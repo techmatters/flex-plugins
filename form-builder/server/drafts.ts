@@ -68,8 +68,13 @@ const FILE_PATH_PATTERN = /^[A-Za-z0-9_-]+(\/[A-Za-z0-9_-]+)*\.json$/;
 export const isValidDraftKey = (code: string, version: string) =>
   CODE_PATTERN.test(code) && VERSION_PATTERN.test(version);
 
+// The webchat's translation files (see filePaths.ts), e.g. webchat-app/translations/en-US.json
+const WEBCHAT_FILE_PATH_PATTERN = /^webchat-app\/translations\/[A-Za-z0-9_-]+\.json$/;
+
 export const isValidDraftFilePath = (filePath: string) =>
-  FILE_PATH_PATTERN.test(filePath) && !filePath.split('/').includes('..');
+  filePath.startsWith('webchat-app/')
+    ? WEBCHAT_FILE_PATH_PATTERN.test(filePath)
+    : FILE_PATH_PATTERN.test(filePath) && !filePath.split('/').includes('..');
 
 const readJson = async <T>(filePath: string): Promise<T | undefined> => {
   try {

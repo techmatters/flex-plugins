@@ -135,7 +135,7 @@ describe('HelplineWorkspace', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
 
     const result = await screen.findByRole('dialog', { name: 'Changes applied' });
-    expect(within(result).getByText(`form-definitions/usnm/v1/${CALLER_TAB}`)).toBeTruthy();
+    expect(within(result).getByText(`lambdas/packages/hrm-form-definitions/form-definitions/usnm/v1/${CALLER_TAB}`)).toBeTruthy();
     expect(context.applier.apply).toHaveBeenCalledTimes(1);
     expect(await store.get('usnm', 'v1')).toBeUndefined();
   });

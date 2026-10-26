@@ -45,6 +45,8 @@ import { ReviewChanges } from './ReviewChanges';
 import { CallTypesEditor } from './sections/CallTypesEditor';
 import { CannedResponsesEditor } from './sections/CannedResponsesEditor';
 import { MessagesEditor } from './sections/MessagesEditor';
+import { WebchatFormEditor } from './webchat/WebchatFormEditor';
+import { PRE_ENGAGEMENT_FILE } from '../webchat';
 
 // Which screen is showing in the main area
 type View =
@@ -53,6 +55,7 @@ type View =
   | { kind: 'callTypes' }
   | { kind: 'cannedResponses' }
   | { kind: 'messages' }
+  | { kind: 'webchat' }
   | { kind: 'caseStatus' }
   | { kind: 'caseSection'; sectionKey: string };
 
@@ -220,6 +223,20 @@ export const HelplineWorkspace = ({
         />
       );
     }
+    if (view.kind === 'webchat') {
+      return (
+        <WebchatFormEditor
+          key={editorKey}
+          draftFiles={files}
+          originalFiles={originalFiles}
+          staffMode={staffMode}
+          settings={definitions.webchat}
+          featureFlags={definitions.featureFlags}
+          issues={sectionIssues.filter((issue) => issue.message.startsWith('Webchat form'))}
+          onChangeFiles={draft.updateFiles}
+        />
+      );
+    }
     if (view.kind === 'categories') {
       return <CategoriesPreview categoriesByHelpline={getCategoriesByHelpline(files)} />;
     }
@@ -328,6 +345,13 @@ export const HelplineWorkspace = ({
               errors={sectionErrorCount('Canned responses')}
             />
             <NavItem current={view} onSelect={setView} target={{ kind: 'messages' }} label="Automatic messages" />
+            {originalFiles[PRE_ENGAGEMENT_FILE] !== undefined && (
+              <NavItem current={view} onSelect={setView}
+                target={{ kind: 'webchat' }}
+                label="Webchat form"
+                errors={sectionErrorCount('Webchat form')}
+              />
+            )}
           </ul>
           <h3>Cases (preview only)</h3>
           <ul>
@@ -380,6 +404,7 @@ export const HelplineWorkspace = ({
           onSubmit={draft.submit}
           onApply={draft.apply}
           issues={allIssues}
+          webchatDefaultLocale={definitions.webchat?.defaultLocale}
           onClose={() => setReviewing(false)}
         />
       )}

@@ -557,8 +557,8 @@ export const ContactFormEditor = ({
             <p className="muted">Click any field on the left to change its question, answers or
               whether it's required.</p>
             <p className="muted">
-              Changes are saved as a draft in this browser automatically. Nothing reaches Aselo
-              until you export and the Aselo team applies it.
+              Changes are saved as a draft automatically. Nothing reaches Aselo until the Aselo
+              team reviews and applies it.
             </p>
           </div>
         )}

@@ -34,6 +34,17 @@ It reads and writes the same files the Flex plugin uses:
   chat and post-survey messages (`customStrings/Messages.json`,
   `customStrings/postSurveyMessages.json`). Existing "close without a form" call types are
   locked to Aselo staff, because contacts are saved with the button's text.
+- **Webchat form** (`webchat/PreEngagementForm.json`) next to a working preview of the webchat
+  (its window, texts, required questions and linked dropdowns, styled like
+  `aselo-webchat-react-app`). Texts are edited per language: a question that uses a
+  translation key keeps it and its text goes into the webchat's translations
+  (`aselo-webchat-react-app/configSrc/<code>/translations/<locale>.json`); text written in the
+  form stays in the form. The window title, introduction and start button are edited the same
+  way. Changed webchat texts add a note for the reviewer, because the webchat has to be
+  redeployed for them (the form itself is deployed with the form definitions). Each question
+  can also fill in contact form fields, written to `PrepopulateMappings.json` (never the older
+  `PrepopulateKeys.json`); helplines without `use_prepopulate_mappings` are told it only takes
+  effect once that flag is on.
 - Issue categories and cases are still preview only.
 
 ### Drafts, roles and applying
@@ -85,9 +96,8 @@ grouped by the value chosen above (`options: { "<value above>": [...] }`).
 
 Planned next:
 
-1. Webchat pre-engagement form and its translations
-2. Issue categories, cases and client profiles
-3. Deployment in the management account: Okta login, S3 drafts, Apply through a GitHub App
+1. Issue categories, cases and client profiles
+2. Deployment in the management account: Okta login, S3 drafts, Apply through a GitHub App
    (branch + PR), Slack and email notifications, Terraform
 
 ## Running locally
@@ -101,7 +111,8 @@ npm run dev
 Open http://localhost:5180.
 
 In development the app reads form definitions straight from this repo checkout. To
-point it at a different checkout, set `FORM_DEFINITIONS_DIR` before `npm run dev`.
+point it at a different checkout, set `FORM_DEFINITIONS_DIR` (and `WEBCHAT_CONFIG_DIR` for
+the webchat's `configSrc`) before `npm run dev`.
 
 Locally you're Aselo staff. To try it as helpline staff:
 

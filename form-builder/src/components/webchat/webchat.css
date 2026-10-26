@@ -1,0 +1,163 @@
+/*
+ * The webchat's look: Twilio Paste's default light theme, as used by aselo-webchat-react-app
+ * (components/styles/*.styles.ts name the Paste tokens; their values are below).
+ */
+.webchat-window {
+  --webchat-primary: rgb(2, 99, 224); /* colorBackgroundPrimary */
+  --webchat-primary-stronger: rgb(3, 11, 93);
+  --webchat-text: rgb(18, 28, 45); /* colorText */
+  --webchat-text-weak: rgb(96, 107, 133);
+  --webchat-border: rgb(136, 145, 170); /* colorBorder */
+  --webchat-error: rgb(214, 31, 31); /* colorBorderError */
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  height: 590px;
+  max-width: 100%;
+  border-radius: 8px; /* borderRadius30 */
+  background: #fff;
+  color: var(--webchat-text);
+  box-shadow: 0 16px 24px 4px rgba(18, 28, 45, 0.2); /* shadow */
+  font-family: 'Inter var', Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  overflow: hidden;
+  text-align: left;
+}
+
+.webchat-header {
+  display: flex;
+  align-items: center;
+  background: var(--webchat-primary);
+  padding: 12px 4px;
+  border-radius: 4px 4px 0 0;
+}
+
+.webchat-header h2 {
+  margin: 0;
+  padding-left: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.webchat-form,
+.webchat-started {
+  flex: 1;
+  overflow: auto;
+  padding: 32px 12px 12px;
+}
+
+.webchat-title {
+  margin: 0 0 20px;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 400;
+}
+
+.webchat-description {
+  margin: 0 0 8px;
+}
+
+.webchat-fields {
+  margin-bottom: 24px;
+}
+
+.webchat-field {
+  margin-bottom: 20px;
+}
+
+.webchat-label {
+  display: block;
+  font-weight: 600;
+}
+
+.webchat-label-text {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.webchat-input,
+.webchat-select {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px var(--webchat-border);
+  background: #fff;
+  color: var(--webchat-text);
+  font: inherit;
+  font-weight: 400;
+}
+
+.webchat-input:focus,
+.webchat-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--webchat-primary);
+}
+
+.webchat-input.has-error,
+.webchat-select.has-error {
+  box-shadow: 0 0 0 1px var(--webchat-error);
+}
+
+.webchat-select:disabled {
+  background: rgb(244, 244, 246);
+  color: var(--webchat-text-weak);
+}
+
+.webchat-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 400;
+}
+
+.webchat-checkbox input {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  margin: 0;
+  accent-color: var(--webchat-primary);
+}
+
+.webchat-checkbox input.has-error {
+  outline: 1px solid var(--webchat-error);
+}
+
+.webchat-checkbox a {
+  color: var(--webchat-primary);
+}
+
+.webchat-error {
+  display: block;
+  margin-top: 4px;
+  color: rgb(203, 50, 50);
+}
+
+.webchat-button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  background: var(--webchat-primary);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.webchat-button:hover:not(:disabled) {
+  background: var(--webchat-primary-stronger);
+}
+
+.webchat-button:disabled {
+  background: rgb(225, 227, 234);
+  color: rgb(136, 145, 170);
+  cursor: not-allowed;
+}
+
+.webchat-started ul {
+  padding-left: 20px;
+}

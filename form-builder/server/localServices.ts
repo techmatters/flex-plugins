@@ -27,6 +27,7 @@ import os from 'os';
 import path from 'path';
 import type { ApiUser, ApplyResult, DraftApplier, Notifier } from './api';
 import type { Draft } from './drafts';
+import { isWebchatTranslationsPath, WEBCHAT_TRANSLATIONS_PREFIX } from './filePaths';
 
 export const localUser = (env: Record<string, string | undefined> = process.env): ApiUser => {
   const role = env.FORM_BUILDER_ROLE === 'helpline-staff' ? 'helpline-staff' : 'aselo-staff';
@@ -44,22 +45,41 @@ export const localUser = (env: Record<string, string | undefined> = process.env)
   };
 };
 
-// Same format as the export: 2-space JSON, which most definition files already use
-const serialize = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
+/**
+ * JSON in the same style as the file it replaces (indentation, line endings and final
+ * newline), so the diff only shows real changes. New files get 2-space JSON, which most
+ * files use.
+ */
+export const serializeLike = (value: unknown, existingText?: string) => {
+  const indent = existingText?.match(/^﻿?[{[]\r?\n([ \t]+)/)?.[1] ?? '  ';
+  const finalNewline = existingText === undefined || existingText.endsWith('\n');
+  const text = `${JSON.stringify(value, null, indent)}${finalNewline ? '\n' : ''}`;
+  return existingText?.includes('\r\n') ? text.replace(/\n/g, '\r\n') : text;
+};
 
 export class LocalApplier implements DraftApplier {
   constructor(
     private readonly formDefinitionsDir: string,
     private readonly repoRoot: string,
+    private readonly webchatConfigDir?: string,
   ) {}
 
+  private targetOf(draft: Draft, filePath: string) {
+    if (isWebchatTranslationsPath(filePath)) {
+      if (!this.webchatConfigDir) throw new Error('No webchat config directory to write to');
+      const fileName = filePath.slice(WEBCHAT_TRANSLATIONS_PREFIX.length);
+      return path.join(this.webchatConfigDir, draft.code, 'translations', fileName);
+    }
+    return path.join(this.formDefinitionsDir, draft.code, draft.version, ...filePath.split('/'));
+  }
+
   async apply(draft: Draft): Promise<ApplyResult> {
-    const versionDir = path.join(this.formDefinitionsDir, draft.code, draft.version);
     const written: string[] = [];
     for (const [filePath, value] of Object.entries(draft.files)) {
-      const target = path.join(versionDir, ...filePath.split('/'));
+      const target = this.targetOf(draft, filePath);
+      const existingText = await fs.readFile(target, 'utf8').catch(() => undefined);
       await fs.mkdir(path.dirname(target), { recursive: true });
-      await fs.writeFile(target, serialize(value));
+      await fs.writeFile(target, serializeLike(value, existingText));
       written.push(path.relative(this.repoRoot, target).split(path.sep).join('/'));
     }
     return {

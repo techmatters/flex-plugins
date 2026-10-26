@@ -28,6 +28,7 @@ import { LocalApplier, localNotifier, localUser } from './localServices';
 type Options = {
   formDefinitionsDir: string;
   helplinesConfigDir?: string;
+  webchatConfigDir?: string;
   draftsDir: string;
   repoRoot: string;
 };
@@ -80,14 +81,16 @@ const middleware =
 export const definitionsDevApi = ({
   formDefinitionsDir,
   helplinesConfigDir,
+  webchatConfigDir,
   draftsDir,
   repoRoot,
 }: Options): Plugin => {
   const context: ApiContext = {
     formDefinitionsDir,
     helplinesConfigDir,
+    webchatConfigDir,
     drafts: new LocalDraftStore(draftsDir),
-    applier: new LocalApplier(formDefinitionsDir, repoRoot),
+    applier: new LocalApplier(formDefinitionsDir, repoRoot, webchatConfigDir),
     notifier: localNotifier,
   };
   return {

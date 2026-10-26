@@ -25,6 +25,7 @@ import { render } from '@testing-library/react';
 import type { ApiContext, ApiUser } from '../../server/api';
 import type { DefinitionFiles } from '../../server/definitionsApi';
 import { MemoryDraftStore } from '../../server/drafts';
+import { repoPathOf } from '../../server/filePaths';
 import { inProcessDraftClient } from '../draftClient.inProcess';
 import { HelplineWorkspace } from '../components/HelplineWorkspace';
 
@@ -34,6 +35,7 @@ export const formDefinitionsDir = path.join(
   'lambdas/packages/hrm-form-definitions/form-definitions',
 );
 export const helplinesConfigDir = path.join(repoRoot, 'twilio-iac/helplines');
+export const webchatConfigDir = path.join(repoRoot, 'aselo-webchat-react-app/configSrc');
 
 export const helplineStaff: ApiUser = { name: 'Helpline person', role: 'helpline-staff', helplines: 'all' };
 export const aseloStaff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
@@ -43,11 +45,12 @@ export const createHarness = () => {
   const context: ApiContext = {
     formDefinitionsDir,
     helplinesConfigDir,
+    webchatConfigDir,
     drafts: store,
     applier: {
       apply: vi.fn(async (draft) => ({
         description: 'Written to your checkout.',
-        written: Object.keys(draft.files).map((filePath) => `form-definitions/${draft.code}/${draft.version}/${filePath}`),
+        written: Object.keys(draft.files).map((filePath) => repoPathOf(draft.code, draft.version, filePath)),
       })),
     },
     notifier: { draftSubmitted: vi.fn(async () => {}) },

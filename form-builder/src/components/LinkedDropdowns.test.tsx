@@ -67,7 +67,7 @@ afterEach(() => {
 const fieldCard = (label: string) =>
   screen.getByRole('button', { name: `${label}. Click to edit, or drag to move.` });
 
-// The draft as saved in this browser, for checking what will be exported
+// The draft as saved on the server, for checking what will be applied
 const savedDraftForm = async (definitions: DefinitionFiles, filePath: string) =>
   (await savedDraftFile(definitions, filePath)) as (FormItemJsonDefinition & Record<string, unknown>)[];
 

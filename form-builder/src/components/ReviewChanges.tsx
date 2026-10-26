@@ -18,7 +18,8 @@ import { useState } from 'react';
 import type { DefinitionFileMap } from '../definitions';
 import { summarizeContactFormChanges } from '../changes';
 import { summarizeSectionChanges } from '../sections';
-import { downloadExportZip, REPO_FORM_DEFINITIONS_DIR } from '../exportZip';
+import { downloadExportZip } from '../exportZip';
+import { repoPathOf } from '../../server/filePaths';
 import type { ValidationIssue } from '../validation';
 import type { ApplyResult } from '../../server/api';
 
@@ -29,6 +30,7 @@ type Props = {
   draftFiles: DefinitionFileMap;
   changedPaths: string[];
   issues: ValidationIssue[];
+  webchatDefaultLocale?: string;
   // Aselo staff apply the changes; helpline staff submit them for review
   mode: 'apply' | 'submit';
   alreadySubmitted: boolean;
@@ -44,6 +46,7 @@ export const ReviewChanges = ({
   draftFiles,
   changedPaths,
   issues,
+  webchatDefaultLocale,
   mode,
   alreadySubmitted,
   onSubmit,
@@ -58,10 +61,10 @@ export const ReviewChanges = ({
   const errors = issues.filter((issue) => issue.severity === 'error');
   const warnings = issues.filter((issue) => issue.severity === 'warning');
   const summaries = summarizeContactFormChanges(originalFiles, draftFiles);
-  const sectionSummaries = summarizeSectionChanges(originalFiles, draftFiles);
+  const sectionSummaries = summarizeSectionChanges(originalFiles, draftFiles, webchatDefaultLocale);
 
   const exportChanges = async () => {
-    await downloadExportZip({ code, version, originalFiles, draftFiles, warnings });
+    await downloadExportZip({ code, version, originalFiles, draftFiles, warnings, webchatDefaultLocale });
     setExported(true);
   };
 
@@ -198,9 +201,7 @@ export const ReviewChanges = ({
               <ul>
                 {changedPaths.map((filePath) => (
                   <li key={filePath}>
-                    <code>
-                      {REPO_FORM_DEFINITIONS_DIR}/{code}/{version}/{filePath}
-                    </code>
+                    <code>{repoPathOf(code, version, filePath)}</code>
                   </li>
                 ))}
               </ul>

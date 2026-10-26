@@ -33,6 +33,11 @@ const formDefinitionsDir =
 // Each helpline's Flex service configuration, for its language
 const helplinesConfigDir =
   process.env.HELPLINES_CONFIG_DIR ?? path.resolve(appDir, '../twilio-iac/helplines');
+// The webchat app's per-helpline settings and translations
+const webchatConfigDir =
+  process.env.WEBCHAT_CONFIG_DIR ?? path.resolve(appDir, '../aselo-webchat-react-app/configSrc');
+// The webchat app's own text, for the webchat form preview
+const webchatTranslationsDir = path.resolve(appDir, '../aselo-webchat-react-app/translationsSrc');
 
 export default defineConfig({
   plugins: [
@@ -41,6 +46,7 @@ export default defineConfig({
     definitionsDevApi({
       formDefinitionsDir,
       helplinesConfigDir,
+      webchatConfigDir,
       // Work in progress, kept out of git; deployed, drafts live in a private S3 bucket
       draftsDir: process.env.FORM_BUILDER_DRAFTS_DIR ?? path.resolve(appDir, 'drafts'),
       repoRoot: path.resolve(appDir, '..'),
@@ -55,6 +61,6 @@ export default defineConfig({
   server: {
     port: 5180,
     // The specification, validator and translations are imported from elsewhere in the repo
-    fs: { allow: [appDir, hrmFormDefinitionsSrc, pluginTranslationsDir] },
+    fs: { allow: [appDir, hrmFormDefinitionsSrc, pluginTranslationsDir, webchatTranslationsDir] },
   },
 });

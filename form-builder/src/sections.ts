@@ -25,6 +25,7 @@ import type {
 import type { DefinitionFileMap } from './definitions';
 import { isSameJson } from './changes';
 import type { ValidationIssue } from './validation';
+import { summarizeWebchatChanges, validateWebchat } from './webchat';
 
 export const CALL_TYPE_BUTTONS_FILE = 'CallTypeButtons.json';
 export const CANNED_RESPONSES_FILE = 'CannedResponses.json';
@@ -171,7 +172,7 @@ export const validateSections = (
   originalFiles: DefinitionFileMap,
 ): ValidationIssue[] => {
   const before = new Set(checkSections(originalFiles).map((found) => found.message));
-  return checkSections(draftFiles).map((found) =>
+  const sectionIssues = checkSections(draftFiles).map((found): ValidationIssue =>
     found.severity === 'error' && before.has(found.message)
       ? {
           ...found,
@@ -180,6 +181,7 @@ export const validateSections = (
         }
       : found,
   );
+  return [...sectionIssues, ...validateWebchat(draftFiles, originalFiles)];
 };
 
 /**
@@ -239,6 +241,7 @@ const describeMessages = (before: unknown, after: unknown): string[] => {
 export const summarizeSectionChanges = (
   originalFiles: DefinitionFileMap,
   draftFiles: DefinitionFileMap,
+  webchatDefaultLocale?: string,
 ): SectionChangeSummary[] => {
   const summaries: SectionChangeSummary[] = [];
   const changed = (filePath: string) => !isSameJson(originalFiles[filePath], draftFiles[filePath]);
@@ -280,5 +283,6 @@ export const summarizeSectionChanges = (
       ),
     });
   }
+  summaries.push(...summarizeWebchatChanges(originalFiles, draftFiles, webchatDefaultLocale));
   return summaries;
 };

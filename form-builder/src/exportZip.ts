@@ -24,8 +24,8 @@ import type { DefinitionFileMap } from './definitions';
 import { getChangedFilePaths, summarizeContactFormChanges } from './changes';
 import { summarizeSectionChanges } from './sections';
 import type { ValidationIssue } from './validation';
-
-export const REPO_FORM_DEFINITIONS_DIR = 'lambdas/packages/hrm-form-definitions/form-definitions';
+import { changedWebchatTranslationFiles } from './webchat';
+import { repoPathOf } from '../server/filePaths';
 
 // Most definition files in the repo are 2-space JSON, so this keeps diffs small
 export const serializeDefinitionFile = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
@@ -36,6 +36,7 @@ type ExportInput = {
   originalFiles: DefinitionFileMap;
   draftFiles: DefinitionFileMap;
   warnings: ValidationIssue[];
+  webchatDefaultLocale?: string;
 };
 
 export const buildChangeLog = ({
@@ -44,6 +45,7 @@ export const buildChangeLog = ({
   originalFiles,
   draftFiles,
   warnings,
+  webchatDefaultLocale,
 }: ExportInput): string => {
   const changedPaths = getChangedFilePaths(originalFiles, draftFiles);
   const lines = [
@@ -62,16 +64,14 @@ export const buildChangeLog = ({
     lines.push('');
   });
 
-  summarizeSectionChanges(originalFiles, draftFiles).forEach((summary) => {
+  summarizeSectionChanges(originalFiles, draftFiles, webchatDefaultLocale).forEach((summary) => {
     lines.push(`## ${summary.title}`, '');
     summary.lines.forEach((line) => lines.push(`- ${line}`));
     lines.push('');
   });
 
   lines.push('## Files changed', '');
-  changedPaths.forEach((filePath) =>
-    lines.push(`- \`${REPO_FORM_DEFINITIONS_DIR}/${code}/${version}/${filePath}\``),
-  );
+  changedPaths.forEach((filePath) => lines.push(`- \`${repoPathOf(code, version, filePath)}\``));
   lines.push('');
 
   if (warnings.length > 0) {
@@ -86,6 +86,9 @@ export const buildChangeLog = ({
     '1. Unzip at the root of a flex-plugins checkout, on a new branch.',
     '2. Run `npm test` in `lambdas/packages/hrm-form-definitions`.',
     '3. Open a PR, then deploy with the "Deploy form-definitions to S3" workflow.',
+    ...(changedWebchatTranslationFiles(originalFiles, draftFiles).length > 0
+      ? [`4. The webchat's texts changed too: redeploy the webchat for ${code.toUpperCase()} (aselo-webchat-react-app).`]
+      : []),
     '',
   );
   return lines.join('\n');
@@ -95,10 +98,7 @@ export const buildExportZip = (input: ExportInput): JSZip => {
   const { code, version, originalFiles, draftFiles } = input;
   const zip = new JSZip();
   getChangedFilePaths(originalFiles, draftFiles).forEach((filePath) => {
-    zip.file(
-      `${REPO_FORM_DEFINITIONS_DIR}/${code}/${version}/${filePath}`,
-      serializeDefinitionFile(draftFiles[filePath]),
-    );
+    zip.file(repoPathOf(code, version, filePath), serializeDefinitionFile(draftFiles[filePath]));
   });
   zip.file('CHANGES.md', buildChangeLog(input));
   return zip;

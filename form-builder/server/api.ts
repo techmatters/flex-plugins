@@ -69,6 +69,8 @@ export interface Notifier {
 export type ApiContext = {
   formDefinitionsDir: string;
   helplinesConfigDir?: string;
+  // aselo-webchat-react-app/configSrc, for the webchat's translations and settings
+  webchatConfigDir?: string;
   drafts: DraftStore;
   applier: DraftApplier;
   notifier: Notifier;
@@ -128,7 +130,13 @@ export const handleApiRequest = async (
       const [, code, version] = definitionsMatch;
       if (!canOpenHelpline(user, code)) return fail(403, `You don't have access to ${code}.`);
       return ok(
-        await loadDefinitionFiles(context.formDefinitionsDir, code, version, context.helplinesConfigDir),
+        await loadDefinitionFiles(
+          context.formDefinitionsDir,
+          code,
+          version,
+          context.helplinesConfigDir,
+          context.webchatConfigDir,
+        ),
       );
     }
 

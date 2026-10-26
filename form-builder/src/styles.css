@@ -1259,3 +1259,66 @@ body {
   margin: 24px auto 0;
   text-align: left;
 }
+
+/* Webchat form */
+.webchat-question {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.webchat-question.selected {
+  border-color: var(--color-accent);
+}
+
+.webchat-question-summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.webchat-question-label {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.webchat-field-settings {
+  padding: 4px 10px 10px;
+  border-top: 1px solid var(--color-border);
+}
+
+.section-preview-frame.webchat-preview-frame {
+  display: flex;
+  justify-content: center;
+  padding: 24px 12px;
+  background: var(--color-bg);
+  overflow: auto;
+}
+
+.prepopulate-targets {
+  list-style: none;
+  margin: 4px 0;
+  padding: 0;
+}
+
+.prepopulate-targets li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.prepopulate-warning {
+  flex-basis: 100%;
+  color: var(--color-pii-text);
+}

@@ -24,6 +24,7 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
+import { WEBCHAT_TRANSLATIONS_PREFIX } from './filePaths';
 
 export type HelplineSummary = {
   code: string;
@@ -47,6 +48,15 @@ export type DefinitionFiles = {
   logoUrl?: string;
   // Production feature flags, e.g. enable_canned_responses
   featureFlags?: Record<string, boolean>;
+  // The helpline's webchat settings, when it has a webchat (aselo-webchat-react-app/configSrc)
+  webchat?: WebchatSettings;
+};
+
+export type WebchatSettings = {
+  // The language the webchat opens in, e.g. 'en-US'
+  defaultLocale: string;
+  // The pre-engagement field whose answer identifies the contact (e.g. an email field)
+  contactIdentifierField?: string;
 };
 
 export class DefinitionsApiError extends Error {
@@ -165,11 +175,68 @@ export const readLogoUrl = (helplinesConfigDir: string, code: string) =>
     ['production.json', 'common.json'],
   );
 
+const readJsonFile = async (filePath: string): Promise<Record<string, any> | undefined> => {
+  try {
+    return JSON.parse((await fs.readFile(filePath, 'utf8')).replace(/^﻿/, ''));
+  } catch {
+    return undefined;
+  }
+};
+
+/**
+ * The helpline's webchat translation files (configSrc/<code>/translations/<locale>.json),
+ * keyed under webchat-app/translations/, plus its settings merged the way the webchat build
+ * merges them (scripts/mergeConfigs.js): defaults.json, common.json, then production.json.
+ * Undefined when the helpline has no webchat.
+ */
+export const loadWebchatFiles = async (
+  webchatConfigDir: string,
+  code: string,
+): Promise<{ files: Record<string, unknown>; errors: DefinitionFileError[]; settings: WebchatSettings } | undefined> => {
+  if (!HELPLINE_CODE_PATTERN.test(code)) return undefined;
+  const helplineDir = path.join(webchatConfigDir, code);
+  const common = await readJsonFile(path.join(helplineDir, 'common.json'));
+  if (!common) return undefined;
+  const settings = {
+    ...(await readJsonFile(path.join(webchatConfigDir, 'defaults.json'))),
+    ...common,
+    ...(await readJsonFile(path.join(helplineDir, 'production.json'))),
+  };
+
+  const files: Record<string, unknown> = {};
+  const errors: DefinitionFileError[] = [];
+  const translationsDir = path.join(helplineDir, 'translations');
+  const fileNames = await fs.readdir(translationsDir).catch(() => [] as string[]);
+  await Promise.all(
+    fileNames
+      .filter((fileName) => /^[A-Za-z0-9_-]+\.json$/.test(fileName))
+      .map(async (fileName) => {
+        const key = `${WEBCHAT_TRANSLATIONS_PREFIX}${fileName}`;
+        const text = await fs.readFile(path.join(translationsDir, fileName), 'utf8');
+        try {
+          files[key] = JSON.parse(text.replace(/^﻿/, ''));
+        } catch (err) {
+          errors.push({ path: key, message: (err as Error).message });
+        }
+      }),
+  );
+  return {
+    files,
+    errors,
+    settings: {
+      defaultLocale: typeof settings.defaultLocale === 'string' ? settings.defaultLocale : 'en-US',
+      contactIdentifierField:
+        typeof settings.contactIdentifierField === 'string' ? settings.contactIdentifierField : undefined,
+    },
+  };
+};
+
 export const loadDefinitionFiles = async (
   rootDir: string,
   code: string,
   version: string,
   helplinesConfigDir?: string,
+  webchatConfigDir?: string,
 ): Promise<DefinitionFiles> => {
   if (!HELPLINE_CODE_PATTERN.test(code) || !VERSION_PATTERN.test(version)) {
     throw new DefinitionsApiError(`Invalid helpline code or version: ${code}/${version}`, 400);
@@ -208,5 +275,15 @@ export const loadDefinitionFiles = async (
   const featureFlags = helplinesConfigDir
     ? await readFeatureFlags(helplinesConfigDir, code)
     : undefined;
-  return { code, version, files, errors, helplineLanguage, logoUrl, featureFlags };
+  const webchat = webchatConfigDir ? await loadWebchatFiles(webchatConfigDir, code) : undefined;
+  return {
+    code,
+    version,
+    files: { ...files, ...webchat?.files },
+    errors: [...errors, ...(webchat?.errors ?? [])],
+    helplineLanguage,
+    logoUrl,
+    featureFlags,
+    webchat: webchat?.settings,
+  };
 };

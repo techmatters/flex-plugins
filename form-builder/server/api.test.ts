@@ -144,6 +144,34 @@ describe('local services', () => {
     await fs.rm(tempDir, { recursive: true, force: true });
   });
 
+  test('LocalApplier writes webchat texts into the webchat app, in the style of the file it replaces', async () => {
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'form-builder-'));
+    const webchatDir = path.join(tempDir, 'configSrc');
+    const translationsFile = path.join(webchatDir, 'ca/translations/fr-CA.json');
+    await fs.mkdir(path.dirname(translationsFile), { recursive: true });
+    await fs.writeFile(translationsFile, '{\r\n    "StartChat": "Démarrer"\r\n}\r\n');
+
+    const result = await new LocalApplier(path.join(tempDir, 'form-definitions'), tempDir, webchatDir).apply({
+      code: 'ca',
+      version: 'v1',
+      files: { 'webchat-app/translations/fr-CA.json': { StartChat: 'Commencer', Title: 'Bonjour' } },
+      meta: { revision: 1, status: 'editing', updatedAt: 'now', updatedBy: 'me', baseHashes: {} },
+    });
+    expect(result.written).toEqual(['configSrc/ca/translations/fr-CA.json']);
+    expect(await fs.readFile(translationsFile, 'utf8')).toBe(
+      '{\r\n    "StartChat": "Commencer",\r\n    "Title": "Bonjour"\r\n}\r\n',
+    );
+    await fs.rm(tempDir, { recursive: true, force: true });
+  });
+
+  test('only the webchat translations can be saved outside the form definitions', async () => {
+    const save = (filePath: string) =>
+      call(staff, 'PUT', '/api/drafts/ca/v1', { expectedRevision: 0, files: { [filePath]: {} }, baseHashes: {} });
+    expect((await save('webchat-app/translations/fr-CA.json')).status).toBe(200);
+    expect((await save('webchat-app/common.json')).status).toBe(400);
+    expect((await save('webchat-app/translations/../../common.json')).status).toBe(400);
+  });
+
   test('locally you are Aselo staff unless told otherwise', () => {
     expect(localUser({ FORM_BUILDER_USER: 'alex' })).toEqual({ name: 'alex', role: 'aselo-staff', helplines: 'all' });
     expect(
