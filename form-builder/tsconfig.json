@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "noEmit": true,
+    // Off because hrm-form-definitions re-exports types (export { LayoutVersion }), which
+    // isolatedModules rejects. Vite/esbuild drops those re-exports at build time anyway.
+    "isolatedModules": false,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "types": ["node"],
+    "baseUrl": ".",
+    "paths": {
+      "@hrm-form-definitions/*": ["../lambdas/packages/hrm-form-definitions/src/*"],
+      // hrm-form-definitions has no node_modules of its own in a fresh checkout
+      "lodash/*": ["./node_modules/@types/lodash/*"]
+    }
+  },
+  "include": ["src", "server", "build-tools", "vite.config.ts"]
+}
