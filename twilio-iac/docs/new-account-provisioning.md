@@ -87,6 +87,8 @@ From `twilio-iac/stages/provision` on the devops node:
 2. 🤖 `make HL=<code> HL_ENV=staging plan` and review. Adjust the helpline config if needed.
 3. 🧑 `make HL=<code> HL_ENV=staging apply`
 4. Repeat 2–3 in `stages/lex` and then `stages/configure`.
+5. 🧑 Buy/assign the phone number in Twilio and point its **A call comes in** to the voice Studio
+   flow (Terraform does not manage phone numbers; it only uses `phone_numbers` in routing expressions).
 
 ### 1.4 Error reporting 🤝
 
@@ -198,7 +200,7 @@ Copy into the helpline's tracking issue / task and tick as you go.
 - [ ] 0 Intake complete
 - [ ] 1.1 Helpline config (incl. okta / okta_app) committed
 - [ ] 1.2 SSM secrets
-- [ ] 1.3 provision / lex / configure applied
+- [ ] 1.3 provision / lex / configure applied · phone number → voice flow
 - [ ] 1.4 Error webhook + TwilioErrorReporter PR
 - [ ] 1.5 Okta: group (okta-org) · group rule (manual, if any) · Flex SSO page opened · app (okta-app) · Flex SSO values pasted · verifySso ✅ · SSO login ✅
 - [ ] 1.6 Twilio console users invited
