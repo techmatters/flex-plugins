@@ -146,11 +146,17 @@ Things to know:
 ```hcl
 # helplines/<code>/common.hcl, inside local_config
 okta = {
-  group_name            = "SafeSpot (JM)"                       # required
-  app_name              = "SafeSpot"                            # optional, defaults to helpline
-  group_rule_expression = "user.organization==\"SafeSpot\""     # optional auto-membership rule
-  group_rule_name       = "SafeSpot (JM)"                       # optional, defaults to group_name
-  import_existing       = true                                  # adopt the existing group/rule
+  group_name      = "SafeSpot (JM)"   # required
+  app_name        = "SafeSpot"        # optional, defaults to helpline
+  import_existing = true              # adopt the existing group/rule
+
+  # Optional group rule: adds users to the group automatically. Set exactly ONE of:
+  group_rule = {
+    organizations = ["SafeSpot"]                 # -> user.organization=="SafeSpot"
+    # email_domains = ["@paralaconfianza.com"]   # -> String.stringContains(user.email,"@paralaconfianza.com")
+    # expression    = "String.stringContains(user.email,\"barnardos.org.nz\") AND String.stringContains(user.department,\"training\")"
+    # name          = "SafeSpot (JM)"            # optional, defaults to group_name
+  }
 }
 
 # helplines/<code>/staging.hcl or production.hcl, inside local_config
@@ -166,6 +172,12 @@ okta_app = {
   ]
 }
 ```
+
+Group rules: several `organizations` or `email_domains` are joined with `OR`. Include the `@` in
+email domains (`"@example.org"`), otherwise `"example.org"` also matches addresses like
+`x@example.org.fake.net`. The generated expressions use the same format as the rules that already
+exist, so adopting them is a no-op. Okta keeps users in a rule-based group only while they match:
+changing a user's organization or email removes them.
 
 Pilot config is in place for **jm, mt, usch, usvc** (all with `import_existing = true`), and
 `baseline/` has blocks to copy for new helplines.

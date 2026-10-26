@@ -16,14 +16,18 @@ variable "okta" {
     Helpline-level Okta settings (common.hcl). Shared by both environments.
       group_name            - the helpline's Okta group, created by the okta-org stage
       app_name              - name used in app labels, defaults to var.helpline
-      group_rule_expression, group_rule_name, import_existing - used by the okta-org stage only
+      group_rule, import_existing - used by the okta-org stage only
   EOT
   type = object({
-    group_name            = string
-    app_name              = optional(string)
-    group_rule_expression = optional(string)
-    group_rule_name       = optional(string)
-    import_existing       = optional(bool)
+    group_name = string
+    app_name   = optional(string)
+    group_rule = optional(object({
+      email_domains = optional(list(string))
+      organizations = optional(list(string))
+      expression    = optional(string)
+      name          = optional(string)
+    }))
+    import_existing = optional(bool)
   })
   default = null
 

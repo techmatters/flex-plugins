@@ -14,12 +14,23 @@ data "aws_ssm_parameter" "okta_terraform_app" {
 }
 
 locals {
+  # Build each rule's Okta expression from its structured form. The format matches the rules that
+  # already exist in Okta, so adopting them is a no-op.
+  group_rule_expressions = {
+    for code, okta in var.helpline_okta : code => (
+      okta.group_rule.expression != null ? okta.group_rule.expression :
+      okta.group_rule.organizations != null ? join(" OR ", [for org in okta.group_rule.organizations : "user.organization==\"${org}\""]) :
+      join(" OR ", [for domain in okta.group_rule.email_domains : "String.stringContains(user.email,\"${domain}\")"])
+    )
+    if okta.group_rule != null
+  }
+
   helpline_groups = {
     for code, okta in var.helpline_okta : code => {
       group_name = okta.group_name
-      group_rule = okta.group_rule_expression == null ? null : {
-        name       = coalesce(okta.group_rule_name, okta.group_name)
-        expression = okta.group_rule_expression
+      group_rule = okta.group_rule == null ? null : {
+        name       = coalesce(okta.group_rule.name, okta.group_name)
+        expression = local.group_rule_expressions[code]
       }
     }
   }
@@ -43,8 +54,8 @@ data "okta_group" "existing" {
 }
 
 data "okta_group_rule" "existing" {
-  for_each = { for code, okta in local.importing : code => okta if okta.group_rule_expression != null }
-  name     = coalesce(each.value.group_rule_name, each.value.group_name)
+  for_each = { for code, okta in local.importing : code => okta if okta.group_rule != null }
+  name     = coalesce(each.value.group_rule.name, each.value.group_name)
 }
 
 import {

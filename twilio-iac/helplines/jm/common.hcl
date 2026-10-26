@@ -64,7 +64,7 @@ locals {
     # Okta: helpline-level, shared by staging and production apps (okta-org stage). See twilio-iac/docs/okta.md
     okta = {
       group_name            = "SafeSpot (JM)"
-      group_rule_expression = "user.organization==\"SafeSpot\""
+      group_rule      = { organizations = ["SafeSpot"] }
       import_existing       = true
     }
   }
