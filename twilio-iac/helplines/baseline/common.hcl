@@ -14,43 +14,42 @@ locals {
     enable_post_survey         = false
     enable_external_recordings = true
     permission_config          = "demo"
+    # Baseline: 1 queue, 1 workflow, a webchat channel and a voice channel. Add more as the helpline needs.
     workflows = {
       master : {
         friendly_name = "Master Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master.tftpl"
-      },
-      //NOTE: MAKE SURE TO ADD THIS IF THE ACCOUNT USES A CONVERSATION CHANNEL
-      queue_transfers : {
-        friendly_name = "Queue Transfers Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
-      },
-      survey : {
-        friendly_name = "Survey Workflow"
-        templatefile  = "/app/twilio-iac/helplines/templates/workflows/lex.tftpl"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/master-basic.tftpl"
       }
+      # Add when the account uses a Conversations channel (chat/SMS/WhatsApp...), for queue transfers:
+      # queue_transfers : {
+      #   friendly_name = "Queue Transfers Workflow"
+      #   templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+      # }
     }
     task_queues = {
       master : {
         "target_workers" = "1==1",
         "friendly_name"  = "<helpline name>"
-      },
-      survey : {
-        "target_workers" = "1==0",
-        "friendly_name"  = "Survey"
-      },
-      e2e_test : {
-        "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
-        "friendly_name"  = "E2E Test Queue"
       }
     }
+
     #Channels
     channels = {
-      chat : {
-        channel_type         = "chat"
-        messaging_mode       = "conversations"
+      webchat : {
+        channel_type         = "web"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda.tftpl"
         channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      voice : {
+        channel_type     = "voice"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
+        channel_flow_vars = {
+          voice_ivr_greeting_message = "Hello, thank you for calling <helpline name>. Please wait for a counsellor."
+          voice_ivr_language         = "en-US"
+        }
         chatbot_unique_names = []
       }
     }
