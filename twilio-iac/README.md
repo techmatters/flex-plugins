@@ -42,6 +42,9 @@ In order to set up the Aselo Terraform project:
 
 ## Running on a new environment
 
+For the complete process (Twilio, Okta SSO, deployments, who does what, tracking checklist) see
+[docs/new-account-provisioning.md](docs/new-account-provisioning.md). This section covers the Terraform part.
+
 There are currently some gotchas which mean that, unfortunately, it's not a simple as running `make apply` when provisioning an environment for the first time (but hopefully should be good after that).
 
 The process for a first run is as follows:
