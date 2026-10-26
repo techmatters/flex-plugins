@@ -119,19 +119,24 @@ Okta now calls the classic per-app attribute statements the *legacy configuratio
 **attribute statements** (federated claims, written in Expression Language for Identity Engine). The
 module supports both through `okta_app.attribute_statements_mode`:
 
-- `legacy` (default): matches every existing app, so imports are no-ops.
-- `federated`: creates one `okta_app_federated_claim` per attribute and removes the legacy statements
-  **in the same apply**.
+- `federated`: **the standard for new helplines** (set in `baseline/`). Creates one
+  `okta_app_federated_claim` per attribute.
+- `legacy` (code default): matches every existing app, so adopting them is a no-op. Existing apps move
+  to `federated` one at a time with [runbook D](#d-move-an-app-to-the-new-attribute-statements); the
+  switch removes the legacy statements **in the same apply**.
 
-**Federated mode has not been tried on a real login yet.** Before using it for real, test it on one
-staging app (see [runbook D](#d-move-an-app-to-the-new-attribute-statements)) and compare the
-assertion. Known differences:
+**Tested on ASOP staging (2026-10-26):** with a freshly created worker, Flex received the same
+attributes, values and types as with legacy statements (`waitingOfflineContact` boolean, `labels` and
+`roles` lists, `image_url` fine without the `uri` name format). Changing `labels` in Okta
+(Team Blue → Team Green) updated `labels` and `team` on the next login. An empty profile value
+(`helpline`) still ended up as `""` on the new worker.
 
-- New statements have no name format, so `image_url` loses its `uri` format.
-- Okta leaves out a statement whose value is empty. A user with no labels may then keep a stale
-  `team` value in Flex instead of having it cleared.
-- During the switch apply, the app update runs first, so for a few seconds the app sends no
-  attributes. Do production during a quiet period.
+Still to check, and things to know:
+
+- A user whose `labels` goes from a value to empty: is `team` cleared or kept? Okta may omit empty
+  claims, so Flex could keep the old value.
+- During the switch apply on an existing app, the app update runs first, so for a few seconds the
+  app sends no attributes. Do production during a quiet period.
 
 ## Configuration reference
 
@@ -263,7 +268,8 @@ replaced by test values because there are no AWS credentials locally:
 | Import IDs from data sources (nothing hard-coded) | ✅ |
 | `okta-app` stage on all 8 pilot apps | 6 × `0 to change`. USCH stg: attribute reorder only. USVC stg: adds the missing *Staff* group, and the check block flags *Production* + *VPN* |
 | `okta-org` stage on the 4 pilot groups + 2 rules | ✅ `6 to import, 0 to change` |
-| Federated mode on JM stg (plan only) | ✅ 8 claims created, legacy statements removed |
+| Federated mode on ASOP stg (applied, real Flex logins) | ✅ Same worker attributes as legacy; profile changes propagate |
+| New helpline end to end (ASOP stg: group, app, Flex SSO, login) | ✅ |
 | Terragrunt collection of `okta` blocks across all 32 `common.hcl` | ✅ |
 | Scripts: connection, handoff, verify (without `--login`), audit | ✅ |
 | `verifySso --login` | ⚠️ Only the public half was tested (Flex → Okta redirect). Needs a no-MFA test user |
