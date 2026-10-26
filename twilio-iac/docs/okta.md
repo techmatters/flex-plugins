@@ -131,10 +131,13 @@ attributes, values and types as with legacy statements (`waitingOfflineContact` 
 (Team Blue → Team Green) updated `labels` and `team` on the next login. An empty profile value
 (`helpline`) still ended up as `""` on the new worker.
 
-Still to check, and things to know:
+Things to know:
 
-- A user whose `labels` goes from a value to empty: is `team` cleared or kept? Okta may omit empty
-  claims, so Flex could keep the old value.
+- **Clearing a value in Okta does not clear it in Flex**, with either kind of statement (tested on
+  ASOP stg with federated claims and USVC stg with legacy statements). Flex updates the attributes
+  it receives at login but keeps attributes that arrive empty or not at all. Removing a counsellor's
+  team label in Okta therefore leaves `team`/`labels` on the worker: clear them on the worker in
+  TaskRouter, or delete the worker so it is recreated at the next login.
 - During the switch apply on an existing app, the app update runs first, so for a few seconds the
   app sends no attributes. Do production during a quiet period.
 
