@@ -31,6 +31,8 @@ provider "okta" {
   scopes = [
     "okta.apps.read", "okta.apps.manage", "okta.groups.read", "okta.groups.manage",
     "okta.authorizationServers.read", "okta.authorizationServers.manage",
+    # The app gets the org's default sign-in policy, which the provider has to look up
+    "okta.policies.read",
   ]
 }
 
