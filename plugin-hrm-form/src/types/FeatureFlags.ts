@@ -45,6 +45,7 @@ export type FeatureFlags = {
   enable_twilio_transcripts: boolean; // Enables Viewing Transcripts Stored at Twilio
   enable_voice_recordings: boolean; // Enables Loading Voice Recordings
   use_prepopulate_mappings: boolean; // Use PrepopulateMappings.json instead of PrepopulateKeys.json
+  use_twilio_lambda_for_conference_ending: boolean; // Use conference status webhooks handled in the twilio account scoped lambda to end conferences, instead of managing participants' endConferenceOnExit properties in Flex
   use_twilio_lambda_for_conference_functions: boolean; // Use the twilio account scoped lambda for conferencing functions
   use_twilio_lambda_for_conversation_duration: boolean; // Use the twilio account scoped lambda to calculate conversationDuration
   use_twilio_lambda_for_iwf_reporting: boolean; // Use the twilio account scoped lambda for reportToIWF and selfReportToIWF
