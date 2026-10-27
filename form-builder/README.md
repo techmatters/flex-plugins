@@ -6,6 +6,12 @@ categories, case sections and statuses) without editing JSON by hand.
 It reads and writes the same files the Flex plugin uses:
 `lambdas/packages/hrm-form-definitions/form-definitions/<helpline>/<version>/`.
 
+- [docs/user-guide.md](docs/user-guide.md): how to use it, for helpline staff and Aselo staff
+  (editing, submitting for review, reviewing and publishing).
+- [docs/architecture.md](docs/architecture.md): how it works (each part, sign-in, permissions,
+  future steps), with diagrams.
+- [terraform/README.md](terraform/README.md): setting it up and deploying it.
+
 ## Status
 
 **Phase 2: contact form editing.**
