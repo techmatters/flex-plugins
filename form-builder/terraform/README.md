@@ -77,9 +77,9 @@ Steps (an organization owner, or someone they make a *GitHub App manager*):
 5. **Where can this GitHub App be installed?** *Only on this account*. Create it.
 6. On the app's page, note the **App ID**. Under *Private keys*, **Generate a private key**: a
    `.pem` file downloads.
-7. **Install App** › techmatters › *Only select repositories*: `flex-plugins` and
-   `aselo-webchat-react-app` (the webchat translations live there). After installing, the URL ends
-   in `/installations/<number>`: that's the **installation ID**.
+7. **Install App** › techmatters › *Only select repositories*: `flex-plugins` only (the form
+   definitions, the service configuration and the webchat translations are all in it). After
+   installing, the URL ends in `/installations/<number>`: that's the **installation ID**.
 8. Put the three values in SSM (us-east-1), from the AWS console:
    - `/form-builder/github_app/app_id` (String)
    - `/form-builder/github_app/installation_id` (String)
