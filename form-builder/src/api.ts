@@ -15,9 +15,10 @@
  */
 
 import type { DefinitionFiles, HelplineSummary } from '../server/definitionsApi';
+import { apiFetch } from './auth';
 
 const getJson = async <T>(url: string): Promise<T> => {
-  const response = await fetch(url);
+  const response = await apiFetch(url);
   if (!response.ok) {
     const body = await response.json().catch(() => ({}));
     throw new Error(body.message ?? `Request to ${url} failed (${response.status})`);

@@ -18,6 +18,7 @@ import { useEffect, useState } from 'react';
 import type { DefinitionFiles, HelplineSummary } from '../server/definitionsApi';
 import type { ApiUser } from '../server/api';
 import { fetchDefinitionFiles, fetchHelplines } from './api';
+import { isSignInEnabled, signOut } from './auth';
 import { DraftClient, httpDraftClient } from './draftClient';
 import { HelplineWorkspace } from './components/HelplineWorkspace';
 import { DraftsList } from './components/DraftsList';
@@ -108,6 +109,14 @@ export const App = ({ draftClient = httpDraftClient }: Props) => {
           {user && (
             <>
               {user.name} · {isAseloStaff ? 'Aselo staff' : 'Helpline staff'}
+              {isSignInEnabled() && (
+                <>
+                  {' · '}
+                  <button type="button" className="link-button" onClick={signOut}>
+                    Sign out
+                  </button>
+                </>
+              )}
             </>
           )}
         </span>

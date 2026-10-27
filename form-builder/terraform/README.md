@@ -6,6 +6,8 @@ account. Pieces:
 | Piece | Where | Status |
 |---|---|---|
 | Okta: sign-in app, its authorization server, the groups | `okta/` (this folder) | Ready to plan |
+| API code for the Lambda (master snapshot, S3 drafts, GitHub Apply, Slack) | `server/lambda.ts`, `npm run build:lambda` | Done |
+| Sign-in in the page (Okta, PKCE) | `src/auth.ts` | Done |
 | AWS: S3 site + CloudFront, API Gateway + Lambda, private drafts bucket | `aws/` | To do |
 | GitHub App that opens the Apply PRs | GitHub, by an org owner | Steps below |
 | Slack webhook for "submitted for review" | Slack | Steps below |

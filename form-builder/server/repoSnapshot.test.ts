@@ -45,7 +45,10 @@ beforeAll(async () => {
   );
   tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'form-builder-snapshot-'));
 });
-afterAll(() => fs.rm(tempDir, { recursive: true, force: true }));
+afterAll(() => fs.rm(tempDir, { recursive: true, force: true, maxRetries: 5 }));
+
+// Unpacking takes a few seconds when the whole suite runs at once
+const TIMEOUT = 30_000;
 
 describe('snapshots of master', () => {
   test('unpack only what the builder reads, and are read like a checkout', async () => {
@@ -58,7 +61,7 @@ describe('snapshots of master', () => {
     expect('service-configuration/common.json' in definitions.files).toBe(true);
     expect(definitions.serviceConfigDefaults).toBeDefined();
     await expect(fs.stat(path.join(snapshot.repoRoot, 'twilio-iac/stages'))).rejects.toThrow();
-  });
+  }, TIMEOUT);
 
   test('download once, check master again after a while, and move on when it changes', async () => {
     let time = 0;
@@ -85,5 +88,5 @@ describe('snapshots of master', () => {
     expect(moved.sha).toBe('sha2');
     expect(source.tarball).toHaveBeenCalledTimes(2);
     await expect(fs.stat(first.repoRoot)).rejects.toThrow();
-  });
+  }, TIMEOUT);
 });

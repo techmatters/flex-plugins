@@ -17,10 +17,27 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+import { initAuth } from './auth';
 import './styles.css';
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+const root = createRoot(document.getElementById('root')!);
+
+// Deployed, sign in with Okta first (see auth.ts); locally this renders straight away
+initAuth().then(
+  (ready) => {
+    if (ready) {
+      root.render(
+        <StrictMode>
+          <App />
+        </StrictMode>,
+      );
+    }
+  },
+  (err) => {
+    root.render(
+      <p className="sign-in-error">
+        {(err as Error).message} <a href="/">Try again</a>
+      </p>,
+    );
+  },
 );

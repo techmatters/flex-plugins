@@ -21,6 +21,7 @@
  */
 import type { ApiUser, ApplyResult } from '../server/api';
 import type { Draft, DraftMeta, DraftSummary } from '../server/drafts';
+import { apiFetch } from './auth';
 
 export type SaveDraftRequest = {
   expectedRevision: number;
@@ -79,7 +80,7 @@ export const clientFor = (send: Send): DraftClient => {
 };
 
 export const httpDraftClient: DraftClient = clientFor(async (method, path, body) => {
-  const response = await fetch(path, {
+  const response = await apiFetch(path, {
     method,
     headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
     body: body === undefined ? undefined : JSON.stringify(body),

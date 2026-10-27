@@ -1805,3 +1805,10 @@ body {
 .config-add-fields .field:first-child input {
   min-width: 320px;
 }
+
+/* Sign-in (auth.ts) */
+.sign-in-error {
+  margin: 48px auto;
+  max-width: 480px;
+  text-align: center;
+}
