@@ -87,7 +87,8 @@ From `twilio-iac/stages/provision` on the devops node:
    [README](../README.md#running-on-a-new-environment)).
 2. 🤖 `make HL=<code> HL_ENV=staging plan` and review. Adjust the helpline config if needed.
 3. 🧑 `make HL=<code> HL_ENV=staging apply`
-4. Repeat 2–3 in `stages/lex`, then `stages/system-down` (the system-down subflow every Studio flow
+4. Repeat 2–3 in `stages/lex` (only if the helpline uses Lex chatbots or a post-survey bot; the
+   other stages don't depend on it, so skip it otherwise), then `stages/system-down` (the system-down subflow every Studio flow
    runs first; the baseline has `enable_system_down = true`), and then `stages/configure`, which reads
    the subflow from the system-down state, so it must come after it.
 5. 🧑 Buy/assign the phone number in Twilio and point its **A call comes in** to the voice Studio
@@ -150,6 +151,9 @@ Twilio Console › Account › **Manage users**: invite the engineers and soluti
 3. 🤖 `cd lambdas/packages/hrm-form-definitions && npm test -- validateDefinitions`: must pass.
    Include the files in the helpline's PR.
 4. 🧑 GitHub Actions › **Deploy form-definitions to S3** with `helpline_code=<code>` and the environment.
+   Until the forms are merged, set **Use workflow from** to the helpline's branch (or
+   `gh workflow run <workflow file> --ref <branch> -f ...`): on master the folder doesn't exist yet and
+   the sync fails with "The user-provided path ... does not exist".
    (The webchat deploy in 2.4 also deploys the forms; this step is still needed without webchat or
    when only the forms change.)
 
@@ -158,7 +162,9 @@ Twilio Console › Account › **Manage users**: invite the engineers and soluti
 Run *Deploy All Twilio Lambdas* ([twilio-lambda-deploy-all.yml](../../.github/workflows/twilio-lambda-deploy-all.yml))
 in this repo's GitHub Actions for the environment (`staging` / `production`). It deploys every
 Twilio lambda (account-scoped, TwilioErrorReporter, …) for all helplines of that environment, so it
-also picks up the new account in TwilioErrorReporter (step 1.4) once that PR is merged.
+also picks up the new account in TwilioErrorReporter (step 1.4) once that PR is merged. Run it
+from master only: running it from the helpline's branch would deploy that branch's lambdas to every
+helpline.
 
 ### 2.3 Flex plugin 🧑
 
@@ -188,6 +194,10 @@ Run *Flex Deploy* in this repo's GitHub Actions for the new account.
    plus `<code>: <code>Rules,` in `rulesMapDef`.
 2. 🧑 PR, review and HRM deploy by an engineer.
 
+A test helpline can skip this and reuse existing rules instead: set `permission_config` in
+`common.hcl` and `permissionConfig` in `service-configuration/common.json` to that helpline's code
+(e.g. `demo`).
+
 ### 2.6 FullStory 🧑
 
 FullStory › Create › Segment: name `<code> <HL_ENV> (<Helpline name>)`, filter `accountSid` = the
@@ -203,7 +213,9 @@ Ask an AWS admin to add the `tl-aselo-docs-<code>-production` bucket to CloudTra
 
 - 🤖 `node twilio-iac/scripts/okta/verifySso.mjs --hl <code> --env <env>`: all ✅
 - 🤖 `node twilio-iac/scripts/okta/auditGroupRules.mjs --hl <code>`: ✅
-- 🤖 Re-plan `okta-org`, `okta-app`, `provision`, `lex`, `system-down`, `configure`: **No changes**
+- 🤖 Re-plan `okta-org`, `okta-app`, `provision`, `lex` (if used), `system-down`, `configure`: **No
+  changes**, except the known perpetual drift every helpline shows: "whitespace changes" on the
+  workflow `configuration` and the Studio flow `definition`
 - 🧑 Log in through SSO, open a test contact, check the forms load and a webchat/SMS/call reaches a counsellor.
 
 ## Production (near launch)
@@ -230,7 +242,7 @@ Copy into the helpline's tracking issue / task and tick as you go.
 - [ ] 0 Intake complete
 - [ ] 1.1 Helpline config (incl. okta / okta_app) committed
 - [ ] 1.2 SSM secrets
-- [ ] 1.3 provision / lex / system-down / configure applied · phone number → voice flow
+- [ ] 1.3 provision / lex (if used) / system-down / configure applied · phone number → voice flow
 - [ ] 1.4 Error webhook + TwilioErrorReporter PR
 - [ ] 1.5 Okta: group (okta-org) · group rule (manual, if any) · Flex SSO page opened · app (okta-app) · Flex SSO values pasted · verifySso ✅ · SSO login ✅
 - [ ] 1.6 Twilio console users invited

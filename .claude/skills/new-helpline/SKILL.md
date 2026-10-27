@@ -40,7 +40,8 @@ If the Asana tools are available: look for this helpline's onboarding project
 (`<Name> (<CODE>) <environment>` onboarding). If there is none, offer to create it from the
 **"New helpline onboarding"** project template (search `project_template`). After each step, tick the
 matching task (task names are `<icon> <step number> …`: 🤖 agent, 🧑 person, 🤝 both) and add a short comment with what was
-done. Never assign or reassign tasks without asking.
+done. Never assign or reassign tasks without asking. If a template task disagrees with the guide
+(e.g. it predates a step), follow the guide and mention it in the task comment.
 
 ### 3. Intake (step 0)
 
@@ -81,7 +82,8 @@ Later on this information may come from a tool that collects it from meetings; u
 
 - 1.2 🧑 SSM secrets: give the person the `make manage-ssm-secrets` command; the Datadog answers can
   be dummy values (see the guide).
-- 1.3 Run `make plan HL=<code> HL_ENV=<env>` in `stages/provision`, then `stages/lex`, then
+- 1.3 Run `make plan HL=<code> HL_ENV=<env>` in `stages/provision`, then `stages/lex` (only if the
+  helpline uses Lex chatbots or a post-survey bot; skip it otherwise), then
   `stages/system-down`, then `stages/configure` (first time: the person runs `setup-new-environment`
   in provision). configure reads the system-down state, so it can't be planned before system-down is
   applied. Summarize each plan (what gets created) and wait for the person's apply before the next stage.
@@ -101,18 +103,22 @@ when `okta.group_rule` is set. Finish with `verifySso.mjs` all ✅ and the perso
   set `definitionVersion` to `<code>-v1`, fill the manager details, replace the example
   states/counties, adapt fields and categories to the intake (rules in `as/v3/README.md`), then run
   `npm test -- validateDefinitions` in `lambdas/packages/hrm-form-definitions`. 🧑 The person runs
-  the "Deploy form-definitions to S3" workflow.
+  the "Deploy form-definitions to S3" workflow, with **Use workflow from** set to the helpline's
+  branch until the forms are merged (on master the folder doesn't exist and the sync fails).
 - 2.4 Webchat config in `aselo-webchat-react-app/configSrc/<code>/` (copy `usvt`: common, staging,
   translations; no Twilio values needed).
-- 2.5 HRM permissions in the hrm repo, if the person has it checked out.
-- 🧑 2.2 Twilio lambdas (*Deploy All Twilio Lambdas*), 2.3 Flex, 2.4 webchat (*Deploy Aselo Webchat React
+- 2.5 HRM permissions in the hrm repo, if the person has it checked out. A test helpline can reuse
+  existing rules instead (`permission_config` / `permissionConfig` = e.g. `demo`).
+- 🧑 2.2 Twilio lambdas (*Deploy All Twilio Lambdas*, from master only, after the TwilioErrorReporter
+  PR is merged: it deploys to every helpline of the environment), 2.3 Flex, 2.4 webchat (*Deploy Aselo Webchat React
   App - single helpline*, on a branch CI has built that contains `configSrc/<code>/`; not *Deploy
   webchat configuration to S3*), 2.6 FullStory, 2.7 CloudTrail: tell the person
   what to run or ask for, and wait.
 
 ### 8. Verification (Phase 3)
 
-Re-run `onboardingStatus.mjs` (no ❌), re-plan every stage (No changes), and ask the person for the
+Re-run `onboardingStatus.mjs` (no ❌), re-plan every stage (No changes, apart from the known
+"whitespace changes" drift on workflows and Studio flows), and ask the person for the
 end-to-end test. Report what is done, what the person still has to confirm, and anything that
 deviates from the baseline.
 

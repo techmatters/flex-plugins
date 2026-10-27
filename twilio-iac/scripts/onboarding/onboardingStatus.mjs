@@ -42,7 +42,11 @@ const exists = (p) => fs.existsSync(path.join(repoRoot, p));
 // 1.1 Helpline configuration
 const helplineDir = path.join(helplinesDir, code);
 const configFiles = ['common.hcl', `${environment}.hcl`].filter((f) => fs.existsSync(path.join(helplineDir, f)));
-add('1.1', 'Helpline config (common + environment file)', configFiles.length === 2 ? 'done' : 'missing', configFiles.length === 2 ? '' : `missing in helplines/${code}/`);
+// The files alone aren't enough: an Okta-only config has them too, so also look for the Twilio blocks
+const configText = configFiles.map((f) => fs.readFileSync(path.join(helplineDir, f), 'utf8')).join('\n');
+const missingBlocks = ['workflows', 'task_queues', 'channels'].filter((key) => !new RegExp(`^\\s*${key}\\s*[=:]`, 'm').test(configText));
+const configDone = configFiles.length === 2 && missingBlocks.length === 0;
+add('1.1', 'Helpline config (common + environment file)', configDone ? 'done' : 'missing', configFiles.length !== 2 ? `missing in helplines/${code}/` : missingBlocks.length ? `no ${missingBlocks.join(', ')} in helplines/${code}/` : '');
 const okta = configFiles.length ? getHelplineOkta(code) : null;
 const expectedApp = configFiles.length === 2 ? getExpectedApp(code, environment) : null;
 add('1.1', 'Okta config (okta in common.hcl, okta_app in environment file)', okta && expectedApp ? 'done' : 'missing');
@@ -61,7 +65,7 @@ add('1.2', `SSM secret /terraform/twilio-iac/${environment}/${code}/secrets.json
 const accountSid = resolveAccountSid(code, environment, args);
 
 // 1.3 Terraform stages: plans can only be confirmed on the devops node
-add('1.3', 'provision / lex / system-down / configure applied (re-plan shows No changes)', 'manual', `make plan HL=${code} HL_ENV=${environment} in each stage`);
+add('1.3', 'provision / lex (if used) / system-down / configure applied (re-plan shows only the known whitespace drift)', 'manual', `make plan HL=${code} HL_ENV=${environment} in each stage`);
 add('1.3', 'Phone number points at the voice Studio flow', 'manual', 'Twilio Console › Phone Numbers');
 
 // 1.4 Error reporting
@@ -106,17 +110,23 @@ add('1.6', 'Engineers invited to the Twilio console', 'manual');
 const formsDir = `lambdas/packages/hrm-form-definitions/form-definitions/${code}/v1`;
 add('2.1', 'Form definitions', exists(formsDir) ? 'done' : 'missing', exists(formsDir) ? '' : formsDir);
 const serviceConfigFile = path.join(helplineDir, 'configs/service-configuration/common.json');
-const definitionVersion = fs.existsSync(serviceConfigFile) ? JSON.parse(fs.readFileSync(serviceConfigFile, 'utf8')).attributes?.definitionVersion : undefined;
+const readAttributes = (file) => (fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')).attributes ?? {} : {});
+const { definitionVersion } = readAttributes(serviceConfigFile);
+// The environment file can override permissionConfig (as/staging uses "demo")
+const { permissionConfig } = { ...readAttributes(serviceConfigFile), ...readAttributes(path.join(helplineDir, `configs/service-configuration/${environment}.json`)) };
 add('2.1', `definitionVersion is ${code}-v1 in service-configuration/common.json`, definitionVersion === `${code}-v1` ? 'done' : 'missing', definitionVersion && definitionVersion !== `${code}-v1` ? `currently "${definitionVersion}"` : '');
-add('2.1', 'Form definitions deployed to S3', 'manual', 'GitHub Actions › Deploy form-definitions to S3');
-add('2.2', 'Twilio lambdas deployed', 'manual', 'GitHub Actions › Deploy All Twilio Lambdas (environment)');
+add('2.1', 'Form definitions deployed to S3', 'manual', 'GitHub Actions › Deploy form-definitions to S3 (from the helpline branch until merged)');
+add('2.2', 'Twilio lambdas deployed', 'manual', 'GitHub Actions › Deploy All Twilio Lambdas (environment), from master after the PR is merged');
 add('2.3', 'Flex plugin deployed', 'manual', 'Flex Deploy workflow');
 const webchatConfig = `aselo-webchat-react-app/configSrc/${code}`;
 add('2.4', 'Webchat config (if the helpline uses webchat)', exists(webchatConfig) ? 'done' : 'missing', exists(webchatConfig) ? '' : webchatConfig);
 add('2.4', 'Webchat config + app deployed (if the helpline uses webchat)', 'manual', 'Deploy Aselo Webchat React App - single helpline (also deploys the forms)');
+// permissionConfig can point at another helpline's rules (e.g. "demo" for a test helpline)
+const rulesName = permissionConfig && !permissionConfig.startsWith('<') ? permissionConfig : code;
+const borrowedRules = rulesName !== code ? ` (permissionConfig "${rulesName}": reuses that helpline's rules)` : '';
 if (args.hrmRepo) {
-  const rules = path.join(path.resolve(String(args.hrmRepo)), 'hrm-domain/hrm-core/permission-rules', `${code}.json`);
-  add('2.5', 'HRM permissions file', fs.existsSync(rules) ? 'done' : 'missing', fs.existsSync(rules) ? '' : rules);
+  const rules = path.join(path.resolve(String(args.hrmRepo)), 'hrm-domain/hrm-core/permission-rules', `${rulesName}.json`);
+  add('2.5', `HRM permissions file${borrowedRules}`, fs.existsSync(rules) ? 'done' : 'missing', fs.existsSync(rules) ? '' : rules);
 } else {
   add('2.5', 'HRM permissions file', 'unknown', 'pass --hrm-repo <path to hrm checkout>');
 }
