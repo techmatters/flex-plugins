@@ -164,9 +164,11 @@ Run *Flex Deploy* in this repo's GitHub Actions for the new account.
 
 ### 2.4 Webchat (only if the helpline uses it) 🤝
 
-1. 🤖 Add `aselo-webchat-react-app/configSrc/<code>/` (`common.json`, `staging.json`, and later
-   `production.json`) by following an existing helpline; production files reuse staging values.
-   Needs the account SID and the chat channel's Conversations address from Twilio (ask the person).
+1. 🤖 Add `aselo-webchat-react-app/configSrc/<code>/` (`common.json`, `staging.json`, later
+   `production.json`, and `translations/en-US.json`, which the build requires) by following a
+   Conversations helpline such as `usvt`: `helplineCode`, `aseloBackendUrl` and `definitionVersion`
+   (`<code>-v1`). No Twilio SIDs or addresses are needed. Set `contactIdentifierField` to a field the
+   pre-engagement form has (`ip` with `captureIp: true` for the baseline form, which has no email).
 2. 🧑 Run *Deploy Aselo Webchat React App - single helpline*
    ([aselo-webchat-react-app-deploy.yml](../../.github/workflows/aselo-webchat-react-app-deploy.yml))
    with `helpline_code=<CODE>` and the environment. It deploys the app together with the helpline's
