@@ -1,7 +1,7 @@
 /**
  * Aselo Okta Pilot (ASOP): test helpline for the Okta / Flex SSO process (see twilio-iac/docs/okta.md)
  * and for the end-to-end new helpline onboarding (see twilio-iac/docs/new-account-provisioning.md).
- * Baseline shape: 1 queue, 1 workflow, a webchat channel and a voice channel.
+ * Baseline shape: 1 queue, a chat (Conversations) channel and a voice channel.
  **/
 locals {
   defaults_config_hcl = read_terragrunt_config(find_in_parent_folders("defaults.hcl"))
@@ -21,6 +21,11 @@ locals {
         friendly_name = "Master Workflow"
         templatefile  = "/app/twilio-iac/helplines/templates/workflows/master-basic.tftpl"
       }
+      # Needed because the account uses a Conversations channel (chat)
+      queue_transfers : {
+        friendly_name = "Queue Transfers Workflow"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+      }
     }
     task_queues = {
       master : {
@@ -31,10 +36,12 @@ locals {
 
     #Channels
     channels = {
-      webchat : {
-        channel_type         = "web"
+      # Webchat over Conversations (the Programmable Chat "web" channel and its Flex Flow are deprecated)
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },
