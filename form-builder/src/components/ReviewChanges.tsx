@@ -33,6 +33,8 @@ type Props = {
   webchatDefaultLocale?: string;
   // Aselo staff apply the changes; helpline staff submit them for review
   mode: 'apply' | 'submit';
+  // False when deployed without the GitHub App: Aselo staff download the changes and open the PR
+  applyInBuilder?: boolean;
   alreadySubmitted: boolean;
   onSubmit: () => Promise<void>;
   // Gets the change log, which becomes the PR description when deployed
@@ -49,6 +51,7 @@ export const ReviewChanges = ({
   issues,
   webchatDefaultLocale,
   mode,
+  applyInBuilder = true,
   alreadySubmitted,
   onSubmit,
   onApply,
@@ -241,35 +244,45 @@ export const ReviewChanges = ({
               </div>
             ) : (
               <div className="modal-footer">
-                <p className="muted">
-                  {exported
-                    ? 'Downloaded. The draft stays here until it is applied or discarded.'
-                    : 'Applying writes these changes into the repository for a pull request. Counselors see them once the PR is merged and deployed.'}
-                </p>
+                {applyInBuilder ? (
+                  <p className="muted">
+                    {exported
+                      ? 'Downloaded. The draft stays here until it is applied or discarded.'
+                      : 'Applying writes these changes into the repository for a pull request. Counselors see them once the PR is merged and deployed.'}
+                  </p>
+                ) : (
+                  <p className="muted">
+                    {exported
+                      ? 'Downloaded. Once the PR is merged, discard this draft.'
+                      : 'Download the changes, unzip them at the root of a flex-plugins checkout on a new branch and open a PR (CHANGES.md in the zip says what changed). Once it is merged, discard this draft.'}
+                  </p>
+                )}
                 <button
                   type="button"
-                  className="secondary-button"
+                  className={applyInBuilder ? 'secondary-button' : 'primary-button'}
                   disabled={errors.length > 0 || busy}
                   onClick={exportChanges}
                 >
                   Download as zip
                 </button>
-                <button
-                  type="button"
-                  className="primary-button"
-                  disabled={errors.length > 0 || busy}
-                  onClick={() =>
-                    run(async () => {
-                      setApplied(
-                        await onApply(
-                          buildChangeLog({ code, version, originalFiles, draftFiles, warnings, webchatDefaultLocale, target: 'pr' }),
-                        ),
-                      );
-                    })
-                  }
-                >
-                  Apply
-                </button>
+                {applyInBuilder && (
+                  <button
+                    type="button"
+                    className="primary-button"
+                    disabled={errors.length > 0 || busy}
+                    onClick={() =>
+                      run(async () => {
+                        setApplied(
+                          await onApply(
+                            buildChangeLog({ code, version, originalFiles, draftFiles, warnings, webchatDefaultLocale, target: 'pr' }),
+                          ),
+                        );
+                      })
+                    }
+                  >
+                    Apply
+                  </button>
+                )}
               </div>
             )}
           </>

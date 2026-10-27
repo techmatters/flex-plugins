@@ -19,7 +19,7 @@
  * the same server code directly. Only types are imported from the server here, so no Node code
  * ends up in the browser bundle.
  */
-import type { ApiUser, ApplyResult } from '../server/api';
+import type { ApplyResult, Me } from '../server/api';
 import type { Draft, DraftMeta, DraftSummary } from '../server/drafts';
 import { apiFetch } from './auth';
 
@@ -34,7 +34,7 @@ export type SaveOutcome =
   | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
 
 export type DraftClient = {
-  me(): Promise<ApiUser>;
+  me(): Promise<Me>;
   load(code: string, version: string): Promise<Draft | undefined>;
   save(code: string, version: string, request: SaveDraftRequest): Promise<SaveOutcome>;
   // The draft's revision afterwards: 0, unless it still holds changes this person can't see

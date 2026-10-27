@@ -44,6 +44,10 @@ export type ApiUser = {
   helplines: string[] | 'all';
 };
 
+// What GET /api/me returns: the person, and whether Apply works from the builder here (deployed
+// without the GitHub App, Aselo staff download the changes and open the PR themselves)
+export type Me = ApiUser & { applyInBuilder: boolean };
+
 export type ApiRequest = {
   method: string;
   path: string;
@@ -79,7 +83,8 @@ export type ApiContext = {
   // aselo-webchat-react-app/configSrc, for the webchat's translations and settings
   webchatConfigDir?: string;
   drafts: DraftStore;
-  applier: DraftApplier;
+  // Optional: without one, Apply isn't offered and Aselo staff open the PR by hand
+  applier?: DraftApplier;
   notifier: Notifier;
   now?: () => Date;
 };
@@ -135,7 +140,10 @@ export const handleApiRequest = async (
   const route = `${request.method.toUpperCase()} ${request.path.replace(/\/+$/, '')}`;
 
   try {
-    if (route === 'GET /api/me') return ok(user);
+    if (route === 'GET /api/me') {
+      const me: Me = { ...user, applyInBuilder: context.applier !== undefined };
+      return ok(me);
+    }
 
     if (route === 'GET /api/helplines') {
       const helplines = await listHelplines(context.formDefinitionsDir);
@@ -262,6 +270,9 @@ export const handleApiRequest = async (
     if (method === 'POST' && action === '/apply') {
       if (user.role !== 'aselo-staff') return fail(403, 'Only Aselo staff can apply changes.');
       if (!existing) return fail(404, 'There are no changes to apply.');
+      if (!context.applier) {
+        return fail(501, "Applying from the builder isn't set up. Download the changes and open a PR instead.");
+      }
       const description = (request.body as ApplyDetails | undefined)?.description;
       const result = await context.applier.apply(existing, user, {
         description: typeof description === 'string' ? description : undefined,

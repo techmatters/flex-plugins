@@ -19,7 +19,7 @@ import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { describe, expect, test, vi } from 'vitest';
-import { ApiUser, handleApiRequest } from './api';
+import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { Draft, MemoryDraftStore } from './drafts';
 import { LocalApplier } from './localServices';
 
@@ -31,7 +31,7 @@ const helplineStaff: ApiUser = { name: 'Helpline person', role: 'helpline-staff'
 const COMMON = 'service-configuration/common.json';
 const CALLER_TAB = 'tabbedForms/CallerInformationTab.json';
 
-const createContext = () => ({
+const createContext = (): ApiContext & { drafts: MemoryDraftStore } => ({
   formDefinitionsDir: path.join(repoRoot, 'lambdas/packages/hrm-form-definitions/form-definitions'),
   helplinesConfigDir,
   drafts: new MemoryDraftStore(),
@@ -39,9 +39,25 @@ const createContext = () => ({
   notifier: { draftSubmitted: vi.fn() },
 });
 
-type Context = ReturnType<typeof createContext>;
+type Context = ApiContext;
 const call = (context: Context, user: ApiUser, method: string, apiPath: string, body?: unknown) =>
   handleApiRequest(context, { method, path: apiPath, body, user });
+
+describe('applying', () => {
+  test('is refused, and not offered, when the builder has no way to apply', async () => {
+    const context = { ...createContext(), applier: undefined };
+    expect((await call(context, staff, 'GET', '/api/me')).body).toMatchObject({ applyInBuilder: false });
+    await call(context, staff, 'PUT', '/api/drafts/usnm/v1', {
+      expectedRevision: 0,
+      files: { [CALLER_TAB]: [] },
+      baseHashes: {},
+    });
+    expect((await call(context, staff, 'POST', '/api/drafts/usnm/v1/apply')).status).toBe(501);
+    // The draft stays, to be discarded once the PR is merged
+    expect(await context.drafts.get('usnm', 'v1')).toBeDefined();
+    expect((await call(createContext(), staff, 'GET', '/api/me')).body).toMatchObject({ applyInBuilder: true });
+  });
+});
 
 describe('the service configuration', () => {
   test('is only sent to Aselo staff', async () => {

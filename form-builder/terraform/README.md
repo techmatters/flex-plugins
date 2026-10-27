@@ -6,12 +6,25 @@ account. Pieces:
 | Piece | Where | Status |
 |---|---|---|
 | Okta: sign-in app, its authorization server, the groups | `okta/` (this folder) | Ready to plan |
-| API code for the Lambda (master snapshot, S3 drafts, GitHub Apply, Slack) | `server/lambda.ts`, `npm run build:lambda` | Done |
+| API code for the Lambda (master snapshot, S3 drafts, Slack) | `server/lambda.ts`, `npm run build:lambda` | Done |
 | Sign-in in the page (Okta, PKCE) | `src/auth.ts` | Done |
 | AWS: S3 site + CloudFront, API Gateway + Lambda, private drafts bucket | `aws/` | To do |
-| GitHub App that opens the Apply PRs | GitHub, by an org owner | Steps below |
 | Slack webhook for "submitted for review" | Slack | Steps below |
 | Deploys | GitHub Actions workflow | To do |
+| GitHub App, so Apply opens the PR | GitHub, by an org owner | Later, after the proof of concept |
+
+### Applying, for the proof of concept
+
+The builder doesn't write to GitHub yet. Reading master needs no credentials (flex-plugins is
+public). To apply a draft, Aselo staff:
+
+1. Review it in the builder and **Download as zip** (laid out like the repo, with a `CHANGES.md`).
+2. Unzip it at the root of a flex-plugins checkout, on a new branch, check the diff and open a PR
+   as usual (paste `CHANGES.md` as the description).
+3. Once it's merged and deployed, **discard the draft** in the builder.
+
+When the proof of concept is approved, the GitHub App below lets **Apply** do steps 1 and 2 (the
+code is in `server/githubApplier.ts`).
 
 Secrets never go in this repo (it's public). They live in SSM Parameter Store, us-east-1, under
 `/form-builder/`, and only the builder's Lambda can read them.
@@ -64,9 +77,10 @@ part reads them.
 Okta Admin › Directory › Groups › the group › **Assign people**. Removing someone from the group
 removes their access at their next sign-in (tokens last 8 hours).
 
-## GitHub App (Apply)
+## GitHub App (Apply), later
 
-Apply opens a branch and a PR with the draft's changes. It uses a GitHub App owned by the
+Not needed for the proof of concept. With it, Apply opens a branch and a PR with the draft's
+changes. It uses a GitHub App owned by the
 `techmatters` organization, not a person's token, so PRs don't depend on anyone's account.
 
 Steps (an organization owner, or someone they make a *GitHub App manager*):
@@ -88,6 +102,8 @@ Steps (an organization owner, or someone they make a *GitHub App manager*):
    - `/form-builder/github_app/private_key` (SecureString, the whole `.pem` contents)
 
    Then delete the downloaded `.pem`. Don't paste the key anywhere else.
+9. In `server/lambda.ts`, read those parameters and pass a `GitHubApplier` as the `applier`
+   (and give the Lambda read access to them). Apply then appears for Aselo staff.
 
 If branch protection requires reviews on `master`, nothing changes: the app only opens PRs, and
 people review and merge them as usual.

@@ -136,8 +136,21 @@ describe('HelplineWorkspace', () => {
 
     const result = await screen.findByRole('dialog', { name: 'Changes applied' });
     expect(within(result).getByText(`lambdas/packages/hrm-form-definitions/form-definitions/usnm/v1/${CALLER_TAB}`)).toBeTruthy();
-    expect(context.applier.apply).toHaveBeenCalledTimes(1);
+    expect(context.applier!.apply).toHaveBeenCalledTimes(1);
     expect(await store.get('usnm', 'v1')).toBeUndefined();
+  });
+
+  test('without Apply in the builder, Aselo staff download the changes and open the PR themselves', async () => {
+    const { renderWorkspace } = createHarness();
+    renderWorkspace(usnm, { user: aseloStaff, applyInBuilder: false });
+    await renameRelationship('Relationship');
+    await screen.findByText(/All changes saved/);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Review & apply' }));
+    const dialog = screen.getByRole('dialog', { name: 'Review your changes' });
+    expect(within(dialog).queryByRole('button', { name: 'Apply' })).toBeNull();
+    expect(within(dialog).getByRole('button', { name: 'Download as zip' })).toBeTruthy();
+    expect(within(dialog).getByText(/open a PR .*Once it is merged, discard this draft/)).toBeTruthy();
   });
 
   test('restores the saved draft when the helpline is opened again', async () => {

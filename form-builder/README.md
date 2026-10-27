@@ -195,11 +195,13 @@ npm run build
   holds the routes. In development they're served by the Vite dev server
   (`server/devApiPlugin.ts`, with `server/localServices.ts`). Deployed, the same routes run in a
   Lambda (`server/lambda.ts`, built with `npm run build:lambda`), with:
-  - the current files from flex-plugins master, downloaded through the GitHub App and kept
-    until master moves on (`server/repoSnapshot.ts`, `server/github.ts`);
+  - the current files from flex-plugins master, which is public, so it's downloaded without
+    credentials and kept until master moves on (`server/repoSnapshot.ts`, `server/publicRepo.ts`);
   - drafts in S3 (`server/s3DraftStore.ts`);
-  - Apply opening a branch and PR, with the review's change log as its description
-    (`server/githubApplier.ts`);
+  - no Apply for now: Aselo staff download the changes and open the PR themselves, then discard
+    the draft (see `terraform/README.md`). Apply through a GitHub App, opening a branch and PR
+    with the review's change log as its description, is ready for later
+    (`server/githubApplier.ts`, `server/github.ts`);
   - "submitted for review" posted to Slack (`server/slackNotifier.ts`). A failed notification
     doesn't stop the submission; it's logged.
 

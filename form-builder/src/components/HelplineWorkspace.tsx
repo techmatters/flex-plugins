@@ -103,6 +103,8 @@ type Props = {
   staffMode: boolean;
   // Aselo staff apply changes; helpline staff submit them for review
   canApply: boolean;
+  // False when deployed without the GitHub App: Aselo staff download the changes and open the PR
+  applyInBuilder?: boolean;
   draftClient: DraftClient;
   // Reload the helpline from the server (after applying, or when someone else changed the draft)
   onReload: () => void;
@@ -122,6 +124,7 @@ export const HelplineWorkspace = ({
   definitions,
   staffMode,
   canApply,
+  applyInBuilder = true,
   draftClient,
   onReload,
   saveDelayMs,
@@ -577,6 +580,7 @@ export const HelplineWorkspace = ({
           draftFiles={files}
           changedPaths={draft.changedPaths}
           mode={canApply ? 'apply' : 'submit'}
+          applyInBuilder={applyInBuilder}
           alreadySubmitted={draft.meta?.status === 'submitted'}
           onSubmit={draft.submit}
           onApply={draft.apply}

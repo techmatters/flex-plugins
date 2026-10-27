@@ -58,13 +58,18 @@ export const createHarness = () => {
 
   const renderWorkspace = (
     definitions: DefinitionFiles,
-    { user = helplineStaff, onReload = () => {} }: { user?: ApiUser; onReload?: () => void } = {},
+    {
+      user = helplineStaff,
+      onReload = () => {},
+      applyInBuilder = true,
+    }: { user?: ApiUser; onReload?: () => void; applyInBuilder?: boolean } = {},
   ) =>
     render(
       <HelplineWorkspace
         definitions={definitions}
         staffMode={user.role === 'aselo-staff'}
         canApply={user.role === 'aselo-staff'}
+        applyInBuilder={applyInBuilder}
         draftClient={inProcessDraftClient(context, user)}
         onReload={onReload}
         saveDelayMs={0}

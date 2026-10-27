@@ -17,16 +17,19 @@
 /**
  * The deployed API: the same routes as locally (api.ts), behind API Gateway, whose JWT authorizer
  * has already checked the Okta access token. Who the person is and what they can do come from the
- * token's claims; the current files come from flex-plugins master; drafts live in S3.
+ * token's claims; the current files come from flex-plugins master (public, read without signing
+ * in); drafts live in S3.
+ *
+ * Apply isn't offered for now: Aselo staff download the changes and open the PR themselves. The
+ * GitHub App version (githubApplier.ts) is ready for when the organization has the app.
  *
  * Environment: DRAFTS_BUCKET, APP_URL (https://form-builder.aselo.org) and SSM_PREFIX
- * (/form-builder), under which the GitHub App's credentials and the Slack webhook are kept.
+ * (/form-builder), under which the Slack webhook is kept.
  */
 import { GetParametersCommand, SSMClient } from '@aws-sdk/client-ssm';
 import type { APIGatewayProxyEventV2WithJWTAuthorizer, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { ApiContext, ApiUser, handleApiRequest } from './api';
-import { GitHubClient } from './github';
-import { GitHubApplier } from './githubApplier';
+import { PublicRepoSource } from './publicRepo';
 import { RepoSnapshots } from './repoSnapshot';
 import { S3DraftStore } from './s3DraftStore';
 import { SlackNotifier } from './slackNotifier';
@@ -58,7 +61,7 @@ let services: Promise<Services> | undefined;
 
 const loadServices = async (): Promise<Services> => {
   const prefix = process.env.SSM_PREFIX ?? '/form-builder';
-  const names = ['github_app/app_id', 'github_app/installation_id', 'github_app/private_key', 'slack_webhook_url'];
+  const names = ['slack_webhook_url'];
   const { Parameters = [] } = await new SSMClient({}).send(
     new GetParametersCommand({ Names: names.map((name) => `${prefix}/${name}`), WithDecryption: true }),
   );
@@ -68,16 +71,9 @@ const loadServices = async (): Promise<Services> => {
     return found;
   };
 
-  const github = new GitHubClient({
-    appId: value('github_app/app_id'),
-    installationId: value('github_app/installation_id'),
-    privateKey: value('github_app/private_key'),
-  });
-  const snapshots = new RepoSnapshots(github, '/tmp/flex-plugins');
   return {
-    snapshots,
+    snapshots: new RepoSnapshots(new PublicRepoSource(), '/tmp/flex-plugins'),
     drafts: new S3DraftStore(process.env.DRAFTS_BUCKET!),
-    applier: new GitHubApplier(github, snapshots),
     notifier: new SlackNotifier(value('slack_webhook_url'), process.env.APP_URL ?? 'https://form-builder.aselo.org'),
   };
 };

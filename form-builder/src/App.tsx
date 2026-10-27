@@ -16,7 +16,7 @@
 
 import { useEffect, useState } from 'react';
 import type { DefinitionFiles, HelplineSummary } from '../server/definitionsApi';
-import type { ApiUser } from '../server/api';
+import type { Me } from '../server/api';
 import { fetchDefinitionFiles, fetchHelplines } from './api';
 import { isSignInEnabled, signOut } from './auth';
 import { DraftClient, httpDraftClient } from './draftClient';
@@ -28,7 +28,7 @@ type Props = {
 };
 
 export const App = ({ draftClient = httpDraftClient }: Props) => {
-  const [user, setUser] = useState<ApiUser>();
+  const [user, setUser] = useState<Me>();
   const [helplines, setHelplines] = useState<HelplineSummary[]>([]);
   const [code, setCode] = useState('');
   const [version, setVersion] = useState('');
@@ -155,6 +155,7 @@ export const App = ({ draftClient = httpDraftClient }: Props) => {
           definitions={definitions}
           staffMode={actingAsStaff}
           canApply={actingAsStaff}
+          applyInBuilder={user?.applyInBuilder !== false}
           draftClient={draftClient}
           onReload={() => setReloadCount((count) => count + 1)}
         />
