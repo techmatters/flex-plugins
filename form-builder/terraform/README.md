@@ -23,7 +23,8 @@ Who can use the builder comes from Okta groups:
 | `form-builder-aselo-staff` | Aselo staff | Every helpline, staff-only settings, the service configuration, Apply |
 | `form-builder-<code>` | That helpline's staff | Their helpline's drafts, submit for review |
 
-Helplines get a group when their code is added to `helplines` in `okta/terragrunt.hcl`.
+The list starts empty, so only Aselo staff can use the builder. A helpline gets its group when
+its code is added to `helplines` in `okta/terragrunt.hcl`, once it starts using the builder.
 
 The app signs in with authorization code + PKCE against its own authorization server
 (*Aselo Form Builder*), whose access tokens carry a `groups` claim with only the
@@ -51,8 +52,8 @@ On the devops node, from `form-builder/terraform/okta`:
 make plan
 ```
 
-The first plan adds 2 groups (`form-builder-aselo-staff`, `form-builder-usnm`), the app, its
-authorization server with 3 claims, a policy and a rule, and 2 group assignments. A person reviews
+The first plan adds the `form-builder-aselo-staff` group, the app, its authorization server with 3
+claims, a policy and a rule, and the group's assignment to the app. A person reviews
 it and runs `make apply`. The outputs (`issuer`, `audience`, `client_id`) are not secret; the AWS
 part reads them.
 
