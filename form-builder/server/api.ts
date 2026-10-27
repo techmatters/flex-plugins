@@ -60,8 +60,13 @@ export type ApplyResult = {
   link?: string;
 };
 
+export type ApplyDetails = {
+  // What changed, in plain language (the review's change log), for the PR description
+  description?: string;
+};
+
 export interface DraftApplier {
-  apply(draft: Draft, user: ApiUser): Promise<ApplyResult>;
+  apply(draft: Draft, user: ApiUser, details?: ApplyDetails): Promise<ApplyResult>;
 }
 
 export interface Notifier {
@@ -246,14 +251,21 @@ export const handleApiRequest = async (
         meta: { ...existing.meta, status: 'submitted', submittedAt: now, submittedBy: user.name },
       };
       await context.drafts.put(submitted);
-      await context.notifier.draftSubmitted(submitted, user);
+      // The draft is submitted either way; a failed notification is only logged
+      await context.notifier.draftSubmitted(submitted, user).catch((err) => {
+        // eslint-disable-next-line no-console
+        console.error(`[form-builder] Could not notify about ${code}/${version}:`, err);
+      });
       return ok(submitted.meta);
     }
 
     if (method === 'POST' && action === '/apply') {
       if (user.role !== 'aselo-staff') return fail(403, 'Only Aselo staff can apply changes.');
       if (!existing) return fail(404, 'There are no changes to apply.');
-      const result = await context.applier.apply(existing, user);
+      const description = (request.body as ApplyDetails | undefined)?.description;
+      const result = await context.applier.apply(existing, user, {
+        description: typeof description === 'string' ? description : undefined,
+      });
       await context.drafts.remove(code, version);
       return ok(result);
     }

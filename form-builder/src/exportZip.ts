@@ -37,6 +37,8 @@ type ExportInput = {
   draftFiles: DefinitionFileMap;
   warnings: ValidationIssue[];
   webchatDefaultLocale?: string;
+  // 'pr' when the change log becomes the description of the PR that Apply opens
+  target?: 'zip' | 'pr';
 };
 
 export const buildChangeLog = ({
@@ -46,12 +48,15 @@ export const buildChangeLog = ({
   draftFiles,
   warnings,
   webchatDefaultLocale,
+  target = 'zip',
 }: ExportInput): string => {
   const changedPaths = getChangedFilePaths(originalFiles, draftFiles);
   const lines = [
     `# Form changes for ${code.toUpperCase()} (${version})`,
     '',
-    `Exported from the Aselo Form Builder on ${new Date().toISOString()}.`,
+    target === 'pr'
+      ? 'Changes made in the Aselo Form Builder.'
+      : `Exported from the Aselo Form Builder on ${new Date().toISOString()}.`,
     '',
   ];
 
@@ -83,11 +88,15 @@ export const buildChangeLog = ({
   lines.push(
     '## Next steps',
     '',
-    '1. Unzip at the root of a flex-plugins checkout, on a new branch.',
-    '2. Run `npm test` in `lambdas/packages/hrm-form-definitions`.',
-    '3. Open a PR, then deploy with the "Deploy form-definitions to S3" workflow.',
+    ...(target === 'pr'
+      ? ['1. Review and merge this PR.', '2. Deploy with the "Deploy form-definitions to S3" workflow.']
+      : [
+          '1. Unzip at the root of a flex-plugins checkout, on a new branch.',
+          '2. Run `npm test` in `lambdas/packages/hrm-form-definitions`.',
+          '3. Open a PR, then deploy with the "Deploy form-definitions to S3" workflow.',
+        ]),
     ...(changedWebchatTranslationFiles(originalFiles, draftFiles).length > 0
-      ? [`4. The webchat's texts changed too: redeploy the webchat for ${code.toUpperCase()} (aselo-webchat-react-app).`]
+      ? [`- The webchat's texts changed too: redeploy the webchat for ${code.toUpperCase()} (aselo-webchat-react-app).`]
       : []),
     ...(getChangedFilePaths(originalFiles, draftFiles).some(isServiceConfigPath)
       ? [

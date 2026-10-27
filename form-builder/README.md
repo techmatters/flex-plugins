@@ -191,9 +191,19 @@ npm run build
 
 ## How it fits together
 
-- `server/definitionsApi.ts` reads raw definition files for a helpline. In development
-  it's served by the Vite dev server (`server/devApiPlugin.ts`); the deployed backend
-  will implement the same routes.
+- `server/definitionsApi.ts` reads raw definition files for a helpline, and `server/api.ts`
+  holds the routes. In development they're served by the Vite dev server
+  (`server/devApiPlugin.ts`, with `server/localServices.ts`). Deployed, the same routes run in a
+  Lambda (`server/lambda.ts`, built with `npm run build:lambda`), with:
+  - the current files from flex-plugins master, downloaded through the GitHub App and kept
+    until master moves on (`server/repoSnapshot.ts`, `server/github.ts`);
+  - drafts in S3 (`server/s3DraftStore.ts`);
+  - Apply opening a branch and PR, with the review's change log as its description
+    (`server/githubApplier.ts`);
+  - "submitted for review" posted to Slack (`server/slackNotifier.ts`). A failed notification
+    doesn't stop the submission; it's logged.
+
+  Who's signed in comes from the Okta token's `groups` claim (see `terraform/README.md`).
 - Form types, the Aselo specification (`aseloForms.ts`) and its validator come from
   `lambdas/packages/hrm-form-definitions/src`, so the builder stays in step with what the
   plugin expects. `build-tools/hrmFormDefinitionsResolver.ts` lets the browser bundle use them

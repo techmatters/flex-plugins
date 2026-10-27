@@ -181,9 +181,9 @@ export const useDraft = (
     setMeta(submitted);
   };
 
-  const apply = async (): Promise<ApplyResult> => {
+  const apply = async (description?: string): Promise<ApplyResult> => {
     await flush();
-    return client.apply(code, version);
+    return client.apply(code, version, description);
   };
 
   return {

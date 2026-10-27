@@ -18,7 +18,7 @@ import { useState } from 'react';
 import type { DefinitionFileMap } from '../definitions';
 import { summarizeContactFormChanges } from '../changes';
 import { summarizeSectionChanges } from '../sections';
-import { downloadExportZip } from '../exportZip';
+import { buildChangeLog, downloadExportZip } from '../exportZip';
 import { repoPathOf } from '../../server/filePaths';
 import type { ValidationIssue } from '../validation';
 import type { ApplyResult } from '../../server/api';
@@ -35,7 +35,8 @@ type Props = {
   mode: 'apply' | 'submit';
   alreadySubmitted: boolean;
   onSubmit: () => Promise<void>;
-  onApply: () => Promise<ApplyResult>;
+  // Gets the change log, which becomes the PR description when deployed
+  onApply: (description: string) => Promise<ApplyResult>;
   onClose: () => void;
 };
 
@@ -259,7 +260,11 @@ export const ReviewChanges = ({
                   disabled={errors.length > 0 || busy}
                   onClick={() =>
                     run(async () => {
-                      setApplied(await onApply());
+                      setApplied(
+                        await onApply(
+                          buildChangeLog({ code, version, originalFiles, draftFiles, warnings, webchatDefaultLocale, target: 'pr' }),
+                        ),
+                      );
                     })
                   }
                 >

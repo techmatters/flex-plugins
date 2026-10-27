@@ -39,7 +39,8 @@ export type DraftClient = {
   // The draft's revision afterwards: 0, unless it still holds changes this person can't see
   discard(code: string, version: string): Promise<number>;
   submit(code: string, version: string): Promise<DraftMeta>;
-  apply(code: string, version: string): Promise<ApplyResult>;
+  // description: the change log, for the PR the deployed Apply opens
+  apply(code: string, version: string, description?: string): Promise<ApplyResult>;
   list(): Promise<DraftSummary[]>;
 };
 
@@ -71,7 +72,8 @@ export const clientFor = (send: Send): DraftClient => {
     },
     discard: async (code, version) => (await expectOk('DELETE', `/api/drafts/${code}/${version}`))?.revision ?? 0,
     submit: (code, version) => expectOk('POST', `/api/drafts/${code}/${version}/submit`),
-    apply: (code, version) => expectOk('POST', `/api/drafts/${code}/${version}/apply`),
+    apply: (code, version, description) =>
+      expectOk('POST', `/api/drafts/${code}/${version}/apply`, description === undefined ? undefined : { description }),
     list: () => expectOk('GET', '/api/drafts'),
   };
 };

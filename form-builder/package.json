@@ -10,7 +10,8 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build:lambda": "esbuild server/lambda.ts --bundle --platform=node --target=node22 --format=esm --outfile=dist-lambda/index.mjs --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\""
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1157.0",
