@@ -118,7 +118,16 @@ It reads and writes the same files the Flex plugin uses:
 
 - A field's name is what contacts are saved under, so it's locked once the field exists.
   New fields get a camelCase name generated from the question.
-- Relabelling an existing answer keeps its saved value; new answers are saved as their text.
+- An answer's text (what counselors see) and its saved value (what's saved and reported) can
+  differ, e.g. "0" saved as "00". **Show saved values** shows and edits them; it's on whenever
+  any answer differs. Relabelling an existing answer keeps its saved value, which only Aselo staff
+  can change. New answers are saved as their text unless given a value. **Paste several at once**
+  takes one answer per line, or one line separated by commas, with an optional saved value after
+  a `|` (`0 | 00`) or as a second spreadsheet column.
+- The blank first answer of a dropdown follows Aselo's convention: saved as `""` when the field
+  is required (so it can't be saved unanswered), `"Unknown"` when it isn't (so unanswered isn't
+  saved as an empty string). New dropdowns aren't required, and switching "required" switches it.
+  A helpline's other values are left alone. It may share its value with a real "Unknown" answer.
 - Fields the Aselo specification requires (`callSummary`, child `age` and `gender`) can't
   be removed where a helpline has them.
 - Removing a field asks for confirmation and lists what else uses it (Insights reporting,

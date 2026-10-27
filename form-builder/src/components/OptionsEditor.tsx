@@ -17,9 +17,11 @@
 /**
  * Edits the answers of a dropdown or multiple choice list.
  *
- * Each answer has a label (what counselors see) and a value (what's saved and reported).
- * New answers are saved as their label. Answers that already existed keep their saved value
- * when relabelled, so past contacts and reports stay consistent.
+ * Each answer has a label (what counselors see) and a value (what's saved and reported). They're
+ * usually the same, but don't have to be (e.g. "0" saved as "00").
+ * - New answers are saved as their label, unless someone sets a different saved value.
+ * - Answers that already existed keep their saved value when relabelled, so past contacts and
+ *   reports stay consistent. Only Aselo staff can change it.
  */
 import { useState } from 'react';
 import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
@@ -33,6 +35,23 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
 import { isBlankOption } from '../formEditing';
+
+/**
+ * Answers pasted in one go: one per line, or all on one line separated by commas. Each can have
+ * a saved value after a | ("0 | 00"), or come as two spreadsheet columns (text, then value).
+ */
+export const parsePastedAnswers = (text: string): SelectOption[] => {
+  const lines = text.split(/\r?\n/).filter((line) => line.trim());
+  const entries = lines.length === 1 && !lines[0].includes('\t') ? lines[0].split(',') : lines;
+  return entries
+    .map((entry) => {
+      const separator = entry.includes('\t') ? '\t' : '|';
+      const [label, ...rest] = entry.split(separator);
+      const value = rest.join(separator).trim();
+      return { label: label.trim(), value: value || label.trim() };
+    })
+    .filter((option) => option.label);
+};
 
 type Props = {
   options: SelectOption[];
@@ -53,18 +72,23 @@ const OptionRow = ({
   option,
   isExisting,
   staffMode,
+  showValues,
   onLabelChange,
+  onValueChange,
   onRemove,
 }: {
   id: string;
   option: SelectOption;
   isExisting: boolean;
   staffMode: boolean;
+  showValues: boolean;
   onLabelChange: (label: string) => void;
+  onValueChange: (value: string) => void;
   onRemove: () => void;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
-  const showSavedValue = staffMode && isExisting && String(option.value) !== option.label;
+  // Saved values of existing answers are what past contacts hold: only Aselo staff change them
+  const canEditValue = !isExisting || staffMode;
   return (
     <li
       ref={setNodeRef}
@@ -88,7 +112,21 @@ const OptionRow = ({
           placeholder="Type an answer"
           onChange={(e) => onLabelChange(e.target.value)}
         />
-        {showSavedValue && <span className="field-hint">Saved as “{String(option.value)}”</span>}
+        {showValues && (
+          <label className="option-value">
+            <span className="field-hint">Saved as</span>
+            {canEditValue ? (
+              <input
+                type="text"
+                value={String(option.value)}
+                aria-label="Saved value"
+                onChange={(e) => onValueChange(e.target.value)}
+              />
+            ) : (
+              <span className="option-value-locked">“{String(option.value)}”</span>
+            )}
+          </label>
+        )}
       </div>
       <button type="button" className="icon-button" aria-label="Remove answer" onClick={onRemove}>
         ×
@@ -111,6 +149,12 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
         ids.filter((_, index) => originalValues.has(String(editableOptions[index].value))),
       ),
   );
+  // New answers whose saved value was set on purpose, so it no longer follows their text
+  const [customValueIds, setCustomValueIds] = useState<Set<string>>(() => new Set());
+  // Shown from the start when any answer is saved under something other than its text
+  const [showValues, setShowValues] = useState(() =>
+    editableOptions.some((option) => String(option.value) !== String(option.label).trim()),
+  );
   const [bulkText, setBulkText] = useState<string>();
 
   const sensors = useSensors(
@@ -125,19 +169,32 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
     emit(
       editableOptions.map((option, i) => {
         if (i !== index) return option;
-        // New answers are saved as their text; existing ones keep their saved value
-        return existingIds.has(ids[index]) ? { ...option, label } : { value: label.trim(), label };
+        // New answers are saved as their text (unless given their own value); existing ones keep theirs
+        const keepsValue = existingIds.has(ids[index]) || customValueIds.has(ids[index]);
+        return keepsValue ? { ...option, label } : { value: label.trim(), label };
       }),
     );
+
+  const updateValue = (index: number, value: string) => {
+    setCustomValueIds(new Set(customValueIds).add(ids[index]));
+    emit(editableOptions.map((option, i) => (i === index ? { ...option, value } : option)));
+  };
 
   const remove = (index: number) => {
     setIds(ids.filter((_, i) => i !== index));
     emit(editableOptions.filter((_, i) => i !== index));
   };
 
-  const addOptions = (labels: string[]) => {
-    setIds([...ids, ...labels.map(newOptionId)]);
-    emit([...editableOptions, ...labels.map((label) => ({ value: label.trim(), label }))]);
+  const addOptions = (added: SelectOption[]) => {
+    const addedIds = added.map(newOptionId);
+    setIds([...ids, ...addedIds]);
+    // Answers pasted with their own saved value keep it when their text is edited
+    const custom = addedIds.filter((_, i) => String(added[i].value) !== String(added[i].label).trim());
+    if (custom.length > 0) {
+      setCustomValueIds(new Set([...customValueIds, ...custom]));
+      setShowValues(true);
+    }
+    emit([...editableOptions, ...added]);
   };
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
@@ -149,11 +206,8 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
   };
 
   const addBulk = () => {
-    const labels = (bulkText ?? '')
-      .split('\n')
-      .map((line) => line.trim())
-      .filter(Boolean);
-    if (labels.length) addOptions(labels);
+    const added = parsePastedAnswers(bulkText ?? '');
+    if (added.length) addOptions(added);
     setBulkText(undefined);
   };
 
@@ -161,9 +215,25 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
     <div className="options-editor">
       {blankOption && (
         <p className="field-hint">
-          The dropdown starts empty until the counselor picks an answer.
+          The dropdown starts empty until the counselor picks an answer
+          {String(blankOption.value) === ''
+            ? ' (it has to be answered).'
+            : ` (if it's left empty, it's saved as “${String(blankOption.value)}”).`}
         </p>
       )}
+      <div className="option-actions">
+        <button type="button" className="link-button" onClick={() => setShowValues(!showValues)}>
+          {showValues ? 'Hide saved values' : 'Show saved values'}
+        </button>
+        {showValues && (
+          <span className="field-hint">
+            Each answer is saved and reported as its saved value, usually the same as its text.
+            {staffMode
+              ? ' Past contacts and reports use the saved values of existing answers: change them only if you mean to.'
+              : ' Existing answers keep theirs.'}
+          </span>
+        )}
+      </div>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={ids} strategy={verticalListSortingStrategy}>
           <ul className="option-list">
@@ -174,7 +244,9 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
                 option={option}
                 isExisting={existingIds.has(ids[index])}
                 staffMode={staffMode}
+                showValues={showValues}
                 onLabelChange={(label) => updateLabel(index, label)}
+                onValueChange={(value) => updateValue(index, value)}
                 onRemove={() => remove(index)}
               />
             ))}
@@ -184,7 +256,7 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
 
       {bulkText === undefined ? (
         <div className="option-actions">
-          <button type="button" className="secondary-button" onClick={() => addOptions([''])}>
+          <button type="button" className="secondary-button" onClick={() => addOptions([{ value: '', label: '' }])}>
             + Add an answer
           </button>
           <button type="button" className="link-button" onClick={() => setBulkText('')}>
@@ -194,7 +266,12 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
       ) : (
         <div className="bulk-add">
           <label className="field">
-            <span className="field-label">One answer per line</span>
+            <span className="field-label">Answers to add</span>
+            <span className="field-hint">
+              One answer per line, or all on one line separated by commas. To save an answer under a
+              different value, put it after a | (for example <code>0 | 00</code>), or paste two
+              columns from a spreadsheet: the text, then the saved value.
+            </span>
             <textarea
               rows={6}
               value={bulkText}

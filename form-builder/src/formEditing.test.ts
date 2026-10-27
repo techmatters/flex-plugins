@@ -15,12 +15,12 @@
  */
 
 import { describe, expect, test } from 'vitest';
-import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
+import type { FormItemJsonDefinition, SelectOption } from '@hrm-form-definitions/formDefinition/types';
 import {
   applyColumnSplit,
   changeFieldType,
   createField,
-  detectBlankOptionValue,
+  blankOptionValueFor,
   getAllowedTypeSwitches,
   isFieldRequired,
   setFieldRequired,
@@ -71,8 +71,8 @@ describe('updateField', () => {
 });
 
 describe('createField', () => {
-  test('creates a dropdown with the helpline’s blank option and a unique name', () => {
-    const created = createField('select', ['newQuestion'], 'Unknown');
+  test('creates a dropdown, not required, with a blank first answer saved as Unknown, and a unique name', () => {
+    const created = createField('select', ['newQuestion']);
     expect(created).toEqual({
       name: 'newQuestion2',
       label: 'New question',
@@ -88,16 +88,16 @@ describe('createField', () => {
 
 describe('changeFieldType', () => {
   test('dropdown to list removes the blank first option, and back adds it', () => {
-    const select = createField('select', [], '');
-    const list = changeFieldType(select, 'listbox-multiselect', '');
+    const select = createField('select', []);
+    const list = changeFieldType(select, 'listbox-multiselect');
     expect('options' in list && list.options).toEqual([{ value: 'Option 1', label: 'Option 1' }]);
-    const backToSelect = changeFieldType(list, 'select', '');
+    const backToSelect = changeFieldType(list, 'select');
     expect('options' in backToSelect && backToSelect.options).toHaveLength(2);
   });
 
   test('drops textarea-only properties when switching to short text', () => {
     const textarea = field({ name: 'notes', label: 'Notes', type: 'textarea', rows: 10 });
-    expect(changeFieldType(textarea, 'input', '')).toEqual({
+    expect(changeFieldType(textarea, 'input')).toEqual({
       name: 'notes',
       label: 'Notes',
       type: 'input',
@@ -128,14 +128,44 @@ describe('getAllowedTypeSwitches', () => {
   });
 });
 
-describe('detectBlankOptionValue', () => {
-  test('uses the most common blank option value', () => {
-    const select = (value: string) =>
-      field({ name: 'x', label: 'X', type: 'select', options: [{ value, label: '' }] });
-    expect(detectBlankOptionValue([[select('Unknown'), select('Unknown'), select('')]])).toBe(
-      'Unknown',
-    );
-    expect(detectBlankOptionValue([[]])).toBe('');
+describe('the blank first answer', () => {
+  const firstOption = (item: FormItemJsonDefinition) => (item as unknown as { options: SelectOption[] }).options[0];
+  const select = (value: string, extra = {}) =>
+    field({ name: 'x', label: 'X', type: 'select', options: [{ value, label: '' }, { value: 'A', label: 'A' }], ...extra });
+
+  test('is "" for required dropdowns and Unknown for the rest', () => {
+    expect(blankOptionValueFor(true)).toBe('');
+    expect(blankOptionValueFor(false)).toBe('Unknown');
+  });
+
+  test('follows the field when it becomes required or optional', () => {
+    const required = setFieldRequired(select('Unknown'), true);
+    expect(firstOption(required)).toEqual({ value: '', label: '' });
+    const optional = setFieldRequired(required, false);
+    expect(firstOption(optional)).toEqual({ value: 'Unknown', label: '' });
+  });
+
+  test('is left alone when a helpline uses some other value', () => {
+    const custom = setFieldRequired(select('NotAsked'), true);
+    expect(firstOption(custom)).toEqual({ value: 'NotAsked', label: '' });
+  });
+
+  test('of a linked dropdown follows the field too', () => {
+    const level = field({
+      name: 'district',
+      label: 'District',
+      type: 'dependent-select',
+      dependsOn: 'province',
+      defaultOption: { value: 'Unknown', label: '' },
+      options: {},
+    });
+    expect(setFieldRequired(level, true)).toMatchObject({ defaultOption: { value: '', label: '' } });
+  });
+
+  test('switching a required list to a dropdown adds a blank answer saved as ""', () => {
+    const list = field({ name: 'x', label: 'X', type: 'listbox-multiselect', options: [{ value: 'A', label: 'A' }], required: { value: true, message: 'RequiredFieldError' } });
+    const dropdown = changeFieldType(list, 'select');
+    expect(firstOption(dropdown)).toEqual({ value: '', label: '' });
   });
 });
 

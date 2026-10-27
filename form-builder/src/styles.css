@@ -1812,3 +1812,32 @@ body {
   max-width: 480px;
   text-align: center;
 }
+
+/* Saved values of answers (OptionsEditor) */
+.option-value {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.option-value .field-hint {
+  white-space: nowrap;
+}
+
+.option-inputs .option-value input {
+  padding: 3px 6px;
+  font-size: 0.9em;
+}
+
+.option-value-locked {
+  font-size: 0.9em;
+  color: var(--color-muted);
+}
+
+.options-editor .option-actions .field-hint {
+  flex: 1;
+}
+
+.bulk-add code {
+  font-size: 0.95em;
+}

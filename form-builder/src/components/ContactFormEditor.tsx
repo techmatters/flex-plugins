@@ -59,7 +59,7 @@ import {
 import {
   applyColumnSplit,
   createField,
-  detectBlankOptionValue,
+  blankOptionValueFor,
   FieldType,
 } from '../formEditing';
 import {
@@ -197,10 +197,6 @@ export const ContactFormEditor = ({
   );
   const hadExplicitSplit = getSplitFormAt(originalFiles, tab) !== undefined;
   const referenceData = getReferenceData(draftFiles);
-  const blankOptionValue = useMemo(
-    () => detectBlankOptionValue([originalForm]),
-    [originalForm],
-  );
 
   // The editor owns the column layout while it's open; it's built once from the draft
   const [columns, setColumns] = useState<Columns>(() => {
@@ -323,7 +319,6 @@ export const ContactFormEditor = ({
       createField(
         type,
         allEntries.map((existing) => existing.item.name),
-        blankOptionValue,
       ),
     );
     commit({ ...columns, [column]: [...columns[column], entry] });
@@ -417,12 +412,11 @@ export const ContactFormEditor = ({
     const newFields = createChainFields(
       levelLabels,
       formItems.map((item) => item.name),
-      blankOptionValue,
       existingTop,
     );
     const rootBlankOption = existingTop
       ? chainToTree([existingTop], referenceData).rootBlankOption
-      : { value: blankOptionValue, label: '' };
+      : { value: blankOptionValueFor(false), label: '' };
     const { fields, otherFiles } = buildChain(
       newFields,
       roots,
@@ -551,7 +545,6 @@ export const ContactFormEditor = ({
             draftFiles={draftFiles}
             formItems={formItems}
             staffMode={staffMode}
-            blankOptionValue={blankOptionValue}
             issues={issues.filter((issue) => issue.fieldName === selectedEntry.item.name)}
             onChange={(item) => commit(mapEntry(selectedEntry.id, (entry) => ({ ...entry, item })))}
             onEditLinked={openChainEditor}

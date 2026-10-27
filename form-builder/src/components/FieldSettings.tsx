@@ -52,7 +52,6 @@ type Props = {
   // Every field in this form, to find the linked dropdowns this field belongs to
   formItems: FormItemJsonDefinition[];
   staffMode: boolean;
-  blankOptionValue: string;
   issues: ValidationIssue[];
   onChange: (item: FormItemJsonDefinition) => void;
   onEditLinked: (chain: string[]) => void;
@@ -73,7 +72,6 @@ export const FieldSettings = ({
   draftFiles,
   formItems,
   staffMode,
-  blankOptionValue,
   issues,
   onChange,
   onEditLinked,
@@ -207,7 +205,7 @@ export const FieldSettings = ({
           <select
             value={type}
             onChange={(e) =>
-              onChange(changeFieldType(item, e.target.value as FieldType, blankOptionValue))
+              onChange(changeFieldType(item, e.target.value as FieldType))
             }
           >
             {allowedTypes.map((allowedType) => (

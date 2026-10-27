@@ -83,6 +83,12 @@ Things to know:
 - **Some things are locked**, because contacts and reports already use them: the saved name of an
   existing field, existing call types, existing category names, existing case sections and
   statuses. The Aselo team can change those if needed.
+- **Answers have a text and a saved value**: what counselors see, and what's saved and reported.
+  They're usually the same, but can differ (for example "0" saved as "00"). **Show saved values**
+  shows them. You can set a different saved value for new answers; existing ones keep theirs.
+- **Paste several at once** adds many answers: one per line, or all on one line separated by
+  commas. Add a saved value after a `|` (`0 | 00`), or paste two columns from a spreadsheet
+  (the text, then the saved value).
 - **Removing a field asks first** and says what else uses it (reports, the webchat form, linked
   dropdowns).
 - **Discard draft** throws away all the draft's changes.

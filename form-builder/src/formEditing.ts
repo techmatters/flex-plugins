@@ -151,9 +151,18 @@ export const setFieldRequired = (
   required: boolean,
 ): FormItemJsonDefinition => {
   const { required: _previous, ...rest } = item as unknown as FieldJson;
-  return required
-    ? asField({ ...rest, required: { value: true, message: REQUIRED_FIELD_MESSAGE } })
-    : asField(rest);
+  const field: FieldJson = required ? { ...rest, required: { value: true, message: REQUIRED_FIELD_MESSAGE } } : rest;
+  // The blank first answer follows the convention for required / not required dropdowns
+  const blankValue = blankOptionValueFor(required);
+  const options = field.options as SelectOption[] | undefined;
+  if (field.type === 'select' && Array.isArray(options) && options.length > 0 && isConventionalBlank(options[0], 0)) {
+    field.options = [{ ...options[0], value: blankValue }, ...options.slice(1)];
+  }
+  const defaultOption = field.defaultOption as SelectOption | undefined;
+  if (field.type === 'dependent-select' && defaultOption && isConventionalBlank(defaultOption, 0)) {
+    field.defaultOption = { ...defaultOption, value: blankValue };
+  }
+  return asField(field);
 };
 
 export const updateField = (
@@ -175,28 +184,18 @@ export const isBlankOption = (option: SelectOption, index: number) =>
   index === 0 && String(option.label ?? '').trim() === '';
 
 /**
- * Helplines differ in the value they use for the blank first dropdown option
- * ('' or 'Unknown'), so new dropdowns follow whatever this helpline already uses.
+ * Aselo's convention for the blank first answer of a dropdown, which is what it shows until the
+ * counselor picks something:
+ * - required: value '' (the form refuses to save while it's chosen);
+ * - not required: value 'Unknown', so an unanswered question isn't saved as an empty string.
  */
-export const detectBlankOptionValue = (forms: FormItemJsonDefinition[][]): string => {
-  const counts = new Map<string, number>();
-  forms.flat().forEach((item) => {
-    if (item.type !== 'select' || !('options' in item) || !Array.isArray(item.options)) return;
-    const first = item.options[0];
-    if (first && isBlankOption(first, 0)) {
-      const value = String(first.value);
-      counts.set(value, (counts.get(value) ?? 0) + 1);
-    }
-  });
-  const [mostCommon] = [...counts.entries()].sort((a, b) => b[1] - a[1]);
-  return mostCommon ? mostCommon[0] : '';
-};
+export const blankOptionValueFor = (required: boolean) => (required ? '' : 'Unknown');
 
-export const createField = (
-  type: FieldType,
-  existingNames: Iterable<string>,
-  blankOptionValue: string,
-): FormItemJsonDefinition => {
+// A blank first answer that follows (either side of) the convention, so it can be switched
+const isConventionalBlank = (option: SelectOption, index: number) =>
+  isBlankOption(option, index) && ['', 'Unknown'].includes(String(option.value));
+
+export const createField = (type: FieldType, existingNames: Iterable<string>): FormItemJsonDefinition => {
   const label = 'New question';
   const field: FieldJson = {
     name: uniqueFieldName(toFieldName(label), existingNames),
@@ -206,7 +205,8 @@ export const createField = (
   };
   if (type === 'select') {
     field.options = [
-      { value: blankOptionValue, label: '' },
+      // New fields aren't required
+      { value: blankOptionValueFor(false), label: '' },
       { value: 'Option 1', label: 'Option 1' },
     ];
   }
@@ -223,7 +223,6 @@ export const createField = (
 export const changeFieldType = (
   item: FormItemJsonDefinition,
   newType: FieldType,
-  blankOptionValue: string,
 ): FormItemJsonDefinition => {
   const field: FieldJson = { ...(item as unknown as FieldJson), type: newType };
   if (newType !== 'textarea') {
@@ -240,7 +239,7 @@ export const changeFieldType = (
     const options = field.options as SelectOption[];
     const hasBlank = options.length > 0 && isBlankOption(options[0], 0);
     if (newType === 'select' && !hasBlank) {
-      field.options = [{ value: blankOptionValue, label: '' }, ...options];
+      field.options = [{ value: blankOptionValueFor(isFieldRequired(item)), label: '' }, ...options];
     } else if (newType === 'listbox-multiselect' && hasBlank) {
       field.options = options.slice(1);
     }

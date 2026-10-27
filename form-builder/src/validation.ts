@@ -42,22 +42,26 @@ export type ValidationIssue = {
 const FIELD_NAME_PATTERN = /^[a-zA-Z][a-zA-Z0-9_]*$/;
 const ONE_TO_ONE_FILE = 'insights/oneToOneConfigSpec.json';
 
-const describeField = (item: FormItemJsonDefinition) => `“${item.label || item.name}”`;
+// e.g. “Age” (Caller information): several forms of a helpline can have a field with the same label
+const describeField = (item: FormItemJsonDefinition, tab?: FormTarget) =>
+  tab ? `“${item.label || item.name}” (${tab.title})` : `“${item.label || item.name}”`;
 
-const checkOptions = (item: FormItemJsonDefinition, options: SelectOption[]): string[] => {
+const checkOptions = (item: FormItemJsonDefinition, options: SelectOption[], tab: FormTarget): string[] => {
   const problems: string[] = [];
   const realOptions = options.filter((option, index) => !isBlankOption(option, index));
   if (realOptions.length === 0) {
-    problems.push(`${describeField(item)} needs at least one answer to choose from.`);
+    problems.push(`${describeField(item, tab)} needs at least one answer to choose from.`);
   }
   if (realOptions.some((option) => String(option.label ?? '').trim() === '')) {
-    problems.push(`${describeField(item)} has an answer with no text.`);
+    problems.push(`${describeField(item, tab)} has an answer with no text.`);
   }
-  const values = options.map((option) => String(option.value));
+  // The blank first answer may share its value with a real one: non-required dropdowns start on
+  // a blank answer saved as "Unknown", and can also offer "Unknown" as an answer
+  const values = realOptions.map((option) => String(option.value));
   const duplicates = [...new Set(values.filter((value, index) => values.indexOf(value) !== index))];
   if (duplicates.length > 0) {
     problems.push(
-      `${describeField(item)} has the same answer more than once: ${duplicates.join(', ')}.`,
+      `${describeField(item, tab)} has the same answer more than once: ${duplicates.join(', ')}.`,
     );
   }
   return problems;
@@ -75,6 +79,7 @@ const checkLinkedDropdown = (
   item: Extract<FormItemJsonDefinition, { dependsOn: string }>,
   form: FormItemJsonDefinition[],
   referenceData: Record<string, unknown>,
+  tab: FormTarget,
 ): ValidationIssue[] => {
   const issues: ValidationIssue[] = [];
   const lists = resolveOptions<DependentOptions>(item, referenceData);
@@ -82,7 +87,7 @@ const checkLinkedDropdown = (
     return [
       {
         severity: 'error',
-        message: `The answers for ${describeField(item)} could not be found.`,
+        message: `The answers for ${describeField(item, tab)} could not be found.`,
         fieldName: item.name,
       },
     ];
@@ -91,7 +96,7 @@ const checkLinkedDropdown = (
     return [
       {
         severity: 'error',
-        message: `${describeField(item)} has no answers yet.`,
+        message: `${describeField(item, tab)} has no answers yet.`,
         fieldName: item.name,
       },
     ];
@@ -102,14 +107,14 @@ const checkLinkedDropdown = (
     if (new Set(values).size !== values.length) {
       issues.push({
         severity: 'error',
-        message: `${describeField(item)} has the same answer more than once under “${key}”.`,
+        message: `${describeField(item, tab)} has the same answer more than once under “${key}”.`,
         fieldName: item.name,
       });
     }
     if (options.some((option) => !String(option.label ?? '').trim())) {
       issues.push({
         severity: 'error',
-        message: `${describeField(item)} has an answer with no text under “${key}”.`,
+        message: `${describeField(item, tab)} has an answer with no text under “${key}”.`,
         fieldName: item.name,
       });
     }
@@ -125,7 +130,7 @@ const checkLinkedDropdown = (
   if (unused.length > 0) {
     issues.push({
       severity: 'warning',
-      message: `${describeField(item)} has answers filed under ${unused.length} value(s) that aren't answers of ${describeField(parent)} (e.g. “${unused[0]}”), so counselors never see them.`,
+      message: `${describeField(item, tab)} has answers filed under ${unused.length} value(s) that aren't answers of ${describeField(parent)} (e.g. “${unused[0]}”), so counselors never see them.`,
       fieldName: item.name,
     });
   }
@@ -133,7 +138,7 @@ const checkLinkedDropdown = (
   if (shared.length > 0) {
     issues.push({
       severity: 'warning',
-      message: `${shared.length} answer(s) of ${describeField(parent)} share a name with another (e.g. “${shared[0]}”), so they all show the same ${describeField(item)} answers. Re-importing the list from a spreadsheet fixes this.`,
+      message: `${shared.length} answer(s) of ${describeField(parent)} share a name with another (e.g. “${shared[0]}”), so they all show the same ${describeField(item, tab)} answers. Re-importing the list from a spreadsheet fixes this.`,
       fieldName: item.name,
     });
   }
@@ -166,19 +171,19 @@ const checkForm = (
     if (isChoiceType(item.type)) {
       const options = resolveOptions(item, referenceData);
       if (!options) {
-        error(`The answers for ${describeField(item)} could not be found.`, item.name);
+        error(`The answers for ${describeField(item, tab)} could not be found.`, item.name);
       } else {
-        checkOptions(item, options).forEach((message) => error(message, item.name));
+        checkOptions(item, options, tab).forEach((message) => error(message, item.name));
       }
     }
     if (item.type === 'dependent-select') {
       if (!names.includes(item.dependsOn)) {
         error(
-          `${describeField(item)} depends on “${item.dependsOn}”, which isn't in this form.`,
+          `${describeField(item, tab)} depends on “${item.dependsOn}”, which isn't in this form.`,
           item.name,
         );
       }
-      checkLinkedDropdown(item, form, referenceData).forEach((issue) => issues.push(issue));
+      checkLinkedDropdown(item, form, referenceData, tab).forEach((issue) => issues.push(issue));
     }
   });
 

@@ -62,6 +62,23 @@ describe('validateContactTab', () => {
     }
   });
 
+  test('a blank first answer saved as Unknown can sit next to an "Unknown" answer, and repeats name their form', () => {
+    // The demo's caller Age: blank answer saved as "Unknown" (not required), plus "Unknown"
+    const messages = validateContactTab(demo, demo, callerTab).map((issue) => issue.message);
+    expect(messages.filter((message) => message.includes('more than once'))).toEqual([]);
+
+    const draft = withForm(demo, callerTab.filePath, (form) =>
+      form.map((item) =>
+        item.name === 'age' && 'options' in item && Array.isArray(item.options)
+          ? ({ ...item, options: [...item.options, { value: '01', label: 'One' }] } as FormItemJsonDefinition)
+          : item,
+      ),
+    );
+    expect(errorsOf(validateContactTab(draft, demo, callerTab))).toContain(
+      '“Age” (Caller information) has the same answer more than once: 01.',
+    );
+  });
+
   test('removing a field the Aselo specification requires is an error', () => {
     const draft = withForm(demo, caseTab.filePath, (form) =>
       form.filter((item) => item.name !== 'callSummary'),
@@ -84,9 +101,9 @@ describe('validateContactTab', () => {
   test('flags duplicate names, missing labels and dropdowns without answers', () => {
     const draft = withForm(usnm, callerTab.filePath, (form) => [
       ...form,
-      { ...createField('input', [], ''), name: form[0].name },
-      { ...createField('input', [], ''), name: 'unlabelled', label: '' },
-      { ...createField('select', [], ''), name: 'emptyChoice', options: [{ value: '', label: '' }] },
+      { ...createField('input', []), name: form[0].name },
+      { ...createField('input', []), name: 'unlabelled', label: '' },
+      { ...createField('select', []), name: 'emptyChoice', options: [{ value: '', label: '' }] },
     ] as FormItemJsonDefinition[]);
     const errors = errorsOf(validateContactTab(draft, usnm, callerTab));
     expect(errors).toEqual(

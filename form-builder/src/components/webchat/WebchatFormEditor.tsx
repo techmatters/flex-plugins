@@ -229,8 +229,8 @@ export const WebchatFormEditor = ({
     const created = createChainFields(
       levelLabels,
       fields.map((field) => field.name),
-      '',
       existingTop,
+      '',
     ).map((item, level) =>
       level === 0 && existingTop ? (item as unknown as WebchatField) : toWebchatChainField(item, level === 0),
     );

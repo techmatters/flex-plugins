@@ -204,7 +204,7 @@ describe('editing the tree by path', () => {
 
 describe('creating and saving a chain', () => {
   test('creates linked fields and writes their options', () => {
-    const fields = createChainFields(['Province', 'District'], ['province'], 'Unknown');
+    const fields = createChainFields(['Province', 'District'], ['province']);
     expect(fields.map((f) => [f.name, f.type])).toEqual([
       ['province2', 'select'],
       ['district', 'dependent-select'],
@@ -244,7 +244,7 @@ describe('creating and saving a chain', () => {
   });
 
   test('moves big lists into ReferenceData.json', () => {
-    const fields = createChainFields(['Region', 'Town'], [], '');
+    const fields = createChainFields(['Region', 'Town'], []);
     const rows = Array.from({ length: 250 }, (_, i) => ['North', `Town ${i}`]);
     const options = treeToChainOptions(rowsToTree(rows, 2).roots, 2);
     const result = applyChainOptions(fields, options, { 'ReferenceData.json': { townOptions: [] } });

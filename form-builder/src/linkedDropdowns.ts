@@ -35,7 +35,7 @@ import type {
 } from '@hrm-form-definitions/formDefinition/types';
 import type { DefinitionFileMap } from './definitions';
 import { getReferenceData, resolveOptions } from './definitions';
-import { isBlankOption, toFieldName, uniqueFieldName, updateField } from './formEditing';
+import { blankOptionValueFor, isBlankOption, toFieldName, uniqueFieldName, updateField } from './formEditing';
 
 export type AnswerNode = {
   id: string;
@@ -486,8 +486,9 @@ export const applyChainOptions = (
 export const createChainFields = (
   levelLabels: string[],
   existingNames: Iterable<string>,
-  blankOptionValue: string,
   existingRoot?: FormItemJsonDefinition,
+  // Contact forms: Aselo's convention for a field that isn't required. The webchat passes its own.
+  blankOptionValue = blankOptionValueFor(false),
 ): FormItemJsonDefinition[] => {
   const names = [...existingNames];
   const fields: FormItemJsonDefinition[] = [];
