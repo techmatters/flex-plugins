@@ -25,27 +25,21 @@ import { OptionsEditor, parsePastedAnswers } from './OptionsEditor';
 afterEach(cleanup);
 
 describe('pasting answers', () => {
-  test('one per line, with or without a saved value', () => {
-    expect(parsePastedAnswers('Spanish\n0 | 00\n\nUnder 18 | U18\n')).toEqual([
-      { label: 'Spanish', value: 'Spanish' },
-      { label: '0', value: '00' },
-      { label: 'Under 18', value: 'U18' },
+  test('one per line: "saved value;text", or just the text', () => {
+    expect(parsePastedAnswers('00;0\n01;1\n12\n\n13\nYes, sometimes\n')).toEqual([
+      { value: '00', label: '0' },
+      { value: '01', label: '1' },
+      { value: '12', label: '12' },
+      { value: '13', label: '13' },
+      { value: 'Yes, sometimes', label: 'Yes, sometimes' },
     ]);
   });
 
-  test('all on one line, separated by commas', () => {
-    expect(parsePastedAnswers('Yes, No,Maybe | M')).toEqual([
-      { label: 'Yes', value: 'Yes' },
-      { label: 'No', value: 'No' },
-      { label: 'Maybe', value: 'M' },
-    ]);
-  });
-
-  test('two columns from a spreadsheet (text, then saved value)', () => {
-    expect(parsePastedAnswers('0\t00\r\n1\t01\r\nOther\t')).toEqual([
-      { label: '0', value: '00' },
-      { label: '1', value: '01' },
-      { label: 'Other', value: 'Other' },
+  test('two columns from a spreadsheet (saved value, then text)', () => {
+    expect(parsePastedAnswers('00\t0\r\n01\t1\r\nOther\t')).toEqual([
+      { value: '00', label: '0' },
+      { value: '01', label: '1' },
+      { value: 'Other', label: 'Other' },
     ]);
   });
 });
@@ -104,7 +98,7 @@ describe('saved values', () => {
   test('pasted answers keep the values they were pasted with', () => {
     render(<Harness initial={[{ value: 'Unknown', label: '' }]} />);
     fireEvent.click(screen.getByRole('button', { name: 'Paste several at once' }));
-    fireEvent.change(screen.getByRole('textbox', { name: /Answers to add/ }), { target: { value: '0 | 00\n1 | 01' } });
+    fireEvent.change(screen.getByRole('textbox', { name: /Answers to add/ }), { target: { value: '00;0\n01;1' } });
     fireEvent.click(screen.getByRole('button', { name: 'Add these answers' }));
     expect(currentOptions()).toEqual([
       { value: 'Unknown', label: '' },

@@ -86,9 +86,9 @@ Things to know:
 - **Answers have a text and a saved value**: what counselors see, and what's saved and reported.
   They're usually the same, but can differ (for example "0" saved as "00"). **Show saved values**
   shows them. You can set a different saved value for new answers; existing ones keep theirs.
-- **Paste several at once** adds many answers: one per line, or all on one line separated by
-  commas. Add a saved value after a `|` (`0 | 00`), or paste two columns from a spreadsheet
-  (the text, then the saved value).
+- **Paste several at once** adds many answers, one per line. When the saved value differs from
+  the text, write the saved value, a semicolon, then the text: `00;0`. Otherwise just the text
+  (`12`). You can also paste two columns from a spreadsheet: saved value, then text.
 - **Removing a field asks first** and says what else uses it (reports, the webchat form, linked
   dropdowns).
 - **Discard draft** throws away all the draft's changes.

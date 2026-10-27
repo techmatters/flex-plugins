@@ -122,8 +122,8 @@ It reads and writes the same files the Flex plugin uses:
   differ, e.g. "0" saved as "00". **Show saved values** shows and edits them; it's on whenever
   any answer differs. Relabelling an existing answer keeps its saved value, which only Aselo staff
   can change. New answers are saved as their text unless given a value. **Paste several at once**
-  takes one answer per line, or one line separated by commas, with an optional saved value after
-  a `|` (`0 | 00`) or as a second spreadsheet column.
+  takes one answer per line: `saved value;text` when they differ (`00;0`), or just the text.
+  Two spreadsheet columns (saved value, then text) work too.
 - The blank first answer of a dropdown follows Aselo's convention: saved as `""` when the field
   is required (so it can't be saved unanswered), `"Unknown"` when it isn't (so unanswered isn't
   saved as an empty string). New dropdowns aren't required, and switching "required" switches it.

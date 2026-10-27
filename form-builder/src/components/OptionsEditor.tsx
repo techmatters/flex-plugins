@@ -37,21 +37,20 @@ import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
 import { isBlankOption } from '../formEditing';
 
 /**
- * Answers pasted in one go: one per line, or all on one line separated by commas. Each can have
- * a saved value after a | ("0 | 00"), or come as two spreadsheet columns (text, then value).
+ * Answers pasted in one go, one per line. A line can be "saved value;text" when the two differ
+ * ("00;0"), or two spreadsheet columns in the same order; otherwise the text is also the value.
  */
-export const parsePastedAnswers = (text: string): SelectOption[] => {
-  const lines = text.split(/\r?\n/).filter((line) => line.trim());
-  const entries = lines.length === 1 && !lines[0].includes('\t') ? lines[0].split(',') : lines;
-  return entries
-    .map((entry) => {
-      const separator = entry.includes('\t') ? '\t' : '|';
-      const [label, ...rest] = entry.split(separator);
-      const value = rest.join(separator).trim();
-      return { label: label.trim(), value: value || label.trim() };
+export const parsePastedAnswers = (text: string): SelectOption[] =>
+  text
+    .split(/\r?\n/)
+    .filter((line) => line.trim())
+    .map((line) => {
+      const separator = line.includes('\t') ? '\t' : ';';
+      const [first, ...rest] = line.split(separator);
+      const label = rest.join(separator).trim();
+      return label ? { value: first.trim(), label } : { value: first.trim(), label: first.trim() };
     })
     .filter((option) => option.label);
-};
 
 type Props = {
   options: SelectOption[];
@@ -268,16 +267,16 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
           <label className="field">
             <span className="field-label">Answers to add</span>
             <span className="field-hint">
-              One answer per line, or all on one line separated by commas. To save an answer under a
-              different value, put it after a | (for example <code>0 | 00</code>), or paste two
-              columns from a spreadsheet: the text, then the saved value.
+              One answer per line. When the saved value differs from the text, write the saved value
+              first, then a semicolon, then the text: <code>00;0</code>. You can also paste two
+              columns from a spreadsheet: saved value, then text.
             </span>
             <textarea
               rows={6}
               value={bulkText}
               autoFocus
               onChange={(e) => setBulkText(e.target.value)}
-              placeholder={'Spanish\nFrench\nPortuguese'}
+              placeholder={'Spanish\nFrench\n00;0'}
             />
           </label>
           <div className="option-actions">
