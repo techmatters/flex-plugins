@@ -143,7 +143,8 @@ grouped by the value chosen above (`options: { "<value above>": [...] }`).
 Planned next:
 
 1. Deployment at form-builder.aselo.org, in the management account: Okta login, S3 drafts, Apply through a GitHub App
-   (branch + PR), Slack and email notifications, Terraform
+   (branch + PR), Slack and email notifications, Terraform. Steps and status:
+   [terraform/README.md](terraform/README.md)
 
 Future improvements:
 
