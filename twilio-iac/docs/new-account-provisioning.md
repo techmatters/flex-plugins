@@ -87,7 +87,9 @@ From `twilio-iac/stages/provision` on the devops node:
    [README](../README.md#running-on-a-new-environment)).
 2. 🤖 `make HL=<code> HL_ENV=staging plan` and review. Adjust the helpline config if needed.
 3. 🧑 `make HL=<code> HL_ENV=staging apply`
-4. Repeat 2–3 in `stages/lex` and then `stages/configure`.
+4. Repeat 2–3 in `stages/lex`, then `stages/system-down` (the system-down subflow every Studio flow
+   runs first; the baseline has `enable_system_down = true`), and then `stages/configure`, which reads
+   the subflow from the system-down state, so it must come after it.
 5. 🧑 Buy/assign the phone number in Twilio and point its **A call comes in** to the voice Studio
    flow (Terraform does not manage phone numbers; it only uses `phone_numbers` in routing expressions).
 
@@ -201,7 +203,7 @@ Ask an AWS admin to add the `tl-aselo-docs-<code>-production` bucket to CloudTra
 
 - 🤖 `node twilio-iac/scripts/okta/verifySso.mjs --hl <code> --env <env>`: all ✅
 - 🤖 `node twilio-iac/scripts/okta/auditGroupRules.mjs --hl <code>`: ✅
-- 🤖 Re-plan `okta-org`, `okta-app`, `provision`, `lex`, `configure`: **No changes**
+- 🤖 Re-plan `okta-org`, `okta-app`, `provision`, `lex`, `system-down`, `configure`: **No changes**
 - 🧑 Log in through SSO, open a test contact, check the forms load and a webchat/SMS/call reaches a counsellor.
 
 ## Production (near launch)
@@ -228,7 +230,7 @@ Copy into the helpline's tracking issue / task and tick as you go.
 - [ ] 0 Intake complete
 - [ ] 1.1 Helpline config (incl. okta / okta_app) committed
 - [ ] 1.2 SSM secrets
-- [ ] 1.3 provision / lex / configure applied · phone number → voice flow
+- [ ] 1.3 provision / lex / system-down / configure applied · phone number → voice flow
 - [ ] 1.4 Error webhook + TwilioErrorReporter PR
 - [ ] 1.5 Okta: group (okta-org) · group rule (manual, if any) · Flex SSO page opened · app (okta-app) · Flex SSO values pasted · verifySso ✅ · SSO login ✅
 - [ ] 1.6 Twilio console users invited

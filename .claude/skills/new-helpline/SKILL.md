@@ -52,7 +52,8 @@ Collect, asking only for what is missing:
 - channels and phone numbers (baseline: chat (webchat over Conversations) + voice)
 - Okta group name (`<Name> (<CODE>)`), group rule (organization / email domain with `@` / none),
   optional SAML attributes (`labels`, `team`)
-- webchat needed? greeting text for voice? blocked-contact message?
+- webchat needed? pre-queue messages for chat and voice? blocked-contact messages? system-down
+  (outage) messages, and for calls whether to say a message, play a recording or forward to a number?
 - forms: who contacts the helpline (wording instead of "help seeker"), service area (states/counties),
   categories, anything to add or remove from the baseline forms (`as/v3`)
 
@@ -66,6 +67,14 @@ Later on this information may come from a tool that collects it from meetings; u
   (`flow_vars`, `okta_app`), service configuration JSON. Keep the baseline shape (1 queue, chat +
   voice) unless the intake asks for more; follow AGENTS.md for anything extra. Never add a
   `channel_type = "web"` channel: its Flex Flow API is deprecated (404 on apply).
+- Studio flows: keep the baseline's shared templates, `messaging-blocking-conv-lambda-sd.tftpl` (chat)
+  and `voice-blocking-no-op-hours-sd.tftpl` (voice), with system-down enabled. Fill their messages
+  from the intake (`send_message_prequeue`, `play_message_voice_prequeue`,
+  `play_message_voice_blocked`, `flow_vars.chat_blocked_message`, `system_down_flow_vars`). Don't
+  use the older templates (`voice-basic*`, `messaging-blocking-lambda`, `messaging-blocking-conv-lambda`
+  without `-sd`); see AGENTS.md "Studio flow templates for new helplines". If the helpline needs
+  something they don't do (operating hours, chatbot, voicemail), pick or fork a template that follows
+  the AGENTS.md Studio standards and widget names, and validate it as described there.
 - Show the diff, commit, and ask the person to push / open the PR.
 
 ### 5. Twilio infrastructure (steps 1.2–1.4)
@@ -73,8 +82,9 @@ Later on this information may come from a tool that collects it from meetings; u
 - 1.2 🧑 SSM secrets: give the person the `make manage-ssm-secrets` command; the Datadog answers can
   be dummy values (see the guide).
 - 1.3 Run `make plan HL=<code> HL_ENV=<env>` in `stages/provision`, then `stages/lex`, then
-  `stages/configure` (first time: the person runs `setup-new-environment` in provision). Summarize
-  each plan (what gets created) and wait for the person's apply before the next stage.
+  `stages/system-down`, then `stages/configure` (first time: the person runs `setup-new-environment`
+  in provision). configure reads the system-down state, so it can't be planned before system-down is
+  applied. Summarize each plan (what gets created) and wait for the person's apply before the next stage.
 - 1.3 🧑 Phone number → voice Studio flow (Terraform doesn't manage numbers).
 - 1.4 Edit `lambdas/TwilioErrorReporter/index.ts` (alphabetical order) when the person gives the
   account SID; 🧑 errors webhook in the console.

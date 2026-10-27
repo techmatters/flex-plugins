@@ -60,7 +60,7 @@ helplines/<short_code>/
 
 - `helplines/baseline/` is the copy-me starting point for a new helpline: 1 queue, 1 workflow
   (`master-basic.tftpl`) plus `queue_transfers`, a `chat` channel (webchat over Conversations) and a
-  voice channel, plus the Okta blocks.
+  voice channel, system-down enabled, plus the Okta blocks.
 - `helplines/templates/` and `helplines/configs/` are the **shared** versions. Prefer a shared template;
   only fork into `<short_code>/templates/` when behavior genuinely diverges.
 - `files/additional.*.tf` is described in its own README as a "dirty hack" / "temporary band-aid".
@@ -152,6 +152,25 @@ Lower case with underscores, action first, then what makes the widget specific
 Older shared templates (e.g. `voice-basic.tftpl`) predate these names; don't rename widgets in
 templates other helplines already use without checking the impact on monitoring.
 
+### Studio flow templates for new helplines
+
+New helplines start from the baseline's shared templates, which follow the standards above:
+
+| Channel | Template | Flow |
+|---|---|---|
+| chat (Conversations) | `messaging-blocking-conv-lambda-sd.tftpl` | system-down subflow → blocked check (lambda) → pre-queue message → `send_to_queue`; failures notified |
+| voice | `voice-blocking-no-op-hours-sd.tftpl` | system-down subflow → blocked check (lambda) → pre-queue message → `send_to_queue`; failed enqueue notified |
+
+They need `enable_system_down = true` plus `system_down_templatefile` / `system_down_flow_vars`
+(see the baseline `common.hcl`), and the `system-down` stage applied before `configure`. The blocked
+check calls `lambda_twilio_account_scoped_url`, which the channels module builds from the account and
+region, so `get_profile_flags_for_identifier_base_url` is not needed.
+
+Don't start new helplines on `voice-basic*.tftpl`, `messaging-blocking-lambda*.tftpl` or
+`messaging-blocking-conv-lambda.tftpl` (no system-down, Serverless-era names). Known issue:
+`voice-basic-sd.tftpl` and `voice-voicemail-sd.tftpl` have `"name"` instead of `"next"` on
+`send_to_queue` `failedToEnqueue`, so the failed-to-enqueue alert never fires.
+
 ## Naming conventions
 
 - Helpline directories are the lowercase short code: `usnm`, `usch`, `nz`, `mt`.
@@ -164,7 +183,7 @@ templates other helplines already use without checking the impact on monitoring.
 ## Channels: things to know
 
 - Webchat for **new** helplines is `chat` with `messaging_mode = "conversations"` (shared template
-  `messaging-blocking-conv-lambda.tftpl`). Don't add `channel_type = "web"` (default `programmable-chat`
+  `messaging-blocking-conv-lambda-sd.tftpl`). Don't add `channel_type = "web"` (default `programmable-chat`
   mode): it creates a Flex Flow and Twilio's `/v1/FlexFlows` API now returns 404, so the configure apply
   fails. Existing helplines that still have a `web` channel keep it until they are migrated.
 - Conversations chat tasks still get `channelType` `web` (set by the webchat app), so routing filters and
