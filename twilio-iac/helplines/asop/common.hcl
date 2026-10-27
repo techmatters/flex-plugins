@@ -41,20 +41,39 @@ locals {
         messaging_mode       = "conversations"
         channel_type         = "chat"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
-        channel_flow_vars    = {}
+        # Studio flow: system-down check, blocked-contact check, pre-queue message, send to the queue
+        templatefile = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda-sd.tftpl"
+        channel_flow_vars = {
+          send_message_prequeue = "Thank you for contacting Aselo Okta Pilot. A counsellor will be with you shortly. If you are in immediate danger, please call 911."
+        }
         chatbot_unique_names = []
       },
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
+        # Studio flow: system-down check, blocked-caller check, pre-queue message, send to the queue
+        templatefile = "/app/twilio-iac/helplines/templates/studio-flows/voice-blocking-no-op-hours-sd.tftpl"
         channel_flow_vars = {
-          voice_ivr_greeting_message = "Hello, thank you for calling Aselo Okta Pilot. Please wait for a counsellor."
-          voice_ivr_language         = "en-US"
+          voice_ivr_language          = "en-US"
+          play_message_voice_prequeue = "Hello, thank you for calling Aselo Okta Pilot. Please wait for a counsellor."
+          play_message_voice_blocked  = "Sorry, you're not able to contact Aselo Okta Pilot from this number."
         }
         chatbot_unique_names = []
       }
+    }
+
+    # System down: every Studio flow first runs this subflow (system-down stage, applied before configure).
+    # To announce an outage set is_system_down = "true" and apply the system-down stage.
+    # call_action for calls: "message" (say voice_message), "recording" (play recording_url) or "forward" (to forward_number).
+    enable_system_down       = true
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    system_down_flow_vars = {
+      is_system_down = "false"
+      message        = "We're having some technical problems at the moment, so messages might not go through. We're working on it and will be back as soon as we can. Thanks for your patience."
+      voice_message  = "We're having some technical problems at the moment, so calls might not go through. We're working on it and will be back as soon as we can. Thanks for your patience."
+      call_action    = "message"
+      forward_number = "+123"
+      recording_url  = "https://<place_holder>.mp3"
     }
 
     # Okta: helpline-level, shared by staging and production apps (okta-org stage). See twilio-iac/docs/okta.md
