@@ -9,7 +9,7 @@
 locals {
   # Helplines whose staff can use the builder: one Okta group form-builder-<code> each.
   # Add a code here (e.g. "usnm") when a helpline starts using it; until then only Aselo staff can.
-  helplines = []
+  helplines = ["usnm"]
 
   aws_account_id  = get_aws_account_id()
   state_role_arn  = "arn:aws:iam::${local.aws_account_id}:role/tf-twilio-iac-production"
