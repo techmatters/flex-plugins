@@ -37,6 +37,30 @@
     "ContactDetails-GeneralDetails-SolvedProblem": "Did the client feel we solved their problem?",
     "ContactDetails-GeneralDetails-WouldRecommend": "Would the client recommend us to a friend?",
     "SectionName-ChildInformation": "Client Information {{sectionNo}} of {{sectionCount}}",
-    "Contact-EditChild": "Edit Client Information"
+    "Contact-EditChild": "Edit Client Information",
+
+    "CallSummary-Counselor": "Coordinator: ",
+    "GeneralizedSearchForm-Counselor": "Coordinator",
+    "SearchForm-Counselor": "Coordinator",
+    "SearchResults-CounselorName": "Coordinator Name:",
+    "CaseHeader-Counsellor": "Coordinator",
+    "SharedStateLoadFormError": "The information stored in the form by previous coordinator couldn't be retrieved. Starting current task with clear contact form.",
+    "TabbedForms-ReportsCounselorReport": "Report as coordinator",
+    "Case-CaseDetailsOwner": "Coordinator",
+    "CSAMCLC-ActionHeaderAdded": "Added {{date}} at {{time}} &nbsp;&nbsp; Coordinator: {{counsellor}}",
+    "Case-ActionHeaderCounselor": "Coordinator:",
+    "Case-Counsellor": "Coordinator",
+    "CaseList-THCounselor": "Coordinator",
+    "CaseList-Filters-Counselor": "Coordinator",
+    "CaseList-Filters-SearchForCounselor": "Search for coordinator by name",
+    "ContactDetails-GeneralDetails-Counselor": "Coordinator",
+    "ContactDetails-GeneralDetails-HangUpBy/Agent": "Coordinator",
+    "ContactDetails-GeneralDetails-HangUpBy/Consult": "Consulting Coordinator",
+    "Contact-ConfirmRemoveTaskDialog-Content": "An error occurred trying to complete the task associated with this contact. Do you want to try to remove the task instead? This will clear the task from the coordinators list but the data for this contact will not get stored in the insights reporting system if you do.",
+    "Conference-Wrapping-HangupBy/Agent": "Call Ended by Coordinator",
+    "Conference-Wrapping-HangupBy/Consult": "Call Ended by Consulting Coordinator",
+    "TeamsView-Counsellor": "coordinator",
+    "TeamsView-Counsellors": "coordinators",
+    "Counsellor": "Coordinator"
   }
 }
