@@ -97,8 +97,16 @@ It reads and writes the same files the Flex plugin uses:
   drafts. Locally, Apply writes the draft into this checkout for you to review with `git diff`
   and commit; deployed, it will open a PR through a GitHub App. Staff can tick "View as
   helpline staff" to see what helpline staff see.
-- Roles are checked by the API (`server/api.ts`), not just hidden in the page. Deployed, they
-  come from Okta groups (`form-builder-<code>`, `form-builder-aselo-staff`).
+- Roles come from Okta groups when deployed (`form-builder-<code>`, `form-builder-aselo-staff`).
+  The API (`server/api.ts`) checks which helplines a person can open, that only Aselo staff
+  apply, and that only Aselo staff see or change the service configuration.
+- The other Aselo staff only edits (renaming existing fields, call types, categories, sections
+  or statuses, PII on existing fields, switching an existing field's kind, removing required
+  fields or existing sections) are enforced by the page only, not the API. This is a deliberate
+  decision: only Aselo and helpline staff use the builder, someone calling the API directly
+  would only be changing their own helpline's forms, and every draft is still reviewed by
+  Aselo staff before it's applied. Checking these on the server is listed as a future
+  improvement below.
 
 ### Rules that protect saved data
 
@@ -136,6 +144,11 @@ Planned next:
 
 1. Deployment at form-builder.aselo.org, in the management account: Okta login, S3 drafts, Apply through a GitHub App
    (branch + PR), Slack and email notifications, Terraform
+
+Future improvements:
+
+- Enforce the Aselo staff only edits on the server too: compare a helpline staff save with the
+  current files and refuse changes the page wouldn't allow (see "Drafts, roles and applying").
 
 Pending (found while building, in the definitions themselves):
 
