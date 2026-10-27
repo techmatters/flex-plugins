@@ -35,4 +35,5 @@ export enum DefinitionVersionId {
   zwV1 = 'zw-v1', // Childline Zimbabwe v1
   mtV1 = 'mt-v1', // Kellimni Malta v1
   nzV1 = 'nz-v1', // Youthline (NZ) v1
+  asopV1 = 'asop-v1', // Aselo Okta Pilot v1
 }

@@ -1,0 +1,80 @@
+{
+  "contactForm": {
+    "childInformation": [
+      {
+        "name": "age",
+        "insights": [
+          "conversations",
+          "conversation_attribute_3"
+        ]
+      },
+      {
+        "name": "gender",
+        "insights": [
+          "conversations",
+          "conversation_attribute_4"
+        ]
+      },
+      {
+        "name": "postalCode",
+        "insights": [
+          "customers",
+          "zip"
+        ]
+      }
+    ],
+    "callerInformation": [
+      {
+        "name": "relationshipToChild",
+        "insights": [
+          "conversations",
+          "initiated_by"
+        ]
+      }
+    ],
+    "caseInformation": [
+      {
+        "name": "repeatCaller",
+        "insights": [
+          "conversations",
+          "conversation_attribute_7"
+        ],
+        "type": "mixed-checkbox"
+      },
+      {
+        "name": "actionTaken",
+        "insights": [
+          "conversations",
+          "initiative"
+        ]
+      },
+      {
+        "name": "howDidYouKnowAboutOurLine",
+        "insights": [
+          "conversations",
+          "conversation_attribute_5"
+        ]
+      }
+    ]
+  },
+  "caseForm": {
+    "topLevel": [
+      {
+        "name": "id",
+        "insights": [
+          "conversations",
+          "case"
+        ]
+      }
+    ],
+    "referral": [
+      {
+        "name": "referredTo",
+        "insights": [
+          "customers",
+          "customer_manager"
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "Aselo Okta Pilot": {
+    "categories": {
+      "Mental Health": {
+        "color": "#085f63",
+        "subcategories": [
+          {
+            "label": "Anxiety"
+          },
+          {
+            "label": "Depression"
+          },
+          {
+            "label": "Loneliness or isolation"
+          },
+          {
+            "label": "Self-harm"
+          },
+          {
+            "label": "Stress"
+          },
+          {
+            "label": "Suicidal thoughts",
+            "toolkitUrl": "https://988lifeline.org/professionals/"
+          },
+          {
+            "label": "Unspecified/Other - Mental Health"
+          }
+        ]
+      },
+      "Violence and Abuse": {
+        "color": "#14919b",
+        "subcategories": [
+          {
+            "label": "Bullying"
+          },
+          {
+            "label": "Domestic or family violence"
+          },
+          {
+            "label": "Emotional abuse"
+          },
+          {
+            "label": "Physical abuse"
+          },
+          {
+            "label": "Sexual abuse"
+          },
+          {
+            "label": "Unspecified/Other - Violence and Abuse"
+          }
+        ]
+      },
+      "Relationships": {
+        "color": "#0b6e4f",
+        "subcategories": [
+          {
+            "label": "Family"
+          },
+          {
+            "label": "Friends and peers"
+          },
+          {
+            "label": "Partner"
+          },
+          {
+            "label": "Unspecified/Other - Relationships"
+          }
+        ]
+      },
+      "Physical Health": {
+        "color": "#5e548e",
+        "subcategories": [
+          {
+            "label": "Alcohol or drug use"
+          },
+          {
+            "label": "Eating and body image"
+          },
+          {
+            "label": "Sexual and reproductive health"
+          },
+          {
+            "label": "Unspecified/Other - Physical Health"
+          }
+        ]
+      },
+      "Basic Needs": {
+        "color": "#b56576",
+        "subcategories": [
+          {
+            "label": "Employment"
+          },
+          {
+            "label": "Financial"
+          },
+          {
+            "label": "Food"
+          },
+          {
+            "label": "Housing"
+          },
+          {
+            "label": "Health insurance"
+          },
+          {
+            "label": "Unspecified/Other - Basic Needs"
+          }
+        ]
+      },
+      "Information": {
+        "color": "#6d597a",
+        "subcategories": [
+          {
+            "label": "About the helpline"
+          },
+          {
+            "label": "About other services"
+          },
+          {
+            "label": "Unspecified/Other - Information"
+          }
+        ]
+      }
+    },
+    "maxSelections": 3
+  }
+}
