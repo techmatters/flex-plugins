@@ -14,7 +14,8 @@ locals {
     task_language              = "en-US"
     enable_post_survey         = false
     enable_external_recordings = true
-    permission_config          = "asop"
+    # Test helpline: reuses the HRM demo permission rules instead of its own permission-rules/asop.json
+    permission_config          = "demo"
     workflows = {
       master : {
         friendly_name = "Master Workflow"

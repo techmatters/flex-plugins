@@ -5,6 +5,6 @@
         ],
         "definitionVersion": "asop-v1",
         "helplineLanguage": "en-US",
-        "permissionConfig": "asop"
+        "permissionConfig": "demo"
     }
 }
