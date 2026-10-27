@@ -61,7 +61,7 @@ add('1.2', `SSM secret /terraform/twilio-iac/${environment}/${code}/secrets.json
 const accountSid = resolveAccountSid(code, environment, args);
 
 // 1.3 Terraform stages: plans can only be confirmed on the devops node
-add('1.3', 'provision / lex / configure applied (re-plan shows No changes)', 'manual', `make plan HL=${code} HL_ENV=${environment} in each stage`);
+add('1.3', 'provision / lex / system-down / configure applied (re-plan shows No changes)', 'manual', `make plan HL=${code} HL_ENV=${environment} in each stage`);
 add('1.3', 'Phone number points at the voice Studio flow', 'manual', 'Twilio Console › Phone Numbers');
 
 // 1.4 Error reporting
