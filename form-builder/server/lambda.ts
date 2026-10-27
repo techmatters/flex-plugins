@@ -23,12 +23,14 @@
  * Apply isn't offered for now: Aselo staff download the changes and open the PR themselves. The
  * GitHub App version (githubApplier.ts) is ready for when the organization has the app.
  *
- * Environment: DRAFTS_BUCKET, APP_URL (https://form-builder.aselo.org) and SSM_PREFIX
- * (/form-builder), under which the Slack webhook is kept.
+ * Environment: DRAFTS_BUCKET, APP_URL (https://form-builder.tl.techmatters.org) and SSM_PREFIX
+ * (/form-builder), under which the Slack webhook is kept (optional: without it, submissions are
+ * only logged).
  */
 import { GetParametersCommand, SSMClient } from '@aws-sdk/client-ssm';
 import type { APIGatewayProxyEventV2WithJWTAuthorizer, APIGatewayProxyResultV2 } from 'aws-lambda';
 import { ApiContext, ApiUser, handleApiRequest } from './api';
+import { localNotifier } from './localServices';
 import { PublicRepoSource } from './publicRepo';
 import { RepoSnapshots } from './repoSnapshot';
 import { S3DraftStore } from './s3DraftStore';
@@ -61,20 +63,18 @@ let services: Promise<Services> | undefined;
 
 const loadServices = async (): Promise<Services> => {
   const prefix = process.env.SSM_PREFIX ?? '/form-builder';
-  const names = ['slack_webhook_url'];
   const { Parameters = [] } = await new SSMClient({}).send(
-    new GetParametersCommand({ Names: names.map((name) => `${prefix}/${name}`), WithDecryption: true }),
+    new GetParametersCommand({ Names: [`${prefix}/slack_webhook_url`], WithDecryption: true }),
   );
-  const value = (name: string) => {
-    const found = Parameters.find((parameter) => parameter.Name === `${prefix}/${name}`)?.Value;
-    if (!found) throw new Error(`Missing SSM parameter ${prefix}/${name}`);
-    return found;
-  };
+  const slackWebhookUrl = Parameters.find((parameter) => parameter.Name === `${prefix}/slack_webhook_url`)?.Value;
 
   return {
     snapshots: new RepoSnapshots(new PublicRepoSource(), '/tmp/flex-plugins'),
     drafts: new S3DraftStore(process.env.DRAFTS_BUCKET!),
-    notifier: new SlackNotifier(value('slack_webhook_url'), process.env.APP_URL ?? 'https://form-builder.aselo.org'),
+    // Until the Slack webhook is set up, submissions are only logged
+    notifier: slackWebhookUrl
+      ? new SlackNotifier(slackWebhookUrl, process.env.APP_URL ?? 'https://form-builder.tl.techmatters.org')
+      : localNotifier,
   };
 };
 

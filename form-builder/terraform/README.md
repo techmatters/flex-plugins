@@ -1,16 +1,16 @@
 # Deploying the form builder
 
-The builder runs at **form-builder.aselo.org** in the `management` environment of the Aselo AWS
-account. Pieces:
+The builder runs at **form-builder.tl.techmatters.org** in the `management` environment of the
+Aselo AWS account (DNS in the `tl.techmatters.org` Route 53 zone of the same account). Pieces:
 
 | Piece | Where | Status |
 |---|---|---|
-| Okta: sign-in app, its authorization server, the groups | `okta/` (this folder) | Ready to plan |
+| Okta: sign-in app, its authorization server, the groups | `okta/` (this folder) | Applied |
 | API code for the Lambda (master snapshot, S3 drafts, Slack) | `server/lambda.ts`, `npm run build:lambda` | Done |
 | Sign-in in the page (Okta, PKCE) | `src/auth.ts` | Done |
-| AWS: S3 site + CloudFront, API Gateway + Lambda, private drafts bucket | `aws/` | To do |
-| Slack webhook for "submitted for review" | Slack | Steps below |
-| Deploys | GitHub Actions workflow | To do |
+| AWS: S3 site + CloudFront, API Gateway + Lambda, private drafts bucket | `aws/` (this folder) | Ready to plan |
+| Slack webhook for "submitted for review" | Slack | Steps below (optional) |
+| Deploys (the page and the Lambda's code) | `.github/workflows/form-builder-deploy.yml` | Ready |
 | GitHub App, so Apply opens the PR | GitHub, by an org owner | Later, after the proof of concept |
 
 ### Applying, for the proof of concept
@@ -28,6 +28,37 @@ code is in `server/githubApplier.ts`).
 
 Secrets never go in this repo (it's public). They live in SSM Parameter Store, us-east-1, under
 `/form-builder/`, and only the builder's Lambda can read them.
+
+## Order
+
+1. `okta/`: plan and apply (once; again when the domain or the helplines change).
+2. `aws/`: plan and apply. It reads the Okta outputs from the Okta stage's state.
+3. Deploy: push to the branch (or run the **Deploy form builder** workflow). It tests, builds and
+   uploads the page and the Lambda's code.
+4. Open https://form-builder.tl.techmatters.org and sign in with Okta.
+
+## AWS
+
+`aws/` is applied with `tf-admin` (state in `tl-terraform-state-management`) and creates:
+
+- the certificate for the domain (validated through Route 53) and its A/AAAA records;
+- CloudFront, serving the page from a private S3 bucket (`tl-form-builder-site`) and sending
+  `/api/*` to API Gateway. Paths without a file extension serve `index.html` (a CloudFront
+  function), so `/login/callback` works;
+- `/config.json` in the site bucket: the Okta issuer and client id the page signs in with;
+- API Gateway (HTTP API), whose JWT authorizer only lets through access tokens from the builder's
+  Okta authorization server (its issuer, audience `api://form-builder`);
+- the Lambda (`form-builder-api`, Node 22) with placeholder code, its role (the drafts bucket,
+  the `/form-builder/*` SSM parameters, its logs) and a log group kept 30 days;
+- the drafts bucket (`tl-form-builder-drafts`): private, versioned, old versions kept 90 days;
+- a policy on the `github-actions` IAM user so the deploy workflow can upload the page and the
+  Lambda's code and refresh CloudFront, for these resources only.
+
+On the devops node, from `form-builder/terraform/aws`: `make plan`, then `make apply`.
+
+The deploy workflow runs on every push to `alejandro-c/form_builder_app` that touches
+`form-builder/` (a manual-only workflow can't be started before it's on master). Until `aws/` is
+applied it skips the upload with a notice.
 
 ## Okta
 
@@ -86,7 +117,7 @@ changes. It uses a GitHub App owned by the
 Steps (an organization owner, or someone they make a *GitHub App manager*):
 
 1. GitHub › techmatters organization › **Settings › Developer settings › GitHub Apps › New GitHub App**.
-2. Name **Aselo Form Builder**. Homepage URL `https://form-builder.aselo.org`.
+2. Name **Aselo Form Builder**. Homepage URL `https://form-builder.tl.techmatters.org`.
 3. **Webhook**: untick *Active* (the builder doesn't listen to GitHub).
 4. **Repository permissions**: *Contents* Read and write, *Pull requests* Read and write.
    *Metadata* Read-only is added automatically. Nothing else.
@@ -114,4 +145,5 @@ people review and merge them as usual.
    (Slack › Apps › an app with *Incoming Webhooks* on › *Add New Webhook to Workspace*).
 2. Put its URL in SSM: `/form-builder/slack_webhook_url` (SecureString).
 
-The same notification also goes to support@aselo.org by email.
+For the proof of concept there is no email; Slack only. Until the parameter exists, submissions are
+only logged (CloudWatch).

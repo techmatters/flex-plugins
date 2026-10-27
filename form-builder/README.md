@@ -91,7 +91,7 @@ It reads and writes the same files the Flex plugin uses:
   `form-builder/drafts/<code>/<version>/` (gitignored); deployed, in a private versioned S3
   bucket. If someone else saved the same draft in between, saving stops and asks to reload.
 - **Helpline staff** edit their own helplines' drafts and **submit them for review**, which
-  notifies Aselo (deployed: Slack and support@aselo.org).
+  notifies Aselo (deployed: a Slack message).
 - **Aselo staff** also see settings that affect saved data (field names, PII on existing
   fields, switching an existing field's kind, renaming existing call types) and **apply**
   drafts. Locally, Apply writes the draft into this checkout for you to review with `git diff`
@@ -142,7 +142,7 @@ grouped by the value chosen above (`options: { "<value above>": [...] }`).
 
 Planned next:
 
-1. Deployment at form-builder.aselo.org, in the management account: Okta login, S3 drafts, Apply through a GitHub App
+1. Deployment at form-builder.tl.techmatters.org, in the management account: Okta login, S3 drafts, Apply through a GitHub App
    (branch + PR), Slack and email notifications, Terraform. Steps and status:
    [terraform/README.md](terraform/README.md)
 

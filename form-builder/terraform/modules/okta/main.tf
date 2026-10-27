@@ -89,7 +89,7 @@ resource "okta_app_oauth" "form_builder" {
 
 resource "okta_auth_server" "form_builder" {
   name        = "Aselo Form Builder"
-  description = "Tokens for the Aselo Form Builder API (form-builder.aselo.org)"
+  description = "Tokens for the Aselo Form Builder API (form-builder.tl.techmatters.org)"
   audiences   = [local.audience]
 }
 

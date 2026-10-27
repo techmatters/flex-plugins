@@ -1,0 +1,105 @@
+# Copyright (C) 2021-2026 Technology Matters
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published
+# by the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see https://www.gnu.org/licenses/.
+
+# Builds the form builder (form-builder/) and deploys it to https://form-builder.tl.techmatters.org:
+# the page to its S3 bucket and the API's code to its Lambda. The AWS resources themselves come
+# from form-builder/terraform/aws; the names below are its defaults.
+
+name: 'Deploy form builder'
+
+# While it's a proof of concept, every push to its branch that touches form-builder/ deploys it.
+# (A manual-only workflow can't be started until it's on master.)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - alejandro-c/form_builder_app
+    paths:
+      - 'form-builder/**'
+      - '.github/workflows/form-builder-deploy.yml'
+
+concurrency:
+  group: form-builder-deploy
+  cancel-in-progress: false
+
+env:
+  SITE_BUCKET: tl-form-builder-site
+  LAMBDA_FUNCTION: form-builder-api
+  SITE_DOMAIN: form-builder.tl.techmatters.org
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: form-builder
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: form-builder/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Check
+        run: |
+          npm run typecheck
+          npm test
+
+      - name: Build
+        run: |
+          npx vite build
+          npm run build:lambda
+          (cd dist-lambda && zip -q ../lambda.zip index.mjs)
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Until form-builder/terraform/aws is applied there's nothing to deploy to
+      - name: Check the AWS resources exist
+        id: resources
+        run: |
+          if aws lambda get-function --function-name "$LAMBDA_FUNCTION" > /dev/null 2>&1; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::notice::Not deployed: the form builder's AWS resources don't exist yet (apply form-builder/terraform/aws first)."
+          fi
+
+      - name: Deploy the API
+        if: steps.resources.outputs.ready == 'true'
+        run: |
+          aws lambda update-function-code --function-name "$LAMBDA_FUNCTION" --zip-file fileb://lambda.zip > /dev/null
+          aws lambda wait function-updated --function-name "$LAMBDA_FUNCTION"
+
+      # Hashed assets can be cached for good; index.html must always be checked. config.json is
+      # written by Terraform, so it's left alone.
+      - name: Deploy the page
+        if: steps.resources.outputs.ready == 'true'
+        run: |
+          aws s3 sync dist/assets "s3://$SITE_BUCKET/assets" --delete --cache-control "public, max-age=31536000, immutable"
+          aws s3 sync dist "s3://$SITE_BUCKET" --delete --exclude "assets/*" --exclude "config.json" --cache-control "no-cache"
+
+      - name: Refresh CloudFront
+        if: steps.resources.outputs.ready == 'true'
+        run: |
+          DISTRIBUTION_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?contains(Aliases.Items, '$SITE_DOMAIN')].Id | [0]" --output text)
+          aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION_ID" --paths "/index.html" "/" > /dev/null

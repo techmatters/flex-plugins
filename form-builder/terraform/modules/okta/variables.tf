@@ -11,7 +11,7 @@ variable "helplines" {
 variable "domain" {
   description = "Where the builder is served."
   type        = string
-  default     = "form-builder.aselo.org"
+  default     = "form-builder.tl.techmatters.org"
 }
 
 variable "allow_local_dev" {

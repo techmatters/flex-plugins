@@ -1,5 +1,5 @@
 /**
-  * Okta for the form builder (form-builder.aselo.org): its OIDC app and the groups that say who can
+  * Okta for the form builder (form-builder.tl.techmatters.org): its OIDC app and the groups that say who can
   * use it. Not tied to a helpline or environment, so it ignores HL/HL_ENV.
   * Usage: make plan   (from this directory, on the devops node)
   *

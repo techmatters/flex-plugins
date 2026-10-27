@@ -20,7 +20,7 @@
  *   to try the helpline staff view);
  * - "Apply" writes the draft into the checkout, for you to review with git diff, then commit
  *   and open a PR as usual (deployed, Apply will open the PR through the GitHub App);
- * - "Submit for review" is logged (deployed, it notifies Slack and support@aselo.org).
+ * - "Submit for review" is logged (deployed, it posts to Slack).
  */
 import { promises as fs } from 'fs';
 import os from 'os';
@@ -97,7 +97,7 @@ export const localNotifier: Notifier = {
   async draftSubmitted(draft, user) {
     // eslint-disable-next-line no-console
     console.info(
-      `[form-builder] ${user.name} submitted ${draft.code}/${draft.version} for review (${Object.keys(draft.files).length} files). Deployed, this notifies Slack and support@aselo.org.`,
+      `[form-builder] ${user.name} submitted ${draft.code}/${draft.version} for review (${Object.keys(draft.files).length} files). Deployed, this posts to Slack.`,
     );
   },
 };

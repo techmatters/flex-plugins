@@ -43,7 +43,7 @@ describe('who is signed in, from the Okta token', () => {
 describe('Slack', () => {
   test('is told about a submitted draft', async () => {
     const fetchImpl = vi.fn(async () => new Response('ok'));
-    await new SlackNotifier('https://hooks.slack.com/x', 'https://form-builder.aselo.org', fetchImpl).draftSubmitted(
+    await new SlackNotifier('https://hooks.slack.com/x', 'https://form-builder.tl.techmatters.org', fetchImpl).draftSubmitted(
       {
         code: 'usnm',
         version: 'v1',
