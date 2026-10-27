@@ -53,6 +53,7 @@ const productionAccounts = Object.values(productionAccountMap);
 const stagingAccountMap = {
   ASELO_BETA: 'AC6b99858a6faf7af1b572c83988b50eb1',
   AS_STAGING: 'AC1ca120bc71593bbe9ca78e2232a31e0d',
+  ASOP_STAGING: 'AC8f5267bbbf3af7e8f321b487276ffa57',
   BR_STAGING: 'AC4a92fba4d8040b1d6dbe2bbceee87cbf',
   CA_STAGING: 'ACeb335f4685aa874fddf00cdd7c2946bd',
   CL_STAGING: 'AC6ca34b61e7bf2d7cf8b8ca24e7efe65f',
