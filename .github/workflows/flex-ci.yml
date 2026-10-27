@@ -27,7 +27,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: '20.x' # some twilio dev deps still complain about node 22 :-(
+          node-version: "24.x" # some twilio dev deps still complain about node 22 :-(
       - name: Create Temp Files
         run: |
           touch ./public/appConfig.js
@@ -54,46 +54,46 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Branch
-      uses: actions/checkout@v7
-    - name: Use Node.js
-      uses: actions/setup-node@v7
-      with:
-        node-version: '20.x'
-    - name: Install Flex Plugin
-      uses: ./.github/actions/install-flex-plugin
-    - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v6
-      with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-1
+      - name: Checkout Branch
+        uses: actions/checkout@v7
+      - name: Use Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24.x"
+      - name: Install Flex Plugin
+        uses: ./.github/actions/install-flex-plugin
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-    - name: Set Twilio account SID for AS DEV
-      uses: ./.github/actions/inject-ssm-secrets
-      with:
-        ssm_parameter: "/development/twilio/AS/account_sid"
-        env_variable_name: "TWILIO_ACCOUNT_SID"
-  
-    - name: Set Twilio Auth Token for AS DEV
-      uses: ./.github/actions/inject-ssm-secrets
-      with:
-        ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
-        env_variable_name: "TWILIO_AUTH_TOKEN"
+      - name: Set Twilio account SID for AS DEV
+        uses: ./.github/actions/inject-ssm-secrets
+        with:
+          ssm_parameter: "/development/twilio/AS/account_sid"
+          env_variable_name: "TWILIO_ACCOUNT_SID"
 
-    - name: Run plugin-hrm-form Tests
-      run: TWILIO_ACCOUNT_SID=${{env.TWILIO_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{env.TWILIO_AUTH_TOKEN}} npm run test
-      working-directory: ./plugin-hrm-form
-      env:
-        CI: true
+      - name: Set Twilio Auth Token for AS DEV
+        uses: ./.github/actions/inject-ssm-secrets
+        with:
+          ssm_parameter: "/development/twilio/${{env.TWILIO_ACCOUNT_SID}}/auth_token"
+          env_variable_name: "TWILIO_AUTH_TOKEN"
 
-    - name: Publish Test Reports
-      uses: dorny/test-reporter@v3
-      if: success() || failure() # always run even if the previous step fails
-      with:
-        name: Plugin Unit Tests Report
-        path: '!(node_modules)/**/junit.xml'
-        reporter: jest-junit
+      - name: Run plugin-hrm-form Tests
+        run: TWILIO_ACCOUNT_SID=${{env.TWILIO_ACCOUNT_SID}} TWILIO_AUTH_TOKEN=${{env.TWILIO_AUTH_TOKEN}} npm run test
+        working-directory: ./plugin-hrm-form
+        env:
+          CI: true
+
+      - name: Publish Test Reports
+        uses: dorny/test-reporter@v3
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          name: Plugin Unit Tests Report
+          path: "!(node_modules)/**/junit.xml"
+          reporter: jest-junit
   ui-test:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -107,7 +107,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: '20.x'
+          node-version: "24.x"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -165,15 +165,14 @@ jobs:
       - name: Run UI tests
         uses: ./.github/actions/run-e2e-tests
         with:
-          run-ui-tests: 'true'
-
+          run-ui-tests: "true"
 
       - name: Publish Test Reports
         uses: dorny/test-reporter@v3
         if: success() || failure() # always run even if the previous step fails
         with:
           name: UI Tests Report
-          path: '!(node_modules)/**/junit.xml'
+          path: "!(node_modules)/**/junit.xml"
           reporter: java-junit
 
   upload-plugin:
@@ -184,7 +183,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: '20.x'
+          node-version: "24.x"
       - name: Install Flex Plugin
         uses: ./.github/actions/install-flex-plugin
 
