@@ -36,7 +36,8 @@ export type DraftClient = {
   me(): Promise<ApiUser>;
   load(code: string, version: string): Promise<Draft | undefined>;
   save(code: string, version: string, request: SaveDraftRequest): Promise<SaveOutcome>;
-  discard(code: string, version: string): Promise<void>;
+  // The draft's revision afterwards: 0, unless it still holds changes this person can't see
+  discard(code: string, version: string): Promise<number>;
   submit(code: string, version: string): Promise<DraftMeta>;
   apply(code: string, version: string): Promise<ApplyResult>;
   list(): Promise<DraftSummary[]>;
@@ -68,9 +69,7 @@ export const clientFor = (send: Send): DraftClient => {
       if (response.status >= 400) throw new Error(response.body?.message ?? 'Could not save the draft');
       return { ok: true, meta: response.body };
     },
-    discard: async (code, version) => {
-      await expectOk('DELETE', `/api/drafts/${code}/${version}`);
-    },
+    discard: async (code, version) => (await expectOk('DELETE', `/api/drafts/${code}/${version}`))?.revision ?? 0,
     submit: (code, version) => expectOk('POST', `/api/drafts/${code}/${version}/submit`),
     apply: (code, version) => expectOk('POST', `/api/drafts/${code}/${version}/apply`),
     list: () => expectOk('GET', '/api/drafts'),

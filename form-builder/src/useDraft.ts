@@ -167,8 +167,7 @@ export const useDraft = (
 
   const discardChanges = async () => {
     await saveChain.current;
-    await client.discard(code, version);
-    revision.current = 0;
+    revision.current = await client.discard(code, version);
     lastSavedJson.current = '{}';
     setMeta(undefined);
     setNotice(undefined);

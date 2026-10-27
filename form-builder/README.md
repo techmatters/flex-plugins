@@ -59,13 +59,26 @@ It reads and writes the same files the Flex plugin uses:
   edits names, colours, order and which status a case can move to, next to the status dropdown
   counselors get. Section keys and status values are what cases save, so they never change;
   existing sections are removed by Aselo staff only.
+- **Service configuration** (Aselo staff only): the helpline's Flex service configuration
+  (`twilio-iac/helplines/<code>/configs/service-configuration`), with the repo as the source of
+  truth. Every setting (feature flags, attributes, Flex UI, other settings) shows what staging and
+  production get and which file it comes from: Aselo's `defaults.json`, `common.json`, or the
+  environment's file. They're merged as `manageServiceConfig.py` does: objects merge, lists add up,
+  `null` removes. Filters: set by the helpline, all (including defaults), different between
+  environments, changed in this draft. Each file's value is edited in place (on/off, text,
+  number, or JSON), new settings are added with suggestions from the plugin's `FeatureFlags.ts`,
+  and each file can be edited as JSON. `defaults.json` is read-only. The files travel in the
+  draft as `service-configuration/<file>.json`. The API never sends them to helpline staff, and
+  refuses them from helpline staff. Helpline staff saving or discarding a shared draft keeps
+  Aselo staff's changes. The review lists each changed setting and the
+  `make service-config-plan` / `service-config-apply` runs needed. It also warns about values
+  that applying replaces (`serverless_base_url`) and about removals outside `attributes`, which
+  applying doesn't remove from Twilio. The builder never applies anything to Twilio, and doesn't
+  compare with what's live.
 - **Features** (Aselo staff): switch client profiles, canned responses and
-  `use_prepopulate_mappings` on or off. They live in the helpline's Flex service configuration
-  (`twilio-iac/helplines/<code>/configs/service-configuration`), so drafts carry only the
-  switches, the API refuses them from helpline staff, Apply writes them where the
-  configuration sets them, and the review reminds the reviewer to apply the service
-  configuration. What counselors can do with cases is set by HRM permission rules, which the
-  page names but doesn't change.
+  `use_prepopulate_mappings` on or off, as a shortcut onto the service configuration: each switch
+  is written in every file that already sets it, else in `common.json`. What counselors can do
+  with cases is set by HRM permission rules, which the page names but doesn't change.
 - **Client profiles** (`profileForms/`): profile sections (title, edit button, hint, height,
   personal data; names lock once they exist, existing ones are removed by Aselo staff only),
   the blocking options counselors choose from (name and length, in hours, days or weeks; each

@@ -45,6 +45,7 @@ import { CategoriesEditor } from './sections/CategoriesEditor';
 import { CaseStatusEditor } from './sections/CaseStatusEditor';
 import { CaseSectionsEditor } from './sections/CaseSectionsEditor';
 import { FeaturesEditor } from './sections/FeaturesEditor';
+import { ServiceConfigEditor } from './sections/ServiceConfigEditor';
 import { ProfilesEditor } from './sections/ProfilesEditor';
 import { hasProfiles } from '../profiles';
 import { getFeatures } from '../helplineFeatures';
@@ -64,6 +65,7 @@ type View =
   | { kind: 'caseStatus' }
   | { kind: 'caseSections' }
   | { kind: 'features' }
+  | { kind: 'serviceConfig' }
   | { kind: 'profiles' }
   | { kind: 'caseSection'; sectionKey: string };
 
@@ -147,7 +149,7 @@ export const HelplineWorkspace = ({
       ]) as Record<string, ValidationIssue[]>,
     [files, originalFiles, caseTargets],
   );
-  const sectionIssues = useMemo(() => validateSections(files, originalFiles), [files, originalFiles]);
+  const sectionIssues = useMemo(() => validateSections(files, originalFiles, definitions.code), [files, originalFiles, definitions.code]);
   // For the review: problems in forms the draft changes (anything blocking always counts), so
   // reviewers aren't shown old notes about forms nobody touched
   const changedFilePaths = new Set(draft.changedPaths);
@@ -230,7 +232,7 @@ export const HelplineWorkspace = ({
           key={editorKey}
           draftFiles={files}
           helplineLanguage={definitions.helplineLanguage}
-          enabled={getFeatures(files)?.enableCannedResponses ?? definitions.featureFlags?.enable_canned_responses !== false}
+          enabled={getFeatures(files, definitions.serviceConfigDefaults)?.enableCannedResponses ?? definitions.featureFlags?.enable_canned_responses !== false}
           onChangeFiles={draft.updateFiles}
           onTryItOut={() => setTryItOut({ focus: 'cannedResponses' })}
         />
@@ -256,7 +258,7 @@ export const HelplineWorkspace = ({
           settings={definitions.webchat}
           featureFlags={{
             ...definitions.featureFlags,
-            ...(getFeatures(files) ? { use_prepopulate_mappings: getFeatures(files)!.usePrepopulateMappings } : {}),
+            ...(getFeatures(files, definitions.serviceConfigDefaults) ? { use_prepopulate_mappings: getFeatures(files, definitions.serviceConfigDefaults)!.usePrepopulateMappings } : {}),
           }}
           issues={sectionIssues.filter((issue) => issue.message.startsWith('Webchat form'))}
           onChangeFiles={draft.updateFiles}
@@ -284,7 +286,7 @@ export const HelplineWorkspace = ({
           draftFiles={files}
           originalFiles={originalFiles}
           staffMode={staffMode}
-          profilesEnabled={getFeatures(files)?.enableClientProfiles !== false}
+          profilesEnabled={getFeatures(files, definitions.serviceConfigDefaults)?.enableClientProfiles !== false}
           issues={sectionIssues.filter((issue) => issue.message.startsWith('Client profiles'))}
           onChangeFiles={draft.updateFiles}
         />
@@ -297,7 +299,19 @@ export const HelplineWorkspace = ({
           draftFiles={files}
           originalFiles={originalFiles}
           canChange={canApply}
-          permissionConfig={definitions.permissionConfig}
+          defaults={definitions.serviceConfigDefaults}
+          onChangeFiles={draft.updateFiles}
+        />
+      );
+    }
+    if (view.kind === 'serviceConfig' && canApply) {
+      return (
+        <ServiceConfigEditor
+          key={editorKey}
+          code={definitions.code}
+          draftFiles={files}
+          originalFiles={originalFiles}
+          defaults={definitions.serviceConfigDefaults}
           onChangeFiles={draft.updateFiles}
         />
       );
@@ -440,12 +454,18 @@ export const HelplineWorkspace = ({
 
       <div className="workspace">
         <nav className="sidebar">
-          {/* Helpline features are for Aselo staff only (not when viewing as helpline staff) */}
+          {/* Features and the service configuration are for Aselo staff only (not when viewing as helpline staff) */}
           {canApply && (
             <>
               <h3>Helpline</h3>
               <ul>
                 <NavItem current={view} onSelect={setView} target={{ kind: 'features' }} label="Features" />
+                <NavItem
+                  current={view}
+                  onSelect={setView}
+                  target={{ kind: 'serviceConfig' }}
+                  label="Service configuration"
+                />
               </ul>
             </>
           )}

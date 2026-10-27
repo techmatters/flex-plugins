@@ -24,8 +24,7 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
-import { FEATURES_FILE, WEBCHAT_TRANSLATIONS_PREFIX } from './filePaths';
-import { readHelplineFeatures } from './features';
+import { SERVICE_CONFIG_FILE_NAMES, serviceConfigPath, WEBCHAT_TRANSLATIONS_PREFIX } from './filePaths';
 
 export type HelplineSummary = {
   code: string;
@@ -51,8 +50,10 @@ export type DefinitionFiles = {
   featureFlags?: Record<string, boolean>;
   // The helpline's webchat settings, when it has a webchat (aselo-webchat-react-app/configSrc)
   webchat?: WebchatSettings;
-  // The HRM permission rules the helpline uses (they decide what counselors can do with cases)
-  permissionConfig?: string;
+  // The service configuration every helpline starts from (twilio-iac/helplines/configs/
+  // service-configuration/defaults.json). Read-only here; Aselo staff only, like the helpline's
+  // own service configuration files (service-configuration/*.json in files).
+  serviceConfigDefaults?: Record<string, unknown>;
 };
 
 export type WebchatSettings = {
@@ -187,6 +188,34 @@ const readJsonFile = async (filePath: string): Promise<Record<string, any> | und
 };
 
 /**
+ * The helpline's service configuration files, exactly as in the repo, keyed under
+ * service-configuration/ (files that don't exist yet are left out), and the shared defaults.
+ */
+export const loadServiceConfigFiles = async (
+  helplinesConfigDir: string,
+  code: string,
+): Promise<{ files: Record<string, unknown>; errors: DefinitionFileError[]; defaults?: Record<string, unknown> }> => {
+  const files: Record<string, unknown> = {};
+  const errors: DefinitionFileError[] = [];
+  if (!HELPLINE_CODE_PATTERN.test(code)) return { files, errors };
+  const dir = path.join(helplinesConfigDir, code, 'configs', 'service-configuration');
+  await Promise.all(
+    SERVICE_CONFIG_FILE_NAMES.map(async (name) => {
+      const text = await fs.readFile(path.join(dir, `${name}.json`), 'utf8').catch(() => undefined);
+      if (text === undefined) return;
+      const key = serviceConfigPath(name);
+      try {
+        files[key] = JSON.parse(text.replace(/^﻿/, ''));
+      } catch (err) {
+        errors.push({ path: key, message: (err as Error).message });
+      }
+    }),
+  );
+  const defaults = await readJsonFile(path.join(helplinesConfigDir, 'configs', 'service-configuration', 'defaults.json'));
+  return { files, errors, defaults };
+};
+
+/**
  * The helpline's webchat translation files (configSrc/<code>/translations/<locale>.json),
  * keyed under webchat-app/translations/, plus its settings merged the way the webchat build
  * merges them (scripts/mergeConfigs.js): defaults.json, common.json, then production.json.
@@ -279,14 +308,14 @@ export const loadDefinitionFiles = async (
     ? await readFeatureFlags(helplinesConfigDir, code)
     : undefined;
   const webchat = webchatConfigDir ? await loadWebchatFiles(webchatConfigDir, code) : undefined;
-  // The feature switches, as a file the draft can change (Aselo staff only)
-  const features = helplinesConfigDir ? await readHelplineFeatures(helplinesConfigDir, code) : undefined;
+  // The service configuration, as files the draft can change (Aselo staff only)
+  const serviceConfig = helplinesConfigDir ? await loadServiceConfigFiles(helplinesConfigDir, code) : undefined;
   return {
     code,
     version,
-    files: { ...files, ...webchat?.files, ...(features ? { [FEATURES_FILE]: features.features } : {}) },
-    permissionConfig: features?.permissionConfig,
-    errors: [...errors, ...(webchat?.errors ?? [])],
+    files: { ...files, ...webchat?.files, ...serviceConfig?.files },
+    serviceConfigDefaults: serviceConfig?.defaults,
+    errors: [...errors, ...(webchat?.errors ?? []), ...(serviceConfig?.errors ?? [])],
     helplineLanguage,
     logoUrl,
     featureFlags,

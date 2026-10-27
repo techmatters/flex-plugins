@@ -71,10 +71,14 @@ export const isValidDraftKey = (code: string, version: string) =>
 // The webchat's translation files (see filePaths.ts), e.g. webchat-app/translations/en-US.json
 const WEBCHAT_FILE_PATH_PATTERN = /^webchat-app\/translations\/[A-Za-z0-9_-]+\.json$/;
 
-export const isValidDraftFilePath = (filePath: string) =>
-  filePath.startsWith('webchat-app/')
-    ? WEBCHAT_FILE_PATH_PATTERN.test(filePath)
-    : FILE_PATH_PATTERN.test(filePath) && !filePath.split('/').includes('..');
+// The helpline's service configuration (see filePaths.ts), e.g. service-configuration/common.json
+const SERVICE_CONFIG_FILE_PATH_PATTERN = /^service-configuration\/(common|staging|production|development)\.json$/;
+
+export const isValidDraftFilePath = (filePath: string) => {
+  if (filePath.startsWith('webchat-app/')) return WEBCHAT_FILE_PATH_PATTERN.test(filePath);
+  if (filePath.startsWith('service-configuration/')) return SERVICE_CONFIG_FILE_PATH_PATTERN.test(filePath);
+  return FILE_PATH_PATTERN.test(filePath) && !filePath.split('/').includes('..');
+};
 
 const readJson = async <T>(filePath: string): Promise<T | undefined> => {
   try {

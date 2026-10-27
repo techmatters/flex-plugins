@@ -27,8 +27,12 @@ import os from 'os';
 import path from 'path';
 import type { ApiUser, ApplyResult, DraftApplier, Notifier } from './api';
 import type { Draft } from './drafts';
-import { isWebchatTranslationsPath, WEBCHAT_TRANSLATIONS_PREFIX } from './filePaths';
-import { applyHelplineFeatures, FEATURES_FILE, HelplineFeatures } from './features';
+import {
+  isServiceConfigPath,
+  isWebchatTranslationsPath,
+  SERVICE_CONFIG_PREFIX,
+  WEBCHAT_TRANSLATIONS_PREFIX,
+} from './filePaths';
 import { serializeLike } from './serializeLike';
 
 export { serializeLike };
@@ -54,11 +58,16 @@ export class LocalApplier implements DraftApplier {
     private readonly formDefinitionsDir: string,
     private readonly repoRoot: string,
     private readonly webchatConfigDir?: string,
-    // twilio-iac/helplines, where helpline features (FEATURES_FILE) are applied
+    // twilio-iac/helplines, for the service configuration files
     private readonly helplinesConfigDir?: string,
   ) {}
 
   private targetOf(draft: Draft, filePath: string) {
+    if (isServiceConfigPath(filePath)) {
+      if (!this.helplinesConfigDir) throw new Error('No helplines config directory to write to');
+      const fileName = filePath.slice(SERVICE_CONFIG_PREFIX.length);
+      return path.join(this.helplinesConfigDir, draft.code, 'configs', 'service-configuration', fileName);
+    }
     if (isWebchatTranslationsPath(filePath)) {
       if (!this.webchatConfigDir) throw new Error('No webchat config directory to write to');
       const fileName = filePath.slice(WEBCHAT_TRANSLATIONS_PREFIX.length);
@@ -70,12 +79,6 @@ export class LocalApplier implements DraftApplier {
   async apply(draft: Draft): Promise<ApplyResult> {
     const written: string[] = [];
     for (const [filePath, value] of Object.entries(draft.files)) {
-      if (filePath === FEATURES_FILE) {
-        if (!this.helplinesConfigDir) throw new Error('No helplines config directory to apply features to');
-        const files = await applyHelplineFeatures(this.helplinesConfigDir, draft.code, value as HelplineFeatures);
-        written.push(...files.map((file) => path.relative(this.repoRoot, file).split(path.sep).join('/')));
-        continue;
-      }
       const target = this.targetOf(draft, filePath);
       const existingText = await fs.readFile(target, 'utf8').catch(() => undefined);
       await fs.mkdir(path.dirname(target), { recursive: true });

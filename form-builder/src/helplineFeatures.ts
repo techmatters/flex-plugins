@@ -15,15 +15,41 @@
  */
 
 /**
- * Helpline features Aselo staff switch on or off (see server/features.ts for where they live).
+ * The main helpline features, as switches Aselo staff turn on or off. They're settings in the
+ * helpline's service configuration (serviceConfig.ts); the Service configuration page shows
+ * them all, per environment.
  */
 import type { DefinitionFileMap } from './definitions';
-import { isSameJson } from './changes';
-import type { ValidationIssue } from './validation';
-import { FEATURES_FILE, HelplineFeatures } from '../server/filePaths';
+import {
+  ConfigObject,
+  getIn,
+  getServiceConfigFile,
+  hasServiceConfig,
+  mergedServiceConfig,
+  setServiceConfigValue,
+} from './serviceConfig';
+import { SERVICE_CONFIG_FILE_NAMES } from '../server/filePaths';
 
-export { FEATURES_FILE };
-export type { HelplineFeatures };
+export type HelplineFeatures = {
+  enableClientProfiles: boolean;
+  enableCannedResponses: boolean;
+  usePrepopulateMappings: boolean;
+};
+
+// Where each switch lives. Client profiles are read by the plugin from
+// attributes.enableClientProfiles; the feature flag is kept in step.
+const LOCATIONS: Record<keyof HelplineFeatures, string[][]> = {
+  enableClientProfiles: [['attributes', 'enableClientProfiles'], ['attributes', 'feature_flags', 'enable_client_profiles']],
+  enableCannedResponses: [['attributes', 'feature_flags', 'enable_canned_responses']],
+  usePrepopulateMappings: [['attributes', 'feature_flags', 'use_prepopulate_mappings']],
+};
+
+// What the plugin does when a switch isn't set at all
+const UNSET: HelplineFeatures = {
+  enableClientProfiles: true,
+  enableCannedResponses: false,
+  usePrepopulateMappings: false,
+};
 
 export const FEATURE_INFO: { key: keyof HelplineFeatures; title: string; description: string }[] = [
   {
@@ -45,28 +71,47 @@ export const FEATURE_INFO: { key: keyof HelplineFeatures; title: string; descrip
   },
 ];
 
-export const getFeatures = (files: DefinitionFileMap) => files[FEATURES_FILE] as HelplineFeatures | undefined;
+const readFeatures = (config: ConfigObject): HelplineFeatures =>
+  Object.fromEntries(
+    FEATURE_INFO.map(({ key }) => {
+      const value = getIn(config, LOCATIONS[key][0]);
+      return [key, typeof value === 'boolean' ? value : UNSET[key]];
+    }),
+  ) as HelplineFeatures;
 
-export const featuresNote = (originalFiles: DefinitionFileMap, draftFiles: DefinitionFileMap): ValidationIssue[] =>
-  !isSameJson(getFeatures(originalFiles), getFeatures(draftFiles))
-    ? [
-        {
-          severity: 'warning',
-          message:
-            'Helpline features changed. They live in the Flex service configuration (twilio-iac/helplines/<code>/configs/service-configuration), so after the PR is merged, apply the service configuration (manageServiceConfig.py) for staging and production.',
-        },
-      ]
-    : [];
+// As production sees them
+export const getFeatures = (files: DefinitionFileMap, defaults?: ConfigObject): HelplineFeatures | undefined =>
+  hasServiceConfig(files) ? readFeatures(mergedServiceConfig(files, defaults, 'production')) : undefined;
+
+export const getPermissionConfig = (files: DefinitionFileMap, defaults?: ConfigObject) => {
+  const value = getIn(mergedServiceConfig(files, defaults, 'production'), ['attributes', 'permissionConfig']);
+  return typeof value === 'string' ? value : undefined;
+};
+
+/**
+ * Switches a feature in every file that already sets it (so staging and production overrides
+ * follow), else in common.json.
+ */
+export const setFeature = (files: DefinitionFileMap, feature: keyof HelplineFeatures, value: boolean) =>
+  LOCATIONS[feature].reduce((current, location) => {
+    const setting = SERVICE_CONFIG_FILE_NAMES.filter((name) => getIn(getServiceConfigFile(current, name), location) !== undefined);
+    return (setting.length > 0 ? setting : (['common'] as const)).reduce(
+      (updated, name) => setServiceConfigValue(updated, name, location, value),
+      current,
+    );
+  }, files);
 
 export const summarizeFeatureChanges = (
   originalFiles: DefinitionFileMap,
   draftFiles: DefinitionFileMap,
 ): { title: string; lines: string[] }[] => {
-  const before = getFeatures(originalFiles);
-  const after = getFeatures(draftFiles);
-  if (!before || !after) return [];
-  const lines = FEATURE_INFO.filter((info) => before[info.key] !== after[info.key]).map(
-    (info) => `${info.title}: switched ${after[info.key] ? 'on' : 'off'}`,
-  );
+  // A switch changes when a file writes it differently (setFeature writes the same value everywhere)
+  const lines = FEATURE_INFO.flatMap((info) => {
+    const written = SERVICE_CONFIG_FILE_NAMES.map((name) => ({
+      before: getIn(getServiceConfigFile(originalFiles, name), LOCATIONS[info.key][0]),
+      after: getIn(getServiceConfigFile(draftFiles, name), LOCATIONS[info.key][0]),
+    })).find(({ before, after }) => before !== after && typeof after === 'boolean');
+    return written ? [`${info.title}: switched ${written.after ? 'on' : 'off'}`] : [];
+  });
   return lines.length > 0 ? [{ title: 'Helpline features', lines }] : [];
 };

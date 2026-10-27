@@ -36,21 +36,24 @@ export const webchatLocaleOf = (filePath: string) =>
   filePath.slice(WEBCHAT_TRANSLATIONS_PREFIX.length).replace(/\.json$/, '');
 
 /**
- * Helpline features (client profiles, canned responses...) live in the helpline's Flex service
- * configuration. Drafts only carry the switches, in this file; applying writes them there.
+ * The helpline's Flex service configuration (twilio-iac/helplines/<code>/configs/service-configuration),
+ * keyed under `service-configuration/`: common.json and one file per environment, exactly as in
+ * the repo. Only Aselo staff see or change them. Applying them to Twilio stays a separate step
+ * (make service-config-plan / service-config-apply).
  */
-export const FEATURES_FILE = 'aselo-features.json';
+export const SERVICE_CONFIG_PREFIX = 'service-configuration/';
+export const SERVICE_CONFIG_FILE_NAMES = ['common', 'staging', 'production', 'development'] as const;
+export type ServiceConfigFileName = (typeof SERVICE_CONFIG_FILE_NAMES)[number];
 
-export type HelplineFeatures = {
-  enableClientProfiles: boolean;
-  enableCannedResponses: boolean;
-  usePrepopulateMappings: boolean;
-};
+export const isServiceConfigPath = (filePath: string) => filePath.startsWith(SERVICE_CONFIG_PREFIX);
+export const serviceConfigPath = (name: ServiceConfigFileName) => `${SERVICE_CONFIG_PREFIX}${name}.json`;
 
 export const repoServiceConfigDir = (code: string) => `twilio-iac/helplines/${code}/configs/service-configuration`;
 
 export const repoPathOf = (code: string, version: string, filePath: string) => {
-  if (filePath === FEATURES_FILE) return `${repoServiceConfigDir(code)}/ (helpline features)`;
+  if (isServiceConfigPath(filePath)) {
+    return `${repoServiceConfigDir(code)}/${filePath.slice(SERVICE_CONFIG_PREFIX.length)}`;
+  }
   return isWebchatTranslationsPath(filePath)
     ? `${REPO_WEBCHAT_CONFIG_DIR}/${code}/translations/${filePath.slice(WEBCHAT_TRANSLATIONS_PREFIX.length)}`
     : `${REPO_FORM_DEFINITIONS_DIR}/${code}/${version}/${filePath}`;

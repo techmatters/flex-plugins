@@ -25,7 +25,7 @@ import { getChangedFilePaths, summarizeContactFormChanges } from './changes';
 import { summarizeSectionChanges } from './sections';
 import type { ValidationIssue } from './validation';
 import { changedWebchatTranslationFiles } from './webchat';
-import { FEATURES_FILE, repoPathOf } from '../server/filePaths';
+import { isServiceConfigPath, repoPathOf } from '../server/filePaths';
 
 // Most definition files in the repo are 2-space JSON, so this keeps diffs small
 export const serializeDefinitionFile = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;
@@ -89,6 +89,11 @@ export const buildChangeLog = ({
     ...(changedWebchatTranslationFiles(originalFiles, draftFiles).length > 0
       ? [`4. The webchat's texts changed too: redeploy the webchat for ${code.toUpperCase()} (aselo-webchat-react-app).`]
       : []),
+    ...(getChangedFilePaths(originalFiles, draftFiles).some(isServiceConfigPath)
+      ? [
+          `- The service configuration changed too: once merged, run make service-config-plan and make service-config-apply (HL=${code}) for each environment.`,
+        ]
+      : []),
     '',
   );
   return lines.join('\n');
@@ -97,10 +102,7 @@ export const buildChangeLog = ({
 export const buildExportZip = (input: ExportInput): JSZip => {
   const { code, version, originalFiles, draftFiles } = input;
   const zip = new JSZip();
-  getChangedFilePaths(originalFiles, draftFiles)
-    // Feature switches go into the service configuration by hand (see CHANGES.md)
-    .filter((filePath) => filePath !== FEATURES_FILE)
-    .forEach((filePath) => {
+  getChangedFilePaths(originalFiles, draftFiles).forEach((filePath) => {
       zip.file(repoPathOf(code, version, filePath), serializeDefinitionFile(draftFiles[filePath]));
     });
   zip.file('CHANGES.md', buildChangeLog(input));

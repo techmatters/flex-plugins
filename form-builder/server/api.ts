@@ -29,11 +29,12 @@
  *   POST   /api/drafts/:code/:version/apply         Aselo staff only: apply a draft
  *
  * Roles: Aselo staff can do everything for every helpline. Helpline staff only see their own
- * helplines and can't apply. Deployed, both come from Okta groups.
+ * helplines, can't apply, and never see or change the service configuration
+ * (service-configuration/*.json). Deployed, both come from Okta groups.
  */
 import { DefinitionsApiError, listHelplines, loadDefinitionFiles } from './definitionsApi';
 import { Draft, DraftStore, isValidDraftFilePath, isValidDraftKey } from './drafts';
-import { FEATURES_FILE } from './filePaths';
+import { isServiceConfigPath } from './filePaths';
 
 export type ApiUser = {
   name: string;
@@ -94,6 +95,21 @@ const fail = (status: number, message: string, extra: object = {}): ApiResponse 
 export const canOpenHelpline = (user: ApiUser, code: string) =>
   user.helplines === 'all' || user.helplines.includes(code);
 
+// The service configuration is Aselo staff business: helpline staff never see it, in the
+// current files or in drafts
+const isStaff = (user: ApiUser) => user.role === 'aselo-staff';
+const pickFiles = <T>(files: Record<string, T>, serviceConfig: boolean) =>
+  Object.fromEntries(Object.entries(files).filter(([filePath]) => isServiceConfigPath(filePath) === serviceConfig));
+
+const draftForUser = (draft: Draft, user: ApiUser): Draft =>
+  isStaff(user)
+    ? draft
+    : {
+        ...draft,
+        files: pickFiles(draft.files, false),
+        meta: { ...draft.meta, baseHashes: pickFiles(draft.meta.baseHashes, false) },
+      };
+
 const isSaveDraftBody = (body: unknown): body is SaveDraftBody => {
   const candidate = body as SaveDraftBody;
   return (
@@ -137,10 +153,8 @@ export const handleApiRequest = async (
         context.helplinesConfigDir,
         context.webchatConfigDir,
       );
-      if (user.role === 'aselo-staff') return ok(definitions);
-      // Helpline features and permission rules are Aselo staff business
-      const { [FEATURES_FILE]: _features, ...files } = definitions.files;
-      return ok({ ...definitions, files, permissionConfig: undefined });
+      if (isStaff(user)) return ok(definitions);
+      return ok({ ...definitions, files: pickFiles(definitions.files, false), serviceConfigDefaults: undefined });
     }
 
     const draftMatch = route.match(/^(GET|PUT|DELETE|POST) \/api\/drafts\/([^/]+)\/([^/]+)(\/submit|\/apply)?$/);
@@ -152,15 +166,19 @@ export const handleApiRequest = async (
     const existing = await context.drafts.get(code, version);
 
     if (method === 'GET' && !action) {
-      return existing ? ok(existing) : fail(404, 'No draft');
+      return existing ? ok(draftForUser(existing, user)) : fail(404, 'No draft');
     }
 
     if (method === 'PUT' && !action) {
       if (!isSaveDraftBody(request.body)) return fail(400, 'Invalid draft');
-      const { expectedRevision, files, baseHashes } = request.body;
-      // Switching helpline features on or off is for Aselo staff only
-      if (user.role !== 'aselo-staff' && FEATURES_FILE in files) {
-        return fail(403, 'Only Aselo staff can change helpline features');
+      const { expectedRevision, baseHashes } = request.body;
+      let { files } = request.body;
+      if (!isStaff(user)) {
+        if (Object.keys(files).some(isServiceConfigPath)) {
+          return fail(403, 'Only Aselo staff can change the service configuration');
+        }
+        // Keep the service configuration changes Aselo staff made in this draft
+        files = { ...files, ...pickFiles(existing?.files ?? {}, true) };
       }
       const invalidPath = Object.keys(files).find((filePath) => !isValidDraftFilePath(filePath));
       if (invalidPath) return fail(400, `Invalid file path ${invalidPath}`);
@@ -195,10 +213,28 @@ export const handleApiRequest = async (
         },
       };
       await context.drafts.put(draft);
-      return ok(draft.meta);
+      return ok(draftForUser(draft, user).meta);
     }
 
     if (method === 'DELETE' && !action) {
+      const kept = isStaff(user) ? {} : pickFiles(existing?.files ?? {}, true);
+      if (existing && Object.keys(kept).length > 0) {
+        // Helpline staff discard their own changes; Aselo staff's service configuration stays
+        const draft: Draft = {
+          ...existing,
+          files: kept,
+          meta: {
+            ...existing.meta,
+            revision: existing.meta.revision + 1,
+            status: 'editing',
+            updatedAt: now,
+            updatedBy: user.name,
+            baseHashes: pickFiles(existing.meta.baseHashes, true),
+          },
+        };
+        await context.drafts.put(draft);
+        return ok({ revision: draft.meta.revision, status: 'editing' });
+      }
       if (existing) await context.drafts.remove(code, version);
       return ok({ revision: 0, status: 'editing' });
     }

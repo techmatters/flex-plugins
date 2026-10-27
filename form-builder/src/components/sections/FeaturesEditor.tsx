@@ -18,27 +18,30 @@
  * Helpline features: switched on or off by Aselo staff; helpline staff see what's on.
  */
 import type { DefinitionFileMap } from '../../definitions';
-import { FEATURE_INFO, FEATURES_FILE, getFeatures } from '../../helplineFeatures';
+import { FEATURE_INFO, getFeatures, getPermissionConfig, setFeature } from '../../helplineFeatures';
+import type { ConfigObject } from '../../serviceConfig';
 
 type Props = {
   draftFiles: DefinitionFileMap;
   originalFiles: DefinitionFileMap;
   // Aselo staff (not just viewing as helpline staff)
   canChange: boolean;
-  permissionConfig?: string;
+  // Aselo’s shared service configuration defaults
+  defaults?: ConfigObject;
   onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
 };
 
-export const FeaturesEditor = ({ draftFiles, originalFiles, canChange, permissionConfig, onChangeFiles }: Props) => {
-  const features = getFeatures(draftFiles);
-  const original = getFeatures(originalFiles);
+export const FeaturesEditor = ({ draftFiles, originalFiles, canChange, defaults, onChangeFiles }: Props) => {
+  const features = getFeatures(draftFiles, defaults);
+  const original = getFeatures(originalFiles, defaults);
+  const permissionConfig = getPermissionConfig(draftFiles, defaults);
 
   return (
     <section className="panel features-panel">
       <h2>Helpline features</h2>
       <p className="muted">
         {canChange
-          ? 'Switch features on or off for counselors. These live in the helpline’s Flex service configuration, so the reviewer applies them to staging and production after the PR is merged.'
+          ? 'Switch features on or off for counselors. These are settings in the helpline’s service configuration (see Service configuration for everything, per environment); after the PR is merged, apply the service configuration to staging and production.'
           : 'What’s switched on for your counselors. To change any of these, contact the Aselo team.'}
       </p>
       {!features ? (
@@ -54,10 +57,7 @@ export const FeaturesEditor = ({ draftFiles, originalFiles, canChange, permissio
                   checked={features[info.key]}
                   disabled={!canChange}
                   onChange={(e) =>
-                    onChangeFiles((files) => ({
-                      ...files,
-                      [FEATURES_FILE]: { ...getFeatures(files)!, [info.key]: e.target.checked },
-                    }))
+                    onChangeFiles((files) => setFeature(files, info.key, e.target.checked))
                   }
                 />
                 <span>

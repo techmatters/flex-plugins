@@ -29,7 +29,8 @@ import { summarizeWebchatChanges, validateWebchat } from './webchat';
 import { summarizeCategoryChanges, validateCategories } from './categories';
 import { summarizeCaseStatusChanges, validateCaseStatuses } from './caseStatuses';
 import { summarizeCaseSectionChanges, validateCaseSections } from './caseSections';
-import { featuresNote, summarizeFeatureChanges } from './helplineFeatures';
+import { summarizeFeatureChanges } from './helplineFeatures';
+import { summarizeServiceConfigChanges, validateServiceConfig } from './serviceConfig';
 import { summarizeProfileChanges, validateProfiles } from './profiles';
 
 export const CALL_TYPE_BUTTONS_FILE = 'CallTypeButtons.json';
@@ -175,6 +176,7 @@ const checkSections = (files: DefinitionFileMap) => [
 export const validateSections = (
   draftFiles: DefinitionFileMap,
   originalFiles: DefinitionFileMap,
+  code = '<code>',
 ): ValidationIssue[] => {
   const before = new Set(checkSections(originalFiles).map((found) => found.message));
   const sectionIssues = checkSections(draftFiles).map((found): ValidationIssue =>
@@ -191,7 +193,7 @@ export const validateSections = (
     ...validateCategories(draftFiles, originalFiles),
     ...validateCaseStatuses(draftFiles, originalFiles),
     ...validateCaseSections(draftFiles, originalFiles),
-    ...featuresNote(originalFiles, draftFiles),
+    ...validateServiceConfig(code, originalFiles, draftFiles),
     ...validateProfiles(draftFiles, originalFiles),
     ...validateWebchat(draftFiles, originalFiles),
   ];
@@ -262,6 +264,7 @@ export const summarizeSectionChanges = (
     ...summarizeCaseStatusChanges(originalFiles, draftFiles),
     ...summarizeCaseSectionChanges(originalFiles, draftFiles),
     ...summarizeProfileChanges(originalFiles, draftFiles),
+    ...summarizeServiceConfigChanges(originalFiles, draftFiles),
   ];
   const changed = (filePath: string) => !isSameJson(originalFiles[filePath], draftFiles[filePath]);
 

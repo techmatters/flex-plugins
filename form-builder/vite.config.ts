@@ -25,6 +25,8 @@ const appDir = path.dirname(fileURLToPath(import.meta.url));
 const hrmFormDefinitionsSrc = path.resolve(appDir, '../lambdas/packages/hrm-form-definitions/src');
 // The Flex plugin's UI text, so the "Try it out" preview uses the same wording as Aselo
 const pluginTranslationsDir = path.resolve(appDir, '../plugin-hrm-form/src/translations');
+// The plugin's feature flags, whose comments describe them on the Service configuration page
+const pluginTypesDir = path.resolve(appDir, '../plugin-hrm-form/src/types');
 
 // Defaults to this repo's form definitions; override to point at another checkout
 const formDefinitionsDir =
@@ -71,6 +73,6 @@ export default defineConfig({
   server: {
     port: 5180,
     // The specification, validator and translations are imported from elsewhere in the repo
-    fs: { allow: [appDir, hrmFormDefinitionsSrc, pluginTranslationsDir, webchatTranslationsDir] },
+    fs: { allow: [appDir, hrmFormDefinitionsSrc, pluginTranslationsDir, pluginTypesDir, webchatTranslationsDir] },
   },
 });

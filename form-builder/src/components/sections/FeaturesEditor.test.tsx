@@ -39,12 +39,15 @@ describe('helpline features', () => {
     await openFeatures(harness, true);
     fireEvent.click(screen.getByRole('switch', { name: /Client profiles/ }));
     await screen.findByText(/All changes saved/);
-    expect((await harness.savedFile(usnm, 'aselo-features.json')).enableClientProfiles).toBe(false);
+    // Written into the service configuration (USNM doesn't set it, so in common.json)
+    const common = await harness.savedFile(usnm, 'service-configuration/common.json');
+    expect(common.attributes.enableClientProfiles).toBe(false);
+    expect(common.attributes.feature_flags.enable_client_profiles).toBe(false);
 
     fireEvent.click(screen.getByRole('button', { name: 'Review & apply' }));
     const dialog = screen.getByRole('dialog', { name: 'Review your changes' });
     expect(within(dialog).getByText('Client profiles: switched off')).toBeTruthy();
-    expect(within(dialog).getByText(/apply the service configuration/)).toBeTruthy();
+    expect(within(dialog).getByText(/make service-config-apply with HL=usnm/)).toBeTruthy();
   });
 
   test('Aselo staff see which permission rules decide what counselors can do with cases', async () => {
