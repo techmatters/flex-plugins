@@ -14,17 +14,17 @@ locals {
     enable_post_survey         = false
     enable_external_recordings = true
     permission_config          = "demo"
-    # Baseline: 1 queue, 1 workflow, a webchat channel and a voice channel. Add more as the helpline needs.
+    # Baseline: 1 queue, a chat (webchat over Conversations) channel and a voice channel. Add more as the helpline needs.
     workflows = {
       master : {
         friendly_name = "Master Workflow"
         templatefile  = "/app/twilio-iac/helplines/templates/workflows/master-basic.tftpl"
       }
-      # Add when the account uses a Conversations channel (chat/SMS/WhatsApp...), for queue transfers:
-      # queue_transfers : {
-      #   friendly_name = "Queue Transfers Workflow"
-      #   templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
-      # }
+      # Needed by every account with a Conversations channel (chat/SMS/WhatsApp...), for queue transfers
+      queue_transfers : {
+        friendly_name = "Queue Transfers Workflow"
+        templatefile  = "/app/twilio-iac/helplines/templates/workflows/queue-transfers.tftpl"
+      }
     }
     task_queues = {
       master : {
@@ -35,10 +35,12 @@ locals {
 
     #Channels
     channels = {
-      webchat : {
-        channel_type         = "web"
+      # Webchat over Conversations. Don't use channel_type "web" (Programmable Chat): its Flex Flow API is gone
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       },

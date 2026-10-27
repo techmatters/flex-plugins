@@ -49,7 +49,7 @@ Collect, asking only for what is missing:
 - helpline display name, short code (lower case), environment
 - Twilio account name follows `STG_<Name> (<CODE>)` / `<Name> (<CODE>)` (the person creates the account)
 - helpline region (`us-east-1` / `eu-west-1`)
-- channels and phone numbers (baseline: webchat + voice)
+- channels and phone numbers (baseline: chat (webchat over Conversations) + voice)
 - Okta group name (`<Name> (<CODE>)`), group rule (organization / email domain with `@` / none),
   optional SAML attributes (`labels`, `team`)
 - webchat needed? greeting text for voice? blocked-contact message?
@@ -63,9 +63,9 @@ Later on this information may come from a tool that collects it from meetings; u
 - Branch from master (person's naming convention, e.g. `<prefix>/<code>/<task>`).
 - Copy `twilio-iac/helplines/baseline/` to `twilio-iac/helplines/<code>/` and fill in the
   placeholders: `common.hcl` (helpline, region, queue name, channels, `okta`), `staging.hcl`
-  (`flow_vars`, `okta_app`), service configuration JSON. Keep the baseline shape (1 queue, 1 workflow,
-  webchat + voice) unless the intake asks for more; follow AGENTS.md for anything extra
-  (e.g. Conversations channels need the `queue_transfers` workflow).
+  (`flow_vars`, `okta_app`), service configuration JSON. Keep the baseline shape (1 queue, chat +
+  voice) unless the intake asks for more; follow AGENTS.md for anything extra. Never add a
+  `channel_type = "web"` channel: its Flex Flow API is deprecated (404 on apply).
 - Show the diff, commit, and ask the person to push / open the PR.
 
 ### 5. Twilio infrastructure (steps 1.2–1.4)

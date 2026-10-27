@@ -59,7 +59,8 @@ helplines/<short_code>/
 ```
 
 - `helplines/baseline/` is the copy-me starting point for a new helpline: 1 queue, 1 workflow
-  (`master-basic.tftpl`), a webchat channel and a voice channel, plus the Okta blocks.
+  (`master-basic.tftpl`) plus `queue_transfers`, a `chat` channel (webchat over Conversations) and a
+  voice channel, plus the Okta blocks.
 - `helplines/templates/` and `helplines/configs/` are the **shared** versions. Prefer a shared template;
   only fork into `<short_code>/templates/` when behavior genuinely diverges.
 - `files/additional.*.tf` is described in its own README as a "dirty hack" / "temporary band-aid".
@@ -162,8 +163,12 @@ templates other helplines already use without checking the impact on monitoring.
 
 ## Channels: things to know
 
-- `channel_type = "web"` with the default `messaging_mode` (`programmable-chat`) is how every webchat
-  is set up today (it creates a Flex Flow, which the webchat config needs).
-- `messaging_mode = "conversations"` is used for `chat` / SMS / WhatsApp style channels; accounts with
+- Webchat for **new** helplines is `chat` with `messaging_mode = "conversations"` (shared template
+  `messaging-blocking-conv-lambda.tftpl`). Don't add `channel_type = "web"` (default `programmable-chat`
+  mode): it creates a Flex Flow and Twilio's `/v1/FlexFlows` API now returns 404, so the configure apply
+  fails. Existing helplines that still have a `web` channel keep it until they are migrated.
+- Conversations chat tasks still get `channelType` `web` (set by the webchat app), so routing filters and
+  `contacts_waiting_channels` keep using `web`.
+- `messaging_mode = "conversations"` is also used for SMS / WhatsApp style channels; accounts with
   Conversations channels also need the `queue_transfers` workflow.
 - The voice Studio flow still has to be attached to the Twilio phone number.

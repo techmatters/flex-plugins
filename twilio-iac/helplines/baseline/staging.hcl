@@ -13,6 +13,9 @@ locals {
       widget_from          = "<helpline name>"
       chat_blocked_message = "Sorry, you're not able to contact <helpline name> from this device or account"
     }
+    # Blocked-contact check used by the chat Studio flow (falls back to the old serverless URL if unset).
+    # eu-west-1 helplines: hrm-staging-eu
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
 
     # Okta SAML app for this environment (okta-app stage). See twilio-iac/docs/okta.md
     okta_app = {

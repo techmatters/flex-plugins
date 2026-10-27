@@ -166,7 +166,7 @@ Run *Flex Deploy* in this repo's GitHub Actions for the new account.
 
 1. 🤖 Add `aselo-webchat-react-app/configSrc/<code>/` (`common.json`, `staging.json`, and later
    `production.json`) by following an existing helpline; production files reuse staging values.
-   Needs the account SID and the web Flex Flow / conversations address from Twilio (ask the person).
+   Needs the account SID and the chat channel's Conversations address from Twilio (ask the person).
 2. 🧑 Run *Deploy Aselo Webchat React App - single helpline*
    ([aselo-webchat-react-app-deploy.yml](../../.github/workflows/aselo-webchat-react-app-deploy.yml))
    with `helpline_code=<CODE>` and the environment. It deploys the app together with the helpline's
