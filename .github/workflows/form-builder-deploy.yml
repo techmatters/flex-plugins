@@ -88,7 +88,8 @@ jobs:
         if: steps.resources.outputs.ready == 'true'
         run: |
           aws lambda update-function-code --function-name "$LAMBDA_FUNCTION" --zip-file fileb://lambda.zip > /dev/null
-          aws lambda wait function-updated --function-name "$LAMBDA_FUNCTION"
+          # function-updated-v2 polls with lambda:GetFunction, which the deploy policy allows
+          aws lambda wait function-updated-v2 --function-name "$LAMBDA_FUNCTION"
 
       # Hashed assets can be cached for good; index.html must always be checked. config.json is
       # written by Terraform, so it's left alone.

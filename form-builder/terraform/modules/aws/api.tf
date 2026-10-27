@@ -206,7 +206,7 @@ resource "aws_iam_user_policy" "github_deploy" {
       {
         Sid      = "DeployApi"
         Effect   = "Allow"
-        Action   = ["lambda:UpdateFunctionCode", "lambda:GetFunction"]
+        Action   = ["lambda:UpdateFunctionCode", "lambda:GetFunction", "lambda:GetFunctionConfiguration"]
         Resource = aws_lambda_function.api.arn
       },
       {
