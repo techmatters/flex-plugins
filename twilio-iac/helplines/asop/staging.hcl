@@ -8,6 +8,12 @@ locals {
   config            = merge(local.common_config, local.local_config)
 
   local_config = {
+    custom_task_routing_filter_expression = ""
+    flow_vars = {
+      widget_from          = "Aselo Okta Pilot"
+      chat_blocked_message = "Sorry, you're not able to contact Aselo Okta Pilot from this device or account"
+    }
+
     # Okta SAML app for this environment (okta-app stage). See twilio-iac/docs/okta.md
     okta_app = {
       optional_attribute_sets = ["labels", "team"]
