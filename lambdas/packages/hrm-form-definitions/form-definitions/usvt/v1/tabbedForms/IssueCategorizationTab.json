@@ -1,384 +1,90 @@
 {
-  "PCAVT":{
+  "PCAVT": {
     "categories": {
-      "Missing children": {
+      "Curriculum Program": {
         "color": "#085f63",
         "subcategories": [
           {
-            "label": "Child abduction"
+            "label": "Nurturing Parenting Program"
           },
           {
-            "label": "Lost, unaccounted for or otherwise missing child"
+            "label": "Nurturing Program for Families in Substance Use Treatment & Recovery"
           },
           {
-            "label": "Runaway"
+            "label": "Nurturing Fathers"
           },
           {
-            "label": "Unspecified/Other - MS"
+            "label": "Strengthening Families 0-3"
+          },
+          {
+            "label": "Strengthening Families Teens"
           }
         ]
       },
-      "Violence": {
+      "Circle of Parents Support Groups": {
         "color": "#14919b",
         "subcategories": [
           {
-            "label": "Bullying"
+            "label": "Perinatal Circle"
           },
           {
-            "label": "Child/Early/Forced marriage"
+            "label": "Fathers Circle"
           },
           {
-            "label": "Child labour"
+            "label": "Valley Vista Circle"
           },
           {
-            "label": "Cyberbullying"
-          },
-          {
-            "label": "Female Genital Mutilation (FGM)\r"
-          },
-          {
-            "label": "Neglect (or negligent treatment)"
-          },
-          {
-            "label": "Online child sexual abuse and exploitation"
-          },
-          {
-            "label": "Other harmful traditional practices"
-          },
-          {
-            "label": "Physical violence"
-          },
-          {
-            "label": "Psychological / Emotional violence"
-          },
-          {
-            "label": "Sexual violence"
-          },
-          {
-            "label": "Unspecified/Other - V"
+            "label": "NWSCF Circle"
           }
         ]
       },
-      "Mental Health": {
+      "Population Data": {
         "color": "#fac05e",
         "subcategories": [
           {
-            "label": "Addictive behaviours and substance use"
+            "label": "In recovery from Substance Use"
           },
           {
-            "label": "Behavioural problems"
+            "label": "Involved with DCF"
           },
           {
-            "label": "Concerns about the self"
+            "label": "Involved with Corrections"
           },
           {
-            "label": "Emotional distress – anger problems"
+            "label": "Recommended by Case Worker"
           },
           {
-            "label": "Emotional distress – fear and anxiety problems"
+            "label": "Required by Case Worker"
           },
           {
-            "label": "Emotional distress – mood problems"
+            "label": "Has custody of child/ren"
           },
           {
-            "label": "Neurodevelopmental concerns"
-          },
-          {
-            "label": "Problems with eating behaviour"
-          },
-          {
-            "label": "Self-harming behaviour"
-          },
-          {
-            "label": "Suicidal thoughts and suicide attempts"
-          },
-          {
-            "label": "Traumatic distress"
-          },
-          {
-            "label": "Unspecified/Other - MH"
+            "label": "Does not have custody of child/ren"
           }
         ]
       },
-      "Physical Health": {
+      "Housing Information": {
         "color": "#f79d8f",
         "subcategories": [
           {
-            "label": "COVID-19"
+            "label": "Has stable housing that meets my needs"
           },
           {
-            "label": "General medical concerns"
+            "label": "Staying with Friends/Family"
           },
           {
-            "label": "Medical or lifestyle information about HIV/AIDS"
+            "label": "Transitional or emergency housing"
           },
           {
-            "label": "Nutrition"
+            "label": "Does not have stable housing"
           },
           {
-            "label": "Pregnancy and maternal care"
-          },
-          {
-            "label": "Sexual and reproductive health"
-          },
-          {
-            "label": "Unspecified/Other - PH"
-          }
-        ]
-      },
-      "Access to Services": {
-        "color": "#f0817c",
-        "subcategories": [
-          {
-            "label": "Education"
-          },
-          {
-            "label": "Essential needs"
-          },
-          {
-            "label": "General healthcare services"
-          },
-          {
-            "label": "Legal services and advice"
-          },
-          {
-            "label": "Mental health services"
-          },
-          {
-            "label": "Sexual health services"
-          },
-          {
-            "label": "Socio-economical services"
-          },
-          {
-            "label": "Unspecified/Other - A"
-          }
-        ]
-      },
-      "Discrimination and Exclusion": {
-        "color": "#4d92c2",
-        "subcategories": [
-          {
-            "label": "Ethnicity/nationality"
-          },
-          {
-            "label": "Financial situation"
-          },
-          {
-            "label": "Gender"
-          },
-          {
-            "label": "Gender identity or expression and sexual orientation"
-          },
-          {
-            "label": "Health"
-          },
-          {
-            "label": "Philosophical or religious beliefs"
-          },
-          {
-            "label": "Unspecified/Other - DE"
-          }
-        ]
-      },
-      "Family Relationships": {
-        "color": "#c99f7d",
-        "subcategories": [
-          {
-            "label": "Adoption, fostering, and extended family placement"
-          },
-          {
-            "label": "Family health and wellbeing"
-          },
-          {
-            "label": "General family issues"
-          },
-          {
-            "label": "Relationship to caregiver"
-          },
-          {
-            "label": "Relationship with sibling(s)"
-          },
-          {
-            "label": "Unspecified/Other - FR"
-          }
-        ]
-      },
-      "Peer Relationships": {
-        "color": "#db7a34",
-        "subcategories": [
-          {
-            "label": "Classmates/colleagues relationships"
-          },
-          {
-            "label": "Friends and friendships"
-          },
-          {
-            "label": "Partner relationships"
-          },
-          {
-            "label": "Unspecified/Other - PR"
-          }
-        ]
-      },
-      "Education and Occupation": {
-        "color": "#e7c582",
-        "subcategories": [
-          {
-            "label": "Academic issues"
-          },
-          {
-            "label": "Problems at work"
-          },
-          {
-            "label": "Teacher and school problems"
-          },
-          {
-            "label": "Unspecified/Other - EO"
-          }
-        ]
-      },
-      "Sexuality": {
-        "color": "#037971",
-        "subcategories": [
-          {
-            "label": "Sexual behaviours"
-          },
-          {
-            "label": "Sexual orientation and gender identity"
-          },
-          {
-            "label": "Unspecified/Other - S"
+            "label": "I prefer not to answer"
           }
         ]
       }
     },
-    "maxSelections": 100
-  },
-  "LifeLine": { "categories": {
-    "Physical and Sexual Health": {
-      "color": "#BBE3FF",
-      "subcategories": [
-        {
-          "label": "COVID-19"
-        },
-        {
-          "label": "Condom Use"
-        },
-        {
-          "label": "Medical or lifestyle information about HIV/AIDS"
-        },
-        {
-          "label": "Male Circumcision"
-        },
-        {
-          "label": "Pregnancy and maternal care"
-        },
-        {
-          "label": "Sexual and reproductive health"
-        },
-        {
-          "label": "Sexually Transmitted Diseases"
-        },
-        {
-          "label": "Nutrition"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
-    "Mental Health": {
-      "color": "#F5A623",
-      "subcategories": [
-        {
-          "label": "Emotional distress – anger problems"
-        },
-        {
-          "label": "Emotional distress – fear and anxiety problems"
-        },
-        {
-          "label": "Emotional distress – mood problems"
-        },
-        {
-          "label": "Problems with eating behaviour"
-        },
-        {
-          "label": "Self-harming behaviour"
-        },
-        {
-          "label": "Suicidal thoughts and suicide attempts"
-        },
-        {
-          "label": "Traumatic distress"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
-    "Abuse": {
-      "color": "#F8E900",
-      "subcategories": [
-        {
-          "label": "Addictive behaviours and substance use"
-        },
-        {
-          "label": "Cyber Bullying"
-        },
-        {
-          "label": "Gender Based Violence (GBV)"
-        },
-        {
-          "label": "Mental/Emotional violence"
-        },
-        {
-          "label": "Economic abuse"
-        },
-        {
-          "label": "Online sexual abuse"
-        },
-        {
-          "label": "Online sexual exploitation"
-        },
-        {
-          "label": "Physical violence"
-        },
-        {
-          "label": "Sexual violence"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
-    "Relationships": {
-      "color": "#E86B6B",
-      "subcategories": [
-        {
-          "label": "Family Relationships"
-        },
-        {
-          "label": "Marital Issues"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    },
-    "Education and Occupation": {
-      "color": "#8055BA",
-      "subcategories": [
-        {
-          "label": "Problems at learning institution"
-        },
-        {
-          "label": "Problems at work"
-        },
-        {
-          "label": "Unspecified/Other"
-        }
-      ]
-    }
-  } }
+    "maxSelections": 3
+  }
 }

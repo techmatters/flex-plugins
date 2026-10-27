@@ -1,13 +1,66 @@
 {
   "en": {
-    "HelplineSubstitution": "Helpline-Substitution",
-    "Switchboard-NoQueuesSwitchboarded": "No queues are currently being switchboarded",
-    "Admin": "Translated Admin",
-    "Chat Queue Test": "Quat Teue Chest",
-    "CustomLink-Label-ResourceMap": "Resource Map"
-  },
-  "es": {
-    "HelplineSubstitution": "Substitución de la Línea de Ayuda",
-    "Switchboard-NoQueuesSwitchboarded": "No hay colas que estén actualmente en switchboard"
+    "CallType-child": "Client calling about self",
+    "CallType-caller": "Someone calling about a client",
+    "ConnectDialog-Child": "Copy client information from this record to new contact?",
+      
+    "CaseHeader-CopyChildInfo": "Copy Client Information into Current Contact",
+   
+    
+    "CaseSection-BottomBar-SaveAndAddAnother/familySupport": "Save and Add Another Family Support Program",
+    "CaseSection-BottomBar-Save/familySupport": "Save Family Support Program",
+
+    "TabbedForms-AddChildInfoTab": "Client",
+
+    "TabbedForms-ReportsChildLink": "Create link for client",
+ 
+    "Case-CaseDetailsChildName": "Client Name",
+
+    "Case-SectionList-Title/familySupport": "Family Support Program",
+
+    "Case-SectionList-Add/familySupport": "Family Support Program",
+
+
+    "CaseSection-Add/familySupport": "Add Family Support Program",
+
+    "CaseSection-Edit/familySupport": "Edit Family Support Program",
+
+    "Case-SectionList-NoItems/familySupport": "No Family Support Program Listed",
+
+    "CaseSection-View-Title/familySupport": "View Family Support Program",
+
+    "Case-ChildIsAtRisk": "Client is at risk",
+    "CaseList-THChildName": "Case Name",
+    "CallerForm-RelationshipToChild": "Relationship to Client",
+    "CallerSection-RelationshipToChild": "Relationship to Client",
+    "ContactDetails-GeneralDetails-DiscussRights": "Did you discuss rights with the client?",
+    "ContactDetails-GeneralDetails-SolvedProblem": "Did the client feel we solved their problem?",
+    "ContactDetails-GeneralDetails-WouldRecommend": "Would the client recommend us to a friend?",
+    "SectionName-ChildInformation": "Client Information {{sectionNo}} of {{sectionCount}}",
+    "Contact-EditChild": "Edit Client Information",
+
+    "CallSummary-Counselor": "Coordinator: ",
+    "GeneralizedSearchForm-Counselor": "Coordinator",
+    "SearchForm-Counselor": "Coordinator",
+    "SearchResults-CounselorName": "Coordinator Name:",
+    "CaseHeader-Counsellor": "Coordinator",
+    "SharedStateLoadFormError": "The information stored in the form by previous coordinator couldn't be retrieved. Starting current task with clear contact form.",
+    "TabbedForms-ReportsCounselorReport": "Report as coordinator",
+    "Case-CaseDetailsOwner": "Coordinator",
+    "CSAMCLC-ActionHeaderAdded": "Added {{date}} at {{time}} &nbsp;&nbsp; Coordinator: {{counsellor}}",
+    "Case-ActionHeaderCounselor": "Coordinator:",
+    "Case-Counsellor": "Coordinator",
+    "CaseList-THCounselor": "Coordinator",
+    "CaseList-Filters-Counselor": "Coordinator",
+    "CaseList-Filters-SearchForCounselor": "Search for coordinator by name",
+    "ContactDetails-GeneralDetails-Counselor": "Coordinator",
+    "ContactDetails-GeneralDetails-HangUpBy/Agent": "Coordinator",
+    "ContactDetails-GeneralDetails-HangUpBy/Consult": "Consulting Coordinator",
+    "Contact-ConfirmRemoveTaskDialog-Content": "An error occurred trying to complete the task associated with this contact. Do you want to try to remove the task instead? This will clear the task from the coordinators list but the data for this contact will not get stored in the insights reporting system if you do.",
+    "Conference-Wrapping-HangupBy/Agent": "Call Ended by Coordinator",
+    "Conference-Wrapping-HangupBy/Consult": "Call Ended by Consulting Coordinator",
+    "TeamsView-Counsellor": "coordinator",
+    "TeamsView-Counsellors": "coordinators",
+    "Counsellor": "Coordinator"
   }
 }
