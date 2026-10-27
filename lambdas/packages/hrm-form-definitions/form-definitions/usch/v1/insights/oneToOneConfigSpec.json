@@ -59,23 +59,23 @@
     "caseInformation": [
       {
         "name": "campaign",
-        "insights": ["customers", "market_segment"]
+        "insights": ["conversations", "campaign"]
       },
       {
         "name": "languageLineUsed",
-        "insights": ["conversations", "customer_email"]
+        "insights": ["customers", "customer_email"]
       },
       {
         "name": "actionPlanDeveloped",
-        "insights": ["conversations", "initiated_by"]
+        "insights": ["conversations", "source"]
       },
       {
         "name": "wasASafetyPlanCreated",
-        "insights": ["conversations", "language"]
+        "insights": ["customers", "market_segment"]
       },
       {
         "name": "levelOfIntervention",
-        "insights": ["conversations", "outcome"]
+        "insights": ["conversations", "service_level"]
       },
       {
         "name": "howTheHelpseekerHeardAboutUs",

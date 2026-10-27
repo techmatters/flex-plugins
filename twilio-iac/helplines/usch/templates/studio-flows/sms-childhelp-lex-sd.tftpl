@@ -104,11 +104,11 @@ ${
       }
     },
     {
-      "name": "send_message_sms_blocked_client",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_blocked_client",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -119,12 +119,24 @@ ${
           "x": 660,
           "y": 730
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.sms_blocked_client_message}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.sms_blocked_client_message}",
+            "key": "message"
+          },
+          {
+            "value": "Bot",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
@@ -136,7 +148,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_message_sms_blocked_client",
+          "next": "f_sendMessageAndRunJanitor_blocked_client",
           "event": "match",
           "conditions": [
             {
@@ -266,7 +278,7 @@ ${
           ]
         },
         {
-          "next": "send_message_childhelp_sms_other_language",
+          "next": "f_sendMessageAndRunJanitor_other_language",
           "event": "match",
           "conditions": [
             {
@@ -289,11 +301,11 @@ ${
       }
     },
     {
-      "name": "send_message_childhelp_sms_other_language",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_other_language",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -304,12 +316,24 @@ ${
           "x": 630,
           "y": 1350
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.childhelp_sms_other_message}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.childhelp_sms_other_message}",
+            "key": "message"
+          },
+          {
+            "value": "Bot",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
@@ -346,7 +370,7 @@ ${
           "event": "success"
         },
         {
-          "next": "send_message_childhelp_sms_failure",
+          "next": "f_sendMessageAndRunJanitor_failure",
           "event": "failed"
         }
       ],
@@ -414,11 +438,11 @@ ${
       }
     },
     {
-      "name": "send_message_childhelp_sms_no_response_language",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_no_response_language",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -429,20 +453,32 @@ ${
           "x": -240,
           "y": 1180
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.childhelp_sms_no_response_language_message}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.childhelp_sms_no_response_language_message}",
+            "key": "message"
+          },
+          {
+            "value": "Bot",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
-      "name": "send_message_childhelp_sms_failure",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_failure",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -453,12 +489,24 @@ ${
           "x": 1190,
           "y": 2400
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.childhelp_sms_failure_message}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.childhelp_sms_failure_message}",
+            "key": "message"
+          },
+          {
+            "value": "Bot",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
@@ -493,7 +541,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "send_message_childhelp_sms_no_response_language",
+          "next": "f_sendMessageAndRunJanitor_no_response_language",
           "event": "match",
           "conditions": [
             {

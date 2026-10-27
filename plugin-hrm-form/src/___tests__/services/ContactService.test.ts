@@ -23,6 +23,7 @@ import { baseMockConfig as mockBaseConfig, mockGetDefinitionsResponse } from '..
 import {
   finalizeContact,
   determineConversationMedia,
+  createOfflineContact,
   saveContact,
   updateContactInHrm,
 } from '../../services/ContactService';
@@ -30,9 +31,16 @@ import { channelTypes } from '../../states/DomainConstants';
 import { getDefinitionVersions, getHrmConfig } from '../../hrmConfig';
 import { VALID_EMPTY_CONTACT, VALID_EMPTY_METADATA } from '../testContacts';
 import { ContactState } from '../../states/contacts/existingContacts';
+import { getOfflineContactTask } from '../../states/contacts/offlineContactTask';
+import { getWorkerAttributes } from '../../services/twilioWorkerService';
 
 const helpline = 'ChildLine';
 const mockGetHrmConfig = getHrmConfig as jest.Mock;
+const mockGetWorkerAttributes = getWorkerAttributes as jest.MockedFunction<typeof getWorkerAttributes>;
+
+jest.mock('../../services/twilioWorkerService', () => ({
+  getWorkerAttributes: jest.fn(),
+}));
 
 // eslint-disable-next-line no-empty-function
 global.fetch = global.fetch ? global.fetch : () => Promise.resolve(<any>{ ok: true });
@@ -109,6 +117,86 @@ const createContactState = ({ callType, childFirstName }, contactlessTaskInfo = 
 
 const getFormFromPATCH = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).rawJson;
 const getNumberFromPATCH = mockedFetch => JSON.parse(mockedFetch.mock.calls[0][1].body).number;
+
+describe('createOfflineContact()', () => {
+  test.each([
+    ['contact helpline', 'form helpline', 'WK-other-worker', 'contact helpline'],
+    ['', 'form helpline', 'WK-other-worker', 'form helpline'],
+    ['', '', 'WK-other-worker', 'selected worker helpline'],
+    ['', '', null, 'selected worker helpline'],
+  ])(
+    'sets helpline from contact=%s, form=%s, createdOnBehalfOf=%s before posting',
+    async (contactHelpline, formHelpline, createdOnBehalfOf, expectedHelpline) => {
+      mockGetHrmConfig.mockReturnValue({ ...mockBaseConfig, helpline: 'current worker helpline' });
+      mockGetWorkerAttributes.mockReset();
+      mockGetWorkerAttributes.mockResolvedValue({ helpline: 'selected worker helpline' });
+      const contact = {
+        ...VALID_EMPTY_CONTACT,
+        helpline: contactHelpline,
+        rawJson: {
+          ...VALID_EMPTY_CONTACT.rawJson,
+          contactlessTask: {
+            ...VALID_EMPTY_CONTACT.rawJson.contactlessTask,
+            helpline: formHelpline,
+            createdOnBehalfOf,
+          },
+        },
+      };
+      const mockedFetch = jest.spyOn(global, 'fetch').mockResolvedValue({
+        ok: true,
+        headers: { get: () => 'application/json' },
+        json: async () => ({ ...contact, helpline: expectedHelpline }),
+      } as Response);
+
+      try {
+        const savedContact = await createOfflineContact(contact, 'WK-worker-sid', getOfflineContactTask());
+
+        expect(mockedFetch).toHaveBeenCalledTimes(1);
+        expect(JSON.parse(mockedFetch.mock.calls[0][1].body as string).helpline).toBe(expectedHelpline);
+        expect(savedContact.helpline).toBe(expectedHelpline);
+        expect(contact.helpline).toBe(contactHelpline);
+        if (contactHelpline || formHelpline) {
+          expect(mockGetWorkerAttributes).not.toHaveBeenCalled();
+        } else {
+          expect(mockGetWorkerAttributes).toHaveBeenCalledTimes(1);
+          expect(mockGetWorkerAttributes).toHaveBeenCalledWith(createdOnBehalfOf || 'WK-worker-sid');
+          expect(mockGetWorkerAttributes.mock.invocationCallOrder[0]).toBeLessThan(
+            mockedFetch.mock.invocationCallOrder[0],
+          );
+        }
+      } finally {
+        mockedFetch.mockRestore();
+        mockGetHrmConfig.mockReturnValue(mockBaseConfig);
+      }
+    },
+  );
+
+  test('does not create a contact when the worker helpline lookup fails', async () => {
+    const error = new Error('Worker lookup failed');
+    mockGetWorkerAttributes.mockRejectedValueOnce(error);
+    const mockedFetch = jest.spyOn(global, 'fetch');
+
+    try {
+      await expect(
+        createOfflineContact(
+          {
+            ...VALID_EMPTY_CONTACT,
+            helpline: '',
+            rawJson: {
+              ...VALID_EMPTY_CONTACT.rawJson,
+              contactlessTask: { helpline: '', createdOnBehalfOf: 'WK-other-worker' },
+            },
+          },
+          'WK-worker-sid',
+          getOfflineContactTask(),
+        ),
+      ).rejects.toThrow(error);
+      expect(mockedFetch).not.toHaveBeenCalled();
+    } finally {
+      mockedFetch.mockRestore();
+    }
+  });
+});
 
 describe('saveContact()', () => {
   const task = {

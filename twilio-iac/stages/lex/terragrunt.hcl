@@ -17,27 +17,7 @@ include "root" {
 // dependencies {
 //   paths = include.root.locals.use_local_state ? [] : [
 //     "../provision",
-//     "../chatbot",
 //   ]
-// }
-
-// /**
-//   * Dependency blocks allow us to mock outputs from previous stages so that we can
-//   * validate, init, and manage state in dependant modules without having to apply
-//   * the previous stages.
-//   */
-// dependency "provision" {
-//   config_path = "../provision"
-
-//   mock_outputs_allowed_terraform_commands = ["validate", "init", "state"]
-//   mock_outputs                            = local.config.mock_outputs.provision
-// }
-
-// dependency "chatbot" {
-//   config_path = "../chatbot"
-
-//   mock_outputs_allowed_terraform_commands = ["validate", "init", "state"]
-//   mock_outputs                            = local.config.mock_outputs.chatbot
 // }
 
 /**

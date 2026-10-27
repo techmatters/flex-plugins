@@ -17,7 +17,14 @@ locals {
       send_message_janitor_function_sid = "ZH32e89389e042507522a3396bde4a4611"
       bot_language                      = "en-USNC"
     }
-
+    studio_flows = {
+      post_call_survey : {
+        templatefile = "/app/twilio-iac/helplines/usnc/templates/studio-flows/post-call-survey.tftpl"
+        flow_vars = {
+          usnc_assets_url    = "https://usnc-assets-v2-7993.twil.io"
+        }
+      }
+    }
     channels = {
       webchat : {
         channel_type     = "web"
@@ -47,10 +54,9 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/voice-blocking-no-op-hours-rec-sd.tftpl"
         channel_flow_vars = {
-          play_message_voice_prequeue    = "https://usnc-assets-7869.twil.io/play_message_voice_prequeue.mp3"
-          gather_live_monitoring_consent = "https://usnc-assets-7869.twil.io/gather_live_monitoring_consent.mp3"
-          play_message_voice_blocked     = "https://usnc-assets-7869.twil.io/play_message_voice_blocked.mp3"
-          voice_ivr_language             = "en-US"
+          play_message_voice_prequeue    = "https://usnc-assets-v2-7993.twil.io/play_message_voice_prequeue.mp3"
+          gather_live_monitoring_consent = "https://usnc-assets-v2-7993.twil.io/gather_live_monitoring_consent.mp3"
+          play_message_voice_blocked     = "https://usnc-assets-v2-7993.twil.io/play_message_voice_blocked.mp3"
         }
         chatbot_unique_names = []
         enable_datadog_monitor = true
@@ -68,8 +74,6 @@ locals {
         contact_identity = "+18557337762"
         templatefile     = "/app/twilio-iac/helplines/usnc/templates/studio-flows/messaging-lex-v3-blocking-lambda-sd.tftpl"
         channel_flow_vars = {
-          widget_from           = "Warm Line"
-          send_message_prequeue = "Hello"
         }
         chatbot_unique_names = []
       }

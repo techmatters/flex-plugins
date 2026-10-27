@@ -8,10 +8,6 @@ locals {
   local_config = {
     operating_hours_enforced_override     = false
     flow_vars = {
-      service_sid                           = "ZS45d1a256ef1c4fa2112f7accc40306c5"
-      environment_sid                       = "ZE730f552b9429ca7a2105c822ef7faae4"
-      capture_channel_with_bot_function_sid = "ZH520142ac0ba1c7e75bc2a24ab5d8fce6"
-      operating_hours_function_sid          = "ZHc6798fb7d700cd812589cf202bb166ca"
       widget_from                           = "ECPAT"
       chat_blocked_message                  = "Sorry, you're not able to contact ECPAT from this device or account"
     }

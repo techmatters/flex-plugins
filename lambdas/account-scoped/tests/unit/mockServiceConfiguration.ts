@@ -30,14 +30,14 @@ export const setConfigurationAttributes = (
   const mockServiceConfigurationFetch: jest.MockedFunction<
     ConfigurationContext['fetch']
   > = jest.fn();
-  const updatedConfiguration: AseloServiceConfigurationAttributes = {
+  const updatedConfiguration = {
     ...DEFAULT_CONFIGURATION_ATTRIBUTES,
     ...attributes,
     feature_flags: {
       ...DEFAULT_CONFIGURATION_ATTRIBUTES.feature_flags,
       ...attributes.feature_flags,
     },
-  };
+  } as AseloServiceConfigurationAttributes;
   mockServiceConfigurationFetch.mockClear();
   mockServiceConfigurationFetch.mockResolvedValue({
     attributes: updatedConfiguration,

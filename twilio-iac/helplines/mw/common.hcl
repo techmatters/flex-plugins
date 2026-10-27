@@ -6,19 +6,12 @@ locals {
 
   local_config = {
     helpline                          = "Tithandizane"
-    old_dir_prefix                    = "tithandizane"
-    definition_version                = "mw-v1"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en"
-    helpline_language                 = "en"
     voice_ivr_language                = ""
     enable_post_survey                = false
     permission_config                 = "mw"
 
 
-    lex_bot_languages = {
-      en_MW : ["pre_survey", "youth_testing"]
-    }
 
 
     workflows = {

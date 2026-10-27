@@ -9,7 +9,6 @@ locals {
     helpline           = "Promise Resource Network"
     task_language      = "en-USNC"
     enable_post_survey = true
-    enable_lex_v2      = true
 
     workflows = {
       master : {
@@ -75,38 +74,6 @@ locals {
       survey : "Survey"
     }
     activities = {
-      scheduled_break : {
-        friendly_name = "Scheduled Break"
-        available     = false
-      },
-      unscheduled_break : {
-        friendly_name = "Unscheduled Break"
-        available     = false
-      },
-      meal_break : {
-        friendly_name = "Meal Break"
-        available     = false
-      },
-      meeting : {
-        friendly_name = "Meeting"
-        available     = false
-      },
-      documentation : {
-        friendly_name = "Documentation"
-        available     = false
-      },
-      training : {
-        friendly_name = "Training"
-        available     = false
-      },
-      leadership : {
-        friendly_name = "Leadership Admin Tasks"
-        available     = false
-      },
-      supervision : {
-        friendly_name = "Supervision"
-        available     = false
-      }
     }
 
   }

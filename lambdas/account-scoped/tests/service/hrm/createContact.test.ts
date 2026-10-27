@@ -259,6 +259,7 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
       const event: Partial<EventFields> = {
         AccountSid: TEST_ACCOUNT_SID,
         TaskAttributes: JSON.stringify(taskAttributes),
+        WorkerAttributes: JSON.stringify({ helpline: 'worker helpline' }),
         TaskSid: TEST_TASK_SID,
         WorkerSid: TEST_WORKER_SID,
         WorkspaceSid: TEST_WORKSPACE_SID,
@@ -280,6 +281,7 @@ describe('Create HRM Contact on Reservation Accepted event', () => {
       expect(response.status).toBe(200);
       await verifyCreateContactRequest(createHrmContactEndpoint, {
         ...BLANK_CONTACT,
+        helpline: 'worker helpline',
         definitionVersion: 'ut-v1',
         rawJson: {
           ...BLANK_CONTACT.rawJson,

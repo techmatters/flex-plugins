@@ -45,10 +45,11 @@ locals {
     }
     #Channels
     channels = {
-      webchat : {
-        channel_type         = "web"
+      chat : {
+        channel_type         = "chat"
+        messaging_mode       = "conversations"
         contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/webchat-basic.tftpl"
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }

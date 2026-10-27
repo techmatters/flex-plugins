@@ -1,4 +1,5 @@
 {
+  "call_recording_enabled": true,
   "attributes": {
     "contacts_waiting_channels": ["sms", "voice", "voicemail"],
     "external_recordings_enabled": true,
@@ -10,6 +11,7 @@
     "feature_flags": {
       "enable_canned_responses": false,
       "enable_conferencing": true,
+      "enable_conference_status_event_handler": true,
       "enable_external_transcripts": true,
       "enable_hierarchical_translations": true,
       "enable_lex_v2": true,
@@ -22,6 +24,48 @@
       "use_prepopulate_mappings": true,
       "use_twilio_lambda_to_transition_participants": false,
       "enable_hang_up_by_hrm_saving": true
+    },
+     "postStudioFlows": {
+      "${task_queues.en_std}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.es_std}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+      },
+      "${task_queues.es_tya}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+      },
+      "${task_queues.en_tya}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.en_fcg}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.es_tya_voicemail}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+      },
+      "${task_queues.es_std_voicemail}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+      },
+      "${task_queues.en_std_voicemail}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.en_tya_voicemail}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.en_fcg_voicemail}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      }
     },
     "definitionVersion": "usnm-v1",
     "helplineLanguage": "en",

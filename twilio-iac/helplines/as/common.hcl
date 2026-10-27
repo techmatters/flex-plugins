@@ -7,15 +7,10 @@ locals {
 
   local_config = {
     helpline                          = "Aselo"
-    old_dir_prefix                    = "aselo-as"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
     voice_ivr_language                = ""
     enable_post_survey                = false
 
-    lex_bot_languages = {
-      en_US : ["pre_survey", "post_survey"]
-    }
 
     lex_v2_bot_languages = {
       en_US : ["pre_survey", "post_survey"]
@@ -49,6 +44,10 @@ locals {
         "target_workers" = "email=='aselo-alerts+production@techmatters.org'",
         "friendly_name"  = "E2E Test Queue"
       },
+      voicemail : {
+        "target_workers" = "routing.skills HAS 'Voicemail'",
+        "friendly_name"  = "Voicemail"
+      },
       switchboard : {
         "target_workers" = "1==1",
         "friendly_name"  = "Switchboard Queue"
@@ -62,8 +61,8 @@ locals {
       video : "Video"
       email : "Email"
       survey : "Survey"
+      voicemail : "Voicemail"
       external: "External"
     }
-
   }
 }

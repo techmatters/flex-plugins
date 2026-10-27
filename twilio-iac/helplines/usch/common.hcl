@@ -14,7 +14,6 @@ locals {
     enable_post_survey         = true
     enable_external_recordings = true
     permission_config          = "usch"
-    enable_lex_v2              = true
 
     channel_attributes = {
       webchat                            = "/app/twilio-iac/helplines/usch/templates/channel-attributes/webchat.tftpl",
@@ -96,9 +95,6 @@ locals {
       }
     }
 
-    lex_bot_languages = {
-      en_USCH : []
-    }
     lex_v2_bot_languages = {
       en_USCH : ["pre_survey", "post_survey"]
       //ch : ["post_survey"],

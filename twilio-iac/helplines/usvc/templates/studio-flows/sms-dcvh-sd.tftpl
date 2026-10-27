@@ -114,7 +114,7 @@ ${
           "event": "incomingMessage"
         },
         {
-          "next": "send_message_dcvh_sms_no_service",
+          "next": "f_sendMessageAndRunJanitor_no_service",
           "event": "timeout"
         },
         {
@@ -136,11 +136,11 @@ ${
       }
     },
     {
-      "name": "send_message_dcvh_sms_no_service",
-      "type": "send-message",
+      "name": "f_sendMessageAndRunJanitor_no_service",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "sent"
+          "event": "success"
         },
         {
           "event": "failed"
@@ -151,12 +151,24 @@ ${
           "x": -150,
           "y": 1040
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "Bot",
-        "message_type": "custom",
-        "to": "{{contact.channel.address}}",
-        "body": "${flow_vars.send_message_dcvh_sms_no_service}"
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "${flow_vars.send_message_dcvh_sms_no_service}",
+            "key": "message"
+          },
+          {
+            "value": "Bot",
+            "key": "from"
+          }
+        ],
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
@@ -164,7 +176,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_message_dcvh_sms_no_service",
+          "next": "f_sendMessageAndRunJanitor_no_service",
           "event": "noMatch"
         },
         {
@@ -182,7 +194,7 @@ ${
           ]
         },
         {
-          "next": "send_message_dcvh_sms_no_service",
+          "next": "f_sendMessageAndRunJanitor_no_service",
           "event": "match",
           "conditions": [
             {

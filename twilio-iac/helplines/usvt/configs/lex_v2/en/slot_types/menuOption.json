@@ -1,0 +1,85 @@
+{
+  "slotTypeName": "menuOption",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "report_abuse"
+      },
+      "synonyms": [
+        { "value": "1" },
+        { "value": "Report" },
+        { "value": "Reporting child abuse and neglect" },
+        { "value": "report abuse" },
+        { "value": "report child abuse" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "talk_to_someone"
+      },
+      "synonyms": [
+        { "value": "2" },
+        { "value": "Talk with someone" },
+        { "value": "talk to someone" },
+        { "value": "I need to talk" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "parent_education"
+      },
+      "synonyms": [
+        { "value": "3" },
+        { "value": "parent education" },
+        { "value": "enroll in parent education programs" },
+        { "value": "parenting classes" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "csa_prevention"
+      },
+      "synonyms": [
+        { "value": "4" },
+        { "value": "child sexual abuse prevention" },
+        { "value": "school based programs" },
+        { "value": "training of trainers" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "healthy_relationships"
+      },
+      "synonyms": [
+        { "value": "5" },
+        { "value": "healthy relationships project" },
+        { "value": "HRP" },
+        { "value": "school based curriculum" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "adult_responsibility"
+      },
+      "synonyms": [
+        { "value": "6" },
+        { "value": "adult responsibility project" },
+        { "value": "ART trainings" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "volunteer_apply"
+      },
+      "synonyms": [
+        { "value": "7" },
+        { "value": "volunteer" },
+        { "value": "apply to be a volunteer" },
+        { "value": "I want to volunteer" }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

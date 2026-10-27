@@ -17,6 +17,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { errors, expect, Page } from '@playwright/test';
 import TimeoutError = errors.TimeoutError;
+import { getConfigValue } from './config';
 
 export const agentDesktop = (page: Page) => {
   const selectors = {
@@ -65,26 +66,37 @@ export const agentDesktop = (page: Page) => {
   };
 };
 
-export const clickThroughTwilioPasteModals = async (page: Page) => {
+export const clickThroughTwilioPasteModals = async (page: Page, initialTimeoutMs?: number) => {
   const MAX_ATTEMPTS = 100;
   let attempts = 0;
+  const initialTimeout = initialTimeoutMs ?? (getConfigValue('inLambda') ? 15000 : 2000);
+  console.debug(`[${new Date().toISOString()}] Starting dismissing Twilio Paste modals`);
   try {
+    await page.waitForSelector('button[data-paste-element="MODAL_HEADER_CLOSE_BUTTON"]', {
+      timeout: initialTimeout,
+      state: 'visible',
+    });
+    console.debug(`[${new Date().toISOString()}] First Twilio Paste modal detected`);
     // noinspection InfiniteLoopJS
     for (; attempts < MAX_ATTEMPTS; attempts++) {
       await page
         .locator('button[data-paste-element="MODAL_HEADER_CLOSE_BUTTON"]')
-        .click({ timeout: 2000 });
-      console.info('Twilio Paste modal detected and dismissed');
+        .click({ timeout: 2000, force: true });
+      console.info(`[${new Date().toISOString()}] Twilio Paste modal detected and dismissed`);
     }
   } catch (err) {
     if (err instanceof TimeoutError) {
-      console.debug(`Dismissed ${attempts} Twilio modals, no more detected. Continuing`);
+      console.debug(
+        `[${new Date().toISOString()}] Dismissed ${attempts} Twilio Paste modals, no more detected. Continuing`,
+      );
       return;
     } else {
       throw err;
     }
   }
-  throw new Error(`Still attempting dismiss modals after ${attempts} attempts. Giving up.`);
+  throw new Error(
+    `[${new Date().toISOString()}] Still attempting dismiss modals after ${attempts} attempts. Giving up.`,
+  );
 };
 
 export const navigateToAgentDesktop = async (page: Page) => {

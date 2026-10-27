@@ -7,11 +7,7 @@ locals {
     operating_hours_enforced_override = false
     #Studio flow
     flow_vars = {
-      operating_hours_function_sid          = "ZH3ef7c7c03c4533829cc1b53b38197de7"
-      capture_channel_with_bot_function_sid = "ZH26e3dd66fd428ae98074f9959a5ec8d3"
-      chatbot_callback_cleanup_function_sid = "ZHfba53e17e98107e879e54299fd472796"
       send_message_run_janitor_sid          = "ZH223086290be816e9600ffac5655174ac"
-      bot_language                          = "en-NZ"
       blocked_message                       = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
       outside_country_message               = "Kia ora, only numbers or contacts from NZ can reach Youthline's helpline. We are not able to read or receive further messages from you. If you this is an error, please email complaints@youthline.co.nz with your name and contact details. If you are in NZ and feel unsafe or require urgent support, please call 111 now.  Outside of NZ please refer to www.findahelpline.com."
       ip_location_finder_url                = "https://hrm-staging.tl.techmatters.org/lambda/ipLocationFinder"
@@ -55,8 +51,6 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/voice-lambda-sd.tftpl"
         channel_flow_vars = {
-          voice_ivr_greeting_message = "Kia ora, thank you for contacting Youthline. One of our counsellors will get back to you as soon as we can. If you or someone else are in immediate danger, please call 111 immediately."
-          voice_ivr_language         = "en-US"
           wait_url                   = "https://nz-assets-8961.twil.io/busyLine"
           blocked_url                = "https://nz-assets-8961.twil.io/blocked_number.mp3"
           initial_message_url        = "https://nz-assets-8961.twil.io/initial_message.mp3"
