@@ -51,6 +51,9 @@ export default defineConfig({
       webchatConfigDir,
       // Work in progress, kept out of git; deployed, drafts live in a private S3 bucket
       draftsDir: process.env.FORM_BUILDER_DRAFTS_DIR ?? path.resolve(appDir, 'drafts'),
+      // Flow designer boards, also kept out of git
+      boardsDir: process.env.FORM_BUILDER_BOARDS_DIR ?? path.resolve(appDir, 'boards'),
+      peopleDir: process.env.FORM_BUILDER_PEOPLE_DIR ?? path.resolve(appDir, 'people'),
       repoRoot: path.resolve(appDir, '..'),
     }),
   ],
@@ -66,6 +69,7 @@ export default defineConfig({
         // Libraries change less often than the app, so they're cached separately
         manualChunks: {
           vendor: ['react', 'react-dom', '@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities', 'jszip'],
+          flows: ['@xyflow/react', 'lucide-react'],
         },
       },
     },

@@ -81,6 +81,34 @@ body {
   border-radius: var(--radius);
 }
 
+/* Forms / Contact flows */
+.area-switch {
+  display: flex;
+  gap: 4px;
+}
+
+.area-switch button {
+  font: inherit;
+  font-size: 14px;
+  color: inherit;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 4px 12px;
+  cursor: pointer;
+  opacity: 0.75;
+}
+
+.area-switch button:hover {
+  opacity: 1;
+}
+
+.area-switch button.active {
+  opacity: 1;
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .staff-toggle {
   margin-left: auto;
   font-size: 13px;

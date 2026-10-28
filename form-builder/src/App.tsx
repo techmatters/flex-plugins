@@ -22,12 +22,21 @@ import { isSignInEnabled, signOut } from './auth';
 import { DraftClient, httpDraftClient } from './draftClient';
 import { HelplineWorkspace } from './components/HelplineWorkspace';
 import { DraftsList } from './components/DraftsList';
+import { FlowsArea } from './flows/FlowsArea';
+import type { BoardClient } from './flows/boardClient';
+
+type Area = 'forms' | 'flows';
+
+const areaFromUrl = (): Area => (new URLSearchParams(window.location.search).get('area') === 'flows' ? 'flows' : 'forms');
 
 type Props = {
   draftClient?: DraftClient;
+  boardClient?: BoardClient;
 };
 
-export const App = ({ draftClient = httpDraftClient }: Props) => {
+export const App = ({ draftClient = httpDraftClient, boardClient }: Props) => {
+  // Forms, or the flow designer (Contact flows)
+  const [area, setArea] = useState<Area>(areaFromUrl);
   const [user, setUser] = useState<Me>();
   const [helplines, setHelplines] = useState<HelplineSummary[]>([]);
   const [code, setCode] = useState('');
@@ -78,22 +87,45 @@ export const App = ({ draftClient = httpDraftClient }: Props) => {
 
   const versions = helplines.find((helpline) => helpline.code === code)?.versions ?? [];
 
+  const switchArea = (newArea: Area) => {
+    setArea(newArea);
+    const params = new URLSearchParams(window.location.search);
+    params.set('area', newArea);
+    if (newArea === 'forms') params.delete('board');
+    window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
+  };
+
   return (
-    <div className="app">
+    <div className={area === 'flows' ? 'app app-flows' : 'app'}>
       <header className="top-bar">
         <h1>Aselo Form Builder</h1>
-        <label>
-          Helpline
-          <select value={code} onChange={(e) => selectHelpline(e.target.value)}>
-            <option value="">Choose a helpline…</option>
-            {helplines.map((helpline) => (
-              <option key={helpline.code} value={helpline.code}>
-                {helpline.code.toUpperCase()}
-              </option>
-            ))}
-          </select>
-        </label>
-        {versions.length > 1 && (
+        <nav className="area-switch" aria-label="Area">
+          {(['forms', 'flows'] as Area[]).map((candidate) => (
+            <button
+              key={candidate}
+              type="button"
+              className={area === candidate ? 'active' : ''}
+              aria-current={area === candidate ? 'page' : undefined}
+              onClick={() => switchArea(candidate)}
+            >
+              {candidate === 'forms' ? 'Forms' : 'Contact flows'}
+            </button>
+          ))}
+        </nav>
+        {area === 'forms' && (
+          <label>
+            Helpline
+            <select value={code} onChange={(e) => selectHelpline(e.target.value)}>
+              <option value="">Choose a helpline…</option>
+              {helplines.map((helpline) => (
+                <option key={helpline.code} value={helpline.code}>
+                  {helpline.code.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </label>
+        )}
+        {area === 'forms' && versions.length > 1 && (
           <label>
             Version
             <select value={version} onChange={(e) => setVersion(e.target.value)}>
@@ -134,7 +166,17 @@ export const App = ({ draftClient = httpDraftClient }: Props) => {
 
       {error && <div className="alert alert-error">{error}</div>}
 
-      {!code && !error && (
+      {area === 'flows' && user && (
+        <FlowsArea
+          client={boardClient}
+          helplineCodes={helplines.map((helpline) => helpline.code)}
+          staffMode={actingAsStaff}
+          userName={user.name}
+          userEmail={user.email}
+        />
+      )}
+
+      {area === 'forms' && !code && !error && (
         <main className="empty-state">
           <p>Choose a helpline to see and edit its forms.</p>
           {user && (
@@ -147,9 +189,9 @@ export const App = ({ draftClient = httpDraftClient }: Props) => {
         </main>
       )}
 
-      {loading && <main className="empty-state">Loading forms…</main>}
+      {area === 'forms' && loading && <main className="empty-state">Loading forms…</main>}
 
-      {definitions && user && (
+      {area === 'forms' && definitions && user && (
         <HelplineWorkspace
           key={`${definitions.code}/${definitions.version}/${reloadCount}`}
           definitions={definitions}

@@ -1,0 +1,799 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+/* The flow designer. The board fills the window below the top bar. */
+.app-flows {
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.app-flows > main.flows-home {
+  overflow: auto;
+}
+
+.danger {
+  color: #c62828;
+}
+
+/* Start page */
+.flows-home {
+  flex: 1;
+  padding: 24px 32px;
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.flows-home h2 {
+  margin: 0 0 4px;
+}
+
+.flows-new {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px 16px;
+  margin: 20px 0 28px;
+  padding: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.flows-new h3 {
+  width: 100%;
+  margin: 0;
+  font-size: 15px;
+}
+
+.flows-new .field {
+  margin: 0;
+  min-width: 200px;
+}
+
+.flows-group h3 {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  margin: 20px 0 8px;
+}
+
+.flows-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.flows-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding: 10px 14px;
+}
+
+.flows-list li + li {
+  border-top: 1px solid var(--color-border);
+}
+
+.flows-open {
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.flows-list .danger {
+  margin-left: auto;
+}
+
+/* Editor layout */
+.flow-editor {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.flow-editor:focus {
+  outline: none;
+}
+
+.flow-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.flow-toolbar h2 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.flow-board-code {
+  font-size: 12px;
+  color: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1px 8px;
+}
+
+.flow-save-state {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.flow-save-state.conflict,
+.flow-save-state.error {
+  color: var(--color-error-text);
+  font-weight: 600;
+}
+
+.flow-toolbar-buttons {
+  margin-left: auto;
+  display: flex;
+  gap: 2px;
+}
+
+.flow-toolbar-buttons .icon-button:hover:not(:disabled) {
+  color: var(--color-accent);
+}
+
+.flow-toolbar-buttons .icon-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.flow-editor > .alert {
+  margin: 8px 16px 0;
+}
+
+.flow-workspace {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.flow-canvas {
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  background: #fafbfc;
+}
+
+/* Palette */
+.flow-palette {
+  width: 220px;
+  flex-shrink: 0;
+  overflow-y: auto;
+  padding: 10px 10px 24px;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+}
+
+.flow-palette .field-hint {
+  margin: 0 0 8px;
+}
+
+.flow-palette-group h3 {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+  margin: 12px 0 4px;
+}
+
+.flow-palette-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  font: inherit;
+  font-size: 13px;
+  text-align: left;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 4px 6px;
+  cursor: grab;
+}
+
+.flow-palette-item:hover {
+  background: var(--color-accent-soft);
+  border-color: var(--color-border);
+}
+
+.flow-palette-preview {
+  position: relative;
+  width: 40px;
+  height: 26px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #37474f;
+}
+
+.flow-palette-preview .flow-shape {
+  position: absolute;
+  inset: 0;
+}
+
+.flow-palette-preview svg:not(.flow-shape) {
+  position: relative;
+}
+
+/* Side panel: settings and tasks */
+.flow-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+}
+
+.flow-sidebar-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.flow-sidebar-tabs button {
+  flex: 1;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 8px 8px;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.flow-sidebar-tabs button[aria-selected='true'] {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+.flow-inspector,
+.flow-tasks {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 14px 24px;
+}
+
+.flow-problems {
+  margin: 6px 0 0;
+  padding: 6px 8px 6px 24px;
+  font-size: 12.5px;
+  color: #8a3b00;
+  background: #fff3e0;
+  border: 1px solid #ffcc80;
+  border-radius: var(--radius);
+}
+
+.flow-problems li + li {
+  margin-top: 4px;
+}
+
+/* Tasks */
+.flow-tasks-filter {
+  display: flex;
+  gap: 4px;
+  margin: 10px 0;
+}
+
+.flow-tasks-filter button {
+  font: inherit;
+  font-size: 12.5px;
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+
+.flow-tasks-filter button.active {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.flow-task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.flow-task {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.flow-task.done {
+  opacity: 0.5;
+}
+
+.flow-task.done .flow-task-title {
+  text-decoration: line-through;
+}
+
+.flow-task-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.flow-task-title {
+  text-align: left;
+  text-decoration: none;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.flow-task-check {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #37474f;
+  display: flex;
+}
+
+.flow-task-check:disabled {
+  cursor: default;
+}
+
+.flow-inspector-section {
+  padding: 10px 0;
+}
+
+.flow-inspector-section + .flow-inspector-section {
+  border-top: 1px solid var(--color-border);
+}
+
+.flow-inspector-section h3 {
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+
+.flow-inspector textarea {
+  width: 100%;
+  font: inherit;
+}
+
+.flow-inspector-actions {
+  border-top: 1px solid var(--color-border);
+  padding-top: 12px;
+}
+
+.flow-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.flow-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid #90a4ae;
+  cursor: pointer;
+  padding: 0;
+}
+
+.flow-swatch.selected {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.flow-exits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+}
+
+.flow-exits li {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.flow-exits input {
+  flex: 1;
+  font: inherit;
+  padding: 4px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.flow-comments {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 8px;
+}
+
+.flow-comments li {
+  padding: 6px 0;
+}
+
+.flow-comments p {
+  margin: 2px 0 0;
+  white-space: pre-wrap;
+}
+
+.flow-comment-author {
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.flow-resolved {
+  font-weight: normal;
+  color: var(--color-muted);
+}
+
+.flow-frame-list,
+.flow-tips {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.flow-tips li {
+  margin-bottom: 4px;
+}
+
+/* Objects on the canvas */
+.flow-object {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.flow-object > .flow-shape {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.flow-object-body {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  padding: 6px 18px;
+  text-align: center;
+  font-size: 12.5px;
+  line-height: 1.25;
+  color: #1c2b33;
+  overflow: hidden;
+}
+
+/* Leave room for the slanted, double or pointed sides */
+.flow-shape-diamond .flow-object-body {
+  padding: 14px 22%;
+}
+
+.flow-shape-parallelogram .flow-object-body {
+  padding: 6px 28px;
+}
+
+.flow-shape-predefined .flow-object-body {
+  padding: 6px 20px;
+}
+
+.flow-shape-manualInput .flow-object-body {
+  padding-top: 18px;
+}
+
+.flow-shape-cylinder .flow-object-body {
+  padding-top: 18px;
+}
+
+.flow-shape-document .flow-object-body {
+  padding-bottom: 14px;
+}
+
+.flow-shape-offPage .flow-object-body {
+  padding-right: 28px;
+}
+
+.flow-shape-none .flow-object-body {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.flow-shape-none.selected .flow-object-body {
+  outline: 1px dashed #1565c0;
+}
+
+.flow-object-icon {
+  color: #37474f;
+  display: flex;
+}
+
+.flow-shape-none .flow-object-icon {
+  display: none;
+}
+
+.flow-object-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.flow-object-caption {
+  font-size: 9.5px;
+  color: #546e7a;
+  font-family: ui-monospace, Consolas, monospace;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flow-placeholder {
+  color: #90a4ae;
+}
+
+.flow-inline-input {
+  width: 100%;
+  min-height: 2.6em;
+  font: inherit;
+  text-align: center;
+  resize: none;
+  border: 1px solid #1565c0;
+  border-radius: 3px;
+  background: #ffffff;
+  padding: 2px 4px;
+}
+
+.flow-comment-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  background: #ff8f00;
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 1px 6px;
+}
+
+/* Connection points: shown on hover, or while connecting */
+.flow-handle.react-flow__handle {
+  width: 10px;
+  height: 10px;
+  background: #ffffff;
+  border: 2px solid #1565c0;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.react-flow__node:hover .flow-handle,
+.react-flow__node.selected .flow-handle,
+.react-flow.connecting .flow-handle,
+.flow-handle.connectingfrom,
+.flow-handle.connectingto {
+  opacity: 1;
+}
+
+/* Frames */
+.flow-frame {
+  width: 100%;
+  height: 100%;
+  border: 1.5px solid #b0bec5;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+.flow-frame.selected {
+  border-color: #1565c0;
+}
+
+.flow-frame-title {
+  position: absolute;
+  top: -30px;
+  left: 0;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+  font-size: 15px;
+  font-weight: 600;
+  color: #37474f;
+  cursor: grab;
+  white-space: nowrap;
+  padding: 2px 4px;
+}
+
+.flow-frame-title .flow-inline-input {
+  text-align: left;
+  min-width: 240px;
+}
+
+.flow-frame-tags {
+  font-size: 12px;
+  font-weight: normal;
+  color: var(--color-muted);
+}
+
+/* Stickies */
+.flow-sticky {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  font-size: 13px;
+  line-height: 1.35;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.flow-sticky.selected {
+  outline: 2px solid #1565c0;
+}
+
+.flow-sticky-text {
+  display: block;
+  white-space: pre-wrap;
+  word-break: break-word;
+  height: 100%;
+}
+
+.flow-sticky .flow-inline-input {
+  height: 100%;
+  text-align: left;
+  background: transparent;
+}
+
+/* Connections */
+.flow-edge {
+  stroke: #37474f !important;
+  stroke-width: 1.6 !important;
+}
+
+.flow-edge.selected {
+  stroke: #1565c0 !important;
+  stroke-width: 2.4 !important;
+}
+
+.flow-edge-label {
+  position: absolute;
+  pointer-events: all;
+  font-size: 11.5px;
+  background: #ffffff;
+  border: 1px solid #b0bec5;
+  border-radius: 10px;
+  padding: 1px 7px;
+  color: #37474f;
+}
+
+.flow-edge-label.selected {
+  border-color: #1565c0;
+  color: #1565c0;
+}
+
+/* Problems on objects */
+.flow-problem-badge {
+  position: absolute;
+  top: -9px;
+  left: -9px;
+  display: flex;
+  background: #e65100;
+  color: #ffffff;
+  border-radius: 50%;
+  padding: 3px;
+}
+
+/* While connecting, the object under the pointer shows it will take the connection */
+.flow-canvas.connecting .react-flow__node-object:hover .flow-shape {
+  filter: drop-shadow(0 0 5px rgba(21, 101, 192, 0.85));
+}
+
+.flow-canvas.connecting .react-flow__node-object:hover .flow-shape-none .flow-object-body {
+  outline: 2px solid #1565c0;
+}
+
+/* Why a connection wasn't made */
+.flow-notice {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  max-width: 520px;
+  background: #263238;
+  color: #ffffff;
+  font-size: 13.5px;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 10;
+}
+
+/* Sticky notes that are tasks */
+.flow-sticky-task {
+  display: flex;
+  flex-direction: column;
+}
+
+.flow-sticky-task-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.flow-sticky-assignee {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flow-sticky-task.done {
+  filter: grayscale(0.85);
+  opacity: 0.6;
+}
+
+.flow-sticky-task.done .flow-sticky-text {
+  text-decoration: line-through;
+}
+
+/* People lists */
+.flows-people {
+  margin-top: 32px;
+}
+
+.flows-people h3 {
+  font-size: 15px;
+  margin: 0 0 4px;
+}
+
+.flows-people .field {
+  max-width: 260px;
+  margin: 12px 0;
+}
+
+.flows-people-add {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.flows-people-add input {
+  font: inherit;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}

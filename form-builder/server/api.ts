@@ -27,6 +27,7 @@
  *   DELETE /api/drafts/:code/:version               discard a draft
  *   POST   /api/drafts/:code/:version/submit        helpline staff: send for review
  *   POST   /api/drafts/:code/:version/apply         Aselo staff only: apply a draft
+ *   ...    /api/boards..., /api/people/...          the flow designer (boardsApi.ts)
  *
  * Roles: Aselo staff can do everything for every helpline. Helpline staff only see their own
  * helplines, can't apply, and never see or change the service configuration
@@ -34,6 +35,9 @@
  */
 import { DefinitionsApiError, listHelplines, loadDefinitionFiles } from './definitionsApi';
 import { Draft, DraftStore, isValidDraftFilePath, isValidDraftKey } from './drafts';
+import type { BoardStore } from './boards';
+import type { PeopleStore } from './people';
+import { handleBoardRequest } from './boardsApi';
 import { isServiceConfigPath } from './filePaths';
 
 export type ApiUser = {
@@ -86,6 +90,9 @@ export type ApiContext = {
   // Optional: without one, Apply isn't offered and Aselo staff open the PR by hand
   applier?: DraftApplier;
   notifier: Notifier;
+  // The flow designer's boards and people lists; without them, their routes answer 501
+  boards?: BoardStore;
+  people?: PeopleStore;
   now?: () => Date;
 };
 
@@ -153,6 +160,13 @@ export const handleApiRequest = async (
     if (route === 'GET /api/drafts') {
       const drafts = await context.drafts.list();
       return ok(drafts.filter((draft) => canOpenHelpline(user, draft.code)));
+    }
+
+    const boardsPath = request.path.replace(/\/+$/, '');
+    if (boardsPath === '/api/boards' || boardsPath.startsWith('/api/boards/') || boardsPath.startsWith('/api/people/')) {
+      if (!context.boards) return fail(501, "The flow designer isn't set up here.");
+      const stores = { boards: context.boards, people: context.people };
+      return await handleBoardRequest(stores, request.method.toUpperCase(), boardsPath, request.body, user, now);
     }
 
     const definitionsMatch = route.match(/^GET \/api\/definitions\/([^/]+)\/([^/]+)$/);

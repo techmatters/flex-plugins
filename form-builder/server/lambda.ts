@@ -33,7 +33,9 @@ import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { localNotifier } from './localServices';
 import { PublicRepoSource } from './publicRepo';
 import { RepoSnapshots } from './repoSnapshot';
+import { S3BoardStore } from './s3BoardStore';
 import { S3DraftStore } from './s3DraftStore';
+import { S3PeopleStore } from './people';
 import { SlackNotifier } from './slackNotifier';
 
 const ASELO_STAFF_GROUP = 'form-builder-aselo-staff';
@@ -71,6 +73,9 @@ const loadServices = async (): Promise<Services> => {
   return {
     snapshots: new RepoSnapshots(new PublicRepoSource(), '/tmp/flex-plugins'),
     drafts: new S3DraftStore(process.env.DRAFTS_BUCKET!),
+    // Flow designer boards share the drafts bucket, under boards/
+    boards: new S3BoardStore(process.env.DRAFTS_BUCKET!),
+    people: new S3PeopleStore(process.env.DRAFTS_BUCKET!),
     // Until the Slack webhook is set up, submissions are only logged
     notifier: slackWebhookUrl
       ? new SlackNotifier(slackWebhookUrl, process.env.APP_URL ?? 'https://form-builder.tl.techmatters.org')

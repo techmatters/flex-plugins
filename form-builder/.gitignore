@@ -2,3 +2,5 @@ node_modules/
 dist/
 drafts/
 dist-lambda/
+boards/
+people/

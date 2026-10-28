@@ -16,13 +16,15 @@
 
 /**
  * Serves the form builder API (api.ts) from the Vite dev server, using the local repo
- * checkout: definitions are read from it, drafts are kept in form-builder/drafts (gitignored)
- * and "Apply" writes into it. Deployed, the same API runs in a Lambda instead.
+ * checkout: definitions are read from it, drafts, boards and people lists are kept in
+ * form-builder/drafts, form-builder/boards and form-builder/people (gitignored) and "Apply" writes into it. Deployed, the same API runs in a Lambda instead.
  */
 import type { IncomingMessage, ServerResponse } from 'http';
 import type { Plugin } from 'vite';
 import { ApiContext, handleApiRequest } from './api';
 import { LocalDraftStore } from './drafts';
+import { LocalBoardStore } from './boards';
+import { LocalPeopleStore } from './people';
 import { LocalApplier, localNotifier, localUser } from './localServices';
 
 type Options = {
@@ -30,6 +32,8 @@ type Options = {
   helplinesConfigDir?: string;
   webchatConfigDir?: string;
   draftsDir: string;
+  boardsDir: string;
+  peopleDir: string;
   repoRoot: string;
 };
 
@@ -83,6 +87,8 @@ export const definitionsDevApi = ({
   helplinesConfigDir,
   webchatConfigDir,
   draftsDir,
+  boardsDir,
+  peopleDir,
   repoRoot,
 }: Options): Plugin => {
   const context: ApiContext = {
@@ -90,6 +96,8 @@ export const definitionsDevApi = ({
     helplinesConfigDir,
     webchatConfigDir,
     drafts: new LocalDraftStore(draftsDir),
+    boards: new LocalBoardStore(boardsDir),
+    people: new LocalPeopleStore(peopleDir),
     applier: new LocalApplier(formDefinitionsDir, repoRoot, webchatConfigDir, helplinesConfigDir),
     notifier: localNotifier,
   };
