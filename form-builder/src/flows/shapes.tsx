@@ -19,6 +19,7 @@
  * real size, so lines keep the same thickness however an object is resized.
  */
 import {
+  BellRing,
   Bot,
   Braces,
   CircleStop,
@@ -51,6 +52,7 @@ import {
 import type { Shape } from './model';
 
 export const ICONS: Record<string, LucideIcon> = {
+  BellRing,
   Bot,
   Braces,
   CircleStop,

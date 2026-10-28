@@ -35,7 +35,9 @@ import {
 } from './model';
 import type { BoardContent, Person } from './model';
 import { CanvasNode, ConnectionEdge, FrameNode, newId, ObjectNode, StickyNode } from './canvasModel';
+import type { Issue } from './checks';
 import { uniqueName } from './checks';
+import { RecordingActions, RecordingSection, ScriptApproval } from './RecordingControls';
 
 const CHANNELS: { value: Channel; label: string }[] = [
   { value: 'voice', label: 'Voice' },
@@ -52,8 +54,8 @@ export type InspectorProps = {
   title: string;
   // The board as saved, for checks across objects (e.g. names already used)
   content: BoardContent;
-  // Problems found on each object (checks.ts), by object id
-  problems: Map<string, string[]>;
+  // What the check found on each object (checks.ts), by object id
+  problems: Map<string, Issue[]>;
   // Who tasks can be assigned to: the helpline's people and the Aselo team
   people: Person[];
   nodes: CanvasNode[];
@@ -68,6 +70,9 @@ export type InspectorProps = {
   onDelete: () => void;
   onDuplicate: () => void;
   onFocusFrame: (id: string) => void;
+  onEndHere: (objectId: string, exit: string, ends?: boolean) => void;
+  // The helpline's recordings, and what this person can do with them
+  recordings: RecordingActions;
 };
 
 const ChannelSelect = ({
@@ -227,8 +232,25 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
   const problems = props.problems.get(node.id) ?? [];
   const showsChannel = info.hasMessage || object.type === 'incoming';
 
+  const exits = exitsOf(object);
+  const nameOfTarget = (id: string) => {
+    const target = props.nodes.find(
+      (candidate): candidate is ObjectNode => candidate.id === id && candidate.type === 'object',
+    );
+    return target ? target.data.object.studioName || target.data.object.text : 'another object';
+  };
+
   return (
     <>
+      {problems.length > 0 && (
+        <ul className="flow-problems" aria-label="Problems">
+          {problems.map((issue) => (
+            <li key={issue.key} className={issue.severity}>
+              {issue.message}
+            </li>
+          ))}
+        </ul>
+      )}
       <section className="flow-inspector-section">
         <label className="field">
           <span className="field-label">Kind</span>
@@ -318,6 +340,20 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
         </section>
       )}
 
+      {info.hasMessage && (
+        <>
+          <RecordingSection object={object} frame={frame?.data.frame} actions={props.recordings} />
+          <ScriptApproval
+            object={object}
+            frame={frame?.data.frame}
+            staff={props.recordings.staff}
+            readOnly={readOnly}
+            userName={props.userName}
+            onApprove={(approved) => update({ message: { ...object.message, approved } })}
+          />
+        </>
+      )}
+
       {info.studioPrefix && (
         <section className="flow-inspector-section">
           <label className="field">
@@ -327,8 +363,6 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
               value={object.studioName ?? ''}
               disabled={readOnly}
               placeholder={suggestion}
-              aria-invalid={problems.length > 0}
-              aria-describedby={problems.length > 0 ? `problems-${node.id}` : undefined}
               onChange={(e) => update({ studioName: e.target.value.trim() || undefined })}
             />
             <span className="field-hint">
@@ -336,13 +370,6 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
               {info.hasMessage && object.message?.channel === 'voice' ? ' and its recording file' : ''}.
             </span>
           </label>
-          {problems.length > 0 && (
-            <ul className="flow-problems" id={`problems-${node.id}`}>
-              {problems.map((problem) => (
-                <li key={problem}>{problem}</li>
-              ))}
-            </ul>
-          )}
           {!readOnly && suggestion && suggestion !== object.studioName && (
             <button type="button" className="link-button" onClick={() => update({ studioName: suggestion })}>
               Use {suggestion}
@@ -354,9 +381,9 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
       {info.fields && (
         <section className="flow-inspector-section">
           <h3>Call settings</h3>
-          {info.studioFunction && (
+          {info.studioRoute && (
             <p className="field-hint">
-              Calls <code>{info.studioFunction}</code> (see STUDIO_ROUTES.md in the account-scoped lambdas).
+              Calls <code>{info.studioRoute}</code> (see STUDIO_ROUTES.md in the account-scoped lambdas).
             </p>
           )}
           {info.fields.map((field) => {
@@ -391,6 +418,38 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
               </label>
             );
           })}
+        </section>
+      )}
+
+      {exits.length > 0 && (
+        <section className="flow-inspector-section">
+          <h3>Where it goes</h3>
+          <ul className="flow-exit-targets">
+            {exits.map((exit) => {
+              const connection = props.edges.find(
+                (edge) => edge.source === node.id && (edge.data?.exit ?? '') === exit,
+              );
+              const ended = (object.endedExits ?? []).includes(exit);
+              return (
+                <li key={exit || 'next'}>
+                  <span className="flow-exit-name">{exit || 'Next'}</span>
+                  {connection ? (
+                    <span>→ {nameOfTarget(connection.target)}</span>
+                  ) : (
+                    <label className="field-checkbox">
+                      <input
+                        type="checkbox"
+                        checked={ended}
+                        disabled={readOnly}
+                        onChange={(e) => props.onEndHere(node.id, exit, e.target.checked)}
+                      />
+                      <span>{ended ? 'The flow ends here' : 'Not connected: the flow ends here on purpose'}</span>
+                    </label>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </section>
       )}
 

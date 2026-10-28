@@ -30,11 +30,12 @@ import {
   useReactFlow,
 } from '@xyflow/react';
 import { MessageSquareText, Square, SquareCheck, TriangleAlert } from 'lucide-react';
+import type { Issue } from './checks';
 import { iconOf, OBJECT_TYPES, objectColor, STICKY_COLORS } from './model';
 import type { ConnectionEdge, FrameNode, ObjectNode, StickyNode } from './canvasModel';
 import { ObjectIcon, ShapeOutline } from './shapes';
 
-export const BoardEditingContext = createContext<{ readOnly: boolean; problems?: Map<string, string[]> }>({
+export const BoardEditingContext = createContext<{ readOnly: boolean; problems?: Map<string, Issue[]> }>({
   readOnly: false,
 });
 
@@ -133,7 +134,8 @@ export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<
   const comments = openComments(object.thread);
   const objectProblems = problems?.get(id) ?? [];
   let stroke = '#37474f';
-  if (objectProblems.length > 0) stroke = '#e65100';
+  const hasErrors = objectProblems.some((issue) => issue.severity === 'error');
+  if (objectProblems.length > 0) stroke = hasErrors ? '#c62828' : '#e65100';
   if (selected) stroke = '#1565c0';
   return (
     <div className={`flow-object flow-shape-${info.shape} ${selected ? 'selected' : ''}`}>
@@ -146,7 +148,11 @@ export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<
         stroke={stroke}
       />
       {objectProblems.length > 0 && (
-        <span className="flow-problem-badge" title={objectProblems.join('\n')} aria-label="Has problems">
+        <span
+          className={`flow-problem-badge ${hasErrors ? 'error' : 'warning'}`}
+          title={objectProblems.map((issue) => issue.message).join('\n')}
+          aria-label={hasErrors ? 'Has errors' : 'Has warnings'}
+        >
           <TriangleAlert size={13} aria-hidden />
         </span>
       )}

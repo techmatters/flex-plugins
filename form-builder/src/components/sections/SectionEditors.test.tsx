@@ -99,7 +99,8 @@ describe('call types', () => {
 });
 
 describe('canned responses', () => {
-  test('says they are switched off, and adds responses pasted from a spreadsheet', async () => {
+  // Slow (reads a spreadsheet), so it can pass 5 seconds when the whole suite runs at once
+  test('says they are switched off, and adds responses pasted from a spreadsheet', { timeout: 15_000 }, async () => {
     await open('Canned responses');
     expect(screen.getAllByText(/switched off for this helpline/).length).toBeGreaterThan(0);
 

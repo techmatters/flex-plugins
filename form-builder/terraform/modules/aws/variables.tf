@@ -45,6 +45,18 @@ variable "github_actions_user" {
   default     = "github-actions"
 }
 
+variable "recordings_domain" {
+  description = "Public address the helplines' recordings are played from (Studio's recordings URL)."
+  type        = string
+  default     = "recordings.tl.techmatters.org"
+}
+
+variable "recordings_bucket" {
+  description = "Private bucket the recordings are kept in, served through CloudFront."
+  type        = string
+  default     = "tl-aselo-recordings"
+}
+
 variable "ssm_prefix" {
   description = "SSM Parameter Store path for the builder's secrets (the Slack webhook)."
   type        = string

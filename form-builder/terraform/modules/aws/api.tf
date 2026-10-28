@@ -92,6 +92,25 @@ resource "aws_iam_role_policy" "api" {
         Resource = "${aws_s3_bucket.drafts.arn}/*"
       },
       {
+        Sid      = "ListRecordings"
+        Effect   = "Allow"
+        Action   = "s3:ListBucket"
+        Resource = aws_s3_bucket.recordings.arn
+      },
+      {
+        # Upload links are signed with the Lambda's permissions; publishing copies staging to production
+        Sid      = "ManageRecordings"
+        Effect   = "Allow"
+        Action   = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
+        Resource = "${aws_s3_bucket.recordings.arn}/*"
+      },
+      {
+        Sid      = "RefreshRecordings"
+        Effect   = "Allow"
+        Action   = "cloudfront:CreateInvalidation"
+        Resource = aws_cloudfront_distribution.recordings.arn
+      },
+      {
         Sid      = "ReadSecrets"
         Effect   = "Allow"
         Action   = ["ssm:GetParameters", "ssm:GetParameter"]
@@ -133,6 +152,10 @@ resource "aws_lambda_function" "api" {
       DRAFTS_BUCKET = aws_s3_bucket.drafts.id
       APP_URL       = "https://${var.domain}"
       SSM_PREFIX    = var.ssm_prefix
+      # The flow designer's recordings (recordings.tf)
+      RECORDINGS_BUCKET          = aws_s3_bucket.recordings.id
+      RECORDINGS_URL             = "https://${var.recordings_domain}"
+      RECORDINGS_DISTRIBUTION_ID = aws_cloudfront_distribution.recordings.id
     }
   }
 

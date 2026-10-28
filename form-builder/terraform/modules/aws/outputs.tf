@@ -29,6 +29,18 @@ output "lambda_function" {
   value = aws_lambda_function.api.function_name
 }
 
+output "recordings_url" {
+  value = "https://${var.recordings_domain}"
+}
+
+output "recordings_bucket" {
+  value = aws_s3_bucket.recordings.id
+}
+
+output "recordings_distribution_id" {
+  value = aws_cloudfront_distribution.recordings.id
+}
+
 output "cloudfront_distribution_id" {
   value = aws_cloudfront_distribution.this.id
 }

@@ -96,6 +96,7 @@ export const FlowsArea = ({ client = httpBoardClient, helplineCodes, staffMode, 
       board={board}
       client={client}
       readOnly={board.code === TEMPLATES_CODE && !staffMode}
+      staffMode={staffMode}
       userName={userName}
       userEmail={userEmail}
       onClose={() => setOpen(undefined)}

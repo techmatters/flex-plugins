@@ -56,6 +56,8 @@ export type MessageContent = {
   // e.g. en, es
   language?: string;
   script?: string;
+  // Messaging scripts are approved by Aselo staff; the approval holds while the script is the same
+  approved?: { by: string; at: string; script: string };
 };
 
 export type FlowObject = Position &
@@ -75,6 +77,8 @@ export type FlowObject = Position &
     thread?: CommentThread;
     // The Studio call's parameters, for types that have some (e.g. targetSkills); see ObjectTypeInfo.fields
     settings?: Record<string, string>;
+    // Ways out deliberately left unconnected: the flow ends there ('' for a single way out)
+    endedExits?: string[];
   };
 
 export type Connection = {
@@ -186,6 +190,7 @@ export type FlowObjectType =
   | 'setVariable'
   | 'wait'
   | 'forwardCall'
+  | 'notifyError'
   | 'goToFrame'
   | 'text';
 
@@ -224,9 +229,9 @@ export type ObjectTypeInfo = {
   // Holds a script (and, for voice, a recording)
   hasMessage?: boolean;
   defaultSize: Size;
-  // The account-scoped lambda route it calls (lambdas/account-scoped/STUDIO_ROUTES.md); its Studio
-  // name is f_ + the route name, as those docs say
-  studioFunction?: string;
+  // The account-scoped lambda route it calls (lambdas/account-scoped/STUDIO_ROUTES.md), e.g.
+  // worker/isSkilledWorkerAvailable; its Studio name is f_ + the route's name, as those docs say
+  studioRoute?: string;
   // The call's parameters, set per object
   fields?: ObjectField[];
   // The field whose value tells calls to the same route apart in their names
@@ -292,7 +297,7 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     family: 'check',
     studioWidget: 'Function + Split',
     studioPrefix: 'f_',
-    studioFunction: 'operatingHours',
+    studioRoute: 'operatingHours',
     exits: ['open', 'closed', 'holiday', 'failed'],
     defaultSize: { width: 190, height: 72 },
   },
@@ -304,7 +309,7 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     family: 'check',
     studioWidget: 'Function + Split',
     studioPrefix: 'f_',
-    studioFunction: 'getProfileFlagsForIdentifier',
+    studioRoute: 'getProfileFlagsForIdentifier',
     exits: ['blocked', 'not blocked', 'failed'],
     defaultSize: { width: 190, height: 72 },
   },
@@ -317,7 +322,7 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     family: 'check',
     studioWidget: 'HTTP Request + Split',
     studioPrefix: 'f_',
-    studioFunction: 'isSkilledWorkerAvailable',
+    studioRoute: 'worker/isSkilledWorkerAvailable',
     nameSuffixFrom: 'targetSkills',
     fields: [
       {
@@ -345,7 +350,7 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     family: 'check',
     studioWidget: 'HTTP Request + Split',
     studioPrefix: 'f_',
-    studioFunction: 'isSkilledWorkerLoggedIn',
+    studioRoute: 'worker/isSkilledWorkerLoggedIn',
     nameSuffixFrom: 'targetSkills',
     fields: [
       {
@@ -498,6 +503,18 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     exits: ['call completed', 'hung up'],
     defaultSize: { width: 180, height: 64 },
   },
+  // An HTTP request to webhook_url_studio_errors, which posts to the Aselo team's Slack: the
+  // Studio flow standards ask for one on every failure, e.g. failed to enqueue
+  notifyError: {
+    label: 'Notify the Aselo team',
+    group: 'Other',
+    shape: 'rounded',
+    icon: 'BellRing',
+    family: 'voicemail',
+    studioWidget: 'HTTP Request (Studio errors webhook)',
+    studioPrefix: 'http_post_',
+    defaultSize: { width: 190, height: 64 },
+  },
   setVariable: {
     label: 'Set variable / counter',
     group: 'Other',
@@ -597,6 +614,9 @@ export const iconOf = (object: Pick<FlowObject, 'type' | 'message'>) =>
     ? CHANNEL_ICONS[object.message.channel]
     : OBJECT_TYPES[object.type].icon;
 
+// The route's own name: worker/isSkilledWorkerAvailable -> isSkilledWorkerAvailable
+export const routeName = (route: string) => route.split('/').pop() ?? route;
+
 export const toSnake = (text: string) =>
   text
     .normalize('NFD')
@@ -622,9 +642,9 @@ export const suggestStudioName = (
   const postqueue = frame?.stage === 'postqueue' ? 'postqueue_' : '';
   if (info.studioPrefix === 'f_') {
     // Named after the route it calls, plus what tells two calls apart (e.g. the skills)
-    if (info.studioFunction) {
+    if (info.studioRoute) {
       const suffix = info.nameSuffixFrom ? toSnake(object.settings?.[info.nameSuffixFrom] ?? '') : '';
-      return `${postqueue}f_${info.studioFunction}${suffix ? `_${suffix}` : ''}`;
+      return `${postqueue}f_${routeName(info.studioRoute)}${suffix ? `_${suffix}` : ''}`;
     }
     return `${postqueue}f_${toCamel(object.text) || 'function'}`;
   }
@@ -636,7 +656,11 @@ export const suggestStudioName = (
   const language = info.hasMessage ? object.message?.language : undefined;
   // Text that repeats the prefix (e.g. a new "Play message (voice)") doesn't say it twice
   const prefixWords = info.studioPrefix.replace(/_$/, '');
-  const described = toSnake(object.text).replace(new RegExp(`^${prefixWords}(_|$)`), '');
+  let described = toSnake(object.text).replace(new RegExp(`^${prefixWords}(_|$)`), '');
+  // ...nor repeats the channel or language (a new voice message's text says "voice")
+  [channel, language].forEach((word) => {
+    if (word) described = described.replace(new RegExp(`(^|_)${word}(?=_|$)`), '').replace(/^_+/, '');
+  });
   const parts = [channel, language, described].filter(Boolean);
   return `${postqueue}${info.studioPrefix}${parts.join('_')}`;
 };

@@ -28,6 +28,7 @@
  *   POST   /api/drafts/:code/:version/submit        helpline staff: send for review
  *   POST   /api/drafts/:code/:version/apply         Aselo staff only: apply a draft
  *   ...    /api/boards..., /api/people/...          the flow designer (boardsApi.ts)
+ *   ...    /api/recordings/...                      its recordings (recordingsApi.ts)
  *
  * Roles: Aselo staff can do everything for every helpline. Helpline staff only see their own
  * helplines, can't apply, and never see or change the service configuration
@@ -38,6 +39,7 @@ import { Draft, DraftStore, isValidDraftFilePath, isValidDraftKey } from './draf
 import type { BoardStore } from './boards';
 import type { PeopleStore } from './people';
 import { handleBoardRequest } from './boardsApi';
+import { handleRecordingRequest, RecordingStores } from './recordingsApi';
 import { isServiceConfigPath } from './filePaths';
 
 export type ApiUser = {
@@ -93,6 +95,8 @@ export type ApiContext = {
   // The flow designer's boards and people lists; without them, their routes answer 501
   boards?: BoardStore;
   people?: PeopleStore;
+  // Recording files, and who uploaded, approved and published them; without them, 501
+  recordings?: RecordingStores;
   now?: () => Date;
 };
 
@@ -163,6 +167,9 @@ export const handleApiRequest = async (
     }
 
     const boardsPath = request.path.replace(/\/+$/, '');
+    if (boardsPath.startsWith('/api/recordings/')) {
+      return await handleRecordingRequest(context.recordings, request.method.toUpperCase(), boardsPath, request.body, user, now);
+    }
     if (boardsPath === '/api/boards' || boardsPath.startsWith('/api/boards/') || boardsPath.startsWith('/api/people/')) {
       if (!context.boards) return fail(501, "The flow designer isn't set up here.");
       const stores = { boards: context.boards, people: context.people };

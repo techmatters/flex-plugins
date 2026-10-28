@@ -195,6 +195,14 @@ describe('objects', () => {
     ).toBe('postqueue_f_isSkilledWorkerAvailable_tya_calls');
     expect(suggestStudioName({ type: 'checkWorkerLoggedIn', text: 'x' })).toBe('f_isSkilledWorkerLoggedIn');
     expect(suggestStudioName({ type: 'function', text: 'Save post survey' })).toBe('f_savePostSurvey');
+    // A new voice message's text repeats its prefix and channel; the name doesn't
+    expect(
+      suggestStudioName({
+        type: 'playMessage',
+        text: 'Play message (voice)',
+        message: { channel: 'voice', language: 'en' },
+      }),
+    ).toBe('play_message_voice_en');
     expect(suggestStudioName({ type: 'decision', text: 'Is English?' }, voice)).toBe('postqueue_split_is_english');
     expect(
       suggestStudioName({ type: 'playMessage', text: 'Post queue closed', message: { language: 'en' } }, voice),

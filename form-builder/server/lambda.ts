@@ -25,7 +25,8 @@
  *
  * Environment: DRAFTS_BUCKET, APP_URL (https://form-builder.tl.techmatters.org) and SSM_PREFIX
  * (/form-builder), under which the Slack webhook is kept (optional: without it, submissions are
- * only logged).
+ * only logged). For the flow designer's recordings: RECORDINGS_BUCKET, RECORDINGS_URL
+ * (https://recordings.tl.techmatters.org) and RECORDINGS_DISTRIBUTION_ID.
  */
 import { GetParametersCommand, SSMClient } from '@aws-sdk/client-ssm';
 import type { APIGatewayProxyEventV2WithJWTAuthorizer, APIGatewayProxyResultV2 } from 'aws-lambda';
@@ -36,6 +37,7 @@ import { RepoSnapshots } from './repoSnapshot';
 import { S3BoardStore } from './s3BoardStore';
 import { S3DraftStore } from './s3DraftStore';
 import { S3PeopleStore } from './people';
+import { S3RecordingFiles, S3RecordingLogStore } from './recordingStores';
 import { SlackNotifier } from './slackNotifier';
 
 const ASELO_STAFF_GROUP = 'form-builder-aselo-staff';
@@ -76,6 +78,17 @@ const loadServices = async (): Promise<Services> => {
     // Flow designer boards share the drafts bucket, under boards/
     boards: new S3BoardStore(process.env.DRAFTS_BUCKET!),
     people: new S3PeopleStore(process.env.DRAFTS_BUCKET!),
+    // Until the recordings bucket is set up (RECORDINGS_BUCKET), recordings answer 501
+    recordings: process.env.RECORDINGS_BUCKET
+      ? {
+          files: new S3RecordingFiles(
+            process.env.RECORDINGS_BUCKET,
+            process.env.RECORDINGS_URL ?? 'https://recordings.tl.techmatters.org',
+            process.env.RECORDINGS_DISTRIBUTION_ID,
+          ),
+          log: new S3RecordingLogStore(process.env.DRAFTS_BUCKET!),
+        }
+      : undefined,
     // Until the Slack webhook is set up, submissions are only logged
     notifier: slackWebhookUrl
       ? new SlackNotifier(slackWebhookUrl, process.env.APP_URL ?? 'https://form-builder.tl.techmatters.org')

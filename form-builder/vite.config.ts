@@ -54,6 +54,7 @@ export default defineConfig({
       // Flow designer boards, also kept out of git
       boardsDir: process.env.FORM_BUILDER_BOARDS_DIR ?? path.resolve(appDir, 'boards'),
       peopleDir: process.env.FORM_BUILDER_PEOPLE_DIR ?? path.resolve(appDir, 'people'),
+      recordingsDir: process.env.FORM_BUILDER_RECORDINGS_DIR ?? path.resolve(appDir, 'recordings'),
       repoRoot: path.resolve(appDir, '..'),
     }),
   ],
@@ -78,5 +79,8 @@ export default defineConfig({
     port: 5180,
     // The specification, validator and translations are imported from elsewhere in the repo
     fs: { allow: [appDir, hrmFormDefinitionsSrc, pluginTranslationsDir, pluginTypesDir, webchatTranslationsDir] },
+    // The local data folders change as people work; they aren't code, so don't watch them (on
+    // Windows, watching a recording as it's copied can crash the server)
+    watch: { ignored: ['**/drafts/**', '**/boards/**', '**/people/**', '**/recordings/**'] },
   },
 });

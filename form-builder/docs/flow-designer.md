@@ -66,6 +66,7 @@ reads the same way as Studio.
 | Set variable / counter | box | variable | 1 | Set Variables (`set_var_...`) |
 | Wait / repeat | delay shape | timer | 1 | post-queue loop (e.g. every 2 minutes) |
 | Go to frame | off-page arrow | link | none | jumps to another frame ("continues in SMS post-queue") |
+| Notify the Aselo team | rounded box | bell | 1 | HTTP Request to `webhook_url_studio_errors` (`http_post_...`) |
 | Text | no border | text | none | a label or title, no Studio meaning |
 
 Colours by family: green for start and end, yellow for decisions, blue for checks and functions,
@@ -95,8 +96,8 @@ is mostly worked out automatically (see [Recordings and scripts](#recordings-and
   an object with one way out connects once, a decision once per answer. When a connection isn't
   allowed, a short note says why.
 - Studio names are checked as they're typed (prefix, lower case, camelCase only after `f_`,
-  `postqueue_` after the queue, no repeats in the same flow); objects with problems get a warning
-  badge. Frames with the same channel count as one Studio flow.
+  `postqueue_` after the queue, no repeats in the same flow); see [Check the flow](#check-the-flow).
+  Frames with the same channel count as one Studio flow.
 
 ### Tasks
 
@@ -120,42 +121,68 @@ the Studio flow standards:
   - the language in the name matches the message's language (`_es_` on Spanish messages);
   - no two objects in a flow share a name.
 - **No open ends:** every exit goes somewhere, including "no match" on decisions and "timeout"
-  on questions, unless it's marked as intentionally ending the flow.
-- **Failures are notified:** every Send to queue has its "failed to enqueue" exit going to a
-  notification (`http_post_webhook_notify_failed_to_enqueue`), and so do failed functions.
+  on questions, unless it's marked as ending the flow on purpose (in the Check panel, or under
+  "Where it goes" in the object's settings).
+- **One place per way out:** a way out leads to one place; connections only use ways out the
+  object has (e.g. after a decision's answer was renamed); End has nothing after it.
+- **Failures are notified:** "failed to enqueue" and failed calls go to a **Notify the Aselo
+  team** object (an HTTP request to `webhook_url_studio_errors`, which posts to Slack).
 - **System down first:** an incoming call or message goes to the system-down subflow before
-  anything else (new helplines).
-- **Menus that repeat** have a counter and a way out, so a caller can't loop for ever.
-- **Unreachable objects:** nothing connects to them.
-- **Content:** messages and questions without a script; voice messages without a recording;
-  uploaded recordings that no object uses.
+  anything else.
+- **Menus that repeat** have a counter (Set variable) or a wait on the way round, so a caller
+  can't loop for ever.
+- **Unreachable objects:** nothing leads to them (a post-queue frame may start from its queue).
+- **Content:** messages and questions without a script. (Voice messages without a recording, and
+  uploaded recordings no object uses, come with the recordings library in step 3.)
+- **Frames** that hold objects say which channel they're for, so the export knows which Studio
+  flow they're part of.
 
-Errors (e.g. open ends, duplicate names) and warnings (e.g. missing recording while the design is
-still in progress) are separate, so a work-in-progress board isn't a wall of red.
+**Errors** are mistakes: names that break the standards or repeat, a way out leading to two
+places, connections from ways out that don't exist. **Warnings** are what a design in progress
+still lacks: open ends, missing names and scripts, notifications, system down first, unreachable
+objects. Objects get a red badge for errors and an orange one for warnings; the panel can hide
+warnings.
 
 ## Recordings and scripts
 
-Each helpline has a **library** in the builder with every message and question on its boards, one
-row each: Studio name, frame, channel, language, script, recording, status.
+A voice message's recording is the file named after its Studio name: the widget
+`play_message_voice_en_welcome` plays `play_message_voice_en_welcome.mp3` (or `.wav`). So a voice
+message needs its Studio name before its recording can be uploaded.
 
-- **Scripts** are typed on the object or in the library. The helpline can also download the
-  library as a spreadsheet, fill in or correct the scripts, and upload it back: rows are matched
-  by Studio name.
-- **Recordings** are uploaded in the library (one file, or many at once). Files are matched to
-  objects by name: `play_message_voice_en_welcome.mp3` goes to the object named
-  `play_message_voice_en_welcome`. Files that match nothing are listed so they can be renamed.
-  Formats Twilio plays (MP3, WAV); the builder checks the format and shows the length, and the
-  recording can be played in the browser.
-- **Status** is worked out, not typed:
+**In the editor:**
 
-  | Voice | Messaging |
-  |---|---|
-  | *No script* → *Script ready* → *Recorded* → *Approved* → *Published* | *No script* → *Script ready* → *Approved* |
+- **The object's settings** have a **Recording** section for voice messages: its status, the file
+  name it needs, players for the staging file (and for production, while production has an older
+  one), who uploaded, approved and published it, and the buttons for what this person can do next
+  (**Upload recording** / **Replace recording**; for Aselo staff, **Approve** and **Publish to
+  production**).
+- **The Recordings tab** lists every voice message on the board with its status and player,
+  uploads **several files at once** (matched to widgets by file name; files that match no widget
+  are listed, and can be uploaded anyway for another board), has **Publish all approved** for
+  Aselo staff, and lists the helpline's recordings **no widget on this board uses** (another board,
+  or a typo; staging-only ones can be removed).
+- **The Recordings button** in the toolbar (↻) and **Refresh** in the tab reload the list, to see
+  what others uploaded or published since the board opened. Your own changes refresh it by
+  themselves.
+- **Messaging scripts** get approved by Aselo staff in the object's settings (**Approve script**);
+  the approval holds while the script stays the same.
+- **The Check panel** says what's left: voice messages without a recording, recordings waiting
+  for approval, approved ones not published yet, messaging scripts not approved.
+- **The exports** carry it too: the spreadsheet's Status column, and in the JSON each message's
+  `status`, `recordingFile` and `recordingUrls`, plus the board's `recordingsBaseUrl`.
 
-  "Recorded" comes from the file found in the bucket's `staging` folder; "Approved" is set by Aselo
-  staff; "Published" means the same file is in `production`. If staging gets a newer recording
-  after publishing, it goes back to *Recorded* and production keeps the published one until it's
-  approved and published again.
+**Status** is worked out, not typed:
+
+| Voice | Messaging |
+|---|---|
+| *No script* → *Script ready* → *Recorded* → *Approved* → *Published* | *No script* → *Script ready* → *Approved* |
+
+"Recorded" means the file is in the helpline's `staging` folder; "Approved" is set by Aselo
+staff, for that file; "Published" means production has the same file. Uploading a new take sends
+it back to *Recorded* (approvals hold only for the file approved), and production keeps the
+published one until the new take is approved and published. Publishing needs an approval first.
+
+Not built yet: sending the scripts spreadsheet back filled in (rows matched by Studio name).
 
 ### Where recordings are stored
 
@@ -164,7 +191,9 @@ row each: Studio name, frame, channel, language, script, recording, status.
 | Bucket | new, private, versioned: `tl-aselo-recordings`, one folder per helpline |
 | Paths | `<helpline code>/staging/<studio name>.mp3` and `<helpline code>/production/<studio name>.mp3` |
 | Public URL | through CloudFront, e.g. `https://recordings.tl.techmatters.org/usnm/production/play_message_voice_en_welcome.mp3` (the bucket itself stays private) |
-| Who writes | helpline staff upload to `staging`; only Aselo staff **Publish to production**, in the builder (copies the file) |
+| Who writes | helpline and Aselo staff upload to `staging` (the page sends the file straight to the bucket, through a link the API signs); only Aselo staff **Publish to production** (the API copies the file, and refreshes CloudFront so it's served straight away) |
+| Who did what | who uploaded, approved and published each file, in the private drafts bucket (`recordings/<code>.json`): the recordings bucket is public |
+| Terraform | `form-builder/terraform/modules/aws/recordings.tf` (see `form-builder/terraform/README.md`) |
 
 The two folders matter because Studio plays the file at call time: replacing a file changes what
 callers hear immediately. Uploads therefore reach staging first, and production only when Aselo
@@ -182,55 +211,80 @@ voicemails are never stored here.
 
 ### JSON for Claude
 
-One file per board, versioned (`schemaVersion`), designed to be read without the canvas: layout
-is kept separate from meaning so an agent can ignore it. Recording URLs are included, so the
-agent knows exactly what to play.
+**Export › Flows for Claude (JSON)**, Aselo staff only. One file per board
+(`<helpline>-<board title>.flows.json`), versioned (`schemaVersion`) and readable without the
+canvas: each **flow** is one Studio flow (frames with the same channel together), each object
+lists its **exits** and where they lead, and `layout` (where things sit) is separate so an agent
+can ignore it. `about` tells the agent what the file is and which standards to follow.
 
 ```json
 {
   "schemaVersion": 1,
-  "board": { "id": "b-7f3a", "title": "USNM contact flows", "helpline": "usnm" },
-  "recordingsBaseUrl": {
-    "staging": "https://recordings.tl.techmatters.org/usnm/staging",
-    "production": "https://recordings.tl.techmatters.org/usnm/production"
-  },
-  "frames": [
+  "about": "A contact flow design from the Aselo flow designer. Each flow is one Twilio Studio flow ...",
+  "board": { "helpline": "usnm", "id": "abcd1234", "title": "USNM contact flows", "updatedAt": "...", "updatedBy": "Ale" },
+  "flows": [
     {
-      "id": "f-voice-postqueue",
-      "title": "Voice: post-queue (all queues except voicemail)",
-      "flow": { "channel": "voice", "stage": "postqueue", "repeatEverySeconds": 120 },
-      "objects": [
-        { "id": "o1", "type": "sendToQueue", "text": "Queue", "studioName": "send_to_queue" },
-        { "id": "o2", "type": "checkOperatingHours", "text": "Check operating hours",
-          "studioName": "postqueue_f_operatingHours" },
-        { "id": "o3", "type": "decision", "text": "Is English?", "studioName": "postqueue_split_language" },
-        { "id": "o4", "type": "menuVoice", "text": "Wait or leave a voicemail",
-          "studioName": "postqueue_gather_input_voice_en_post_queue_wait_or_voicemail",
-          "message": {
-            "channel": "voice", "language": "en", "script": "...",
-            "status": "recordedStaging", "recording": "postqueue_gather_input_voice_en_post_queue_wait_or_voicemail.mp3"
-          },
-          "exits": ["2", "noMatch", "timeout"] }
+      "key": "channel:voice",
+      "channel": "voice",
+      "frames": [
+        { "id": "f-pre", "title": "Voice: pre-queue", "stage": "prequeue" },
+        { "id": "f-post", "title": "Voice: post-queue", "stage": "postqueue" }
       ],
-      "connections": [
-        { "from": "o2", "exit": "open", "to": "o3" },
-        { "from": "o3", "exit": "Yes", "to": "o4" }
+      "objects": [
+        {
+          "id": "o-tya",
+          "type": "checkQueueAvailability",
+          "kind": "Skilled worker available?",
+          "studioWidget": "HTTP Request + Split",
+          "studioName": "f_isSkilledWorkerAvailable_tya_calls",
+          "text": "TYA specialist free?",
+          "frame": "f-pre",
+          "stage": "prequeue",
+          "call": {
+            "route": "worker/isSkilledWorkerAvailable",
+            "urlTemplate": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerAvailable",
+            "body": { "targetSkills": "TYA,Calls", "targetChannel": "voice" }
+          },
+          "exits": [
+            { "name": "available", "to": "o-welcome", "toStudioName": "play_message_voice_en_welcome" },
+            { "name": "not available" },
+            { "name": "failed" }
+          ]
+        },
+        {
+          "id": "o-welcome",
+          "type": "playMessage",
+          "studioName": "play_message_voice_en_welcome",
+          "message": {
+            "channel": "voice", "language": "en", "script": "Thank you for calling.",
+            "recordingFile": "play_message_voice_en_welcome.mp3"
+          },
+          "exits": [{ "name": "", "endsFlow": true }],
+          "openComments": [{ "author": "Ale", "text": "Shorter?" }]
+        }
       ]
     }
   ],
-  "stickies": [{ "frame": "f-voice-postqueue", "text": "2 minutes", "near": "o1" }],
-  "comments": [{ "on": "o4", "author": "...", "text": "...", "resolved": false }],
-  "checks": [{ "severity": "warning", "on": "o4", "message": "Not published to production yet." }],
-  "layout": { "o1": { "x": 0, "y": 0, "w": 120, "h": 80, "color": "#ffb3b8" } }
+  "notes": [{ "text": "Record the welcome", "frame": "f-pre", "task": { "status": "todo", "assignee": "Ale" } }],
+  "checks": [{ "severity": "warning", "message": "“Closed” has no Studio name yet.", "objectId": "o-closed" }],
+  "layout": { "o-tya": { "x": 40, "y": 200, "width": 210, "height": 72, "frame": "f-pre" } }
 }
 ```
+
+An exit without `to` and without `endsFlow` is still open (and is in `checks`). Recording URLs
+come in step 3, when recordings live in the recordings bucket; until then `recordingFile` is the
+name the file should have.
 
 A Claude skill (later, in `twilio-iac`) reads this file together with the helpline's config and
 the Studio standards, and writes or updates the `.tftpl` templates, then shows `make plan`.
 
 ### Recordings and scripts list
 
-The library as a spreadsheet (see above): what to record, what to approve, and what's done.
+**Export › Recordings and scripts (spreadsheet)**, for everyone: one row per message or question,
+by frame and top to bottom, with the frame, Studio name, recording file (voice), kind, channel,
+language, the text on the board, the script and a status (*No script* / *Script ready* for now;
+the recording statuses come with step 3). Sending it back filled in comes with the library in
+step 3.
 
 ### Import an existing helpline
 
@@ -284,7 +338,7 @@ from the templates and keeps the board's stickies and comments.
 
 ## Phases
 
-1. **Studio flows** (this), in this order:
+1. **Studio flows** (this), in this order (1 to 3 built):
    1. boards, frames, objects, connectors, stickies, comments, autosave;
    2. checks, JSON and spreadsheet exports;
    3. recordings bucket and library (upload, status, publish to production);

@@ -37,8 +37,12 @@ import {
   useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { Copy, Redo2, Trash2, Undo2 } from 'lucide-react';
-import { objectProblems } from './checks';
+import { Copy, Download, Redo2, RefreshCw, Trash2, Undo2 } from 'lucide-react';
+import { boardChecks, issuesByObject } from './checks';
+import { downloadFlowExport, downloadScripts } from './exports';
+import { CheckPanel } from './CheckPanel';
+import type { RecordingsList } from './recordings';
+import { RecordingActions, RecordingsPanel } from './RecordingControls';
 import type { BoardClient } from './boardClient';
 import type { Board, BoardContent, FlowObjectType, Person } from './model';
 import { ASELO_PEOPLE_CODE, objectColor, OBJECT_TYPES, STICKY_COLORS, TEMPLATES_CODE } from './model';
@@ -72,6 +76,8 @@ type Props = {
   readOnly: boolean;
   userName: string;
   userEmail?: string;
+  // Acting as Aselo staff: exports the JSON for Claude, approves and publishes recordings
+  staffMode: boolean;
   onClose: () => void;
   onReload: () => void;
 };
@@ -99,7 +105,7 @@ const mergePeople = (lists: Person[][]) => {
   return [...byKey.values()].sort((a, b) => a.name.localeCompare(b.name));
 };
 
-const Editor = ({ board, client, readOnly, userName, userEmail, onClose, onReload }: Props) => {
+const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClose, onReload }: Props) => {
   const flow = useReactFlow<CanvasNode, ConnectionEdge>();
   const [nodes, setNodes, onNodesChange] = useNodesState<CanvasNode>(toNodes(board.content));
   const [edges, setEdges, onEdgesChange] = useEdgesState<ConnectionEdge>(toEdges(board.content));
@@ -440,7 +446,61 @@ const Editor = ({ board, client, readOnly, userName, userEmail, onClose, onReloa
   };
 
   // ----- Side panel, problems and tasks
-  const [sideTab, setSideTab] = useState<'settings' | 'tasks'>('settings');
+  const [sideTab, setSideTab] = useState<'settings' | 'tasks' | 'check' | 'recordings'>('settings');
+
+  // ----- Recordings: loaded when the board opens, after every change, and with Refresh
+  const [recordingList, setRecordingList] = useState<RecordingsList>();
+  const [recordingsUnavailable, setRecordingsUnavailable] = useState<string>();
+  const [busyFiles, setBusyFiles] = useState<Set<string>>(() => new Set());
+  const [refreshing, setRefreshing] = useState(false);
+
+  const loadRecordings = useCallback(async () => {
+    if (board.code === TEMPLATES_CODE) {
+      setRecordingsUnavailable('Templates have no recordings: each helpline records its own.');
+      return;
+    }
+    setRefreshing(true);
+    try {
+      setRecordingList(await client.recordings(board.code));
+      setRecordingsUnavailable(undefined);
+    } catch (err) {
+      setRecordingsUnavailable((err as Error).message);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [client, board.code]);
+
+  useEffect(() => {
+    loadRecordings();
+  }, [loadRecordings]);
+
+  const changeRecording = async (fileName: string, change: () => Promise<RecordingsList>) => {
+    setBusyFiles((current) => new Set(current).add(fileName));
+    try {
+      setRecordingList(await change());
+    } catch (err) {
+      setNotice((err as Error).message);
+    } finally {
+      setBusyFiles((current) => {
+        const next = new Set(current);
+        next.delete(fileName);
+        return next;
+      });
+    }
+  };
+
+  const recordingActions: RecordingActions = {
+    list: recordingList,
+    unavailable: recordingsUnavailable,
+    busy: busyFiles,
+    staff: staffMode,
+    readOnly,
+    upload: (fileName, file) => changeRecording(fileName, () => client.uploadRecording(board.code, fileName, file)),
+    approve: (fileName, approved) =>
+      changeRecording(fileName, () => client.approveRecording(board.code, fileName, approved)),
+    publish: (fileName) => changeRecording(fileName, () => client.publishRecording(board.code, fileName)),
+    remove: (fileName) => changeRecording(fileName, () => client.removeRecording(board.code, fileName)),
+  };
   // Who tasks can be assigned to: the helpline's people and the Aselo team
   const [people, setPeople] = useState<Person[]>([]);
 
@@ -450,8 +510,28 @@ const Editor = ({ board, client, readOnly, userName, userEmail, onClose, onReloa
       setPeople(mergePeople(lists)),
     );
   }, [client, board.code]);
-  const problems = useMemo(() => objectProblems(content), [content]);
+  const issues = useMemo(() => boardChecks(content, recordingList?.recordings), [content, recordingList]);
+  const problems = useMemo(() => issuesByObject(issues), [issues]);
   const editingContext = useMemo(() => ({ readOnly, problems }), [readOnly, problems]);
+  const errorCount = issues.filter((issue) => issue.severity === 'error').length;
+
+  // A way out left unconnected on purpose: the flow ends there
+  const endHere = (objectId: string, exit: string, ends = true) =>
+    setNodes((current) =>
+      current.map((node) => {
+        if (node.id !== objectId || node.type !== 'object') return node;
+        const others = (node.data.object.endedExits ?? []).filter((candidate) => candidate !== exit);
+        const endedExits = ends ? [...others, exit] : others;
+        return {
+          ...node,
+          data: { object: { ...node.data.object, endedExits: endedExits.length > 0 ? endedExits : undefined } },
+        };
+      }),
+    );
+
+  // The board as it is now, for the exports
+  const currentBoard = () => ({ ...board, content });
+  const [exporting, setExporting] = useState(false);
   const openTasks = openTaskCount(nodes);
 
   // Selects a node and brings it into view
@@ -496,6 +576,51 @@ const Editor = ({ board, client, readOnly, userName, userEmail, onClose, onReloa
               )}
             </span>
           )}
+          <button
+            type="button"
+            className="secondary-button flow-refresh"
+            title="Check for recordings uploaded or published since the board opened"
+            disabled={refreshing || board.code === TEMPLATES_CODE}
+            onClick={loadRecordings}
+          >
+            <RefreshCw size={15} aria-hidden /> {refreshing ? 'Refreshing…' : 'Recordings'}
+          </button>
+          <span className="flow-export">
+            <button
+              type="button"
+              className="secondary-button"
+              aria-expanded={exporting}
+              onClick={() => setExporting(!exporting)}
+            >
+              <Download size={15} aria-hidden /> Export
+            </button>
+            {exporting && (
+              <span className="flow-export-menu" role="menu">
+                <button
+                  type="button"
+                  role="menuitem"
+                  onClick={() => {
+                    setExporting(false);
+                    downloadScripts(currentBoard(), recordingList);
+                  }}
+                >
+                  Recordings and scripts (spreadsheet)
+                </button>
+                {staffMode && (
+                  <button
+                    type="button"
+                    role="menuitem"
+                    onClick={() => {
+                      setExporting(false);
+                      downloadFlowExport(currentBoard(), recordingList);
+                    }}
+                  >
+                    Flows for Claude (JSON)
+                  </button>
+                )}
+              </span>
+            )}
+          </span>
           {!readOnly && (
             <span className="flow-toolbar-buttons">
               <button
@@ -639,8 +764,39 @@ const Editor = ({ board, client, readOnly, userName, userEmail, onClose, onReloa
               <button type="button" role="tab" aria-selected={sideTab === 'tasks'} onClick={() => setSideTab('tasks')}>
                 Tasks{openTasks > 0 ? ` (${openTasks})` : ''}
               </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={sideTab === 'check'}
+                className={errorCount > 0 ? 'has-errors' : ''}
+                onClick={() => setSideTab('check')}
+              >
+                Check{issues.length > 0 ? ` (${issues.length})` : ''}
+              </button>
+              <button
+                type="button"
+                role="tab"
+                aria-selected={sideTab === 'recordings'}
+                onClick={() => setSideTab('recordings')}
+              >
+                Recordings
+              </button>
             </div>
-            {sideTab === 'settings' ? (
+            {sideTab === 'recordings' && (
+              <RecordingsPanel
+                messages={content.objects.map((object) => ({
+                  object,
+                  frame: content.frames.find((frame) => frame.id === object.frameId),
+                }))}
+                actions={recordingActions}
+                onShow={showNode}
+                onRefresh={loadRecordings}
+              />
+            )}
+            {sideTab === 'check' && (
+              <CheckPanel issues={issues} readOnly={readOnly} onShow={showNode} onEndHere={endHere} />
+            )}
+            {sideTab === 'settings' && (
               <Inspector
                 title={title}
                 content={content}
@@ -658,8 +814,11 @@ const Editor = ({ board, client, readOnly, userName, userEmail, onClose, onReloa
                 onDelete={deleteSelected}
                 onDuplicate={duplicateSelected}
                 onFocusFrame={focusFrame}
+                onEndHere={endHere}
+                recordings={recordingActions}
               />
-            ) : (
+            )}
+            {sideTab === 'tasks' && (
               <TasksPanel
                 nodes={nodes}
                 readOnly={readOnly}

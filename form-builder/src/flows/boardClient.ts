@@ -15,12 +15,24 @@
  */
 
 /**
- * Talks to the flow designer's API routes (server/boardsApi.ts). Tests run the same server code
- * in process through clientFor's Send.
+ * Talks to the flow designer's API routes (server/boardsApi.ts, server/recordingsApi.ts). Tests
+ * run the same server code in process through clientFor's Send.
  */
 import { apiFetch } from '../auth';
 import type { Send } from '../draftClient';
 import type { Board, BoardContent, BoardMeta, BoardSummary, Person } from './model';
+import type { RecordingsList } from './recordings';
+
+export type UploadTarget = { url: string; method: 'PUT'; headers: Record<string, string> };
+
+// Sends a file to where the API said (a signed S3 link when deployed). Not through apiFetch: the
+// link carries its own permission, and an extra Authorization header would break it.
+export type SendFile = (target: UploadTarget, file: Blob) => Promise<void>;
+
+export const sendFileWithFetch: SendFile = async (target, file) => {
+  const response = await fetch(target.url, { method: target.method, headers: target.headers, body: file });
+  if (!response.ok) throw new Error(`The upload failed (${response.status}). Please try again.`);
+};
 
 export type BoardSaveOutcome =
   { ok: true; meta: BoardMeta } | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
@@ -34,9 +46,15 @@ export type BoardClient = {
   // Who can be assigned tasks: a helpline's people, or the Aselo team's (code _aselo)
   people(code: string): Promise<Person[]>;
   savePeople(code: string, people: Person[]): Promise<Person[]>;
+  // A helpline's recordings (see recordings.ts); each change answers with the updated list
+  recordings(code: string): Promise<RecordingsList>;
+  uploadRecording(code: string, fileName: string, file: Blob): Promise<RecordingsList>;
+  approveRecording(code: string, fileName: string, approved: boolean): Promise<RecordingsList>;
+  publishRecording(code: string, fileName: string): Promise<RecordingsList>;
+  removeRecording(code: string, fileName: string): Promise<RecordingsList>;
 };
 
-export const boardClientFor = (send: Send): BoardClient => {
+export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetch): BoardClient => {
   const expectOk = async (method: string, path: string, body?: unknown) => {
     const response = await send(method, path, body);
     if (response.status >= 400) {
@@ -61,6 +79,19 @@ export const boardClientFor = (send: Send): BoardClient => {
     },
     people: (code) => expectOk('GET', `/api/people/${code}`),
     savePeople: (code, people) => expectOk('PUT', `/api/people/${code}`, { people }),
+    recordings: (code) => expectOk('GET', `/api/recordings/${code}`),
+    async uploadRecording(code, fileName, file) {
+      const target: UploadTarget = await expectOk('POST', `/api/recordings/${code}/uploads`, {
+        fileName,
+        size: file.size,
+      });
+      await sendFile(target, file);
+      return expectOk('POST', `/api/recordings/${code}/files/${fileName}/uploaded`);
+    },
+    approveRecording: (code, fileName, approved) =>
+      expectOk('POST', `/api/recordings/${code}/files/${fileName}/approve`, { approved }),
+    publishRecording: (code, fileName) => expectOk('POST', `/api/recordings/${code}/files/${fileName}/publish`),
+    removeRecording: (code, fileName) => expectOk('DELETE', `/api/recordings/${code}/files/${fileName}`),
   };
 };
 

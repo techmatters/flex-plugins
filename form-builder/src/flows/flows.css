@@ -276,7 +276,8 @@
 }
 
 .flow-inspector,
-.flow-tasks {
+.flow-tasks,
+.flow-check {
   flex: 1;
   overflow-y: auto;
   padding: 4px 14px 24px;
@@ -796,4 +797,258 @@
   padding: 6px 8px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
+}
+
+.flow-problem-badge.error {
+  background: #c62828;
+}
+
+.flow-problems li.error {
+  color: var(--color-error-text);
+  font-weight: 600;
+}
+
+.flow-inspector > .flow-problems {
+  margin-top: 10px;
+}
+
+.flow-sidebar-tabs button.has-errors {
+  color: #c62828;
+}
+
+/* Check panel */
+.flow-check-summary {
+  font-weight: 600;
+  margin: 8px 0;
+}
+
+.flow-issue-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+
+.flow-issue {
+  display: flex;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 13px;
+}
+
+.flow-issue-icon {
+  flex-shrink: 0;
+  display: flex;
+  padding-top: 1px;
+}
+
+.flow-issue.error .flow-issue-icon {
+  color: #c62828;
+}
+
+.flow-issue.warning .flow-issue-icon {
+  color: #e65100;
+}
+
+.flow-issue-message {
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+}
+
+.flow-issue-message:hover {
+  text-decoration: underline;
+}
+
+.flow-issue-fix {
+  display: block;
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+/* Where each way out goes */
+.flow-exit-targets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+}
+
+.flow-exit-targets li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  padding: 3px 0;
+}
+
+.flow-exit-name {
+  font-weight: 600;
+  min-width: 70px;
+}
+
+.flow-exit-targets .field-checkbox {
+  margin: 0;
+  font-size: 12.5px;
+}
+
+/* Export menu */
+.flow-export {
+  position: relative;
+  margin-left: auto;
+}
+
+.flow-export .secondary-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 13px;
+}
+
+.flow-export-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  padding: 4px 0;
+}
+
+.flow-export-menu button {
+  font: inherit;
+  font-size: 13.5px;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+
+.flow-export-menu button:hover {
+  background: var(--color-accent-soft);
+}
+
+.flow-export + .flow-toolbar-buttons {
+  margin-left: 0;
+}
+
+/* Message and recording statuses */
+.flow-status {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 1px 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+  background: #eceff1;
+  color: #455a64;
+}
+
+.flow-status-script-ready {
+  background: #fff3e0;
+  color: #8a4b00;
+}
+
+.flow-status-recorded {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.flow-status-approved {
+  background: #ede7f6;
+  color: #4527a0;
+}
+
+.flow-status-published {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.flow-recording-player {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px 0;
+}
+
+.flow-recording-player audio,
+.flow-recording-list audio {
+  width: 100%;
+  height: 32px;
+}
+
+.flow-recording-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.flow-recording-buttons .primary-button,
+.flow-recording-buttons .secondary-button,
+.flow-recordings .secondary-button,
+.flow-recordings .primary-button {
+  padding: 5px 10px;
+  font-size: 13px;
+}
+
+/* Recordings tab */
+.flow-recordings {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 14px 24px;
+}
+
+.flow-recordings h3 {
+  font-size: 13px;
+  margin: 16px 0 6px;
+}
+
+.flow-publish-all {
+  margin-top: 10px;
+}
+
+.flow-upload-report {
+  font-size: 12.5px;
+  padding-left: 18px;
+}
+
+.flow-recording-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.flow-recording-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 13px;
+}
+
+.flow-recording-list code {
+  overflow-wrap: anywhere;
+}
+
+/* Refresh recordings */
+.flow-refresh {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  font-size: 13px;
+  margin-left: auto;
+}
+
+.flow-refresh + .flow-export {
+  margin-left: 0;
 }

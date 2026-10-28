@@ -8,7 +8,8 @@ Aselo AWS account (DNS in the `tl.techmatters.org` Route 53 zone of the same acc
 | Okta: sign-in app, its authorization server, the groups | `okta/` (this folder) | Applied |
 | API code for the Lambda (master snapshot, S3 drafts, Slack) | `server/lambda.ts`, `npm run build:lambda` | Done |
 | Sign-in in the page (Okta, PKCE) | `src/auth.ts` | Done |
-| AWS: S3 site + CloudFront, API Gateway + Lambda, private drafts bucket | `aws/` (this folder) | Ready to plan |
+| AWS: S3 site + CloudFront, API Gateway + Lambda, private drafts bucket | `aws/` (this folder) | Applied |
+| AWS: recordings bucket + recordings.tl.techmatters.org (flow designer) | `aws/` (this folder) | Ready to plan |
 | Slack webhook for "submitted for review" | Slack | Steps below (optional) |
 | Deploys (the page and the Lambda's code) | `.github/workflows/form-builder-deploy.yml` | Ready |
 | GitHub App, so Apply opens the PR | GitHub, by an org owner | Later, after the proof of concept |
@@ -52,9 +53,23 @@ Secrets never go in this repo (it's public). They live in SSM Parameter Store, u
   the `/form-builder/*` SSM parameters, its logs) and a log group kept 30 days;
 - the drafts bucket (`tl-form-builder-drafts`): private, versioned, old versions kept 90 days;
 - a policy on the `github-actions` IAM user so the deploy workflow can upload the page and the
-  Lambda's code and refresh CloudFront, for these resources only.
+  Lambda's code and refresh CloudFront, for these resources only;
+- the flow designer's recordings (`modules/aws/recordings.tf`): a private, versioned bucket
+  (`tl-aselo-recordings`, old versions kept a year) with a folder per helpline (`<code>/staging/`,
+  `<code>/production/`), served publicly at **recordings.tl.techmatters.org** through its own
+  CloudFront distribution and certificate, so Studio can play them. The bucket accepts uploads
+  from the builder's page (CORS, `PUT` only) through links the Lambda signs; the Lambda can list,
+  upload, copy (publish) and remove recordings and refresh their CloudFront cache, and gets
+  `RECORDINGS_BUCKET`, `RECORDINGS_URL` and `RECORDINGS_DISTRIBUTION_ID`. Who uploaded, approved
+  and published each recording is kept in the drafts bucket (`recordings/<code>.json`), not in
+  the public one.
 
 On the devops node, from `form-builder/terraform/aws`: `make plan`, then `make apply`.
+
+Adding the recordings to an `aws/` that was already applied shows them as new resources (bucket,
+its settings and policy, certificate and its validation record, CloudFront distribution, A/AAAA
+records) plus two changes to the Lambda: its environment and its role's policy. Nothing else
+changes. Until it's applied, the deployed builder says recordings aren't set up.
 
 The deploy workflow runs on every push to `alejandro-c/form_builder_app` that touches
 `form-builder/` (a manual-only workflow can't be started before it's on master). Until `aws/` is

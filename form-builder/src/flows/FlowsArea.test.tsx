@@ -22,6 +22,7 @@ import type { ApiContext, ApiUser } from '../../server/api';
 import { handleApiRequest } from '../../server/api';
 import { MemoryBoardStore } from '../../server/boards';
 import { MemoryPeopleStore } from '../../server/people';
+import { MemoryRecordingFiles, MemoryRecordingLogStore } from '../../server/recordingStores';
 import { MemoryDraftStore } from '../../server/drafts';
 import { boardClientFor } from './boardClient';
 import { FlowsArea } from './FlowsArea';
@@ -71,29 +72,44 @@ const usnmStaff: ApiUser = { name: 'NAMI person', role: 'helpline-staff', helpli
 
 let boards: MemoryBoardStore;
 let people: MemoryPeopleStore;
+let recordingFiles: MemoryRecordingFiles;
 let context: ApiContext;
 
 const clientAs = (user: ApiUser) =>
-  boardClientFor((method, path, body) =>
-    handleApiRequest(context, { method, path, body: structuredClone(body), user }),
+  boardClientFor(
+    (method, path, body) => handleApiRequest(context, { method, path, body: structuredClone(body), user }),
+    // Instead of the signed S3 link: https://upload.test/<code>/staging/<file>
+    async (target, file) => {
+      const [code, , fileName] = new URL(target.url).pathname.split('/').slice(1);
+      // jsdom's Blob has no text()
+      const content = await new Promise<string>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.readAsText(file);
+      });
+      recordingFiles.put(code, fileName, content);
+    },
   );
 
 beforeEach(() => {
   window.history.replaceState(null, '', '/?area=flows');
   boards = new MemoryBoardStore();
   people = new MemoryPeopleStore();
+  recordingFiles = new MemoryRecordingFiles();
   context = {
     formDefinitionsDir: '/nowhere',
     drafts: new MemoryDraftStore(),
     boards,
     people,
+    recordings: { files: recordingFiles, log: new MemoryRecordingLogStore() },
     notifier: { draftSubmitted: async () => {} },
   };
 });
 
 afterEach(cleanup);
 
-describe('flow designer', () => {
+// Autosave waits a second after the last change, so these take a few seconds each
+describe('flow designer', { timeout: 20_000 }, () => {
   test('a new board opens, objects are added from the palette, and it saves by itself', async () => {
     render(
       <FlowsArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} userName="NAMI person" />,
@@ -176,8 +192,8 @@ describe('flow designer', () => {
     fireEvent.change(settings().getByRole('textbox', { name: /^Studio name/ }), {
       target: { value: 'splitsAABBwrong' },
     });
-    expect(settings().getByText('Decision names start with split_.')).toBeTruthy();
-    expect(screen.getByLabelText('Has problems')).toBeTruthy();
+    expect(settings().getByText('“Decision”: Decision names start with split_.')).toBeTruthy();
+    expect(screen.getByLabelText('Has errors')).toBeTruthy();
 
     // Two voice messages: the second one's suggested name doesn't repeat the first
     fireEvent.click(palette().getByRole('button', { name: /^Play message/ }));
@@ -187,17 +203,17 @@ describe('flow designer', () => {
     fireEvent.change(settings().getByRole('textbox', { name: /^Studio name/ }), {
       target: { value: 'play_message_voice' },
     });
-    expect(settings().getByText('Another object in this flow is also named play_message_voice.')).toBeTruthy();
+    expect(settings().getByText(/another object in this flow is also named play_message_voice./)).toBeTruthy();
   });
 
   test('the skilled worker checks hold their route settings and are named after the route', async () => {
     const board = await openNewBoard('Skills');
     fireEvent.click(palette().getByRole('button', { name: /^Skilled worker available/ }));
-    expect(settings().getByText('No Studio name yet.')).toBeTruthy();
+    expect(settings().getByText('“Skilled worker available?” has no Studio name yet.')).toBeTruthy();
     fireEvent.change(settings().getByRole('textbox', { name: /^Skills/ }), { target: { value: 'TYA,Calls' } });
     fireEvent.change(settings().getByRole('combobox', { name: /^Channel/ }), { target: { value: 'voice' } });
     fireEvent.click(settings().getByRole('button', { name: 'Use f_isSkilledWorkerAvailable_tya_calls' }));
-    expect(settings().queryByText('No Studio name yet.')).toBeNull();
+    expect(settings().queryByText(/has no Studio name yet/)).toBeNull();
 
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
     expect((await boards.get('usnm', board.id))?.content.objects[0]).toMatchObject({
@@ -206,6 +222,77 @@ describe('flow designer', () => {
       settings: { targetSkills: 'TYA,Calls', targetChannel: 'voice' },
     });
     expect(palette().getByRole('button', { name: /^Skilled worker logged in/ })).toBeTruthy();
+  });
+
+  test('the Check panel lists what to fix, and a way out can end the flow on purpose', async () => {
+    await openNewBoard('Check');
+    fireEvent.click(palette().getByRole('button', { name: /^End/ }));
+    fireEvent.click(palette().getByRole('button', { name: /^Play message/ }));
+    fireEvent.click(settings().getByRole('button', { name: /^Use play_message_voice/ }));
+
+    fireEvent.click(screen.getByRole('tab', { name: /^Check/ }));
+    const check = within(screen.getByRole('region', { name: 'Check' }));
+    expect(check.getByText('0 errors, 4 warnings')).toBeTruthy();
+    expect(check.getByRole('button', { name: 'Nothing comes after “Play message (voice)”.' })).toBeTruthy();
+
+    fireEvent.click(check.getByRole('button', { name: 'The flow ends here on purpose' }));
+    expect(check.queryByText(/Nothing comes after/)).toBeNull();
+    expect(check.getByText('0 errors, 3 warnings')).toBeTruthy();
+
+    // The warnings can be hidden, leaving only errors
+    fireEvent.click(check.getByRole('checkbox', { name: 'Show warnings' }));
+    expect(check.queryAllByRole('listitem')).toHaveLength(0);
+  });
+
+  test('exports: the spreadsheet for everyone, the JSON for Claude only for Aselo staff', async () => {
+    await openNewBoard('Exports');
+    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    expect(screen.getByRole('menuitem', { name: 'Recordings and scripts (spreadsheet)' })).toBeTruthy();
+    expect(screen.queryByRole('menuitem', { name: 'Flows for Claude (JSON)' })).toBeNull();
+    cleanup();
+
+    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    await screen.findByRole('heading', { name: 'Exports' });
+    fireEvent.click(screen.getByRole('button', { name: 'Export' }));
+    expect(screen.getByRole('menuitem', { name: 'Flows for Claude (JSON)' })).toBeTruthy();
+  });
+
+  test('a voice message is recorded, approved and published', async () => {
+    const board = await openNewBoard('Recordings');
+    fireEvent.click(palette().getByRole('button', { name: /^Play message/ }));
+    fireEvent.change(settings().getByRole('combobox', { name: /^Channel/ }), { target: { value: 'voice' } });
+    fireEvent.change(settings().getByRole('textbox', { name: 'Script' }), {
+      target: { value: 'Welcome to the helpline.' },
+    });
+    fireEvent.click(settings().getByRole('button', { name: /^Use play_message_voice/ }));
+    const recording = () => within(screen.getByRole('region', { name: 'Recording' }));
+    await waitFor(() => expect(recording().getByText('Script ready')).toBeTruthy());
+
+    // Helpline staff upload: it reaches staging
+    fireEvent.change(recording().getByLabelText('Upload recording'), {
+      target: { files: [new File(['take one'], 'welcome.mp3', { type: 'audio/mpeg' })] },
+    });
+    await waitFor(() => expect(recording().getByText('Recorded')).toBeTruthy());
+    expect(recordingFiles.files.has('usnm/staging/play_message_voice.mp3')).toBe(true);
+    expect(recording().getByLabelText('Staging recording')).toBeTruthy();
+    // ...but don't approve or publish
+    expect(recording().queryByRole('button', { name: 'Approve' })).toBeNull();
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    cleanup();
+
+    // Aselo staff approve, then publish
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    await screen.findByRole('heading', { name: 'Recordings' });
+    fireEvent.click(screen.getByRole('tab', { name: 'Recordings' }));
+    const panel = within(screen.getByRole('region', { name: 'Recordings' }));
+    await waitFor(() => expect(panel.getByText('Recorded')).toBeTruthy());
+    fireEvent.click(panel.getByRole('button', { name: 'Approve' }));
+    await waitFor(() => expect(panel.getByText('Approved')).toBeTruthy());
+    fireEvent.click(panel.getByRole('button', { name: 'Publish to production' }));
+    await waitFor(() => expect(panel.getByText('Published')).toBeTruthy());
+    expect(recordingFiles.files.get('usnm/production/play_message_voice.mp3')?.content).toBe('take one');
   });
 
   test('a sticky note becomes a task, listed in the Tasks panel until it is done', async () => {

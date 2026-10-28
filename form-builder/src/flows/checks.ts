@@ -16,11 +16,13 @@
 
 /**
  * Checks a board against the Studio flow standards (twilio-iac/AGENTS.md, "Studio flow
- * standards"). Problems are shown on the objects and in their settings; they never stop saving,
- * since a board is a design in progress.
+ * standards"). Problems are shown on the objects, in their settings and in the Check panel; they
+ * never stop saving, since a board is a design in progress.
  */
 import type { BoardContent, FlowObject, Frame } from './model';
-import { OBJECT_TYPES } from './model';
+import { exitsOf, OBJECT_TYPES } from './model';
+import type { Recording } from './recordings';
+import { isVoiceMessage, messageStatus } from './recordings';
 
 const POSTQUEUE = 'postqueue_';
 
@@ -105,6 +107,242 @@ export const uniqueName = (
   let count = 2;
   while (taken.has(`${name}_${count}`)) count += 1;
   return `${name}_${count}`;
+};
+
+// ---------------------------------------------------------------------------------------------
+// The whole board
+
+export type Severity = 'error' | 'warning';
+
+export type Issue = {
+  // Stable, for lists
+  key: string;
+  severity: Severity;
+  message: string;
+  objectId?: string;
+  frameId?: string;
+  // An unconnected way out, which can be marked as ending the flow on purpose
+  openExit?: string;
+};
+
+// Ways out that are failures: the standards ask for every failure to be notified
+const FAILURE_EXITS = ['failed', 'failed to enqueue'];
+
+// Objects that don't need anything leading to them
+const STARTS = new Set<FlowObject['type']>(['incoming', 'text']);
+
+/**
+ * Everything worth fixing on the board, errors first. Errors are mistakes (names that break the
+ * standards or repeat, a way out leading to two places); warnings are what's still missing in a
+ * design in progress (open ends, names, scripts, failure notifications...).
+ */
+export const boardChecks = (
+  content: Pick<BoardContent, 'objects' | 'frames' | 'connections'>,
+  // The helpline's recordings, when they're known: voice messages are then checked for theirs
+  recordings?: Recording[],
+): Issue[] => {
+  const issues: Issue[] = [];
+  const add = (issue: Omit<Issue, 'key'>, kind: string) =>
+    issues.push({ ...issue, key: `${issue.objectId ?? issue.frameId}|${kind}|${issue.openExit ?? ''}` });
+  const byId = new Map(content.objects.map((object) => [object.id, object]));
+  const frameOf = (object: FlowObject) => content.frames.find((frame) => frame.id === object.frameId);
+  const nameOf = (object: FlowObject) => `“${object.text.trim() || OBJECT_TYPES[object.type].label}”`;
+  const outgoing = (id: string) => content.connections.filter((connection) => connection.from === id);
+  const targets = new Set(content.connections.map((connection) => connection.to));
+  const duplicates = duplicateNames(content);
+
+  content.objects.forEach((object) => {
+    const info = OBJECT_TYPES[object.type];
+    const frame = frameOf(object);
+    const objectId = object.id;
+    const name = nameOf(object);
+
+    // Studio name
+    studioNameProblems(object, frame).forEach((message, index) =>
+      add({ severity: 'error', message: `${name}: ${message}`, objectId }, `name${index}`),
+    );
+    if (!object.studioName && info.studioPrefix) {
+      add({ severity: 'warning', message: `${name} has no Studio name yet.`, objectId }, 'noName');
+    }
+    if (duplicates.has(objectId)) {
+      add(
+        {
+          severity: 'error',
+          message: `${name}: another object in this flow is also named ${object.studioName}.`,
+          objectId,
+        },
+        'duplicate',
+      );
+    }
+
+    // Ways out: each one leads to one place, or ends the flow on purpose
+    const exits = exitsOf(object);
+    const named = exits.filter(Boolean);
+    const out = outgoing(objectId);
+    const ended = new Set(object.endedExits ?? []);
+    if (exits.length === 0) {
+      if (out.length > 0) {
+        add({ severity: 'error', message: `${name} ends the flow, but a connection leaves it.`, objectId }, 'endsOut');
+      }
+    } else if (named.length === 0) {
+      if (out.length > 1) {
+        add(
+          { severity: 'error', message: `${name} has one way out but ${out.length} connections leave it.`, objectId },
+          'manyOut',
+        );
+      }
+      if (out.length === 0 && !ended.has('')) {
+        add({ severity: 'warning', message: `Nothing comes after ${name}.`, objectId, openExit: '' }, 'open');
+      }
+    } else {
+      named.forEach((exit) => {
+        const leaving = out.filter((connection) => connection.exit === exit);
+        if (leaving.length > 1) {
+          add(
+            {
+              severity: 'error',
+              message: `${name}: “${exit}” leads to ${leaving.length} places; it can only lead to one.`,
+              objectId,
+            },
+            `twice-${exit}`,
+          );
+        }
+        if (leaving.length === 0 && !ended.has(exit)) {
+          add(
+            { severity: 'warning', message: `${name}: “${exit}” isn't connected.`, objectId, openExit: exit },
+            `open-${exit}`,
+          );
+        }
+        // Failures are notified
+        const leadsTo = leaving[0] && byId.get(leaving[0].to);
+        if (FAILURE_EXITS.includes(exit) && (leadsTo || ended.has(exit)) && leadsTo?.type !== 'notifyError') {
+          add(
+            {
+              severity: 'warning',
+              message: `${name}: when it's “${exit}”, the Aselo team isn't notified. Connect it to “Notify the Aselo team” first.`,
+              objectId,
+            },
+            `notify-${exit}`,
+          );
+        }
+      });
+      out
+        .filter((connection) => !named.includes(connection.exit ?? ''))
+        .forEach((connection) =>
+          add(
+            {
+              severity: 'error',
+              message: connection.exit
+                ? `${name}: a connection leaves by “${connection.exit}”, which it doesn't have any more.`
+                : `${name}: a connection doesn't say which way out it is.`,
+              objectId,
+            },
+            `unknownExit-${connection.id}`,
+          ),
+        );
+    }
+
+    // Incoming contacts check that the system is up before anything else
+    if (object.type === 'incoming' && frame?.stage !== 'postqueue') {
+      const first = out[0] && byId.get(out[0].to);
+      if (first && first.type !== 'systemDown') {
+        add(
+          {
+            severity: 'warning',
+            message: `${name} should go to the system-down subflow before anything else.`,
+            objectId,
+          },
+          'systemDown',
+        );
+      }
+    }
+
+    // Reached from somewhere (a post-queue frame can start from its queue)
+    const startsPostQueue = object.type === 'sendToQueue' && frame?.stage === 'postqueue';
+    if (!STARTS.has(object.type) && !targets.has(objectId) && !startsPostQueue) {
+      add({ severity: 'warning', message: `Nothing leads to ${name}.`, objectId }, 'unreachable');
+    }
+
+    // The language in the name is the message's (play_message_voice_es_... for Spanish)
+    const language = object.message?.language?.trim().toLowerCase();
+    if (info.hasMessage && language && object.studioName && !object.studioName.split('_').includes(language)) {
+      add(
+        { severity: 'warning', message: `${name} is in “${language}”, but its Studio name doesn't say so.`, objectId },
+        'language',
+      );
+    }
+
+    if (info.hasMessage && !object.message?.script?.trim()) {
+      add({ severity: 'warning', message: `${name} has no script yet.`, objectId }, 'noScript');
+    }
+
+    // What's left before callers hear it (voice) or before it's sent (messaging)
+    if (info.hasMessage && isVoiceMessage(object, frame)) {
+      const status = recordings && object.studioName ? messageStatus(object, frame, recordings) : undefined;
+      const left: Partial<Record<string, string>> = {
+        'No script': `${name} has no recording yet.`,
+        'Script ready': `${name} has no recording yet.`,
+        Recorded: `${name}: its recording is waiting for Aselo staff to approve it.`,
+        Approved: `${name}: its recording is approved but not published to production yet.`,
+      };
+      if (status && left[status]) add({ severity: 'warning', message: left[status]!, objectId }, 'recording');
+    } else if (info.hasMessage && messageStatus(object, frame) === 'Script ready') {
+      add({ severity: 'warning', message: `${name}: its script isn't approved yet.`, objectId }, 'scriptApproval');
+    }
+
+    // A menu that can come back to itself needs a counter (or a wait) on the way, so callers
+    // can't go round for ever
+    if (object.type === 'menuVoice' || object.type === 'questionMessaging') {
+      const seen = new Set<string>();
+      const queue = out.map((connection) => connection.to);
+      let loops = false;
+      while (queue.length > 0 && !loops) {
+        const id = queue.shift()!;
+        if (id === objectId) loops = true;
+        const next = byId.get(id);
+        if (seen.has(id) || !next || next.type === 'setVariable' || next.type === 'wait') continue;
+        seen.add(id);
+        queue.push(...outgoing(id).map((connection) => connection.to));
+      }
+      if (loops) {
+        add(
+          {
+            severity: 'warning',
+            message: `${name} can repeat for ever: add a counter (Set variable) and a way out after a few tries.`,
+            objectId,
+          },
+          'loop',
+        );
+      }
+    }
+  });
+
+  content.frames
+    .filter((frame) => !frame.channel && content.objects.some((object) => object.frameId === frame.id))
+    .forEach((frame) =>
+      add(
+        {
+          severity: 'warning',
+          message: `Frame “${frame.title}” doesn't say which channel it's for, so the export can't tell which Studio flow it belongs to.`,
+          frameId: frame.id,
+        },
+        'frameChannel',
+      ),
+    );
+
+  return [
+    ...issues.filter((issue) => issue.severity === 'error'),
+    ...issues.filter((issue) => issue.severity === 'warning'),
+  ];
+};
+
+// The issues on each object, for its badge and settings
+export const issuesByObject = (issues: Issue[]): Map<string, Issue[]> => {
+  const result = new Map<string, Issue[]>();
+  issues.forEach((issue) => {
+    if (issue.objectId) result.set(issue.objectId, [...(result.get(issue.objectId) ?? []), issue]);
+  });
+  return result;
 };
 
 /**
