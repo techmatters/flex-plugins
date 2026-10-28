@@ -180,6 +180,25 @@ describe('JSON for Claude', () => {
     expect(exported.layout['o-tya']).toEqual({ x: 40, y: 200, width: 210, height: 72, frame: 'f-pre' });
   });
 
+  test('carries each frame written as a Studio flow template, with its variables and TODOs', () => {
+    const { studioTemplates } = toFlowExport(board);
+    expect(studioTemplates.map((template) => template.title)).toEqual(['Voice: pre-queue', 'Voice: post-queue', 'SMS']);
+    const [preQueue] = studioTemplates;
+    expect(preQueue.text.startsWith('${\n  jsonencode({')).toBe(true);
+    expect(preQueue.text).toContain('"name": "f_isSkilledWorkerAvailable_tya_calls"');
+    // Designed from scratch: no Trigger yet, a send to queue to set up...
+    expect(preQueue.todo).toContain('The flow has no incoming call or message (its Trigger).');
+    // ...and the SMS message's text goes in flow_vars
+    expect(studioTemplates[2].variables).toEqual([
+      {
+        scope: 'flow_vars',
+        name: 'postqueue_send_message_sms_en_keep_waiting',
+        value: '',
+        widget: 'postqueue_send_message_sms_en_keep_waiting',
+      },
+    ]);
+  });
+
   test('is named after the helpline and board', () => {
     expect(exportFileName(board, '.flows.json')).toBe('usnm-usnm_contact_flows.flows.json');
   });

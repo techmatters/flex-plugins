@@ -417,7 +417,13 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         ...info.defaultSize,
         ...(type !== 'incoming' ? { studioName: name } : {}),
         exits,
-        studio: { name, type: String(state.type), properties: studioProperties as Record<string, unknown> },
+        studio: {
+          name,
+          type: String(state.type),
+          properties: studioProperties as Record<string, unknown>,
+          ...(isObject(offset) ? { offset: offsets[index] } : {}),
+          transitions: transitions as Record<string, unknown>[],
+        },
       };
 
       if (type !== 'incoming' && studioNameProblems(object).length > 0) legacyNames += 1;
@@ -477,6 +483,8 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
           ...(recordingFile && recordingFile.replace(/\.(mp3|wav)$/, '') !== name ? { recordingFile } : {}),
         };
         if (!object.message.language) delete object.message.language;
+        // So regenerating the flow only touches the text if it's changed on the board
+        if (script !== undefined && object.studio) object.studio.importedScript = script;
       }
 
       // The route's settings, from the request body
@@ -540,6 +548,14 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
       width,
       height,
       ...(source.channel ? { channel: source.channel } : {}),
+      studio: {
+        template: source.templatefile.slice(CONTAINER_HELPLINES_DIR.length),
+        channels: source.channels,
+        settings: Object.fromEntries(Object.entries(flow as HclObject).filter(([key]) => key !== 'states')) as Record<
+          string,
+          unknown
+        >,
+      },
     };
     const boardTitle = `${code.toUpperCase()} · ${title}`;
     boards.push({

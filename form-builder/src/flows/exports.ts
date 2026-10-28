@@ -23,6 +23,8 @@
 import type { Board, BoardContent, Channel, FlowObject, Frame } from './model';
 import { exitsOf, OBJECT_TYPES, toSnake } from './model';
 import { boardChecks, flowScopeOf } from './checks';
+import type { FlowVarChange } from './studioTemplate';
+import { toStudioFlows } from './studioTemplate';
 import type { MessageStatus, RecordingsList } from './recordings';
 import { messageStatus, recordingOf } from './recordings';
 
@@ -78,6 +80,19 @@ export type FlowExport = {
   flows: ExportedFlow[];
   notes: { text: string; frame?: string; task?: NonNullable<BoardContent['stickies'][number]['task']> }[];
   checks: { severity: string; message: string; objectId?: string }[];
+  // The Studio flow template generated for each frame, ready to write into twilio-iac
+  studioTemplates: {
+    title: string;
+    // Under twilio-iac/helplines, when the frame was imported from it
+    template?: string;
+    channels: string[];
+    // The .tftpl file's contents
+    text: string;
+    // Texts to set in the helpline's .hcl files
+    variables: FlowVarChange[];
+    // What still has to be filled in or decided
+    todo: string[];
+  }[];
   // Where things are on the board; not needed to build the flows
   layout: Record<string, { x: number; y: number; width: number; height: number; frame?: string; color?: string }>;
 };
@@ -89,6 +104,8 @@ const ABOUT = [
   'following twilio-iac/AGENTS.md ("Studio flow standards"); calls to account-scoped lambda routes are described in',
   'lambdas/account-scoped/STUDIO_ROUTES.md. Voice recordings are named after their widget (recordingFile).',
   'Objects imported from a live helpline carry currentStudioWidget: the widget as it is in the template today.',
+  '"studioTemplates" has each frame already written as a .tftpl (rebuilt exactly as it is live for widgets nobody',
+  'changed), the texts to set in the .hcl variables, and the TODOs it could not fill in: start from those.',
   '"checks" lists what the design still lacks; "layout" is only where things sit on the board.',
 ].join(' ');
 
@@ -203,6 +220,14 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
         ...(sticky.frameId ? { frame: sticky.frameId } : {}),
         ...(sticky.task ? { task: sticky.task } : {}),
       })),
+    studioTemplates: toStudioFlows(content).map(({ title, template, channels, text, flowVars, todo }) => ({
+      title,
+      ...(template ? { template } : {}),
+      channels,
+      text,
+      variables: flowVars,
+      todo,
+    })),
     checks: boardChecks(content, recordings?.recordings).map(({ severity, message, objectId }) => ({
       severity,
       message,

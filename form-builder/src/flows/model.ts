@@ -37,7 +37,18 @@ export type Frame = Position &
     // What the frame designs, when it's a flow (used by the exports)
     channel?: Channel;
     stage?: FlowStage;
+    // The Studio flow it was imported from
+    studio?: StudioFlowSource;
   };
+
+export type StudioFlowSource = {
+  // Its template, under twilio-iac/helplines, e.g. usnm/templates/studio-flows/voice.tftpl
+  template: string;
+  // The channels (in the helpline's config) that use it
+  channels: string[];
+  // The flow's own settings besides its widgets (initial_state, flags, description), as written
+  settings: Record<string, unknown>;
+};
 
 export type BoardComment = {
   id: string;
@@ -248,7 +259,14 @@ export type ObjectTypeInfo = {
 export type StudioWidget = {
   name: string;
   type: string;
+  // Its settings, without its position
   properties?: Record<string, unknown>;
+  // Its position in Studio, kept so regenerating the flow doesn't move it
+  offset?: { x: number; y: number };
+  // Its transitions as written (events, split conditions); "next" is taken from the board's connections
+  transitions?: Record<string, unknown>[];
+  // Its text as imported (with the variables it reads resolved)
+  importedScript?: string;
 };
 
 export type ObjectField = {

@@ -1,0 +1,586 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+/**
+ * Turns a board's frame into a Twilio Studio flow template (.tftpl) for twilio-iac, as
+ * `${ jsonencode({...}) }` like the helplines' own templates:
+ *
+ * - widgets imported from a live flow are rebuilt from what the import kept (their settings,
+ *   position and transitions), with "next" taken from the board's connections and the texts or
+ *   settings changed on the board. An unchanged board gives back the template it came from;
+ * - new objects become widgets of their kind; what the board can't know (a split's input, a
+ *   workflow) is marked TODO, for whoever builds the flow (a person, or Claude with the
+ *   studio-flow-from-board skill);
+ * - texts that live in flow_vars stay there: the changes are listed, for the helpline's .hcl files.
+ */
+import type { BoardContent, FlowObject, Frame } from './model';
+import { exitsOf, OBJECT_TYPES, toSnake } from './model';
+import { isVoiceMessage } from './recordings';
+
+export type StudioTransition = Record<string, unknown> & { event: string; next?: string };
+export type StudioState = {
+  name: string;
+  type: string;
+  transitions: StudioTransition[];
+  properties: Record<string, unknown>;
+};
+export type StudioFlow = Record<string, unknown> & { states: StudioState[] };
+
+// A text to set in the helpline's variables (staging.hcl / production.hcl): flow_vars, or the
+// channel's channel_flow_vars
+export type FlowVarChange = { scope: string; name: string; value: string; widget: string };
+
+export type GeneratedStudioFlow = {
+  frameId?: string;
+  title: string;
+  // The template it came from (under twilio-iac/helplines) and the channels using it, if imported
+  template?: string;
+  channels: string[];
+  flow: StudioFlow;
+  // The .tftpl file's contents
+  text: string;
+  flowVars: FlowVarChange[];
+  // What a person (or Claude) still has to fill in or decide
+  todo: string[];
+};
+
+// A text that is only a variable: ${flow_vars.x}, ${channel_flow_vars.x}...
+const VARIABLE = /^\$\{\s*([a-z_]*flow_vars)\.([A-Za-z0-9_]+)\s*\}$/;
+const TODO = 'TODO';
+const ACCOUNT_SCOPED = '${lambda_twilio_account_scoped_url}';
+
+// What new flows start with (the baseline templates' settings)
+const DEFAULT_SETTINGS = {
+  description: '${flow_description}',
+  initial_state: 'Trigger',
+  flags: { allow_concurrent_calls: true },
+};
+
+const TRIGGER_EVENTS = [
+  'incomingMessage',
+  'incomingCall',
+  'incomingConversationMessage',
+  'incomingRequest',
+  'incomingParent',
+];
+
+const httpRequest = (url: string, body: string) => ({
+  method: 'POST',
+  content_type: 'application/json;charset=utf-8',
+  add_twilio_auth: false,
+  body,
+  url,
+});
+
+const condition = (input: string, type: string, value: string, friendlyName: string) => ({
+  friendly_name: friendlyName,
+  arguments: [input],
+  type,
+  value,
+});
+
+// Where a ${...} (or %{...}) starting at `start` ends, braces and quoted strings inside included
+const interpolationEnd = (text: string, start: number) => {
+  let depth = 0;
+  let inString = false;
+  for (let index = start + 1; index < text.length; index += 1) {
+    const char = text[index];
+    if (inString) {
+      if (char === '\\') index += 1;
+      else if (char === '"') inString = false;
+    } else if (char === '"') inString = true;
+    else if (char === '{') depth += 1;
+    else if (char === '}') {
+      depth -= 1;
+      if (depth === 0) return index + 1;
+    }
+  }
+  return text.length;
+};
+
+// A quoted HCL string: text escaped, interpolations (${...}) kept exactly as written
+const hclString = (text: string) => {
+  let result = '"';
+  let index = 0;
+  while (index < text.length) {
+    const char = text[index];
+    if ((char === '$' || char === '%') && text[index + 1] === '{') {
+      const end = interpolationEnd(text, index);
+      result += text.slice(index, end);
+      index = end;
+    } else {
+      const escapes: Record<string, string> = { '"': '\\"', '\\': '\\\\', '\n': '\\n', '\r': '\\r', '\t': '\\t' };
+      result += escapes[char] ?? char;
+      index += 1;
+    }
+  }
+  return `${result}"`;
+};
+
+const isExpression = (value: object) => Object.keys(value).length === 1 && 'expression' in value;
+
+// The flow as HCL, laid out like JSON (as the helplines' templates are written)
+const toHcl = (value: unknown, indent = ''): string => {
+  if (typeof value === 'string') return hclString(value);
+  if (value === null || typeof value !== 'object') return JSON.stringify(value);
+  // An expression the template had unquoted, kept as it was
+  if (!Array.isArray(value) && isExpression(value)) return String((value as { expression: string }).expression);
+  const inner = `${indent}  `;
+  if (Array.isArray(value)) {
+    return value.length === 0 ? '[]' : `[\n${value.map((item) => inner + toHcl(item, inner)).join(',\n')}\n${indent}]`;
+  }
+  const entries = Object.entries(value).filter(([, item]) => item !== undefined);
+  if (entries.length === 0) return '{}';
+  return `{\n${entries.map(([key, item]) => `${inner}${JSON.stringify(key)}: ${toHcl(item, inner)}`).join(',\n')}\n${indent}}`;
+};
+
+export const toTemplateText = (flow: StudioFlow) => `\${\n  jsonencode(${toHcl(flow, '  ')})\n}\n`;
+
+/**
+ * The Studio flow for one frame of a board (or for the objects outside frames, without frameId).
+ */
+export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStudioFlow => {
+  const objects = content.objects.filter((object) => object.frameId === frame?.id);
+  const ids = new Set(objects.map((object) => object.id));
+  const connections = content.connections.filter((connection) => ids.has(connection.from) && ids.has(connection.to));
+  const byId = new Map(objects.map((object) => [object.id, object]));
+  const todo: string[] = [];
+  const flowVars: FlowVarChange[] = [];
+  const label = (object: FlowObject) => `“${object.studioName ?? object.text}”`;
+
+  // The recordings folder variable this flow's voice widgets already use, for new ones
+  const recordingsVariable = objects
+    .map(
+      (object) => String(object.studio?.properties?.play ?? '').match(/^\$\{\s*flow_vars\.([A-Za-z0-9_]+)\s*\}\//)?.[1],
+    )
+    .find(Boolean);
+
+  // Each object's widget name; kinds that aren't widgets have none
+  const NOT_WIDGETS = new Set<FlowObject['type']>(['end', 'text', 'goToFrame', 'wait', 'chatbot', 'preSurvey']);
+  const nameOf = (object: FlowObject): string | undefined => {
+    if (object.studio) return object.studioName ?? object.studio.name;
+    if (object.type === 'incoming') return 'Trigger';
+    if (NOT_WIDGETS.has(object.type)) return undefined;
+    return object.studioName ?? `todo_${toSnake(object.text) || object.id}`;
+  };
+  // Design objects that stand for something built some other way
+  const BUILT_ELSEWHERE: Partial<Record<FlowObject['type'], string>> = {
+    chatbot: 'a chatbot (Lex) step: build it with the chatbot widgets (capture channel with bot)',
+    preSurvey: 'a pre-survey: build it with the chatbot or webchat form',
+    wait: 'a wait / repeat: post-queue loops are built in the queue and its post-queue widgets',
+  };
+  // Where a way out leads: the widget it's connected to (End, or nothing, ends the flow)
+  const nextOf = (object: FlowObject, exit: string) => {
+    const connection = connections.find((candidate) => candidate.from === object.id && (candidate.exit ?? '') === exit);
+    const target = connection && byId.get(connection.to);
+    if (!target || target.type === 'end') return undefined;
+    const name = nameOf(target);
+    if (!name)
+      todo.push(
+        `${label(object)} leads to ${label(target)} (${OBJECT_TYPES[target.type].label}), which isn't a Studio widget: connect it to one.`,
+      );
+    return name;
+  };
+  const withNext = (transition: Record<string, unknown>, next?: string): StudioTransition =>
+    ({ ...transition, ...(next ? { next } : {}) }) as StudioTransition;
+  const offsetOf = (object: FlowObject) =>
+    object.studio?.offset ?? { x: Math.round(object.x), y: Math.round(object.y * 2) };
+
+  // A message's text changed on the board: in its variable when the widget reads one, otherwise in
+  // the template
+  const setText = (object: FlowObject, properties: Record<string, unknown>, field: 'say' | 'body', name: string) => {
+    const script = object.message?.script;
+    if (script === undefined || script === object.studio?.importedScript) return;
+    const current = properties[field];
+    const variable = typeof current === 'string' ? current.match(VARIABLE) : undefined;
+    if (variable) {
+      flowVars.push({ scope: variable[1], name: variable[2], value: script, widget: name });
+    } else {
+      if (typeof current === 'string' && current.includes('${')) {
+        todo.push(`${label(object)}: its text was ${current}; the board's text replaces it, variables and all.`);
+      }
+      properties[field] = script;
+    }
+  };
+
+  const states: StudioState[] = objects.flatMap((object): StudioState[] => {
+    const name = nameOf(object);
+    if (!name) {
+      const how = BUILT_ELSEWHERE[object.type];
+      if (how) todo.push(`${label(object)} is ${how}.`);
+      return [];
+    }
+    const offset = offsetOf(object);
+
+    // Imported: rebuilt as it was, with the board's connections and changes
+    if (object.studio) {
+      const { studio } = object;
+      const properties: Record<string, unknown> = { ...studio.properties, offset };
+      if (object.studioName && object.studioName !== studio.name) {
+        todo.push(
+          `${label(object)} was ${studio.name} in Studio: renaming a live widget also means its recording file and any monitoring that uses the name.`,
+        );
+      }
+      if ('say' in properties) setText(object, properties, 'say', name);
+      else if ('body' in properties && OBJECT_TYPES[object.type].hasMessage) setText(object, properties, 'body', name);
+      if (object.settings && typeof properties.body === 'string') {
+        try {
+          const body = JSON.parse(properties.body);
+          if (Object.entries(object.settings).some(([key, value]) => body[key] !== value)) {
+            properties.body = JSON.stringify({ ...body, ...object.settings }, null, 2);
+          }
+        } catch {
+          // A body that isn't JSON keeps its settings
+        }
+      }
+      const exits = object.exits ?? [];
+      // Boards imported before transitions were kept can't be rebuilt as they are live
+      if (!studio.transitions) {
+        todo.push('This board was imported before the import kept what Studio needs: import the helpline again.');
+      }
+      const original = studio.transitions ?? [];
+      const transitions = original.map((transition, index) => {
+        const { next, ...rest } = transition;
+        const exit = studio.type === 'trigger' ? String(transition.event) : exits[index];
+        return withNext(rest, exit === undefined ? undefined : nextOf(object, exit));
+      });
+      // Ways out added on the board (e.g. a decision's new answer)
+      exits.slice(original.length).forEach((exit) => {
+        todo.push(`${label(object)} has a new way out “${exit}”: set the condition it stands for.`);
+        transitions.push(
+          withNext({ event: 'match', conditions: [condition(TODO, 'equal_to', exit, exit)] }, nextOf(object, exit)),
+        );
+      });
+      return [{ name, type: studio.type, transitions, properties }];
+    }
+
+    // New: a widget of its kind
+    const info = OBJECT_TYPES[object.type];
+    const exits = exitsOf(object);
+    const next = (exit = '') => nextOf(object, exit);
+    const message = object.message?.script ?? '';
+    const voice = isVoiceMessage(object, frame);
+    const voiceRecording = voice && (object.message?.recordingFile ?? `${object.studioName}.mp3`);
+    const spoken = () =>
+      recordingsVariable && object.studioName
+        ? { play: `\${flow_vars.${recordingsVariable}}/${voiceRecording}` }
+        : { say: message || TODO };
+    const fromFlowVars = () => {
+      flowVars.push({ scope: 'flow_vars', name, value: message, widget: name });
+      return `\${flow_vars.${name}}`;
+    };
+    // A split on a value, one match per way out (and "no match")
+    const split = (
+      splitName: string,
+      input: string,
+      matches: { exit: string; type: string; value: string }[],
+      noMatch: string,
+    ): StudioState => ({
+      name: splitName,
+      type: 'split-based-on',
+      transitions: [
+        withNext({ event: 'noMatch' }, next(noMatch)),
+        ...matches.map(({ exit, type, value }) =>
+          withNext({ event: 'match', conditions: [condition(input, type, value, exit)] }, next(exit)),
+        ),
+      ],
+      properties: { input, offset: { x: offset.x, y: offset.y + 240 } },
+    });
+    // Its Split, e.g. f_isSkilledWorkerAvailable_tya_calls -> split_is_skilled_worker_available_tya_calls
+    const splitName = `split_${toSnake(name.replace(/^(postqueue_)?(f_|gather_input_)/, '$1').replace(/([a-z])([A-Z])/g, '$1_$2'))}`;
+
+    switch (object.type) {
+      case 'incoming': {
+        const event = object.message?.channel === 'voice' ? 'incomingCall' : 'incomingConversationMessage';
+        return [
+          {
+            name,
+            type: 'trigger',
+            transitions: TRIGGER_EVENTS.map((candidate) =>
+              withNext({ event: candidate }, candidate === event ? next(exits[0] ?? '') : undefined),
+            ),
+            properties: { offset },
+          },
+        ];
+      }
+      case 'playMessage':
+        if (!recordingsVariable && voice) {
+          todo.push(
+            `${label(object)}: no recordings folder variable found in this flow; it says its script instead of playing a recording.`,
+          );
+        }
+        return [
+          {
+            name,
+            type: 'say-play',
+            transitions: [withNext({ event: 'audioComplete' }, next())],
+            properties: { ...spoken(), loop: 1, offset },
+          },
+        ];
+      case 'sendMessage':
+        return [
+          {
+            name,
+            type: 'send-message',
+            transitions: [withNext({ event: 'sent' }, next()), { event: 'failed' }],
+            properties: {
+              offset,
+              service: '{{trigger.message.InstanceSid}}',
+              channel: '{{trigger.message.ChannelSid}}',
+              from: '{{flow.channel.address}}',
+              to: '{{contact.channel.address}}',
+              body: fromFlowVars(),
+            },
+          },
+        ];
+      case 'questionMessaging':
+        return [
+          {
+            name,
+            type: 'send-and-wait-for-reply',
+            transitions: [
+              withNext({ event: 'incomingMessage' }, next('reply')),
+              withNext({ event: 'timeout' }, next('timeout')),
+              { event: 'deliveryFailure' },
+            ],
+            properties: {
+              offset,
+              service: '{{trigger.message.InstanceSid}}',
+              channel: '{{trigger.message.ChannelSid}}',
+              from: '{{flow.channel.address}}',
+              body: fromFlowVars(),
+              timeout: '3600',
+            },
+          },
+        ];
+      case 'menuVoice': {
+        const digits = exits.filter((exit) => exit !== 'noMatch' && exit !== 'timeout');
+        const input = `{{widgets.${name}.Digits}}`;
+        return [
+          {
+            name,
+            type: 'gather-input-on-call',
+            transitions: [
+              { event: 'keypress', next: splitName },
+              { event: 'speech' },
+              withNext({ event: 'timeout' }, next('timeout')),
+            ],
+            properties: {
+              ...spoken(),
+              number_of_digits: 1,
+              speech_timeout: 'auto',
+              offset,
+              loop: 1,
+              finish_on_key: '#',
+              stop_gather: true,
+              gather_language: object.message?.language ?? 'en',
+              speech_model: 'numbers_and_commands',
+              timeout: 10,
+            },
+          },
+          split(
+            splitName,
+            input,
+            digits.map((digit) => ({ exit: digit, type: 'equal_to', value: digit })),
+            'noMatch',
+          ),
+        ];
+      }
+      case 'decision':
+      case 'checkCountry':
+        todo.push(`${label(object)}: set what it splits on (its input) and its conditions.`);
+        return [
+          {
+            name,
+            type: 'split-based-on',
+            transitions: [
+              withNext({ event: 'noMatch' }, next('noMatch')),
+              ...exits
+                .filter((exit) => exit !== 'noMatch')
+                .map((exit) =>
+                  withNext({ event: 'match', conditions: [condition(TODO, 'equal_to', exit, exit)] }, next(exit)),
+                ),
+            ],
+            properties: { input: TODO, offset },
+          },
+        ];
+      case 'checkQueueAvailability':
+      case 'checkWorkerLoggedIn': {
+        const result =
+          object.type === 'checkQueueAvailability' ? ['available', 'not available'] : ['logged in', 'not logged in'];
+        const input = `{{widgets.${name}.parsed.totalAvailableWorkers}}`;
+        if (object.type === 'checkWorkerLoggedIn')
+          todo.push(
+            `${label(object)}: check the field its split reads in STUDIO_ROUTES.md (worker/isSkilledWorkerLoggedIn).`,
+          );
+        return [
+          {
+            name,
+            type: 'make-http-request',
+            transitions: [{ event: 'success', next: splitName }, withNext({ event: 'failed' }, next('failed'))],
+            properties: {
+              offset,
+              ...httpRequest(`${ACCOUNT_SCOPED}/${info.studioRoute}`, JSON.stringify(object.settings ?? {}, null, 2)),
+            },
+          },
+          split(splitName, input, [{ exit: result[0], type: 'greater_than', value: '0' }], result[1]),
+        ];
+      }
+      case 'checkOperatingHours':
+      case 'checkClientProfile': {
+        const route = info.studioRoute!;
+        todo.push(
+          `${label(object)}: set its request body and what its split reads from the response, from STUDIO_ROUTES.md (${route}).`,
+        );
+        const results = exits.filter((exit) => exit !== 'failed');
+        return [
+          {
+            name,
+            type: 'make-http-request',
+            transitions: [{ event: 'success', next: splitName }, withNext({ event: 'failed' }, next('failed'))],
+            properties: { offset, ...httpRequest(`${ACCOUNT_SCOPED}/${route}`, TODO) },
+          },
+          split(
+            splitName,
+            `{{widgets.${name}.parsed.${TODO}}}`,
+            results.slice(0, -1).map((exit) => ({ exit, type: 'equal_to', value: exit })),
+            results[results.length - 1],
+          ),
+        ];
+      }
+      case 'function':
+      case 'notifyError':
+        todo.push(`${label(object)}: set the address it calls and its request body.`);
+        return [
+          {
+            name,
+            type: 'make-http-request',
+            transitions: [
+              withNext({ event: 'success' }, next(exits.includes('success') ? 'success' : '')),
+              withNext({ event: 'failed' }, next('failed')),
+            ],
+            properties: {
+              offset,
+              ...httpRequest(object.type === 'notifyError' ? '${webhook_url_studio_errors}' : TODO, TODO),
+            },
+          },
+        ];
+      case 'sendToQueue':
+        todo.push(`${label(object)}: set its workflow, task channel and task attributes.`);
+        return [
+          {
+            name,
+            type: 'send-to-flex',
+            transitions: [
+              withNext({ event: 'callComplete' }, next('post-queue')),
+              withNext({ event: 'failedToEnqueue' }, next('failed to enqueue')),
+              { event: 'callFailure' },
+            ],
+            properties: { offset, workflow: TODO, channel: TODO, attributes: TODO },
+          },
+        ];
+      case 'recordVoicemail':
+        return [
+          {
+            name,
+            type: 'record-voicemail',
+            transitions: [withNext({ event: 'recordingComplete' }, next()), { event: 'noAudio' }, { event: 'hangup' }],
+            properties: {
+              transcribe: false,
+              offset,
+              trim: 'trim-silence',
+              play_beep: 'true',
+              finish_on_key: '#',
+              timeout: 5,
+              max_length: 3600,
+            },
+          },
+        ];
+      case 'setVariable':
+        todo.push(`${label(object)}: set its variables.`);
+        return [
+          {
+            name,
+            type: 'set-variables',
+            transitions: [withNext({ event: 'next' }, next())],
+            properties: { variables: [], offset },
+          },
+        ];
+      case 'systemDown':
+      case 'subflow': {
+        const after = next(exits[0] ?? '');
+        if (object.type === 'subflow') todo.push(`${label(object)}: set the subflow it runs.`);
+        return [
+          {
+            name,
+            type: 'run-subflow',
+            transitions: [
+              withNext({ event: 'completed' }, object.type === 'systemDown' ? after : next('completed')),
+              withNext({ event: 'failed' }, object.type === 'systemDown' ? after : next('failed')),
+            ],
+            properties: {
+              flow_sid: object.type === 'systemDown' ? '${system_down_studio_subflow_sid}' : TODO,
+              flow_revision: 'LatestPublished',
+              parameters: [],
+              offset,
+            },
+          },
+        ];
+      }
+      case 'forwardCall':
+        todo.push(`${label(object)}: set the number it forwards to.`);
+        return [
+          {
+            name,
+            type: 'connect-call-to',
+            transitions: [
+              withNext({ event: 'callCompleted' }, next('call completed')),
+              withNext({ event: 'hangup' }, next('hung up')),
+            ],
+            properties: { offset, caller_id: '{{contact.channel.address}}', noun: 'number', to: TODO, timeout: 30 },
+          },
+        ];
+      default:
+        todo.push(`${label(object)} (${info.label}) has no Studio widget: build it by hand.`);
+        return [];
+    }
+  });
+
+  if (!states.some((state) => state.type === 'trigger'))
+    todo.push('The flow has no incoming call or message (its Trigger).');
+
+  const flow: StudioFlow = { ...(frame?.studio?.settings ?? DEFAULT_SETTINGS), states };
+  return {
+    ...(frame ? { frameId: frame.id } : {}),
+    title: frame?.title ?? content.title,
+    ...(frame?.studio ? { template: frame.studio.template } : {}),
+    channels: frame?.studio?.channels ?? [],
+    flow,
+    text: toTemplateText(flow),
+    flowVars,
+    todo: [...new Set(todo)],
+  };
+};
+
+// One flow per frame (and one for objects outside frames, if any)
+export const toStudioFlows = (content: BoardContent): GeneratedStudioFlow[] => [
+  ...content.frames
+    .filter((frame) => content.objects.some((object) => object.frameId === frame.id))
+    .map((frame) => toStudioFlow(content, frame)),
+  ...(content.objects.some((object) => !object.frameId || !content.frames.some((frame) => frame.id === object.frameId))
+    ? [toStudioFlow(content)]
+    : []),
+];

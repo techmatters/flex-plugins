@@ -269,12 +269,42 @@ can ignore it. `about` tells the agent what the file is and which standards to f
 }
 ```
 
-An exit without `to` and without `endsFlow` is still open (and is in `checks`). Recording URLs
-come in step 3, when recordings live in the recordings bucket; until then `recordingFile` is the
-name the file should have.
+An exit without `to` and without `endsFlow` is still open (and is in `checks`). Each voice
+message has its `recordingFile`, its `status` and, once uploaded, its `recordingUrls`.
 
-A Claude skill (later, in `twilio-iac`) reads this file together with the helpline's config and
-the Studio standards, and writes or updates the `.tftpl` templates, then shows `make plan`.
+The file also carries **`studioTemplates`**: each frame already written as a Studio flow template
+(`src/flows/studioTemplate.ts`), with the texts to set in the `.hcl` variables and what it couldn't
+fill in:
+
+```json
+"studioTemplates": [
+  {
+    "title": "[voice] · voice",
+    "template": "usnm/templates/studio-flows/voice.tftpl",
+    "channels": ["voice"],
+    "text": "${
+  jsonencode({
+    \"description\": \"${flow_description}\", ...",
+    "variables": [{ "scope": "flow_vars", "name": "send_wait_sms_welcome", "value": "Welcome to ...", "widget": "send_wait_sms_welcome" }],
+    "todo": ["“split_language”: set what it splits on (its input) and its conditions."]
+  }
+]
+```
+
+- **Widgets imported from a live flow** are rebuilt from what the import kept (their settings,
+  position and transitions); only their connections and the texts or settings changed on the board
+  change. An imported board nobody changed gives back exactly the live template: the tests do
+  that for every flow of every helpline in the repo.
+- **New objects** become widgets of their kind: a voice menu is a Gather and a Split on its
+  digits, a route check is the HTTP request and a Split on its answer, a message reads its text
+  from `flow_vars`. What the board can't know (a split's input, a workflow) is marked `TODO`.
+- **Texts** that a widget reads from a variable (`${flow_vars.x}`, `${channel_flow_vars.x}`) stay
+  there: the changes are listed in `variables`, for `staging.hcl` / `production.hcl`.
+
+The Claude skill **studio-flow-from-board** (`.claude/skills/studio-flow-from-board/SKILL.md`)
+takes this file from there: it writes the templates, fills in the TODOs (from STUDIO_ROUTES.md, the
+helpline's config, or by asking), sets the texts in the `.hcl` files, checks, and runs a staging
+`make plan` for the person to review and apply.
 
 ### Recordings and scripts list
 
