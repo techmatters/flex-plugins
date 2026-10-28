@@ -57,6 +57,14 @@ export interface RecordingFiles {
   uploadTarget(code: string, fileName: string, contentType: string): Promise<UploadTarget>;
   publish(code: string, fileName: string): Promise<void>;
   remove(code: string, environment: RecordingEnvironment, fileName: string): Promise<void>;
+  // Puts a file straight into a folder (copying a helpline's recordings when importing it)
+  store(
+    code: string,
+    environment: RecordingEnvironment,
+    fileName: string,
+    content: Uint8Array,
+    contentType: string,
+  ): Promise<void>;
   // So a replaced file is served straight away, not after the cache expires
   refresh(code: string, environment: RecordingEnvironment, fileName: string): Promise<void>;
 }
@@ -70,6 +78,8 @@ export type RecordingLogEntry = {
   approvedEtag?: string;
   publishedBy?: string;
   publishedAt?: string;
+  // Where it was copied from, when the helpline was imported
+  importedFrom?: Partial<Record<RecordingEnvironment, string>>;
 };
 
 export type RecordingLog = Record<string, RecordingLogEntry>;
@@ -153,6 +163,12 @@ export class LocalRecordingFiles implements RecordingFiles {
     await fs.rm(this.file(code, environment, fileName), { force: true });
   }
 
+  async store(code: string, environment: RecordingEnvironment, fileName: string, content: Uint8Array) {
+    const target = this.file(code, environment, fileName);
+    await fs.mkdir(path.dirname(target), { recursive: true });
+    await fs.writeFile(target, content);
+  }
+
   async refresh() {
     // Nothing cached locally
   }
@@ -230,6 +246,14 @@ export class MemoryRecordingFiles implements RecordingFiles {
 
   async remove(code: string, environment: RecordingEnvironment, fileName: string) {
     this.files.delete(`${code}/${environment}/${fileName}`);
+  }
+
+  async store(code: string, environment: RecordingEnvironment, fileName: string, content: Uint8Array) {
+    check(code, fileName);
+    this.files.set(`${code}/${environment}/${fileName}`, {
+      content: Buffer.from(content).toString(),
+      at: new Date().toISOString(),
+    });
   }
 
   async refresh(code: string, environment: RecordingEnvironment, fileName: string) {
@@ -321,6 +345,23 @@ export class S3RecordingFiles implements RecordingFiles {
 
   async remove(code: string, environment: RecordingEnvironment, fileName: string) {
     await this.s3.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: this.key(code, environment, fileName) }));
+  }
+
+  async store(
+    code: string,
+    environment: RecordingEnvironment,
+    fileName: string,
+    content: Uint8Array,
+    contentType: string,
+  ) {
+    await this.s3.send(
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: this.key(code, environment, fileName),
+        Body: content,
+        ContentType: contentType,
+      }),
+    );
   }
 
   async refresh(code: string, environment: RecordingEnvironment, fileName: string) {

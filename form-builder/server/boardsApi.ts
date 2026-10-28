@@ -18,7 +18,8 @@
  * The flow designer's routes, called from api.ts:
  *
  *   GET    /api/boards                 boards this person can see, and the Aselo templates
- *   POST   /api/boards/:code           new board ({ title, copyFrom?: { code, id } })
+ *   POST   /api/boards/:code           new board ({ title, copyFrom?: { code, id } } or { title, content },
+ *                                      e.g. an imported helpline)
  *   GET    /api/boards/:code/:id       a board
  *   PUT    /api/boards/:code/:id       save ({ expectedRevision, content }); 409 if someone else saved
  *   DELETE /api/boards/:code/:id       Aselo staff only
@@ -57,7 +58,7 @@ const newBoardId = () => randomUUID().slice(0, 8);
 
 export type FlowStores = { boards: BoardStore; people?: PeopleStore };
 
-type CreateBody = { title?: unknown; copyFrom?: { code?: unknown; id?: unknown } };
+type CreateBody = { title?: unknown; copyFrom?: { code?: unknown; id?: unknown }; content?: unknown };
 type SaveBody = { expectedRevision?: unknown; content?: unknown };
 
 const handlePeopleRequest = async (
@@ -106,11 +107,15 @@ export const handleBoardRequest = async (
   if (method === 'POST' && createMatch) {
     const [, code] = createMatch;
     if (!canEdit(user, code)) return fail(403, `You can't add boards to ${code}.`);
-    const { title, copyFrom } = (body ?? {}) as CreateBody;
+    const { title, copyFrom, content: given } = (body ?? {}) as CreateBody;
     if (typeof title !== 'string' || !title.trim()) return fail(400, 'A board needs a title.');
 
     let content: BoardContent = emptyBoard(title.trim());
-    if (copyFrom) {
+    if (given !== undefined) {
+      if (!isBoardContent(given)) return fail(400, 'Invalid board');
+      if (JSON.stringify(given).length > MAX_BOARD_BYTES) return fail(413, 'This board is too big to save.');
+      content = { ...given, title: title.trim() };
+    } else if (copyFrom) {
       const fromCode = String(copyFrom.code);
       const fromId = String(copyFrom.id);
       if (!isValidBoardKey(fromCode, fromId) || !canSee(user, fromCode)) return fail(403, "You can't copy that board.");

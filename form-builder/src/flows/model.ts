@@ -58,6 +58,9 @@ export type MessageContent = {
   script?: string;
   // Messaging scripts are approved by Aselo staff; the approval holds while the script is the same
   approved?: { by: string; at: string; script: string };
+  // The recording's file, when it isn't named after the widget (helplines whose recordings
+  // predate the naming standards)
+  recordingFile?: string;
 };
 
 export type FlowObject = Position &
@@ -79,6 +82,8 @@ export type FlowObject = Position &
     settings?: Record<string, string>;
     // Ways out deliberately left unconnected: the flow ends there ('' for a single way out)
     endedExits?: string[];
+    // The Studio widget it was imported from: its name, type and settings, as in the template
+    studio?: StudioWidget;
   };
 
 export type Connection = {
@@ -192,7 +197,8 @@ export type FlowObjectType =
   | 'forwardCall'
   | 'notifyError'
   | 'goToFrame'
-  | 'text';
+  | 'text'
+  | 'other';
 
 export type Shape =
   | 'pill'
@@ -237,6 +243,12 @@ export type ObjectTypeInfo = {
   // The field whose value tells calls to the same route apart in their names
   // (f_isSkilledWorkerAvailable_tya_calls)
   nameSuffixFrom?: string;
+};
+
+export type StudioWidget = {
+  name: string;
+  type: string;
+  properties?: Record<string, unknown>;
 };
 
 export type ObjectField = {
@@ -552,6 +564,17 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     exits: [],
     defaultSize: { width: 200, height: 40 },
   },
+  // A Studio widget the designer has no kind for (imported as it is)
+  other: {
+    label: 'Other Studio widget',
+    group: 'Other',
+    shape: 'rectangle',
+    icon: 'Braces',
+    family: 'neutral',
+    editableExits: true,
+    exits: ['next'],
+    defaultSize: { width: 190, height: 64 },
+  },
 };
 
 export const FAMILY_COLORS: Record<ColorFamily, string> = {
@@ -592,9 +615,10 @@ export const objectColor = (object: Pick<FlowObject, 'type' | 'color'>) =>
 
 // The object's ways out: its own when it can set them, otherwise its type's. One unnamed way
 // out is ['']
-export const exitsOf = (object: Pick<FlowObject, 'type' | 'exits'>): string[] => {
+export const exitsOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio'>): string[] => {
   const info = OBJECT_TYPES[object.type];
-  if (info.editableExits && object.exits) return object.exits;
+  // Imported widgets keep their Studio events as ways out
+  if ((info.editableExits || object.studio) && object.exits) return object.exits;
   return info.exits ?? [''];
 };
 

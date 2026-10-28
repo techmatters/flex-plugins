@@ -16,6 +16,8 @@
 
 // @vitest-environment jsdom
 
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ApiContext, ApiUser } from '../../server/api';
@@ -101,7 +103,13 @@ beforeEach(() => {
     drafts: new MemoryDraftStore(),
     boards,
     people,
-    recordings: { files: recordingFiles, log: new MemoryRecordingLogStore() },
+    recordings: {
+      files: recordingFiles,
+      log: new MemoryRecordingLogStore(),
+      fetchSource: async (url: string) => new TextEncoder().encode(`audio from ${url}`),
+    },
+    // The repo's twilio-iac/helplines, for importing a live helpline
+    helplinesConfigDir: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../twilio-iac/helplines'),
     notifier: { draftSubmitted: async () => {} },
   };
 });
@@ -293,6 +301,44 @@ describe('flow designer', { timeout: 20_000 }, () => {
     fireEvent.click(panel.getByRole('button', { name: 'Publish to production' }));
     await waitFor(() => expect(panel.getByText('Published')).toBeTruthy());
     expect(recordingFiles.files.get('usnm/production/play_message_voice.mp3')?.content).toBe('take one');
+  });
+
+  test('Aselo staff import the flows they choose from a live helpline, a board each, with their recordings', async () => {
+    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    fireEvent.change(await screen.findByRole('combobox', { name: 'Helpline to import' }), {
+      target: { value: 'usnm' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Preview' }));
+    const preview = within(await screen.findByRole('region', { name: 'Import preview' }));
+    expect(preview.getByRole('checkbox', { name: /^\[voice\] · voice\b/ })).toBeTruthy();
+    // Where each flow is live
+    const redirect = preview.getByRole('checkbox', { name: /sms-redirect/ }).closest('li')!;
+    expect(within(redirect as HTMLElement).queryByText('Staging')).toBeNull();
+    expect(within(redirect as HTMLElement).getByText('Production')).toBeTruthy();
+    expect(preview.getByText('sms_shortcode: production only · chat: staging only')).toBeTruthy();
+    expect(preview.getByText(/recordings to copy: \d+ for staging, \d+ for production/)).toBeTruthy();
+
+    expect(preview.getByRole('button', { name: 'Create the 7 boards' })).toBeTruthy();
+
+    // Only the voice flow
+    fireEvent.click(preview.getByRole('button', { name: 'None' }));
+    fireEvent.click(preview.getByRole('checkbox', { name: /^\[voice\] · voice\b/ }));
+    expect(preview.getByText('66 recordings to copy: 33 for staging, 33 for production.')).toBeTruthy();
+    fireEvent.click(preview.getByRole('button', { name: 'Create the board' }));
+    await waitFor(() => expect(preview.getByRole('status').textContent).toMatch(/^Copied \d+ of \d+ recordings\.$/), {
+      timeout: 15_000,
+    });
+    const [copied, total] = preview.getByRole('status').textContent!.match(/\d+/g)!;
+    expect(copied).toBe(total);
+    expect(recordingFiles.files.get('usnm/production/play_message_voice_outside_us.mp3')?.content).toBe(
+      'audio from https://usnm-recordings-5659.twil.io/play_message_voice_outside_us.mp3',
+    );
+
+    expect((await boards.list()).map((summary) => summary.title)).toEqual(['USNM · [voice] · voice']);
+    // ...and only its recordings
+    expect(recordingFiles.files.has('usnm/production/play_message_voice_launch_technical_upgrade.mp3')).toBe(false);
+    fireEvent.click(preview.getByRole('button', { name: 'USNM · [voice] · voice' }));
+    await screen.findByRole('heading', { name: 'USNM · [voice] · voice' });
   });
 
   test('a sticky note becomes a task, listed in the Tasks panel until it is done', async () => {

@@ -59,6 +59,8 @@ export type Recording = {
   approvedAt?: string;
   publishedBy?: string;
   publishedAt?: string;
+  // Where it was copied from, when the helpline was imported
+  importedFrom?: Partial<Record<RecordingEnvironment, string>>;
 };
 
 export type RecordingsList = {
@@ -76,12 +78,16 @@ export const isVoiceMessage = (object: Pick<FlowObject, 'type' | 'message'>, fra
   Boolean(OBJECT_TYPES[object.type].hasMessage) && (object.message?.channel ?? frame?.channel) === 'voice';
 
 // The object's recording: a file named after its Studio name, MP3 or WAV
-export const recordingOf = (object: Pick<FlowObject, 'studioName'>, recordings: Recording[] = []) =>
-  object.studioName
+export const recordingOf = (object: Pick<FlowObject, 'studioName' | 'message'>, recordings: Recording[] = []) => {
+  // Imported from a helpline whose files aren't named after their widgets
+  const own = object.message?.recordingFile;
+  if (own) return recordings.find((recording) => recording.fileName === own);
+  return object.studioName
     ? recordings.find((recording) =>
         RECORDING_EXTENSIONS.some((extension) => recording.fileName === `${object.studioName}.${extension}`),
       )
     : undefined;
+};
 
 export type MessageStatus = 'No script' | 'Script ready' | 'Recorded' | 'Approved' | 'Published';
 

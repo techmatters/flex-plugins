@@ -66,7 +66,7 @@ reads the same way as Studio.
 | Set variable / counter | box | variable | 1 | Set Variables (`set_var_...`) |
 | Wait / repeat | delay shape | timer | 1 | post-queue loop (e.g. every 2 minutes) |
 | Go to frame | off-page arrow | link | none | jumps to another frame ("continues in SMS post-queue") |
-| Notify the Aselo team | rounded box | bell | 1 | HTTP Request to `webhook_url_studio_errors` (`http_post_...`) |
+| Notify the Aselo team | rounded box | bell | 1 | HTTP Request to `webhook_url_studio_errors` (`http_post_...`), where a flow posts to Slack; optional, since failures are followed in Datadog |
 | Text | no border | text | none | a label or title, no Studio meaning |
 
 Colours by family: green for start and end, yellow for decisions, blue for checks and functions,
@@ -125,8 +125,6 @@ the Studio flow standards:
   "Where it goes" in the object's settings).
 - **One place per way out:** a way out leads to one place; connections only use ways out the
   object has (e.g. after a decision's answer was renamed); End has nothing after it.
-- **Failures are notified:** "failed to enqueue" and failed calls go to a **Notify the Aselo
-  team** object (an HTTP request to `webhook_url_studio_errors`, which posts to Slack).
 - **System down first:** an incoming call or message goes to the system-down subflow before
   anything else.
 - **Menus that repeat** have a counter (Set variable) or a wait on the way round, so a caller
@@ -139,7 +137,7 @@ the Studio flow standards:
 
 **Errors** are mistakes: names that break the standards or repeat, a way out leading to two
 places, connections from ways out that don't exist. **Warnings** are what a design in progress
-still lacks: open ends, missing names and scripts, notifications, system down first, unreachable
+still lacks: open ends, missing names and scripts, system down first, unreachable
 objects. Objects get a red badge for errors and an orange one for warnings; the panel can hide
 warnings.
 
@@ -288,33 +286,44 @@ step 3.
 
 ### Import an existing helpline
 
-Builds a board for a helpline that's already live, as automatically as possible, so its flows
-can be seen, checked and changed later, and its recordings moved into the builder. Aselo staff
-pick the helpline and click **Import**; the builder reads everything from `master` (as it does for
-form definitions) and shows a report before saving anything.
+Builds boards for a helpline that's already live, one per Studio flow as in Studio, so its flows can be seen, checked and changed
+later, and its recordings moved into the recordings bucket. On the boards page, Aselo staff pick
+the helpline under **Import a live helpline** and click **Preview**; the builder reads everything
+from `master` (as it does for form definitions) and shows what it found and what needs a
+person. Each flow found shows where it's live (**Staging**, **Production**, and channels that are in one environment only, e.g. "chat: staging only") and has a checkbox (all ticked to start): **Create the boards** saves the ticked ones (e.g. "USNM · [voice] · voice", "USNM · [sms, sms_shortcode] · sms") and copies their recordings (optional; only those the ticked flows play), with progress.
+Nothing in Twilio or the repo changes.
 
 | What | Where it comes from | Becomes |
 |---|---|---|
-| Which flows exist | the `channels` in the helpline's `common.hcl` (each channel's template), plus the system-down subflow | one frame per flow ("Voice", "SMS", "Webchat") |
-| Objects and connectors | the `.tftpl` templates: widgets and their transitions | objects of the matching type, with the widget's name; connectors labelled with the event ("keypress", "noMatch", "audioComplete") |
-| Layout | Studio's own widget positions (`offset`) | the same layout people see in Studio |
-| Messaging texts | `${flow_vars...}` / `${channel_flow_vars...}` resolved from `staging.hcl` and `production.hcl`; texts written in the template | each message's script |
-| Recordings | `play` URLs resolved from the same files (today Twilio Serverless, which is public) | downloaded and stored in the recordings bucket: staging's files in `staging`, production's in `production` |
-| Voice scripts | not stored anywhere as text | optional: transcribed from the recording (Amazon Transcribe), marked *Transcribed, to check* |
+| Which flows exist | the `channels` in the helpline's `staging.hcl` / `production.hcl` (merged over `common.hcl`, as Terraform does), the system-down subflow, and the other `studio_flows` (e.g. post-call surveys) | one board per Studio flow, with one frame; channels sharing a template are one flow ("[sms, sms_shortcode] · sms") |
+| Objects and connectors | the `.tftpl` templates: widgets and their transitions | objects of the matching kind (e.g. `make-http-request` to `worker/isSkilledWorkerAvailable` becomes "Skilled worker available?" with its skills), keeping the widget's name, its settings ("In Studio today") and its events as ways out (`audioComplete`, `noMatch`, `failedToEnqueue`) |
+| Layout | Studio's own widget positions (`offset`) | the same layout as in Studio, with heights halved (Studio's widgets are much taller than the board's objects); objects that would overlap are moved down |
+| Messaging texts | `${flow_vars...}` / `${channel_flow_vars...}` resolved from the environment files (production's when they differ); texts written in the template | each message's script |
+| Recordings | `play` URLs resolved from the same files (today Twilio Serverless, which is public) | copied into the recordings bucket: staging's files in `staging`, production's in `production`, under their current names |
+
+The templates are read with a small HCL reader (`server/hcl.ts`) that keeps interpolations as
+written; its tests read every helpline's files in the repo, and import every helpline.
 
 The report lists what needs a person:
 
-- texts or recordings that **differ between staging and production**;
-- **names that don't follow the convention** (e.g. `childhelp_voice_welcome_message`): kept as
-  they are, since they're live and monitoring may use them. Renaming one later is a planned
-  change (widget, recording file and template together);
-- recordings whose filename isn't the widget name (the import keeps the actual filename);
-- recordings that couldn't be downloaded, variables that couldn't be resolved, widget types it
-  doesn't know (kept as "Other" with their settings);
-- HTTP requests whose JSON body isn't a message (kept on the object, not in the library).
+- texts that **differ between staging and production**;
+- **names that don't follow the convention**: kept as they are, since they're live and monitoring
+  may use them. Renaming one later is a planned change (widget, recording file and template
+  together);
+- recordings whose file isn't named after the widget (e.g. USCH's
+  `childhelp_voice_welcome_message.mp3`): kept under their name, and the object points at it;
+- recording addresses or variables that couldn't be resolved, widget types the designer has no
+  kind for (kept as "Other", with their settings).
 
-Importing again later (e.g. after someone changed Studio through the repo) updates the frames
-from the templates and keeps the board's stickies and comments.
+Recordings are only copied from Twilio Serverless (`*.twil.io`) or `*.techmatters.org` addresses,
+by Aselo staff.
+
+Not built yet:
+
+- **importing again** into an existing board (updating its frames from the templates and keeping
+  its stickies and comments); for now each import makes a new board;
+- **transcribing** voice recordings into scripts (Amazon Transcribe), since voice scripts aren't
+  stored anywhere as text.
 
 ## Storage and access
 
@@ -338,7 +347,7 @@ from the templates and keeps the board's stickies and comments.
 
 ## Phases
 
-1. **Studio flows** (this), in this order (1 to 3 built):
+1. **Studio flows** (this), in this order (all four built; re-import and transcription later):
    1. boards, frames, objects, connectors, stickies, comments, autosave;
    2. checks, JSON and spreadsheet exports;
    3. recordings bucket and library (upload, status, publish to production);
@@ -357,3 +366,6 @@ from the templates and keeps the board's stickies and comments.
    - **Compare with Studio**: show where the live Studio flow differs from the board.
    - Slack notification on new comments and assigned tasks; PNG/PDF export; board history
      (compare two saves).
+   - **Studio failure notifications**: today failures (e.g. a contact that fails to enqueue) are
+     followed in Datadog, from Twilio's events; improve how the team is told about them. The flow
+     check doesn't ask for a notification widget on each failure.

@@ -125,16 +125,13 @@ export type Issue = {
   openExit?: string;
 };
 
-// Ways out that are failures: the standards ask for every failure to be notified
-const FAILURE_EXITS = ['failed', 'failed to enqueue'];
-
 // Objects that don't need anything leading to them
 const STARTS = new Set<FlowObject['type']>(['incoming', 'text']);
 
 /**
  * Everything worth fixing on the board, errors first. Errors are mistakes (names that break the
  * standards or repeat, a way out leading to two places); warnings are what's still missing in a
- * design in progress (open ends, names, scripts, failure notifications...).
+ * design in progress (open ends, names, scripts, recordings...).
  */
 export const boardChecks = (
   content: Pick<BoardContent, 'objects' | 'frames' | 'connections'>,
@@ -211,18 +208,6 @@ export const boardChecks = (
           add(
             { severity: 'warning', message: `${name}: “${exit}” isn't connected.`, objectId, openExit: exit },
             `open-${exit}`,
-          );
-        }
-        // Failures are notified
-        const leadsTo = leaving[0] && byId.get(leaving[0].to);
-        if (FAILURE_EXITS.includes(exit) && (leadsTo || ended.has(exit)) && leadsTo?.type !== 'notifyError') {
-          add(
-            {
-              severity: 'warning',
-              message: `${name}: when it's “${exit}”, the Aselo team isn't notified. Connect it to “Notify the Aselo team” first.`,
-              objectId,
-            },
-            `notify-${exit}`,
           );
         }
       });

@@ -29,6 +29,7 @@
  *   POST   /api/drafts/:code/:version/apply         Aselo staff only: apply a draft
  *   ...    /api/boards..., /api/people/...          the flow designer (boardsApi.ts)
  *   ...    /api/recordings/...                      its recordings (recordingsApi.ts)
+ *   POST   /api/flows/import/:code                  Aselo staff: a board from a live helpline (flowImport.ts)
  *
  * Roles: Aselo staff can do everything for every helpline. Helpline staff only see their own
  * helplines, can't apply, and never see or change the service configuration
@@ -40,6 +41,7 @@ import type { BoardStore } from './boards';
 import type { PeopleStore } from './people';
 import { handleBoardRequest } from './boardsApi';
 import { handleRecordingRequest, RecordingStores } from './recordingsApi';
+import { importHelpline } from './flowImport';
 import { isServiceConfigPath } from './filePaths';
 
 export type ApiUser = {
@@ -167,6 +169,14 @@ export const handleApiRequest = async (
     }
 
     const boardsPath = request.path.replace(/\/+$/, '');
+    // A board built from a live helpline's twilio-iac config, for Aselo staff to look at first
+    const importMatch = route.match(/^POST \/api\/flows\/import\/([a-z0-9]+)$/);
+    if (importMatch) {
+      if (!isStaff(user)) return fail(403, 'Only Aselo staff import helplines.');
+      if (!context.helplinesConfigDir) return fail(501, "The helplines' config isn't available here.");
+      return ok(await importHelpline(context.helplinesConfigDir, importMatch[1]));
+    }
+
     if (boardsPath.startsWith('/api/recordings/')) {
       return await handleRecordingRequest(context.recordings, request.method.toUpperCase(), boardsPath, request.body, user, now);
     }

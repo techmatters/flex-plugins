@@ -160,7 +160,7 @@ from the `okta` stage's state).
 |---|---|
 | Okta app, server, claims, policy, group | `form-builder/terraform/okta` on the devops node: `make plan`, `make apply` |
 | AWS resources | `form-builder/terraform/aws` on the devops node: `make plan`, `make apply` |
-| The page and the Lambda's code | Push to `alejandro-c/form_builder_app` (or re-run **Deploy form builder** in GitHub Actions) |
+| The page and the Lambda's code | Push to `alejandro-c/flow_designer` (or re-run **Deploy form builder** in GitHub Actions) |
 | Slack webhook | Created in Slack; URL stored by hand in SSM `/form-builder/slack_webhook_url` |
 | People | Added by hand to the Okta groups |
 

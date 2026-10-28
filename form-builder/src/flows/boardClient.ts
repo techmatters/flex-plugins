@@ -22,6 +22,7 @@ import { apiFetch } from '../auth';
 import type { Send } from '../draftClient';
 import type { Board, BoardContent, BoardMeta, BoardSummary, Person } from './model';
 import type { RecordingsList } from './recordings';
+import type { HelplineImport, ImportedRecording } from '../../server/flowImport';
 
 export type UploadTarget = { url: string; method: 'PUT'; headers: Record<string, string> };
 
@@ -39,7 +40,7 @@ export type BoardSaveOutcome =
 
 export type BoardClient = {
   list(): Promise<BoardSummary[]>;
-  create(code: string, title: string, copyFrom?: { code: string; id: string }): Promise<Board>;
+  create(code: string, title: string, copyFrom?: { code: string; id: string }, content?: BoardContent): Promise<Board>;
   load(code: string, id: string): Promise<Board>;
   save(code: string, id: string, expectedRevision: number, content: BoardContent): Promise<BoardSaveOutcome>;
   remove(code: string, id: string): Promise<void>;
@@ -52,6 +53,9 @@ export type BoardClient = {
   approveRecording(code: string, fileName: string, approved: boolean): Promise<RecordingsList>;
   publishRecording(code: string, fileName: string): Promise<RecordingsList>;
   removeRecording(code: string, fileName: string): Promise<RecordingsList>;
+  // Aselo staff: a board built from a live helpline, and copying its recordings
+  previewImport(code: string): Promise<HelplineImport>;
+  importRecording(code: string, recording: ImportedRecording): Promise<RecordingsList>;
 };
 
 export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetch): BoardClient => {
@@ -64,7 +68,7 @@ export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetc
   };
   return {
     list: () => expectOk('GET', '/api/boards'),
-    create: (code, title, copyFrom) => expectOk('POST', `/api/boards/${code}`, { title, copyFrom }),
+    create: (code, title, copyFrom, content) => expectOk('POST', `/api/boards/${code}`, { title, copyFrom, content }),
     load: (code, id) => expectOk('GET', `/api/boards/${code}/${id}`),
     async save(code, id, expectedRevision, content) {
       const response = await send('PUT', `/api/boards/${code}/${id}`, { expectedRevision, content });
@@ -92,6 +96,8 @@ export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetc
       expectOk('POST', `/api/recordings/${code}/files/${fileName}/approve`, { approved }),
     publishRecording: (code, fileName) => expectOk('POST', `/api/recordings/${code}/files/${fileName}/publish`),
     removeRecording: (code, fileName) => expectOk('DELETE', `/api/recordings/${code}/files/${fileName}`),
+    previewImport: (code) => expectOk('POST', `/api/flows/import/${code}`),
+    importRecording: (code, recording) => expectOk('POST', `/api/recordings/${code}/import`, recording),
   };
 };
 

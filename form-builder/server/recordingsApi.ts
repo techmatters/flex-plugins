@@ -24,6 +24,8 @@
  *   POST   /api/recordings/:code/files/:file/approve       Aselo staff: ({ approved: boolean })
  *   POST   /api/recordings/:code/files/:file/publish       Aselo staff: copy the approved file to production
  *   DELETE /api/recordings/:code/files/:file               remove the staging file (not a published one)
+ *   POST   /api/recordings/:code/import                    Aselo staff: copy a live recording into a folder
+ *                                                          ({ sourceUrl, fileName, environment })
  *
  * Helpline staff upload and remove their helpline's staging files; only Aselo staff approve and
  * publish, and a file has to be approved before it's published. The browser sends files straight
@@ -34,7 +36,36 @@ import { MAX_RECORDING_BYTES, RECORDING_CONTENT_TYPES, RECORDING_FILE_PATTERN } 
 import type { ApiResponse, ApiUser } from './api';
 import type { RecordingFiles, RecordingLog, RecordingLogStore } from './recordingStores';
 
-export type RecordingStores = { files: RecordingFiles; log: RecordingLogStore };
+export type RecordingStores = {
+  files: RecordingFiles;
+  log: RecordingLogStore;
+  // Downloads a recording being imported (replaced in tests)
+  fetchSource?: (url: string) => Promise<Uint8Array>;
+};
+
+// Where a live helpline's recordings can be copied from: its Twilio Serverless assets, or ours
+const isImportSource = (url: unknown): url is string => {
+  if (typeof url !== 'string') return false;
+  try {
+    const { protocol, hostname } = new URL(url);
+    return protocol === 'https:' && (hostname.endsWith('.twil.io') || hostname.endsWith('.techmatters.org'));
+  } catch {
+    return false;
+  }
+};
+
+const fetchRecording = async (url: string): Promise<Uint8Array> => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 20_000);
+  try {
+    // No redirects: only the address that was checked is read
+    const response = await fetch(url, { signal: controller.signal, redirect: 'error' });
+    if (!response.ok) throw new Error(`it answered ${response.status}`);
+    return new Uint8Array(await response.arrayBuffer());
+  } finally {
+    clearTimeout(timer);
+  }
+};
 
 const ok = (body: unknown, status = 200): ApiResponse => ({ status, body });
 const fail = (status: number, message: string): ApiResponse => ({ status, body: { message } });
@@ -80,7 +111,7 @@ export const handleRecordingRequest = async (
 ): Promise<ApiResponse> => {
   if (!stores) return fail(501, "Recordings aren't set up here.");
   const match = path.match(
-    /^\/api\/recordings\/([a-z0-9]+)(?:\/(uploads|files\/([^/]+)(?:\/(uploaded|approve|publish))?))?$/,
+    /^\/api\/recordings\/([a-z0-9]+)(?:\/(uploads|import|files\/([^/]+)(?:\/(uploaded|approve|publish))?))?$/,
   );
   if (!match) return fail(404, `Unknown API route ${method} ${path}`);
   const [, code, part, fileName, action] = match;
@@ -93,6 +124,39 @@ export const handleRecordingRequest = async (
   }
 
   if (method === 'GET' && !part) return ok(await listRecordings(stores, code));
+
+  // Copying a live helpline's recording from where it is now (importing the helpline)
+  if (method === 'POST' && part === 'import') {
+    if (!isStaff(user)) return fail(403, 'Only Aselo staff import recordings.');
+    const {
+      sourceUrl,
+      fileName: name,
+      environment,
+    } = (body ?? {}) as { sourceUrl?: string; fileName?: string; environment?: string };
+    if (typeof name !== 'string' || !RECORDING_FILE_PATTERN.test(name)) return fail(400, 'Invalid recording name');
+    if (environment !== 'staging' && environment !== 'production') return fail(400, 'Invalid environment');
+    if (!isImportSource(sourceUrl)) {
+      return fail(400, 'Recordings can only be copied from Twilio Serverless (twil.io) or techmatters.org addresses.');
+    }
+    let content: Uint8Array;
+    try {
+      content = await (stores.fetchSource ?? fetchRecording)(sourceUrl);
+    } catch (err) {
+      return fail(502, `Couldn't download ${name}: ${(err as Error).message}`);
+    }
+    if (content.byteLength > MAX_RECORDING_BYTES) return fail(413, `${name} is too big for a recording.`);
+    const extension = name.split('.').pop() as keyof typeof RECORDING_CONTENT_TYPES;
+    await stores.files.store(code, environment, name, content, RECORDING_CONTENT_TYPES[extension]);
+    await updateLog(stores.log, code, (log) => {
+      const entry = { ...log[name], importedFrom: { ...log[name]?.importedFrom, [environment]: sourceUrl } };
+      log[name] =
+        environment === 'staging'
+          ? { ...entry, uploadedBy: user.name, uploadedAt: now }
+          : { ...entry, publishedBy: user.name, publishedAt: now };
+    });
+    await stores.files.refresh(code, environment, name);
+    return ok(await listRecordings(stores, code));
+  }
 
   if (method === 'POST' && part === 'uploads') {
     const { fileName: name, size } = (body ?? {}) as { fileName?: string; size?: number };

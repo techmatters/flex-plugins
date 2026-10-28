@@ -198,7 +198,7 @@ describe('the board check', () => {
     ]);
   });
 
-  test('failures go to a notification, incoming contacts to the system-down subflow first', () => {
+  test('incoming contacts go to the system-down subflow first; failures need no notification object', () => {
     const content = {
       frames: [],
       objects: [
@@ -211,7 +211,7 @@ describe('the board check', () => {
     };
     expect(messagesOf(content)).toEqual([
       '“Call” should go to the system-down subflow before anything else.',
-      "“Queue”: when it's “failed to enqueue”, the Aselo team isn't notified. Connect it to “Notify the Aselo team” first.",
+      // Failures (here "failed to enqueue") are notified through Datadog, not in the flow
       'Nothing comes after “Wait”.',
     ]);
 
@@ -224,13 +224,12 @@ describe('the board check', () => {
           studioName: 'run_subflow_system_down',
           endedExits: [''],
         }),
-        named('notify', 'notifyError', undefined, { text: 'Notify', studioName: 'http_post_notify', endedExits: [''] }),
       ],
       connections: [
         connect('in', 'down'),
         connect('down', 'q'),
         connect('q', 'wait', 'post-queue'),
-        connect('q', 'notify', 'failed to enqueue'),
+        connect('q', 'sorry', 'failed to enqueue'),
         connect('wait', 'sorry'),
       ],
     };

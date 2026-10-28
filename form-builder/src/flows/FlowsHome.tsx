@@ -22,6 +22,7 @@ import { useEffect, useState } from 'react';
 import type { BoardClient } from './boardClient';
 import { BoardSummary, TEMPLATES_CODE } from './model';
 import { PeopleManager } from './PeopleManager';
+import { ImportHelpline } from './ImportHelpline';
 
 type Props = {
   client: BoardClient;
@@ -158,6 +159,7 @@ export const FlowsHome = ({ client, helplineCodes, isAseloStaff, onOpen }: Props
           </ul>
         </section>
       ))}
+      {isAseloStaff && <ImportHelpline client={client} helplineCodes={helplineCodes} onOpen={onOpen} />}
       <PeopleManager client={client} helplineCodes={helplineCodes} isAseloStaff={isAseloStaff} />
     </main>
   );

@@ -461,6 +461,22 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
         />
       )}
 
+      {object.studio && (
+        <section className="flow-inspector-section">
+          <h3>In Studio today</h3>
+          <p className="field-hint">
+            Imported from the live flow: a <code>{object.studio.type}</code> widget named{' '}
+            <code>{object.studio.name}</code>.
+          </p>
+          {object.studio.properties && (
+            <details>
+              <summary>Its settings</summary>
+              <pre className="flow-studio-properties">{JSON.stringify(object.studio.properties, null, 2)}</pre>
+            </details>
+          )}
+        </section>
+      )}
+
       <Comments
         thread={object.thread}
         readOnly={readOnly}

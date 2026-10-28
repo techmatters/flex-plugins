@@ -71,7 +71,8 @@ its settings and policy, certificate and its validation record, CloudFront distr
 records) plus two changes to the Lambda: its environment and its role's policy. Nothing else
 changes. Until it's applied, the deployed builder says recordings aren't set up.
 
-The deploy workflow runs on every push to `alejandro-c/form_builder_app` that touches
+The deploy workflow runs on every push to `alejandro-c/flow_designer` (which holds the form builder
+as well as the flow designer) that touches
 `form-builder/` (a manual-only workflow can't be started before it's on master). Until `aws/` is
 applied it skips the upload with a notice.
 

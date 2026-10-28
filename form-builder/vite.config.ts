@@ -14,6 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+/// <reference types="vitest/config" />
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { defineConfig } from 'vite';
@@ -42,6 +43,11 @@ const webchatConfigDir =
 const webchatTranslationsDir = path.resolve(appDir, '../aselo-webchat-react-app/translationsSrc');
 
 export default defineConfig({
+  test: {
+    // The UI tests render whole editors in jsdom; with every test file running at once, some take
+    // more than Vitest's default 5 seconds
+    testTimeout: 20_000,
+  },
   plugins: [
     hrmFormDefinitionsResolver(hrmFormDefinitionsSrc),
     react(),

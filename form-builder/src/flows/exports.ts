@@ -57,6 +57,8 @@ export type ExportedObject = {
   call?: { route: string; urlTemplate: string; body: Record<string, string> };
   exits: ExportedExit[];
   openComments?: { author: string; text: string }[];
+  // The live Studio widget it was imported from, as it is in the template today
+  currentStudioWidget?: FlowObject['studio'];
 };
 
 export type ExportedFlow = {
@@ -86,6 +88,7 @@ const ABOUT = [
   'and exits say where each way out leads. Build or update the helpline twilio-iac Studio flow templates (.tftpl)',
   'following twilio-iac/AGENTS.md ("Studio flow standards"); calls to account-scoped lambda routes are described in',
   'lambdas/account-scoped/STUDIO_ROUTES.md. Voice recordings are named after their widget (recordingFile).',
+  'Objects imported from a live helpline carry currentStudioWidget: the widget as it is in the template today.',
   '"checks" lists what the design still lacks; "layout" is only where things sit on the board.',
 ].join(' ');
 
@@ -150,6 +153,7 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
           }
         : {}),
       exits,
+      ...(object.studio ? { currentStudioWidget: object.studio } : {}),
       ...(openComments.length > 0 ? { openComments: openComments.map(({ author, text }) => ({ author, text })) } : {}),
     };
   };
