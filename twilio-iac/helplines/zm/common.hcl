@@ -5,13 +5,10 @@ locals {
 
   local_config = {
     helpline                          = "ChildLine Zambia"
-    old_dir_prefix                    = ""
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
     voice_ivr_language                = ""
     enable_post_survey                = false
     permission_config                 = "zm"
-    enable_lex_v2                     = true
 
     workflows = {
       master : {
@@ -55,15 +52,6 @@ locals {
     }
 
 
-    lex_bot_languages = {
-      en_US : ["pre_survey", "language_selector"],
-      bem : ["pre_survey"],
-      kqn : ["pre_survey"],
-      loz : ["pre_survey"],
-      lun : ["pre_survey"],
-      nyz : ["pre_survey"],
-      toi : ["pre_survey"]
-    }
 
     lex_v2_bot_languages = {
       en_US : ["pre_survey", "language_selector"],

@@ -16,3 +16,9 @@ There is no need to run them after every individual edit.
 5. `npm run lint:fix` — lint must be clean (auto-fixes what it can)
 
 If any step fails, fix the problem and start again from step 1 until you get a clean run.
+
+## Studio-callable routes
+
+`account-scoped/STUDIO_ROUTES.md` documents every `account-scoped` route that Twilio Studio
+flows call. When you add, remove or change the params or response of such a route, update
+that file in the same PR.

@@ -29,7 +29,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: '22.x'
+          node-version: "24.x"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -43,7 +43,7 @@ jobs:
         with:
           ssm_parameter: "/development/twilio/E2E/account_sid"
           env_variable_name: "TWILIO_ACCOUNT_SID"
-      
+
       - name: Set Twilio Auth Token
         uses: ./.github/actions/inject-ssm-secrets
         with:
@@ -94,5 +94,5 @@ jobs:
         if: success() || failure() # always run even if the previous step fails
         with:
           name: E2E Tests Report
-          path: '!(node_modules)/**/junit.xml'
+          path: "!(node_modules)/**/junit.xml"
           reporter: java-junit

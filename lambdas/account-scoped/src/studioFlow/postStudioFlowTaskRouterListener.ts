@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2021-2023 Technology Matters
+ * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
@@ -155,14 +155,21 @@ const triggerPostStudioFlow = async ({
           `${logPrefix} Initiated post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}`,
         );
         if (conference?.sid) {
-          const remainingParticipants = await client.conferences
-            .get(conference.sid)
-            .participants.list();
-          if (remainingParticipants.length === 1) {
-            console.debug(
-              `${logPrefix} Only one participant (${remainingParticipants[0].callSid}) remaining in conference ${conference.sid}. Removing`,
+          try {
+            const remainingParticipants = await client.conferences
+              .get(conference.sid)
+              .participants.list();
+            if (remainingParticipants.length === 1) {
+              console.debug(
+                `${logPrefix} Only one participant (${remainingParticipants[0].callSid}) remaining in conference ${conference.sid}. Removing`,
+              );
+              await remainingParticipants[0].remove();
+            }
+          } catch (err) {
+            console.error(
+              `${logPrefix} Failed to clean up conference ${conference.sid}`,
+              err,
             );
-            await remainingParticipants[0].remove();
           }
         }
       } else {

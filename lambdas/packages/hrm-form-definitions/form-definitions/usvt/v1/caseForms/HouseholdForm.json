@@ -1,185 +1,121 @@
 [
   {
-    "name": "firstName",
-    "type": "input",
-    "label": "First Name",
-    "required": { "value": true, "message": "RequiredFieldError" },
+    "name": "ownDisabilities",
+    "label": "Please tell us about any disabilities you have. (This helps us to meet your needs and provide you with helpful resources)",
+    "type": "textarea",
     "isPII": true
   },
   {
-    "name": "lastName",
-    "type": "input",
-    "label": "Last Name",
-    "required": { "value": true, "message": "RequiredFieldError" },
+    "name": "childrenDisabilities",
+    "label": "Please tell us about any disabilities your children have. (This helps us to meet your needs and provide you with helpful resources)",
+    "type": "textarea",
     "isPII": true
   },
   {
-    "name": "relationshipToChild",
+    "name": "housingSituation",
+    "label": "Which best describes your current housing situation? (This helps us to meet your needs and provide you with helpful resources)",
     "type": "select",
-    "label": "Relationship to Child",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Peer", "label": "Peer" },
-      { "value": "Caregiver", "label": "Caregiver" },
-      { "value": "Partner", "label": "Partner" },
-      { "value": "OtherAdultKnownToChild", "label": "Other adult known to the child" },
-      { "value": "Sibling", "label": "Sibling(s)" },
-      { "value": "Stranger", "label": "Stranger" },
-      { "value": "Person in a position of responsibility", "label": "Person in a position of responsibility" },
-      { "value": "Other", "label": "Other" },
-      { "value": "Unknown", "label": "Unknown" }
+      { "value": "I have stable housing that meets my needs", "label": "I have stable housing that meets my needs" },
+      { "value": "I have housing, but I have concerns about its safety, affordability, or adequacy", "label": "I have housing, but I have concerns about its safety, affordability, or adequacy" },
+      { "value": "I am staying temporarily with friends or family", "label": "I am staying temporarily with friends or family" },
+      { "value": "I am in transitional or emergency housing", "label": "I am in transitional or emergency housing" },
+      { "value": "I do not currently have stable housing", "label": "I do not currently have stable housing" },
+      { "value": "I prefer not to answer", "label": "I prefer not to answer" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" },
     "isPII": false
   },
   {
-    "name": "streetAddress",
-    "label": "Street Address",
-    "type": "input",
-    "isPII": true
+    "name": "numberOfChildren",
+    "label": "How many children do you have?",
+    "type": "numeric-input",
+    "isPII": false
   },
   {
-    "name": "province",
-    "label": "Province",
-    "type": "select",
+    "name": "childrenAges",
+    "label": "Select the ages of all your children",
+    "type": "listbox-multiselect",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Northern", "label": "Northern" },
-      { "value": "Eastern", "label": "Eastern" },
-      { "value": "Western", "label": "Western" },
-      { "value": "Southern", "label": "Southern" }
+      { "value": "Currently pregnant", "label": "Currently pregnant" },
+      { "value": "Birth to 11 months", "label": "Birth to 11 months" },
+      { "value": "1 year", "label": "1 year" },
+      { "value": "2 years", "label": "2 years" },
+      { "value": "3 years", "label": "3 years" },
+      { "value": "4 years", "label": "4 years" },
+      { "value": "5 years", "label": "5 years" },
+      { "value": "6 years", "label": "6 years" },
+      { "value": "7 years", "label": "7 years" },
+      { "value": "8 years", "label": "8 years" },
+      { "value": "9 years", "label": "9 years" },
+      { "value": "10 years", "label": "10 years" },
+      { "value": "11 years", "label": "11 years" },
+      { "value": "12 years", "label": "12 years" },
+      { "value": "13 years", "label": "13 years" },
+      { "value": "14 years", "label": "14 years" },
+      { "value": "15 years", "label": "15 years" },
+      { "value": "16 years", "label": "16 years" },
+      { "value": "17 years", "label": "17 years" },
+      { "value": "18 years and above", "label": "18 years and above" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" },
     "isPII": false
   },
   {
-    "name": "district",
-    "label": "District",
-    "type": "dependent-select",
-    "dependsOn": "province",
-    "defaultOption": { "value": "", "label": "" },
-    "options": {
-      "Northern": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" }
-      ],
-      "Eastern": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" }
-      ],
-      "Western": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" }
-      ],
-      "Southern": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" }
-      ]
-    },
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "isPII": false
-  },
-  {
-    "name": "postalCode",
-    "label": "Postal Code",
-    "type": "input",
-    "isPII": false
-  },    
-  {
-    "name": "phone1",
-    "label": "Phone #1",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "phone2",
-    "label": "Phone #2",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "gender",
-    "label": "Gender",
+    "name": "childrenLiveWithYou",
+    "label": "Do your children live with you?",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Boy", "label": "Boy" },
-      { "value": "Girl", "label": "Girl" },
-      { "value": "Non-Binary", "label": "Non-Binary" },
-      { "value": "Unknown", "label": "Unknown" }
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" },
     "isPII": false
   },
   {
-    "name": "age",
-    "label": "Age",
-    "type": "select",
+    "name": "groupGoals",
+    "label": "What would you like to gain from attending our groups? (Check all that apply)",
+    "type": "listbox-multiselect",
     "options": [
-      { "value": "", "label": "" },
-      { "value": "Unborn", "label": "Unborn" },
-      { "value": "0", "label": "0" },
-      { "value": "01", "label": "1" },
-      { "value": "02", "label": "2" },
-      { "value": "03", "label": "3" },
-      { "value": "04", "label": "4" },
-      { "value": "05", "label": "5" },
-      { "value": "06", "label": "6" },
-      { "value": "07", "label": "7" },
-      { "value": "08", "label": "8" },
-      { "value": "09", "label": "9" },
-      { "value": "10", "label": "10" },
-      { "value": "11", "label": "11" },
-      { "value": "12", "label": "12" },
-      { "value": "13", "label": "13" },
-      { "value": "14", "label": "14" },
-      { "value": "15", "label": "15" },
-      { "value": "16", "label": "16" },
-      { "value": "17", "label": "17" },
-      { "value": "18", "label": "18" },
-      { "value": "19", "label": "19" },
-      { "value": "20", "label": "20" },
-      { "value": "21", "label": "21" },
-      { "value": "22", "label": "22" },
-      { "value": "23", "label": "23" },
-      { "value": "24", "label": "24" },
-      { "value": "25", "label": "25" },
-      { "value": ">25", "label": ">25" },
-      { "value": "Unknown", "label": "Unknown" },
+      { "value": "More tools to use as a parent/caregiver", "label": "More tools to use as a parent/caregiver" },
+      { "value": "More time with my child", "label": "More time with my child" },
+      { "value": "Better understanding of my child", "label": "Better understanding of my child" },
+      { "value": "Better understanding of my and my child's emotions", "label": "Better understanding of my and my child's emotions" },
+      { "value": "Improved family communication", "label": "Improved family communication" },
       { "value": "Other", "label": "Other" }
     ],
-    "required": { "value": true, "message": "RequiredFieldError" },
     "isPII": false
   },
   {
-    "name": "language",
-    "label": "Language",
+    "name": "substanceMisuseRecovery",
+    "label": "Are you in or working towards recovery from substance misuse?",
     "type": "select",
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Hausa", "label": "Hausa" },
-      { "value": "English", "label": "English" },
-      { "value": "Xhosa", "label": "Xhosa" },
-      { "value": "Bemba", "label": "Bemba" },
-      { "value": "Other", "label": "Other" }
-    ] ,
-    "isPII": false 
-  },
-  {
-    "name": "ethnicity",
-    "label": "Ethnicity",
-    "type": "input",
+      { "value": "", "label": "" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" }
+    ],
     "isPII": false
   },
   {
-    "name": "copyToPerpetrator",
-    "label": "This household member is also a perpetrator",
-    "type": "copy-to",
-    "target": "perpetrator",
+    "name": "involvedWithDepartmentOfCorrections",
+    "label": "Are you involved with the Department of Corrections?",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "involvedWithDCF",
+    "label": "Are you involved with Department of Children and Families?",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" }
+    ],
     "isPII": false
   }
 ]

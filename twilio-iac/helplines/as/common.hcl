@@ -7,15 +7,10 @@ locals {
 
   local_config = {
     helpline                          = "Aselo"
-    old_dir_prefix                    = "aselo-as"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
     voice_ivr_language                = ""
     enable_post_survey                = false
 
-    lex_bot_languages = {
-      en_US : ["pre_survey", "post_survey"]
-    }
 
     lex_v2_bot_languages = {
       en_US : ["pre_survey", "post_survey"]

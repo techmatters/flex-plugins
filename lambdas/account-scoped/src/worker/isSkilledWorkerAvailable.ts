@@ -42,7 +42,10 @@ type AvailableWorkerSummary = {
 /**
  * Returns true if the worker possesses every required skill.
  */
-const hasRequiredSkills = (workerSkills: string[], requiredSkills: string[]): boolean => {
+export const hasRequiredSkills = (
+  workerSkills: string[],
+  requiredSkills: string[],
+): boolean => {
   return requiredSkills.every(skill => workerSkills.includes(skill));
 };
 

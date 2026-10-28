@@ -5,17 +5,12 @@ locals {
 
   local_config = {
     helpline                          = "Kellimni"
-    old_dir_prefix                    = "mt-kellimni"
-    definition_version                = "mt-v1"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-MT"
-    helpline_language                 = "en-MT"
     voice_ivr_language                = ""
     contacts_waiting_channels         = ["web", "whatsapp", "facebook", "instagram"]
     enable_post_survey                = false
     helpline_region                   = "eu-west-1"
     permission_config                 = "mt"
-    enable_lex_v2                     = true
 
 
 
@@ -62,12 +57,6 @@ locals {
       email : "Email"
       survey : "Survey"
     }
-/*
-    lex_bot_languages = {
-      en_MT : ["pre_survey", "language_selector", "terms_conditions_acceptance"],
-      mt_MT : ["pre_survey", "terms_conditions_acceptance"],
-      uk : ["pre_survey", "terms_conditions_acceptance"]
-    }*/
     lex_v2_bot_languages = {
       en_MT : ["pre_survey", "language_selector", "terms_conditions_acceptance"],
       mt_MT : ["pre_survey", "terms_conditions_acceptance"],

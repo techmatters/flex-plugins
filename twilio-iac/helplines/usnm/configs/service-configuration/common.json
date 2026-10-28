@@ -25,6 +25,48 @@
       "use_twilio_lambda_to_transition_participants": false,
       "enable_hang_up_by_hrm_saving": true
     },
+     "postStudioFlows": {
+      "${task_queues.en_std}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.es_std}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+      },
+      "${task_queues.es_tya}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+      },
+      "${task_queues.en_tya}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.en_fcg}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.es_tya_voicemail}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+      },
+      "${task_queues.es_std_voicemail}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+      },
+      "${task_queues.en_std_voicemail}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.en_tya_voicemail}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.en_fcg_voicemail}": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      }
+    },
     "definitionVersion": "usnm-v1",
     "helplineLanguage": "en",
     "permissionConfig": "usnm"

@@ -11,15 +11,11 @@ locals {
     operating_hours_enforced_override     = true
     custom_task_routing_filter_expression = ""
     flow_vars = {
-      widget_from                                            = "NAMI"
-      chat_blocked_message                                   = "Hi, you've been blocked from accessing NAMI services and we are not able to read or receive further messages from you."
-      send_message_prequeue                                  = "Welcome. Pleas wait for a specialist."
       custom_functions_url                                   = "https://custom-functions-2196.twil.io"
       usnm_recordings_url                                    = "https://usnm-recordings-5659.twil.io"
       conversation_time_delay_function_sid                   = "ZHc4d16dc47536625d362c9643af7afcd2"
       is_task_in_queue_function_sid                          = "ZH4c638934125af2174fe4c005de72495a"
       cancel_pending_task_function_sid                       = "ZHf6502c58b42dbc188b3d8bd868823ce1"
-      workspace_sid                                          = "WS041e1b18805e2d7cbe83d2331f1c1e18"
       custom_functions_service_id                            = "ZSe84307e251201120ce2d7ffbd1a13051"
       custom_functions_environment_id                        = "ZEda1d8429b29d7624dbc65cee802801fa"
       send_message_sms_voip_blocked                          = "We're unable to support conversations from VoIP or internet-based phone numbers at this time. Please try again using a mobile carrier number. If this is an emergency, call or text 988."
@@ -44,32 +40,30 @@ locals {
       send_message_sms_conversation_closed                   = "This conversation is now closed. If you need support from the NAMI HelpLine, you can start a new conversation anytime."
       send_message_sms_post_queue_closed                     = "NAMI HelpLine is now closed. We're sorry we weren't able to connect you with a Specialist today. We encourage you to contact us again Monday - Friday, from 10am-10pm ET, excluding national holidays. This contact will now end. Thank you for contacting us."
       send_message_sms_post_queue_keep_waiting               = "Thank you for your patience. NAMI HelpLine Specialists are currently assisting other Help Seekers. Someone will be with you as soon as possible. In the meantime, info and resources are online at https://www.nami.org/nami-helpline/ "
+      send_message_sms_redirect                              = "This number is for calls to the NAMI HelpLine. To text a HelpLine Specialist, text HELPLINE to 62640. Message and data rates may apply."
     }
 
-
-    //Serverless -- to allow enabling the operating hours check on this staging account.
-    ui_editable = true
 
     studio_flows = {
       post_call_survey : {
         templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey.tftpl"
         flow_vars = {
           conversation_service_sid = "IS459056d42cc944f295525b836610852c"
-          outbound_phone_number    = "+18773594183"
+          outbound_phone_number    = "62640"
         }
       },
       post_call_survey_es : {
         templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey-es.tftpl"
         flow_vars = {
           conversation_service_sid = "IS459056d42cc944f295525b836610852c"
-          outbound_phone_number    = "+18773594183"
+          outbound_phone_number    = "62640"
         }
       },
       post_call_survey_en : {
         templatefile = "/app/twilio-iac/helplines/usnm/templates/studio-flows/post-call-survey-en.tftpl"
         flow_vars = {
           conversation_service_sid = "IS459056d42cc944f295525b836610852c"
-          outbound_phone_number    = "+18773594183"
+          outbound_phone_number    = "62640"
         }
       }
     }
@@ -81,9 +75,6 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usnm/templates/studio-flows/voice.tftpl"
         channel_flow_vars = {
-          voice_ivr_greeting_message = "Hello, you are contacting NAMI. Please hold for a counsellor."
-          voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
-          voice_ivr_language         = "en-US"
         }
         chatbot_unique_names = []
       },
@@ -92,6 +83,30 @@ locals {
         channel_type         = "sms"
         contact_identity     = "+18773594183"
         templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      sms_shortcode : {
+        messaging_mode       = "conversations"
+        channel_type         = "sms"
+        contact_identity     = "62640"
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      sms_longcode : {
+        messaging_mode       = "conversations"
+        channel_type         = "sms"
+        contact_identity     = "+18009506264"
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms-redirect.tftpl"
+        channel_flow_vars    = {}
+        chatbot_unique_names = []
+      },
+      sms_state_longcode : {
+        messaging_mode       = "conversations"
+        channel_type         = "sms"
+        contact_identity     = "+12075158398"
+        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms-redirect.tftpl"
         channel_flow_vars    = {}
         chatbot_unique_names = []
       }

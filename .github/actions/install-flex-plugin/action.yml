@@ -23,8 +23,12 @@ runs:
   using: "composite"
   steps:
     - name: Install the Twilio CLI and plugins
-      run: npm install -g twilio-cli@6.2.3  && twilio plugins:install @twilio-labs/plugin-flex@7.1.2
+      run: npm install -g twilio-cli@7.2.0  && twilio plugins:install @twilio-labs/plugin-flex@7.1.3
       shell: bash
+      env:
+        # The Twilio CLI installs plugins with yarn, which enforces engines strictly,
+        # and @twilio-labs/plugin-flex doesn't declare Node 24 support yet (it works on it)
+        YARN_IGNORE_ENGINES: 'true'
     - name: Install plugin-hrm-form Packages
       run: npm ci
       working-directory: ${{ inputs.path }}/plugin-hrm-form

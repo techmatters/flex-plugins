@@ -16,14 +16,12 @@
 import { setUpSelectAgentColumn } from './SelectAgentColumn';
 import { setUpAgentColumn } from './AgentColumn';
 import { setUpSkillsColumn } from './SkillsColumn';
-import { setUpStatusColumn } from './StatusColumn';
 import { setUpTeamsViewSorting } from './teamsViewSorting';
 import { setUpTeamsViewFilters, setUpWorkerDirectoryFilters } from './teamsViewFilters';
 
 const TeamsView = {
   setUpSelectAgentColumn,
   setUpAgentColumn,
-  setUpStatusColumn,
   setUpSkillsColumn,
   setUpTeamsViewSorting,
   setUpTeamsViewFilters,

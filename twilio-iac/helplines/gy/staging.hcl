@@ -31,7 +31,6 @@ locals {
         channel_flow_vars = {
           voice_ivr_greeting_message = "Hello, thank you for calling Guyana 913. Please wait for an operator."
           voice_ivr_language         = "en-US"
-          voice_ivr_blocked_message  = "Apologies, your number has been blocked."
 
         }
         chatbot_unique_names = []

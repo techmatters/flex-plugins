@@ -26,7 +26,7 @@ import HoldParticipantButton from '../components/Conference/HoldParticipantButto
 import RemoveParticipantButton from '../components/Conference/RemoveParticipantButton';
 import ConferenceMonitor from '../components/Conference/ConferenceMonitor';
 import ParticipantLabel from '../components/Conference/ParticipantLabel';
-import { getTemplateStrings } from '../hrmConfig';
+import { getAseloFeatureFlags, getTemplateStrings } from '../hrmConfig';
 import { newHangUpByStateManager } from '../hangUpByState';
 import HangUpByLabel from '../components/HangUpByLabel';
 
@@ -35,7 +35,10 @@ export const setupConferenceComponents = () => {
   strings.HangupCallTooltip = strings.HangupCallLeaveTooltip;
   const hangUpByStateManager = newHangUpByStateManager();
 
-  CallCanvas.Content.add(<ConferenceMonitor key="conference-monitor" />);
+  if (!getAseloFeatureFlags().use_twilio_lambda_for_conference_ending) {
+    // Conference ending is managed via participants' endConferenceOnExit properties from Flex, which requires the ConferenceMonitor to keep them up to date
+    CallCanvas.Content.add(<ConferenceMonitor key="conference-monitor" />);
+  }
   CallCanvasActions.Content.remove('toggleMute', {
     if: props => TaskHelper.isCallTask(props.task) && TaskHelper.isLiveCall(props.task),
   });

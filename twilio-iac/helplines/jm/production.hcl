@@ -60,10 +60,6 @@ locals {
 
     #Studio flow
     flow_vars = {
-      service_sid                           = "ZSf7422a38f3b243b8aab97ca268f4ce6b"
-      environment_sid                       = "ZE471872ba9e5a44ea96c773adb2b9076c"
-      capture_channel_with_bot_function_sid = "ZH211708560ea265161b4ad235d2d99922"
-      chatbot_callback_cleanup_function_sid = "ZH269e007928bfa8d3dbd4e7b806d8d690"
       send_message_janitor_function_sid     = "ZHf7c24e583970bf78690354da1986caba"
       bot_language                          = "en-JM"
       widget_from                           = "SafeSpot"
@@ -75,7 +71,6 @@ locals {
 
     #System Down Configuration
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
-    enable_system_down       = true
     system_down_flow_vars = {
       is_system_down                   = "false"
       message                          = "Thank you for reaching out to SafeSpotJa. We're sorry, the helpline is experiencing technical difficulties with our chat system. If this is an emergency, please call 119 or reach out to the Intake Desk of the Office of the Children's Advocate at 876 275-956. Once we are up and running, a counsellor will get back to you. We apologize for the inconvenience and appreciate your patience"

@@ -15,8 +15,6 @@ To run a terraform command for a single stage, navigate into the stage directory
 example plan action for the aselo helpline in the production environment:
 
 ```bash
-
-```bash
 make HL=as HL_ENV=production plan
 ```
 
@@ -32,14 +30,30 @@ make HL=as HL_ENV=production plan-all
 
 ## Stages
 
+Stages are applied in this order for a new helpline: `provision` → `system-down` (if enabled) → `configure`. The `lex` and `external-recordings` stages can be run independently once `provision` exists.
+
 ### `provision`
 
-This is the initial stage and is used to provision resources that will rarely, if ever, change for a helpline.
+This is the initial stage and is used to provision resources that will rarely, if ever, change for a helpline, such as TaskRouter (workspace, task queues, workflows, task channels, activities), the serverless service, AWS resources and GitHub secrets.
 
-### `chatbot`
+### `system-down`
 
-Chatbot configuration is complicated enough to require its own stage. This stage depends on the `provision` stage and is used to configure the chatbot and its resources.
+Creates the "System Down" and "Debug" Studio subflows that channel flows call when the Aselo backend is unavailable or when debugging. It depends on the `provision` stage.
+
+Only needed when `enable_system_down = true`. In that case the `configure` stage reads this stage's outputs (from its remote state), so `system-down` must be applied before `configure`.
 
 ### `configure`
 
-This stage manages often changed configuration for a helpline. It depends on the `provision` and `chatbot` stages.
+This stage manages often changed configuration for a helpline: channels and their Studio flows, standalone Studio flows (such as post-call surveys), event subscriptions, Datadog monitors and the HRM service integration. It depends on the `provision` stage, and on `system-down` when `enable_system_down = true`.
+
+After apply, it also runs `manageServiceConfig.py` to apply the helpline's Flex service configuration from `helplines/<short_code>/configs/service-configuration/`.
+
+### `lex`
+
+Creates the Amazon Lex V2 bots, intents, slots and slot types listed in `lex_v2_bot_languages`. It has no stage dependencies. See [lex/README.md](lex/README.md) for how the bot, intent, slot and slot type JSON files are looked up.
+
+### `external-recordings`
+
+Creates the IAM user and keys Twilio uses to upload external recordings to S3. Only creates resources when `enable_external_recordings = true`. It depends on the `provision` stage.
+
+Unlike the other stages, it runs with the `tf-admin` role rather than the environment role, because it manages IAM users. See [external-recordings/README.md](external-recordings/README.md) for details.

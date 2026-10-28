@@ -1,4 +1,5 @@
 import json
+import re
 from copy import deepcopy
 from deepdiff import DeepDiff
 from deepmerge import always_merger
@@ -29,6 +30,20 @@ JSON_CONFIGS = [
 SSM_FIELDS = {
     "attributes.serverless_base_url": "/{environment}/serverless/{account_sid}/base_url",
 }
+
+# Placeholders that can be used anywhere (keys or values) in the service
+# configuration JSON files, e.g. "${task_queues.en_std}", "${workflow_sids.master}"
+# or "${studio_flow_sids.post_call_survey_en}".
+# Same names as the studio flow / workflow .tftpl interpolations. The SID maps
+# are written to SSM by the configure stage (terraform-modules/stages/configure).
+SID_PLACEHOLDER_SSM_KEYS = {
+    "task_queues": "/{environment}/twilio/{account_sid}/task_queue_sids",
+    "workflow_sids": "/{environment}/twilio/{account_sid}/workflow_sids",
+    "studio_flow_sids": "/{environment}/twilio/{account_sid}/studio_flow_sids",
+}
+SID_PLACEHOLDER_PATTERN = re.compile(
+    r"\$\{(" + "|".join(SID_PLACEHOLDER_SSM_KEYS.keys()) + r")\.([A-Za-z0-9_]+)\}"
+)
 
 TEMPLATE_FIELDS = {
     "attributes.assets_bucket_url": "https://assets-{environment}.tl.techmatters.org",
@@ -167,10 +182,17 @@ class ServiceConfiguration():
         self.remote_state: dict[str, object] = self._twilio_client.get_flex_configuration()
         self.feature_flags = get_nested_key(self.remote_state, "attributes.feature_flags")
         self.init_version()
-        self.init_region()
-        self.init_local_state()
-        self.init_new_state()
-        self.init_plan()
+        try:
+            self.init_region()
+            self.init_local_state()
+            self.init_new_state()
+            self.init_plan()
+        except Exception:
+            # This runs while config is being built, outside manager.main()'s
+            # cleanup, so release the lock taken by init_version ourselves
+            # (e.g. an unresolvable SID placeholder)
+            self.cleanup()
+            raise
 
     def get_ssm_client(self):
         return SSMClient(self.aws_role_arn)
@@ -212,6 +234,54 @@ class ServiceConfiguration():
                 )
 
             self.local_state = remove_empty(self.local_state)
+
+        # Only resolved in the merged state - local_configs keep the raw
+        # placeholders because update_prop writes them back to disk
+        self.local_state = self.resolve_sid_placeholders(self.local_state)
+
+    def resolve_sid_placeholders(self, data):
+        """
+        Replace ${task_queues.<key>} / ${workflow_sids.<key>} / ${studio_flow_sids.<key>} placeholders
+        (in keys or values) with the SIDs Terraform created for this account.
+        The SID maps are only read from SSM if a placeholder is present.
+        """
+        sid_maps: dict[str, dict[str, str]] = {}
+
+        def lookup(match):
+            map_name, map_key = match.group(1), match.group(2)
+            if map_name not in sid_maps:
+                ssm_key_name = SID_PLACEHOLDER_SSM_KEYS[map_name].format(
+                    environment=self.environment,
+                    account_sid=self.account_sid,
+                )
+                try:
+                    sid_maps[map_name] = json.loads(
+                        self.get_ssm_client().get_parameter(ssm_key_name)
+                    )
+                except Exception as e:
+                    raise Exception(
+                        f"Could not load {ssm_key_name} to resolve {match.group(0)}. "
+                        "Has the configure stage been applied for this helpline?"
+                    ) from e
+
+            sid = sid_maps[map_name].get(map_key)
+            if not sid:
+                raise Exception(
+                    f"Could not resolve {match.group(0)}: '{map_key}' not found in {map_name}. "
+                    f"Available keys: {sorted(sid_maps[map_name].keys())}"
+                )
+            return sid
+
+        def resolve(value):
+            if isinstance(value, dict):
+                return {resolve(k): resolve(v) for k, v in value.items()}
+            if isinstance(value, list):
+                return [resolve(v) for v in value]
+            if isinstance(value, str):
+                return SID_PLACEHOLDER_PATTERN.sub(lookup, value)
+            return value
+
+        return resolve(data)
 
     def init_new_state(self):
         self.new_state = always_merger.merge(

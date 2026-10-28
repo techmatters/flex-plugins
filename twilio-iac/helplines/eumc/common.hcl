@@ -5,15 +5,11 @@ locals {
 
   local_config = {
     helpline                          = "Missing Children EU"
-    definition_version                = "eumc-v1"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-EUMC"
-    helpline_language                 = "en-EUMC"
     voice_ivr_language                = ""
     enable_post_survey                = false
     helpline_region                   = "eu-west-1"
     permission_config                 = "eumc"
-    enable_lex_v2                     = false
 
     workflows = {
       master : {

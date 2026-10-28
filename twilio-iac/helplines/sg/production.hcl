@@ -13,10 +13,6 @@ locals {
     enable_datadog_monitoring             = true
     custom_task_routing_filter_expression = ""
     flow_vars = {
-      service_sid                   = "ZSbfebd43b19b4db9e3bd763b72b101eaf"
-      environment_sid               = "ZE12ad6d59ba95d24d43e184a21cfe3669"
-      operating_hours_function_sid  = "ZH95bf7c7442969d4577caa5b656957f53"
-      operating_hours_function_name = "operatingHours"
     }
 
     //Serverless -- to allow enabling the operating hours check on this account.
@@ -69,14 +65,11 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/sg/templates/studio-flows/voice-no-chatbot-operating-hours-lambda-sd.tftpl"
         channel_flow_vars = {
           voice_ivr_language         = "en-US",
-          voice_ivr_greeting_message = "Hello! Tinkle Friend is engaged with other children at the moment. Please hold on for a while and we will attend to you as soon as we can."
 
           welcome_message_url = "https://sg-services-4304.twil.io/welcome_Message.mp3"
           busy_message_url    = "https://sg-services-4304.twil.io/waiting_music.mp3"
           closed_message_url  = "https://sg-services-4304.twil.io/closed_Message.mp3"
 
-          widget_from               = "Tinkle Friend"
-          voice_ivr_blocked_message = "Hi, you've been blocked from accessing Tinkle Friend services and we are not able to read or receive further messages from you."
         }
         enable_datadog_monitor = true
         custom_monitor = {

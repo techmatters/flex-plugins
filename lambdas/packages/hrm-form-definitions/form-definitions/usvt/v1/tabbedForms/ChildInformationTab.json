@@ -3,37 +3,30 @@
     "name": "firstName",
     "label": "First Name",
     "type": "input",
-    "isPII": true,
-    "description": {
-      "title": "AsV1-ChildInformationTab-FirstName-Title",
-      "content": "AsV1-ChildInformationTab-FirstName-Content"
-    }
+    "isPII": true
   },
   {
     "name": "lastName",
     "label": "Last Name",
     "type": "input",
-    "isPII": true,
-    "description": {
-      "title": "Last Name description title in two lines",
-      "content": "Lorem ipsum dolor sit amet, consectetur adipis"
-    }
+    "isPII": true
   },
   {
-    "name": "contactIdentifier",
-    "label": "Email",
+    "name": "email",
+    "label": "Email Address",
     "type": "input",
     "isPII": true
   },
   {
     "name": "gender",
-    "label": "Gender",
+    "label": "What gender do you identify as?",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Boy", "label": "Boy" },
-      { "value": "Girl", "label": "Girl" },
+      { "value": "Woman", "label": "Woman" },
+      { "value": "Man", "label": "Man" },
       { "value": "Non-Binary", "label": "Non-Binary" },
+      { "value": "I prefer not to respond", "label": "I prefer not to respond" },
       { "value": "Unknown", "label": "Unknown" }
     ],
     "required": { "value": true, "message": "RequiredFieldError" },
@@ -41,7 +34,7 @@
   },
   {
     "name": "age",
-    "label": "Age",
+    "label": "What is your age?",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
@@ -79,199 +72,98 @@
     "isPII": false
   },
   {
-    "name": "streetAddress",
-    "label": "Street Address",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "city",
-    "label": "City",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "province",
-    "label": "Province",
+    "name": "race",
+    "label": "What race best describes you?",
     "type": "select",
     "options": [
       { "value": "", "label": "" },
-      { "value": "Northern", "label": "Northern" },
-      { "value": "Eastern", "label": "Eastern" },
-      { "value": "Western", "label": "Western" },
-      { "value": "Southern", "label": "Southern" },
-      { "value": "Unknown", "label": "Unknown"}
-    ],
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "isPII": false
-  },
-  {
-    "name": "district",
-    "label": "District",
-    "type": "dependent-select",
-    "dependsOn": "province",
-    "defaultOption": { "value": "", "label": "" },
-    "options": {
-      "Northern": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" },
-        { "value": "Unknown", "label": "Unknown"}
-      ],
-      "Eastern": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" },
-        { "value": "Unknown", "label": "Unknown"}
-      ],
-      "Western": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" },
-        { "value": "Unknown", "label": "Unknown"}
-      ],
-      "Southern": [
-        { "value": "District A", "label": "District A" },
-        { "value": "District B", "label": "District B" },
-        { "value": "District C", "label": "District C" },
-        { "value": "Unknown", "label": "Unknown"}
-      ]
-    },
-    "required": { "value": true, "message": "RequiredFieldError" },
-    "isPII": false
-  },
-  {
-    "name": "postalCode",
-    "label": "Postal Code",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "phone1",
-    "label": "Phone #1",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "phone2",
-    "label": "Phone #2",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "language",
-    "label": "Language",
-    "type": "select",
-    "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Hausa", "label": "Hausa" },
-      { "value": "English", "label": "English" },
-      { "value": "Xhosa", "label": "Xhosa" },
-      { "value": "Bemba", "label": "Bemba" },
-      { "value": "Other", "label": "Other" }
-    ] ,
-    "isPII": false 
-  },
-  {
-    "name": "ethnicity",
-    "label": "Ethnicity",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "schoolName",
-    "label": "School Name",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "gradeLevel",
-    "label": "Grade Level",
-    "type": "select",
-    "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Grade 1 to 4", "label": "Grade 1 to 4" },
-      { "value": "Grade 5 to 7", "label": "Grade 5 to 7" },
-      { "value": "Grade 8 to 9", "label": "Grade 8 to 9" },
-      { "value": "Grade 10 to 12", "label": "Grade 10 to 12" },
-      { "value": "Out of school", "label": "Out of school" }
+      { "value": "American Indian/Alaskan Native", "label": "American Indian/Alaskan Native" },
+      { "value": "Asian", "label": "Asian" },
+      { "value": "Black", "label": "Black" },
+      { "value": "More than one race", "label": "More than one race" },
+      { "value": "Native Hawaiian/Pacific Islander", "label": "Native Hawaiian/Pacific Islander" },
+      { "value": "White", "label": "White" },
+      { "value": "I prefer not to respond", "label": "I prefer not to respond" }
     ],
     "isPII": false
   },
   {
-    "name": "livingSituation",
-    "label": "Living Situation",
+    "name": "town",
+    "label": "Town in which you are reaching out from",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "role",
+    "label": "Which best describes your role today?",
     "type": "select",
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Alternative care", "label": "Alternative care" },
-      { "value": "Group residential facility", "label": "Group residential facility" },
-      { "value": "Homeless or marginally housed", "label": "Homeless or marginally housed" },
-      { "value": "In detention", "label": "In detention" },
-      { "value": "Living independently", "label": "Living independently" },
-      { "value": "With parent(s)", "label": "With parent(s)" },
-      { "value": "With relatives", "label": "With relatives" },
+      { "value": "", "label": "" },
+      { "value": "Parent", "label": "Parent" },
+      { "value": "Caregiver", "label": "Caregiver" },
+      { "value": "Pregnant or expecting parent", "label": "Pregnant or expecting parent" },
+      { "value": "Family member", "label": "Family member" },
+      { "value": "Professional/Service Provider", "label": "Professional/Service Provider" },
+      { "value": "Community Member", "label": "Community Member" },
+      { "value": "Volunteer", "label": "Volunteer" },
       { "value": "Other", "label": "Other" }
     ],
     "isPII": false
   },
   {
-    "name": "vulnerableGroups",
-    "label": "Vulnerable Groups",
-    "type": "listbox-multiselect",
+    "name": "howHeardAboutUs",
+    "label": "How did you hear about us?",
+    "type": "select",
     "options": [
-      {
-        "value": "Child in conflict with the law",
-        "label": "Child in conflict with the law"
-      },
-      {
-        "value": "Child living in conflict zone",
-        "label": "Child living in conflict zone"
-      },
-      {
-        "value": "Child living in poverty",
-        "label": "Child living in poverty"
-      },
-      {
-        "value": "Child member of an ethnic, racial or religious minority",
-        "label": "Child member of an ethnic, racial or religious minority"
-      },
-      {
-        "value": "Child on the move (involuntarily)",
-        "label": "Child on the move (involuntarily)"
-      },
-      {
-        "value": "Child on the move (voluntarily)",
-        "label": "Child on the move (voluntarily)"
-      },
-      {
-        "value": "Child with disability",
-        "label": "Child with disability"
-      },
-      {
-        "value": "LGBTQI+/SOGIESC child",
-        "label": "LGBTQI+/SOGIESC child"
-      },
-      {
-        "value": "Out-of-school child",
-        "label": "Out-of-school child"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
-      }
+      { "value": "", "label": "" },
+      { "value": "Google Search", "label": "Google Search" },
+      { "value": "Social media", "label": "Social media" },
+      { "value": "Healthcare provider", "label": "Healthcare provider" },
+      { "value": "DCF", "label": "DCF" },
+      { "value": "School", "label": "School" },
+      { "value": "Friend/family", "label": "Friend/family" },
+      { "value": "Community organization", "label": "Community organization" },
+      { "value": "Other", "label": "Other" }
     ],
     "isPII": false
   },
   {
-    "name": "region",
-    "label": "Region",
+    "name": "menuOption",
+    "label": "How can we help you today?",
     "type": "select",
     "options": [
-      { "value": "Unknown", "label": "" },
-      { "value": "Cities", "label": "Cities" },
-      { "value": "Rural areas", "label": "Rural areas" },
-      { "value": "Town & semi-dense areas", "label": "Town & semi-dense areas" }
+      { "value": "", "label": "" },
+      { "value": "report_abuse", "label": "Reporting child abuse and neglect" },
+      { "value": "talk_to_someone", "label": "Talk with someone about something that is happening" },
+      { "value": "parent_education", "label": "Information how to enroll in parent education programs" },
+      { "value": "csa_prevention", "label": "Child Sexual Abuse Prevention: School-based programs, adult-focused programs and training of trainers" },
+      { "value": "healthy_relationships", "label": "Healthy Relationships Project® School based curriculum" },
+      { "value": "adult_responsibility", "label": "Adult Responsibility Project Trainings" },
+      { "value": "volunteer_apply", "label": "Apply to be a volunteer" }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "hispanicDescent",
+    "label": "Are you of Hispanic descent?",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" },
+      { "value": "I prefer not to respond", "label": "I prefer not to respond" }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "immigrantOrRefugee",
+    "label": "Are you an immigrant or refugee?",
+    "type": "select",
+    "options": [
+      { "value": "", "label": "" },
+      { "value": "Yes", "label": "Yes" },
+      { "value": "No", "label": "No" },
+      { "value": "I prefer not to respond", "label": "I prefer not to respond" }
     ],
     "isPII": false
   }
