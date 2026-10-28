@@ -21,7 +21,7 @@ import { RemoveContactStateAction } from '../types';
 import { removeContactState } from '../actions';
 import {
   createOfflineContactAsyncAction,
-  newLoadContactFromHrmForTaskAsyncAction,
+  newLoadContactFromHrmForIncomingTaskAsyncAction,
   updateContactInHrmAsyncAction,
 } from '../contacts/saveContact';
 import { CallStatus } from './callStatus';
@@ -104,7 +104,7 @@ const createNewEntryForTaskId = (state: ConferencingState, action: Action) => {
 const conferencingReducer = createReducer(initialState, handleAction => [
   // Handle GeneralActionType
   handleAction(createOfflineContactAsyncAction.fulfilled, createNewEntryForTaskId),
-  handleAction(newLoadContactFromHrmForTaskAsyncAction.fulfilled, createNewEntryForTaskId),
+  handleAction(newLoadContactFromHrmForIncomingTaskAsyncAction.fulfilled, createNewEntryForTaskId),
   handleAction(updateContactInHrmAsyncAction.fulfilled, (state, action) => {
     const {
       payload: { contact, previousContact },

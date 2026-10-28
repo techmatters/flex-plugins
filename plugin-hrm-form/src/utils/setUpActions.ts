@@ -32,7 +32,10 @@ import type { RootState } from '../states';
 import { getTaskLanguage } from './task';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import asyncDispatch from '../states/asyncDispatch';
-import { newFinalizeContactAsyncAction, newLoadContactFromHrmForTaskAsyncAction } from '../states/contacts/saveContact';
+import {
+  newFinalizeContactAsyncAction,
+  newLoadContactFromHrmForIncomingTaskAsyncAction,
+} from '../states/contacts/saveContact';
 import { handleTransferredTask } from '../transfer/setUpTransferActions';
 import { completeConversationTask, wrapupConversationTask } from '../services/twilioTaskService';
 import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
@@ -175,7 +178,7 @@ export const afterAcceptTask = async (payload: ActionPayload) => {
         stateContact.savedContact?.twilioWorkerId !== task.workerSid ||
         stateContact.savedContact?.taskId !== task.taskSid
       ) {
-        asyncDispatch(store.dispatch)(newLoadContactFromHrmForTaskAsyncAction(task, `${task.taskSid}-active`));
+        asyncDispatch(store.dispatch)(newLoadContactFromHrmForIncomingTaskAsyncAction(task, `${task.taskSid}-active`));
       }
     }
   });
