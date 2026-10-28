@@ -11,15 +11,11 @@ locals {
     operating_hours_enforced_override     = true
     custom_task_routing_filter_expression = ""
     flow_vars = {
-      widget_from                                            = "NAMI"
-      chat_blocked_message                                   = "Hi, you've been blocked from accessing NAMI services and we are not able to read or receive further messages from you."
-      send_message_prequeue                                  = "Welcome. Pleas wait for a specialist."
       custom_functions_url                                   = "https://custom-functions-2196.twil.io"
       usnm_recordings_url                                    = "https://usnm-recordings-5659.twil.io"
       conversation_time_delay_function_sid                   = "ZHc4d16dc47536625d362c9643af7afcd2"
       is_task_in_queue_function_sid                          = "ZH4c638934125af2174fe4c005de72495a"
       cancel_pending_task_function_sid                       = "ZHf6502c58b42dbc188b3d8bd868823ce1"
-      workspace_sid                                          = "WS041e1b18805e2d7cbe83d2331f1c1e18"
       custom_functions_service_id                            = "ZSe84307e251201120ce2d7ffbd1a13051"
       custom_functions_environment_id                        = "ZEda1d8429b29d7624dbc65cee802801fa"
       send_message_sms_voip_blocked                          = "We're unable to support conversations from VoIP or internet-based phone numbers at this time. Please try again using a mobile carrier number. If this is an emergency, call or text 988."
@@ -79,9 +75,6 @@ locals {
         contact_identity = ""
         templatefile     = "/app/twilio-iac/helplines/usnm/templates/studio-flows/voice.tftpl"
         channel_flow_vars = {
-          voice_ivr_greeting_message = "Hello, you are contacting NAMI. Please hold for a counsellor."
-          voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
-          voice_ivr_language         = "en-US"
         }
         chatbot_unique_names = []
       },

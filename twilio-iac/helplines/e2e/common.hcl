@@ -6,19 +6,12 @@ locals {
 
   local_config = {
     helpline                          = "End to End Testing"
-    old_dir_prefix                    = "e2e"
-    definition_version                = "e2e-v1"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-US"
-    helpline_language                 = "en"
     voice_ivr_language                = ""
     enable_post_survey                = false
     task_language                     = "en-US"
 
 
-    lex_bot_languages = {
-
-    }
 
     lex_v2_bot_languages = {
       en_US : ["pre_survey"]

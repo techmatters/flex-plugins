@@ -9,10 +9,6 @@ locals {
 
     #Studio flow
     flow_vars = {
-      service_sid                            = "ZS19005295d6d012bfea9983de0ba3e6b8"
-      environment_sid                        = "ZEa0a7fc38616a1934a04b9e13c678df53"
-      capture_channel_with_bot_function_sid  = "ZHbabcecf88565b1288514afe30d0e73f3"
-      capture_channel_with_bot_function_name = "channelCapture/captureChannelWithBot"
       bot_language                           = "en_MW"
       widget_from                            = "Tithandizane"
       chat_blocked_message                   = "Sorry, you're not able to contact Tithandizane from this device or account"
@@ -20,13 +16,12 @@ locals {
 
     #Channels
     channels = {
-      webchat : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking.tftpl"
-        channel_flow_vars = {
-
-        }
+      chat : {
+        channel_type         = "chat"
+        messaging_mode       = "conversations"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
+        channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       facebook : {

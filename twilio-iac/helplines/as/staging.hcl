@@ -12,8 +12,6 @@ locals {
 
     #Studio flow
     flow_vars = {
-      capture_channel_with_bot_function_sid = "ZH979fc67a70a4a9572552c81a0d5d41d7"
-      chatbot_callback_cleanup_function_sid = "ZH31416a207f81bf504a1391ed7649400e"
       send_message_janitor_function_sid     = "ZH91e33557d45b6dd60100876452e2428b"
       bot_language                          = "en-US"
       widget_from                           = "Aselo"
@@ -89,8 +87,6 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-voicemail-sd.tftpl"
         channel_flow_vars = {
           voice_ivr_greeting_message = "Hello, you are contacting Aselo. If you would like to leave a voicemail for callback, please press any key. Otherwise, please hold for a counsellor."
-          voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
-          voice_ivr_record_voicemail = "Please leave your message after the beep."
           voice_ivr_language         = "en-US"
         }
         chatbot_unique_names = []

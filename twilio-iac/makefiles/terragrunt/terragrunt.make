@@ -60,7 +60,7 @@ destroy-tg: verify-env
 destroy-all-tg: verify-env
 	docker run -it --rm \
   -v $(TF_PLUGIN_CACHE_HOST):$(TF_PLUGIN_CACHE_CONT) \
-  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt rum-all destroy $(tg_args)
+  $(DEFAULT_ARGS) $(TG_ENV) $(DOCKER_IMAGE):$(TF_VER) terragrunt run-all destroy $(tg_args)
 
 ##@ Terragrunt Stage Targets - Usage: make [target] HL=[hl short code] HL_ENV=[hl environment]
 apply: verify-pre-work apply-tg ## Apply the current terragrunt stage

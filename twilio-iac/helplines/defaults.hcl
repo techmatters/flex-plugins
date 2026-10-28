@@ -10,7 +10,6 @@ locals {
   enable_system_down               = false
   target_task_name                 = "greeting"
   twilio_numbers                   = []
-  channel                          = ""
   enable_lambda_event_callback_url = false
   enable_external_recordings       = false
 
@@ -56,7 +55,6 @@ locals {
   task_queues = {
     master : {
       friendly_name   = "Master"
-      target_workders = "1"
       target_workers  = "1==1"
     },
     e2e_test : {
@@ -166,23 +164,4 @@ locals {
   }
 
 
-  mock_outputs = {
-    chatbot = {
-      chatbot_languages_selector_sid = "chatbot_languages_selector_sid"
-      chatbot_sids = {
-        "en"         = "chatbot_sid_en"
-        "pre_survey" = "pre_survey_bot_sid"
-      }
-    }
-
-    provision = {
-      serverless_url                        = "serverless_url"
-      serverless_environment_production_sid = "serverless_environment_production_sid"
-      serverless_service_sid                = "serverless_service_sid"
-      task_router_master_workflow_sid       = "task_router_master_workflow_sid"
-      task_router_chat_task_channel_sid     = "task_router_chat_task_channel_sid"
-      task_router_voice_task_channel_sid    = "task_router_voice_task_channel_sid"
-      services_flex_chat_service_sid        = "services_flex_chat_service_sid"
-    }
-  }
 }

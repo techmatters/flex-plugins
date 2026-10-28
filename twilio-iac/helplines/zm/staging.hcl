@@ -49,8 +49,6 @@ locals {
     #Studio flow
     flow_vars = {
       send_message_janitor_function_sid     = "ZH0b9f111cb63b53f265d487aa63bb4818"
-      capture_channel_with_bot_function_sid = "ZHca6a97b33320c5efd5430fb9f1a5480b"
-      chatbot_callback_cleanup_function_sid = "ZHc633e352ec3541df3eea9f9ae4af1ad4"
       widget_from                           = "Lifeline/Childline Zambia"
       chat_blocked_message                  = "Hi, you've been blocked from accessing Childline/Lifeline services and we are not able to read or receive further messages from you."
       voice_ivr_language                    = "en-US",

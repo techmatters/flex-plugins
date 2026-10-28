@@ -6,11 +6,7 @@ locals {
 
   local_config = {
     helpline                          = "Childline South Africa"
-    old_dir_prefix                    = ""
-    definition_version                = "za-v1"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "en-ZA"
-    helpline_language                 = "en-US"
     voice_ivr_language                = ""
     enable_post_survey                = false
     permission_config                 = "za"
