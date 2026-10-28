@@ -9,36 +9,32 @@
         "label": "Alcoholic beverages (beer, wine, spirits, etc.)"
       },
       {
-        "value": "Cannabis (marijuana, pot, grass, hash, etc.)",
-        "label": "Cannabis (marijuana, pot, grass, hash, etc.)"
+        "value": "Cannabis (marijuana, pot, grass, hash, etc.) ",
+        "label": "Cannabis (marijuana, pot, grass, hash, etc.) "
       },
       {
-        "value": "Cocaine (coke, crack, etc.)",
-        "label": "Cocaine (coke, crack, etc.)"
+        "value": "Cocaine (coke, crack, etc.) ",
+        "label": "Cocaine (coke, crack, etc.) "
       },
       {
         "value": "Amphetamine type stimulants (speed, diet pills, ecstasy, etc.)",
         "label": "Amphetamine type stimulants (speed, diet pills, ecstasy, etc.)"
       },
       {
-        "value": "Inhalants (nitrous, glue, petrol, paint thinner, etc.)",
-        "label": "Inhalants (nitrous, glue, petrol, paint thinner, etc.)"
+        "value": "Inhalants (nitrous, glue, petrol, paint thinner, etc.) ",
+        "label": "Inhalants (nitrous, glue, petrol, paint thinner, etc.) "
       },
       {
-        "value": "Sedatives or Sleeping Pills (Valium, Serepax, Rohypnol, etc.)",
-        "label": "Sedatives or Sleeping Pills (Valium, Serepax, Rohypnol, etc.)"
+        "value": "Sedatives or Sleeping Pills (Valium, Serepax, Rohypnol, etc.) ",
+        "label": "Sedatives or Sleeping Pills (Valium, Serepax, Rohypnol, etc.) "
       },
       {
         "value": "Hallucinogens (LSD, acid, mushrooms, PCP, Special K, etc.)",
         "label": "Hallucinogens (LSD, acid, mushrooms, PCP, Special K, etc.)"
       },
       {
-        "value": "Opioids (heroin, morphine, methadone, codeine, fentanyl etc.)",
-        "label": "Opioids (heroin, morphine, methadone, codeine, fentanyl etc.)"
-      },
-      {
-        "value": "Other",
-        "label": "Other"
+        "value": "Opioids (heroin, morphine, methadone, codeine, fentanyl etc.) ",
+        "label": "Opioids (heroin, morphine, methadone, codeine, fentanyl etc.) "
       }
     ],
     "isPII": false
