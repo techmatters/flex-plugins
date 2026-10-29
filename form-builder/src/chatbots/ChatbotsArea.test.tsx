@@ -81,7 +81,7 @@ describe('chatbot designer', () => {
 
     // The contact form fields the answers fill in
     // genderInput fills in the first of the caller's and the child's field: rebuilt by hand, it's the same
-    expect(await screen.findAllByText('CallerInformationTab.genderInput')).toHaveLength(1);
+    expect(await screen.findAllByText('CallerInformationTab.genderInput', { selector: 'code' })).toHaveLength(1);
     const gender = (await store.get('usch'))!.design.bots[0].intents[0].questions[1];
     const card = within(document.getElementById(`question-${gender.id}`)!);
     fireEvent.click(
