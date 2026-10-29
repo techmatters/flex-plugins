@@ -21,7 +21,7 @@ flowchart LR
   person([Helpline or Aselo staff<br/>in a browser])
 
   subgraph okta[Okta · techmatters.okta.com]
-    oktaApp[App: Aselo Form Builder]
+    oktaApp[App: Aselo Builder]
     oktaServer[Authorization server:<br/>Aselo Form Builder]
     oktaGroups[Groups:<br/>form-builder-aselo-staff<br/>form-builder-&lt;code&gt;]
   end
@@ -67,7 +67,7 @@ flowchart LR
 | **S3 drafts bucket** (`tl-form-builder-drafts`) | One file per draft: `drafts/<code>/<version>/draft.json`. Private, versioned; old versions kept 90 days. | `api.tf` | Terraform, `aws` stage |
 | **SSM** (`/form-builder/slack_webhook_url`) | The Slack webhook (secret). Optional: without it, submissions are only logged. | Parameter Store | By hand, in the AWS console |
 | **CloudWatch logs** | The Lambda's logs (errors, failed Slack messages), kept 30 days | `api.tf` | Terraform, `aws` stage |
-| **Okta app** (*Aselo Form Builder*) | The sign-in. Single-page app with PKCE, no client secret. | `terraform/modules/okta/main.tf` | Terraform, `okta` stage |
+| **Okta app** (*Aselo Builder*, with the logo in `terraform/modules/okta/logo.png`) | The sign-in. Single-page app with PKCE, no client secret. | `terraform/modules/okta/main.tf` | Terraform, `okta` stage |
 | **Okta authorization server** (*Aselo Form Builder*) | Issues the builder's access tokens (8 hours) with the person's `groups`, `email` and `name`. Only gives tokens to this app. Doesn't touch Okta's other servers. | `terraform/modules/okta/main.tf` | Terraform, `okta` stage |
 | **Okta groups** | `form-builder-aselo-staff`; `form-builder-<code>` per helpline using the builder (none yet). Members are added by hand. | `terraform/okta/terragrunt.hcl` (`helplines`) | Terraform, `okta` stage |
 | **flex-plugins master** | Where the current files come from: form definitions, the helpline's service configuration, the webchat settings. Read without credentials (public repo). | — | — |

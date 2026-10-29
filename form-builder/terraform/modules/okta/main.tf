@@ -79,8 +79,11 @@ resource "okta_group" "helpline" {
 }
 
 resource "okta_app_oauth" "form_builder" {
-  label = "Aselo Form Builder"
+  label = "Aselo Builder"
   type  = "browser"
+  # The tile on the Okta dashboard: the app's mark (src/components/AseloBuilderLogo.tsx) as a PNG,
+  # as Okta takes PNG, JPG or GIF only
+  logo = "${path.module}/logo.png"
 
   grant_types                = ["authorization_code"]
   response_types             = ["code"]

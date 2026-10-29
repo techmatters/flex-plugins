@@ -4,8 +4,9 @@ A web app for helpline staff and the Aselo team to design a helpline: its forms 
 issue categories, case sections and statuses), contact flows, routing and chatbots, without editing
 JSON by hand.
 
-It was called the Aselo Form Builder: the folder, the site's address, the Okta app and groups
-(`form-builder-<code>`, `form-builder-aselo-staff`) and the AWS resources keep that name.
+It was called the Aselo Form Builder: the folder, the site's address, the Okta groups
+(`form-builder-<code>`, `form-builder-aselo-staff`), the Okta authorization server and the AWS
+resources keep that name. The Okta app shows as "Aselo Builder", with the logo.
 
 It reads and writes the same files the Flex plugin uses:
 `lambdas/packages/hrm-form-definitions/form-definitions/<helpline>/<version>/`.
