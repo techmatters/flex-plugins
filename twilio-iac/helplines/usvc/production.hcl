@@ -36,6 +36,23 @@ locals {
 
 
     }
+    #Post call survey (triggered in-call, wired through postStudioFlows in service-configuration)
+    studio_flows = {
+      post_call_survey_en : {
+        templatefile = "/app/twilio-iac/helplines/usvc/templates/studio-flows/post-call-survey.tftpl"
+        flow_vars = {
+          post_survey_assets_url = "<ADD_ENGLISH_RECORDINGS_URL>"
+          gather_language        = "en-US"
+        }
+      },
+      post_call_survey_es : {
+        templatefile = "/app/twilio-iac/helplines/usvc/templates/studio-flows/post-call-survey.tftpl"
+        flow_vars = {
+          post_survey_assets_url = "<ADD_SPANISH_RECORDINGS_URL>"
+          gather_language        = "es-US"
+        }
+      }
+    }
     //Serverless -- to allow enabling the operating hours check on this staging account.
     ui_editable = true
     #Channels
