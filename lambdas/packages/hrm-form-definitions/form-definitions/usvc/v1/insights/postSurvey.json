@@ -1,12 +1,42 @@
 [
   {
     "insightsObject": "conversations",
-    "attributeName": "conversation_measure_6",
-    "questions": ["was_helpful"]
+    "attributeName": "conversation_attribute_1",
+    "questions": ["connected_to_vas"]
   },
   {
     "insightsObject": "conversations",
-    "attributeName": "conversation_measure_7",
+    "attributeName": "conversation_attribute_2",
+    "questions": ["specialist_knowledge_satisfaction"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_3",
+    "questions": ["will_follow_advice"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_4",
     "questions": ["would_recommend"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_5",
+    "questions": ["overall_satisfaction"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_6",
+    "questions": ["self_or_other"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_7",
+    "questions": ["victim_service_profesional"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_8",
+    "questions": ["was_first_time"]
   }
 ]
