@@ -1,0 +1,78 @@
+${
+  jsonencode({
+  "description": "A survey shared by two Studio flows (English and Spanish)",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "gather_input_voice_rating",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingRequest"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "gather_input_voice_rating",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "play_message_voice_thanks",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "play_message_voice_thanks",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 250
+        },
+        "play": "${flow_vars.assets_url}/gather_input_voice_rating.mp3",
+        "language": "${flow_vars.gather_language}",
+        "number_of_digits": 1,
+        "timeout": 5
+      }
+    },
+    {
+      "name": "play_message_voice_thanks",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 500
+        },
+        "say": "${flow_vars.thanks_text}",
+        "language": "${flow_vars.gather_language}",
+        "loop": 1
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+}

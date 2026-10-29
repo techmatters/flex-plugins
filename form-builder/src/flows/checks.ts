@@ -20,7 +20,7 @@
  * never stop saving, since a board is a design in progress.
  */
 import type { BoardContent, FlowObject, Frame } from './model';
-import { exitsOf, OBJECT_TYPES } from './model';
+import { exitsOf, fieldProblem, flowDetailsOf, OBJECT_TYPES, variesByVariant } from './model';
 import type { Recording } from './recordings';
 import { isVoiceMessage, messageStatus } from './recordings';
 import { taskAttributesProblem } from './taskAttributes';
@@ -135,7 +135,7 @@ const STARTS = new Set<FlowObject['type']>(['incoming', 'text']);
  * design in progress (open ends, names, scripts, recordings...).
  */
 export const boardChecks = (
-  content: Pick<BoardContent, 'objects' | 'frames' | 'connections'>,
+  content: Pick<BoardContent, 'objects' | 'frames' | 'connections' | 'flow'>,
   // The helpline's recordings, when they're known: voice messages are then checked for theirs
   recordings?: Recording[],
 ): Issue[] => {
@@ -143,7 +143,8 @@ export const boardChecks = (
   const add = (issue: Omit<Issue, 'key'>, kind: string) =>
     issues.push({ ...issue, key: `${issue.objectId ?? issue.frameId}|${kind}|${issue.openExit ?? ''}` });
   const byId = new Map(content.objects.map((object) => [object.id, object]));
-  const frameOf = (object: FlowObject) => content.frames.find((frame) => frame.id === object.frameId);
+  // The object's frame, or the board's own flow for objects outside frames
+  const frameOf = (object: FlowObject) => flowDetailsOf(content, object.frameId);
   const nameOf = (object: FlowObject) => `“${object.text.trim() || OBJECT_TYPES[object.type].label}”`;
   const outgoing = (id: string) => content.connections.filter((connection) => connection.from === id);
   const targets = new Set(content.connections.map((connection) => connection.to));
@@ -229,6 +230,16 @@ export const boardChecks = (
         );
     }
 
+    // Call settings: valid addresses and JSON
+    (info.fields ?? []).forEach((field) => {
+      const problem = fieldProblem(field, object.settings?.[field.key] ?? '');
+      if (problem)
+        add({ severity: 'error', message: `${name}: ${field.label}: ${problem}`, objectId }, `field-${field.key}`);
+    });
+    if (object.type === 'function' && !object.studio && !object.settings?.url?.trim()) {
+      add({ severity: 'warning', message: `${name} has no address (URL) to call yet.`, objectId }, 'noUrl');
+    }
+
     // Incoming contacts check that the system is up before anything else
     if (object.type === 'incoming' && frame?.stage !== 'postqueue') {
       const first = out[0] && byId.get(out[0].to);
@@ -263,9 +274,17 @@ export const boardChecks = (
       add({ severity: 'warning', message: `Nothing leads to ${name}.`, objectId }, 'unreachable');
     }
 
-    // The language in the name is the message's (play_message_voice_es_... for Spanish)
+    // The language in the name is the message's (play_message_voice_es_... for Spanish); not for a template
+    // several flows share in different languages, where one widget plays each flow's
     const language = object.message?.language?.trim().toLowerCase();
-    if (info.hasMessage && language && object.studioName && !object.studioName.split('_').includes(language)) {
+    const sharedByVariants = !object.frameId && (content.flow?.variants?.length ?? 0) > 1;
+    if (
+      info.hasMessage &&
+      language &&
+      object.studioName &&
+      !sharedByVariants &&
+      !object.studioName.split('_').includes(language)
+    ) {
       add(
         { severity: 'warning', message: `${name} is in “${language}”, but its Studio name doesn't say so.`, objectId },
         'language',
@@ -274,6 +293,17 @@ export const boardChecks = (
 
     if (info.hasMessage && !object.message?.script?.trim()) {
       add({ severity: 'warning', message: `${name} has no script yet.`, objectId }, 'noScript');
+    }
+    // Flows sharing the template: each other one's script, where the message is its own
+    if (info.hasMessage && !object.frameId && variesByVariant(object)) {
+      (content.flow?.variants ?? []).slice(1).forEach((variant) => {
+        if (!object.variantMessages?.[variant.key]?.script?.trim()) {
+          add(
+            { severity: 'warning', message: `${variant.label}: ${name} has no script yet.`, objectId },
+            `noScript-${variant.key}`,
+          );
+        }
+      });
     }
 
     // What's left before callers hear it (voice) or before it's sent (messaging)
@@ -359,11 +389,11 @@ export const issuesByObject = (issues: Issue[]): Map<string, Issue[]> => {
  * Problems with each object, by object id: its Studio name (missing, or breaking the standards),
  * and names used twice in a flow.
  */
-export const objectProblems = (content: Pick<BoardContent, 'objects' | 'frames'>): Map<string, string[]> => {
+export const objectProblems = (content: Pick<BoardContent, 'objects' | 'frames' | 'flow'>): Map<string, string[]> => {
   const duplicates = duplicateNames(content);
   const problems = new Map<string, string[]>();
   content.objects.forEach((object) => {
-    const frame = content.frames.find((candidate) => candidate.id === object.frameId);
+    const frame = flowDetailsOf(content, object.frameId);
     const found = studioNameProblems(object, frame);
     // Everything that becomes a Studio widget needs a name (its recording's too, for voice)
     if (!object.studioName && OBJECT_TYPES[object.type].studioPrefix) found.push('No Studio name yet.');

@@ -20,6 +20,11 @@
  *   <code>/staging/<file>       uploaded by helpline or Aselo staff; staging Studio flows play these
  *   <code>/production/<file>    copied from staging when Aselo staff publish; production plays these
  *
+ * A flow that shares its template with others (e.g. the English and Spanish post-call surveys)
+ * keeps its recordings in a folder of its own, named after the flow, as the files are named the
+ * same: <code>/staging/<flow>/<file>. Each such folder is a library ("<code>/<flow>"); the
+ * helpline's own folder is the library "<code>".
+ *
  * Deployed, in the recordings bucket, served at https://recordings.tl.techmatters.org/<code>/...;
  * locally, in form-builder/recordings (gitignored), served by the dev server.
  *
@@ -89,11 +94,20 @@ export interface RecordingLogStore {
   put(code: string, log: RecordingLog): Promise<void>;
 }
 
-export const isValidRecordingKey = (code: string, fileName: string) =>
-  /^[a-z0-9]+$/.test(code) && RECORDING_FILE_PATTERN.test(fileName);
+// A library: the helpline ("usvc"), or one of its flows' folders ("usvc/post_call_survey_es")
+export const RECORDING_LIBRARY_PATTERN = /^[a-z0-9]+(\/[a-z0-9_]+)?$/;
 
-const check = (code: string, fileName: string) => {
-  if (!isValidRecordingKey(code, fileName)) throw new Error(`Invalid recording ${code}/${fileName}`);
+export const isValidRecordingKey = (library: string, fileName: string) =>
+  RECORDING_LIBRARY_PATTERN.test(library) && RECORDING_FILE_PATTERN.test(fileName);
+
+const check = (library: string, fileName: string) => {
+  if (!isValidRecordingKey(library, fileName)) throw new Error(`Invalid recording ${library}/${fileName}`);
+};
+
+// <code>/<environment>/[<folder>/]: where a library's files are, in an environment
+const folderOf = (library: string, environment: RecordingEnvironment) => {
+  const [code, folder] = library.split('/');
+  return folder ? `${code}/${environment}/${folder}` : `${code}/${environment}`;
 };
 
 const emptyFiles = (): StoredFiles => ({ staging: new Map(), production: new Map() });
@@ -106,18 +120,19 @@ export class LocalRecordingFiles implements RecordingFiles {
 
   private file(code: string, environment: RecordingEnvironment, fileName: string) {
     check(code, fileName);
-    return path.join(this.rootDir, code, environment, fileName);
+    return path.join(this.rootDir, folderOf(code, environment), fileName);
   }
 
   // Played through the dev server (devApiPlugin.ts)
   baseUrl(code: string, environment: RecordingEnvironment) {
-    return `/api/recordings/${code}/local/${environment}`;
+    const [helpline, folder] = code.split('/');
+    return `/api/recordings/${helpline}/local/${environment}${folder ? `/${folder}` : ''}`;
   }
 
   async list(code: string): Promise<StoredFiles> {
     const files = emptyFiles();
     for (const environment of ENVIRONMENTS) {
-      const dir = path.join(this.rootDir, code, environment);
+      const dir = path.join(this.rootDir, folderOf(code, environment));
       const names = await fs.readdir(dir).catch(() => [] as string[]);
       for (const fileName of names.filter((name) => RECORDING_FILE_PATTERN.test(name))) {
         const full = path.join(dir, fileName);
@@ -178,8 +193,9 @@ export class LocalRecordingLogStore implements RecordingLogStore {
   constructor(private readonly rootDir: string) {}
 
   private file(code: string) {
-    if (!/^[a-z0-9]+$/.test(code)) throw new Error(`Invalid helpline ${code}`);
-    return path.join(this.rootDir, code, 'log.json');
+    if (!RECORDING_LIBRARY_PATTERN.test(code)) throw new Error(`Invalid helpline ${code}`);
+    const [helpline, folder] = code.split('/');
+    return path.join(this.rootDir, helpline, folder ? `log-${folder}.json` : 'log.json');
   }
 
   async get(code: string): Promise<RecordingLog> {
@@ -206,14 +222,15 @@ export class MemoryRecordingFiles implements RecordingFiles {
   readonly refreshed: string[] = [];
 
   baseUrl(code: string, environment: RecordingEnvironment) {
-    return `https://recordings.test/${code}/${environment}`;
+    return `https://recordings.test/${folderOf(code, environment)}`;
   }
 
   async list(code: string) {
     const files = emptyFiles();
     this.files.forEach(({ content, at }, key) => {
-      const [fileCode, environment, fileName] = key.split('/');
-      if (fileCode !== code) return;
+      const environment = ENVIRONMENTS.find((candidate) => key.startsWith(`${folderOf(code, candidate)}/`));
+      const fileName = environment && key.slice(folderOf(code, environment).length + 1);
+      if (!environment || !fileName || fileName.includes('/')) return;
       files[environment as RecordingEnvironment].set(fileName, {
         etag: createHash('md5').update(content).digest('hex'),
         size: content.length,
@@ -227,7 +244,7 @@ export class MemoryRecordingFiles implements RecordingFiles {
   async uploadTarget(code: string, fileName: string, contentType: string): Promise<UploadTarget> {
     check(code, fileName);
     return {
-      url: `https://upload.test/${code}/staging/${fileName}`,
+      url: `https://upload.test/${folderOf(code, 'staging')}/${fileName}`,
       method: 'PUT',
       headers: { 'Content-Type': contentType },
     };
@@ -235,29 +252,29 @@ export class MemoryRecordingFiles implements RecordingFiles {
 
   // What the browser's upload does
   put(code: string, fileName: string, content: string) {
-    this.files.set(`${code}/staging/${fileName}`, { content, at: new Date().toISOString() });
+    this.files.set(`${folderOf(code, 'staging')}/${fileName}`, { content, at: new Date().toISOString() });
   }
 
   async publish(code: string, fileName: string) {
-    const staging = this.files.get(`${code}/staging/${fileName}`);
+    const staging = this.files.get(`${folderOf(code, 'staging')}/${fileName}`);
     if (!staging) throw new Error('Nothing to publish');
-    this.files.set(`${code}/production/${fileName}`, { ...staging });
+    this.files.set(`${folderOf(code, 'production')}/${fileName}`, { ...staging });
   }
 
   async remove(code: string, environment: RecordingEnvironment, fileName: string) {
-    this.files.delete(`${code}/${environment}/${fileName}`);
+    this.files.delete(`${folderOf(code, environment)}/${fileName}`);
   }
 
   async store(code: string, environment: RecordingEnvironment, fileName: string, content: Uint8Array) {
     check(code, fileName);
-    this.files.set(`${code}/${environment}/${fileName}`, {
+    this.files.set(`${folderOf(code, environment)}/${fileName}`, {
       content: Buffer.from(content).toString(),
       at: new Date().toISOString(),
     });
   }
 
   async refresh(code: string, environment: RecordingEnvironment, fileName: string) {
-    this.refreshed.push(`${code}/${environment}/${fileName}`);
+    this.refreshed.push(`${folderOf(code, environment)}/${fileName}`);
   }
 }
 
@@ -292,11 +309,11 @@ export class S3RecordingFiles implements RecordingFiles {
 
   private key(code: string, environment: RecordingEnvironment, fileName: string) {
     check(code, fileName);
-    return `${code}/${environment}/${fileName}`;
+    return `${folderOf(code, environment)}/${fileName}`;
   }
 
   baseUrl(code: string, environment: RecordingEnvironment) {
-    return `${this.publicUrl}/${code}/${environment}`;
+    return `${this.publicUrl}/${folderOf(code, environment)}`;
   }
 
   async list(code: string): Promise<StoredFiles> {
@@ -304,14 +321,14 @@ export class S3RecordingFiles implements RecordingFiles {
     let token: string | undefined;
     do {
       const page: ListObjectsV2CommandOutput = await this.s3.send(
-        new ListObjectsV2Command({ Bucket: this.bucket, Prefix: `${code}/`, ContinuationToken: token }),
+        new ListObjectsV2Command({ Bucket: this.bucket, Prefix: `${code.split('/')[0]}/`, ContinuationToken: token }),
       );
       (page.Contents ?? []).forEach((object) => {
-        const [, environment, fileName] = (object.Key ?? '').split('/');
-        if (
-          !ENVIRONMENTS.includes(environment as RecordingEnvironment) ||
-          !RECORDING_FILE_PATTERN.test(fileName ?? '')
-        ) {
+        // Only this library's files: not its sub-folders' (other flows'), nor the helpline's
+        const key = object.Key ?? '';
+        const environment = ENVIRONMENTS.find((candidate) => key.startsWith(`${folderOf(code, candidate)}/`));
+        const fileName = environment ? key.slice(folderOf(code, environment).length + 1) : '';
+        if (!environment || !RECORDING_FILE_PATTERN.test(fileName)) {
           return;
         }
         files[environment as RecordingEnvironment].set(fileName, {
@@ -386,7 +403,7 @@ export class S3RecordingLogStore implements RecordingLogStore {
   ) {}
 
   private key(code: string) {
-    if (!/^[a-z0-9]+$/.test(code)) throw new Error(`Invalid helpline ${code}`);
+    if (!RECORDING_LIBRARY_PATTERN.test(code)) throw new Error(`Invalid helpline ${code}`);
     return `recordings/${code}.json`;
   }
 

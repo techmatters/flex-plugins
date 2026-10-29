@@ -20,6 +20,7 @@ import { fileURLToPath } from 'url';
 import { beforeAll, describe, expect, test } from 'vitest';
 import { boardChecks } from '../src/flows/checks';
 import { exitsOf } from '../src/flows/model';
+import { toFlowExport } from '../src/flows/exports';
 import { HelplineImport, importHelpline, separate } from './flowImport';
 import type { Board, BoardContent, BoardSummary } from '../src/flows/model';
 import type { RecordingsList } from '../src/flows/recordings';
@@ -67,7 +68,7 @@ describe('importing a live helpline', () => {
       chat: ['staging'],
     });
     expect(usnm.boards.map((board) => board.title)).toContain('USNM · [voice] · voice');
-    expect(usnm.boards.map((board) => board.content.frames[0].channel)).toEqual([
+    expect(usnm.boards.map((board) => board.content.flow?.channel)).toEqual([
       'voice',
       'sms',
       'sms',
@@ -77,13 +78,13 @@ describe('importing a live helpline', () => {
       undefined,
     ]);
     usnm.boards.forEach(({ content }) => {
-      // One frame, holding every object
-      expect(content.frames).toHaveLength(1);
-      const [frame] = content.frames;
+      // One Studio flow per board: no frame around it, the board says what flow it is
+      expect(content.frames).toEqual([]);
+      expect(content.flow?.studio?.template).toMatch(/\.tftpl$/);
       content.objects.forEach((object) => {
-        expect(object.frameId).toBe(frame.id);
-        expect(object.x + object.width).toBeLessThanOrEqual(frame.width);
-        expect(object.y + object.height).toBeLessThanOrEqual(frame.height);
+        expect(object.frameId).toBeUndefined();
+        expect(object.x).toBeGreaterThanOrEqual(0);
+        expect(object.y).toBeGreaterThanOrEqual(0);
       });
       // Widget names are only unique within their own flow; two flows can use the same one
       expect(
@@ -121,7 +122,8 @@ describe('importing a live helpline', () => {
     });
     // The voice flow spans 4000px or so in Studio; on the board, much less
     // The voice flow is 5,600px tall in Studio; on the board, about half
-    expect(boardOf('usnm/templates/studio-flows/voice.tftpl').frames[0].height).toBeLessThan(3200);
+    const voice = boardOf('usnm/templates/studio-flows/voice.tftpl');
+    expect(Math.max(...voice.objects.map((object) => object.y + object.height))).toBeLessThan(3200);
   });
 
   test("each board knows the recordings it plays, so only the chosen boards' are copied", () => {
@@ -185,6 +187,42 @@ describe('importing a live helpline', () => {
     );
     expect(technical?.message?.recordingFile).toBe('play_message_voice_launch_technical_upgrade.mp3');
     expect(usnm.report.notes).toContainEqual(expect.stringContaining("isn't named after the widget"));
+  });
+
+  test('a template other helplines use too: who, and where a change to it goes', async () => {
+    const { boards } = await importHelpline(helplinesDir, 'clhs');
+    const studioOf = (name: string) => boards.find((board) => board.title.endsWith(name))!.content.flow!.studio!;
+    // System down is shared by most helplines; CLHS is the only one using its messaging template
+    expect(studioOf('System down').sharedWith).toEqual(expect.arrayContaining(['usch', 'usnc', 'usnm']));
+    expect(studioOf('System down').sharedWith).not.toContain('clhs');
+    expect(studioOf('messaging-blocking-preq-lambda-sd').sharedWith).toBeUndefined();
+
+    const board = (content: BoardContent): Board => ({
+      code: 'clhs',
+      id: 'b',
+      meta: { revision: 1, createdAt: '', createdBy: '', updatedAt: '', updatedBy: '' },
+      content,
+    });
+    const systemDown = boards.find((candidate) => candidate.title.endsWith('System down'))!.content;
+    // By default a change gives CLHS a copy of its own; the shared one only when Aselo staff choose it
+    expect(toFlowExport(board(systemDown)).studioTemplates[0]).toMatchObject({
+      template: 'templates/studio-flows/system-down.tftpl',
+      writeTo: 'clhs/templates/studio-flows/system-down.tftpl',
+      sharedWith: expect.arrayContaining(['usch']),
+    });
+    const forEveryone = {
+      ...systemDown,
+      flow: { ...systemDown.flow, studio: { ...systemDown.flow!.studio!, changeShared: true } },
+    };
+    expect(toFlowExport(board(forEveryone)).studioTemplates[0]).toMatchObject({
+      writeTo: 'templates/studio-flows/system-down.tftpl',
+      changeShared: true,
+    });
+    // A template only this helpline uses is changed where it is
+    const preq = boards.find((candidate) => candidate.title.endsWith('messaging-blocking-preq-lambda-sd'))!.content;
+    expect(toFlowExport(board(preq)).studioTemplates[0].writeTo).toBe(
+      'templates/studio-flows/messaging-blocking-preq-lambda-sd.tftpl',
+    );
   });
 
   test("recordings whose address isn't a URL yet: one note per flow and address, with its value", async () => {

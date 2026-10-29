@@ -28,6 +28,7 @@ import { MemoryRecordingFiles, MemoryRecordingLogStore } from '../../server/reco
 import { MemoryDraftStore } from '../../server/drafts';
 import { boardClientFor } from './boardClient';
 import { FlowsArea } from './FlowsArea';
+import { importHelpline } from '../../server/flowImport';
 
 // What React Flow needs from a browser that jsdom doesn't have (see reactflow.dev/learn/advanced-use/testing)
 beforeAll(() => {
@@ -80,9 +81,12 @@ let context: ApiContext;
 const clientAs = (user: ApiUser) =>
   boardClientFor(
     (method, path, body) => handleApiRequest(context, { method, path, body: structuredClone(body), user }),
-    // Instead of the signed S3 link: https://upload.test/<code>/staging/<file>
+    // Instead of the signed S3 link: https://upload.test/<code>/staging/[<flow folder>/]<file>
     async (target, file) => {
-      const [code, , fileName] = new URL(target.url).pathname.split('/').slice(1);
+      const parts = new URL(target.url).pathname.split('/').slice(1);
+      const [helpline] = parts;
+      const fileName = parts[parts.length - 1];
+      const code = parts.length === 4 ? `${helpline}/${parts[2]}` : helpline;
       // jsdom's Blob has no text()
       const content = await new Promise<string>((resolve) => {
         const reader = new FileReader();
@@ -290,6 +294,88 @@ describe('flow designer', { timeout: 20_000 }, () => {
     await screen.findByRole('heading', { name: 'Exports' });
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
     expect(screen.getByRole('menuitem', { name: 'Flows for Claude (JSON)' })).toBeTruthy();
+  });
+
+  test('flows sharing a template: one board, each flow its own script and recordings folder', async () => {
+    const { boards: imported } = await importHelpline(
+      path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../server/__fixtures__/helplines'),
+      'zz',
+    );
+    const board = await clientAs(staff).create('usnm', 'Survey', undefined, imported[0].content);
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    await screen.findByRole('heading', { name: 'Survey' });
+    expect(screen.getByRole('tab', { name: 'English' }).getAttribute('aria-selected')).toBe('true');
+
+    // Spanish: its own script and recording
+    fireEvent.click(screen.getByRole('tab', { name: 'Spanish' }));
+    fireEvent.click(screen.getByText('Thanks'));
+    const script = () => settings().getByRole('textbox', { name: 'Script' }) as HTMLTextAreaElement;
+    expect(script().value).toBe('Gracias por sus respuestas.');
+    fireEvent.change(script(), { target: { value: 'Muchas gracias.' } });
+    const recording = () => within(screen.getByRole('region', { name: 'Recording' }));
+    fireEvent.change(recording().getByLabelText('Upload recording'), {
+      target: { files: [new File(['gracias'], 'thanks.mp3', { type: 'audio/mpeg' })] },
+    });
+    await waitFor(() =>
+      expect(recordingFiles.files.get('usnm/staging/survey_es/play_message_voice_thanks.mp3')?.content).toBe('gracias'),
+    );
+    expect(recordingFiles.files.has('usnm/staging/survey_en/play_message_voice_thanks.mp3')).toBe(false);
+
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    const thanks = (await boards.get('usnm', board.id))!.content.objects.find(
+      (object) => object.studioName === 'play_message_voice_thanks',
+    )!;
+    expect(thanks.message?.script).toBe('Thank you for your answers.');
+    expect(thanks.variantMessages?.survey_es?.script).toBe('Muchas gracias.');
+
+    // Back to English: its own script
+    fireEvent.click(screen.getByRole('tab', { name: 'English' }));
+    expect(script().value).toBe('Thank you for your answers.');
+
+    // Spanish becomes its own flow: a new board, with its texts and a template of its own to make
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    fireEvent.click(screen.getByRole('tab', { name: 'Spanish' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Make Spanish its own flow' }));
+    await waitFor(() => expect(screen.queryByRole('tab', { name: 'Spanish' })).toBeNull());
+    const spanish = (await boards.list()).find((summary) => summary.title === 'Survey (Spanish)')!;
+    const { content: split } = (await boards.get('usnm', spanish.id))!;
+    expect(split.flow).toMatchObject({
+      variants: [expect.objectContaining({ key: 'survey_es', recordingsFolder: 'survey_es' })],
+      ownTemplate: { suggested: 'zz/templates/studio-flows/survey-es.tftpl' },
+    });
+    expect(split.objects.find((object) => object.studioName === 'play_message_voice_thanks')?.message?.script).toBe(
+      'Muchas gracias.',
+    );
+  });
+
+  test('a template other helplines use: said on the board; changing it for all is Aselo staff’s choice', async () => {
+    const { boards: imported } = await importHelpline(
+      path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../twilio-iac/helplines'),
+      'clhs',
+    );
+    const systemDown = imported.find((candidate) => candidate.title.endsWith('System down'))!;
+    const board = await clientAs(staff).create('usnm', 'System down', undefined, systemDown.content);
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    await screen.findByRole('heading', { name: 'System down' });
+    expect(screen.getByText(/Shared template, also used by/)).toBeTruthy();
+    expect(screen.getByText(/give USNM a copy of its own/)).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Change the shared template for every helpline' }));
+    expect(screen.getByText(/every one of these helplines changes too/)).toBeTruthy();
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    expect((await boards.get('usnm', board.id))!.content.flow?.studio?.changeShared).toBe(true);
+    cleanup();
+
+    // Helpline staff see where changes go, without the choice
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+    render(
+      <FlowsArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} userName="NAMI person" />,
+    );
+    await screen.findByRole('heading', { name: 'System down' });
+    expect(screen.getByText(/every one of these helplines changes too/)).toBeTruthy();
+    expect(screen.queryByRole('checkbox', { name: 'Change the shared template for every helpline' })).toBeNull();
   });
 
   test('a voice message is recorded, approved and published', async () => {

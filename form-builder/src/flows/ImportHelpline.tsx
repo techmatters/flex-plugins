@@ -22,6 +22,7 @@
  */
 import { useState } from 'react';
 import type { HelplineImport, ImportedFlow } from '../../server/flowImport';
+import { importedRecordingKey } from './recordings';
 import type { FromBranch } from '../../server/branches';
 import { BranchPicker, ImportedFrom } from '../components/BranchPicker';
 import type { BoardClient } from './boardClient';
@@ -82,7 +83,8 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
   const chosenBoards = preview?.boards.filter((_, index) => selected.has(index)) ?? [];
   // Only the recordings the chosen flows play
   const chosenFiles = new Set(chosenBoards.flatMap((board) => board.recordingFiles));
-  const chosenRecordings = preview?.recordings.filter((recording) => chosenFiles.has(recording.fileName)) ?? [];
+  const chosenRecordings =
+    preview?.recordings.filter((recording) => chosenFiles.has(importedRecordingKey(recording))) ?? [];
 
   const toggle = (index: number) => {
     const next = new Set(selected);
@@ -107,7 +109,8 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
         setCopying({ ...progress });
         for (const recording of chosenRecordings) {
           try {
-            await client.importRecording(code, recording);
+            // A flow sharing its template keeps its recordings in its own folder
+            await client.importRecording(recording.folder ? `${code}/f/${recording.folder}` : code, recording);
           } catch (err) {
             progress.failed.push(`${recording.environment}/${recording.fileName}: ${(err as Error).message}`);
           }

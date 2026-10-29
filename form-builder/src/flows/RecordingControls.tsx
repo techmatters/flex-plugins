@@ -269,7 +269,8 @@ export const ScriptApproval = ({
   );
 };
 
-type BoardMessage = { object: FlowObject; frame?: Frame };
+// frame: the object's frame, or the board's own flow (what tells a voice message)
+type BoardMessage = { object: FlowObject; frame?: Pick<Frame, 'channel'> };
 
 /**
  * The Recordings tab: every voice message on the board with its recording, many files uploaded

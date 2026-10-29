@@ -37,7 +37,7 @@ import {
   useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { Copy, Download, Redo2, RefreshCw, Trash2, Undo2 } from 'lucide-react';
+import { Copy, Download, Languages, Redo2, RefreshCw, Trash2, Undo2, Users } from 'lucide-react';
 import { boardChecks, issuesByObject, splitIgnored } from './checks';
 import { downloadFlowExport, downloadScripts } from './exports';
 import { CheckPanel } from './CheckPanel';
@@ -48,6 +48,8 @@ import type { Board, BoardContent, FlowObjectType, Person } from './model';
 import {
   ASELO_PEOPLE_CODE,
   designOf,
+  flowDetailsOf,
+  messageFor,
   isImportedBoard,
   objectColor,
   OBJECT_TYPES,
@@ -132,9 +134,21 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
   // What's on the canvas; the status isn't part of it (nor of undo)
   const canvasContent = useMemo(() => toContent(title, nodes, edges), [title, nodes, edges]);
   const canvasJson = useMemo(() => JSON.stringify(canvasContent), [canvasContent]);
+  // What the board's objects outside frames are (an imported board's Studio flow); not on the canvas either
+  const [boardFlow, setBoardFlow] = useState(board.content.flow);
+  // Studio flows sharing this template (FlowDetails.variants): which one is shown (texts, recordings)
+  const variants = boardFlow?.variants ?? [];
+  const mainVariant = variants[0]?.key;
+  const [variantKey, setVariantKey] = useState(mainVariant);
+  const variant = variants.find((candidate) => candidate.key === variantKey) ?? variants[0];
   const content = useMemo(
-    () => ({ ...canvasContent, status, ...(ignoredChecks.length > 0 ? { ignoredChecks } : {}) }),
-    [canvasContent, status, ignoredChecks],
+    () => ({
+      ...canvasContent,
+      status,
+      ...(boardFlow ? { flow: boardFlow } : {}),
+      ...(ignoredChecks.length > 0 ? { ignoredChecks } : {}),
+    }),
+    [canvasContent, status, boardFlow, ignoredChecks],
   );
   const json = useMemo(() => JSON.stringify(content), [content]);
   const dragging = nodes.some((node) => node.dragging);
@@ -290,6 +304,59 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
   // ----- Connecting
   // Why a connection wasn't made, shown for a few seconds
   const [notice, setNotice] = useState<string>();
+
+  // A variant made its own Studio flow: a new board where its texts are the board's own (its recordings
+  // stay in its folder), flagged so the export asks for a template of its own; it leaves this board
+  const splitVariant = async (key: string) => {
+    const leaving = variants.find((candidate) => candidate.key === key);
+    if (!leaving || !boardFlow?.studio) return;
+    // eslint-disable-next-line no-alert
+    if (
+      !window.confirm(
+        `Make ${leaving.label} (${key}) its own Studio flow? It becomes a new board, with a template of its own, and leaves this one.`,
+      )
+    )
+      return;
+    const template = boardFlow.studio.template;
+    const objects = content.objects.map(({ variantMessages, ...object }) => {
+      const own = variantMessages?.[key];
+      return {
+        ...object,
+        message: messageFor({ ...object, variantMessages }, key, mainVariant),
+        ...(object.studio && own ? { studio: { ...object.studio, importedScript: own.importedScript } } : {}),
+      };
+    });
+    try {
+      const created = await client.create(board.code, `${title} (${leaving.label})`, undefined, {
+        ...content,
+        title: `${title} (${leaving.label})`,
+        objects,
+        flow: {
+          ...boardFlow,
+          variants: [leaving],
+          ownTemplate: { suggested: template.replace(/\.tftpl$/, `-${key.split('_').pop()}.tftpl`) },
+        },
+        status: STATUS_AFTER_CHANGE,
+      });
+      setBoardFlow({ ...boardFlow, variants: variants.filter((candidate) => candidate.key !== key) });
+      setVariantKey(mainVariant);
+      setNodes((current) =>
+        current.map((node) => {
+          if (node.type !== 'object' || !node.data.object.variantMessages?.[key]) return node;
+          const { [key]: removed, ...others } = node.data.object.variantMessages;
+          return {
+            ...node,
+            data: {
+              object: { ...node.data.object, variantMessages: Object.keys(others).length > 0 ? others : undefined },
+            },
+          };
+        }),
+      );
+      setNotice(`${leaving.label} is now its own board: “${created.content.title}”.`);
+    } catch (err) {
+      setNotice((err as Error).message);
+    }
+  };
   const [connecting, setConnecting] = useState(false);
 
   useEffect(() => {
@@ -485,6 +552,8 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
   const [busyFiles, setBusyFiles] = useState<Set<string>>(() => new Set());
   const [refreshing, setRefreshing] = useState(false);
 
+  // The helpline's recordings, or the shown variant's own folder (flows sharing a template)
+  const recordingsLibrary = variant ? `${board.code}/f/${variant.recordingsFolder}` : board.code;
   const loadRecordings = useCallback(async () => {
     if (board.code === TEMPLATES_CODE) {
       setRecordingsUnavailable('Templates have no recordings: each helpline records its own.');
@@ -492,14 +561,14 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
     }
     setRefreshing(true);
     try {
-      setRecordingList(await client.recordings(board.code));
+      setRecordingList(await client.recordings(recordingsLibrary));
       setRecordingsUnavailable(undefined);
     } catch (err) {
       setRecordingsUnavailable((err as Error).message);
     } finally {
       setRefreshing(false);
     }
-  }, [client, board.code]);
+  }, [client, board.code, recordingsLibrary]);
 
   useEffect(() => {
     loadRecordings();
@@ -526,11 +595,12 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
     busy: busyFiles,
     staff: staffMode,
     readOnly,
-    upload: (fileName, file) => changeRecording(fileName, () => client.uploadRecording(board.code, fileName, file)),
+    upload: (fileName, file) =>
+      changeRecording(fileName, () => client.uploadRecording(recordingsLibrary, fileName, file)),
     approve: (fileName, approved) =>
-      changeRecording(fileName, () => client.approveRecording(board.code, fileName, approved)),
-    publish: (fileName) => changeRecording(fileName, () => client.publishRecording(board.code, fileName)),
-    remove: (fileName) => changeRecording(fileName, () => client.removeRecording(board.code, fileName)),
+      changeRecording(fileName, () => client.approveRecording(recordingsLibrary, fileName, approved)),
+    publish: (fileName) => changeRecording(fileName, () => client.publishRecording(recordingsLibrary, fileName)),
+    remove: (fileName) => changeRecording(fileName, () => client.removeRecording(recordingsLibrary, fileName)),
   };
   // Who tasks can be assigned to: the helpline's people and the Aselo team
   const [people, setPeople] = useState<Person[]>([]);
@@ -608,6 +678,16 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
               onChange={setStatus}
               label="Board status"
             />
+          )}
+          {/* The Studio flow the board is (an imported board's), as its frame used to say */}
+          {boardFlow?.studio && (
+            <span
+              className="flow-board-source"
+              title={`Studio flow template${boardFlow.studio.channels.length > 0 ? `, used by ${boardFlow.studio.channels.join(', ')}` : ''}`}
+            >
+              {boardFlow.channel && <span className="flow-board-channel">{boardFlow.channel}</span>}
+              <code>{boardFlow.studio.template}</code>
+            </span>
           )}
           {readOnly ? (
             <span className="flow-save-state">View only</span>
@@ -714,6 +794,81 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
             </span>
           )}
         </div>
+
+        {/* A template other helplines use too: where a change to its widgets goes */}
+        {(boardFlow?.studio?.sharedWith?.length ?? 0) > 0 && boardFlow?.studio && (
+          <div className={`flow-shared-bar ${boardFlow.studio.changeShared ? 'everyone' : ''}`}>
+            <span
+              className="flow-shared-label"
+              title={boardFlow.studio.sharedWith!.map((code) => code.toUpperCase()).join(', ')}
+            >
+              <Users size={15} aria-hidden /> Shared template, also used by{' '}
+              {boardFlow.studio.sharedWith!.length <= 5
+                ? boardFlow.studio.sharedWith!.map((code) => code.toUpperCase()).join(', ')
+                : `${boardFlow.studio
+                    .sharedWith!.slice(0, 4)
+                    .map((code) => code.toUpperCase())
+                    .join(', ')} and ${boardFlow.studio.sharedWith!.length - 4} more`}
+            </span>
+            <span className="field-hint">
+              {boardFlow.studio.changeShared
+                ? 'Changes to widgets and connections go to the shared template: every one of these helplines changes too.'
+                : `Changes to widgets and connections give ${board.code.toUpperCase()} a copy of its own; texts are always its own.`}
+            </span>
+            {staffMode && !readOnly && (
+              <label className="field-checkbox flow-shared-switch">
+                <input
+                  type="checkbox"
+                  checked={Boolean(boardFlow.studio.changeShared)}
+                  onChange={(e) =>
+                    setBoardFlow({
+                      ...boardFlow,
+                      studio: { ...boardFlow.studio!, changeShared: e.target.checked || undefined },
+                    })
+                  }
+                />
+                <span>Change the shared template for every helpline</span>
+              </label>
+            )}
+          </div>
+        )}
+
+        {/* Studio flows sharing this template: whose texts and recordings are shown */}
+        {variants.length > 1 && (
+          <div className="flow-variant-bar">
+            <span className="flow-variant-bar-label">
+              <Languages size={15} aria-hidden /> Flows sharing this template
+            </span>
+            <span className="flow-variants" role="tablist" aria-label="Flows sharing this template">
+              {variants.map((candidate) => (
+                <button
+                  key={candidate.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={candidate.key === variant?.key}
+                  title={`${candidate.key}: its texts and recordings (folder ${candidate.recordingsFolder})`}
+                  onClick={() => setVariantKey(candidate.key)}
+                >
+                  {candidate.label}
+                </button>
+              ))}
+            </span>
+            {variant && (
+              <span className="field-hint flow-variant-bar-hint">
+                Scripts and recordings shown: <code>{variant.key}</code>. Widgets and connections are the same for all.
+              </span>
+            )}
+            {!readOnly && variant && variant.key !== mainVariant && (
+              <button
+                type="button"
+                className="link-button flow-variant-split"
+                onClick={() => splitVariant(variant.key)}
+              >
+                Make {variant.label} its own flow
+              </button>
+            )}
+          </div>
+        )}
 
         {conflict && (
           <div className="alert alert-error">
@@ -833,8 +988,8 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
             {sideTab === 'recordings' && (
               <RecordingsPanel
                 messages={content.objects.map((object) => ({
-                  object,
-                  frame: content.frames.find((frame) => frame.id === object.frameId),
+                  object: { ...object, message: messageFor(object, variant?.key, mainVariant) },
+                  frame: flowDetailsOf(content, object.frameId),
                 }))}
                 actions={recordingActions}
                 onShow={showNode}
@@ -871,6 +1026,7 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
                 onFocusFrame={focusFrame}
                 onEndHere={endHere}
                 recordings={recordingActions}
+                variant={variant?.key}
               />
             )}
             {sideTab === 'tasks' && (

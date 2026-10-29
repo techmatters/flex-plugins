@@ -23,6 +23,10 @@ import {
   CommentThread,
   exitsOf,
   FlowObjectType,
+  fieldProblem,
+  messageFor,
+  variesByVariant,
+  withVariantMessage,
   FlowStage,
   OBJECT_COLORS,
   OBJECT_TYPES,
@@ -34,6 +38,7 @@ import {
   TaskStatus,
 } from './model';
 import type { BoardContent, Person } from './model';
+import { AutoTextarea } from '../components/AutoTextarea';
 import { CanvasNode, ConnectionEdge, FrameNode, newId, ObjectNode, StickyNode } from './canvasModel';
 import type { Issue } from './checks';
 import { uniqueName } from './checks';
@@ -74,6 +79,8 @@ export type InspectorProps = {
   onEndHere: (objectId: string, exit: string, ends?: boolean) => void;
   // The helpline's recordings, and what this person can do with them
   recordings: RecordingActions;
+  // The variant shown, for flows sharing a template (FlowDetails.variants): its texts are edited
+  variant?: string;
 };
 
 const ChannelSelect = ({
@@ -227,11 +234,24 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
   const frame = props.nodes.find((candidate): candidate is FrameNode => candidate.id === node.parentId);
   const update = (changes: Partial<ObjectNode['data']['object']>) =>
     onNodeData(node.id, { object: { ...object, ...changes } });
-  const suggested = suggestStudioName(object, frame?.data.frame);
+  // The object's frame, or the board's own flow (an imported board's) when it's outside frames
+  const details = frame ? frame.data.frame : props.content.flow;
+  const suggested = suggestStudioName(object, details);
   // Not one another object in the same flow already has
   const suggestion = suggested && uniqueName(suggested, { id: node.id, frameId: node.parentId }, props.content);
   const problems = props.problems.get(node.id) ?? [];
   const showsChannel = info.hasMessage || object.type === 'incoming';
+  // The message as the shown variant has it (flows sharing a template), and changing it there
+  const variants = props.content.flow?.variants ?? [];
+  const mainVariant = variants[0]?.key;
+  const shownVariant = variants.find((candidate) => candidate.key === props.variant);
+  const message = messageFor(object, props.variant, mainVariant);
+  const setMessage = (changed: NonNullable<typeof message>) => {
+    const next = withVariantMessage(object, props.variant, mainVariant, changed);
+    update({ message: next.message, variantMessages: next.variantMessages });
+  };
+  const sharedText = variants.length > 1 && !variesByVariant(object);
+  const shown = { ...object, message };
 
   const exits = exitsOf(object);
   const nameOfTarget = (id: string) => {
@@ -308,6 +328,13 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
             disabled={readOnly}
             onChange={(channel) => update({ message: { ...object.message, channel } })}
           />
+          {info.hasMessage && variants.length > 1 && shownVariant && (
+            <p className="field-hint flow-variant-hint">
+              {sharedText
+                ? 'This text is written in the template the flows share: changing it changes every one of them.'
+                : `${shownVariant.label} (${shownVariant.key}): this flow's own script${message?.channel === 'voice' ? ' and recording' : ''}.`}
+            </p>
+          )}
           {info.hasMessage && (
             <>
               <label className="field">
@@ -315,10 +342,10 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                 <input
                   type="text"
                   list="flow-languages"
-                  value={object.message?.language ?? ''}
+                  value={message?.language ?? ''}
                   disabled={readOnly}
                   placeholder="en"
-                  onChange={(e) => update({ message: { ...object.message, language: e.target.value || undefined } })}
+                  onChange={(e) => setMessage({ ...message, language: e.target.value || undefined })}
                 />
                 <datalist id="flow-languages">
                   {['en', 'es', 'fr', 'pt', 'mt', 'zh'].map((language) => (
@@ -330,10 +357,10 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                 <span className="field-label">Script</span>
                 <textarea
                   rows={5}
-                  value={object.message?.script ?? ''}
+                  value={message?.script ?? ''}
                   disabled={readOnly}
                   placeholder="What the caller hears, or the message sent"
-                  onChange={(e) => update({ message: { ...object.message, script: e.target.value || undefined } })}
+                  onChange={(e) => setMessage({ ...message, script: e.target.value || undefined })}
                 />
               </label>
             </>
@@ -343,14 +370,14 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
 
       {info.hasMessage && (
         <>
-          <RecordingSection object={object} frame={frame?.data.frame} actions={props.recordings} />
+          <RecordingSection object={shown} frame={details} actions={props.recordings} />
           <ScriptApproval
-            object={object}
-            frame={frame?.data.frame}
+            object={shown}
+            frame={details}
             staff={props.recordings.staff}
             readOnly={readOnly}
             userName={props.userName}
-            onApprove={(approved) => update({ message: { ...object.message, approved } })}
+            onApprove={(approved) => setMessage({ ...message, approved })}
           />
         </>
       )}
@@ -387,6 +414,11 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
               Calls <code>{info.studioRoute}</code> (see STUDIO_ROUTES.md in the account-scoped lambdas).
             </p>
           )}
+          {object.type === 'function' && object.studio?.type === 'run-function' && (
+            <p className="field-hint">
+              A Twilio Function in Studio (<code>run-function</code>): its settings stay as they are live.
+            </p>
+          )}
           {info.fields.map((field) => {
             const value = object.settings?.[field.key] ?? '';
             const set = (newValue: string) => {
@@ -406,15 +438,30 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                       </option>
                     ))}
                   </select>
+                ) : field.kind === 'json' ? (
+                  <AutoTextarea
+                    className="flow-field-json"
+                    value={value}
+                    minRows={4}
+                    placeholder={field.placeholder}
+                    disabled={readOnly}
+                    spellCheck={false}
+                    aria-invalid={Boolean(fieldProblem(field, value))}
+                    onChange={(e) => set(e.target.value)}
+                  />
                 ) : (
                   <input
-                    type="text"
+                    type={field.kind === 'url' ? 'url' : 'text'}
+                    className={field.kind === 'url' ? 'flow-field-url' : undefined}
                     value={value}
                     placeholder={field.placeholder}
                     disabled={readOnly}
+                    spellCheck={field.kind === 'url' ? false : undefined}
+                    aria-invalid={Boolean(fieldProblem(field, value))}
                     onChange={(e) => set(e.target.value)}
                   />
                 )}
+                {fieldProblem(field, value) && <span className="flow-field-problem">{fieldProblem(field, value)}</span>}
                 {field.hint && <span className="field-hint">{field.hint}</span>}
               </label>
             );
@@ -425,7 +472,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
       {object.type === 'sendToQueue' && (
         <TaskAttributesSection
           attributes={object.taskAttributes}
-          channel={frame?.data.frame.channel}
+          channel={details?.channel}
           readOnly={readOnly}
           onChange={(taskAttributes) => update({ taskAttributes })}
         />

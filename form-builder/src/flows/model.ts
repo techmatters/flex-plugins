@@ -44,6 +44,37 @@ export type Frame = Position &
     studio?: StudioFlowSource;
   };
 
+/**
+ * What a flow is (its channel, pre- or post-queue, the Studio flow it was imported from): set on a
+ * frame, or on the board itself for the objects outside frames. An imported board is one Studio
+ * flow, so its objects sit on the board and the board says what flow it is.
+ */
+export type FlowDetails = Pick<Frame, 'channel' | 'stage' | 'studio'> & {
+  // Studio flows built from this one template (e.g. the English and Spanish post-call surveys):
+  // the board draws the template once, and each variant has what tells them apart
+  variants?: FlowVariant[];
+  // A flow split off from a shared template: it gets a template of its own, a copy of studio.template
+  // (the export asks for it, e.g. post-call-survey-es.tftpl, and to point its studio_flows entry at it)
+  ownTemplate?: { suggested: string };
+};
+
+/**
+ * One Studio flow among several sharing a template: its studio_flows entry, its own flow_vars and
+ * its recordings folder. Changes to widgets and connections are changes to the shared template
+ * (every variant); texts from flow_vars, and voice messages' scripts and recordings, are each
+ * variant's own. The first variant is the board's main one (FlowObject.message).
+ */
+export type FlowVariant = {
+  // The studio_flows key, e.g. post_call_survey_es
+  key: string;
+  // e.g. Spanish
+  label: string;
+  // Where its recordings are: <code>/<environment>/<folder>/ (the recordings library "<code>/<folder>")
+  recordingsFolder: string;
+  // Its own flow_vars (its studio_flows entry's), per environment, as written
+  flowVars?: Partial<Record<'staging' | 'production', Record<string, string>>>;
+};
+
 export type StudioFlowSource = {
   // Its template, under twilio-iac/helplines, e.g. usnm/templates/studio-flows/voice.tftpl
   template: string;
@@ -51,7 +82,22 @@ export type StudioFlowSource = {
   channels: string[];
   // The flow's own settings besides its widgets (initial_state, flags, description), as written
   settings: Record<string, unknown>;
+  // A template shared by helplines (templates/studio-flows/...): the other helplines using it
+  sharedWith?: string[];
+  // Aselo staff chose to change the shared template itself (every helpline using it); otherwise a
+  // change to its widgets or connections makes this helpline a copy of its own
+  changeShared?: boolean;
 };
+
+// Where a changed template goes: the shared one is only written when Aselo staff chose to change it
+// for every helpline; otherwise the helpline gets a copy of its own, with the same name
+export const templateTargetOf = (
+  code: string,
+  studio: Pick<StudioFlowSource, 'template' | 'sharedWith' | 'changeShared'>,
+) =>
+  studio.template.startsWith('templates/') && (studio.sharedWith?.length ?? 0) > 0 && !studio.changeShared
+    ? `${code}/${studio.template}`
+    : studio.template;
 
 export type BoardComment = {
   id: string;
@@ -100,7 +146,12 @@ export type FlowObject = Position &
     studio?: StudioWidget;
     // For "Send to queue": the task's attributes (see taskAttributes.ts)
     taskAttributes?: TaskAttributes;
+    // The message as each other variant has it (FlowDetails.variants), by key: its script and
+    // language, and the script as imported (to tell what changed)
+    variantMessages?: Record<string, VariantMessage>;
   };
+
+export type VariantMessage = Pick<MessageContent, 'language' | 'script' | 'approved'> & { importedScript?: string };
 
 export type TaskAttributes = {
   // As JSON, as Studio sends them: {{…}} is filled in from the contact (Liquid); ${helpline} and
@@ -167,6 +218,8 @@ export type BoardContent = {
   stickies: Sticky[];
   // Where the design is (see designStatus.ts). Boards saved before statuses have none: see statusOf
   status?: DesignStatus;
+  // The flow its objects outside frames make (an imported board: the Studio flow it was read from)
+  flow?: FlowDetails;
   // Warnings marked as not needed for this board (their keys, checks.ts Issue.key), e.g. the
   // system-down one on a post-survey flow; they're listed apart and not counted
   ignoredChecks?: string[];
@@ -215,10 +268,63 @@ export const emptyBoard = (title: string): BoardContent => ({
 
 // A board imported from a live helpline has frames read from its Studio flows; any other board
 // (empty, or from a template) is new
-export const isImportedBoard = (content: Pick<BoardContent, 'frames'>) =>
-  content.frames.some((frame) => frame.studio !== undefined);
+export const isImportedBoard = (content: Pick<BoardContent, 'frames' | 'flow'>) =>
+  content.flow?.studio !== undefined || content.frames.some((frame) => frame.studio !== undefined);
 
-export const statusOf = (content: Pick<BoardContent, 'frames' | 'status'>): DesignStatus =>
+/**
+ * Variants (FlowDetails.variants): which messages differ between them, and each variant's
+ * message. A voice message's script (what's recorded, in each language) and a text from flow_vars
+ * are each variant's; any other text is written in the shared template, so it's the same for all.
+ */
+export const variesByVariant = (object: Pick<FlowObject, 'message' | 'studio'>) => {
+  if (object.message?.channel === 'voice') return true;
+  const written = object.studio?.properties?.say ?? object.studio?.properties?.body;
+  return typeof written === 'string' && /^\$\{\s*[a-z_]*flow_vars\./.test(written.trim());
+};
+
+// The message as a variant has it: the main variant's (or no variant's) is the object's own; another
+// variant has its own script and language where the message varies (none yet: empty, to be written)
+export const messageFor = (
+  object: Pick<FlowObject, 'message' | 'variantMessages' | 'studio'>,
+  variant?: string,
+  mainVariant?: string,
+): MessageContent | undefined => {
+  if (!variant || variant === mainVariant || !variesByVariant(object)) return object.message;
+  const own = object.variantMessages?.[variant];
+  const { script, language, approved, ...shared } = object.message ?? {};
+  return {
+    ...shared,
+    ...(own?.language ? { language: own.language } : {}),
+    ...(own?.script !== undefined ? { script: own.script } : {}),
+    ...(own?.approved ? { approved: own.approved } : {}),
+  };
+};
+
+// The object with a variant's message changed (the main variant's is the object's own)
+export const withVariantMessage = <T extends Pick<FlowObject, 'message' | 'variantMessages'>>(
+  object: T,
+  variant: string | undefined,
+  mainVariant: string | undefined,
+  message: MessageContent,
+): T => {
+  if (!variant || variant === mainVariant) return { ...object, message };
+  const { channel, recordingFile, ...own } = message;
+  return {
+    ...object,
+    variantMessages: {
+      ...object.variantMessages,
+      [variant]: { ...object.variantMessages?.[variant], ...own },
+    },
+  };
+};
+
+// The flow an object is part of: its frame's, or the board's own for objects outside frames
+export const flowDetailsOf = (
+  content: Pick<BoardContent, 'frames' | 'flow'>,
+  frameId?: string,
+): FlowDetails | undefined => (frameId ? content.frames.find((frame) => frame.id === frameId) : content.flow);
+
+export const statusOf = (content: Pick<BoardContent, 'frames' | 'flow' | 'status'>): DesignStatus =>
   content.status ?? (isImportedBoard(content) ? 'imported' : STATUS_AFTER_CHANGE);
 
 /**
@@ -333,6 +439,41 @@ export type ObjectField = {
   hint?: string;
   // A choice between these, instead of free text
   options?: string[];
+  // What's typed: a line of text (default), an address, or a JSON body (several lines)
+  kind?: 'text' | 'url' | 'json';
+};
+
+/**
+ * What's wrong with a field's value, in plain words (empty values are fine here: what's missing
+ * is the check's to say). Addresses are https://..., or start with one of the helpline's
+ * variables (${lambda_twilio_account_scoped_url}/...). JSON bodies may hold Studio's {{...}} and
+ * Terraform's ${...}, in strings or as values.
+ */
+export const fieldProblem = (field: Pick<ObjectField, 'kind'>, value: string): string | undefined => {
+  if (!value.trim()) return undefined;
+  if (field.kind === 'url') {
+    if (/^\$\{[^}]+\}(\/\S*)?$/.test(value.trim())) return undefined;
+    try {
+      const url = new URL(value.trim());
+      if (url.protocol !== 'https:' && url.protocol !== 'http:') return 'The address must start with https://';
+      return undefined;
+    } catch {
+      return 'This isn’t a valid address (https://... or ${variable}/...).';
+    }
+  }
+  if (field.kind === 'json') {
+    // Placeholders standing as values (not inside quotes) become null to check the rest
+    const checked = value
+      .replace(/"(?:[^"\\]|\\.)*"/g, (quoted) => quoted.replace(/[{}$]/g, '_'))
+      .replace(/\{\{[^}]*\}\}|\$\{[^}]*\}/g, 'null');
+    try {
+      JSON.parse(checked);
+      return undefined;
+    } catch (err) {
+      return `This isn’t valid JSON: ${(err as Error).message}`;
+    }
+  }
+  return undefined;
 };
 
 export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
@@ -476,6 +617,24 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     family: 'check',
     studioWidget: 'Run Function / HTTP Request',
     studioPrefix: 'f_',
+    // The request it makes (sent as application/json, without Twilio's authentication)
+    fields: [
+      { key: 'method', label: 'Method', options: ['POST', 'GET'] },
+      {
+        key: 'url',
+        label: 'Address (URL)',
+        kind: 'url',
+        placeholder: '${lambda_twilio_account_scoped_url}/hrm/savePostSurvey',
+        hint: 'https://..., or one of the helpline’s variables followed by the path.',
+      },
+      {
+        key: 'body',
+        label: 'Body (JSON)',
+        kind: 'json',
+        placeholder: '{\n  "contactId": "{{trigger.call.contactId}}"\n}',
+        hint: 'Sent as application/json. Studio’s {{...}} can be used in it.',
+      },
+    ],
     editableExits: true,
     exits: ['success', 'failed'],
     defaultSize: { width: 200, height: 72 },

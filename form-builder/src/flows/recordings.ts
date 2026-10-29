@@ -36,6 +36,10 @@ export const RECORDING_CONTENT_TYPES: Record<(typeof RECORDING_EXTENSIONS)[numbe
 // Twilio plays files up to a few minutes long; this is far beyond any prompt
 export const MAX_RECORDING_BYTES = 20 * 1024 * 1024;
 
+// A recording's place when importing: "<flow folder>/<file>" for flows sharing a template, else "<file>"
+export const importedRecordingKey = (recording: { fileName: string; folder?: string }) =>
+  recording.folder ? `${recording.folder}/${recording.fileName}` : recording.fileName;
+
 // A Studio name and an extension: play_message_voice_en_welcome.mp3
 export const RECORDING_FILE_PATTERN = /^[A-Za-z0-9_]+\.(mp3|wav)$/;
 

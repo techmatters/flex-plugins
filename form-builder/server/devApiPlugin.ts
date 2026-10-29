@@ -57,15 +57,17 @@ const readBytes = (req: IncomingMessage): Promise<Buffer> =>
   });
 
 // Deployed, recordings are uploaded to S3 and played from CloudFront; locally, from here:
-// PUT and GET /api/recordings/<code>/local/<staging|production>/<file>
-const LOCAL_RECORDING_PATH = /^\/api\/recordings\/([a-z0-9]+)\/local\/(staging|production)\/([A-Za-z0-9_]+\.(mp3|wav))$/;
+// PUT and GET /api/recordings/<code>/local/<staging|production>/[<flow folder>/]<file>
+const LOCAL_RECORDING_PATH =
+  /^\/api\/recordings\/([a-z0-9]+)\/local\/(staging|production)\/(?:([a-z0-9_]+)\/)?([A-Za-z0-9_]+\.(mp3|wav))$/;
 
 const serveLocalRecording = async (
   files: LocalRecordingFiles,
   req: IncomingMessage,
   res: ServerResponse,
-  [, code, environment, fileName, extension]: RegExpMatchArray,
+  [, helpline, environment, folder, fileName, extension]: RegExpMatchArray,
 ) => {
+  const code = folder ? `${helpline}/${folder}` : helpline;
   if (req.method === 'PUT' && environment === 'staging') {
     await files.write(code, fileName, await readBytes(req));
     res.statusCode = 200;

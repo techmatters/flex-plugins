@@ -18,6 +18,10 @@
  * The recordings routes, called from api.ts:
  *
  *   GET    /api/recordings/:code                           the helpline's recordings and their status
+ *
+ * Each route also works on one of the helpline's flow folders (flows sharing a template keep their
+ * recordings apart): /api/recordings/:code/f/:folder/... (see recordingStores.ts).
+ *
  *   POST   /api/recordings/:code/uploads                   where to send a new staging file
  *                                                          ({ fileName, size })
  *   POST   /api/recordings/:code/files/:file/uploaded      the browser sent it: note who, refresh the cache
@@ -111,11 +115,13 @@ export const handleRecordingRequest = async (
 ): Promise<ApiResponse> => {
   if (!stores) return fail(501, "Recordings aren't set up here.");
   const match = path.match(
-    /^\/api\/recordings\/([a-z0-9]+)(?:\/(uploads|import|files\/([^/]+)(?:\/(uploaded|approve|publish))?))?$/,
+    /^\/api\/recordings\/([a-z0-9]+)(?:\/f\/([a-z0-9_]+))?(?:\/(uploads|import|files\/([^/]+)(?:\/(uploaded|approve|publish))?))?$/,
   );
   if (!match) return fail(404, `Unknown API route ${method} ${path}`);
-  const [, code, part, fileName, action] = match;
-  if (!canOpen(user, code)) return fail(403, `You don't have access to ${code}.`);
+  const [, helpline, folder, part, fileName, action] = match;
+  if (!canOpen(user, helpline)) return fail(403, `You don't have access to ${helpline}.`);
+  // The library: the helpline's folder, or one of its flows' folders
+  const code = folder ? `${helpline}/${folder}` : helpline;
   if (fileName && !RECORDING_FILE_PATTERN.test(fileName)) {
     return fail(
       400,

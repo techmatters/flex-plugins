@@ -62,16 +62,28 @@ Warnings (open ends, missing recordings) are for the person to decide on; list t
 
 For each `studioTemplates` entry:
 
-- **With `template`** (imported): write `text` to `twilio-iac/helplines/<template>`. Show
+- **With `template`** (imported): write `text` to `twilio-iac/helplines/<writeTo>`. Show
   `git diff` and explain it in plain terms: connections that moved, texts, new or removed widgets.
+  If `text` is the same as the current file (only widget positions differ, or nothing), write nothing.
 - **Without `template`** (designed from scratch): ask which channels it's for and in which
   environment. Write it to `twilio-iac/helplines/<code>/templates/studio-flows/<name>.tftpl`
   (name after what it does, e.g. `voice.tftpl`, `sms.tftpl`) and point the channels' `templatefile`
   at `/app/twilio-iac/helplines/<code>/templates/studio-flows/<name>.tftpl` in `staging.hcl`.
   Follow the channel conventions in `twilio-iac/AGENTS.md` (e.g. conversations messaging mode).
-- The system-down subflow's template is shared (`templates/studio-flows/system-down.tftpl`):
-  changing it changes every helpline. Ask first; usually the helpline's `system_down_flow_vars`
-  are what should change instead.
+- **Templates shared by helplines** (`template` under `templates/`, with `sharedWith`: the other
+  helplines using it, e.g. `templates/studio-flows/system-down.tftpl`):
+  - Without `changeShared` (the default): never edit the shared file. `writeTo` is a copy of this
+    helpline's own with the same name (`<code>/templates/studio-flows/<name>.tftpl`, as USNC did with
+    `messaging-blocking-preq-lambda-sd.tftpl`). Write it there and point this helpline's
+    `templatefile` entries (channels, `studio_flows`, `system_down_templatefile`) at
+    `/app/twilio-iac/helplines/<writeTo>`, in the environment being done. The other helplines
+    keep the shared template.
+  - With `changeShared` (Aselo staff chose it on the board): `writeTo` is the shared file. Tell
+    the person every helpline in `sharedWith` changes too and ask before writing; then plan
+    staging for each of them (one at a time), not only this one.
+  - Texts (`variables`) are always the helpline's own `flow_vars` / `system_down_flow_vars`:
+    changing only texts never touches the template. For system down, that's usually all that
+    should change.
 
 ### 3. Fill in the TODOs
 
@@ -92,10 +104,11 @@ anything you can't find; don't guess.
 
 ### 4. Set the texts
 
-For each entry in `variables` (`scope`, `name`, `value`):
+For each entry in `variables` (`scope`, `name`, `value`, and `flow` for shared templates):
 
 - `flow_vars`: set `name` in `flow_vars` in `staging.hcl` (and in `production.hcl` only when the
-  person is doing production).
+  person is doing production). With `flow`, it's that `studio_flows` entry's own `flow_vars`
+  (`studio_flows.<flow>.flow_vars`), not the helpline-wide ones.
 - `channel_flow_vars`: set it in the channel's `channel_flow_vars`, for each channel using the
   template.
 - Write HCL strings with `\n` for line breaks and `\"` for quotes. Keep the existing order; add new
@@ -147,6 +160,21 @@ flow's channels get different templates: say so, and change only the one the boa
 person says otherwise. Changing attributes the workflows' filters read changes routing: point out
 any attribute a filter reads (`twilio-iac/helplines/<code>/templates/workflows/*.tftpl`) that was
 renamed or removed.
+
+### 4c. Studio flows sharing a template (`sharedTemplate`, `ownTemplate`)
+
+Several `studio_flows` entries can use one template, each with its own `flow_vars` (e.g. a
+post-call survey in English and Spanish). The board shows them as one, with a tab per flow.
+
+- **`sharedTemplate`**: the template stays **one file**. Changes to widgets and connections go in it
+  once and affect every flow listed; never copy it per flow. Each flow's texts are `variables` with
+  its `flow`. Each flow keeps its recordings in its own folder: set `recordingsUrlVariable` in each
+  flow's `flow_vars` to its `recordingsUrls.staging` / `.production` (replacing placeholders like
+  `<ADD_SPANISH_RECORDINGS_URL>`), in the environment being done.
+- **`ownTemplate`**: this flow was split off a shared template on purpose. Write a new template
+  (`ownTemplate.suggested`, e.g. `post-call-survey-es.tftpl`), a copy of `ownTemplate.from` with
+  the board's changes; point `studio_flows.<ownTemplate.studioFlow>.templatefile` at it. Leave the
+  shared template and the other flows as they are. Say so in the hand-off.
 
 ### 5. Recordings
 

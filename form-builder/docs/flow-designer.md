@@ -52,7 +52,7 @@ reads the same way as Studio.
 | Skilled worker available? | double-sided box | users | available / not available / failed | `worker/isSkilledWorkerAvailable` (`f_isSkilledWorkerAvailable_<skills>`) + Split; settings: skills, channel |
 | Skilled worker logged in? | double-sided box | user check | logged in / not logged in / failed | `worker/isSkilledWorkerLoggedIn` (`f_isSkilledWorkerLoggedIn_<skills>`) + Split; settings: skills, activities not counted |
 | Check country / phone code | diamond | globe | one per country, other | Split (`split_country...`) |
-| Other function / HTTP request | double-sided box | braces / webhook | success / failed | Run Function or HTTP Request (`f_...`, `http_post_...`) |
+| Other function / HTTP request | double-sided box | braces / webhook | success / failed | Run Function or HTTP Request (`f_...`, `http_post_...`). Its settings: method, address (https://... or `${variable}/...`) and JSON body (Studio's `{{...}}` allowed), sent as `application/json` without Twilio auth; both checked. Imported from the live widget, and only written back when changed |
 | Decision | diamond | branch | one per answer, plus "no match" | Split Based On (`split_...`) |
 | Play message (voice) | parallelogram | speaker | 1 | Say/Play (`play_message_...`) |
 | Send message | parallelogram | message | 1 | Send Message (`send_message_...`) |
@@ -208,7 +208,7 @@ Not built yet: sending the scripts spreadsheet back filled in (rows matched by S
 | | |
 |---|---|
 | Bucket | new, private, versioned: `tl-aselo-recordings`, one folder per helpline |
-| Paths | `<helpline code>/staging/<studio name>.mp3` and `<helpline code>/production/<studio name>.mp3` |
+| Paths | `<helpline code>/staging/<studio name>.mp3` and `<helpline code>/production/<studio name>.mp3`; a flow sharing its template with others keeps its own in `<helpline code>/<environment>/<flow>/` (e.g. `usvc/staging/post_call_survey_es/`), as the files are named the same |
 | Public URL | through CloudFront, e.g. `https://recordings.tl.techmatters.org/usnm/production/play_message_voice_en_welcome.mp3` (the bucket itself stays private) |
 | Who writes | helpline and Aselo staff upload to `staging` (the page sends the file straight to the bucket, through a link the API signs); only Aselo staff **Publish to production** (the API copies the file, and refreshes CloudFront so it's served straight away) |
 | Who did what | who uploaded, approved and published each file, in the private drafts bucket (`recordings/<code>.json`): the recordings bucket is public |
@@ -225,6 +225,47 @@ moving it is: import, check in staging, publish, then change that one variable p
 
 These are prompts recorded for the helpline, and are public like a website's audio. Callers'
 voicemails are never stored here.
+
+### Flows sharing a template
+
+Several `studio_flows` entries can use one template, each with its own `flow_vars` (USVC's
+post-call survey: `post_call_survey_en` and `post_call_survey_es`, the same widgets, different
+recordings and language). The import makes **one board** for them, the template drawn once, with a
+tab per flow (English / Spanish) in the board's header:
+
+- **Widgets and connections** are the template's: changing them changes every flow, and the export
+  asks Claude to change the one template.
+- **Each flow's own:** voice messages' scripts and recordings, and texts that come from its
+  `flow_vars`, edited on its tab (the side panel says when a text is the shared template's instead).
+  Its recordings are in its own folder (`<code>/<environment>/<flow>/`, so the same file names
+  don't overwrite each other); the export gives each folder's URL, for the flow's recordings URL
+  variable (e.g. `post_survey_assets_url`), and each text change with the flow it belongs to.
+- **Make <language> its own flow** (on that flow's tab): when one flow really has to differ. It
+  becomes a board of its own (its texts, the same recordings folder), flagged so the export asks for
+  a template of its own (e.g. `post-call-survey-es.tftpl`) and to point its `studio_flows` entry at
+  it; the other flows keep the shared template.
+
+Checks: each flow's scripts are checked on its own ("Spanish: “Thanks” has no script yet"); the
+"language in the Studio name" rule doesn't apply, as one widget plays each flow's language.
+
+### Templates shared by helplines
+
+Some templates under `twilio-iac/helplines/templates/studio-flows/` are used by several helplines
+(`system-down.tftpl` by most; `messaging-blocking-conv-lambda.tftpl` by MT, MW, ZA, ZW...). Each
+helpline still has its own board (helpline staff see only theirs); the import finds which other
+helplines use the template, and the board says so in a bar under its toolbar:
+
+- **By default**, a change to its widgets or connections gives the helpline a **copy of its own**
+  (same name, under `<code>/templates/studio-flows/`, as USNC did with
+  `messaging-blocking-preq-lambda-sd.tftpl`), and its config points at it. The other helplines
+  don't change.
+- **"Change the shared template for every helpline"** (Aselo staff, on the board): the change goes
+  to the shared file, and every helpline using it changes; the export lists them, and the skill
+  asks before writing and plans each one.
+- **Texts** are always the helpline's own (`flow_vars`, `system_down_flow_vars`), so changing only
+  texts never touches the template.
+
+A template in the shared folder that no other helpline uses is changed where it is.
 
 ## Outputs
 
@@ -364,7 +405,7 @@ Nothing in Twilio or the repo changes.
 
 | What | Where it comes from | Becomes |
 |---|---|---|
-| Which flows exist | the `channels` in the helpline's `staging.hcl` / `production.hcl` (merged over `common.hcl`, as Terraform does), the system-down subflow, and the other `studio_flows` (e.g. post-call surveys) | one board per Studio flow, with one frame; channels sharing a template are one flow ("[sms, sms_shortcode] · sms") |
+| Which flows exist | the `channels` in the helpline's `staging.hcl` / `production.hcl` (merged over `common.hcl`, as Terraform does), the system-down subflow, and the other `studio_flows` (e.g. post-call surveys) | one board per Studio flow, its objects straight on the board (no frame around them: the board itself says which flow it is, `flow` with its channel and template, shown in its header; frames can still be added); channels sharing a template are one flow ("[sms, sms_shortcode] · sms") |
 | Objects and connectors | the `.tftpl` templates: widgets and their transitions | objects of the matching kind (e.g. `make-http-request` to `worker/isSkilledWorkerAvailable` becomes "Skilled worker available?" with its skills), keeping the widget's name, its settings ("In Studio today") and its events as ways out (`audioComplete`, `noMatch`, `failedToEnqueue`) |
 | Layout | Studio's own widget positions (`offset`) | the same layout as in Studio, with heights halved (Studio's widgets are much taller than the board's objects); objects that would overlap are moved down |
 | Messaging texts | `${flow_vars...}` / `${channel_flow_vars...}` resolved from the environment files (production's when they differ); texts written in the template | each message's script |

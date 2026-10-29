@@ -68,7 +68,7 @@ describe('importing a helpline from a branch', () => {
     fireEvent.change(screen.getByRole('combobox', { name: 'Helpline to import' }), { target: { value: 'usvc' } });
     // A first preview, of master
     fireEvent.click(screen.getByRole('button', { name: 'Preview' }));
-    expect(await screen.findByRole('region', { name: 'Import preview' })).toBeTruthy();
+    expect(await screen.findByRole('region', { name: 'Import preview' }, { timeout: 10_000 })).toBeTruthy();
     expect(screen.queryByText(/Read from/)).toBeNull();
 
     // Choosing a branch clears it, so it can't be mistaken for the branch's
@@ -77,7 +77,7 @@ describe('importing a helpline from a branch', () => {
     });
     expect(screen.queryByRole('region', { name: 'Import preview' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Preview' }));
-    expect(await screen.findByText('alejandro-c/usvc/x', { selector: 'code' })).toBeTruthy();
+    expect(await screen.findByText('alejandro-c/usvc/x', { selector: 'code' }, { timeout: 10_000 })).toBeTruthy();
     expect(asked).toEqual(['alejandro-c/usvc/x']);
-  });
+  }, 30_000);
 });

@@ -19,7 +19,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { describe, expect, test } from 'vitest';
 import type { BoardContent, FlowObject } from '../src/flows/model';
-import { emptyBoard } from '../src/flows/model';
+import { emptyBoard, fieldProblem } from '../src/flows/model';
 import { toStudioFlow, toStudioFlows } from '../src/flows/studioTemplate';
 import { importHelpline } from './flowImport';
 import { parseTemplate } from './hcl';
@@ -53,13 +53,13 @@ describe('Studio templates from boards', () => {
 
   test('changes on the board: new connections, texts in flow_vars or in the template, renamed widgets', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
-    const sms = boards.find((board) => board.content.frames[0].studio?.template.endsWith('/sms.tftpl'))!.content;
+    const sms = boards.find((board) => board.content.flow?.studio?.template.endsWith('/sms.tftpl'))!.content;
     const find = (studioName: string) => sms.objects.find((object) => object.studioName === studioName)!;
 
     const welcome = find('send_wait_sms_welcome');
     welcome.message = { ...welcome.message, script: 'Hello from the board' };
     const crisis = find('send_message_sms_tya_info');
-    const generated = toStudioFlow(sms, sms.frames[0]);
+    const generated = toStudioFlow(sms);
 
     // The welcome reads ${flow_vars.send_wait_sms_welcome}: the new text is for the .hcl files
     expect(generated.flowVars).toContainEqual({
@@ -77,7 +77,7 @@ describe('Studio templates from boards', () => {
       (transition) => transition.event === connection.exit,
     )?.next;
     connection.to = crisis.id;
-    const moved = toStudioFlow(sms, sms.frames[0]);
+    const moved = toStudioFlow(sms);
     const after = moved.flow.states.find((candidate) => candidate.name === 'send_wait_sms_welcome')!;
     expect(after.transitions.find((transition) => transition.event === connection.exit)?.next).toBe(
       'send_message_sms_tya_info',
@@ -153,5 +153,83 @@ describe('Studio templates from boards', () => {
     expect(generated.todo).toContainEqual(expect.stringContaining('send_to_queue'));
     // The template reads back as the same flow
     expect(parseTemplate(generated.text)).toEqual(generated.flow);
+  });
+});
+
+describe('Other function / HTTP request', () => {
+  test('its address and JSON body are checked: https or a variable; {{...}} and ${...} allowed', () => {
+    const url = { kind: 'url' as const };
+    const json = { kind: 'json' as const };
+    expect(fieldProblem(url, 'https://example.org/a')).toBeUndefined();
+    expect(fieldProblem(url, '${lambda_twilio_account_scoped_url}/hrm/savePostSurvey')).toBeUndefined();
+    expect(fieldProblem(url, 'example.org/a')).toMatch(/valid address/);
+    expect(fieldProblem(url, 'ftp://example.org')).toMatch(/https/);
+    expect(
+      fieldProblem(json, '{ "contactId": "{{trigger.call.contactId}}", "n": {{flow.variables.n}} }'),
+    ).toBeUndefined();
+    expect(fieldProblem(json, '{ "a": 1, }')).toMatch(/valid JSON/);
+    expect(fieldProblem(json, '')).toBeUndefined();
+  });
+
+  test("a new one is built from its settings; an imported one keeps Studio's, with what changed on the board", () => {
+    const studioWidget = {
+      name: 'f_savePostSurvey',
+      type: 'make-http-request',
+      properties: {
+        method: 'POST',
+        content_type: 'application/json;charset=utf-8',
+        add_twilio_auth: false,
+        body: '{"a": "{{flow.variables.a}}"}',
+        url: '${lambda_twilio_account_scoped_url}/hrm/savePostSurvey',
+      },
+      transitions: [{ event: 'success' }, { event: 'failed' }],
+    };
+    const object = (id: string, extra: Partial<FlowObject>): FlowObject => ({
+      id,
+      type: 'function',
+      text: id,
+      x: 0,
+      y: 0,
+      width: 200,
+      height: 70,
+      exits: ['success', 'failed'],
+      ...extra,
+    });
+    const content: BoardContent = {
+      ...emptyBoard('Survey'),
+      objects: [
+        object('new', {
+          studioName: 'f_new',
+          settings: { method: 'GET', url: 'https://example.org/x', body: '{"b": 1}' },
+        }),
+        object('same', {
+          studioName: 'f_savePostSurvey',
+          studio: studioWidget,
+          settings: { method: 'POST', url: studioWidget.properties.url, body: studioWidget.properties.body },
+        }),
+        object('moved', {
+          studioName: 'f_moved',
+          studio: { ...studioWidget, name: 'f_moved' },
+          settings: { url: '${lambda_twilio_account_scoped_url}/hrm/somewhereElse' },
+        }),
+      ],
+      connections: [],
+    };
+    const generated = toStudioFlow(content);
+    const state = (name: string) => generated.flow.states.find((candidate) => candidate.name === name)!;
+    expect(state('f_new').properties).toMatchObject({
+      method: 'GET',
+      content_type: 'application/json;charset=utf-8',
+      add_twilio_auth: false,
+      body: '{"b": 1}',
+      url: 'https://example.org/x',
+    });
+    expect(generated.todo.some((item) => /f_new/.test(item) && /address/.test(item))).toBe(false);
+    // Unchanged: exactly as Studio had it
+    expect(state('f_savePostSurvey').properties).toMatchObject(studioWidget.properties);
+    expect(state('f_moved').properties).toMatchObject({
+      ...studioWidget.properties,
+      url: '${lambda_twilio_account_scoped_url}/hrm/somewhereElse',
+    });
   });
 });

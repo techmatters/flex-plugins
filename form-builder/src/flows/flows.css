@@ -1233,3 +1233,153 @@
 .flow-issue.ignored {
   opacity: 0.65;
 }
+
+/* Which Studio flow the board is (imported boards, whose objects aren't in a frame) */
+.flow-board-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.flow-board-source code {
+  font-size: 11px;
+}
+
+.flow-board-channel {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 0 7px;
+  border-radius: 10px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+/* Call settings: addresses and JSON bodies */
+.flow-field-json,
+.flow-field-url {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+}
+
+.flow-field-json {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  line-height: 1.45;
+}
+
+.flow-field-json[aria-invalid='true'],
+.flow-field-url[aria-invalid='true'] {
+  border-color: var(--color-error-text);
+}
+
+.flow-field-problem {
+  font-size: 12px;
+  color: var(--color-error-text);
+}
+
+/* Flows sharing a template (variants): a bar under the toolbar, a tab per flow */
+.flow-variant-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 16px;
+  background: var(--color-accent-soft);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.flow-variant-bar-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-accent);
+  white-space: nowrap;
+}
+
+.flow-variants {
+  display: inline-flex;
+  flex-shrink: 0;
+  border: 1px solid var(--color-accent);
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--color-surface);
+}
+
+.flow-variants button {
+  font: inherit;
+  font-size: 14px;
+  padding: 4px 18px;
+  border: none;
+  background: transparent;
+  color: var(--color-accent);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.flow-variants button + button {
+  border-left: 1px solid var(--color-accent);
+}
+
+.flow-variants button[aria-selected='true'] {
+  background: var(--color-accent);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.flow-variant-bar-hint {
+  font-size: 12px;
+}
+
+.flow-variant-split {
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.flow-variant-hint {
+  margin: 4px 0 8px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--color-accent-soft);
+}
+
+/* A template other helplines use too: where changes to its widgets go */
+.flow-shared-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 6px 16px;
+  background: #fff8e1;
+  border-bottom: 1px solid #f1d48a;
+  font-size: 13px;
+}
+
+.flow-shared-bar.everyone {
+  background: var(--color-error-bg);
+  border-bottom-color: #f2b8b5;
+}
+
+.flow-shared-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #7a5200;
+  white-space: nowrap;
+}
+
+.flow-shared-bar.everyone .flow-shared-label {
+  color: var(--color-error-text);
+}
+
+.flow-shared-switch {
+  margin-left: auto;
+  white-space: nowrap;
+}

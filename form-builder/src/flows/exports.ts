@@ -21,7 +21,7 @@
  * See docs/flow-designer.md, "Outputs".
  */
 import type { Board, BoardContent, Channel, FlowObject, Frame } from './model';
-import { exitsOf, isImportedBoard, OBJECT_TYPES, statusOf, toSnake } from './model';
+import { exitsOf, flowDetailsOf, isImportedBoard, OBJECT_TYPES, statusOf, templateTargetOf, toSnake } from './model';
 import type { DesignStatus } from '../designStatus';
 import { statusLabel } from '../designStatus';
 import { boardChecks, flowScopeOf, splitIgnored } from './checks';
@@ -93,6 +93,21 @@ export type FlowExport = {
   };
   // The recordings folders: what each environment's recordings URL variable points at
   recordingsBaseUrl?: RecordingsList['baseUrls'];
+  // Studio flows sharing this board's template (one template, several studio_flows entries): each
+  // one's own flow_vars, and its recordings folder (what its recordings URL variable should be)
+  sharedTemplate?: {
+    template?: string;
+    // The flow_vars variable voice widgets read their recordings folder from, e.g. post_survey_assets_url
+    recordingsUrlVariable?: string;
+    flows: {
+      key: string;
+      label: string;
+      flowVars?: Partial<Record<'staging' | 'production', Record<string, string>>>;
+      recordingsUrls?: Partial<RecordingsList['baseUrls']>;
+    }[];
+  };
+  // A flow split off from a shared template: make it a template of its own
+  ownTemplate?: { from: string; suggested: string; studioFlow?: string };
   flows: ExportedFlow[];
   notes: { text: string; frame?: string; task?: NonNullable<BoardContent['stickies'][number]['task']> }[];
   checks: { severity: string; message: string; objectId?: string }[];
@@ -101,6 +116,12 @@ export type FlowExport = {
     title: string;
     // Under twilio-iac/helplines, when the frame was imported from it
     template?: string;
+    // Where to write it if it changed: the template itself, or (a shared template, not to be changed
+    // for everyone) a copy of the helpline's own with the same name, its config pointed at it
+    writeTo?: string;
+    // The other helplines using a shared template
+    sharedWith?: string[];
+    changeShared?: boolean;
     channels: string[];
     // The .tftpl file's contents
     text: string;
@@ -132,11 +153,22 @@ const ABOUT = [
   'Terraform fills it in with that template, picked by channel_attributes in common.hcl (or defaults.hcl) for the',
   'channel: "<channel>-conversations" for Conversations channels, otherwise "<channel>", falling back to',
   '"default-conversations" / "default". New or changed attributes go in that template, never inline in the flow.',
+  '"sharedTemplate" (when present) lists the Studio flows built from this one template (studio_flows entries in',
+  'staging.hcl / production.hcl, e.g. a survey in English and Spanish): the template is ONE file for all of them,',
+  'so a change to widgets or connections is made once there; each flow keeps its own flow_vars ("variables" with',
+  '"flow" say which entry a text goes in), and its recordings folder: set recordingsUrlVariable in each flow\'s',
+  'flow_vars to its recordingsUrls for that environment. "ownTemplate" (when present) means this flow was split',
+  'off a shared template: write it as a new template (suggested name), a copy of "from" with the board\'s changes,',
+  'and point its studio_flows entry at it; the other flows keep the old template.',
+  'A template under templates/ can be shared by helplines ("sharedWith"): if its text changed (more than widget',
+  'positions), write it to "writeTo", which is a copy of this helpline\'s own (same name, under its folder) unless',
+  'Aselo staff chose "changeShared"; then point this helpline\'s templatefile entries at the copy. With',
+  '"changeShared", the shared file itself changes, and every helpline in sharedWith with it: ask first.',
   '"checks" lists what the design still lacks; "layout" is only where things sit on the board.',
 ].join(' ');
 
 // The uploaded file when there is one (MP3 or WAV), otherwise the MP3 it should be
-const recordingFileOf = (object: FlowObject, frame?: Frame, recordings?: RecordingsList) => {
+const recordingFileOf = (object: FlowObject, frame?: Pick<Frame, 'channel'>, recordings?: RecordingsList) => {
   const channel = object.message?.channel ?? frame?.channel;
   if (!OBJECT_TYPES[object.type].hasMessage || channel !== 'voice' || !object.studioName) return undefined;
   return recordingOf(object, recordings?.recordings)?.fileName ?? `${object.studioName}.mp3`;
@@ -145,7 +177,7 @@ const recordingFileOf = (object: FlowObject, frame?: Frame, recordings?: Recordi
 export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExport => {
   const { content } = board;
   const byId = new Map(content.objects.map((object) => [object.id, object]));
-  const frameOf = (object: FlowObject) => content.frames.find((frame) => frame.id === object.frameId);
+  const frameOf = (object: FlowObject) => flowDetailsOf(content, object.frameId);
 
   const exportObject = (object: FlowObject): ExportedObject => {
     const info = OBJECT_TYPES[object.type];
@@ -175,7 +207,8 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
       ...(info.studioWidget ? { studioWidget: info.studioWidget } : {}),
       ...(object.studioName ? { studioName: object.studioName } : {}),
       text: object.text,
-      ...(frame ? { frame: frame.id, ...(frame.stage ? { stage: frame.stage } : {}) } : {}),
+      ...(object.frameId ? { frame: object.frameId } : {}),
+      ...(frame?.stage ? { stage: frame.stage } : {}),
       ...(object.message || recordingFile
         ? {
             message: {
@@ -218,7 +251,7 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
   const flows = new Map<string, ExportedFlow>();
   const flowFor = (object: Pick<FlowObject, 'frameId'>) => {
     const key = flowScopeOf(object, content.frames);
-    const frame = object.frameId ? content.frames.find((candidate) => candidate.id === object.frameId) : undefined;
+    const frame = flowDetailsOf(content, object.frameId);
     if (!flows.has(key))
       flows.set(key, { key, ...(frame?.channel ? { channel: frame.channel } : {}), frames: [], objects: [] });
     return flows.get(key)!;
@@ -254,6 +287,7 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
       updatedBy: board.meta.updatedBy,
     },
     ...(recordings ? { recordingsBaseUrl: recordings.baseUrls } : {}),
+    ...sharedTemplateOf(content, recordings),
     flows: [...flows.values()].filter((flow) => flow.objects.length > 0 || flow.frames.length > 0),
     notes: content.stickies
       .filter((sticky) => sticky.text.trim())
@@ -263,9 +297,13 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
         ...(sticky.task ? { task: sticky.task } : {}),
       })),
     studioTemplates: toStudioFlows(content).map(
-      ({ title, template, channels, text, flowVars, taskAttributes, todo }) => ({
+      ({ title, template, sharedWith, changeShared, channels, text, flowVars, taskAttributes, todo }) => ({
         title,
-        ...(template ? { template } : {}),
+        ...(template
+          ? { template, writeTo: templateTargetOf(board.code, { template, sharedWith, changeShared }) }
+          : {}),
+        ...(sharedWith ? { sharedWith } : {}),
+        ...(changeShared ? { changeShared } : {}),
         channels,
         text,
         variables: flowVars,
@@ -283,6 +321,53 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
     ),
     layout,
   };
+};
+
+// The flows sharing the board's template, and the one split off from it (see FlowExport)
+const sharedTemplateOf = (content: BoardContent, recordings?: RecordingsList): Partial<FlowExport> => {
+  const flow = content.flow;
+  const variants = flow?.variants ?? [];
+  const parts: Partial<FlowExport> = {};
+  if (flow?.ownTemplate && flow.studio) {
+    parts.ownTemplate = {
+      from: flow.studio.template,
+      suggested: flow.ownTemplate.suggested,
+      ...(variants[0] ? { studioFlow: variants[0].key } : {}),
+    };
+  }
+  if (variants.length === 0) return parts;
+  // The recordings loaded are one variant's folder: the helpline's folder is above it
+  const helplineBase = (url: string) =>
+    variants.reduce(
+      (current, variant) =>
+        current.endsWith(`/${variant.recordingsFolder}`)
+          ? current.slice(0, -(variant.recordingsFolder.length + 1))
+          : current,
+      url,
+    );
+  const recordingsUrlVariable = content.objects
+    .map(
+      (object) => String(object.studio?.properties?.play ?? '').match(/^\$\{\s*flow_vars\.([A-Za-z0-9_]+)\s*\}\//)?.[1],
+    )
+    .find(Boolean);
+  parts.sharedTemplate = {
+    ...(flow?.studio ? { template: flow.studio.template } : {}),
+    ...(recordingsUrlVariable ? { recordingsUrlVariable } : {}),
+    flows: variants.map((variant) => ({
+      key: variant.key,
+      label: variant.label,
+      ...(variant.flowVars ? { flowVars: variant.flowVars } : {}),
+      ...(recordings
+        ? {
+            recordingsUrls: {
+              staging: `${helplineBase(recordings.baseUrls.staging)}/${variant.recordingsFolder}`,
+              production: `${helplineBase(recordings.baseUrls.production)}/${variant.recordingsFolder}`,
+            },
+          }
+        : {}),
+    })),
+  };
+  return parts;
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -318,12 +403,13 @@ export const scriptRows = (content: BoardContent, recordings?: RecordingsList): 
     )
     .map((object) => {
       const frame = content.frames.find((candidate) => candidate.id === object.frameId);
+      const details = flowDetailsOf(content, object.frameId);
       return {
         Frame: frame?.title ?? '',
         'Studio name': object.studioName ?? '',
-        'Recording file': recordingFileOf(object, frame, recordings) ?? '',
+        'Recording file': recordingFileOf(object, details, recordings) ?? '',
         Kind: OBJECT_TYPES[object.type].label,
-        Channel: object.message?.channel ?? frame?.channel ?? '',
+        Channel: object.message?.channel ?? details?.channel ?? '',
         Language: object.message?.language ?? '',
         'Text on the board': object.text,
         Script: object.message?.script ?? '',

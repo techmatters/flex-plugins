@@ -44,7 +44,14 @@ export type StudioFlow = Record<string, unknown> & { states: StudioState[] };
 
 // A text to set in the helpline's variables (staging.hcl / production.hcl): flow_vars, or the
 // channel's channel_flow_vars
-export type FlowVarChange = { scope: string; name: string; value: string; widget: string };
+export type FlowVarChange = {
+  scope: string;
+  name: string;
+  value: string;
+  widget: string;
+  // For flows sharing a template (variants): the studio_flows entry whose flow_vars it goes in
+  flow?: string;
+};
 
 // A "Send to queue" widget's task attributes that are new or changed on the board, and where they're
 // kept: a channel-attributes template (for its channels), or the widget itself (already written)
@@ -60,6 +67,9 @@ export type GeneratedStudioFlow = {
   title: string;
   // The template it came from (under twilio-iac/helplines) and the channels using it, if imported
   template?: string;
+  // A shared template's other helplines, and whether Aselo staff chose to change it for all of them
+  sharedWith?: string[];
+  changeShared?: boolean;
   channels: string[];
   flow: StudioFlow;
   // The .tftpl file's contents
@@ -167,6 +177,11 @@ export const toTemplateText = (flow: StudioFlow) => `\${\n  jsonencode(${toHcl(f
  */
 export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStudioFlow => {
   const objects = content.objects.filter((object) => object.frameId === frame?.id);
+  // What the flow is: the frame's, or the board's own (an imported board's Studio flow)
+  const details = frame ?? content.flow;
+  // Studio flows sharing the template: the template is one; each has its own flow_vars
+  const variants = frame ? [] : (content.flow?.variants ?? []);
+  const mainVariant = variants.length > 1 ? variants[0].key : undefined;
   const ids = new Set(objects.map((object) => object.id));
   const connections = content.connections.filter((connection) => ids.has(connection.from) && ids.has(connection.to));
   const byId = new Map(objects.map((object) => [object.id, object]));
@@ -237,7 +252,13 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
     const current = properties[field];
     const variable = typeof current === 'string' ? current.match(VARIABLE) : undefined;
     if (variable) {
-      flowVars.push({ scope: variable[1], name: variable[2], value: script, widget: name });
+      flowVars.push({
+        scope: variable[1],
+        name: variable[2],
+        value: script,
+        widget: name,
+        ...(mainVariant ? { flow: mainVariant } : {}),
+      });
     } else {
       if (typeof current === 'string' && current.includes('${')) {
         todo.push(`${label(object)}: its text was ${current}; the board's text replaces it, variables and all.`);
@@ -271,7 +292,25 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       }
       if ('say' in properties) setText(object, properties, 'say', name);
       else if ('body' in properties && OBJECT_TYPES[object.type].hasMessage) setText(object, properties, 'body', name);
-      if (object.settings && typeof properties.body === 'string') {
+      // The other variants' texts go in their own flow_vars (the template keeps the variable)
+      const written = studio.properties?.say ?? studio.properties?.body;
+      const shared = typeof written === 'string' ? written.match(VARIABLE) : undefined;
+      if (shared && mainVariant) {
+        variants.slice(1).forEach(({ key }) => {
+          const own = object.variantMessages?.[key];
+          if (own?.script === undefined || own.script === own.importedScript) return;
+          flowVars.push({ scope: shared[1], name: shared[2], value: own.script, widget: name, flow: key });
+        });
+      }
+      if (object.type === 'function') {
+        // The request as set on the board (method, address, body), where it differs from Studio's
+        if (studio.type === 'make-http-request') {
+          (['method', 'url', 'body'] as const).forEach((key) => {
+            const value = object.settings?.[key];
+            if (value !== undefined && value !== properties[key]) properties[key] = value;
+          });
+        }
+      } else if (object.settings && typeof properties.body === 'string') {
         try {
           const body = JSON.parse(properties.body);
           if (Object.entries(object.settings).some(([key, value]) => body[key] !== value)) {
@@ -307,7 +346,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
     const exits = exitsOf(object);
     const next = (exit = '') => nextOf(object, exit);
     const message = object.message?.script ?? '';
-    const voice = isVoiceMessage(object, frame);
+    const voice = isVoiceMessage(object, details);
     const voiceRecording = voice && (object.message?.recordingFile ?? `${object.studioName}.mp3`);
     const spoken = () =>
       recordingsVariable && object.studioName
@@ -497,8 +536,12 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         ];
       }
       case 'function':
-      case 'notifyError':
-        todo.push(`${label(object)}: set the address it calls and its request body.`);
+      case 'notifyError': {
+        const url = object.type === 'function' ? object.settings?.url?.trim() : undefined;
+        const body = object.type === 'function' ? object.settings?.body?.trim() : undefined;
+        if (object.type === 'notifyError' || !url || !body) {
+          todo.push(`${label(object)}: set the address it calls and its request body.`);
+        }
         return [
           {
             name,
@@ -509,10 +552,15 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
             ],
             properties: {
               offset,
-              ...httpRequest(object.type === 'notifyError' ? '${webhook_url_studio_errors}' : TODO, TODO),
+              ...httpRequest(
+                object.type === 'notifyError' ? '${webhook_url_studio_errors}' : (url ?? TODO),
+                body ?? TODO,
+              ),
+              ...(object.settings?.method ? { method: object.settings.method } : {}),
             },
           },
         ];
+      }
       case 'sendToQueue': {
         todo.push(`${label(object)}: set its workflow and task channel.`);
         const attributes = object.taskAttributes;
@@ -611,12 +659,14 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
   if (!states.some((state) => state.type === 'trigger'))
     todo.push('The flow has no incoming call or message (its Trigger).');
 
-  const flow: StudioFlow = { ...(frame?.studio?.settings ?? DEFAULT_SETTINGS), states };
+  const flow: StudioFlow = { ...(details?.studio?.settings ?? DEFAULT_SETTINGS), states };
   return {
     ...(frame ? { frameId: frame.id } : {}),
     title: frame?.title ?? content.title,
-    ...(frame?.studio ? { template: frame.studio.template } : {}),
-    channels: frame?.studio?.channels ?? [],
+    ...(details?.studio ? { template: details.studio.template } : {}),
+    ...(details?.studio?.sharedWith?.length ? { sharedWith: details.studio.sharedWith } : {}),
+    ...(details?.studio?.changeShared ? { changeShared: true } : {}),
+    channels: details?.studio?.channels ?? [],
     flow,
     text: toTemplateText(flow),
     flowVars,

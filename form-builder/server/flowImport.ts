@@ -38,12 +38,13 @@ import type {
   Connection,
   FlowObject,
   FlowObjectType,
-  Frame,
+  FlowDetails,
+  FlowVariant,
   Side,
   TaskAttributes,
 } from '../src/flows/model';
-import { emptyBoard, OBJECT_TYPES } from '../src/flows/model';
-import { RECORDING_FILE_PATTERN } from '../src/flows/recordings';
+import { emptyBoard, OBJECT_TYPES, variesByVariant } from '../src/flows/model';
+import { importedRecordingKey, RECORDING_FILE_PATTERN } from '../src/flows/recordings';
 import { studioNameProblems } from '../src/flows/checks';
 import {
   CHANNEL_ATTRIBUTES_REFERENCE,
@@ -56,6 +57,8 @@ export type ImportedRecording = {
   fileName: string;
   environment: 'staging' | 'production';
   sourceUrl: string;
+  // The flow's own recordings folder, for flows sharing a template (see recordingStores.ts)
+  folder?: string;
 };
 
 export type ImportedFlow = {
@@ -68,6 +71,8 @@ export type ImportedFlow = {
   environments: Environment[];
   // For each channel, the environments it's in (they can differ, e.g. a channel only in staging)
   channelEnvironments: Record<string, Environment[]>;
+  // The Studio flows sharing this template, when there are several (one board, a variant each)
+  variants?: string[];
 };
 
 export type ImportReport = {
@@ -83,7 +88,7 @@ export type ImportReport = {
 export type ImportedBoard = {
   title: string;
   content: BoardContent;
-  // The recordings its voice messages play, to copy only those of the boards chosen
+  // The recordings its voice messages play ("<folder>/<file>" for variants), to copy only those of the boards chosen
   recordingFiles: string[];
 };
 
@@ -143,6 +148,11 @@ type FlowSource = {
   vars: Partial<Record<Environment, Vars>>;
   // Each channel's channel-attributes template (under twilio-iac/helplines), as Terraform picks it
   channelAttributes: Record<string, string>;
+  // For studio_flows entries: its key and its own flow_vars, per environment
+  flowName?: string;
+  ownVars?: Partial<Record<Environment, HclObject>>;
+  // Studio flows sharing this template (the first is this one): one board, a variant each
+  variants?: FlowSource[];
 };
 
 const readLocals = async (file: string): Promise<HclObject | undefined> => {
@@ -211,11 +221,24 @@ const humanize = (name: string) => {
   return text ? text[0].toUpperCase() + text.slice(1) : name;
 };
 
-const languageOf = (name: string, properties: HclObject) => {
+const languageOf = (name: string, properties: HclObject, vars?: Vars) => {
   const fromName = name.split('_').find((word) => LANGUAGES.includes(word));
   if (fromName) return fromName;
-  const spoken = textOf(properties.language) ?? textOf(properties.say_language);
-  return spoken ? spoken.split('-')[0].toLowerCase() : undefined;
+  const written = textOf(properties.language) ?? textOf(properties.say_language);
+  // e.g. ${flow_vars.gather_language}: what the flow sets it to
+  const spoken = written && resolve(written, vars);
+  return spoken && !spoken.includes('${') ? spoken.split('-')[0].toLowerCase() : undefined;
+};
+
+// A variant's name for people: its language when it says one (gather_language es-US), else its key
+const LANGUAGE_NAMES: Record<string, string> = { en: 'English', es: 'Spanish', fr: 'French', pt: 'Portuguese' };
+const variantLabelOf = (source: FlowSource) => {
+  const vars = source.vars.production ?? source.vars.staging;
+  const language = Object.entries(vars?.flow_vars ?? {}).find(
+    ([key, value]) => /language/i.test(key) && typeof value === 'string',
+  )?.[1] as string | undefined;
+  const code = language?.split('-')[0].toLowerCase() ?? source.flowName?.match(/_([a-z]{2})$/)?.[1];
+  return (code && LANGUAGE_NAMES[code]) ?? source.flowName ?? source.title;
 };
 
 const typeOf = (widget: HclObject): FlowObjectType | undefined => {
@@ -327,6 +350,30 @@ const fileNameOf = (url: string) => decodeURIComponent(new URL(url).pathname.spl
  * Reads a helpline's config and templates from twilio-iac/helplines (a checkout, or the Lambda's
  * copy of master) and builds its boards (one per Studio flow), the report and the recordings to copy.
  */
+/**
+ * The other helplines whose config uses a template (templates/studio-flows/... is shared): any of
+ * their .hcl files names it. The baseline (a model for new helplines) doesn't count.
+ */
+const helplinesUsing = async (helplinesDir: string, code: string) => {
+  const texts = new Map<string, string>();
+  const folders = await fs.readdir(helplinesDir, { withFileTypes: true });
+  for (const folder of folders) {
+    if (!folder.isDirectory() || !/^[a-z0-9]+$/.test(folder.name) || ['baseline', code].includes(folder.name)) continue;
+    const files = await fs.readdir(path.join(helplinesDir, folder.name)).catch(() => [] as string[]);
+    const hcl = await Promise.all(
+      files
+        .filter((file) => file.endsWith('.hcl'))
+        .map((file) => fs.readFile(path.join(helplinesDir, folder.name, file), 'utf8').catch(() => '')),
+    );
+    texts.set(folder.name, hcl.join('\n'));
+  }
+  return (templatefile: string) =>
+    [...texts.entries()]
+      .filter(([, text]) => text.includes(templatefile))
+      .map(([helpline]) => helpline)
+      .sort();
+};
+
 export const importHelpline = async (helplinesDir: string, code: string): Promise<HelplineImport> => {
   const notes: string[] = [];
   // Recordings whose address isn't a URL (yet), by flow and address
@@ -335,6 +382,8 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
     { title: string; written: string; resolved?: string; names: Set<string>; environments: Set<string> }
   >();
   const { configs, environments } = await readHelplineConfigs(helplinesDir, code);
+  // Which other helplines use a shared template (templates/studio-flows/...)
+  const usersOf = await helplinesUsing(helplinesDir, code);
 
   // The Studio flows: one per template, with each environment's variables
   const sources = new Map<string, FlowSource>();
@@ -405,6 +454,30 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         flow_vars: { ...flowVars, ...objectOf(settings.flow_vars) },
         channel_flow_vars: {},
       });
+      const source = sources.get(`studioFlow:${flowName}`);
+      if (source) {
+        source.flowName = flowName;
+        source.ownVars = { ...source.ownVars, [environment]: objectOf(settings.flow_vars) };
+      }
+    });
+  });
+
+  // Studio flows sharing a template (e.g. a post-call survey in English and Spanish) are one board:
+  // the template drawn once, each flow a variant with its own flow_vars and recordings folder
+  const byTemplate = new Map<string, FlowSource[]>();
+  [...sources.entries()]
+    .filter(([key]) => key.startsWith('studioFlow:'))
+    .forEach(([, source]) =>
+      byTemplate.set(source.templatefile, [...(byTemplate.get(source.templatefile) ?? []), source]),
+    );
+  byTemplate.forEach((shared, templatefile) => {
+    if (shared.length < 2) return;
+    const [first, ...others] = shared;
+    others.forEach((other) => sources.delete(`studioFlow:${other.flowName}`));
+    sources.set(`studioFlow:${first.flowName}`, {
+      ...first,
+      title: path.basename(templatefile, '.tftpl'),
+      variants: shared,
     });
   });
   if (sources.size === 0) notes.push('No Studio flows found: no channels, system-down subflow or other Studio flows.');
@@ -431,7 +504,6 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
     }
     const flowStates = isObject(flow) ? (flow as HclObject).states : undefined;
     const states = Array.isArray(flowStates) ? flowStates.filter(isObject) : [];
-    const frameId = `f-${flowIndex + 1}`;
     const idOf = new Map(
       states.map((state, index) => [textOf(state.name) ?? `#${index}`, `o-${flowIndex + 1}-${index + 1}`]),
     );
@@ -506,7 +578,6 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
       const object: FlowObject = {
         id: idOf.get(name)!,
         type,
-        frameId,
         text: type === 'incoming' ? `Incoming ${source.channel ?? 'contact'}` : humanize(name),
         x: offsets[index].x - minX + FRAME_PADDING,
         y: Math.round((offsets[index].y - minY) * VERTICAL_SCALE) + FRAME_PADDING,
@@ -546,38 +617,45 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         }
         let recordingFile: string | undefined;
         const play = textOf(properties.play);
+        // Each variant plays its own recordings (its flow_vars' address), copied into its own folder
+        const playing = source.variants ?? [source];
         if (play) {
-          ENVIRONMENTS.forEach((environment) => {
-            const vars = source.vars[environment];
-            if (!vars) return;
-            const url = sourceUrlOf(resolve(play, vars));
-            if (!url) {
-              // One note per flow and address (e.g. a flow_vars URL still a placeholder), not per recording
-              // The address without the file name, e.g. ${flow_vars.post_survey_assets_url}/
-              const where = play.includes('/') ? play.replace(/[^/]*$/, '') : play;
-              const key = `${source.title}|${where}`;
-              const missing = unresolvedRecordings.get(key) ?? {
-                title: source.title,
-                written: where === play ? play : `${where}…`,
-                resolved: resolve(where, vars),
-                names: new Set<string>(),
-                environments: new Set<string>(),
-              };
-              missing.names.add(name);
-              missing.environments.add(environment);
-              unresolvedRecordings.set(key, missing);
-              return;
-            }
-            const fileName = fileNameOf(url);
-            if (!RECORDING_FILE_PATTERN.test(fileName)) {
-              notes.push(
-                `${source.title}: “${name}” plays ${fileName}, which isn't an MP3 or WAV named with letters, numbers and underscores; not copied.`,
-              );
-              return;
-            }
-            recordings.set(`${environment}/${fileName}`, { fileName, environment, sourceUrl: url });
-            flowRecordingFiles.add(fileName);
-            recordingFile = fileName;
+          playing.forEach((variant, variantIndex) => {
+            const folder = source.variants ? variant.flowName : undefined;
+            const flowTitle = folder ?? source.title;
+            ENVIRONMENTS.forEach((environment) => {
+              const vars = variant.vars[environment];
+              if (!vars) return;
+              const url = sourceUrlOf(resolve(play, vars));
+              if (!url) {
+                // One note per flow and address (e.g. a flow_vars URL still a placeholder), not per recording
+                // The address without the file name, e.g. ${flow_vars.post_survey_assets_url}/
+                const where = play.includes('/') ? play.replace(/[^/]*$/, '') : play;
+                const key = `${flowTitle}|${where}`;
+                const missing = unresolvedRecordings.get(key) ?? {
+                  title: flowTitle,
+                  written: where === play ? play : `${where}…`,
+                  resolved: resolve(where, vars),
+                  names: new Set<string>(),
+                  environments: new Set<string>(),
+                };
+                missing.names.add(name);
+                missing.environments.add(environment);
+                unresolvedRecordings.set(key, missing);
+                return;
+              }
+              const fileName = fileNameOf(url);
+              if (!RECORDING_FILE_PATTERN.test(fileName)) {
+                notes.push(
+                  `${flowTitle}: “${name}” plays ${fileName}, which isn't an MP3 or WAV named with letters, numbers and underscores; not copied.`,
+                );
+                return;
+              }
+              const recording = { fileName, environment, sourceUrl: url, ...(folder ? { folder } : {}) };
+              recordings.set(`${environment}/${importedRecordingKey(recording)}`, recording);
+              flowRecordingFiles.add(importedRecordingKey(recording));
+              if (variantIndex === 0) recordingFile = fileName;
+            });
           });
           if (recordingFile && recordingFile.replace(/\.(mp3|wav)$/, '') !== name) {
             notes.push(
@@ -587,13 +665,29 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         }
         object.message = {
           ...(channel ? { channel } : {}),
-          ...(isVoice || info.hasMessage ? { language: languageOf(name, properties) } : {}),
+          ...(isVoice || info.hasMessage ? { language: languageOf(name, properties, primary) } : {}),
           ...(script ? { script } : {}),
           ...(recordingFile && recordingFile.replace(/\.(mp3|wav)$/, '') !== name ? { recordingFile } : {}),
         };
         if (!object.message.language) delete object.message.language;
         // So regenerating the flow only touches the text if it's changed on the board
         if (script !== undefined && object.studio) object.studio.importedScript = script;
+
+        // The other variants' texts (from their flow_vars) and languages, where the message varies
+        if (source.variants && variesByVariant(object)) {
+          source.variants.slice(1).forEach((variant) => {
+            const vars = variant.vars.production ?? variant.vars.staging;
+            const variantScript = raw ? resolve(raw, vars) : undefined;
+            const language = languageOf(name, properties, vars);
+            object.variantMessages = {
+              ...object.variantMessages,
+              [variant.flowName!]: {
+                ...(language ? { language } : {}),
+                ...(variantScript ? { script: variantScript, importedScript: variantScript } : {}),
+              },
+            };
+          });
+        }
       }
 
       if (type === 'sendToQueue') {
@@ -601,8 +695,18 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         if (taskAttributes) object.taskAttributes = taskAttributes;
       }
 
-      // The route's settings, from the request body
-      if (info.fields) {
+      // Other HTTP requests: their method, address and body as written (variables kept)
+      if (type === 'function') {
+        if (state.type === 'make-http-request') {
+          const settings = Object.fromEntries(
+            (['method', 'url', 'body'] as const)
+              .filter((key) => typeof properties[key] === 'string')
+              .map((key) => [key, String(properties[key])]),
+          );
+          if (Object.keys(settings).length > 0) object.settings = settings;
+        }
+      } else if (info.fields) {
+        // The route's settings, from the request body
         try {
           const body = JSON.parse(resolve(textOf(properties.body) ?? '{}', primary));
           const settings = Object.fromEntries(
@@ -650,21 +754,37 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
       });
     });
 
-    const width = Math.max(600, ...objects.map((object) => object.x + object.width)) + FRAME_PADDING;
-    const height = Math.max(400, ...objects.map((object) => object.y + object.height)) + FRAME_PADDING;
     // [channels] · template, e.g. "[voice_courage_first] · voice-courage-first-op-hours-sd"
     const title = source.channels.length > 0 ? `[${source.channels.join(', ')}] · ${source.title}` : source.title;
-    const frame: Frame = {
-      id: frameId,
-      title,
-      x: 0,
-      y: 0,
-      width,
-      height,
+    // A template shared by helplines: who else uses it (a change to it would change them too)
+    const sharedWith = source.templatefile.startsWith(`${CONTAINER_HELPLINES_DIR}templates/`)
+      ? usersOf(source.templatefile)
+      : [];
+    // One board per Studio flow: its objects sit on the board (no frame around them), and the board
+    // says what flow it is
+    const flowDetails: FlowDetails = {
       ...(source.channel ? { channel: source.channel } : {}),
+      ...(source.variants
+        ? {
+            variants: source.variants.map((variant): FlowVariant => ({
+              key: variant.flowName!,
+              label: variantLabelOf(variant),
+              recordingsFolder: variant.flowName!,
+              flowVars: Object.fromEntries(
+                Object.entries(variant.ownVars ?? {}).map(([environment, vars]) => [
+                  environment,
+                  Object.fromEntries(
+                    Object.entries(vars ?? {}).filter(([, value]) => typeof value === 'string'),
+                  ) as Record<string, string>,
+                ]),
+              ),
+            })),
+          }
+        : {}),
       studio: {
         template: source.templatefile.slice(CONTAINER_HELPLINES_DIR.length),
         channels: source.channels,
+        ...(sharedWith.length > 0 ? { sharedWith } : {}),
         settings: Object.fromEntries(Object.entries(flow as HclObject).filter(([key]) => key !== 'states')) as Record<
           string,
           unknown
@@ -674,7 +794,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
     const boardTitle = `${code.toUpperCase()} · ${title}`;
     boards.push({
       title: boardTitle,
-      content: { ...emptyBoard(boardTitle), frames: [frame], objects, connections, status: 'imported' },
+      content: { ...emptyBoard(boardTitle), flow: flowDetails, objects, connections, status: 'imported' },
       recordingFiles: [...flowRecordingFiles],
     });
     reportFlows.push({
@@ -692,6 +812,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
           (['staging', 'production'] as const).filter((environment) => found.includes(environment)),
         ]),
       ),
+      ...(source.variants ? { variants: source.variants.map((variant) => variant.flowName!) } : {}),
     });
   }
 
