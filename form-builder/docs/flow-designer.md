@@ -226,6 +226,15 @@ moving it is: import, check in staging, publish, then change that one variable p
 These are prompts recorded for the helpline, and are public like a website's audio. Callers'
 voicemails are never stored here.
 
+**Older names.** Some helplines' recordings aren't named after their widget (USCH's
+`play_message_childhelp_voice_welcome` plays `childhelp_voice_welcome_message.mp3`). The import keeps
+the name they play, and the Check panel flags it. Aselo staff can give them the standard name: on
+import ("Give recordings with older names the standard one"), on a widget's Recording section
+("Use the standard name"), or for the whole board in the Recordings tab ("Use the standard
+names"). It copies each file under the new name (in each flow's folder), keeps the old one (live
+flows still play it), and the generated template then plays the new name, with a TODO: the flow's
+recordings URL has to be the Aselo bucket, where the new name exists.
+
 ### Flows sharing a template
 
 Several `studio_flows` entries can use one template, each with its own `flow_vars` (USVC's

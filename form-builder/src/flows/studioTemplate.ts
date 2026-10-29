@@ -30,7 +30,7 @@
  */
 import type { BoardContent, FlowObject, Frame, TaskAttributes } from './model';
 import { exitsOf, OBJECT_TYPES, toSnake } from './model';
-import { isVoiceMessage } from './recordings';
+import { isVoiceMessage, standardRecordingName } from './recordings';
 import { CHANNEL_ATTRIBUTES_REFERENCE } from './taskAttributes';
 
 export type StudioTransition = Record<string, unknown> & { event: string; next?: string };
@@ -292,6 +292,19 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       }
       if ('say' in properties) setText(object, properties, 'say', name);
       else if ('body' in properties && OBJECT_TYPES[object.type].hasMessage) setText(object, properties, 'body', name);
+      // A recording given its standard name (the widget's) on the board: the widget plays that file now
+      if (typeof properties.play === 'string') {
+        const played = properties.play.split('/').pop() ?? '';
+        const kept = object.message?.recordingFile;
+        const wanted =
+          kept ?? (played.replace(/\.(mp3|wav)$/, '') === name ? played : standardRecordingName(name, played));
+        if (played && /\.(mp3|wav)$/.test(played) && wanted !== played) {
+          properties.play = `${properties.play.slice(0, -played.length)}${wanted}`;
+          todo.push(
+            `${label(object)} plays ${wanted} now (was ${played}): the folder it plays from has to have it, i.e. the Aselo recordings bucket (where the builder copied it), not Twilio Serverless.`,
+          );
+        }
+      }
       // The other variants' texts go in their own flow_vars (the template keeps the variable)
       const written = studio.properties?.say ?? studio.properties?.body;
       const shared = typeof written === 'string' ? written.match(VARIABLE) : undefined;

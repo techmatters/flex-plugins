@@ -22,7 +22,7 @@
 import type { BoardContent, FlowObject, Frame } from './model';
 import { exitsOf, fieldProblem, flowDetailsOf, OBJECT_TYPES, variesByVariant } from './model';
 import type { Recording } from './recordings';
-import { isVoiceMessage, messageStatus } from './recordings';
+import { hasNonStandardRecording, isVoiceMessage, messageStatus } from './recordings';
 import { taskAttributesProblem } from './taskAttributes';
 
 const POSTQUEUE = 'postqueue_';
@@ -293,6 +293,17 @@ export const boardChecks = (
 
     if (info.hasMessage && !object.message?.script?.trim()) {
       add({ severity: 'warning', message: `${name} has no script yet.`, objectId }, 'noScript');
+    }
+    // Recordings named after their widget (the standard); older helplines' may not be
+    if (hasNonStandardRecording(object)) {
+      add(
+        {
+          severity: 'warning',
+          message: `${name} plays ${object.message!.recordingFile}, not a file named after it (${object.studioName}).`,
+          objectId,
+        },
+        'oldRecordingName',
+      );
     }
     // Flows sharing the template: each other one's script, where the message is its own
     if (info.hasMessage && !object.frameId && variesByVariant(object)) {

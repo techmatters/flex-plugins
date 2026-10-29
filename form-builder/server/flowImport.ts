@@ -59,6 +59,8 @@ export type ImportedRecording = {
   sourceUrl: string;
   // The flow's own recordings folder, for flows sharing a template (see recordingStores.ts)
   folder?: string;
+  // The widgets playing it, when the file isn't named after them: its standard names (<widget>.mp3)
+  widgets?: string[];
 };
 
 export type ImportedFlow = {
@@ -651,15 +653,31 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
                 );
                 return;
               }
-              const recording = { fileName, environment, sourceUrl: url, ...(folder ? { folder } : {}) };
-              recordings.set(`${environment}/${importedRecordingKey(recording)}`, recording);
+              const key = `${environment}/${importedRecordingKey({ fileName, folder })}`;
+              const known = recordings.get(key);
+              // Who plays it, when the file isn't named after them (to give it its standard name)
+              const widgets = [
+                ...(known?.widgets ?? []),
+                ...(fileName.replace(/\.(mp3|wav)$/, '') !== name ? [name] : []),
+              ];
+              const recording = {
+                fileName,
+                environment,
+                sourceUrl: url,
+                ...(folder ? { folder } : {}),
+                ...(widgets.length > 0 ? { widgets: [...new Set(widgets)] } : {}),
+              };
+              recordings.set(key, recording);
               flowRecordingFiles.add(importedRecordingKey(recording));
               if (variantIndex === 0) recordingFile = fileName;
             });
           });
+          // The file it plays, as the template names it (also when the folder's address isn't known yet)
+          const written = play.split('/').pop() ?? '';
+          if (!recordingFile && RECORDING_FILE_PATTERN.test(written)) recordingFile = written;
           if (recordingFile && recordingFile.replace(/\.(mp3|wav)$/, '') !== name) {
             notes.push(
-              `${source.title}: “${name}” plays ${recordingFile}, which isn't named after the widget; kept as it is.`,
+              `${source.title}: “${name}” plays ${recordingFile}, which isn't named after the widget; kept as it is (it can be given its standard name, ${name}.${recordingFile.split('.').pop()}).`,
             );
           }
         }

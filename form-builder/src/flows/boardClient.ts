@@ -54,6 +54,8 @@ export type BoardClient = {
   approveRecording(code: string, fileName: string, approved: boolean): Promise<RecordingsList>;
   publishRecording(code: string, fileName: string): Promise<RecordingsList>;
   removeRecording(code: string, fileName: string): Promise<RecordingsList>;
+  // Aselo staff: a copy under another name (its standard one: the widget's)
+  copyRecording(code: string, fileName: string, to: string): Promise<RecordingsList>;
   // Aselo staff: a board built from a live helpline, and copying its recordings
   // From the default config, or a flex-plugins branch
   previewImport(code: string, branch?: string): Promise<HelplineImport & FromBranch>;
@@ -99,6 +101,7 @@ export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetc
       expectOk('POST', `/api/recordings/${code}/files/${fileName}/approve`, { approved }),
     publishRecording: (code, fileName) => expectOk('POST', `/api/recordings/${code}/files/${fileName}/publish`),
     removeRecording: (code, fileName) => expectOk('DELETE', `/api/recordings/${code}/files/${fileName}`),
+    copyRecording: (code, fileName, to) => expectOk('POST', `/api/recordings/${code}/files/${fileName}/copy`, { to }),
     previewImport: (code, branch) => expectOk('POST', `/api/flows/import/${code}`, branch ? { branch } : undefined),
     branches: () => expectOk('GET', '/api/branches'),
     importRecording: (code, recording) => expectOk('POST', `/api/recordings/${code}/import`, recording),

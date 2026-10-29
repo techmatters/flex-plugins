@@ -22,7 +22,7 @@
  */
 import { useState } from 'react';
 import type { HelplineImport, ImportedFlow } from '../../server/flowImport';
-import { importedRecordingKey } from './recordings';
+import { hasNonStandardRecording, importedRecordingKey, standardRecordingName } from './recordings';
 import type { FromBranch } from '../../server/branches';
 import { BranchPicker, ImportedFrom } from '../components/BranchPicker';
 import type { BoardClient } from './boardClient';
@@ -48,6 +48,8 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
   const [error, setError] = useState<string>();
   const [working, setWorking] = useState(false);
   const [copyRecordings, setCopyRecordings] = useState(true);
+  // Give recordings with older names their standard ones (the widget's) as they're copied
+  const [standardNames, setStandardNames] = useState(false);
   const [copying, setCopying] = useState<Copying>();
   // The boards made, one per Studio flow
   // The flows to import, by their place in the preview (all of them to start with)
@@ -100,14 +102,32 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
     try {
       const boards = [];
       for (const { title, content } of chosenBoards) {
-        const board = await client.create(code, title, undefined, content);
+        // With standard names, the widgets play files named after them (copied so below)
+        const objects =
+          standardNames && copyRecordings
+            ? content.objects.map((object) => {
+                if (!hasNonStandardRecording(object)) return object;
+                const { recordingFile, ...message } = object.message ?? {};
+                return { ...object, message };
+              })
+            : content.objects;
+        const board = await client.create(code, title, undefined, { ...content, objects });
         boards.push({ code: board.code, id: board.id, title });
       }
       setCreated(boards);
       if (copyRecordings && chosenRecordings.length > 0) {
-        const progress: Copying = { done: 0, total: chosenRecordings.length, failed: [] };
+        // A file several widgets play becomes a copy for each, named after it (the standard)
+        const copies = chosenRecordings.flatMap((recording) =>
+          standardNames && recording.widgets?.length
+            ? recording.widgets.map((widget) => ({
+                ...recording,
+                fileName: standardRecordingName(widget, recording.fileName),
+              }))
+            : [recording],
+        );
+        const progress: Copying = { done: 0, total: copies.length, failed: [] };
         setCopying({ ...progress });
-        for (const recording of chosenRecordings) {
+        for (const recording of copies) {
           try {
             // A flow sharing its template keeps its recordings in its own folder
             await client.importRecording(recording.folder ? `${code}/f/${recording.folder}` : code, recording);
@@ -232,6 +252,18 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
                     onChange={(e) => setCopyRecordings(e.target.checked)}
                   />
                   <span>Copy the recordings</span>
+                </label>
+              )}
+              {copyRecordings && chosenRecordings.some((recording) => recording.widgets?.length) && (
+                <label
+                  className="field-checkbox"
+                  title="Each copy is named after the widget that plays it, and the widgets play those. The Studio flows then need the Aselo recordings bucket as their recordings folder."
+                >
+                  <input type="checkbox" checked={standardNames} onChange={(e) => setStandardNames(e.target.checked)} />
+                  <span>
+                    Give recordings with older names the standard one (
+                    {chosenRecordings.filter((recording) => recording.widgets?.length).length} files)
+                  </span>
                 </label>
               )}
               <button

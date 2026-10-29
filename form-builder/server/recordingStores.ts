@@ -61,6 +61,8 @@ export interface RecordingFiles {
   // Where the browser sends a new staging file
   uploadTarget(code: string, fileName: string, contentType: string): Promise<UploadTarget>;
   publish(code: string, fileName: string): Promise<void>;
+  // A copy under another name (giving a recording its standard name: the widget's), in one environment
+  copy(code: string, environment: RecordingEnvironment, from: string, to: string): Promise<void>;
   remove(code: string, environment: RecordingEnvironment, fileName: string): Promise<void>;
   // Puts a file straight into a folder (copying a helpline's recordings when importing it)
   store(
@@ -85,6 +87,8 @@ export type RecordingLogEntry = {
   publishedAt?: string;
   // Where it was copied from, when the helpline was imported
   importedFrom?: Partial<Record<RecordingEnvironment, string>>;
+  // The file it's a copy of, when it was given its standard name
+  renamedFrom?: string;
 };
 
 export type RecordingLog = Record<string, RecordingLogEntry>;
@@ -178,6 +182,10 @@ export class LocalRecordingFiles implements RecordingFiles {
     await fs.rm(this.file(code, environment, fileName), { force: true });
   }
 
+  async copy(code: string, environment: RecordingEnvironment, from: string, to: string) {
+    await fs.copyFile(this.file(code, environment, from), this.file(code, environment, to));
+  }
+
   async store(code: string, environment: RecordingEnvironment, fileName: string, content: Uint8Array) {
     const target = this.file(code, environment, fileName);
     await fs.mkdir(path.dirname(target), { recursive: true });
@@ -263,6 +271,13 @@ export class MemoryRecordingFiles implements RecordingFiles {
 
   async remove(code: string, environment: RecordingEnvironment, fileName: string) {
     this.files.delete(`${folderOf(code, environment)}/${fileName}`);
+  }
+
+  async copy(code: string, environment: RecordingEnvironment, from: string, to: string) {
+    check(code, to);
+    const source = this.files.get(`${folderOf(code, environment)}/${from}`);
+    if (!source) throw new Error(`No ${from} to copy`);
+    this.files.set(`${folderOf(code, environment)}/${to}`, { ...source });
   }
 
   async store(code: string, environment: RecordingEnvironment, fileName: string, content: Uint8Array) {
@@ -362,6 +377,16 @@ export class S3RecordingFiles implements RecordingFiles {
 
   async remove(code: string, environment: RecordingEnvironment, fileName: string) {
     await this.s3.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: this.key(code, environment, fileName) }));
+  }
+
+  async copy(code: string, environment: RecordingEnvironment, from: string, to: string) {
+    await this.s3.send(
+      new CopyObjectCommand({
+        Bucket: this.bucket,
+        CopySource: `${this.bucket}/${this.key(code, environment, from)}`,
+        Key: this.key(code, environment, to),
+      }),
+    );
   }
 
   async store(

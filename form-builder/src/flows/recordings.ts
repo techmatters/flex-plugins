@@ -65,6 +65,8 @@ export type Recording = {
   publishedAt?: string;
   // Where it was copied from, when the helpline was imported
   importedFrom?: Partial<Record<RecordingEnvironment, string>>;
+  // The file it's a copy of, when it was given its standard name
+  renamedFrom?: string;
 };
 
 export type RecordingsList = {
@@ -91,6 +93,19 @@ export const recordingOf = (object: Pick<FlowObject, 'studioName' | 'message'>, 
         RECORDING_EXTENSIONS.some((extension) => recording.fileName === `${object.studioName}.${extension}`),
       )
     : undefined;
+};
+
+/**
+ * The standard: a recording is named after its widget (play_message_voice_en_welcome.mp3). Older
+ * helplines' recordings may not be (message.recordingFile): these give the name it should have,
+ * keeping its kind (MP3 or WAV), and whether it isn't the standard one.
+ */
+export const standardRecordingName = (studioName: string, current: string) =>
+  `${studioName}.${current.split('.').pop() === 'wav' ? 'wav' : 'mp3'}`;
+
+export const hasNonStandardRecording = (object: Pick<FlowObject, 'studioName' | 'message'>) => {
+  const file = object.message?.recordingFile;
+  return Boolean(file && object.studioName && file.replace(/\.(mp3|wav)$/, '') !== object.studioName);
 };
 
 export type MessageStatus = 'No script' | 'Script ready' | 'Recorded' | 'Approved' | 'Published';

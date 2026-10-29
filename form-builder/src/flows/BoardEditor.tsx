@@ -42,6 +42,7 @@ import { boardChecks, issuesByObject, splitIgnored } from './checks';
 import { downloadFlowExport, downloadScripts } from './exports';
 import { CheckPanel } from './CheckPanel';
 import type { RecordingsList } from './recordings';
+import { standardRecordingName } from './recordings';
 import { RecordingActions, RecordingsPanel } from './RecordingControls';
 import type { BoardClient } from './boardClient';
 import type { Board, BoardContent, FlowObjectType, Person } from './model';
@@ -574,6 +575,47 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
     loadRecordings();
   }, [loadRecordings]);
 
+  /**
+   * Recordings given their standard names (the widget's): each file is copied under the new name, in
+   * every folder the board's flows play from (each variant's), and the widgets stop pointing at the
+   * old name. A file not uploaded yet just takes the new name.
+   */
+  const renameRecordings = async (objectIds: string[]) => {
+    const libraries =
+      variants.length > 0 ? variants.map((candidate) => `${board.code}/f/${candidate.recordingsFolder}`) : [board.code];
+    const renamed = new Set<string>();
+    for (const id of objectIds) {
+      const object = content.objects.find((candidate) => candidate.id === id);
+      const from = object?.message?.recordingFile;
+      if (!object?.studioName || !from) continue;
+      const to = standardRecordingName(object.studioName, from);
+      try {
+        for (const library of libraries) {
+          await client.copyRecording(library, from, to).catch((err: Error) => {
+            // Not uploaded in that folder: nothing to copy
+            if (!/no .* to copy/i.test(err.message)) throw err;
+          });
+        }
+        renamed.add(id);
+      } catch (err) {
+        setNotice(`${from}: ${(err as Error).message}`);
+      }
+    }
+    setNodes((current) =>
+      current.map((node) => {
+        if (node.type !== 'object' || !renamed.has(node.id)) return node;
+        const { recordingFile, ...message } = node.data.object.message ?? {};
+        return { ...node, data: { object: { ...node.data.object, message } } };
+      }),
+    );
+    await loadRecordings();
+    if (renamed.size > 0) {
+      setNotice(
+        `${renamed.size} recording${renamed.size === 1 ? '' : 's'} renamed to the standard (copied; the old files are kept).`,
+      );
+    }
+  };
+
   const changeRecording = async (fileName: string, change: () => Promise<RecordingsList>) => {
     setBusyFiles((current) => new Set(current).add(fileName));
     try {
@@ -601,6 +643,7 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
       changeRecording(fileName, () => client.approveRecording(recordingsLibrary, fileName, approved)),
     publish: (fileName) => changeRecording(fileName, () => client.publishRecording(recordingsLibrary, fileName)),
     remove: (fileName) => changeRecording(fileName, () => client.removeRecording(recordingsLibrary, fileName)),
+    rename: (objectIds) => renameRecordings(objectIds),
   };
   // Who tasks can be assigned to: the helpline's people and the Aselo team
   const [people, setPeople] = useState<Person[]>([]);

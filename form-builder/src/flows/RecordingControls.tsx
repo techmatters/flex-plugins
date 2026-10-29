@@ -25,6 +25,7 @@ import { useRef, useState } from 'react';
 import type { FlowObject, Frame } from './model';
 import type { MessageStatus, Recording, RecordingsList } from './recordings';
 import {
+  hasNonStandardRecording,
   isApproved,
   isPublished,
   isVoiceMessage,
@@ -32,6 +33,7 @@ import {
   messageStatus,
   RECORDING_EXTENSIONS,
   recordingOf,
+  standardRecordingName,
 } from './recordings';
 
 export type RecordingActions = {
@@ -46,6 +48,8 @@ export type RecordingActions = {
   approve: (fileName: string, approved: boolean) => Promise<void>;
   publish: (fileName: string) => Promise<void>;
   remove: (fileName: string) => Promise<void>;
+  // Aselo staff: give these objects' recordings their standard names (the widget's), copying the files
+  rename?: (objectIds: string[]) => Promise<void>;
 };
 
 const ACCEPT = '.mp3,.wav,audio/mpeg,audio/wav';
@@ -144,11 +148,12 @@ export const RecordingSection = ({
   frame,
   actions,
 }: {
-  object: Pick<FlowObject, 'type' | 'message' | 'studioName'>;
+  object: Pick<FlowObject, 'id' | 'type' | 'message' | 'studioName'>;
   frame?: Pick<Frame, 'channel'>;
   actions: RecordingActions;
 }) => {
   const [problem, setProblem] = useState<string>();
+  const [renaming, setRenaming] = useState(false);
   if (!isVoiceMessage(object, frame)) return null;
   const recording = recordingOf(object, actions.list?.recordings);
   const status = messageStatus(object, frame, actions.list?.recordings);
@@ -174,6 +179,28 @@ export const RecordingSection = ({
           <p className="field-hint">
             File: <code>{recording?.fileName ?? `${object.studioName}.mp3`}</code> (MP3 or WAV)
           </p>
+          {hasNonStandardRecording(object) && (
+            <div className="flow-recording-rename">
+              <span className="field-hint">
+                An older name: the standard is the widget&apos;s,{' '}
+                <code>{standardRecordingName(object.studioName, object.message!.recordingFile!)}</code>.
+              </span>
+              {actions.staff && !actions.readOnly && actions.rename && (
+                <button
+                  type="button"
+                  className="secondary-button"
+                  disabled={renaming}
+                  onClick={async () => {
+                    setRenaming(true);
+                    await actions.rename!([object.id]);
+                    setRenaming(false);
+                  }}
+                >
+                  {renaming ? 'Renaming…' : 'Use the standard name'}
+                </button>
+              )}
+            </div>
+          )}
           {recording?.staging && (
             <div className="flow-recording-player">
               <span className="field-hint">
@@ -295,6 +322,9 @@ export const RecordingsPanel = ({
   const used = new Set(voice.map(({ object }) => recordingOf(object, recordings)?.fileName).filter(Boolean));
   const others = recordings.filter((recording) => !used.has(recording.fileName));
   const approvedWaiting = recordings.filter((recording) => isApproved(recording) && !isPublished(recording));
+  // Voice messages whose recording has an older name, not the widget's
+  const oldNames = voice.filter(({ object }) => hasNonStandardRecording(object));
+  const [renaming, setRenaming] = useState(false);
 
   const uploadMany = async (files: File[]) => {
     const lines: string[] = [];
@@ -357,6 +387,27 @@ export const RecordingsPanel = ({
           </>
         )}
       </div>
+      {actions.staff && !actions.readOnly && actions.rename && oldNames.length > 0 && (
+        <div className="flow-recording-rename">
+          <span className="field-hint">
+            {oldNames.length} recording{oldNames.length === 1 ? ' has' : 's have'} an older name, not the widget&apos;s.
+            Renaming copies each file under the standard name (live flows keep playing the old one until the template
+            changes).
+          </span>
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={renaming}
+            onClick={async () => {
+              setRenaming(true);
+              await actions.rename!(oldNames.map(({ object }) => object.id));
+              setRenaming(false);
+            }}
+          >
+            {renaming ? 'Renaming…' : `Use the standard names (${oldNames.length})`}
+          </button>
+        </div>
+      )}
       {actions.staff && !actions.readOnly && approvedWaiting.length > 0 && (
         <button
           type="button"

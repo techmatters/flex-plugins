@@ -184,6 +184,13 @@ hear the old recording, or nothing for a new file. Moving the helpline to the re
 means setting that variable to `recordingsBaseUrl.staging` / `.production` in each environment's
 file, only once its recordings are published there; offer it, don't do it unasked.
 
+A TODO "plays <widget>.mp3 now (was <old>.mp3)" means the recording was given its standard name
+(the widget's) in the builder: the file was copied under the new name **in the Aselo recordings
+bucket only**. The template now plays the new name, so the flow's recordings URL variable has to
+point at the bucket (`recordingsBaseUrl` for that environment) and the file has to be published
+there before production uses it; Twilio Serverless doesn't have it. If the variable still points
+at Serverless, say so and ask before writing the template for production.
+
 ### 6. Check
 
 ```bash

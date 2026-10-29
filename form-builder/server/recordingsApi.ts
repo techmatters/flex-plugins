@@ -28,6 +28,8 @@
  *   POST   /api/recordings/:code/files/:file/approve       Aselo staff: ({ approved: boolean })
  *   POST   /api/recordings/:code/files/:file/publish       Aselo staff: copy the approved file to production
  *   DELETE /api/recordings/:code/files/:file               remove the staging file (not a published one)
+ *   POST   /api/recordings/:code/files/:file/copy          Aselo staff: copy it under another name ({ to }),
+ *                                                          in each environment it's in (its standard name)
  *   POST   /api/recordings/:code/import                    Aselo staff: copy a live recording into a folder
  *                                                          ({ sourceUrl, fileName, environment })
  *
@@ -115,7 +117,7 @@ export const handleRecordingRequest = async (
 ): Promise<ApiResponse> => {
   if (!stores) return fail(501, "Recordings aren't set up here.");
   const match = path.match(
-    /^\/api\/recordings\/([a-z0-9]+)(?:\/f\/([a-z0-9_]+))?(?:\/(uploads|import|files\/([^/]+)(?:\/(uploaded|approve|publish))?))?$/,
+    /^\/api\/recordings\/([a-z0-9]+)(?:\/f\/([a-z0-9_]+))?(?:\/(uploads|import|files\/([^/]+)(?:\/(uploaded|approve|publish|copy))?))?$/,
   );
   if (!match) return fail(404, `Unknown API route ${method} ${path}`);
   const [, helpline, folder, part, fileName, action] = match;
@@ -216,6 +218,24 @@ export const handleRecordingRequest = async (
       log[fileName] = { ...log[fileName], publishedBy: user.name, publishedAt: now };
     });
     await stores.files.refresh(code, 'production', fileName);
+    return ok(await listRecordings(stores, code));
+  }
+
+  // Giving a recording its standard name (the widget's): a copy, as live flows may still play the old one
+  if (method === 'POST' && action === 'copy') {
+    if (!isStaff(user)) return fail(403, 'Only Aselo staff rename recordings.');
+    const to = (body as { to?: unknown } | undefined)?.to;
+    if (typeof to !== 'string' || !RECORDING_FILE_PATTERN.test(to)) return fail(400, 'Invalid recording name');
+    if (to === fileName) return fail(400, 'It already has that name.');
+    if (!recording?.staging && !recording?.production) return fail(404, `There is no ${fileName} to copy.`);
+    const environments = (['staging', 'production'] as const).filter((environment) => recording[environment]);
+    for (const environment of environments) {
+      await stores.files.copy(code, environment, fileName, to);
+      await stores.files.refresh(code, environment, to);
+    }
+    await updateLog(stores.log, code, (log) => {
+      log[to] = { ...log[fileName], renamedFrom: fileName };
+    });
     return ok(await listRecordings(stores, code));
   }
 

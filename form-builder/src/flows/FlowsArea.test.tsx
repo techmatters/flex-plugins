@@ -378,6 +378,36 @@ describe('flow designer', { timeout: 20_000 }, () => {
     expect(screen.queryByRole('checkbox', { name: 'Change the shared template for every helpline' })).toBeNull();
   });
 
+  test('recordings with older names are given the standard one: copied, and the widgets play it', async () => {
+    const { boards: imported } = await importHelpline(
+      path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../twilio-iac/helplines'),
+      'usch',
+    );
+    const widget = 'play_message_childhelp_voice_welcome';
+    const { content } = imported.find(({ content: candidate }) =>
+      candidate.objects.some((object) => object.studioName === widget),
+    )!;
+    const old = content.objects.find((object) => object.studioName === widget)!.message!.recordingFile!;
+    recordingFiles.put('usnm', old, 'welcome audio');
+    const board = await clientAs(staff).create('usnm', 'Voice', undefined, content);
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    await screen.findByRole('heading', { name: 'Voice' });
+    fireEvent.click(screen.getByRole('tab', { name: 'Recordings' }));
+    const panel = within(screen.getByRole('region', { name: 'Recordings' }));
+    fireEvent.click(await panel.findByRole('button', { name: /^Use the standard names/ }));
+
+    await waitFor(() => expect(recordingFiles.files.get(`usnm/staging/${widget}.mp3`)?.content).toBe('welcome audio'));
+    // The old file is kept: live flows still play it until the template changes
+    expect(recordingFiles.files.has(`usnm/staging/${old}`)).toBe(true);
+    await waitFor(() => expect(panel.queryByRole('button', { name: /^Use the standard names/ })).toBeNull());
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    const saved = (await boards.get('usnm', board.id))!.content.objects.filter(
+      (object) => object.message?.recordingFile,
+    );
+    expect(saved).toEqual([]);
+  });
+
   test('a voice message is recorded, approved and published', async () => {
     const board = await openNewBoard('Recordings');
     fireEvent.click(palette().getByRole('button', { name: /^Play message/ }));
