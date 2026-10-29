@@ -1,0 +1,50 @@
+[
+  {
+    "name": "child",
+    "label": "Help seeker contacting about self",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "caller",
+    "label": "Someone contacting about a help seeker",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "silent",
+    "label": "Silent",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "hangup",
+    "label": "Hang up",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "wrongnumber",
+    "label": "Wrong number",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "abusive",
+    "label": "Abusive",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "questions",
+    "label": "Information only",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "test",
+    "label": "Test contact",
+    "type": "button",
+    "category": "non-data"
+  }
+]

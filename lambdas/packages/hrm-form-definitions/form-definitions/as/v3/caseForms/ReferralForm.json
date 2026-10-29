@@ -1,0 +1,75 @@
+[
+  {
+    "name": "date",
+    "label": "Date",
+    "type": "date-input",
+    "initializeWithCurrent": true,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "referredTo",
+    "label": "Referred To",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "911 / emergency services",
+        "label": "911 / emergency services"
+      },
+      {
+        "value": "988 Suicide & Crisis Lifeline",
+        "label": "988 Suicide & Crisis Lifeline"
+      },
+      {
+        "value": "Mobile crisis team",
+        "label": "Mobile crisis team"
+      },
+      {
+        "value": "Mental health provider",
+        "label": "Mental health provider"
+      },
+      {
+        "value": "Health clinic or hospital",
+        "label": "Health clinic or hospital"
+      },
+      {
+        "value": "Social services",
+        "label": "Social services"
+      },
+      {
+        "value": "Legal aid",
+        "label": "Legal aid"
+      },
+      {
+        "value": "Housing or shelter",
+        "label": "Housing or shelter"
+      },
+      {
+        "value": "Law enforcement",
+        "label": "Law enforcement"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "isPII": true
+  }
+]

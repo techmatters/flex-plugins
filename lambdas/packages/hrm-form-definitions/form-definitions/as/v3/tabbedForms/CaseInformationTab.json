@@ -1,0 +1,158 @@
+[
+  {
+    "name": "repeatCaller",
+    "label": "Repeat Contact?",
+    "type": "checkbox",
+    "initialChecked": false,
+    "isPII": false
+  },
+  {
+    "name": "urgencyLevel",
+    "label": "Urgency Level",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "High",
+        "label": "High"
+      },
+      {
+        "value": "Medium",
+        "label": "Medium"
+      },
+      {
+        "value": "Low",
+        "label": "Low"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "description": {
+      "title": "How to choose",
+      "content": "High: immediate risk to safety. Medium: needs help today but is safe right now. Low: information or support, no current risk."
+    },
+    "isPII": false
+  },
+  {
+    "name": "actionTaken",
+    "label": "Action Taken",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Emotional support",
+        "label": "Emotional support"
+      },
+      {
+        "value": "Information provided",
+        "label": "Information provided"
+      },
+      {
+        "value": "Safety planning",
+        "label": "Safety planning"
+      },
+      {
+        "value": "Referral to another service",
+        "label": "Referral to another service"
+      },
+      {
+        "value": "911 or emergency services contacted",
+        "label": "911 or emergency services contacted"
+      },
+      {
+        "value": "Mobile crisis team dispatched",
+        "label": "Mobile crisis team dispatched"
+      },
+      {
+        "value": "Follow-up arranged",
+        "label": "Follow-up arranged"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "howDidYouKnowAboutOurLine",
+    "label": "How did they hear about us?",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Internet search",
+        "label": "Internet search"
+      },
+      {
+        "value": "Social media",
+        "label": "Social media"
+      },
+      {
+        "value": "Friend or family",
+        "label": "Friend or family"
+      },
+      {
+        "value": "Professional referral",
+        "label": "Professional referral"
+      },
+      {
+        "value": "News or media",
+        "label": "News or media"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "okForCaseWorkerToCall",
+    "label": "Okay to contact them back?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "feltHelped",
+    "label": "Did the help seeker feel helped?",
+    "type": "mixed-checkbox",
+    "isPII": false
+  },
+  {
+    "name": "callSummary",
+    "label": "Contact Summary",
+    "type": "textarea",
+    "placeholder": "What the contact was about, what was done and any next steps",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "rows": 10,
+    "maxLength": {
+      "value": 5000,
+      "message": "Use 5000 characters or fewer"
+    },
+    "isPII": true,
+    "additionalActions": [
+      {
+        "name": "generateSummary",
+        "label": "Generate Summary",
+        "type": "custom-contact-component",
+        "component": "generate-summary-button",
+        "saveable": false,
+        "props": {
+          "form": "caseInformation",
+          "item": "callSummary"
+        }
+      }
+    ]
+  }
+]

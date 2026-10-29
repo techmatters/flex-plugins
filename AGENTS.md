@@ -12,7 +12,7 @@ read the one for the package you are changing.
 | `aselo-webchat-react-app/` | Aselo Webchat client (React + TypeScript) | [`aselo-webchat-react-app/AGENTS.md`](aselo-webchat-react-app/AGENTS.md) |
 | `lambdas/` | AWS Lambdas and shared packages (npm workspaces) | [`lambdas/AGENTS.md`](lambdas/AGENTS.md) |
 | `e2e-tests/` | Playwright end-to-end tests | — |
-| `twilio-iac/` | Terraform / infrastructure as code | — |
+| `twilio-iac/` | Terraform / infrastructure as code (helpline config, Okta SSO) | [`twilio-iac/AGENTS.md`](twilio-iac/AGENTS.md) |
 | `scripts/` | Helper scripts (config, SSM credentials, etc.) | — |
 
 Note: `plugin-hrm-form` and `aselo-webchat-react-app` both depend on

@@ -1,0 +1,29 @@
+terraform {
+  required_providers {
+    okta = {
+      source  = "okta/okta"
+      version = "7.0.0"
+    }
+    http = {
+      source  = "hashicorp/http"
+      version = "3.6.3"
+    }
+  }
+
+%{ if use_local_state ~}
+  backend "local" {
+    path = "${local_state_path}"
+  }
+%{ else ~}
+  backend "s3" {
+    bucket         = "${state_bucket}"
+    key            = "${state_key}"
+    dynamodb_table = "terraform-locks"
+    encrypt        = true
+    region         = "us-east-1"
+    assume_role = {
+      role_arn = "${state_role_arn}"
+    }
+  }
+%{ endif ~}
+}
