@@ -24,7 +24,7 @@ import type { Board, BoardContent, Channel, FlowObject, Frame } from './model';
 import { exitsOf, isImportedBoard, OBJECT_TYPES, statusOf, toSnake } from './model';
 import type { DesignStatus } from '../designStatus';
 import { statusLabel } from '../designStatus';
-import { boardChecks, flowScopeOf } from './checks';
+import { boardChecks, flowScopeOf, splitIgnored } from './checks';
 import type { FlowVarChange, TaskAttributesChange } from './studioTemplate';
 import { toStudioFlows } from './studioTemplate';
 import type { MessageStatus, RecordingsList } from './recordings';
@@ -273,11 +273,14 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
         todo,
       }),
     ),
-    checks: boardChecks(content, recordings?.recordings).map(({ severity, message, objectId }) => ({
-      severity,
-      message,
-      ...(objectId ? { objectId } : {}),
-    })),
+    // The warnings the team marked as not needed aren't listed
+    checks: splitIgnored(boardChecks(content, recordings?.recordings), content.ignoredChecks).active.map(
+      ({ severity, message, objectId }) => ({
+        severity,
+        message,
+        ...(objectId ? { objectId } : {}),
+      }),
+    ),
     layout,
   };
 };

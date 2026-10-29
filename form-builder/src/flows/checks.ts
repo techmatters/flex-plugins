@@ -205,7 +205,8 @@ export const boardChecks = (
             `twice-${exit}`,
           );
         }
-        if (leaving.length === 0 && !ended.has(exit)) {
+        // "speech" is left unconnected on purpose: answers are pressed, rarely said
+        if (leaving.length === 0 && !ended.has(exit) && exit.toLowerCase() !== 'speech') {
           add(
             { severity: 'warning', message: `${name}: “${exit}” isn't connected.`, objectId, openExit: exit },
             `open-${exit}`,
@@ -336,6 +337,16 @@ export const boardChecks = (
 };
 
 // The issues on each object, for its badge and settings
+/**
+ * The board's warnings split into those still to look at and those marked as not needed for this
+ * board. Only warnings can be ignored: errors are mistakes.
+ */
+export const splitIgnored = (issues: Issue[], ignoredKeys: string[] = []) => {
+  const ignored = new Set(ignoredKeys);
+  const isIgnored = (issue: Issue) => issue.severity === 'warning' && ignored.has(issue.key);
+  return { active: issues.filter((issue) => !isIgnored(issue)), ignored: issues.filter(isIgnored) };
+};
+
 export const issuesByObject = (issues: Issue[]): Map<string, Issue[]> => {
   const result = new Map<string, Issue[]>();
   issues.forEach((issue) => {

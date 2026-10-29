@@ -16,7 +16,7 @@
 
 import { describe, expect, test } from 'vitest';
 import type { FlowObject, Frame } from './model';
-import { boardChecks, objectProblems, studioNameProblems, uniqueName } from './checks';
+import { boardChecks, objectProblems, splitIgnored, studioNameProblems, uniqueName } from './checks';
 import { standardTaskAttributes } from './taskAttributes';
 import type { Connection } from './model';
 
@@ -174,6 +174,33 @@ describe('the board check', () => {
       ),
     };
     expect(messagesOf(ended)).toEqual([]);
+  });
+
+  test('"speech" may stay unconnected; a warning can be ignored on a board, errors can’t', () => {
+    const content = {
+      frames: [frame('voice', 'voice')],
+      objects: [
+        named('in', 'incoming', 'voice', { text: 'Call' }),
+        named('optIn', 'decision', 'voice', {
+          text: 'Opt in',
+          studioName: 'split_opt_in',
+          exits: ['1', 'speech'],
+          endedExits: ['1'],
+        }),
+      ],
+      connections: [connect('in', 'optIn')],
+    };
+    // Only the system-down warning: the unconnected "speech" isn't one
+    const issues = boardChecks(content);
+    expect(issues.map((issue) => issue.message)).toEqual([
+      '“Call” should go to the system-down subflow before anything else.',
+    ]);
+
+    const { active, ignored } = splitIgnored(issues, [issues[0].key]);
+    expect(active).toEqual([]);
+    expect(ignored.map((issue) => issue.message)).toEqual([issues[0].message]);
+    const error = { key: 'x', severity: 'error' as const, message: 'A mistake' };
+    expect(splitIgnored([error], ['x']).active).toEqual([error]);
   });
 
   test('a way out leads to one place, and connections only use ways out the object has', () => {

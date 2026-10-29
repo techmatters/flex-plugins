@@ -1208,3 +1208,28 @@
   padding: 6px 8px;
   border-radius: var(--radius);
 }
+
+/* Check: fixes and ignoring a warning that doesn't apply to this board */
+.flow-issue-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-left: 8px;
+}
+
+.flow-issue-actions .flow-issue-fix,
+.flow-issue.ignored .flow-issue-fix {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.flow-check-ignored {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--color-border);
+}
+
+.flow-issue.ignored {
+  opacity: 0.65;
+}

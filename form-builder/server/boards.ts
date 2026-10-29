@@ -63,6 +63,8 @@ export const isBoardContent = (value: unknown): value is BoardContent => {
     typeof candidate.schemaVersion === 'number' &&
     typeof candidate.title === 'string' &&
     (candidate.status === undefined || isDesignStatus(candidate.status)) &&
+    (candidate.ignoredChecks === undefined ||
+      (Array.isArray(candidate.ignoredChecks) && candidate.ignoredChecks.every((key) => typeof key === 'string'))) &&
     ['frames', 'objects', 'connections', 'stickies'].every((key) =>
       isArrayOfObjects(candidate[key as keyof BoardContent]),
     )

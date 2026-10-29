@@ -167,6 +167,9 @@ export type BoardContent = {
   stickies: Sticky[];
   // Where the design is (see designStatus.ts). Boards saved before statuses have none: see statusOf
   status?: DesignStatus;
+  // Warnings marked as not needed for this board (their keys, checks.ts Issue.key), e.g. the
+  // system-down one on a post-survey flow; they're listed apart and not counted
+  ignoredChecks?: string[];
 };
 
 export type BoardMeta = {

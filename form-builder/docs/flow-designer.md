@@ -138,7 +138,8 @@ the Studio flow standards:
   - no two objects in a flow share a name.
 - **No open ends:** every exit goes somewhere, including "no match" on decisions and "timeout"
   on questions, unless it's marked as ending the flow on purpose (in the Check panel, or under
-  "Where it goes" in the object's settings).
+  "Where it goes" in the object's settings). "speech" is the exception: it's left unconnected as
+  a rule (answers are pressed), so it isn't flagged.
 - **One place per way out:** a way out leads to one place; connections only use ways out the
   object has (e.g. after a decision's answer was renamed); End has nothing after it.
 - **System down first:** an incoming call or message goes to the system-down subflow before
@@ -146,6 +147,10 @@ the Studio flow standards:
 - **Menus that repeat** have a counter (Set variable) or a wait on the way round, so a caller
   can't loop for ever.
 - **Unreachable objects:** nothing leads to them (a post-queue frame may start from its queue).
+- **Ignoring a warning:** a warning that doesn't apply to a board (e.g. "should go to the
+  system-down subflow" on a post-survey flow) can be ignored in the Check panel by Aselo staff. It's
+  then listed apart under "ignored", isn't counted or exported for Claude, and can be brought back.
+  Errors can't be ignored. Kept on the board (`ignoredChecks`); it doesn't change its status.
 - **Content:** messages and questions without a script. (Voice messages without a recording, and
   uploaded recordings no object uses, come with the recordings library in step 3.)
 - **Frames** that hold objects say which channel they're for, so the export knows which Studio

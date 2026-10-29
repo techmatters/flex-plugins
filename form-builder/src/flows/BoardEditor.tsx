@@ -38,7 +38,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Copy, Download, Redo2, RefreshCw, Trash2, Undo2 } from 'lucide-react';
-import { boardChecks, issuesByObject } from './checks';
+import { boardChecks, issuesByObject, splitIgnored } from './checks';
 import { downloadFlowExport, downloadScripts } from './exports';
 import { CheckPanel } from './CheckPanel';
 import type { RecordingsList } from './recordings';
@@ -127,10 +127,15 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
   const [fitOnOpen] = useState(() => nodes.length > 0);
 
   const [status, setStatus] = useState<DesignStatus>(() => statusOf(board.content));
+  // Warnings marked as not needed here; like the status, not part of the canvas (nor of undo)
+  const [ignoredChecks, setIgnoredChecks] = useState<string[]>(() => board.content.ignoredChecks ?? []);
   // What's on the canvas; the status isn't part of it (nor of undo)
   const canvasContent = useMemo(() => toContent(title, nodes, edges), [title, nodes, edges]);
   const canvasJson = useMemo(() => JSON.stringify(canvasContent), [canvasContent]);
-  const content = useMemo(() => ({ ...canvasContent, status }), [canvasContent, status]);
+  const content = useMemo(
+    () => ({ ...canvasContent, status, ...(ignoredChecks.length > 0 ? { ignoredChecks } : {}) }),
+    [canvasContent, status, ignoredChecks],
+  );
   const json = useMemo(() => JSON.stringify(content), [content]);
   const dragging = nodes.some((node) => node.dragging);
 
@@ -536,7 +541,15 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
       setPeople(mergePeople(lists)),
     );
   }, [client, board.code]);
-  const issues = useMemo(() => boardChecks(content, recordingList?.recordings), [content, recordingList]);
+  const allIssues = useMemo(() => boardChecks(content, recordingList?.recordings), [content, recordingList]);
+  const { active: issues, ignored: ignoredIssues } = useMemo(
+    () => splitIgnored(allIssues, ignoredChecks),
+    [allIssues, ignoredChecks],
+  );
+  const ignoreCheck = (key: string, ignore: boolean) =>
+    setIgnoredChecks((current) =>
+      ignore ? [...new Set([...current, key])] : current.filter((other) => other !== key),
+    );
   const problems = useMemo(() => issuesByObject(issues), [issues]);
   const editingContext = useMemo(() => ({ readOnly, problems }), [readOnly, problems]);
   const errorCount = issues.filter((issue) => issue.severity === 'error').length;
@@ -829,7 +842,14 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
               />
             )}
             {sideTab === 'check' && (
-              <CheckPanel issues={issues} readOnly={readOnly} onShow={showNode} onEndHere={endHere} />
+              <CheckPanel
+                issues={issues}
+                ignored={ignoredIssues}
+                readOnly={readOnly}
+                onShow={showNode}
+                onEndHere={endHere}
+                onIgnore={ignoreCheck}
+              />
             )}
             {sideTab === 'settings' && (
               <Inspector
