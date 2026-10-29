@@ -15,7 +15,6 @@ locals {
     enable_external_recordings = false
     permission_config          = "clhs"
     helpline_region            = "us-east-1"
-    enable_lex_v2              = true
     workflows = {
       master : {
         friendly_name            = "Master Workflow"

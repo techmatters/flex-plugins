@@ -8,10 +8,7 @@ locals {
     enable_post_survey                    = true
     permission_config                     = "demo"
     custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice', 'modica'] OR  twilioNumber == 'messenger:105642325869250', 'instagram:17841459369720372' "
-    enable_lex_v2                         = true
     flow_vars = {
-      capture_channel_with_bot_function_sid = "ZHd9eb5ce1b230abe29d9eafccc88b16d3"
-      chatbot_callback_cleanup_function_sid = "ZH757387715913592aa1938b284411f18b"
       send_message_janitor_function_sid     = "ZHdfbbef84918d1e31fab54ab0cab8d0f7"
       bot_language                          = "en-US"
       widget_from                           = "Aselo"
@@ -79,7 +76,6 @@ locals {
         templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/voice-basic.tftpl"
         channel_flow_vars = {
           voice_ivr_greeting_message = "Hello, you are contacting Aselo. Please hold for a counsellor."
-          voice_ivr_blocked_message  = "I'm sorry your number has been blocked."
           voice_ivr_language         = "en-US"
         }
         chatbot_unique_names = []

@@ -14,8 +14,6 @@ locals {
    **/
   local_config = {
     helpline       = "Te Guío"
-    old_dir_prefix = "teguio"   
-    default_autopilot_chatbot_enabled = false
     task_language                     = "es-CO"
     voice_ivr_language                = "es-MX"
     enable_post_survey                = false
@@ -62,8 +60,5 @@ locals {
       survey : "Survey"
     }
 
-     lex_bot_languages = {
-      es_CO : ["post_survey"]
-    }
   }
 }

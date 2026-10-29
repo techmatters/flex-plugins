@@ -6,20 +6,12 @@ locals {
 
   local_config = {
     helpline                          = "Kék Vonal"
-    old_dir_prefix                    = "kek-vonal"
-    definition_version                = "hu-v1"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "{{trigger.message.ChannelAttributes.pre_engagement_data.language}}"
-    helpline_language                 = "hu-HU"
     contacts_waiting_channels         = ["web", "voice"]
     enable_post_survey                = false
     helpline_region                   = "eu-west-1"
     permission_config                 = "hu"
 
-    lex_bot_languages = {
-      uk : ["pre_survey"],
-      ru : ["pre_survey"]
-    }
 
     
 

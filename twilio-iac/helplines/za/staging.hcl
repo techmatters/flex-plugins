@@ -20,18 +20,18 @@ locals {
       service_sid                  = "ZS27e84b6573e9e70a6cede7d8b9e5111d"
       environment_sid              = "ZE892b70dd054646bd3abca6f7ccbe4af4"
       operating_hours_function_sid = "ZH38920759a863f804b58a52fd411a3814"
+      widget_from                  = "Childline South Africa"
+      chat_blocked_message         = "Sorry, you're not able to contact Childline South Africa from this device or account"
     }
 
     #Channels
     channels = {
-      webchat : {
-        channel_type     = "web"
-        contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/templates/studio-flows/messaging-no-chatbot-operating-hours.tftpl"
-        channel_flow_vars = {
-          chat_greeting_message = "Please hold while we connect you to a counselor"
-          widget_from           = "Childline South Africa"
-        }
+      chat : {
+        channel_type         = "chat"
+        messaging_mode       = "conversations"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-conv-lambda.tftpl"
+        channel_flow_vars    = {}
         chatbot_unique_names = []
       },
       facebook_national : {

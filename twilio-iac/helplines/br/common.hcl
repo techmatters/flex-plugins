@@ -6,20 +6,12 @@ locals {
 
   local_config = {
     helpline                          = "SaferNet"
-    old_dir_prefix                    = "safernet"
-    definition_version                = "br-v1"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "pt-BR"
-    helpline_language                 = "pt-BR"
     voice_ivr_language                = ""
     contacts_waiting_channels         = ["facebook", "instagram"]
     enable_post_survey                = false
     permission_config                 = "br"
-    enable_lex_v2                     = true
 
-    lex_bot_languages = {
-      pt_br : ["pre_survey", "contact_reason"]
-    }
     lex_v2_bot_languages = {
       pt_br : ["contact_reason", "pre_survey"]
     }

@@ -5,14 +5,11 @@ locals {
 
   local_config = {
     helpline                          = "Linea Libre"
-    old_dir_prefix                    = "linealibre-cl"
-    default_autopilot_chatbot_enabled = false
     task_language                     = "es-CL"
     voice_ivr_language                = "es-MX"
     enable_post_survey                = true
     enable_external_recordings        = true
     permission_config                 = "cl"
-    enable_lex_v2                     = true
     workflows = {
       master : {
         friendly_name : "Master Workflow"
@@ -103,9 +100,6 @@ locals {
       g2t : ["????"],
     }
 
-    lex_bot_languages = {
-      es_CL : ["post_survey"]
-    }
     lex_v2_bot_languages = {
       es_CL : ["post_survey"]
     }
