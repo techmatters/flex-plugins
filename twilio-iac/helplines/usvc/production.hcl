@@ -41,14 +41,14 @@ locals {
       post_call_survey_en : {
         templatefile = "/app/twilio-iac/helplines/usvc/templates/studio-flows/post-call-survey.tftpl"
         flow_vars = {
-          post_survey_assets_url = "<ADD_ENGLISH_RECORDINGS_URL>"
+          post_survey_assets_url = "https://recordings.tl.techmatters.org/usvc/production/post_call_survey_en"
           gather_language        = "en-US"
         }
       },
       post_call_survey_es : {
         templatefile = "/app/twilio-iac/helplines/usvc/templates/studio-flows/post-call-survey.tftpl"
         flow_vars = {
-          post_survey_assets_url = "<ADD_SPANISH_RECORDINGS_URL>"
+          post_survey_assets_url = "https://recordings.tl.techmatters.org/usvc/production/post_call_survey_es"
           gather_language        = "es-US"
         }
       }
