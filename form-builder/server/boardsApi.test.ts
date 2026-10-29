@@ -64,37 +64,100 @@ beforeEach(() => {
 
 describe('boards', () => {
   test('are created, saved and listed, and a stale save is refused', async () => {
-    const board = await create(usnmStaff, 'usnm', 'USNM contact flows');
-    expect(board.meta).toMatchObject({ revision: 1, createdBy: 'NAMI person' });
-    expect(board.content).toEqual(emptyBoard('USNM contact flows'));
+    const board = await create(staff, 'usnm', 'USNM contact flows');
+    expect(board.meta).toMatchObject({ revision: 1, createdBy: 'Aselo person' });
+    // A new board is being designed
+    expect(board.content).toEqual({ ...emptyBoard('USNM contact flows'), status: 'in-progress' });
 
-    const saved = await call(usnmStaff, 'PUT', `/api/boards/usnm/${board.id}`, {
+    const saved = await call(staff, 'PUT', `/api/boards/usnm/${board.id}`, {
       expectedRevision: 1,
       content: withFrame(board.content),
     });
-    expect(saved).toMatchObject({ status: 200, body: { revision: 2, updatedBy: 'NAMI person' } });
+    expect(saved).toMatchObject({ status: 200, body: { revision: 2, updatedBy: 'Aselo person' } });
 
     // Someone saved in between: refused, saying who
-    const stale = await call(staff, 'PUT', `/api/boards/usnm/${board.id}`, {
+    const otherStaff: ApiUser = { ...staff, name: 'Other Aselo person' };
+    const stale = await call(otherStaff, 'PUT', `/api/boards/usnm/${board.id}`, {
       expectedRevision: 1,
       content: board.content,
     });
-    expect(stale).toMatchObject({ status: 409, body: { updatedBy: 'NAMI person', revision: 2 } });
+    expect(stale).toMatchObject({ status: 409, body: { updatedBy: 'Aselo person', revision: 2 } });
 
     const loaded = (await call(staff, 'GET', `/api/boards/usnm/${board.id}`)).body as Board;
     expect(loaded.content.frames).toHaveLength(1);
     const list = (await call(staff, 'GET', '/api/boards')).body as BoardSummary[];
-    expect(list.map((summary) => [summary.code, summary.title])).toEqual([['usnm', 'USNM contact flows']]);
+    expect(list.map((summary) => [summary.code, summary.title, summary.status, summary.isNew])).toEqual([
+      ['usnm', 'USNM contact flows', 'in-progress', true],
+    ]);
   });
 
-  test('helpline staff only see and change their own helplines, and read the templates', async () => {
+  test('carry a status, set by Aselo staff and listed; boards saved before statuses get one', async () => {
+    const board = await create(staff, 'usnm', 'USNM flows');
+    const ready = await call(staff, 'PUT', `/api/boards/usnm/${board.id}`, {
+      expectedRevision: 1,
+      content: { ...board.content, status: 'ready' },
+    });
+    expect(ready.status).toBe(200);
+    let [summary] = (await call(usnmStaff, 'GET', '/api/boards')).body as BoardSummary[];
+    expect(summary).toMatchObject({ status: 'ready', isNew: true });
+
+    // Helpline staff can't change it
+    const byHelpline = await call(usnmStaff, 'PUT', `/api/boards/usnm/${board.id}`, {
+      expectedRevision: 2,
+      content: { ...board.content, status: 'implemented' },
+    });
+    expect(byHelpline.status).toBe(403);
+    expect(
+      (
+        await call(staff, 'PUT', `/api/boards/usnm/${board.id}`, {
+          expectedRevision: 2,
+          content: { ...board.content, status: 'done' },
+        })
+      ).status,
+    ).toBe(400);
+
+    // Saved before statuses: imported boards (frames read from Studio) are "Imported", others "In progress"
+    const old = withFrame(emptyBoard('USNM flows'));
+    await context.boards!.put({
+      ...board,
+      meta: { ...board.meta, revision: 3 },
+      content: {
+        ...old,
+        frames: old.frames.map((frame) => ({
+          ...frame,
+          studio: { template: 'usnm/templates/studio-flows/voice.tftpl', channels: ['voice'], settings: {} },
+        })),
+      },
+    });
+    [summary] = (await call(staff, 'GET', '/api/boards')).body as BoardSummary[];
+    expect(summary).toMatchObject({ status: 'imported', isNew: false });
+    await context.boards!.put({ ...board, content: old });
+    [summary] = (await call(staff, 'GET', '/api/boards')).body as BoardSummary[];
+    expect(summary).toMatchObject({ status: 'in-progress', isNew: true });
+  });
+
+  test('helpline staff only view their own helplines and the templates, and change none of them', async () => {
+    const usnm = await create(staff, 'usnm', 'USNM flows');
     const usch = await create(staff, 'usch', 'USCH flows');
     const template = await create(staff, '_templates', 'Standard pre-queue flow');
+
+    // Their own helpline: listed and opened, but not added to or saved
+    expect((await call(usnmStaff, 'GET', `/api/boards/usnm/${usnm.id}`)).status).toBe(200);
+    expect((await call(usnmStaff, 'POST', '/api/boards/usnm', { title: 'Mine' })).status).toBe(403);
+    expect(
+      (
+        await call(usnmStaff, 'PUT', `/api/boards/usnm/${usnm.id}`, {
+          expectedRevision: 1,
+          content: withFrame(usnm.content),
+        })
+      ).status,
+    ).toBe(403);
+    expect(((await call(staff, 'GET', `/api/boards/usnm/${usnm.id}`)).body as Board).meta.revision).toBe(1);
 
     expect((await call(usnmStaff, 'POST', '/api/boards/usch', { title: 'Mine' })).status).toBe(403);
     expect((await call(usnmStaff, 'GET', `/api/boards/usch/${usch.id}`)).status).toBe(403);
     const list = (await call(usnmStaff, 'GET', '/api/boards')).body as BoardSummary[];
-    expect(list.map((summary) => summary.code)).toEqual(['_templates']);
+    expect(list.map((summary) => summary.code).sort()).toEqual(['_templates', 'usnm']);
 
     expect((await call(usnmStaff, 'GET', `/api/boards/_templates/${template.id}`)).status).toBe(200);
     expect(
@@ -115,13 +178,15 @@ describe('boards', () => {
       content: withFrame(template.content),
     });
 
-    const copy = await create(usnmStaff, 'usnm', 'USNM flows', { code: '_templates', id: template.id });
+    const copy = await create(staff, 'usnm', 'USNM flows', { code: '_templates', id: template.id });
     expect(copy.content.title).toBe('USNM flows');
     expect(copy.content.frames.map((frame) => frame.title)).toEqual(['Voice: pre-queue']);
+    // A new design, whatever the template's status
+    expect(copy.content.status).toBe('in-progress');
   });
 
   test('only Aselo staff delete boards', async () => {
-    const board = await create(usnmStaff, 'usnm', 'USNM flows');
+    const board = await create(staff, 'usnm', 'USNM flows');
     expect((await call(usnmStaff, 'DELETE', `/api/boards/usnm/${board.id}`)).status).toBe(403);
     expect((await call(staff, 'DELETE', `/api/boards/usnm/${board.id}`)).status).toBe(200);
     expect((await call(staff, 'GET', `/api/boards/usnm/${board.id}`)).status).toBe(404);
@@ -139,7 +204,7 @@ describe('boards', () => {
 
   test('people lists: each helpline its own, the Aselo team for Aselo staff, and openers are added', async () => {
     const usnmWithEmail = { ...usnmStaff, email: 'nami.person@example.org' };
-    const board = await create(usnmWithEmail, 'usnm', 'USNM flows');
+    const board = await create(staff, 'usnm', 'USNM flows');
     await call(usnmWithEmail, 'GET', `/api/boards/usnm/${board.id}`);
     await call({ ...staff, email: 'aselo.person@example.org' }, 'GET', `/api/boards/usnm/${board.id}`);
     expect((await call(usnmStaff, 'GET', '/api/people/usnm')).body).toEqual([

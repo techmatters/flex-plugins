@@ -28,6 +28,9 @@ import { LocalBoardStore } from './boards';
 import { LocalPeopleStore } from './people';
 import { LocalApplier, localNotifier, localUser } from './localServices';
 import { LocalRecordingFiles, LocalRecordingLogStore } from './recordingStores';
+import { LocalRoutingStore } from './routingStore';
+import { LocalChatbotStore } from './chatbotApi';
+import { GitHubBranches } from './branches';
 import type { RecordingEnvironment } from '../src/flows/recordings';
 import { RECORDING_CONTENT_TYPES } from '../src/flows/recordings';
 
@@ -39,6 +42,9 @@ type Options = {
   boardsDir: string;
   peopleDir: string;
   recordingsDir: string;
+  routingDir: string;
+  chatbotsDir: string;
+  branchesDir: string;
   repoRoot: string;
 };
 
@@ -135,6 +141,9 @@ export const definitionsDevApi = ({
   boardsDir,
   peopleDir,
   recordingsDir,
+  routingDir,
+  chatbotsDir,
+  branchesDir,
   repoRoot,
 }: Options): Plugin => {
   const recordingFiles = new LocalRecordingFiles(recordingsDir);
@@ -146,6 +155,10 @@ export const definitionsDevApi = ({
     boards: new LocalBoardStore(boardsDir),
     people: new LocalPeopleStore(peopleDir),
     recordings: { files: recordingFiles, log: new LocalRecordingLogStore(recordingsDir) },
+    routing: new LocalRoutingStore(routingDir),
+    chatbots: new LocalChatbotStore(chatbotsDir),
+    // Imports read this checkout, or a branch from GitHub
+    branches: new GitHubBranches(branchesDir, 'This checkout (local files)'),
     applier: new LocalApplier(formDefinitionsDir, repoRoot, webchatConfigDir, helplinesConfigDir),
     notifier: localNotifier,
   };

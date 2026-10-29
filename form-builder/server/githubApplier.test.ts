@@ -80,7 +80,7 @@ describe('applying through GitHub', () => {
 
     const commit = bodyOf('/git/commits');
     expect(commit.parents).toEqual(['master-sha']);
-    expect(commit.message).toMatch(/^USNM: Form builder changes \(v1\)/);
+    expect(commit.message).toMatch(/^USNM: Form changes \(v1\)/);
     expect(commit.message).toContain('Co-authored-by: Aselo person <person@aselo.org>');
     expect(bodyOf('/git/refs')).toEqual({ ref: 'refs/heads/form-builder/usnm/v1-20261027-0905', sha: 'new-commit' });
 

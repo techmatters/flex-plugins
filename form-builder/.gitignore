@@ -5,3 +5,6 @@ dist-lambda/
 boards/
 people/
 recordings/
+/routing/
+/chatbots-designs/
+/branch-snapshots/

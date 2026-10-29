@@ -32,6 +32,7 @@ import { summarizeCaseSectionChanges, validateCaseSections } from './caseSection
 import { summarizeFeatureChanges } from './helplineFeatures';
 import { summarizeServiceConfigChanges, validateServiceConfig } from './serviceConfig';
 import { summarizeProfileChanges, validateProfiles } from './profiles';
+import { summarizeFormSelectorChanges, validateFormSelector } from './formSelector';
 
 export const CALL_TYPE_BUTTONS_FILE = 'CallTypeButtons.json';
 export const CANNED_RESPONSES_FILE = 'CannedResponses.json';
@@ -196,6 +197,7 @@ export const validateSections = (
     ...validateServiceConfig(code, originalFiles, draftFiles),
     ...validateProfiles(draftFiles, originalFiles),
     ...validateWebchat(draftFiles, originalFiles),
+    ...validateFormSelector(draftFiles, originalFiles),
   ];
 };
 
@@ -306,5 +308,6 @@ export const summarizeSectionChanges = (
     });
   }
   summaries.push(...summarizeWebchatChanges(originalFiles, draftFiles, webchatDefaultLocale));
+  summaries.push(...summarizeFormSelectorChanges(originalFiles, draftFiles));
   return summaries;
 };

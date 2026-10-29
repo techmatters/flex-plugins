@@ -21,6 +21,8 @@
 import { useEffect, useState } from 'react';
 import type { DraftSummary } from '../../server/drafts';
 import type { DraftClient } from '../draftClient';
+import { HelplineFilter } from './HelplineFilter';
+import '../designStatus.css';
 
 type Props = {
   draftClient: DraftClient;
@@ -30,6 +32,7 @@ type Props = {
 
 export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
   const [drafts, setDrafts] = useState<DraftSummary[]>();
+  const [helpline, setHelpline] = useState('');
 
   useEffect(() => {
     draftClient
@@ -51,9 +54,12 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
   if (!drafts || drafts.length === 0) return null;
 
   return (
-    <section className="panel drafts-list">
-      <h2>{isAseloStaff ? 'Drafts' : 'Your drafts'}</h2>
-      <table className="status-table">
+    <section className="drafts-list">
+      <h3>{isAseloStaff ? 'Drafts' : 'Your drafts'}</h3>
+      <div className="area-home-filters">
+        <HelplineFilter codes={drafts.map((draft) => draft.code)} value={helpline} onChange={setHelpline} />
+      </div>
+      <table className="area-home-table">
         <thead>
           <tr>
             <th>Helpline</th>
@@ -64,35 +70,34 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
           </tr>
         </thead>
         <tbody>
-          {drafts.map((draft) => (
-            <tr key={`${draft.code}/${draft.version}`}>
-              <td>
-                {draft.code.toUpperCase()} {draft.version}
-              </td>
-              <td>
-                {draft.meta.status === 'submitted' ? (
-                  <span className="badge badge-new">
-                    Submitted{draft.meta.submittedBy ? ` by ${draft.meta.submittedBy}` : ''}
-                  </span>
-                ) : (
-                  <span className="badge badge-edited">In progress</span>
-                )}
-              </td>
-              <td>
-                {draft.meta.updatedBy}, {new Date(draft.meta.updatedAt).toLocaleString()}
-              </td>
-              <td>{draft.changedFiles.length}</td>
-              <td>
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => onOpen(draft.code, draft.version)}
-                >
-                  {isAseloStaff && draft.meta.status === 'submitted' ? 'Review' : 'Open'}
-                </button>
-              </td>
-            </tr>
-          ))}
+          {drafts
+            .filter((draft) => !helpline || draft.code === helpline)
+            .map((draft) => (
+              <tr key={`${draft.code}/${draft.version}`}>
+                <td className="area-home-name">
+                  {draft.code.toUpperCase()} {draft.version}
+                </td>
+                <td>
+                  {/* Forms have their own review: submitted drafts are applied by Aselo staff in the builder */}
+                  {draft.meta.status === 'submitted' ? (
+                    <span className="design-status design-status-ready">
+                      Submitted for review{draft.meta.submittedBy ? ` by ${draft.meta.submittedBy}` : ''}
+                    </span>
+                  ) : (
+                    <span className="design-status design-status-in-progress">In progress</span>
+                  )}
+                </td>
+                <td>
+                  {draft.meta.updatedBy}, {new Date(draft.meta.updatedAt).toLocaleString()}
+                </td>
+                <td>{draft.changedFiles.length}</td>
+                <td className="area-home-open">
+                  <button type="button" className="secondary-button" onClick={() => onOpen(draft.code, draft.version)}>
+                    {isAseloStaff && draft.meta.status === 'submitted' ? 'Review' : 'Open'}
+                  </button>
+                </td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </section>

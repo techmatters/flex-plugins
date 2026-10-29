@@ -16,7 +16,7 @@
 
 import { describe, expect, test } from 'vitest';
 import type { BoardContent } from './model';
-import { BOARD_SCHEMA_VERSION, exitsOf, suggestStudioName } from './model';
+import { BOARD_SCHEMA_VERSION, designOf, emptyBoard, exitsOf, statusOf, suggestStudioName } from './model';
 import {
   CanvasNode,
   duplicate,
@@ -220,5 +220,35 @@ describe('objects', () => {
     expect(exitsOf({ type: 'decision' })).toEqual(['Yes', 'No', 'noMatch']);
     expect(exitsOf({ type: 'checkOperatingHours', exits: ['x'] })).toEqual(['open', 'closed', 'holiday', 'failed']);
     expect(exitsOf({ type: 'playMessage' })).toEqual(['']);
+  });
+});
+
+describe('board status', () => {
+  const object = { id: 'o-1', type: 'sendMessage' as const, text: 'Welcome', x: 0, y: 0, width: 200, height: 70 };
+  const base: BoardContent = { ...emptyBoard('Board'), objects: [{ ...object, message: { script: 'Hi' } }] };
+
+  test('comments, stickies, script approvals and the title are not the design', () => {
+    const talkedAbout: BoardContent = {
+      ...base,
+      title: 'Renamed',
+      objects: [
+        {
+          ...object,
+          message: { script: 'Hi', approved: { by: 'Ale', at: '2026-10-28', script: 'Hi' } },
+          thread: { comments: [{ id: 'm-1', author: 'Ale', at: '2026-10-28', text: 'OK' }], resolved: false },
+        },
+      ],
+      stickies: [{ id: 's-1', text: 'To do', color: 'yellow', x: 0, y: 0, width: 100, height: 100 }],
+    };
+    expect(designOf(talkedAbout)).toBe(designOf(base));
+    expect(designOf({ ...base, objects: [{ ...object, message: { script: 'Hello' } }] })).not.toBe(designOf(base));
+  });
+
+  test('boards saved before statuses: imported ones are Imported, the others In progress', () => {
+    expect(statusOf(base)).toBe('in-progress');
+    const frame = { id: 'f-1', title: 'voice', x: 0, y: 0, width: 600, height: 400 };
+    const studio = { template: 'usnm/templates/studio-flows/voice.tftpl', channels: ['voice'], settings: {} };
+    expect(statusOf({ ...base, frames: [{ ...frame, studio }] })).toBe('imported');
+    expect(statusOf({ ...base, frames: [{ ...frame, studio }], status: 'ready' })).toBe('ready');
   });
 });

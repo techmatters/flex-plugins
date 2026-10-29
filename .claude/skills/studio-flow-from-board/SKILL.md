@@ -16,6 +16,9 @@ branch), and the account-scoped lambda routes in
 
 ## Hard rules
 
+- Implement only boards marked **Ready for Claude** (`board.status` is `ready` in the export). Any
+  other status (`in-progress`, `imported`, `implemented`) means the design isn't finished and agreed,
+  or is already done: tell the person and ask before going on.
 - **Never** run `apply`, `destroy`, `import` or state commands. Read-only `plan` is fine; the person
   applies.
 - One helpline and environment at a time, **staging first**. Production only when the person says so.
@@ -32,8 +35,9 @@ A `<helpline>-<board>.flows.json` file. What matters here:
 | Field | What it is |
 |---|---|
 | `board.helpline` | The helpline code (`usnm`) |
-| `studioTemplates[]` | One per frame: `text` is the `.tftpl` already written; `template` is where it lives (when the frame was imported from a live helpline); `channels` the channels using it; `variables` the texts to set in the `.hcl` files; `todo` what it couldn't fill in |
-| `flows[].objects[]` | Each widget as designed: `studioName`, `kind`, `message` (script, language, `recordingFile`, `status`), `call` (route and body), `exits` (where each way out leads), `currentStudioWidget` (the widget as it is live, for imported ones) |
+| `board.status` | Where the design is: `ready` (Ready for Claude) is the one to implement; also `in-progress`, `imported`, `implemented`. `board.isNew`: not imported from the live config |
+| `studioTemplates[]` | One per frame: `text` is the `.tftpl` already written; `template` is where it lives (when the frame was imported from a live helpline); `channels` the channels using it; `variables` the texts to set in the `.hcl` files; `taskAttributes` the Send to queue task attributes that are new or changed (see step 4b); `todo` what it couldn't fill in |
+| `flows[].objects[]` | Each widget as designed: `studioName`, `kind`, `message` (script, language, `recordingFile`, `status`), `call` (route and body), `exits` (where each way out leads), `taskAttributes` (Send to queue: the task attributes as JSON and where they're kept), `currentStudioWidget` (the widget as it is live, for imported ones) |
 | `checks` | What the design still lacks (errors first) |
 | `recordingsBaseUrl` | The recordings bucket folders for staging and production |
 | `notes` | Sticky notes and tasks from the board |
@@ -46,7 +50,9 @@ was changed on the board.
 
 ### 1. Read the export
 
-Ask for the file's path if you don't have it. Check `schemaVersion` is 1. Tell the person, briefly:
+Ask for the file's path if you don't have it. Check `schemaVersion` is 1, then `board.status`: if
+it isn't `ready`, say what it is (e.g. "this board is still In progress", "it's marked Implemented
+already") and ask whether to go on; stop if they say no. Tell the person, briefly:
 the helpline, each entry in `studioTemplates` (title, template or "new", number of TODOs and
 variable changes), and the `checks` **errors**. If there are errors (names that break the
 standards or repeat, a way out leading to two places), stop: they're fixed on the board, not here.
@@ -76,7 +82,7 @@ are none.
 |---|---|
 | A split's input and conditions | What the design says (the decision's text and its ways out), and the widget before it (e.g. `{{widgets.<name>.parsed.<field>}}`, `{{trigger.call.From}}`) |
 | A route's request body / response field | `lambdas/account-scoped/STUDIO_ROUTES.md` for that route |
-| Send to queue: workflow, task channel, attributes | The helpline's other templates and `common.hcl`: `${workflow_sids.<key>}`, `${task_channel_sids.<channel>}`, `${channel_attributes.<name>}` |
+| Send to queue: workflow, task channel | The helpline's other templates and `common.hcl`: `${workflow_sids.<key>}`, `${task_channel_sids.<channel>}` (attributes: step 4b) |
 | A subflow's `flow_sid` | `${system_down_studio_subflow_sid}`, or the variable the helpline's other templates use |
 | A number to forward to, an HTTP address | Ask the person (put real values in variables, not the template) |
 | Set variables | What the design's text says the counter or variable is for |
@@ -94,6 +100,53 @@ For each entry in `variables` (`scope`, `name`, `value`):
   template.
 - Write HCL strings with `\n` for line breaks and `\"` for quotes. Keep the existing order; add new
   keys next to related ones.
+
+### 4b. Task attributes (Send to queue)
+
+A `send-to-flex` widget's `attributes` are the task's attributes: what the TaskRouter workflows'
+filters read (`channelType`, `helpline`, `language`, `transferTargetType`...) and what Flex
+shows. The board shows and edits them as JSON (`taskAttributes.json`), as Studio sends them:
+
+- `{{…}}` / `{% … %}` is Liquid, filled in by Studio from the contact
+  (`{{trigger.conversation.ChannelAttributes.from}}`, `{{trigger.call.From}}`);
+- `${helpline}` and `${task_language}` are filled in by Terraform from the helpline's config
+  (`helpline`, `task_language` in common.hcl).
+
+Where they're kept (`taskAttributes.source`):
+
+- **`channelAttributes`** (almost every flow): the widget says
+  `"attributes": "${channel_attributes.default}"` (or `channel_attributes["default"]` in
+  jsonencode-style templates); **keep it that way**. Terraform (terraform-modules/channels/v1)
+  fills it in with a template from the `channel_attributes` map in the helpline's common.hcl, or
+  `helplines/defaults.hcl` when the helpline has none (the helpline's map replaces the whole
+  default map): the key `<channel>-conversations` for channels with
+  `messaging_mode = "conversations"`, otherwise `<channel>`, falling back to
+  `default-conversations` / `default`. The values are paths like
+  `/app/twilio-iac/helplines/<path>.tftpl`; `source.template` is `<path>`, and
+  `source.channels` the channels it applies to.
+- **`inline`**: the JSON is written in the widget itself (some voice flows); `text` already has it.
+
+For each entry in a template's `taskAttributes` (`change`: `new` or `changed`):
+
+1. Compare `json` with the file the channel resolves to (work it out as above from common.hcl /
+   defaults.hcl; don't trust a guess). The same: nothing to do.
+2. Different, and the file is the helpline's own (`<code>/templates/channel-attributes/...`):
+   write `json` to it. It applies to every channel and flow that resolves to it: say which.
+3. Different, and the file is shared (`templates/channel-attributes/...`): **don't edit it** (every
+   helpline uses it). Write `json` to
+   `twilio-iac/helplines/<code>/templates/channel-attributes/<channel>-conversations.tftpl`
+   (`<channel>.tftpl` for non-Conversations channels), and add
+   `<key> = "/app/twilio-iac/helplines/<code>/templates/channel-attributes/<file>"` to
+   `channel_attributes` in common.hcl. If common.hcl has no `channel_attributes` yet, copy the
+   whole map from defaults.hcl first: adding one entry alone would drop the defaults.
+4. A new flow's widget: same as above for the channels the person said it's for.
+
+Keep the JSON as written (Liquid, spacing, `"memory": {{… | to_json}}` unquoted): it isn't
+strict JSON until Studio fills it in. When `objects[].taskAttributes.otherChannels` is there, the
+flow's channels get different templates: say so, and change only the one the board shows unless the
+person says otherwise. Changing attributes the workflows' filters read changes routing: point out
+any attribute a filter reads (`twilio-iac/helplines/<code>/templates/workflows/*.tftpl`) that was
+renamed or removed.
 
 ### 5. Recordings
 
@@ -127,4 +180,6 @@ a call or message in staging.
 ## Hand-off
 
 End with what was changed (files), what the plan shows, what's left for the person (apply, PR,
-publishing recordings, production), and any design warnings they chose to keep.
+publishing recordings, production), and any design warnings they chose to keep. Remind them to mark
+the board **Implemented** in the builder (the status next to the board's title), so the team knows
+it's been done; once it's live, importing the helpline again brings the board back as it is.

@@ -21,6 +21,22 @@
  */
 import type { SnapshotSource } from './repoSnapshot';
 
+// Every branch's head commit (refs/heads/<branch>), from the git protocol's ref list
+export const readBranchHeads = async (
+  ownerAndRepo: string,
+  fetchImpl: typeof fetch = fetch,
+): Promise<Map<string, string>> => {
+  const url = `https://github.com/${ownerAndRepo}.git/info/refs?service=git-upload-pack`;
+  const response = await fetchImpl(url, { headers: { 'User-Agent': 'aselo-form-builder' } });
+  if (!response.ok) throw new Error(`Could not read ${ownerAndRepo} from GitHub (${response.status})`);
+  const heads = new Map<string, string>();
+  (await response.text()).split('\n').forEach((line) => {
+    const match = line.match(/([0-9a-f]{40}) refs\/heads\/(\S+?)(\0|$)/);
+    if (match) heads.set(match[2], match[1]);
+  });
+  return heads;
+};
+
 export class PublicRepoSource implements SnapshotSource {
   constructor(
     private readonly ownerAndRepo = 'techmatters/flex-plugins',
@@ -29,16 +45,9 @@ export class PublicRepoSource implements SnapshotSource {
   ) {}
 
   async headSha() {
-    const url = `https://github.com/${this.ownerAndRepo}.git/info/refs?service=git-upload-pack`;
-    const response = await this.fetchImpl(url, { headers: { 'User-Agent': 'aselo-form-builder' } });
-    if (!response.ok) throw new Error(`Could not read ${this.ownerAndRepo} from GitHub (${response.status})`);
-    const branchRef = `refs/heads/${this.branch}`;
-    const match = (await response.text())
-      .split('\n')
-      .map((line) => line.match(/([0-9a-f]{40}) (\S+?)(\0|$)/))
-      .find((found) => found?.[2] === branchRef);
-    if (!match) throw new Error(`${this.ownerAndRepo} has no ${this.branch} branch`);
-    return match[1];
+    const sha = (await readBranchHeads(this.ownerAndRepo, this.fetchImpl)).get(this.branch);
+    if (!sha) throw new Error(`${this.ownerAndRepo} has no ${this.branch} branch`);
+    return sha;
   }
 
   async tarball(sha: string) {

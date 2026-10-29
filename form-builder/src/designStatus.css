@@ -1,0 +1,207 @@
+/* Design statuses (designStatus.ts), the same in every area */
+
+.design-status-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.design-status {
+  display: inline-block;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  padding: 0 8px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+}
+
+.design-status-select {
+  cursor: pointer;
+  padding-right: 4px;
+}
+
+.design-status-new {
+  background: #fff4d6;
+  color: #7a5200;
+  border-color: #f1d48a;
+}
+
+.design-status-imported {
+  background: #eef0f2;
+  color: #4a5862;
+  border-color: #d4d9de;
+}
+
+.design-status-in-progress {
+  background: #fff1e0;
+  color: #8a4b00;
+  border-color: #f4c98f;
+}
+
+.design-status-ready {
+  background: #e3f4e8;
+  color: #1d6b35;
+  border-color: #a8d8b5;
+}
+
+.design-status-implemented {
+  background: #e6f0fb;
+  color: #1659a8;
+  border-color: #a9c9ee;
+}
+
+/* The start page of each area: what's being worked on, as a table */
+.area-home {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.area-home > h2 {
+  margin: 0 0 4px;
+}
+
+.area-home-intro {
+  margin: 0 0 16px;
+}
+
+.area-home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+  margin: 0 0 20px;
+}
+
+.area-home-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius, 6px);
+  overflow: hidden;
+}
+
+.area-home-table th,
+.area-home-table td {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.area-home-table th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+  background: var(--color-bg);
+}
+
+.area-home-table tr:last-child td {
+  border-bottom: none;
+}
+
+.area-home-table td.area-home-open {
+  text-align: right;
+  width: 1%;
+  white-space: nowrap;
+}
+
+.area-home-name {
+  font-weight: 600;
+}
+
+.area-home-filter {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 0 0 10px;
+}
+
+.area-home-filter button {
+  font: inherit;
+  font-size: 12px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.area-home-filter button.active {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* Back to an area's start page */
+.area-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* The filters above a start page table: helpline, then status */
+.area-home-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 10px;
+}
+
+.area-home-filters .area-home-filter {
+  margin: 0;
+}
+
+.area-home-helpline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.area-home-helpline select {
+  font: inherit;
+  font-size: 12px;
+  padding: 2px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+}
+
+/* Which branch an import reads (BranchPicker) */
+.branch-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.branch-picker input {
+  font: inherit;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  padding: 3px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius, 6px);
+  width: 260px;
+}
+
+.branch-picker-warning {
+  color: #8a4b00;
+  font-weight: 600;
+}
+
+.branch-imported-from {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: #4527a0;
+}

@@ -53,6 +53,8 @@ import { CannedResponsesEditor } from './sections/CannedResponsesEditor';
 import { MessagesEditor } from './sections/MessagesEditor';
 import { WebchatFormEditor } from './webchat/WebchatFormEditor';
 import { PRE_ENGAGEMENT_FILE } from '../webchat';
+import { FormSelectorEditor } from './sections/FormSelectorEditor';
+import { checkFormSelectorFlag, FORM_SELECTOR_PREFIX } from '../formSelector';
 
 // Which screen is showing in the main area
 type View =
@@ -62,6 +64,7 @@ type View =
   | { kind: 'cannedResponses' }
   | { kind: 'messages' }
   | { kind: 'webchat' }
+  | { kind: 'formSelector' }
   | { kind: 'caseStatus' }
   | { kind: 'caseSections' }
   | { kind: 'features' }
@@ -152,7 +155,17 @@ export const HelplineWorkspace = ({
       ]) as Record<string, ValidationIssue[]>,
     [files, originalFiles, caseTargets],
   );
-  const sectionIssues = useMemo(() => validateSections(files, originalFiles, definitions.code), [files, originalFiles, definitions.code]);
+  // Whether answers fill in the contact with PrepopulateMappings.json (else PrepopulateKeys.json)
+  const usePrepopulateMappings =
+    getFeatures(files, definitions.serviceConfigDefaults)?.usePrepopulateMappings ??
+    definitions.featureFlags?.use_prepopulate_mappings === true;
+  const sectionIssues = useMemo(
+    () => [
+      ...validateSections(files, originalFiles, definitions.code),
+      ...checkFormSelectorFlag(originalFiles, files, usePrepopulateMappings),
+    ],
+    [files, originalFiles, definitions.code, usePrepopulateMappings],
+  );
   // For the review: problems in forms the draft changes (anything blocking always counts), so
   // reviewers aren't shown old notes about forms nobody touched
   const changedFilePaths = new Set(draft.changedPaths);
@@ -264,6 +277,18 @@ export const HelplineWorkspace = ({
             ...(getFeatures(files, definitions.serviceConfigDefaults) ? { use_prepopulate_mappings: getFeatures(files, definitions.serviceConfigDefaults)!.usePrepopulateMappings } : {}),
           }}
           issues={sectionIssues.filter((issue) => issue.message.startsWith('Webchat form'))}
+          onChangeFiles={draft.updateFiles}
+        />
+      );
+    }
+    if (view.kind === 'formSelector') {
+      return (
+        <FormSelectorEditor
+          key={editorKey}
+          draftFiles={files}
+          staffMode={staffMode}
+          usePrepopulateMappings={usePrepopulateMappings}
+          issues={sectionIssues.filter((issue) => issue.message.startsWith(FORM_SELECTOR_PREFIX))}
           onChangeFiles={draft.updateFiles}
         />
       );
@@ -489,6 +514,13 @@ export const HelplineWorkspace = ({
                 errors={sectionErrorCount('Issue categories')}
               />
             )}
+            <NavItem
+              current={view}
+              onSelect={setView}
+              target={{ kind: 'formSelector' }}
+              label={FORM_SELECTOR_PREFIX}
+              errors={sectionErrorCount(FORM_SELECTOR_PREFIX)}
+            />
           </ul>
           <h3>Chats and calls</h3>
           <ul>

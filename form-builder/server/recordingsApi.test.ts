@@ -64,11 +64,11 @@ beforeEach(() => {
 
 describe('recordings', () => {
   test('uploaded to staging, approved, then published to production', async () => {
-    expect((await upload(usnmStaff, 'first take')).status).toBe(200);
+    expect((await upload(staff, 'first take')).status).toBe(200);
     let [recording] = (await list()).recordings;
     expect(recording).toMatchObject({
       fileName: FILE,
-      uploadedBy: 'NAMI person',
+      uploadedBy: 'Aselo person',
       uploadedAt: '2026-10-28T12:00:00.000Z',
     });
     expect(recording.staging?.url).toBe(`https://recordings.test/usnm/staging/${FILE}`);
@@ -87,14 +87,19 @@ describe('recordings', () => {
     expect(files.refreshed).toContain(`usnm/production/${FILE}`);
 
     // A new take needs approving again; production keeps the published one meanwhile
-    await upload(usnmStaff, 'second take');
+    await upload(staff, 'second take');
     [recording] = (await list()).recordings;
     expect(recording.approvedBy).toBeUndefined();
     expect(recording.production?.etag).not.toBe(recording.staging?.etag);
   });
 
-  test('only Aselo staff approve and publish; helpline staff only reach their own helpline', async () => {
-    await upload(usnmStaff, 'take');
+  test('only Aselo staff upload, approve and publish; helpline staff only reach their own helpline', async () => {
+    await upload(staff, 'take');
+    // Helpline staff listen to their own helpline's recordings, but don't upload them
+    const listed = await call(usnmStaff, 'GET', '/api/recordings/usnm');
+    expect(listed.status).toBe(200);
+    expect((listed.body as RecordingsList).recordings.map((recording) => recording.fileName)).toEqual([FILE]);
+    expect((await call(usnmStaff, 'POST', '/api/recordings/usnm/uploads', { fileName: FILE })).status).toBe(403);
     expect(
       (await call(usnmStaff, 'POST', `/api/recordings/usnm/files/${FILE}/approve`, { approved: true })).status,
     ).toBe(403);
@@ -115,13 +120,17 @@ describe('recordings', () => {
   });
 
   test('staging files can be removed, but not once they are published', async () => {
-    await upload(usnmStaff, 'typo', 'play_message_voice_en_welcom.mp3');
+    await upload(staff, 'typo', 'play_message_voice_en_welcom.mp3');
+    // Helpline staff only listen, for now
     expect(
       (await call(usnmStaff, 'DELETE', '/api/recordings/usnm/files/play_message_voice_en_welcom.mp3')).status,
+    ).toBe(403);
+    expect(
+      (await call(staff, 'DELETE', '/api/recordings/usnm/files/play_message_voice_en_welcom.mp3')).status,
     ).toBe(200);
     expect((await list()).recordings).toEqual([]);
 
-    await upload(usnmStaff, 'take');
+    await upload(staff, 'take');
     await call(staff, 'POST', `/api/recordings/usnm/files/${FILE}/approve`, { approved: true });
     await call(staff, 'POST', `/api/recordings/usnm/files/${FILE}/publish`);
     expect((await call(staff, 'DELETE', `/api/recordings/usnm/files/${FILE}`)).status).toBe(409);

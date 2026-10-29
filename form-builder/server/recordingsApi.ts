@@ -159,6 +159,8 @@ export const handleRecordingRequest = async (
   }
 
   if (method === 'POST' && part === 'uploads') {
+    // For now helpline staff listen to recordings but don't upload them
+    if (!isStaff(user)) return fail(403, 'Only Aselo staff upload recordings for now.');
     const { fileName: name, size } = (body ?? {}) as { fileName?: string; size?: number };
     if (typeof name !== 'string' || !RECORDING_FILE_PATTERN.test(name)) {
       return fail(
@@ -177,6 +179,7 @@ export const handleRecordingRequest = async (
   const recording = list.recordings.find((candidate) => candidate.fileName === fileName);
 
   if (method === 'POST' && action === 'uploaded') {
+    if (!isStaff(user)) return fail(403, 'Only Aselo staff upload recordings for now.');
     if (!recording?.staging) return fail(404, "The file didn't arrive. Please upload it again.");
     await updateLog(stores.log, code, (log) => {
       log[fileName] = { ...log[fileName], uploadedBy: user.name, uploadedAt: now };
@@ -211,6 +214,7 @@ export const handleRecordingRequest = async (
   }
 
   if (method === 'DELETE' && part?.startsWith('files/') && !action) {
+    if (!isStaff(user)) return fail(403, 'Only Aselo staff remove recordings for now.');
     if (!recording?.staging) return fail(404, 'There is no staging recording to remove.');
     if (recording.production) {
       return fail(409, 'This recording is published. Ask the Aselo team to remove it from production first.');

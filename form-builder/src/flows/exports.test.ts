@@ -125,8 +125,17 @@ describe('JSON for Claude', () => {
       helpline: 'usnm',
       id: 'abcd1234',
       title: 'USNM contact flows',
+      // Saved before statuses, not imported: being designed
+      status: 'in-progress',
+      statusLabel: 'In progress',
+      isNew: true,
       updatedAt: '2026-10-28T12:00:00Z',
       updatedBy: 'Ale',
+    });
+    expect(exported.about).toMatch(/only when board.status is "ready"/);
+    expect(toFlowExport({ ...board, content: { ...board.content, status: 'ready' } }).board).toMatchObject({
+      status: 'ready',
+      statusLabel: 'Ready for Claude',
     });
     expect(exported.about).toMatch(/twilio-iac\/AGENTS\.md/);
 

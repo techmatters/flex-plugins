@@ -23,6 +23,7 @@ import type { Send } from '../draftClient';
 import type { Board, BoardContent, BoardMeta, BoardSummary, Person } from './model';
 import type { RecordingsList } from './recordings';
 import type { HelplineImport, ImportedRecording } from '../../server/flowImport';
+import type { BranchChoice, FromBranch } from '../../server/branches';
 
 export type UploadTarget = { url: string; method: 'PUT'; headers: Record<string, string> };
 
@@ -54,7 +55,9 @@ export type BoardClient = {
   publishRecording(code: string, fileName: string): Promise<RecordingsList>;
   removeRecording(code: string, fileName: string): Promise<RecordingsList>;
   // Aselo staff: a board built from a live helpline, and copying its recordings
-  previewImport(code: string): Promise<HelplineImport>;
+  // From the default config, or a flex-plugins branch
+  previewImport(code: string, branch?: string): Promise<HelplineImport & FromBranch>;
+  branches(): Promise<BranchChoice[]>;
   importRecording(code: string, recording: ImportedRecording): Promise<RecordingsList>;
 };
 
@@ -96,7 +99,8 @@ export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetc
       expectOk('POST', `/api/recordings/${code}/files/${fileName}/approve`, { approved }),
     publishRecording: (code, fileName) => expectOk('POST', `/api/recordings/${code}/files/${fileName}/publish`),
     removeRecording: (code, fileName) => expectOk('DELETE', `/api/recordings/${code}/files/${fileName}`),
-    previewImport: (code) => expectOk('POST', `/api/flows/import/${code}`),
+    previewImport: (code, branch) => expectOk('POST', `/api/flows/import/${code}`, branch ? { branch } : undefined),
+    branches: () => expectOk('GET', '/api/branches'),
     importRecording: (code, recording) => expectOk('POST', `/api/recordings/${code}/import`, recording),
   };
 };

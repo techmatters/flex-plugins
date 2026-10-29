@@ -22,6 +22,9 @@
  * the frame's top left corner (so moving a frame moves its contents); the rest are absolute.
  */
 
+import type { DesignStatus } from '../designStatus';
+import { STATUS_AFTER_CHANGE } from '../designStatus';
+
 export const BOARD_SCHEMA_VERSION = 1;
 
 export type Position = { x: number; y: number };
@@ -95,7 +98,23 @@ export type FlowObject = Position &
     endedExits?: string[];
     // The Studio widget it was imported from: its name, type and settings, as in the template
     studio?: StudioWidget;
+    // For "Send to queue": the task's attributes (see taskAttributes.ts)
+    taskAttributes?: TaskAttributes;
   };
+
+export type TaskAttributes = {
+  // As JSON, as Studio sends them: {{…}} is filled in from the contact (Liquid); ${helpline} and
+  // ${task_language} are the helpline's settings
+  json: string;
+  // Where twilio-iac keeps them: a channel-attributes template (under twilio-iac/helplines) that the
+  // widget uses through ${channel_attributes.default}, for these channels; or the widget itself
+  source: { kind: 'channelAttributes'; template: string; channels: string[] } | { kind: 'inline' };
+  // As imported, to tell whether they were changed on the board
+  imported?: string;
+  // Channels sharing the flow whose channel_attributes point at other templates: what the widget
+  // gives their tasks (shown, not edited, on the board)
+  otherChannels?: { template: string; channels: string[]; json: string }[];
+};
 
 export type Connection = {
   id: string;
@@ -131,7 +150,11 @@ export type StickyTask = {
   due?: string;
 };
 
-export const TASK_STATUSES: Record<TaskStatus, string> = { todo: 'To do', doing: 'In progress', done: 'Done' };
+export const TASK_STATUSES: Record<TaskStatus, string> = {
+  todo: 'To do',
+  doing: 'In progress',
+  done: 'Done',
+};
 
 export type StickyColor = 'yellow' | 'pink' | 'green' | 'blue' | 'purple';
 
@@ -142,6 +165,8 @@ export type BoardContent = {
   objects: FlowObject[];
   connections: Connection[];
   stickies: Sticky[];
+  // Where the design is (see designStatus.ts). Boards saved before statuses have none: see statusOf
+  status?: DesignStatus;
 };
 
 export type BoardMeta = {
@@ -161,7 +186,12 @@ export type Board = {
   content: BoardContent;
 };
 
-export type BoardSummary = Pick<Board, 'code' | 'id' | 'meta'> & { title: string };
+export type BoardSummary = Pick<Board, 'code' | 'id' | 'meta'> & {
+  title: string;
+  status: DesignStatus;
+  // Not imported from the live config
+  isNew: boolean;
+};
 
 export const TEMPLATES_CODE = '_templates';
 
@@ -179,6 +209,30 @@ export const emptyBoard = (title: string): BoardContent => ({
   connections: [],
   stickies: [],
 });
+
+// A board imported from a live helpline has frames read from its Studio flows; any other board
+// (empty, or from a template) is new
+export const isImportedBoard = (content: Pick<BoardContent, 'frames'>) =>
+  content.frames.some((frame) => frame.studio !== undefined);
+
+export const statusOf = (content: Pick<BoardContent, 'frames' | 'status'>): DesignStatus =>
+  content.status ?? (isImportedBoard(content) ? 'imported' : STATUS_AFTER_CHANGE);
+
+/**
+ * The part of a board that is the design: what changing sets the status back to "In progress".
+ * Comments (and the tasks on them), stickies, script approvals and the title are left out:
+ * talking about or reviewing a design doesn't change it.
+ */
+export const designOf = (content: Pick<BoardContent, 'frames' | 'objects' | 'connections'>) =>
+  JSON.stringify({
+    frames: content.frames,
+    objects: content.objects.map(({ thread, message, ...object }) => {
+      if (!message) return object;
+      const { approved, ...rest } = message;
+      return { ...object, message: rest };
+    }),
+    connections: content.connections,
+  });
 
 // ---------------------------------------------------------------------------------------------
 // Object types

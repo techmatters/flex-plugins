@@ -1,4 +1,4 @@
-# Form builder: how it works
+# Aselo Builder: how it works
 
 For the Aselo technical team. How to use the builder is in [user-guide.md](user-guide.md); the
 step-by-step setup is in [../terraform/README.md](../terraform/README.md).

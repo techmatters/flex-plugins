@@ -1,7 +1,11 @@
-# Aselo Form Builder
+# Aselo Builder
 
-A web app for helpline staff to configure their Aselo forms (contact forms, issue
-categories, case sections and statuses) without editing JSON by hand.
+A web app for helpline staff and the Aselo team to design a helpline: its forms (contact forms,
+issue categories, case sections and statuses), contact flows, routing and chatbots, without editing
+JSON by hand.
+
+It was called the Aselo Form Builder: the folder, the site's address, the Okta app and groups
+(`form-builder-<code>`, `form-builder-aselo-staff`) and the AWS resources keep that name.
 
 It reads and writes the same files the Flex plugin uses:
 `lambdas/packages/hrm-form-definitions/form-definitions/<helpline>/<version>/`.
@@ -54,6 +58,26 @@ It reads and writes the same files the Flex plugin uses:
   can also fill in contact form fields, written to `PrepopulateMappings.json` (never the older
   `PrepopulateKeys.json`); helplines without `use_prepopulate_mappings` are told it only takes
   effect once that flag is on.
+- **Filling in the contact** (Contact forms menu): the `formSelector` of
+  `PrepopulateMappings.json`, which decides, when a contact arrives, which contact form tabs the
+  chatbot (`survey`) and webchat form (`preEngagement`) answers fill in, and which call type is
+  preselected. Shown in plain words with a small "when → fills in / call type" diagram:
+  - *Always the same forms* (`staticSelector`): the tabs in `availableTabs`, and `callType` if
+    set (else the counselor picks).
+  - *Depends on an answer* (`serviceUserChoiceSelector`): a list of `{ form, input,
+    aboutSelfValue }` checked in order; the first one answered decides. Equal to
+    `aboutSelfValue` (default `Yes`) = about themselves: Case + Child, "Child calling about
+    self"; any other answer: Case + Caller, "Someone calling about a child"; no answer: chatbot
+    answers fill Case only, webchat answers Case + Child, "Child calling about self".
+  - No `formSelector` (or an unknown `selectorType`) works like *Depends on an answer* with
+    `aboutSelf` in the chatbot.
+
+  Aselo staff edit it (helpline staff see it read-only); only `formSelector` is written, never
+  `survey` or `preEngagement`. Checks: tabs Aselo can't fill in or that the helpline doesn't
+  have, no tabs, call types Aselo can't preselect, webchat answers that aren't webchat questions
+  or whose value isn't one of the question's answers, and mapped answers that land on a tab that
+  is never filled in. It only applies with `use_prepopulate_mappings` on: the panel says so, and
+  a change with the flag off adds a note for the reviewer. Logic in `src/formSelector.ts`.
 - **Issue categories** (`tabbedForms/IssueCategorizationTab.json`) next to the Aselo categories
   tab: add, reorder and colour categories and subcategories (one at a time or pasted one per
   line), help links for counselors, and how many can be chosen. Contacts and reports store the

@@ -32,13 +32,31 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
-import type { BoardContent, Channel, Connection, FlowObject, FlowObjectType, Frame, Side } from '../src/flows/model';
+import type {
+  BoardContent,
+  Channel,
+  Connection,
+  FlowObject,
+  FlowObjectType,
+  Frame,
+  Side,
+  TaskAttributes,
+} from '../src/flows/model';
 import { emptyBoard, OBJECT_TYPES } from '../src/flows/model';
 import { RECORDING_FILE_PATTERN } from '../src/flows/recordings';
 import { studioNameProblems } from '../src/flows/checks';
+import {
+  CHANNEL_ATTRIBUTES_REFERENCE,
+  channelAttributesKeys,
+  isChannelAttributesReference,
+} from '../src/flows/taskAttributes';
 import { HclObject, HclValue, isObject, localsOf, parseHcl, parseTemplate } from './hcl';
 
-export type ImportedRecording = { fileName: string; environment: 'staging' | 'production'; sourceUrl: string };
+export type ImportedRecording = {
+  fileName: string;
+  environment: 'staging' | 'production';
+  sourceUrl: string;
+};
 
 export type ImportedFlow = {
   title: string;
@@ -69,7 +87,11 @@ export type ImportedBoard = {
   recordingFiles: string[];
 };
 
-export type HelplineImport = { boards: ImportedBoard[]; report: ImportReport; recordings: ImportedRecording[] };
+export type HelplineImport = {
+  boards: ImportedBoard[];
+  report: ImportReport;
+  recordings: ImportedRecording[];
+};
 
 const ENVIRONMENTS = ['production', 'staging'] as const;
 export type Environment = (typeof ENVIRONMENTS)[number];
@@ -119,6 +141,8 @@ type FlowSource = {
   channelEnvironments: Record<string, Environment[]>;
   channel?: Channel;
   vars: Partial<Record<Environment, Vars>>;
+  // Each channel's channel-attributes template (under twilio-iac/helplines), as Terraform picks it
+  channelAttributes: Record<string, string>;
 };
 
 const readLocals = async (file: string): Promise<HclObject | undefined> => {
@@ -138,6 +162,28 @@ const configOf = (locals?: HclObject): HclObject => {
 };
 
 const objectOf = (value: HclValue | undefined): HclObject => (isObject(value) ? value : {});
+
+/**
+ * A helpline's settings for each environment: common.hcl, with the environment's file merged over
+ * it as Terraform's merge() does (key by key). Production first.
+ */
+export const readHelplineConfigs = async (helplinesDir: string, code: string) => {
+  if (!/^[a-z0-9]+$/.test(code)) throw new Error(`Invalid helpline ${code}`);
+  const dir = path.join(helplinesDir, code);
+  const common = configOf(await readLocals(path.join(dir, 'common.hcl')));
+  const configs: Partial<Record<Environment, HclObject>> = {};
+  for (const environment of ENVIRONMENTS) {
+    const locals = await readLocals(path.join(dir, `${environment}.hcl`));
+    if (locals) configs[environment] = { ...common, ...configOf(locals) };
+  }
+  const environments = ENVIRONMENTS.filter((environment) => configs[environment]);
+  if (environments.length === 0) throw new Error(`No staging.hcl or production.hcl for ${code}.`);
+  return { configs, environments };
+};
+
+// Templates are referenced by their path in the deploy container; this is it under twilio-iac/helplines
+export const templatePathOf = (templatefile: string) =>
+  templatefile.startsWith(CONTAINER_HELPLINES_DIR) ? templatefile.slice(CONTAINER_HELPLINES_DIR.length) : undefined;
 const textOf = (value: HclValue | undefined) => (typeof value === 'string' ? value : undefined);
 
 // ${flow_vars.x} and ${channel_flow_vars.x} with the environment's values; the rest stays as written
@@ -282,18 +328,13 @@ const fileNameOf = (url: string) => decodeURIComponent(new URL(url).pathname.spl
  * copy of master) and builds its boards (one per Studio flow), the report and the recordings to copy.
  */
 export const importHelpline = async (helplinesDir: string, code: string): Promise<HelplineImport> => {
-  if (!/^[a-z0-9]+$/.test(code)) throw new Error(`Invalid helpline ${code}`);
-  const dir = path.join(helplinesDir, code);
   const notes: string[] = [];
-  const common = configOf(await readLocals(path.join(dir, 'common.hcl')));
-  const configs: Partial<Record<Environment, HclObject>> = {};
-  for (const environment of ENVIRONMENTS) {
-    const locals = await readLocals(path.join(dir, `${environment}.hcl`));
-    // Terraform's merge(): the environment's settings replace the shared ones, key by key
-    if (locals) configs[environment] = { ...common, ...configOf(locals) };
-  }
-  const environments = ENVIRONMENTS.filter((environment) => configs[environment]);
-  if (environments.length === 0) throw new Error(`No staging.hcl or production.hcl for ${code}.`);
+  // Recordings whose address isn't a URL (yet), by flow and address
+  const unresolvedRecordings = new Map<
+    string,
+    { title: string; written: string; resolved?: string; names: Set<string>; environments: Set<string> }
+  >();
+  const { configs, environments } = await readHelplineConfigs(helplinesDir, code);
 
   // The Studio flows: one per template, with each environment's variables
   const sources = new Map<string, FlowSource>();
@@ -314,6 +355,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
       channelEnvironments: {},
       channel,
       vars: {},
+      channelAttributes: {},
     };
     if (channelName && !source.channels.includes(channelName)) source.channels.push(channelName);
     if (channelName) {
@@ -324,13 +366,20 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
     source.vars[environment] ??= vars;
     sources.set(key, source);
   };
+  // channel_attributes: the helpline's (it replaces the whole map), or defaults.hcl's
+  const defaults = await readLocals(path.join(helplinesDir, 'defaults.hcl'));
   environments.forEach((environment) => {
     const config = configs[environment]!;
     const flowVars = objectOf(config.flow_vars);
+    const attributesMap: HclObject = isObject(config.channel_attributes)
+      ? (config.channel_attributes as HclObject)
+      : objectOf(defaults?.channel_attributes);
     Object.entries(objectOf(config.channels)).forEach(([channelName, value]) => {
       const settings = objectOf(value);
       const templatefile = textOf(settings.templatefile);
       const channelType = textOf(settings.channel_type) ?? '';
+      const { key, fallback } = channelAttributesKeys(channelName, settings.messaging_mode === 'conversations');
+      const attributesFile = templatePathOf(textOf(attributesMap[key]) ?? textOf(attributesMap[fallback]) ?? '');
       addSource(
         `channel:${templatefile}`,
         path.basename(templatefile ?? channelName, '.tftpl'),
@@ -340,6 +389,9 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         channelName,
         CHANNEL_TYPES[channelType],
       );
+      const source = sources.get(`channel:${templatefile}`);
+      // Production's, when both have the channel (production is read first)
+      if (source && attributesFile) source.channelAttributes[channelName] ??= attributesFile;
     });
     if (config.enable_system_down === true) {
       addSource('systemDown', 'System down', textOf(config.system_down_templatefile), environment, {
@@ -388,6 +440,50 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
     const minY = Math.min(...offsets.map((offset) => offset.y));
     const flowRecordingFiles = new Set<string>();
     const primary = source.vars.production ?? source.vars.staging;
+
+    // The channel-attributes templates its "Send to queue" widgets use
+    const attributesTemplates = [...new Set(Object.values(source.channelAttributes))];
+    const attributesTexts = new Map<string, string>();
+    for (const template of attributesTemplates) {
+      try {
+        attributesTexts.set(
+          template,
+          (await fs.readFile(path.join(helplinesDir, template), 'utf8')).replace(/\r\n/g, '\n').trimEnd(),
+        );
+      } catch {
+        notes.push(`${source.title}: couldn't read the task attributes template ${template}.`);
+      }
+    }
+    const taskAttributesOf = (name: string, attributes: unknown): TaskAttributes | undefined => {
+      if (typeof attributes === 'string' && !isChannelAttributesReference(attributes)) {
+        return { json: attributes, source: { kind: 'inline' }, imported: attributes };
+      }
+      if (!isChannelAttributesReference(attributes)) return undefined;
+      const [template, ...others] = attributesTemplates.filter((candidate) => attributesTexts.has(candidate));
+      if (!template) {
+        notes.push(
+          `${source.title}: “${name}” uses ${CHANNEL_ATTRIBUTES_REFERENCE}, but no channel uses this flow, so its task attributes can't be told.`,
+        );
+        return undefined;
+      }
+      const channelsOf = (candidate: string) =>
+        Object.keys(source.channelAttributes).filter((channel) => source.channelAttributes[channel] === candidate);
+      const json = attributesTexts.get(template)!;
+      return {
+        json,
+        source: { kind: 'channelAttributes', template, channels: channelsOf(template) },
+        imported: json,
+        ...(others.length > 0
+          ? {
+              otherChannels: others.map((other) => ({
+                template: other,
+                channels: channelsOf(other),
+                json: attributesTexts.get(other)!,
+              })),
+            }
+          : {}),
+      };
+    };
 
     const objects: FlowObject[] = states.map((state, index) => {
       const name = textOf(state.name) ?? `widget ${index + 1}`;
@@ -456,7 +552,20 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
             if (!vars) return;
             const url = sourceUrlOf(resolve(play, vars));
             if (!url) {
-              notes.push(`${source.title}: couldn't work out where “${name}”'s ${environment} recording is (${play}).`);
+              // One note per flow and address (e.g. a flow_vars URL still a placeholder), not per recording
+              // The address without the file name, e.g. ${flow_vars.post_survey_assets_url}/
+              const where = play.includes('/') ? play.replace(/[^/]*$/, '') : play;
+              const key = `${source.title}|${where}`;
+              const missing = unresolvedRecordings.get(key) ?? {
+                title: source.title,
+                written: where === play ? play : `${where}…`,
+                resolved: resolve(where, vars),
+                names: new Set<string>(),
+                environments: new Set<string>(),
+              };
+              missing.names.add(name);
+              missing.environments.add(environment);
+              unresolvedRecordings.set(key, missing);
               return;
             }
             const fileName = fileNameOf(url);
@@ -485,6 +594,11 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         if (!object.message.language) delete object.message.language;
         // So regenerating the flow only touches the text if it's changed on the board
         if (script !== undefined && object.studio) object.studio.importedScript = script;
+      }
+
+      if (type === 'sendToQueue') {
+        const taskAttributes = taskAttributesOf(name, properties.attributes);
+        if (taskAttributes) object.taskAttributes = taskAttributes;
       }
 
       // The route's settings, from the request body
@@ -560,7 +674,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
     const boardTitle = `${code.toUpperCase()} · ${title}`;
     boards.push({
       title: boardTitle,
-      content: { ...emptyBoard(boardTitle), frames: [frame], objects, connections },
+      content: { ...emptyBoard(boardTitle), frames: [frame], objects, connections, status: 'imported' },
       recordingFiles: [...flowRecordingFiles],
     });
     reportFlows.push({
@@ -581,6 +695,17 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
     });
   }
 
+  unresolvedRecordings.forEach(({ title, written, resolved: value, names, environments: where }) => {
+    const shown = value && value !== written.replace(/…$/, '') ? ` (it's “${value}”)` : '';
+    const what =
+      names.size === 1
+        ? '1 recording not copied, as its address'
+        : `${names.size} recordings not copied, as their address`;
+    notes.push(
+      `${title}: ${what} isn't a URL yet in ${[...where].sort().reverse().join(' and ')}: ${written}${shown}. Upload them in the builder once recorded.`,
+    );
+  });
+
   if (legacyNames > 0) {
     notes.push(
       `${legacyNames} widget name${legacyNames === 1 ? " doesn't" : "s don't"} follow the Studio flow standards. They're kept as they are, since they're live; renaming one later means changing the widget, its recording and the template together.`,
@@ -592,7 +717,12 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
 
   return {
     boards,
-    report: { helpline: code, environments: [...environments], flows: reportFlows, notes: [...new Set(notes)] },
+    report: {
+      helpline: code,
+      environments: [...environments],
+      flows: reportFlows,
+      notes: [...new Set(notes)],
+    },
     recordings: [...recordings.values()],
   };
 };

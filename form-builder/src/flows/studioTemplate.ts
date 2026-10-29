@@ -24,11 +24,14 @@
  * - new objects become widgets of their kind; what the board can't know (a split's input, a
  *   workflow) is marked TODO, for whoever builds the flow (a person, or Claude with the
  *   studio-flow-from-board skill);
- * - texts that live in flow_vars stay there: the changes are listed, for the helpline's .hcl files.
+ * - texts that live in flow_vars stay there: the changes are listed, for the helpline's .hcl files;
+ * - "Send to queue" task attributes kept in a channel-attributes template stay there too
+ *   (${channel_attributes.default}): new and changed ones are listed, for that template.
  */
-import type { BoardContent, FlowObject, Frame } from './model';
+import type { BoardContent, FlowObject, Frame, TaskAttributes } from './model';
 import { exitsOf, OBJECT_TYPES, toSnake } from './model';
 import { isVoiceMessage } from './recordings';
+import { CHANNEL_ATTRIBUTES_REFERENCE } from './taskAttributes';
 
 export type StudioTransition = Record<string, unknown> & { event: string; next?: string };
 export type StudioState = {
@@ -43,6 +46,15 @@ export type StudioFlow = Record<string, unknown> & { states: StudioState[] };
 // channel's channel_flow_vars
 export type FlowVarChange = { scope: string; name: string; value: string; widget: string };
 
+// A "Send to queue" widget's task attributes that are new or changed on the board, and where they're
+// kept: a channel-attributes template (for its channels), or the widget itself (already written)
+export type TaskAttributesChange = {
+  widget: string;
+  change: 'new' | 'changed';
+  json: string;
+  source: TaskAttributes['source'];
+};
+
 export type GeneratedStudioFlow = {
   frameId?: string;
   title: string;
@@ -53,6 +65,7 @@ export type GeneratedStudioFlow = {
   // The .tftpl file's contents
   text: string;
   flowVars: FlowVarChange[];
+  taskAttributes: TaskAttributesChange[];
   // What a person (or Claude) still has to fill in or decide
   todo: string[];
 };
@@ -112,7 +125,7 @@ const interpolationEnd = (text: string, start: number) => {
 };
 
 // A quoted HCL string: text escaped, interpolations (${...}) kept exactly as written
-const hclString = (text: string) => {
+export const hclString = (text: string) => {
   let result = '"';
   let index = 0;
   while (index < text.length) {
@@ -133,7 +146,7 @@ const hclString = (text: string) => {
 const isExpression = (value: object) => Object.keys(value).length === 1 && 'expression' in value;
 
 // The flow as HCL, laid out like JSON (as the helplines' templates are written)
-const toHcl = (value: unknown, indent = ''): string => {
+export const toHcl = (value: unknown, indent = ''): string => {
   if (typeof value === 'string') return hclString(value);
   if (value === null || typeof value !== 'object') return JSON.stringify(value);
   // An expression the template had unquoted, kept as it was
@@ -159,7 +172,24 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
   const byId = new Map(objects.map((object) => [object.id, object]));
   const todo: string[] = [];
   const flowVars: FlowVarChange[] = [];
+  const taskAttributes: TaskAttributesChange[] = [];
   const label = (object: FlowObject) => `“${object.studioName ?? object.text}”`;
+
+  // Task attributes in a channel-attributes template: listed for it (the widget keeps the reference)
+  const listTaskAttributes = (object: FlowObject, name: string, change: TaskAttributesChange['change']) => {
+    const attributes = object.taskAttributes!;
+    taskAttributes.push({ widget: name, change, json: attributes.json, source: attributes.source });
+    if (attributes.source.kind !== 'channelAttributes') return;
+    const { template, channels } = attributes.source;
+    const shared = template.startsWith('templates/');
+    todo.push(
+      `${label(object)}: its task attributes are ${change}; they're kept in ${template}${channels.length > 0 ? ` (channels ${channels.join(', ')})` : ''}. ${
+        shared
+          ? "That template is shared by other helplines: write a template of this helpline's own and point the channel's channel_attributes entry in common.hcl at it."
+          : 'Update it.'
+      }`,
+    );
+  };
 
   // The recordings folder variable this flow's voice widgets already use, for new ones
   const recordingsVariable = objects
@@ -233,6 +263,11 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         todo.push(
           `${label(object)} was ${studio.name} in Studio: renaming a live widget also means its recording file and any monitoring that uses the name.`,
         );
+      }
+      const attributes = object.taskAttributes;
+      if (attributes && attributes.imported !== undefined && attributes.json !== attributes.imported) {
+        if (attributes.source.kind === 'inline') properties.attributes = attributes.json;
+        listTaskAttributes(object, name, 'changed');
       }
       if ('say' in properties) setText(object, properties, 'say', name);
       else if ('body' in properties && OBJECT_TYPES[object.type].hasMessage) setText(object, properties, 'body', name);
@@ -478,8 +513,11 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
             },
           },
         ];
-      case 'sendToQueue':
-        todo.push(`${label(object)}: set its workflow, task channel and task attributes.`);
+      case 'sendToQueue': {
+        todo.push(`${label(object)}: set its workflow and task channel.`);
+        const attributes = object.taskAttributes;
+        if (attributes) listTaskAttributes(object, name, 'new');
+        else todo.push(`${label(object)}: set its task attributes.`);
         return [
           {
             name,
@@ -489,9 +527,20 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
               withNext({ event: 'failedToEnqueue' }, next('failed to enqueue')),
               { event: 'callFailure' },
             ],
-            properties: { offset, workflow: TODO, channel: TODO, attributes: TODO },
+            properties: {
+              offset,
+              workflow: TODO,
+              channel: TODO,
+              attributes:
+                attributes?.source.kind === 'inline'
+                  ? attributes.json
+                  : attributes
+                    ? CHANNEL_ATTRIBUTES_REFERENCE
+                    : TODO,
+            },
           },
         ];
+      }
       case 'recordVoicemail':
         return [
           {
@@ -571,6 +620,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
     flow,
     text: toTemplateText(flow),
     flowVars,
+    taskAttributes,
     todo: [...new Set(todo)],
   };
 };

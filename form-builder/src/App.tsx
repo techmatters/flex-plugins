@@ -21,20 +21,37 @@ import { fetchDefinitionFiles, fetchHelplines } from './api';
 import { isSignInEnabled, signOut } from './auth';
 import { DraftClient, httpDraftClient } from './draftClient';
 import { HelplineWorkspace } from './components/HelplineWorkspace';
+import { AseloBuilderLogo } from './components/AseloBuilderLogo';
 import { DraftsList } from './components/DraftsList';
 import { FlowsArea } from './flows/FlowsArea';
+import { RoutingArea } from './routing/RoutingArea';
+import type { RoutingClient } from './routing/routingClient';
+import { ChatbotsArea } from './chatbots/ChatbotsArea';
+import type { ChatbotClient } from './chatbots/chatbotClient';
 import type { BoardClient } from './flows/boardClient';
 
-type Area = 'forms' | 'flows';
+type Area = 'forms' | 'flows' | 'routing' | 'chatbots';
 
-const areaFromUrl = (): Area => (new URLSearchParams(window.location.search).get('area') === 'flows' ? 'flows' : 'forms');
+const AREA_LABELS: Record<Area, string> = {
+  forms: 'Forms',
+  flows: 'Contact flows',
+  routing: 'Routing',
+  chatbots: 'Chatbots',
+};
+
+const areaFromUrl = (): Area => {
+  const area = new URLSearchParams(window.location.search).get('area');
+  return area === 'flows' || area === 'routing' || area === 'chatbots' ? area : 'forms';
+};
 
 type Props = {
   draftClient?: DraftClient;
   boardClient?: BoardClient;
+  routingClient?: RoutingClient;
+  chatbotClient?: ChatbotClient;
 };
 
-export const App = ({ draftClient = httpDraftClient, boardClient }: Props) => {
+export const App = ({ draftClient = httpDraftClient, boardClient, routingClient, chatbotClient }: Props) => {
   // Forms, or the flow designer (Contact flows)
   const [area, setArea] = useState<Area>(areaFromUrl);
   const [user, setUser] = useState<Me>();
@@ -87,20 +104,33 @@ export const App = ({ draftClient = httpDraftClient, boardClient }: Props) => {
 
   const versions = helplines.find((helpline) => helpline.code === code)?.versions ?? [];
 
+  // An area's button always leads to its start page: for Forms, the drafts list (closing the
+  // helpline open); for the others, their table (remounted, so they start over)
+  const [homeCount, setHomeCount] = useState(0);
+
   const switchArea = (newArea: Area) => {
     setArea(newArea);
+    setHomeCount((count) => count + 1);
     const params = new URLSearchParams(window.location.search);
     params.set('area', newArea);
-    if (newArea === 'forms') params.delete('board');
+    params.delete('board');
+    if (newArea === 'forms') {
+      setCode('');
+      setVersion('');
+      setDefinitions(undefined);
+      params.delete('helpline');
+    }
     window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
   };
 
   return (
-    <div className={area === 'flows' ? 'app app-flows' : 'app'}>
+    <div className={area === 'forms' ? 'app' : `app app-${area}`}>
       <header className="top-bar">
-        <h1>Aselo Form Builder</h1>
+        <h1>
+          <AseloBuilderLogo />
+        </h1>
         <nav className="area-switch" aria-label="Area">
-          {(['forms', 'flows'] as Area[]).map((candidate) => (
+          {(['forms', 'flows', 'routing', 'chatbots'] as Area[]).map((candidate) => (
             <button
               key={candidate}
               type="button"
@@ -108,7 +138,7 @@ export const App = ({ draftClient = httpDraftClient, boardClient }: Props) => {
               aria-current={area === candidate ? 'page' : undefined}
               onClick={() => switchArea(candidate)}
             >
-              {candidate === 'forms' ? 'Forms' : 'Contact flows'}
+              {AREA_LABELS[candidate]}
             </button>
           ))}
         </nav>
@@ -166,8 +196,28 @@ export const App = ({ draftClient = httpDraftClient, boardClient }: Props) => {
 
       {error && <div className="alert alert-error">{error}</div>}
 
+      {area === 'chatbots' && user && (
+        <ChatbotsArea
+          key={homeCount}
+          client={chatbotClient}
+          helplineCodes={helplines.map((helpline) => helpline.code)}
+          staffMode={actingAsStaff}
+          userName={user.name}
+        />
+      )}
+
+      {area === 'routing' && user && (
+        <RoutingArea
+          key={homeCount}
+          client={routingClient}
+          helplineCodes={helplines.map((helpline) => helpline.code)}
+          staffMode={actingAsStaff}
+        />
+      )}
+
       {area === 'flows' && user && (
         <FlowsArea
+          key={homeCount}
           client={boardClient}
           helplineCodes={helplines.map((helpline) => helpline.code)}
           staffMode={actingAsStaff}
@@ -177,8 +227,12 @@ export const App = ({ draftClient = httpDraftClient, boardClient }: Props) => {
       )}
 
       {area === 'forms' && !code && !error && (
-        <main className="empty-state">
-          <p>Choose a helpline to see and edit its forms.</p>
+        <main className="area-home forms-home">
+          <h2>Forms</h2>
+          <p className="field-hint area-home-intro">
+            The forms counselors fill in for each contact and case, the webchat form, and how contacts are filled in
+            from the chatbot. Choose a helpline (at the top) to see and edit its forms.
+          </p>
           {user && (
             <DraftsList
               draftClient={draftClient}

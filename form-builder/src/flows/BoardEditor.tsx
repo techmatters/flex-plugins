@@ -45,7 +45,19 @@ import type { RecordingsList } from './recordings';
 import { RecordingActions, RecordingsPanel } from './RecordingControls';
 import type { BoardClient } from './boardClient';
 import type { Board, BoardContent, FlowObjectType, Person } from './model';
-import { ASELO_PEOPLE_CODE, objectColor, OBJECT_TYPES, STICKY_COLORS, TEMPLATES_CODE } from './model';
+import {
+  ASELO_PEOPLE_CODE,
+  designOf,
+  isImportedBoard,
+  objectColor,
+  OBJECT_TYPES,
+  statusOf,
+  STICKY_COLORS,
+  TEMPLATES_CODE,
+} from './model';
+import type { DesignStatus } from '../designStatus';
+import { STATUS_AFTER_CHANGE } from '../designStatus';
+import { DesignStatusPicker } from '../components/DesignStatusPicker';
 import {
   ARROW,
   CanvasNode,
@@ -114,25 +126,39 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
   // Show the whole board when opening it; an empty board keeps the view still as things are added
   const [fitOnOpen] = useState(() => nodes.length > 0);
 
-  const content = useMemo(() => toContent(title, nodes, edges), [title, nodes, edges]);
+  const [status, setStatus] = useState<DesignStatus>(() => statusOf(board.content));
+  // What's on the canvas; the status isn't part of it (nor of undo)
+  const canvasContent = useMemo(() => toContent(title, nodes, edges), [title, nodes, edges]);
+  const canvasJson = useMemo(() => JSON.stringify(canvasContent), [canvasContent]);
+  const content = useMemo(() => ({ ...canvasContent, status }), [canvasContent, status]);
   const json = useMemo(() => JSON.stringify(content), [content]);
   const dragging = nodes.some((node) => node.dragging);
 
+  // ----- Status: every change goes through the canvas, so a change to the design (not to comments
+  // or stickies) is seen here, and means the board is being worked on again
+  const design = useMemo(() => designOf(canvasContent), [canvasContent]);
+  const lastDesign = useRef(design);
+  useEffect(() => {
+    if (design === lastDesign.current) return;
+    lastDesign.current = design;
+    if (!readOnly) setStatus(STATUS_AFTER_CHANGE);
+  }, [design, readOnly]);
+
   // ----- Undo and redo: snapshots of the board, taken when it stops changing
-  const history = useRef({ stack: [JSON.stringify(board.content)], index: 0 });
+  const history = useRef({ stack: [canvasJson], index: 0 });
   const [, setHistoryVersion] = useState(0);
 
   useEffect(() => {
     if (dragging) return undefined;
     const timer = setTimeout(() => {
       const { current } = history;
-      if (current.stack[current.index] === json) return;
-      current.stack = [...current.stack.slice(0, current.index + 1), json].slice(-HISTORY_LIMIT);
+      if (current.stack[current.index] === canvasJson) return;
+      current.stack = [...current.stack.slice(0, current.index + 1), canvasJson].slice(-HISTORY_LIMIT);
       current.index = current.stack.length - 1;
       setHistoryVersion((version) => version + 1);
     }, HISTORY_DELAY_MS);
     return () => clearTimeout(timer);
-  }, [json, dragging]);
+  }, [canvasJson, dragging]);
 
   const restore = (snapshot: string) => {
     const restored = JSON.parse(snapshot) as BoardContent;
@@ -561,6 +587,15 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
           <span className="flow-board-code">
             {board.code === '_templates' ? 'Aselo template' : board.code.toUpperCase()}
           </span>
+          {board.code !== TEMPLATES_CODE && (
+            <DesignStatusPicker
+              status={status}
+              isNew={!isImportedBoard(content)}
+              editable={!readOnly}
+              onChange={setStatus}
+              label="Board status"
+            />
+          )}
           {readOnly ? (
             <span className="flow-save-state">View only</span>
           ) : (

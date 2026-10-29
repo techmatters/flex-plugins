@@ -1,4 +1,4 @@
-# Form builder: user guide
+# Aselo Builder: user guide
 
 The form builder is a website for changing how a helpline's Aselo looks and works for counselors:
 contact forms, issue categories, call types, canned responses, automatic messages, the webchat
@@ -62,8 +62,11 @@ browser tab.
 
 The left menu has everything you can change:
 
-- **Contact forms**: the contact form tabs (e.g. caller and child information) and **Issue
-  categories**.
+- **Contact forms**: the contact form tabs (e.g. caller and child information), **Issue
+  categories**, and **Filling in the contact**: which parts of the contact form Aselo fills in
+  from the chatbot and webchat form answers, and which call type it picks (for example "the
+  answer to *aboutSelf* decides: *Yes* means the person is writing about themselves"). Only the
+  Aselo team can change it.
 - **Chats and calls**: **Call types**, **Canned responses**, **Automatic messages**, **Webchat
   form**.
 - **Cases**: **Sections**, **Case statuses**, and each case section's form (if your helpline uses
@@ -131,6 +134,10 @@ also posted in the Slack channel.
 - **Locked settings unlocked**: saved field names, PII on existing fields, switching an existing
   field's kind, renaming existing call types, categories, sections and statuses, removing existing
   sections. These affect saved data and reporting: check before changing them.
+- **Contact forms › Filling in the contact**: choose *Always the same forms* (tabs and call type)
+  or *Depends on an answer* (an ordered list of chatbot or webchat answers, and the value that
+  means "about themselves"). It's the `formSelector` of `PrepopulateMappings.json`, and only
+  applies when `use_prepopulate_mappings` is on.
 - **View as helpline staff** (top right) shows the builder as helpline staff see it.
 
 ### Reviewing a draft

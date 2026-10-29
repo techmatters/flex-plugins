@@ -64,7 +64,7 @@ export class GitHubApplier implements DraftApplier {
     });
     const coAuthor = user.email ? `\n\nCo-authored-by: ${user.name} <${user.email}>` : '';
     const commit = await this.github.request<{ sha: string }>('POST', '/git/commits', {
-      message: `${helpline}: Form builder changes (${draft.version})\n\nApplied by ${user.name} from the Aselo Form Builder.${coAuthor}`,
+      message: `${helpline}: Form changes (${draft.version})\n\nApplied by ${user.name} from the Aselo Builder.${coAuthor}`,
       tree: tree.sha,
       parents: [snapshot.sha],
     });
@@ -72,14 +72,14 @@ export class GitHubApplier implements DraftApplier {
     const branch = branchNameFor(draft, this.now());
     await this.github.request('POST', '/git/refs', { ref: `refs/heads/${branch}`, sha: commit.sha });
     const pull = await this.github.request<{ number: number; html_url: string }>('POST', '/pulls', {
-      title: `${helpline}: Form builder changes (${draft.version})`,
+      title: `${helpline}: Form changes (${draft.version})`,
       head: branch,
       base: this.baseBranch,
       body: [
         details.description?.trim() || `Files changed:\n\n${files.map(({ repoPath }) => `- \`${repoPath}\``).join('\n')}`,
         '',
         `---`,
-        `Applied by ${user.name} from the Aselo Form Builder. Draft last edited by ${draft.meta.updatedBy}.`,
+        `Applied by ${user.name} from the Aselo Builder. Draft last edited by ${draft.meta.updatedBy}.`,
       ].join('\n'),
     });
 

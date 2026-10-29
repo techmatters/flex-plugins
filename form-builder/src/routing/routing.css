@@ -1,0 +1,867 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+/* The routing designer: conditions are blue, skills purple, queues pink (as in the Miro boards) */
+.app-routing {
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.routing-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.routing-pick {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 16px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.routing-pick select {
+  font: inherit;
+  padding: 4px 8px;
+}
+
+.routing-intro,
+.routing-empty {
+  padding: 24px 32px;
+}
+
+.routing-empty {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.routing-area > .flows-import-preview {
+  margin: 16px 32px;
+  padding: 16px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.routing-editor {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.routing-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 0 12px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.routing-tabs button {
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 10px 12px 8px;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.routing-tabs button[aria-selected='true'] {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+.routing-tabs button.has-errors {
+  color: #c62828;
+}
+
+/* A workflow: cards on the left, the diagram on the right */
+.routing-workflow {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+}
+
+.routing-cards {
+  width: 46%;
+  min-width: 420px;
+  overflow-y: auto;
+  padding: 12px 16px 40px;
+  border-right: 1px solid var(--color-border);
+}
+
+.routing-diagram {
+  flex: 1;
+  min-width: 0;
+  background: #fafbfc;
+}
+
+.routing-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 24px 40px;
+  max-width: 980px;
+}
+
+.routing-workflow-settings {
+  max-width: 340px;
+}
+
+.routing-rule-list {
+  list-style: none;
+  margin: 12px 0;
+  padding: 0;
+}
+
+.routing-rule-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid #1976d2;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+
+.routing-rule-card.selected {
+  box-shadow: 0 0 0 2px #90caf9;
+}
+
+.routing-rule-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.routing-rule-number,
+.routing-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 11px;
+  background: #1976d2;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.routing-step {
+  background: #ad1457;
+}
+
+.routing-rule-name {
+  flex: 1;
+  font: inherit;
+  font-weight: 600;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 4px 6px;
+}
+
+.routing-rule-name:hover,
+.routing-rule-name:focus {
+  border-color: var(--color-border);
+}
+
+.routing-section {
+  margin-top: 8px;
+}
+
+.routing-section h4 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+  margin: 6px 0;
+}
+
+.routing-section h4 .field-hint {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  margin-left: 6px;
+}
+
+/* Rule / JSON tabs on a rule card */
+.routing-rule-tabs {
+  display: inline-flex;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.routing-rule-tabs button {
+  font: inherit;
+  font-size: 12px;
+  padding: 3px 10px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-muted);
+}
+
+.routing-rule-tabs button.active {
+  background: #1976d2;
+  color: #ffffff;
+}
+
+.routing-json {
+  margin: 0;
+  padding: 10px 12px;
+  max-height: 420px;
+  overflow: auto;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+/* Alternative groups of task conditions */
+.routing-group-card {
+  border: 1px dashed #90caf9;
+  border-radius: var(--radius);
+  padding: 4px 10px 6px;
+}
+
+.routing-group-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #1565c0;
+  font-weight: 600;
+}
+
+.routing-or-divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #1565c0;
+}
+
+.routing-or-divider::before,
+.routing-or-divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid #bbdefb;
+}
+
+.routing-attribute-input {
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.routing-warning {
+  color: #8a4b00;
+  background: #fff4e5;
+  border-radius: var(--radius);
+  padding: 2px 6px;
+}
+
+.routing-conditions,
+.routing-targets {
+  list-style: none;
+  margin: 0 0 6px;
+  padding: 0;
+}
+
+/* One row: the values wrap within their own space, and the remove button stays at the end */
+.routing-condition {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 4px 0;
+}
+
+.routing-condition > select,
+.routing-condition > .routing-attribute-input {
+  flex-shrink: 0;
+}
+
+.routing-condition .routing-values {
+  flex: 1;
+  min-width: 0;
+}
+
+.routing-condition > .icon-button {
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.routing-condition select,
+.routing-condition input,
+.routing-who select,
+.routing-target-foot input,
+.routing-target-foot select,
+.routing-target-head select,
+.routing-queue-groups select,
+.routing-queue-head input,
+.routing-skill-list input,
+.routing-add input,
+.routing-who input {
+  font: inherit;
+  font-size: 13px;
+  padding: 3px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.routing-condition.custom input {
+  flex: 1;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+}
+
+.routing-values {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.routing-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12.5px;
+  font-weight: 600;
+  border-radius: 12px;
+  padding: 2px 9px;
+}
+
+.routing-chip button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.routing-chip.value {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.routing-chip.skill {
+  background: #ede7f6;
+  color: #4527a0;
+}
+
+.routing-skills-bar .routing-chip.skill {
+  cursor: grab;
+}
+
+.routing-chip.custom {
+  background: #fff3e0;
+  color: #8a4b00;
+}
+
+.routing-skills-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  background: #f7f5fb;
+  border: 1px dashed #b39ddb;
+  border-radius: var(--radius);
+}
+
+.routing-target-row {
+  border: 1px solid #f8bbd0;
+  background: #fff8fb;
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  margin-bottom: 8px;
+}
+
+.routing-target-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.routing-target-actions {
+  margin-left: auto;
+  display: flex;
+}
+
+.routing-target-actions .icon-button:disabled {
+  opacity: 0.3;
+}
+
+.routing-who {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin: 8px 0 4px;
+  font-size: 13px;
+}
+
+.routing-switches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  font-size: 12.5px;
+}
+
+.routing-switches .field-checkbox {
+  margin: 0;
+}
+
+.routing-custom {
+  font-size: 12px;
+  font-family: ui-monospace, Consolas, monospace;
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.routing-target-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.routing-target-foot input[type='number'] {
+  width: 76px;
+}
+
+/* Queues */
+.routing-queue-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.routing-queue-list > li {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 4px solid #ec407a;
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.routing-queue-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.routing-queue-head input {
+  font-weight: 600;
+  min-width: 260px;
+}
+
+.routing-queue-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin: 8px 0 4px;
+  font-size: 13px;
+}
+
+.routing-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.routing-group-box {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 6px;
+  border: 1px dashed #b39ddb;
+  border-radius: 14px;
+}
+
+.routing-and,
+.routing-or {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.routing-or {
+  margin-right: 2px;
+}
+
+.routing-add {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+/* Skills */
+.routing-skill-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.routing-skill-list li {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.routing-skill-list li input:first-child {
+  font-weight: 600;
+  color: #4527a0;
+  width: 160px;
+}
+
+.routing-skill-list li input + input {
+  flex: 1;
+}
+
+.routing-panel h3 {
+  margin: 18px 0 4px;
+  font-size: 15px;
+}
+
+/* Test a task */
+.routing-test-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+  padding: 5px 0;
+}
+
+.routing-test-label {
+  min-width: 140px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.routing-test-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.routing-test-choice {
+  font: inherit;
+  font-size: 13px;
+  padding: 3px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.routing-test-choice.active {
+  background: #1976d2;
+  border-color: #1976d2;
+  color: #ffffff;
+}
+
+.routing-test-more {
+  margin: 6px 0;
+}
+
+.routing-test-more summary,
+.routing-test-result summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.routing-test-contact {
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.routing-test-timeline {
+  margin: 6px 0 10px;
+  padding-left: 22px;
+}
+
+.routing-test-timeline li {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 4px 0;
+}
+
+.routing-test-result {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.routing-test-steps {
+  list-style: none;
+  padding: 0;
+  font-size: 13px;
+}
+
+.routing-test-steps .match {
+  color: #1b5e20;
+  font-weight: 600;
+}
+
+.routing-test-steps .no {
+  color: var(--color-muted);
+}
+
+.routing-test-steps .unknown {
+  color: #8a4b00;
+}
+
+/* The diagram */
+.routing-node {
+  font-size: 12px;
+  line-height: 1.3;
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.routing-start {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  background: #c8efd4;
+  border: 1.5px solid #2e7d32;
+  border-radius: 20px;
+}
+
+.routing-rule {
+  width: 300px;
+  gap: 6px;
+  background: #ffffff;
+  border: 1.5px solid #1976d2;
+  border-left-width: 5px;
+}
+
+.routing-target {
+  width: 250px;
+  gap: 4px;
+  background: #ffffff;
+  border: 1.5px solid #ad1457;
+  border-left-width: 5px;
+}
+
+.routing-node-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.routing-node-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.routing-node-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.routing-node-or {
+  align-self: flex-start;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #1565c0;
+  background: #e3f2fd;
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.routing-node-who {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.routing-priority {
+  margin-left: auto;
+  font-size: 10px;
+  font-weight: 700;
+  color: #ffffff;
+  background: #ad1457;
+  border-radius: 999px;
+  padding: 1px 6px;
+}
+
+.routing-node-move {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: #546e7a;
+  border-top: 1px dashed #e0e0e0;
+  padding-top: 4px;
+}
+
+.routing-node-move.wait {
+  color: #2e7d32;
+}
+
+/* Task conditions by kind: the same colours in the diagram, the legend and the rule cards */
+.routing-cond-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  font-size: 11px;
+  line-height: 1.3;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.routing-cond-chip.channel {
+  background: #e0f2f1;
+  border-color: #4db6ac;
+  color: #00695c;
+}
+
+.routing-cond-chip.service {
+  background: #ede7f6;
+  border-color: #9575cd;
+  color: #4527a0;
+}
+
+.routing-cond-chip.language {
+  background: #fff8e1;
+  border-color: #ffb300;
+  color: #8a5a00;
+}
+
+.routing-cond-chip.transfer {
+  background: #fce4ec;
+  border-color: #f06292;
+  color: #ad1457;
+}
+
+.routing-cond-chip.offline {
+  background: #eceff1;
+  border-color: #90a4ae;
+  color: #37474f;
+}
+
+.routing-cond-chip.other {
+  background: #f5f5f5;
+  border-color: #bdbdbd;
+  color: #424242;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.routing-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 360px;
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+/* A condition row in a rule card carries its kind's colour */
+.routing-condition[data-family] {
+  border-left: 3px solid transparent;
+  padding-left: 6px;
+}
+
+.routing-condition[data-family='channel'] {
+  border-left-color: #4db6ac;
+}
+
+.routing-condition[data-family='service'] {
+  border-left-color: #9575cd;
+}
+
+.routing-condition[data-family='language'] {
+  border-left-color: #ffb300;
+}
+
+.routing-condition[data-family='transfer'] {
+  border-left-color: #f06292;
+}
+
+.routing-condition[data-family='offline'] {
+  border-left-color: #90a4ae;
+}
+
+.routing-condition[data-family='other'] {
+  border-left-color: #bdbdbd;
+}
+
+.routing-node.selected {
+  box-shadow: 0 0 0 3px #ffb300;
+}
+
+.routing-target-queue {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 700;
+  color: #880e4f;
+}
+
+.routing-node-hint {
+  color: #546e7a;
+  font-size: 11px;
+}

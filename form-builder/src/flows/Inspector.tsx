@@ -38,6 +38,7 @@ import { CanvasNode, ConnectionEdge, FrameNode, newId, ObjectNode, StickyNode } 
 import type { Issue } from './checks';
 import { uniqueName } from './checks';
 import { RecordingActions, RecordingSection, ScriptApproval } from './RecordingControls';
+import { TaskAttributesSection } from './TaskAttributesSection';
 
 const CHANNELS: { value: Channel; label: string }[] = [
   { value: 'voice', label: 'Voice' },
@@ -419,6 +420,15 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
             );
           })}
         </section>
+      )}
+
+      {object.type === 'sendToQueue' && (
+        <TaskAttributesSection
+          attributes={object.taskAttributes}
+          channel={frame?.data.frame.channel}
+          readOnly={readOnly}
+          onChange={(taskAttributes) => update({ taskAttributes })}
+        />
       )}
 
       {exits.length > 0 && (

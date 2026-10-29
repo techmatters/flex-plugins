@@ -70,6 +70,30 @@ body {
   margin: 0;
 }
 
+/* The Aselo Builder logo: the mark, then the name */
+.aselo-builder-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.aselo-builder-logo svg {
+  display: block;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.aselo-builder-name {
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.aselo-builder-name strong {
+  font-weight: 700;
+  color: #ffffff;
+}
+
 .top-bar label {
   display: flex;
   align-items: center;
@@ -1884,4 +1908,156 @@ body {
 
 .bulk-add code {
   font-size: 0.95em;
+}
+
+/* Filling in the contact (formSelector) */
+.form-selector-summary {
+  font-weight: 600;
+}
+
+.form-selector-steps {
+  margin: 0.5rem 0 1rem;
+}
+
+.form-selector-diagram {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-selector-outcome {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) auto minmax(12rem, 2fr);
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.form-selector-when {
+  font-weight: 600;
+}
+
+.form-selector-arrow {
+  color: var(--color-muted);
+  font-size: 1.25rem;
+}
+
+.form-selector-tab {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  margin-right: 0.25rem;
+}
+
+.form-selector-kind,
+.form-selector-tabs {
+  border: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+}
+
+.form-selector-choices {
+  padding-left: 1.25rem;
+}
+
+.form-selector-choices li {
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.form-selector-choices label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9em;
+}
+
+.form-selector-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 20rem;
+}
+
+/* formSelector, edited as written (FormSelectorEditor) */
+.form-selector-file {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-muted);
+  margin-left: 8px;
+}
+
+.form-selector-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.form-selector-row-block {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.form-selector-key {
+  font-weight: 600;
+  min-width: 170px;
+}
+
+.form-selector-info {
+  display: inline-flex;
+  color: var(--color-muted);
+  cursor: help;
+  vertical-align: middle;
+}
+
+.form-selector-checks {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.form-selector-table {
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.form-selector-table th,
+.form-selector-table td {
+  text-align: left;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+
+.form-selector-table th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.form-selector-table input,
+.form-selector-table select {
+  font: inherit;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+}
+
+.form-selector-actions {
+  white-space: nowrap;
+}
+
+.form-selector-tab-key {
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.form-selector-json {
+  font-size: 12px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  overflow-x: auto;
 }

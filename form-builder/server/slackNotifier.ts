@@ -32,7 +32,7 @@ export class SlackNotifier implements Notifier {
     const fileCount = Object.keys(draft.files).length;
     const text = [
       `*${draft.code.toUpperCase()}* form changes (${draft.version}) were submitted for review by ${user.name}.`,
-      `${fileCount} file${fileCount === 1 ? '' : 's'} changed. Review and apply them in the form builder: ${this.appUrl}`,
+      `${fileCount} file${fileCount === 1 ? '' : 's'} changed. Review and apply them in the Aselo Builder: ${this.appUrl}`,
     ].join('\n');
     const response = await this.fetchImpl(this.webhookUrl, {
       method: 'POST',

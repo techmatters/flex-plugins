@@ -17,6 +17,7 @@
 import { describe, expect, test } from 'vitest';
 import type { FlowObject, Frame } from './model';
 import { boardChecks, objectProblems, studioNameProblems, uniqueName } from './checks';
+import { standardTaskAttributes } from './taskAttributes';
 import type { Connection } from './model';
 
 const object = (id: string, type: FlowObject['type'], studioName?: string, frameId?: string): FlowObject => ({
@@ -203,7 +204,11 @@ describe('the board check', () => {
       frames: [],
       objects: [
         named('in', 'incoming', undefined, { text: 'Call' }),
-        named('q', 'sendToQueue', undefined, { text: 'Queue', studioName: 'send_to_queue' }),
+        named('q', 'sendToQueue', undefined, {
+          text: 'Queue',
+          studioName: 'send_to_queue',
+          taskAttributes: standardTaskAttributes('voice'),
+        }),
         named('sorry', 'end', undefined, { text: 'End' }),
         named('wait', 'wait', undefined, { text: 'Wait' }),
       ],

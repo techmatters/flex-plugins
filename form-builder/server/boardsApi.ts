@@ -32,7 +32,8 @@
  */
 import { randomUUID } from 'crypto';
 import type { Board, BoardContent } from '../src/flows/model';
-import { emptyBoard, TEMPLATES_CODE } from '../src/flows/model';
+import { emptyBoard, statusOf, TEMPLATES_CODE } from '../src/flows/model';
+import { STATUS_AFTER_CHANGE } from '../src/designStatus';
 import type { ApiResponse, ApiUser } from './api';
 import { BoardStore, isBoardContent, isValidBoardKey } from './boards';
 import { ASELO_PEOPLE_CODE, isValidPeopleCode, normalizePeople, PeopleStore, registerPerson } from './people';
@@ -51,8 +52,8 @@ const isStaff = (user: ApiUser) => user.role === 'aselo-staff';
 const canSee = (user: ApiUser, code: string) =>
   code === TEMPLATES_CODE || user.helplines === 'all' || user.helplines.includes(code);
 
-const canEdit = (user: ApiUser, code: string) =>
-  code === TEMPLATES_CODE ? isStaff(user) : user.helplines === 'all' || user.helplines.includes(code);
+// For now helpline staff see their helpline's boards but don't change them (Aselo staff do)
+const canEdit = (user: ApiUser, code: string) => isStaff(user) && canSee(user, code);
 
 const newBoardId = () => randomUUID().slice(0, 8);
 
@@ -106,22 +107,24 @@ export const handleBoardRequest = async (
   const createMatch = path.match(/^\/api\/boards\/([^/]+)$/);
   if (method === 'POST' && createMatch) {
     const [, code] = createMatch;
-    if (!canEdit(user, code)) return fail(403, `You can't add boards to ${code}.`);
+    if (!canEdit(user, code)) return fail(403, 'Only Aselo staff add boards for now.');
     const { title, copyFrom, content: given } = (body ?? {}) as CreateBody;
     if (typeof title !== 'string' || !title.trim()) return fail(400, 'A board needs a title.');
 
-    let content: BoardContent = emptyBoard(title.trim());
+    let content: BoardContent = { ...emptyBoard(title.trim()), status: STATUS_AFTER_CHANGE };
     if (given !== undefined) {
       if (!isBoardContent(given)) return fail(400, 'Invalid board');
       if (JSON.stringify(given).length > MAX_BOARD_BYTES) return fail(413, 'This board is too big to save.');
-      content = { ...given, title: title.trim() };
+      // An imported helpline starts "Imported"; anything else given is a new design
+      content = { ...given, title: title.trim(), status: statusOf(given) };
     } else if (copyFrom) {
       const fromCode = String(copyFrom.code);
       const fromId = String(copyFrom.id);
       if (!isValidBoardKey(fromCode, fromId) || !canSee(user, fromCode)) return fail(403, "You can't copy that board.");
       const source = await boards.get(fromCode, fromId);
       if (!source) return fail(404, 'The board to copy no longer exists.');
-      content = { ...source.content, title: title.trim() };
+      // A copy is a new design, whatever the template's status
+      content = { ...source.content, title: title.trim(), status: STATUS_AFTER_CHANGE };
     }
 
     let id = newBoardId();
@@ -161,7 +164,7 @@ export const handleBoardRequest = async (
   }
 
   if (method === 'PUT') {
-    if (!canEdit(user, code)) return fail(403, 'Only Aselo staff can change the templates.');
+    if (!canEdit(user, code)) return fail(403, 'Only Aselo staff change boards for now.');
     if (!existing) return fail(404, 'This board no longer exists.');
     const { expectedRevision, content } = (body ?? {}) as SaveBody;
     if (typeof expectedRevision !== 'number' || !isBoardContent(content)) return fail(400, 'Invalid board');

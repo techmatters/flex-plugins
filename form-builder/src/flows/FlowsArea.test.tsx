@@ -119,11 +119,10 @@ afterEach(cleanup);
 // Autosave waits a second after the last change, so these take a few seconds each
 describe('flow designer', { timeout: 20_000 }, () => {
   test('a new board opens, objects are added from the palette, and it saves by itself', async () => {
-    render(
-      <FlowsArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} userName="NAMI person" />,
-    );
+    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
 
     fireEvent.change(await screen.findByPlaceholderText(/USNM contact flows/), { target: { value: 'NAMI flows' } });
+    fireEvent.change(screen.getByRole('combobox', { name: 'For' }), { target: { value: 'usnm' } });
     fireEvent.click(screen.getByRole('button', { name: 'Create board' }));
 
     await screen.findByRole('heading', { name: 'NAMI flows' });
@@ -141,7 +140,7 @@ describe('flow designer', { timeout: 20_000 }, () => {
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
     const [summary] = await boards.list();
     const saved = await boards.get('usnm', summary.id);
-    expect(saved?.meta.updatedBy).toBe('NAMI person');
+    expect(saved?.meta.updatedBy).toBe('Aselo person');
     expect(saved?.content.frames).toHaveLength(1);
     expect(saved?.content.objects).toMatchObject([
       { type: 'decision', text: 'Decision', studioName: 'split_decision', exits: ['Yes', 'No', 'noMatch'] },
@@ -163,30 +162,58 @@ describe('flow designer', { timeout: 20_000 }, () => {
     expect(template.code).toBe('_templates');
   });
 
-  test('saving stops and asks to reload when someone else saved the board', async () => {
-    const board = await clientAs(staff).create('usnm', 'Shared board');
-    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+  test("helpline staff see their helpline's boards, but don't add or change them", async () => {
+    const board = await clientAs(staff).create('usnm', 'NAMI flows');
     render(
       <FlowsArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} userName="NAMI person" />,
     );
+
+    // The list, without the form to add a board
+    const open = await screen.findByRole('button', { name: 'NAMI flows' });
+    expect(screen.getByRole('heading', { name: 'Contact flows' })).toBeTruthy();
+    expect(screen.queryByRole('heading', { name: 'New board' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Create board' })).toBeNull();
+    fireEvent.click(open);
+
+    // The board opens view only: no palette, no undo, nothing saved
+    await screen.findByRole('heading', { name: 'NAMI flows' });
+    expect(screen.getByText('View only')).toBeTruthy();
+    expect(screen.queryByRole('complementary', { name: 'Objects' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Undo' })).toBeNull();
+    expect(screen.queryByRole('status')).toBeNull();
+    expect((await boards.get('usnm', board.id))?.meta.revision).toBe(1);
+  });
+
+  test('saving stops and asks to reload when someone else saved the board', async () => {
+    const board = await clientAs(staff).create('usnm', 'Shared board');
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
     await screen.findByRole('heading', { name: 'Shared board' });
 
     // Someone else saves first
-    await clientAs(staff).save('usnm', board.id, 1, { ...board.content, title: 'Renamed elsewhere' });
+    await clientAs({ ...staff, name: 'Other Aselo person' }).save('usnm', board.id, 1, {
+      ...board.content,
+      title: 'Renamed elsewhere',
+    });
 
     fireEvent.click(
       within(screen.getByRole('complementary', { name: 'Objects' })).getByRole('button', { name: /^End/ }),
     );
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('Not saved'), { timeout: 4000 });
-    expect(screen.getByText(/Aselo person changed this board/)).toBeTruthy();
+    expect(screen.getByText(/Other Aselo person changed this board/)).toBeTruthy();
     expect((await boards.get('usnm', board.id))?.content.title).toBe('Renamed elsewhere');
   });
 
-  const openNewBoard = async (title: string) => {
+  const openNewBoard = async (title: string, user = staff) => {
     const board = await clientAs(staff).create('usnm', title);
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
     render(
-      <FlowsArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} userName="NAMI person" />,
+      <FlowsArea
+        client={clientAs(user)}
+        helplineCodes={['usnm']}
+        staffMode={user.role === 'aselo-staff'}
+        userName={user.name}
+      />,
     );
     await screen.findByRole('heading', { name: title });
     return board;
@@ -253,7 +280,7 @@ describe('flow designer', { timeout: 20_000 }, () => {
   });
 
   test('exports: the spreadsheet for everyone, the JSON for Claude only for Aselo staff', async () => {
-    await openNewBoard('Exports');
+    await openNewBoard('Exports', usnmStaff);
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
     expect(screen.getByRole('menuitem', { name: 'Recordings and scripts (spreadsheet)' })).toBeTruthy();
     expect(screen.queryByRole('menuitem', { name: 'Flows for Claude (JSON)' })).toBeNull();
@@ -276,19 +303,17 @@ describe('flow designer', { timeout: 20_000 }, () => {
     const recording = () => within(screen.getByRole('region', { name: 'Recording' }));
     await waitFor(() => expect(recording().getByText('Script ready')).toBeTruthy());
 
-    // Helpline staff upload: it reaches staging
+    // Aselo staff upload: it reaches staging
     fireEvent.change(recording().getByLabelText('Upload recording'), {
       target: { files: [new File(['take one'], 'welcome.mp3', { type: 'audio/mpeg' })] },
     });
     await waitFor(() => expect(recording().getByText('Recorded')).toBeTruthy());
     expect(recordingFiles.files.has('usnm/staging/play_message_voice.mp3')).toBe(true);
     expect(recording().getByLabelText('Staging recording')).toBeTruthy();
-    // ...but don't approve or publish
-    expect(recording().queryByRole('button', { name: 'Approve' })).toBeNull();
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
     cleanup();
 
-    // Aselo staff approve, then publish
+    // Then approve and publish it
     vi.spyOn(window, 'confirm').mockReturnValue(true);
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
     render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
@@ -341,12 +366,102 @@ describe('flow designer', { timeout: 20_000 }, () => {
     await screen.findByRole('heading', { name: 'USNM · [voice] · voice' });
   });
 
+  test('the start page lists the boards with their status, filtered by status', async () => {
+    const aselo = clientAs(staff);
+    const draft = await aselo.create('usnm', 'Being designed');
+    const ready = await aselo.create('usnm', 'Agreed');
+    await aselo.save('usnm', ready.id, 1, { ...ready.content, status: 'ready' });
+    const imported = await aselo.create('usnm', 'USNM · voice', undefined, {
+      ...ready.content,
+      frames: [
+        {
+          id: 'f-1',
+          title: 'voice',
+          x: 0,
+          y: 0,
+          width: 600,
+          height: 400,
+          studio: { template: 'usnm/templates/studio-flows/voice.tftpl', channels: ['voice'], settings: {} },
+        },
+      ],
+      status: 'imported',
+    });
+    await aselo.create('_templates', 'Standard pre-queue flow');
+    render(
+      <FlowsArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} userName="NAMI person" />,
+    );
+
+    const table = within(await screen.findByRole('region', { name: 'Boards' }));
+    const rowOf = (title: string) => within(table.getByRole('button', { name: title }).closest('tr')!);
+    expect(rowOf(draft.content.title).getByText('In progress')).toBeTruthy();
+    expect(rowOf(draft.content.title).getByText('New')).toBeTruthy();
+    expect(rowOf('Agreed').getByText('Ready for Claude')).toBeTruthy();
+    expect(rowOf(imported.content.title).getByText('Imported')).toBeTruthy();
+    expect(rowOf(imported.content.title).queryByText('New')).toBeNull();
+    expect(rowOf('Agreed').getByText('USNM')).toBeTruthy();
+    // Helpline staff don't delete; the templates are listed apart
+    expect(table.queryByRole('button', { name: /^Delete/ })).toBeNull();
+    expect(table.queryByRole('button', { name: 'Standard pre-queue flow' })).toBeNull();
+    expect(
+      within(screen.getByRole('region', { name: 'Aselo templates' })).getByRole('button', {
+        name: 'Standard pre-queue flow',
+      }),
+    ).toBeTruthy();
+
+    // Filtered by status, with counts
+    expect(table.getByRole('button', { name: 'All (3)' })).toBeTruthy();
+    fireEvent.click(table.getByRole('button', { name: 'Ready for Claude (1)' }));
+    expect(table.getByRole('button', { name: 'Agreed' })).toBeTruthy();
+    expect(table.queryByRole('button', { name: 'Being designed' })).toBeNull();
+    fireEvent.click(table.getByRole('button', { name: 'Implemented (0)' }));
+    expect(table.getByText('No boards with this status.')).toBeTruthy();
+  });
+
+  test('Aselo staff set the status; a change to the design sets it back to In progress, a comment does not', async () => {
+    const board = await openNewBoard('Status');
+    const status = () => screen.getByRole('combobox', { name: 'Board status' }) as HTMLSelectElement;
+    expect(status().value).toBe('in-progress');
+    expect(screen.getByText('New')).toBeTruthy();
+
+    fireEvent.click(palette().getByRole('button', { name: /^Decision/ }));
+    fireEvent.change(status(), { target: { value: 'ready' } });
+    // Commenting on the (selected) decision doesn't change the design
+    fireEvent.change(settings().getByRole('textbox', { name: 'New comment' }), { target: { value: 'Looks good' } });
+    fireEvent.click(settings().getByRole('button', { name: 'Comment' }));
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    expect(status().value).toBe('ready');
+    let saved = await boards.get('usnm', board.id);
+    expect(saved?.content.status).toBe('ready');
+    expect(saved?.content.objects[0].thread?.comments).toHaveLength(1);
+
+    // Adding an object does
+    fireEvent.click(palette().getByRole('button', { name: /^End/ }));
+    await waitFor(() => expect(status().value).toBe('in-progress'));
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    saved = await boards.get('usnm', board.id);
+    expect(saved?.content.status).toBe('in-progress');
+  });
+
+  test('helpline staff see the status without changing it', async () => {
+    const aselo = clientAs(staff);
+    const board = await aselo.create('usnm', 'Agreed');
+    await aselo.save('usnm', board.id, 1, { ...board.content, status: 'ready' });
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+    render(
+      <FlowsArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} userName="NAMI person" />,
+    );
+    await screen.findByRole('heading', { name: 'Agreed' });
+    expect(screen.getByText('Ready for Claude')).toBeTruthy();
+    expect(screen.queryByRole('combobox', { name: 'Board status' })).toBeNull();
+  });
+
   test('a sticky note becomes a task, listed in the Tasks panel until it is done', async () => {
     await people.put('usnm', [{ name: 'Ale', email: 'ale@example.org' }]);
-    await people.put('_aselo', [{ name: 'Aselo person', email: 'aselo@example.org' }]);
+    await people.put('_aselo', [{ name: 'Aselo lead', email: 'aselo@example.org' }]);
     const board = await openNewBoard('Tasks');
-    // Opening the board put this person on the helpline's list
-    expect((await people.get('usnm')).map((person) => person.name)).toEqual(['Ale', 'NAMI person']);
+    // Opening the board put this Aselo person on the Aselo team's list, not the helpline's
+    expect((await people.get('_aselo')).map((person) => person.name)).toEqual(['Aselo lead', 'Aselo person']);
+    expect((await people.get('usnm')).map((person) => person.name)).toEqual(['Ale']);
     fireEvent.click(palette().getByRole('button', { name: /^Sticky note/ }));
     fireEvent.change(settings().getByRole('textbox', { name: 'Note' }), {
       target: { value: 'Record the closed message' },
@@ -354,7 +469,7 @@ describe('flow designer', { timeout: 20_000 }, () => {
     fireEvent.click(settings().getByRole('button', { name: 'Make it a task' }));
     const assignee = settings().getByRole('combobox', { name: /^For/ });
     await waitFor(() => expect(within(assignee).getAllByRole('option')).toHaveLength(4));
-    expect(within(assignee).getByRole('option', { name: 'Aselo person (aselo@example.org)' })).toBeTruthy();
+    expect(within(assignee).getByRole('option', { name: 'Aselo lead (aselo@example.org)' })).toBeTruthy();
     fireEvent.change(assignee, { target: { value: 'ale@example.org' } });
 
     fireEvent.click(screen.getByRole('tab', { name: 'Tasks (1)' }));

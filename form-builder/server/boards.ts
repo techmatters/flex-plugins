@@ -26,7 +26,8 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import type { Board, BoardContent, BoardSummary } from '../src/flows/model';
-import { TEMPLATES_CODE } from '../src/flows/model';
+import { isImportedBoard, statusOf, TEMPLATES_CODE } from '../src/flows/model';
+import { isDesignStatus } from '../src/designStatus';
 
 export interface BoardStore {
   get(code: string, id: string): Promise<Board | undefined>;
@@ -46,6 +47,8 @@ export const summaryOf = ({ code, id, meta, content }: Board): BoardSummary => (
   id,
   meta,
   title: content.title,
+  status: statusOf(content),
+  isNew: !isImportedBoard(content),
 });
 
 const isArrayOfObjects = (value: unknown) =>
@@ -59,6 +62,7 @@ export const isBoardContent = (value: unknown): value is BoardContent => {
     candidate !== null &&
     typeof candidate.schemaVersion === 'number' &&
     typeof candidate.title === 'string' &&
+    (candidate.status === undefined || isDesignStatus(candidate.status)) &&
     ['frames', 'objects', 'connections', 'stickies'].every((key) =>
       isArrayOfObjects(candidate[key as keyof BoardContent]),
     )

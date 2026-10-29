@@ -20,6 +20,7 @@
  *
  *   GET    /api/me                                  who's signed in and what they can do
  *   GET    /api/helplines                           helplines this person can open
+ *   GET    /api/branches                            Aselo staff: the flex-plugins branches imports can read ({ value, label }[])
  *   GET    /api/definitions/:code/:version          the current (applied) files
  *   GET    /api/drafts                              drafts this person can see
  *   GET    /api/drafts/:code/:version               a draft (404 if there's none)
@@ -30,6 +31,8 @@
  *   ...    /api/boards..., /api/people/...          the flow designer (boardsApi.ts)
  *   ...    /api/recordings/...                      its recordings (recordingsApi.ts)
  *   POST   /api/flows/import/:code                  Aselo staff: a board from a live helpline (flowImport.ts)
+ *   ...    /api/routing/...                         the routing designer (routingApi.ts)
+ *   ...    /api/chatbots/...                        the chatbot designer (chatbotApi.ts)
  *
  * Roles: Aselo staff can do everything for every helpline. Helpline staff only see their own
  * helplines, can't apply, and never see or change the service configuration
@@ -42,6 +45,11 @@ import type { PeopleStore } from './people';
 import { handleBoardRequest } from './boardsApi';
 import { handleRecordingRequest, RecordingStores } from './recordingsApi';
 import { importHelpline } from './flowImport';
+import { handleRoutingRequest } from './routingApi';
+import { ChatbotStore, handleChatbotRequest } from './chatbotApi';
+import type { BranchSource } from './branches';
+import { isValidBranch } from './branches';
+import type { RoutingStore } from './routingStore';
 import { isServiceConfigPath } from './filePaths';
 
 export type ApiUser = {
@@ -99,6 +107,12 @@ export type ApiContext = {
   people?: PeopleStore;
   // Recording files, and who uploaded, approved and published them; without them, 501
   recordings?: RecordingStores;
+  // Routing designs (TaskRouter), one per helpline; without them, 501
+  routing?: RoutingStore;
+  // Chatbot designs (Lex), one per helpline; without them, 501
+  chatbots?: ChatbotStore;
+  // Other flex-plugins branches imports can read ({ branch } in an import's body); without it, only the default
+  branches?: BranchSource;
   now?: () => Date;
 };
 
@@ -144,10 +158,7 @@ const isSaveDraftBody = (body: unknown): body is SaveDraftBody => {
   );
 };
 
-export const handleApiRequest = async (
-  context: ApiContext,
-  request: ApiRequest,
-): Promise<ApiResponse> => {
+export const handleApiRequest = async (context: ApiContext, request: ApiRequest): Promise<ApiResponse> => {
   const { user } = request;
   const now = (context.now ?? (() => new Date()))().toISOString();
   const route = `${request.method.toUpperCase()} ${request.path.replace(/\/+$/, '')}`;
@@ -168,6 +179,42 @@ export const handleApiRequest = async (
       return ok(drafts.filter((draft) => canOpenHelpline(user, draft.code)));
     }
 
+    if (route === 'GET /api/branches') {
+      if (!isStaff(user)) return fail(403, 'Only Aselo staff import.');
+      if (!context.branches) return ok([{ value: '', label: 'master' }]);
+      return ok(await context.branches.choices());
+    }
+
+    // Imports read the config the builder reads, or another branch's ({ branch } in the body)
+    const isImport =
+      request.method.toUpperCase() === 'POST' &&
+      (/^POST \/api\/flows\/import\/[a-z0-9]+$/.test(route) ||
+        /^POST \/api\/(routing|chatbots)\/[a-z0-9]+\/import$/.test(route));
+    const branch = isImport ? (request.body as { branch?: unknown } | undefined)?.branch : undefined;
+    if (isImport && typeof branch === 'string' && branch !== '') {
+      if (!isStaff(user)) return fail(403, 'Only Aselo staff import.');
+      if (!isValidBranch(branch)) return fail(400, `Invalid branch ${branch}`);
+      if (!context.branches) return fail(501, "Other branches can't be read here.");
+      let snapshot;
+      try {
+        snapshot = await context.branches.snapshot(branch);
+      } catch (err) {
+        return fail(404, `Couldn't read the branch ${branch}: ${(err as Error).message}`);
+      }
+      const response = await handleApiRequest(
+        {
+          ...context,
+          helplinesConfigDir: snapshot.helplinesConfigDir,
+          formDefinitionsDir: snapshot.formDefinitionsDir,
+          branches: undefined,
+        },
+        { ...request, body: {} },
+      );
+      return response.status === 200
+        ? { ...response, body: { ...(response.body as object), source: { branch, sha: snapshot.sha } } }
+        : response;
+    }
+
     const boardsPath = request.path.replace(/\/+$/, '');
     // A board built from a live helpline's twilio-iac config, for Aselo staff to look at first
     const importMatch = route.match(/^POST \/api\/flows\/import\/([a-z0-9]+)$/);
@@ -177,10 +224,46 @@ export const handleApiRequest = async (
       return ok(await importHelpline(context.helplinesConfigDir, importMatch[1]));
     }
 
-    if (boardsPath.startsWith('/api/recordings/')) {
-      return await handleRecordingRequest(context.recordings, request.method.toUpperCase(), boardsPath, request.body, user, now);
+    if (boardsPath === '/api/routing' || boardsPath.startsWith('/api/routing/')) {
+      return await handleRoutingRequest(
+        context.routing,
+        context.helplinesConfigDir,
+        request.method.toUpperCase(),
+        boardsPath,
+        request.body,
+        user,
+        now,
+      );
     }
-    if (boardsPath === '/api/boards' || boardsPath.startsWith('/api/boards/') || boardsPath.startsWith('/api/people/')) {
+
+    if (boardsPath === '/api/chatbots' || boardsPath.startsWith('/api/chatbots/')) {
+      return await handleChatbotRequest(
+        context.chatbots,
+        context.helplinesConfigDir,
+        context.formDefinitionsDir,
+        request.method.toUpperCase(),
+        boardsPath,
+        request.body,
+        user,
+        now,
+      );
+    }
+
+    if (boardsPath.startsWith('/api/recordings/')) {
+      return await handleRecordingRequest(
+        context.recordings,
+        request.method.toUpperCase(),
+        boardsPath,
+        request.body,
+        user,
+        now,
+      );
+    }
+    if (
+      boardsPath === '/api/boards' ||
+      boardsPath.startsWith('/api/boards/') ||
+      boardsPath.startsWith('/api/people/')
+    ) {
       if (!context.boards) return fail(501, "The flow designer isn't set up here.");
       const stores = { boards: context.boards, people: context.people };
       return await handleBoardRequest(stores, request.method.toUpperCase(), boardsPath, request.body, user, now);

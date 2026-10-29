@@ -95,7 +95,8 @@ export const FlowsArea = ({ client = httpBoardClient, helplineCodes, staffMode, 
       key={`${board.code}/${board.id}/${loadCount}`}
       board={board}
       client={client}
-      readOnly={board.code === TEMPLATES_CODE && !staffMode}
+      // For now helpline staff see boards without changing them
+      readOnly={!staffMode}
       staffMode={staffMode}
       userName={userName}
       userEmail={userEmail}

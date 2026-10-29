@@ -55,8 +55,8 @@ export const buildChangeLog = ({
     `# Form changes for ${code.toUpperCase()} (${version})`,
     '',
     target === 'pr'
-      ? 'Changes made in the Aselo Form Builder.'
-      : `Exported from the Aselo Form Builder on ${new Date().toISOString()}.`,
+      ? 'Changes made in the Aselo Builder.'
+      : `Exported from the Aselo Builder on ${new Date().toISOString()}.`,
     '',
   ];
 
@@ -94,7 +94,7 @@ export const buildChangeLog = ({
           '1. Unzip at the root of a flex-plugins checkout, on a new branch.',
           '2. Run `npm test` in `lambdas/packages/hrm-form-definitions`.',
           '3. Open a PR, then deploy with the "Deploy form-definitions to S3" workflow.',
-          '4. Once the PR is merged, discard the draft in the form builder.',
+          '4. Once the PR is merged, discard the draft in the Aselo Builder.',
         ]),
     ...(changedWebchatTranslationFiles(originalFiles, draftFiles).length > 0
       ? [`- The webchat's texts changed too: redeploy the webchat for ${code.toUpperCase()} (aselo-webchat-react-app).`]

@@ -15,12 +15,15 @@
  */
 
 /**
- * Import a live helpline (Aselo staff): read its Studio flows from twilio-iac on master, show what
+ * Import a live helpline (Aselo staff): read its Studio flows from twilio-iac on master (or another
+ * branch, e.g. the one its changes are being made in), show what
  * was found and what needs a person, then create a board per Studio flow (as in Studio) and copy
  * its recordings into the recordings bucket (staging's into staging, production's into production).
  */
 import { useState } from 'react';
 import type { HelplineImport, ImportedFlow } from '../../server/flowImport';
+import type { FromBranch } from '../../server/branches';
+import { BranchPicker, ImportedFrom } from '../components/BranchPicker';
 import type { BoardClient } from './boardClient';
 
 type Props = {
@@ -39,7 +42,8 @@ const onlyIn = (flow: ImportedFlow) =>
 
 export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
   const [code, setCode] = useState('');
-  const [preview, setPreview] = useState<HelplineImport>();
+  const [branch, setBranch] = useState('');
+  const [preview, setPreview] = useState<HelplineImport & FromBranch>();
   const [error, setError] = useState<string>();
   const [working, setWorking] = useState(false);
   const [copyRecordings, setCopyRecordings] = useState(true);
@@ -56,13 +60,22 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
     setCopying(undefined);
     setCreated(undefined);
     try {
-      const found = await client.previewImport(code);
+      const found = await client.previewImport(code, branch);
       setPreview(found);
       setSelected(new Set(found.boards.map((_, index) => index)));
     } catch (err) {
       setError((err as Error).message);
     } finally {
       setWorking(false);
+    }
+  };
+
+  // A preview is of one helpline and branch: choosing another one clears it (unless boards were made from it)
+  const choose = (change: () => void) => {
+    change();
+    if (!created) {
+      setPreview(undefined);
+      setError(undefined);
     }
   };
 
@@ -116,12 +129,12 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
     <section className="flows-import">
       <h3>Import a live helpline</h3>
       <p className="field-hint">
-        Builds a board for each of a helpline&apos;s Studio flows on master (its templates, the texts in its staging and
-        production settings), and copies its recordings into the recordings bucket. Nothing in Twilio or the repo
-        changes.
+        Builds a board for each of a helpline&apos;s Studio flows on master, or the branch chosen (its templates, the
+        texts in its staging and production settings), and copies its recordings into the recordings bucket. Nothing in
+        Twilio or the repo changes.
       </p>
       <div className="flows-import-pick">
-        <select value={code} aria-label="Helpline to import" onChange={(e) => setCode(e.target.value)}>
+        <select value={code} aria-label="Helpline to import" onChange={(e) => choose(() => setCode(e.target.value))}>
           <option value="">Choose a helpline…</option>
           {helplineCodes.map((candidate) => (
             <option key={candidate} value={candidate}>
@@ -129,6 +142,7 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
             </option>
           ))}
         </select>
+        <BranchPicker load={client.branches} value={branch} onChange={(next) => choose(() => setBranch(next))} />
         <button type="button" className="secondary-button" disabled={!code || working} onClick={load}>
           {working && !preview ? 'Reading…' : 'Preview'}
         </button>
@@ -138,10 +152,11 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
       {preview && (
         <div className="flows-import-preview" role="region" aria-label="Import preview">
           <h4>Studio flows found</h4>
+          <ImportedFrom source={preview.source} />
           <p className="field-hint">Each one becomes its own board. Untick the ones you don&apos;t want.</p>
           <ul className="flows-import-flows">
             {preview.report.flows.map((flow, index) => (
-              <li key={flow.template}>
+              <li key={`${flow.name}-${index}`}>
                 <label className="field-checkbox">
                   <input
                     type="checkbox"

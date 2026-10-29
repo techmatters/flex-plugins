@@ -21,7 +21,7 @@ import { beforeAll, describe, expect, test } from 'vitest';
 import { boardChecks } from '../src/flows/checks';
 import { exitsOf } from '../src/flows/model';
 import { HelplineImport, importHelpline, separate } from './flowImport';
-import type { Board, BoardContent } from '../src/flows/model';
+import type { Board, BoardContent, BoardSummary } from '../src/flows/model';
 import type { RecordingsList } from '../src/flows/recordings';
 import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { MemoryBoardStore } from './boards';
@@ -187,6 +187,13 @@ describe('importing a live helpline', () => {
     expect(usnm.report.notes).toContainEqual(expect.stringContaining("isn't named after the widget"));
   });
 
+  test("recordings whose address isn't a URL yet: one note per flow and address, with its value", async () => {
+    const { report } = await importHelpline(helplinesDir, 'usvc');
+    expect(report.notes.filter((note) => note.startsWith('System down:'))).toEqual([
+      "System down: 1 recording not copied, as its address isn't a URL yet in staging and production: ${system_down_flow_vars.recording_url} (it's “https://<place_holder>.mp3”). Upload them in the builder once recorded.",
+    ]);
+  });
+
   test('every helpline with environment files imports, and its board can be checked', async () => {
     const codes = readdirSync(helplinesDir).filter(
       (code) =>
@@ -241,6 +248,11 @@ describe('the import routes', () => {
     const created = await call(staffUser, 'POST', '/api/boards/usnm', { title, content });
     expect(created.status).toBe(201);
     expect((created.body as Board).content.objects.length).toBe(content.objects.length);
+    // As it is live: "Imported", and not new
+    expect(content.status).toBe('imported');
+    expect((created.body as Board).content.status).toBe('imported');
+    const [summary] = (await call(staffUser, 'GET', '/api/boards')).body as BoardSummary[];
+    expect(summary).toMatchObject({ status: 'imported', isNew: false });
   });
 
   test('recordings are copied from their live address into the matching folder', async () => {

@@ -23,6 +23,7 @@ import type { BoardContent, FlowObject, Frame } from './model';
 import { exitsOf, OBJECT_TYPES } from './model';
 import type { Recording } from './recordings';
 import { isVoiceMessage, messageStatus } from './recordings';
+import { taskAttributesProblem } from './taskAttributes';
 
 const POSTQUEUE = 'postqueue_';
 
@@ -244,6 +245,19 @@ export const boardChecks = (
 
     // Reached from somewhere (a post-queue frame can start from its queue)
     const startsPostQueue = object.type === 'sendToQueue' && frame?.stage === 'postqueue';
+
+    // What the task carries to routing (a post-queue frame's queue is the pre-queue one)
+    if (object.type === 'sendToQueue' && !startsPostQueue) {
+      const problem = object.taskAttributes && taskAttributesProblem(object.taskAttributes.json);
+      if (!object.taskAttributes) {
+        add({ severity: 'warning', message: `${name} has no task attributes yet.`, objectId }, 'taskAttributes');
+      } else if (problem) {
+        add(
+          { severity: 'error', message: `${name}: its task attributes aren't valid JSON (${problem}).`, objectId },
+          'taskAttributes',
+        );
+      }
+    }
     if (!STARTS.has(object.type) && !targets.has(objectId) && !startsPostQueue) {
       add({ severity: 'warning', message: `Nothing leads to ${name}.`, objectId }, 'unreachable');
     }

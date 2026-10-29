@@ -33,10 +33,13 @@ import type { APIGatewayProxyEventV2WithJWTAuthorizer, APIGatewayProxyResultV2 }
 import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { localNotifier } from './localServices';
 import { PublicRepoSource } from './publicRepo';
+import { GitHubBranches } from './branches';
 import { RepoSnapshots } from './repoSnapshot';
 import { S3BoardStore } from './s3BoardStore';
 import { S3DraftStore } from './s3DraftStore';
 import { S3PeopleStore } from './people';
+import { S3RoutingStore } from './routingStore';
+import { S3ChatbotStore } from './chatbotApi';
 import { S3RecordingFiles, S3RecordingLogStore } from './recordingStores';
 import { SlackNotifier } from './slackNotifier';
 
@@ -74,10 +77,14 @@ const loadServices = async (): Promise<Services> => {
 
   return {
     snapshots: new RepoSnapshots(new PublicRepoSource(), '/tmp/flex-plugins'),
+    // Imports can read another branch (master is the default)
+    branches: new GitHubBranches('/tmp/flex-plugins-branches'),
     drafts: new S3DraftStore(process.env.DRAFTS_BUCKET!),
     // Flow designer boards share the drafts bucket, under boards/
     boards: new S3BoardStore(process.env.DRAFTS_BUCKET!),
     people: new S3PeopleStore(process.env.DRAFTS_BUCKET!),
+    routing: new S3RoutingStore(process.env.DRAFTS_BUCKET!),
+    chatbots: new S3ChatbotStore(process.env.DRAFTS_BUCKET!),
     // Until the recordings bucket is set up (RECORDINGS_BUCKET), recordings answer 501
     recordings: process.env.RECORDINGS_BUCKET
       ? {
@@ -104,7 +111,7 @@ const json = (statusCode: number, body: unknown): APIGatewayProxyResultV2 => ({
 
 export const handler = async (event: APIGatewayProxyEventV2WithJWTAuthorizer): Promise<APIGatewayProxyResultV2> => {
   const user = userFromClaims(event.requestContext.authorizer?.jwt?.claims ?? {});
-  if (!user) return json(403, { message: 'You are not in a form builder group. Ask the Aselo team for access.' });
+  if (!user) return json(403, { message: "You don't have access to the Aselo Builder. Ask the Aselo team for access." });
 
   let body: unknown;
   if (event.body) {

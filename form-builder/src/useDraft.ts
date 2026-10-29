@@ -162,6 +162,18 @@ export const useDraft = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [changedJson, conflict]);
 
+  // Leaving the helpline (back to the Forms start page, or another one) saves what's still waiting
+  const conflictRef = useRef(conflict);
+  conflictRef.current = conflict;
+  useEffect(
+    () => () => {
+      if (conflictRef.current) return;
+      if (JSON.stringify(changedFiles(original, filesRef.current)) !== lastSavedJson.current) flush();
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
+
   const updateFiles = (updater: (current: DefinitionFileMap) => DefinitionFileMap) =>
     setFiles(updater);
 

@@ -21,9 +21,11 @@
  * See docs/flow-designer.md, "Outputs".
  */
 import type { Board, BoardContent, Channel, FlowObject, Frame } from './model';
-import { exitsOf, OBJECT_TYPES, toSnake } from './model';
+import { exitsOf, isImportedBoard, OBJECT_TYPES, statusOf, toSnake } from './model';
+import type { DesignStatus } from '../designStatus';
+import { statusLabel } from '../designStatus';
 import { boardChecks, flowScopeOf } from './checks';
-import type { FlowVarChange } from './studioTemplate';
+import type { FlowVarChange, TaskAttributesChange } from './studioTemplate';
 import { toStudioFlows } from './studioTemplate';
 import type { MessageStatus, RecordingsList } from './recordings';
 import { messageStatus, recordingOf } from './recordings';
@@ -59,6 +61,9 @@ export type ExportedObject = {
   call?: { route: string; urlTemplate: string; body: Record<string, string> };
   exits: ExportedExit[];
   openComments?: { author: string; text: string }[];
+  // For "Send to queue": the task's attributes as JSON (Studio fills in {{…}}; Terraform ${helpline}
+  // and ${task_language}), and where twilio-iac keeps them
+  taskAttributes?: Omit<NonNullable<FlowObject['taskAttributes']>, 'imported'> & { changed?: boolean };
   // The live Studio widget it was imported from, as it is in the template today
   currentStudioWidget?: FlowObject['studio'];
 };
@@ -74,7 +79,18 @@ export type ExportedFlow = {
 export type FlowExport = {
   schemaVersion: number;
   about: string;
-  board: { helpline: string; id: string; title: string; updatedAt: string; updatedBy: string };
+  board: {
+    helpline: string;
+    id: string;
+    title: string;
+    // Only "ready" ("Ready for Claude") is agreed and finished; see designStatus.ts
+    status: DesignStatus;
+    statusLabel: string;
+    // Not imported from the live config
+    isNew: boolean;
+    updatedAt: string;
+    updatedBy: string;
+  };
   // The recordings folders: what each environment's recordings URL variable points at
   recordingsBaseUrl?: RecordingsList['baseUrls'];
   flows: ExportedFlow[];
@@ -90,6 +106,8 @@ export type FlowExport = {
     text: string;
     // Texts to set in the helpline's .hcl files
     variables: FlowVarChange[];
+    // "Send to queue" task attributes that are new or changed, for the channel-attributes templates
+    taskAttributes: TaskAttributesChange[];
     // What still has to be filled in or decided
     todo: string[];
   }[];
@@ -98,14 +116,22 @@ export type FlowExport = {
 };
 
 const ABOUT = [
-  'A contact flow design from the Aselo flow designer. Each flow is one Twilio Studio flow (frames with the same',
-  'channel are parts of it, e.g. pre-queue and post-queue); objects are its widgets, with the Studio names to use,',
+  'A contact flow design from the Aselo flow designer. Implement it only when board.status is "ready" (Ready for',
+  'Claude); any other status means it is not finished or agreed yet, so ask before going on. Each flow is one',
+  'Twilio Studio flow (frames with the same channel are parts of it, e.g. pre-queue and post-queue); objects are',
+  'its widgets, with the Studio names to use,',
   'and exits say where each way out leads. Build or update the helpline twilio-iac Studio flow templates (.tftpl)',
   'following twilio-iac/AGENTS.md ("Studio flow standards"); calls to account-scoped lambda routes are described in',
   'lambdas/account-scoped/STUDIO_ROUTES.md. Voice recordings are named after their widget (recordingFile).',
   'Objects imported from a live helpline carry currentStudioWidget: the widget as it is in the template today.',
   '"studioTemplates" has each frame already written as a .tftpl (rebuilt exactly as it is live for widgets nobody',
   'changed), the texts to set in the .hcl variables, and the TODOs it could not fill in: start from those.',
+  '"Send to queue" objects carry taskAttributes: the task attributes as JSON (as Studio sends them: {{…}} is',
+  'Liquid filled in from the contact, ${helpline} and ${task_language} come from the helpline config). When their',
+  'source is a channel-attributes template, the widget keeps "attributes": "${channel_attributes.default}" and',
+  'Terraform fills it in with that template, picked by channel_attributes in common.hcl (or defaults.hcl) for the',
+  'channel: "<channel>-conversations" for Conversations channels, otherwise "<channel>", falling back to',
+  '"default-conversations" / "default". New or changed attributes go in that template, never inline in the flow.',
   '"checks" lists what the design still lacks; "layout" is only where things sit on the board.',
 ].join(' ');
 
@@ -170,6 +196,19 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
           }
         : {}),
       exits,
+      ...(object.taskAttributes
+        ? {
+            taskAttributes: {
+              json: object.taskAttributes.json,
+              source: object.taskAttributes.source,
+              ...(object.taskAttributes.otherChannels ? { otherChannels: object.taskAttributes.otherChannels } : {}),
+              ...(object.taskAttributes.imported === undefined ||
+              object.taskAttributes.imported !== object.taskAttributes.json
+                ? { changed: true }
+                : {}),
+            },
+          }
+        : {}),
       ...(object.studio ? { currentStudioWidget: object.studio } : {}),
       ...(openComments.length > 0 ? { openComments: openComments.map(({ author, text }) => ({ author, text })) } : {}),
     };
@@ -208,6 +247,9 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
       helpline: board.code,
       id: board.id,
       title: content.title,
+      status: statusOf(content),
+      statusLabel: statusLabel(statusOf(content)),
+      isNew: !isImportedBoard(content),
       updatedAt: board.meta.updatedAt,
       updatedBy: board.meta.updatedBy,
     },
@@ -220,14 +262,17 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
         ...(sticky.frameId ? { frame: sticky.frameId } : {}),
         ...(sticky.task ? { task: sticky.task } : {}),
       })),
-    studioTemplates: toStudioFlows(content).map(({ title, template, channels, text, flowVars, todo }) => ({
-      title,
-      ...(template ? { template } : {}),
-      channels,
-      text,
-      variables: flowVars,
-      todo,
-    })),
+    studioTemplates: toStudioFlows(content).map(
+      ({ title, template, channels, text, flowVars, taskAttributes, todo }) => ({
+        title,
+        ...(template ? { template } : {}),
+        channels,
+        text,
+        variables: flowVars,
+        taskAttributes,
+        todo,
+      }),
+    ),
     checks: boardChecks(content, recordings?.recordings).map(({ severity, message, objectId }) => ({
       severity,
       message,

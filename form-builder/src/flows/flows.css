@@ -29,25 +29,25 @@
   color: #c62828;
 }
 
-/* Start page */
+/* Start page: the area-home layout (designStatus.css), with the new board form and the import side by side */
 .flows-home {
   flex: 1;
-  padding: 24px 32px;
-  max-width: 960px;
   width: 100%;
-  margin: 0 auto;
 }
 
-.flows-home h2 {
-  margin: 0 0 4px;
+.area-home-actions > .flows-new,
+.area-home-actions > .flows-import {
+  flex: 1 1 400px;
+  align-self: stretch;
+  margin: 0;
 }
 
 .flows-new {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
+  align-content: flex-start;
   gap: 12px 16px;
-  margin: 20px 0 28px;
   padding: 16px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -65,12 +65,17 @@
   min-width: 200px;
 }
 
-.flows-group h3 {
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--color-muted);
-  margin: 20px 0 8px;
+.flows-templates {
+  margin-top: 28px;
+}
+
+.flows-templates h3 {
+  font-size: 15px;
+  margin: 0 0 4px;
+}
+
+.flows-templates .field-hint {
+  margin: 0 0 10px;
 }
 
 .flows-list {
@@ -1148,4 +1153,58 @@
 
 .flow-import-name {
   color: #0d47a1;
+}
+
+/* A "Send to queue" object's task attributes */
+.flow-task-attributes {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  resize: vertical;
+  white-space: pre;
+}
+
+.flow-task-attributes-problem {
+  color: #b71c1c;
+}
+
+.flow-task-attribute-names {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 4px 0;
+}
+
+.flow-task-attribute {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.flow-task-attribute.routing {
+  background: #e3f2fd;
+  border-color: #90caf9;
+}
+
+.flow-task-attributes-other summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.flow-task-attributes-other pre {
+  font-size: 11px;
+  overflow: auto;
+  max-height: 240px;
+  background: var(--color-surface);
+  padding: 6px 8px;
+  border-radius: var(--radius);
 }

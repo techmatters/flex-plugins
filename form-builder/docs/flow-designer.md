@@ -61,7 +61,7 @@ reads the same way as Studio.
 | Record voicemail | parallelogram | voicemail | 1 | Record Voicemail (`record_voicemail_...`) |
 | Chatbot | double-sided box | bot | finished / failed | Lex chatbot (phase 2 designs its script) |
 | Pre-survey form | document shape | clipboard | finished | pre-survey chatbot or webchat form |
-| Send to queue | cylinder | inbox | post-queue (continues), failed to enqueue | Send to Flex (`send_to_queue_...`) |
+| Send to queue | cylinder | inbox | post-queue (continues), failed to enqueue | Send to Flex (`send_to_queue_...`), with its **task attributes** (below) |
 | Forward call | rounded box | phone forwarded | call completed, hung up | Connect Call To (`connect_to_...`) |
 | Set variable / counter | box | variable | 1 | Set Variables (`set_var_...`) |
 | Wait / repeat | delay shape | timer | 1 | post-queue loop (e.g. every 2 minutes) |
@@ -98,6 +98,22 @@ is mostly worked out automatically (see [Recordings and scripts](#recordings-and
 - Studio names are checked as they're typed (prefix, lower case, camelCase only after `f_`,
   `postqueue_` after the queue, no repeats in the same flow); see [Check the flow](#check-the-flow).
   Frames with the same channel count as one Studio flow.
+
+### Status
+
+Each board has a status, the same as routing designs and chatbots (`src/designStatus.ts`):
+**Imported** (as it is live, nothing changed), **In progress**, **Ready for Claude** (finished and
+agreed with the helpline: Claude can implement it) and **Implemented** (written into the config).
+Boards imported from a live helpline start *Imported*; new boards (empty or from a template) start
+*In progress* and show **New** (not in the live config). Any change to the design (frames, objects,
+connections, texts and scripts, task attributes, which recording a message plays) sets it back to
+*In progress*, so a board has to be marked ready again after a change; comments (and resolving
+them), stickies and tasks, approving a script, renaming the board, and uploading, approving or
+publishing recordings (they're kept apart from the board) don't. Aselo staff set it from the dropdown next to the board's title;
+helpline staff see it. Boards saved before statuses existed read as *Imported* when their frames
+came from Studio, otherwise *In progress*. The start page lists every board with its status, with
+filters, and the export for Claude carries it (`board.status`): the skill only implements boards
+marked *Ready for Claude*.
 
 ### Tasks
 
@@ -219,7 +235,7 @@ can ignore it. `about` tells the agent what the file is and which standards to f
 {
   "schemaVersion": 1,
   "about": "A contact flow design from the Aselo flow designer. Each flow is one Twilio Studio flow ...",
-  "board": { "helpline": "usnm", "id": "abcd1234", "title": "USNM contact flows", "updatedAt": "...", "updatedBy": "Ale" },
+  "board": { "helpline": "usnm", "id": "abcd1234", "title": "USNM contact flows", "status": "ready", "statusLabel": "Ready for Claude", "isNew": true, "updatedAt": "...", "updatedBy": "Ale" },
   "flows": [
     {
       "key": "channel:voice",
@@ -314,6 +330,24 @@ language, the text on the board, the script and a status (*No script* / *Script 
 the recording statuses come with step 3). Sending it back filled in comes with the library in
 step 3.
 
+### Task attributes (Send to queue)
+
+A Send to queue object's settings show the **task attributes** the widget gives the task, as JSON:
+what the TaskRouter workflows' rules read (`channelType`, `helpline`, `language`...) and what
+Flex shows. `{{…}}` is filled in by Studio from the contact; `${helpline}` and
+`${task_language}` come from the helpline's config. The attributes the routing rules usually read
+are highlighted, and the check flags attributes that aren't valid JSON or are missing.
+
+In twilio-iac the widget almost always says `${channel_attributes.default}`, and Terraform puts
+there a channel-attributes template picked for the channel (`channel_attributes` in common.hcl, or
+defaults.hcl): `<channel>-conversations` for Conversations channels, otherwise `<channel>`, falling
+back to `default-conversations` / `default`. The board shows that template's JSON instead of the
+reference, and where it's kept (and for which channels; a flow shared by channels with different
+templates shows the others too). A new Send to queue starts from the standard template for its
+frame's channel. Changes stay in the template, never inline in the flow: the export lists new and
+changed attributes (`studioTemplates[].taskAttributes`) and the studio-flow-from-board skill writes
+them to the helpline's own template (a shared one gets a copy of the helpline's own).
+
 ### Import an existing helpline
 
 Builds boards for a helpline that's already live, one per Studio flow as in Studio, so its flows can be seen, checked and changed
@@ -330,6 +364,7 @@ Nothing in Twilio or the repo changes.
 | Layout | Studio's own widget positions (`offset`) | the same layout as in Studio, with heights halved (Studio's widgets are much taller than the board's objects); objects that would overlap are moved down |
 | Messaging texts | `${flow_vars...}` / `${channel_flow_vars...}` resolved from the environment files (production's when they differ); texts written in the template | each message's script |
 | Recordings | `play` URLs resolved from the same files (today Twilio Serverless, which is public) | copied into the recordings bucket: staging's files in `staging`, production's in `production`, under their current names |
+| Task attributes | a Send to Flex widget's `attributes`: `${channel_attributes.default}` resolved to the channel's channel-attributes template as Terraform does, or the JSON written in the widget | the Send to queue object's task attributes |
 
 The templates are read with a small HCL reader (`server/hcl.ts`) that keeps interpolations as
 written; its tests read every helpline's files in the repo, and import every helpline.
@@ -396,6 +431,21 @@ Not built yet:
    - **Compare with Studio**: show where the live Studio flow differs from the board.
    - Slack notification on new comments and assigned tasks; PNG/PDF export; board history
      (compare two saves).
+   - **Ready to implement**: mark a board (or a frame) as ready, so the studio-flow-from-board skill
+     reads it straight from the builder (the boards bucket) instead of someone exporting the JSON and
+     handing it over; marking it again after changes shows Claude what changed since.
+   - **Task attributes, improved** (pending task): the JSON editor works but is technical. Next:
+     a guided editor (pick attributes from a list saying what each is for and who reads it: routing
+     rules, Flex, Insights), the same attributes across a helpline's channels, and a check that what
+     the routing rules read (Routing designer) is on the tasks.
    - **Studio failure notifications**: today failures (e.g. a contact that fails to enqueue) are
      followed in Datadog, from Twilio's events; improve how the team is told about them. The flow
      check doesn't ask for a notification widget on each failure.
+
+## Importing from a branch
+
+Imports read master (deployed; locally, this checkout) unless another flex-plugins branch is chosen
+next to the import button, e.g. the branch a helpline's changes are being made in. The branch's
+files are downloaded from GitHub (public) and kept as a snapshot until it moves on
+(server/branches.ts); the preview says which branch and commit it read, and chatbot and routing
+designs keep it as `importedFrom`.

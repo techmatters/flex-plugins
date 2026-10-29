@@ -61,6 +61,10 @@ export default defineConfig({
       boardsDir: process.env.FORM_BUILDER_BOARDS_DIR ?? path.resolve(appDir, 'boards'),
       peopleDir: process.env.FORM_BUILDER_PEOPLE_DIR ?? path.resolve(appDir, 'people'),
       recordingsDir: process.env.FORM_BUILDER_RECORDINGS_DIR ?? path.resolve(appDir, 'recordings'),
+      routingDir: process.env.FORM_BUILDER_ROUTING_DIR ?? path.resolve(appDir, 'routing'),
+      chatbotsDir: process.env.FORM_BUILDER_CHATBOTS_DIR ?? path.resolve(appDir, 'chatbots-designs'),
+      // Other branches' files, downloaded when an import reads one
+      branchesDir: path.resolve(appDir, 'branch-snapshots'),
       repoRoot: path.resolve(appDir, '..'),
     }),
   ],
@@ -87,6 +91,16 @@ export default defineConfig({
     fs: { allow: [appDir, hrmFormDefinitionsSrc, pluginTranslationsDir, pluginTypesDir, webchatTranslationsDir] },
     // The local data folders change as people work; they aren't code, so don't watch them (on
     // Windows, watching a recording as it's copied can crash the server)
-    watch: { ignored: ['**/drafts/**', '**/boards/**', '**/people/**', '**/recordings/**'] },
+    watch: {
+      ignored: [
+        '**/drafts/**',
+        '**/boards/**',
+        '**/people/**',
+        '**/recordings/**',
+        '**/routing/**',
+        '**/chatbots-designs/**',
+        '**/branch-snapshots/**',
+      ],
+    },
   },
 });
