@@ -45,6 +45,7 @@ import type {
 } from '../src/flows/model';
 import { emptyBoard, OBJECT_TYPES, variesByVariant } from '../src/flows/model';
 import { importedRecordingKey, RECORDING_FILE_PATTERN } from '../src/flows/recordings';
+import { janitorValuesOf } from '../src/flows/janitor';
 import { studioNameProblems } from '../src/flows/checks';
 import {
   CHANNEL_ATTRIBUTES_REFERENCE,
@@ -260,6 +261,8 @@ const typeOf = (widget: HclObject): FlowObjectType | undefined => {
       if (/isSkilledWorkerAvailable/.test(target)) return 'checkQueueAvailability';
       if (/isSkilledWorker(LoggedIn|Online)/.test(target)) return 'checkWorkerLoggedIn';
       if (/captureChannelWithBot/.test(target)) return 'chatbot';
+      // The lambda's route, or the Serverless function (its sid in a flow_vars like send_message_janitor_function_sid)
+      if (/sendMessageAndRunJanitor|send_message_(run_)?janitor/i.test(target)) return 'sendMessageAndClose';
       return 'function';
     case 'say-play':
       return 'playMessage';
@@ -600,7 +603,11 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
 
       // Messages: the text, and for voice the recording
       if (info.hasMessage || type === 'incoming') {
-        const raw = textOf(properties.say) ?? textOf(properties.body);
+        // Send message and close: its message is one of the request's values
+        const raw =
+          type === 'sendMessageAndClose'
+            ? janitorValuesOf(properties).message
+            : (textOf(properties.say) ?? textOf(properties.body));
         const isVoice = ['say-play', 'gather-input-on-call'].includes(String(state.type));
         const channel = isVoice ? 'voice' : source.channel;
         const scripts = Object.fromEntries(
@@ -742,6 +749,16 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
           );
           if (Object.keys(settings).length > 0) object.settings = settings;
         }
+      } else if (type === 'sendMessageAndClose') {
+        // Who it's from, and legacy Programmable Chat (channelSid without conversationSid)
+        const values = janitorValuesOf(properties);
+        const settings = {
+          ...(values.from !== undefined ? { from: values.from } : {}),
+          ...(values.channelSid !== undefined && values.conversationSid === undefined
+            ? { conversation: 'channelSid' }
+            : {}),
+        };
+        if (Object.keys(settings).length > 0) object.settings = settings;
       } else if (info.fields) {
         // The route's settings, from the request body, variables kept as written (they're written
         // back as they're set: ${flow_vars.bot_language} stays that, not its value)

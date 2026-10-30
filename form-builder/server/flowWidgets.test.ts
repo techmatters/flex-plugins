@@ -23,7 +23,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { describe, expect, test } from 'vitest';
 import type { BoardContent, FlowObject } from '../src/flows/model';
-import { emptyBoard, exitsOf, repeatWidgetNames, upgradeContent } from '../src/flows/model';
+import { emptyBoard, exitsOf, repeatWidgetNames, suggestStudioName, upgradeContent } from '../src/flows/model';
+import { janitorValuesOf } from '../src/flows/janitor';
 import { boardChecks } from '../src/flows/checks';
 import { toStudioFlow } from '../src/flows/studioTemplate';
 import { importHelpline } from './flowImport';
@@ -307,6 +308,68 @@ describe('menus, repeats and chatbots', () => {
     const queues = boards.flatMap(({ content }) => content.objects.filter((o) => o.type === 'sendToQueue'));
     expect(queues.length).toBeGreaterThan(0);
     expect(queues.every((queue) => queue.settings?.workflow && queue.settings?.taskChannel)).toBe(true);
+  });
+
+  test('send message and close: a new one calls sendMessageAndRunJanitor with its message from flow_vars', () => {
+    const close = object('Blocked', 'sendMessageAndClose', {
+      message: { channel: 'sms', script: 'This number is blocked.' },
+      settings: { from: '${helpline}' },
+    });
+    expect(suggestStudioName(close)).toBe('f_sendMessageAndRunJanitor_blocked');
+    const content = board('webchat', [{ ...close, studioName: 'f_sendMessageAndRunJanitor_blocked' }], []);
+    const { flow, flowVars } = toStudioFlow(content, content.frames[0]);
+    expect(flow.states[0]).toMatchObject({
+      name: 'f_sendMessageAndRunJanitor_blocked',
+      type: 'make-http-request',
+      properties: { url: '${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor' },
+    });
+    expect(JSON.parse(String(flow.states[0].properties.body))).toEqual({
+      conversationSid: '{{flow.channel.address}}',
+      message: '${flow_vars.send_message_blocked}',
+      from: '${helpline}',
+    });
+    expect(flowVars).toContainEqual(
+      expect.objectContaining({ name: 'send_message_blocked', value: 'This number is blocked.' }),
+    );
+  });
+
+  test("imported ones (usnm's, form-encoded parameters) keep their message and author; changes go where they're kept", async () => {
+    const { boards } = await importHelpline(helplinesDir, 'usnm');
+    const sms = boards.find(({ content }) =>
+      content.objects.some((candidate) => candidate.studioName === 'f_sendMessageAndRunJanitor_voip_blocked'),
+    )!.content;
+    const close = sms.objects.find((candidate) => candidate.studioName === 'f_sendMessageAndRunJanitor_voip_blocked')!;
+    expect(close.type).toBe('sendMessageAndClose');
+    expect(close.settings?.from).toBeDefined();
+    expect(close.message?.script).toBeTruthy();
+
+    // The text is in its flow_vars; the author is written in the widget
+    const changed = {
+      ...sms,
+      objects: sms.objects.map((candidate) =>
+        candidate.id === close.id
+          ? { ...candidate, message: { ...candidate.message, script: 'New text' }, settings: { from: 'Aselo' } }
+          : candidate,
+      ),
+    };
+    const { flow, flowVars } = toStudioFlow(changed);
+    expect(flowVars).toContainEqual(
+      expect.objectContaining({ name: 'send_message_sms_voip_blocked', value: 'New text' }),
+    );
+    const state = flow.states.find((candidate) => candidate.name === 'f_sendMessageAndRunJanitor_voip_blocked')!;
+    expect(janitorValuesOf(state.properties)).toMatchObject({
+      message: '${flow_vars.send_message_sms_voip_blocked}',
+      from: 'Aselo',
+    });
+    // Every helpline's: recognised, as Serverless functions or lambda requests
+    let found = 0;
+    for (const code of ['usnm', 'usch', 'mt', 'za']) {
+      const { boards: theirs } = await importHelpline(helplinesDir, code).catch(() => ({ boards: [] }));
+      found += theirs
+        .flatMap(({ content }) => content.objects)
+        .filter((candidate) => candidate.type === 'sendMessageAndClose').length;
+    }
+    expect(found).toBeGreaterThan(3);
   });
 
   test('imported captureChannelWithBot requests are chatbots, their settings as written (variables kept)', async () => {

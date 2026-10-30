@@ -113,6 +113,11 @@ Kinds that become more than one widget, as the board writes them:
   then a `split-based-on` (`split_<name>`) on `{{flow.variables.<name>_counter}}`: `noMatch` goes
   back round (`repeat`), `greater_than` the times to repeat goes on (`max reached`). Used for
   unrecognised input and timeouts (usnm's older `set_var_en_service_counter` / `split_end_cycle_en_service`).
+- **Send message and close**: a `make-http-request` to
+  `${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor` named
+  `f_sendMessageAndRunJanitor_<what>`, body `conversationSid` (or `channelSid` for legacy Programmable
+  Chat), `message` (`${flow_vars.send_message_<what>}`, set in `variables`) and `from`. Imported ones
+  calling the Serverless function keep it; changes are written in its `parameters`.
 - **Send to queue**: `send-to-flex` with the board's workflow, task channel, `timeout` (3600 by
   default) and, when set, `waitUrl` / `waitUrlMethod`: a recording is `<widget name>.mp3` in the
   flow's recordings folder (it's in the recordings library under that name), an address is as written.

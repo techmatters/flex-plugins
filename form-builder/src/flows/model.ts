@@ -369,6 +369,7 @@ export type FlowObjectType =
   | 'decision'
   | 'playMessage'
   | 'sendMessage'
+  | 'sendMessageAndClose'
   | 'menuVoice'
   | 'questionMessaging'
   | 'recordVoicemail'
@@ -426,6 +427,8 @@ export type ObjectTypeInfo = {
   // The field whose value tells calls to the same route apart in their names
   // (f_isSkilledWorkerAvailable_tya_calls)
   nameSuffixFrom?: string;
+  // ...or its text tells them apart (f_sendMessageAndRunJanitor_blocked, for "Blocked")
+  nameSuffixFromText?: boolean;
 };
 
 export type StudioWidget = {
@@ -722,6 +725,37 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     hasMessage: true,
     exits: ['reply', 'timeout'],
     defaultSize: { width: 220, height: 80 },
+  },
+  // conversation/sendMessageAndRunJanitor: a last message, then the conversation is closed (blocked,
+  // closed, a holiday, too many tries...). Its message is the object's script
+  sendMessageAndClose: {
+    label: 'Send message and close',
+    group: 'Messages',
+    shape: 'parallelogram',
+    icon: 'MessageSquareX',
+    family: 'message',
+    studioWidget: 'HTTP Request (sendMessageAndRunJanitor)',
+    studioPrefix: 'f_',
+    studioRoute: 'conversation/sendMessageAndRunJanitor',
+    nameSuffixFromText: true,
+    hasMessage: true,
+    fields: [
+      {
+        key: 'from',
+        label: 'From',
+        placeholder: '${helpline}',
+        hint: 'Who the message is from, as the person sees it (e.g. the helpline’s name). Optional.',
+      },
+      {
+        key: 'conversation',
+        label: 'Conversation',
+        options: ['channelSid'],
+        optionLabels: { '': 'Conversations (conversationSid)', channelSid: 'Legacy Programmable Chat (channelSid)' },
+        hint: 'Conversations for every helpline on Conversations; channelSid only for legacy Programmable Chat.',
+      },
+    ],
+    exits: ['success', 'failed'],
+    defaultSize: { width: 230, height: 72 },
   },
   recordVoicemail: {
     label: 'Record voicemail',
@@ -1115,7 +1149,12 @@ export const suggestStudioName = (
   if (info.studioPrefix === 'f_') {
     // Named after the route it calls, plus what tells two calls apart (e.g. the skills)
     if (info.studioRoute) {
-      const suffix = info.nameSuffixFrom ? toSnake(object.settings?.[info.nameSuffixFrom] ?? '') : '';
+      const suffix = info.nameSuffixFrom
+        ? toSnake(object.settings?.[info.nameSuffixFrom] ?? '')
+        : info.nameSuffixFromText
+          ? // Its text, without the kind's own words (a new one says "Send message and close")
+            toSnake(object.text.toLowerCase().replace(info.label.toLowerCase(), ''))
+          : '';
       return `${postqueue}f_${routeName(info.studioRoute)}${suffix ? `_${suffix}` : ''}`;
     }
     return `${postqueue}f_${toCamel(object.text) || 'function'}`;

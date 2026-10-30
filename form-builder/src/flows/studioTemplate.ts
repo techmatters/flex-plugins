@@ -30,6 +30,7 @@
  */
 import type { BoardContent, FlowObject, Frame, TaskAttributes } from './model';
 import { exitsOf, OBJECT_TYPES, repeatWidgetNames, toSnake } from './model';
+import { janitorValuesOf, withJanitorValues } from './janitor';
 import { isVoiceMessage, standardRecordingName } from './recordings';
 import { CHANNEL_ATTRIBUTES_REFERENCE } from './taskAttributes';
 
@@ -314,7 +315,9 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         listTaskAttributes(object, name, 'changed');
       }
       if ('say' in properties) setText(object, properties, 'say', name);
-      else if ('body' in properties && OBJECT_TYPES[object.type].hasMessage) setText(object, properties, 'body', name);
+      // (Send message and close keeps its message among its request's values: below)
+      else if ('body' in properties && OBJECT_TYPES[object.type].hasMessage && object.type !== 'sendMessageAndClose')
+        setText(object, properties, 'body', name);
       // A recording given its standard name (the widget's) on the board: the widget plays that file now
       if (typeof properties.play === 'string') {
         const played = properties.play.split('/').pop() ?? '';
@@ -354,6 +357,27 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         if (object.settings?.timeout && properties.timeout !== object.settings.timeout) {
           properties.timeout = object.settings.timeout;
         }
+      } else if (object.type === 'sendMessageAndClose') {
+        // Its message (in its variable when it reads one, otherwise written in the widget) and author
+        const values = janitorValuesOf(properties);
+        const changes: Record<string, string | undefined> = {};
+        const script = object.message?.script;
+        if (script !== undefined && script !== studio.importedScript) {
+          const variable = values.message?.match(VARIABLE);
+          if (variable) {
+            flowVars.push({
+              scope: variable[1],
+              name: variable[2],
+              value: script,
+              widget: name,
+              ...(mainVariant ? { flow: mainVariant } : {}),
+            });
+          } else changes.message = script;
+        }
+        if (object.settings?.from !== undefined && object.settings.from !== values.from) {
+          changes.from = object.settings.from;
+        }
+        Object.assign(properties, withJanitorValues(properties, changes));
       } else if (object.type === 'function') {
         // The request as set on the board (method, address, body), where it differs from Studio's
         if (studio.type === 'make-http-request') {
@@ -675,6 +699,31 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
             results.slice(0, -1).map((exit) => ({ exit, type: 'equal_to', value: exit })),
             results[results.length - 1],
           ),
+        ];
+      }
+      case 'sendMessageAndClose': {
+        const settings = object.settings ?? {};
+        // Its message from flow_vars, named as the helplines' are (send_message_<what>)
+        const variable = `send_message_${name.replace(/^(postqueue_)?f_sendMessageAndRunJanitor_?/, '') || 'janitor'}`;
+        flowVars.push({ scope: 'flow_vars', name: variable, value: message, widget: name });
+        const body = {
+          [settings.conversation === 'channelSid' ? 'channelSid' : 'conversationSid']: '{{flow.channel.address}}',
+          message: `\${flow_vars.${variable}}`,
+          ...(settings.from ? { from: settings.from } : {}),
+        };
+        return [
+          {
+            name,
+            type: 'make-http-request',
+            transitions: [
+              withNext({ event: 'success' }, next('success')),
+              withNext({ event: 'failed' }, next('failed')),
+            ],
+            properties: {
+              offset,
+              ...httpRequest(`${ACCOUNT_SCOPED}/${info.studioRoute}`, JSON.stringify(body, null, 2)),
+            },
+          },
         ];
       }
       case 'function':

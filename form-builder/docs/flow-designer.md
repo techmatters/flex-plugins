@@ -56,6 +56,7 @@ reads the same way as Studio.
 | Decision | diamond | branch | one per answer, plus "no match" | Split Based On (`split_...`) |
 | Play message (voice) | parallelogram | speaker | 1 | Say/Play (`play_message_...`) |
 | Send message | parallelogram | message | 1 | Send Message (`send_message_...`) |
+| Send message and close | parallelogram | message with a cross | success / failed | `conversation/sendMessageAndRunJanitor` (`f_sendMessageAndRunJanitor_<what>`, from its text, e.g. “Blocked”): a last message, then the conversation is closed. Its message is its script (in `flow_vars`, `send_message_<what>`, approved like a message's); settings: who it's from, and Conversations or legacy Programmable Chat. Imported from the lambda's route and from the Serverless function (its parameters), with changes written where each keeps them |
 | Menu / question (voice) | manual-input shape | dial pad | keypress, speech, timeout (Studio's) | Gather Input on Call (`gather_input_...`); a Decision after keypress tells the options apart. Boards made when the options were its ways out (1, 2, noMatch) still get a Split for them |
 | Question (messaging) | manual-input shape | message reply | reply, timeout | Send and Wait for Reply (`send_wait_...`) |
 | Record voicemail | parallelogram | voicemail | 1 | Record Voicemail (`record_voicemail_...`) |
