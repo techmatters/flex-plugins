@@ -37,7 +37,7 @@ import {
 } from '../../states/contacts/saveContact';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
-import { checkTaskAssignment } from '../../services/twilioTaskService';
+import { checkTaskAssignment, getTaskAndReservations } from '../../services/twilioTaskService';
 import { isOfflineContact } from '../../types/types';
 import { ConfirmDialog } from '../../design-system/modals/ConfirmDialog';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -122,8 +122,13 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
     if (isAssigned === true) {
       setIsFinalizeContactDialogOpen(true);
     } else {
-      // If the task isn't in an assigned state, trying to complete it is futile
-      setIsRemoveTaskDialogOpen(true);
+      const taskResponse = await getTaskAndReservations(savedContact.taskId);
+      if (taskResponse?.task?.status === 'completed') {
+        setIsFinalizeContactDialogOpen(true);
+      } else {
+        // If the task isn't in an assigned state, trying to complete it is futile
+        setIsRemoveTaskDialogOpen(true);
+      }
     }
   };
 
