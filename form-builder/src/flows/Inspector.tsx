@@ -21,25 +21,43 @@ import { useState } from 'react';
 import {
   Channel,
   CommentThread,
+  composeName,
   exitsOf,
   FlowObjectType,
   fieldProblem,
+  isNamedByParts,
+  messageChannelOf,
   messageFor,
+  nameParts,
+  namingChoicesOf,
   variesByVariant,
   withVariantMessage,
   FlowStage,
   OBJECT_COLORS,
   OBJECT_TYPES,
   objectColor,
+  standardStudioName,
   STICKY_COLORS,
   StickyColor,
   suggestStudioName,
   TASK_STATUSES,
   TaskStatus,
+  toSnake,
 } from './model';
-import type { BoardContent, Person } from './model';
+import type {
+  BoardContent,
+  FlowDetails,
+  FlowNaming,
+  FlowObject,
+  Frame,
+  NameParts,
+  NamingChoices,
+  Person,
+} from './model';
+import { hasNonStandardRecording, isVoiceMessage, withStudioName } from './recordings';
 import { AutoTextarea } from '../components/AutoTextarea';
 import { CanvasNode, ConnectionEdge, FrameNode, newId, ObjectNode, StickyNode } from './canvasModel';
+import type { ChatbotChoice } from './boardClient';
 import type { Issue } from './checks';
 import { uniqueName } from './checks';
 import { RecordingActions, RecordingSection, ScriptApproval } from './RecordingControls';
@@ -81,6 +99,203 @@ export type InspectorProps = {
   recordings: RecordingActions;
   // The variant shown, for flows sharing a template (FlowDetails.variants): its texts are edited
   variant?: string;
+  // The helpline's chatbots, offered for a Chatbot object
+  chatbots?: ChatbotChoice[];
+  // The board's own flow's settings changed (its objects outside frames)
+  onBoardFlow?: (flow: FlowDetails) => void;
+};
+
+/**
+ * A message's name as its parts: the prefix (set by its kind), then the flow's channel, language
+ * and service (chosen; filled in when the flow has one), then what it is.
+ */
+const NamePartsEditor = ({
+  name,
+  prefix,
+  postqueue,
+  choices,
+  channel,
+  language,
+  readOnly,
+  onChange,
+}: {
+  name?: string;
+  prefix: string;
+  postqueue: boolean;
+  choices: NamingChoices;
+  // The message's own channel and language, for a new name
+  channel?: string;
+  language?: string;
+  readOnly: boolean;
+  onChange: (name: string | undefined) => void;
+}) => {
+  const only = (values: string[]) => (values.length === 1 ? values[0] : undefined);
+  const parts: NameParts = (name && nameParts(name, prefix, choices)) || {
+    postqueue,
+    prefix,
+    channel: choices.channels.includes(channel ?? '') ? channel : (only(choices.channels) ?? channel),
+    language: choices.languages.includes(language ?? '') ? language : only(choices.languages),
+    service: only(choices.services),
+    rest: '',
+  };
+  const set = (changes: Partial<NameParts>) => {
+    // Lower case and underscores, kept as typed (a trailing underscore while typing service_menu)
+    const rest = (changes.rest ?? parts.rest).toLowerCase().replace(/[^a-z0-9_]+/g, '_');
+    const next = { ...parts, ...changes, rest };
+    onChange(next.rest || next.channel || next.language || next.service ? composeName(next) : undefined);
+  };
+  // The flow's only value is filled in (shown as it is); several are chosen from
+  const select = (label: string, key: 'channel' | 'language' | 'service', values: string[]) => {
+    if (values.length === 0) return null;
+    if (values.length === 1 && parts[key] === values[0]) {
+      return (
+        <span className="flow-name-part" title={`The flow's only ${label.toLowerCase()}`}>
+          {values[0]}
+        </span>
+      );
+    }
+    return (
+      <select
+        aria-label={`Name's ${label.toLowerCase()}`}
+        title={label}
+        value={parts[key] ?? ''}
+        disabled={readOnly}
+        onChange={(e) => set({ [key]: e.target.value || undefined })}
+      >
+        <option value="">no {label.toLowerCase()}</option>
+        {values.map((value) => (
+          <option key={value} value={value}>
+            {value}
+          </option>
+        ))}
+      </select>
+    );
+  };
+  return (
+    <div className="field">
+      <span className="field-label">Studio name</span>
+      <div className="flow-name-parts">
+        <span className="flow-name-prefix" title="Set by the kind of widget">
+          {parts.postqueue ? 'postqueue_' : ''}
+          {prefix}
+        </span>
+        {select('Channel', 'channel', choices.channels)}
+        {select('Language', 'language', choices.languages)}
+        {select('Service', 'service', choices.services)}
+        <input
+          type="text"
+          aria-label="What it is"
+          value={parts.rest}
+          placeholder="service_menu"
+          disabled={readOnly}
+          spellCheck={false}
+          onChange={(e) => set({ rest: e.target.value })}
+        />
+      </div>
+      {name && <code className="flow-name-full">{name}</code>}
+    </div>
+  );
+};
+
+// A comma-separated list, kept as typed until it's left
+const ListInput = ({
+  label,
+  values,
+  placeholder,
+  hint,
+  readOnly,
+  onChange,
+}: {
+  label: string;
+  values?: string[];
+  placeholder?: string;
+  hint: string;
+  readOnly: boolean;
+  onChange: (values: string[] | undefined) => void;
+}) => {
+  const [text, setText] = useState<string>();
+  const shown = text ?? (values ?? []).join(', ');
+  const commit = () => {
+    if (text === undefined) return;
+    const list = [...new Set(text.split(',').map(toSnake).filter(Boolean))];
+    onChange(list.length > 0 ? list : undefined);
+    setText(undefined);
+  };
+  return (
+    <label className="field">
+      <span className="field-label">{label}</span>
+      <input
+        type="text"
+        value={shown}
+        placeholder={placeholder}
+        disabled={readOnly}
+        onChange={(e) => setText(e.target.value)}
+        onBlur={commit}
+        onKeyDown={(e) => e.key === 'Enter' && commit()}
+      />
+      <span className="field-hint">{hint}</span>
+    </label>
+  );
+};
+
+/**
+ * The flow's channels, languages and services: the parts its messages' names are built from
+ * (gather_input_voice_en_childhelp_service_menu).
+ */
+const NamingSection = ({
+  details,
+  objects,
+  readOnly,
+  onChange,
+}: {
+  details?: Pick<Frame, 'channel' | 'naming'>;
+  objects: FlowObject[];
+  readOnly: boolean;
+  onChange: (naming: FlowNaming | undefined) => void;
+}) => {
+  const naming = details?.naming ?? {};
+  // What's used when nothing is set: the flow's channel, its messages' languages
+  const found = namingChoicesOf(details ? { ...details, naming: undefined } : undefined, objects);
+  const set = (key: keyof FlowNaming, values: string[] | undefined) => {
+    const { [key]: _removed, ...others } = naming;
+    const next = values ? { ...others, [key]: values } : others;
+    onChange(Object.keys(next).length > 0 ? next : undefined);
+  };
+  return (
+    <section className="flow-inspector-section">
+      <h3>Names</h3>
+      <p className="field-hint">
+        Messages, menus and questions are named{' '}
+        <code>&lt;prefix&gt;&lt;channel&gt;_&lt;language&gt;_&lt;service&gt;_…</code>, e.g.{' '}
+        <code>gather_input_voice_en_childhelp_service_menu</code>. One value is filled in by itself; several are chosen
+        from.
+      </p>
+      <ListInput
+        label="Channels"
+        values={naming.channels}
+        placeholder={found.channels.join(', ') || 'voice'}
+        hint="Comma-separated. Empty: the flow's channel."
+        readOnly={readOnly}
+        onChange={(values) => set('channels', values)}
+      />
+      <ListInput
+        label="Languages"
+        values={naming.languages}
+        placeholder={found.languages.join(', ') || 'en, es'}
+        hint="Empty: the languages its messages are in."
+        readOnly={readOnly}
+        onChange={(values) => set('languages', values)}
+      />
+      <ListInput
+        label="Services"
+        values={naming.services}
+        placeholder="childhelp, tya"
+        hint="e.g. the lines or programs the flow serves. Optional."
+        readOnly={readOnly}
+        onChange={(values) => set('services', values)}
+      />
+    </section>
+  );
 };
 
 const ChannelSelect = ({
@@ -236,7 +451,25 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
     onNodeData(node.id, { object: { ...object, ...changes } });
   // The object's frame, or the board's own flow (an imported board's) when it's outside frames
   const details = frame ? frame.data.frame : props.content.flow;
-  const suggested = suggestStudioName(object, details);
+  // The flow's channels, languages and services, the parts messages' names are built from
+  const choices = namingChoicesOf(
+    details,
+    props.content.objects.filter((candidate) => candidate.frameId === node.parentId),
+  );
+  const suggested = suggestStudioName(object, details, choices);
+  const recordingList = props.recordings.list?.recordings;
+  // Renamed, a message keeps playing its recording until the file is copied to the new name
+  const rename = (studioName: string | undefined) =>
+    onNodeData(node.id, { object: withStudioName(object, studioName, recordingList) });
+  const standard = standardStudioName(object, details, choices);
+  const useStandard = async () => {
+    if (!standard) return;
+    const renamed = withStudioName(object, standard, recordingList);
+    onNodeData(node.id, { object: renamed });
+    // Aselo staff: its recording copied to the new name straight away
+    if (props.recordings.rename && hasNonStandardRecording(renamed))
+      await props.recordings.rename([node.id], [renamed]);
+  };
   // Not one another object in the same flow already has
   const suggestion = suggested && uniqueName(suggested, { id: node.id, frameId: node.parentId }, props.content);
   const problems = props.problems.get(node.id) ?? [];
@@ -384,22 +617,43 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
 
       {info.studioPrefix && (
         <section className="flow-inspector-section">
-          <label className="field">
-            <span className="field-label">Studio name</span>
-            <input
-              type="text"
-              value={object.studioName ?? ''}
-              disabled={readOnly}
-              placeholder={suggestion}
-              onChange={(e) => update({ studioName: e.target.value.trim() || undefined })}
+          {isNamedByParts(object.type) &&
+          (!object.studioName || nameParts(object.studioName, info.studioPrefix, choices)) ? (
+            <NamePartsEditor
+              name={object.studioName}
+              prefix={info.studioPrefix}
+              postqueue={details?.stage === 'postqueue'}
+              choices={choices}
+              channel={messageChannelOf(object, details)}
+              language={object.message?.language}
+              readOnly={readOnly}
+              onChange={rename}
             />
-            <span className="field-hint">
-              The widget&apos;s name in Studio
-              {info.hasMessage && object.message?.channel === 'voice' ? ' and its recording file' : ''}.
-            </span>
-          </label>
-          {!readOnly && suggestion && suggestion !== object.studioName && (
-            <button type="button" className="link-button" onClick={() => update({ studioName: suggestion })}>
+          ) : (
+            <label className="field">
+              <span className="field-label">Studio name</span>
+              <input
+                type="text"
+                value={object.studioName ?? ''}
+                disabled={readOnly}
+                placeholder={suggestion}
+                onChange={(e) => rename(e.target.value.trim() || undefined)}
+              />
+            </label>
+          )}
+          <span className="field-hint">
+            The widget&apos;s name in Studio
+            {info.hasMessage && object.message?.channel === 'voice' ? ' and its recording file' : ''}.
+            {isNamedByParts(object.type) && ' Channels, languages and services are set for the flow (its settings).'}
+          </span>
+          {!readOnly && standard && standard !== object.studioName && (
+            <button type="button" className="link-button" onClick={useStandard}>
+              Use the standard name: {standard}
+              {object.studio && isVoiceMessage(object, details) ? ' (its recording is copied to it)' : ''}
+            </button>
+          )}
+          {!readOnly && !standard && suggestion && suggestion !== object.studioName && (
+            <button type="button" className="link-button" onClick={() => rename(suggestion)}>
               Use {suggestion}
             </button>
           )}
@@ -421,9 +675,13 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
           )}
           {info.fields.map((field) => {
             const value = object.settings?.[field.key] ?? '';
+            const suggestions = field.suggestions === 'chatbots' ? (props.chatbots ?? []) : [];
             const set = (newValue: string) => {
               const { [field.key]: _removed, ...others } = object.settings ?? {};
-              const settings = newValue ? { ...others, [field.key]: newValue } : others;
+              const settings: Record<string, string> = newValue ? { ...others, [field.key]: newValue } : others;
+              // A chatbot of the helpline's chosen: its language too (Lex's en_USCH is en-USCH here)
+              const bot = suggestions.find((candidate) => candidate.name === newValue);
+              if (bot && !settings.language) settings.language = bot.language.replace('_', '-');
               update({ settings: Object.keys(settings).length > 0 ? settings : undefined });
             };
             return (
@@ -452,7 +710,9 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                 ) : (
                   <input
                     type={field.kind === 'url' ? 'url' : 'text'}
+                    inputMode={field.kind === 'number' ? 'numeric' : undefined}
                     className={field.kind === 'url' ? 'flow-field-url' : undefined}
+                    list={suggestions.length > 0 ? `suggestions-${node.id}-${field.key}` : undefined}
                     value={value}
                     placeholder={field.placeholder}
                     disabled={readOnly}
@@ -460,6 +720,23 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                     aria-invalid={Boolean(fieldProblem(field, value))}
                     onChange={(e) => set(e.target.value)}
                   />
+                )}
+                {suggestions.length > 0 && (
+                  <datalist id={`suggestions-${node.id}-${field.key}`}>
+                    {[...new Set(suggestions.map((bot) => bot.name))].map((name) => (
+                      <option key={name} value={name}>
+                        {suggestions
+                          .filter((bot) => bot.name === name)
+                          .map((bot) => bot.language)
+                          .join(', ')}
+                      </option>
+                    ))}
+                  </datalist>
+                )}
+                {field.suggestions === 'chatbots' && suggestions.length === 0 && (
+                  <span className="field-hint">
+                    This helpline has no chatbots in the designer yet: type the bot’s name.
+                  </span>
                 )}
                 {fieldProblem(field, value) && <span className="flow-field-problem">{fieldProblem(field, value)}</span>}
                 {field.hint && <span className="field-hint">{field.hint}</span>}
@@ -576,6 +853,12 @@ const FrameSettings = ({ node, props }: { node: FrameNode; props: InspectorProps
       <button type="button" className="link-button" onClick={() => props.onFocusFrame(node.id)}>
         Zoom to this frame
       </button>
+      <NamingSection
+        details={frame}
+        objects={props.content.objects.filter((object) => object.frameId === node.id)}
+        readOnly={props.readOnly}
+        onChange={(naming) => update({ naming })}
+      />
     </section>
   );
 };
@@ -739,6 +1022,8 @@ const ConnectionSettings = ({ edge, props }: { edge: ConnectionEdge; props: Insp
 
 const BoardSettings = ({ props }: { props: InspectorProps }) => {
   const frames = props.nodes.filter((node): node is FrameNode => node.type === 'frame');
+  // The board's own flow: its objects outside frames (an imported board's are all there)
+  const unframed = props.content.objects.filter((object) => !object.frameId);
   return (
     <>
       <section className="flow-inspector-section">
@@ -752,6 +1037,14 @@ const BoardSettings = ({ props }: { props: InspectorProps }) => {
           />
         </label>
       </section>
+      {props.onBoardFlow && (props.content.flow || unframed.length > 0) && (
+        <NamingSection
+          details={props.content.flow}
+          objects={unframed}
+          readOnly={props.readOnly}
+          onChange={(naming) => props.onBoardFlow?.({ ...props.content.flow, naming })}
+        />
+      )}
       <section className="flow-inspector-section">
         <h3>Frames</h3>
         {frames.length === 0 && <p className="field-hint">No frames yet. Add one from the left to hold a flow.</p>}

@@ -1282,6 +1282,51 @@
   color: var(--color-error-text);
 }
 
+/* A message's name by parts: the prefix (fixed), the flow's channel, language and service, what it is */
+.flow-name-parts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+}
+
+.flow-name-parts select,
+.flow-name-parts input {
+  font-family: inherit;
+  font-size: inherit;
+  width: auto;
+  min-width: 0;
+}
+
+.flow-name-parts input {
+  flex: 1 1 120px;
+}
+
+.flow-name-prefix,
+.flow-name-part {
+  padding: 2px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.flow-name-prefix {
+  background: var(--color-surface);
+  color: var(--color-muted);
+}
+
+.flow-name-part {
+  background: var(--color-accent-soft);
+}
+
+.flow-name-full {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  word-break: break-all;
+}
+
 /* Flows sharing a template (variants): a bar under the toolbar, a tab per flow */
 .flow-variant-bar {
   display: flex;

@@ -32,7 +32,7 @@
  */
 import { randomUUID } from 'crypto';
 import type { Board, BoardContent } from '../src/flows/model';
-import { emptyBoard, statusOf, TEMPLATES_CODE } from '../src/flows/model';
+import { emptyBoard, statusOf, TEMPLATES_CODE, upgradeContent } from '../src/flows/model';
 import { STATUS_AFTER_CHANGE } from '../src/designStatus';
 import type { ApiResponse, ApiUser } from './api';
 import { BoardStore, isBoardContent, isValidBoardKey } from './boards';
@@ -124,7 +124,7 @@ export const handleBoardRequest = async (
       const source = await boards.get(fromCode, fromId);
       if (!source) return fail(404, 'The board to copy no longer exists.');
       // A copy is a new design, whatever the template's status
-      content = { ...source.content, title: title.trim(), status: STATUS_AFTER_CHANGE };
+      content = { ...upgradeContent(source.content), title: title.trim(), status: STATUS_AFTER_CHANGE };
     }
 
     let id = newBoardId();
@@ -160,7 +160,7 @@ export const handleBoardRequest = async (
         },
       );
     }
-    return ok(existing);
+    return ok({ ...existing, content: upgradeContent(existing.content) });
   }
 
   if (method === 'PUT') {

@@ -214,7 +214,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
     .find(Boolean);
 
   // Each object's widget name; kinds that aren't widgets have none
-  const NOT_WIDGETS = new Set<FlowObject['type']>(['end', 'text', 'goToFrame', 'wait', 'chatbot', 'preSurvey']);
+  const NOT_WIDGETS = new Set<FlowObject['type']>(['end', 'text', 'goToFrame', 'preSurvey']);
   const nameOf = (object: FlowObject): string | undefined => {
     if (object.studio) return object.studioName ?? object.studio.name;
     if (object.type === 'incoming') return 'Trigger';
@@ -223,9 +223,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
   };
   // Design objects that stand for something built some other way
   const BUILT_ELSEWHERE: Partial<Record<FlowObject['type'], string>> = {
-    chatbot: 'a chatbot (Lex) step: build it with the chatbot widgets (capture channel with bot)',
     preSurvey: 'a pre-survey: build it with the chatbot or webchat form',
-    wait: 'a wait / repeat: post-queue loops are built in the queue and its post-queue widgets',
   };
   // Where a way out leads: the widget it's connected to (End, or nothing, ends the flow)
   const nextOf = (object: FlowObject, exit: string) => {
@@ -454,15 +452,18 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
           },
         ];
       case 'menuVoice': {
-        const digits = exits.filter((exit) => exit !== 'noMatch' && exit !== 'timeout');
+        // Boards made when a menu's options were its ways out (1, 2, noMatch) get a split for them
+        const digits = exits.filter((exit) => !['keypress', 'speech', 'noMatch', 'timeout'].includes(exit));
         const input = `{{widgets.${name}.Digits}}`;
         return [
           {
             name,
             type: 'gather-input-on-call',
             transitions: [
-              { event: 'keypress', next: splitName },
-              { event: 'speech' },
+              digits.length > 0
+                ? { event: 'keypress', next: splitName }
+                : withNext({ event: 'keypress' }, next('keypress')),
+              withNext({ event: 'speech' }, next('speech')),
               withNext({ event: 'timeout' }, next('timeout')),
             ],
             properties: {
@@ -478,12 +479,100 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
               timeout: 10,
             },
           },
-          split(
-            splitName,
-            input,
-            digits.map((digit) => ({ exit: digit, type: 'equal_to', value: digit })),
-            'noMatch',
-          ),
+          ...(digits.length > 0
+            ? [
+                split(
+                  splitName,
+                  input,
+                  digits.map((digit) => ({ exit: digit, type: 'equal_to', value: digit })),
+                  'noMatch',
+                ),
+              ]
+            : []),
+        ];
+      }
+      case 'repeat': {
+        // The counter goes up each time round; past the maximum, the loop's way out
+        const counter = object.settings?.counter?.trim() || name.replace(/^set_var_/, '');
+        const maxRepeats = object.settings?.maxRepeats?.trim() || '2';
+        if (!object.settings?.counter || !object.settings?.maxRepeats) {
+          todo.push(`${label(object)}: check its counter (${counter}) and how many times it repeats (${maxRepeats}).`);
+        }
+        const value = `flow.variables.${counter}`;
+        const endName = `split_end_cycle_${name.replace(/^set_var_/, '').replace(/_counter$/, '')}`;
+        return [
+          {
+            name,
+            type: 'set-variables',
+            transitions: [{ event: 'next', next: endName }],
+            properties: {
+              variables: [
+                {
+                  type: 'string',
+                  value: `{% if ${value} %}{{${value} | plus: 1}}{% else %}1{% endif %}`,
+                  key: counter,
+                },
+              ],
+              offset,
+            },
+          },
+          {
+            name: endName,
+            type: 'split-based-on',
+            transitions: [
+              withNext({ event: 'noMatch' }, next('repeat')),
+              withNext(
+                {
+                  event: 'match',
+                  conditions: [
+                    condition(`{{${value}}}`, 'greater_than', maxRepeats, `If value greater_than ${maxRepeats}`),
+                  ],
+                },
+                next('max reached'),
+              ),
+            ],
+            properties: { input: `{{${value}}}`, offset: { x: offset.x, y: offset.y + 240 } },
+          },
+        ];
+      }
+      case 'chatbot': {
+        const settings = object.settings ?? {};
+        const missing = ['botSuffix', 'language', 'triggerType', 'message', 'releaseType'].filter(
+          (key) => !settings[key],
+        );
+        if (missing.length > 0) {
+          todo.push(
+            `${label(object)}: set its ${missing.join(', ')} (STUDIO_ROUTES.md, channelCapture/captureChannelWithBot).`,
+          );
+        }
+        const releaseType = settings.releaseType ?? 'triggerStudioFlow';
+        const body = {
+          channelSid: '{{flow.channel.address}}',
+          isConversation: 'true',
+          message: settings.message ?? TODO,
+          ...(releaseType === 'triggerStudioFlow' ? { studioFlowSid: '{{flow.flow_sid}}' } : {}),
+          language: settings.language ?? TODO,
+          botSuffix: settings.botSuffix ?? TODO,
+          triggerType: settings.triggerType ?? 'withUserMessage',
+          releaseType,
+          ...(settings.releaseFlag ? { releaseFlag: settings.releaseFlag } : {}),
+          ...(settings.memoryAttribute ? { memoryAttribute: settings.memoryAttribute } : {}),
+          channelType:
+            '{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}',
+        };
+        return [
+          {
+            name,
+            type: 'make-http-request',
+            transitions: [
+              withNext({ event: 'success' }, next('success')),
+              withNext({ event: 'failed' }, next('failed')),
+            ],
+            properties: {
+              offset,
+              ...httpRequest(`${ACCOUNT_SCOPED}/${info.studioRoute}`, JSON.stringify(body, null, 2)),
+            },
+          },
         ];
       }
       case 'decision':

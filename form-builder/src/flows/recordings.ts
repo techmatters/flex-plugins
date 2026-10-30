@@ -108,6 +108,32 @@ export const hasNonStandardRecording = (object: Pick<FlowObject, 'studioName' | 
   return Boolean(file && object.studioName && file.replace(/\.(mp3|wav)$/, '') !== object.studioName);
 };
 
+// The file an imported widget plays (its play address's last part), e.g. welcome_message.mp3
+const playedFile = (object: Pick<FlowObject, 'studio'>) => {
+  const play = object.studio?.properties?.play;
+  const file = typeof play === 'string' ? play.split('/').pop() : undefined;
+  return file && /\.(mp3|wav)$/.test(file) ? file : undefined;
+};
+
+/**
+ * The object with another Studio name, still playing its recording: a message whose file is
+ * named after the old name keeps that file (message.recordingFile), flagged as an older name, until
+ * it's copied to the new one ("Use the standard name").
+ */
+export const withStudioName = <T extends Pick<FlowObject, 'studioName' | 'message' | 'studio'>>(
+  object: T,
+  studioName: string | undefined,
+  recordings: Recording[] = [],
+): T => {
+  if (studioName === object.studioName) return object;
+  if (!object.message) return { ...object, studioName };
+  const played = object.message.recordingFile ?? recordingOf(object, recordings)?.fileName ?? playedFile(object);
+  const { recordingFile: _old, ...message } = object.message;
+  // Back to the file's own name: nothing to keep
+  const keep = played && played.replace(/\.(mp3|wav)$/, '') !== studioName;
+  return { ...object, studioName, message: keep ? { ...message, recordingFile: played } : message };
+};
+
 export type MessageStatus = 'No script' | 'Script ready' | 'Recorded' | 'Approved' | 'Published';
 
 /**

@@ -19,8 +19,16 @@
  * standards"). Problems are shown on the objects, in their settings and in the Check panel; they
  * never stop saving, since a board is a design in progress.
  */
-import type { BoardContent, FlowObject, Frame } from './model';
-import { exitsOf, fieldProblem, flowDetailsOf, OBJECT_TYPES, variesByVariant } from './model';
+import type { BoardContent, FlowObject, Frame, NamingChoices } from './model';
+import {
+  exitsOf,
+  fieldProblem,
+  flowDetailsOf,
+  namingChoicesOf,
+  OBJECT_TYPES,
+  standardStudioName,
+  variesByVariant,
+} from './model';
 import type { Recording } from './recordings';
 import { hasNonStandardRecording, isVoiceMessage, messageStatus } from './recordings';
 import { taskAttributesProblem } from './taskAttributes';
@@ -149,6 +157,15 @@ export const boardChecks = (
   const outgoing = (id: string) => content.connections.filter((connection) => connection.from === id);
   const targets = new Set(content.connections.map((connection) => connection.to));
   const duplicates = duplicateNames(content);
+  // Each flow's names' parts (FlowNaming), by frame (undefined: the board's own flow)
+  const choices = new Map<string | undefined, NamingChoices>();
+  const choicesOf = (frameId?: string) => {
+    if (!choices.has(frameId)) {
+      const flowObjects = content.objects.filter((candidate) => candidate.frameId === frameId);
+      choices.set(frameId, namingChoicesOf(flowDetailsOf(content, frameId), flowObjects));
+    }
+    return choices.get(frameId)!;
+  };
 
   content.objects.forEach((object) => {
     const info = OBJECT_TYPES[object.type];
@@ -162,6 +179,18 @@ export const boardChecks = (
     );
     if (!object.studioName && info.studioPrefix) {
       add({ severity: 'warning', message: `${name} has no Studio name yet.`, objectId }, 'noName');
+    }
+    // Messages: <prefix><channel>_<language>_<service>_<what it is>, from the flow's parts
+    const standard = standardStudioName(object, frame, choicesOf(object.frameId));
+    if (standard && standard !== object.studioName) {
+      add(
+        {
+          severity: 'warning',
+          message: `${name}: ${object.studioName} isn't named <prefix><channel>_<language>_<service>_…; the standard is ${standard}.`,
+          objectId,
+        },
+        'nameStandard',
+      );
     }
     if (duplicates.has(objectId)) {
       add(
@@ -238,6 +267,15 @@ export const boardChecks = (
     });
     if (object.type === 'function' && !object.studio && !object.settings?.url?.trim()) {
       add({ severity: 'warning', message: `${name} has no address (URL) to call yet.`, objectId }, 'noUrl');
+    }
+    if (object.type === 'repeat' && (!object.settings?.counter?.trim() || !object.settings?.maxRepeats?.trim())) {
+      add(
+        { severity: 'warning', message: `${name}: set its counter and how many times it repeats.`, objectId },
+        'noCounter',
+      );
+    }
+    if (object.type === 'chatbot' && !object.studio && !object.settings?.botSuffix?.trim()) {
+      add({ severity: 'warning', message: `${name}: choose the chatbot it starts.`, objectId }, 'noChatbot');
     }
 
     // Incoming contacts check that the system is up before anything else
@@ -331,7 +369,7 @@ export const boardChecks = (
       add({ severity: 'warning', message: `${name}: its script isn't approved yet.`, objectId }, 'scriptApproval');
     }
 
-    // A menu that can come back to itself needs a counter (or a wait) on the way, so callers
+    // A menu that can come back to itself needs a counter (Repeat) on the way, so callers
     // can't go round for ever
     if (object.type === 'menuVoice' || object.type === 'questionMessaging') {
       const seen = new Set<string>();
@@ -341,7 +379,7 @@ export const boardChecks = (
         const id = queue.shift()!;
         if (id === objectId) loops = true;
         const next = byId.get(id);
-        if (seen.has(id) || !next || next.type === 'setVariable' || next.type === 'wait') continue;
+        if (seen.has(id) || !next || next.type === 'setVariable' || next.type === 'repeat') continue;
         seen.add(id);
         queue.push(...outgoing(id).map((connection) => connection.to));
       }
@@ -349,7 +387,7 @@ export const boardChecks = (
         add(
           {
             severity: 'warning',
-            message: `${name} can repeat for ever: add a counter (Set variable) and a way out after a few tries.`,
+            message: `${name} can repeat for ever: add a Repeat (counter) and a way out after a few tries.`,
             objectId,
           },
           'loop',

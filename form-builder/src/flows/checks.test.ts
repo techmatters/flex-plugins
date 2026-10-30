@@ -96,7 +96,7 @@ describe('Studio names', () => {
       objects: [
         object('a', 'decision'),
         object('b', 'end'),
-        object('c', 'chatbot'),
+        object('c', 'preSurvey'),
         object('d', 'checkWorkerLoggedIn'),
       ],
     };
@@ -237,7 +237,7 @@ describe('the board check', () => {
           taskAttributes: standardTaskAttributes('voice'),
         }),
         named('sorry', 'end', undefined, { text: 'End' }),
-        named('wait', 'wait', undefined, { text: 'Wait' }),
+        named('wait', 'setVariable', undefined, { text: 'Wait', studioName: 'set_var_wait' }),
       ],
       connections: [connect('in', 'q'), connect('q', 'wait', 'post-queue'), connect('q', 'sorry', 'failed to enqueue')],
     };
@@ -284,7 +284,7 @@ describe('the board check', () => {
       connections: [connect('again', 'menu'), connect('menu', 'again', '1')],
     };
     expect(messagesOf(content)).toEqual([
-      '“Menu” can repeat for ever: add a counter (Set variable) and a way out after a few tries.',
+      '“Menu” can repeat for ever: add a Repeat (counter) and a way out after a few tries.',
       '“Again” has no script yet.',
       'Nothing leads to “Lost”.',
       "Frame “f1” doesn't say which channel it's for, so the export can't tell which Studio flow it belongs to.",

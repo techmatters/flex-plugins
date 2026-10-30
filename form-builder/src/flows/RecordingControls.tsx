@@ -49,7 +49,8 @@ export type RecordingActions = {
   publish: (fileName: string) => Promise<void>;
   remove: (fileName: string) => Promise<void>;
   // Aselo staff: give these objects' recordings their standard names (the widget's), copying the files
-  rename?: (objectIds: string[]) => Promise<void>;
+  // (objects: as just changed, when the board doesn't have them yet)
+  rename?: (objectIds: string[], objects?: Pick<FlowObject, 'id' | 'studioName' | 'message'>[]) => Promise<void>;
 };
 
 const ACCEPT = '.mp3,.wav,audio/mpeg,audio/wav';

@@ -44,8 +44,8 @@ import { CheckPanel } from './CheckPanel';
 import type { RecordingsList } from './recordings';
 import { standardRecordingName } from './recordings';
 import { RecordingActions, RecordingsPanel } from './RecordingControls';
-import type { BoardClient } from './boardClient';
-import type { Board, BoardContent, FlowObjectType, Person } from './model';
+import type { BoardClient, ChatbotChoice } from './boardClient';
+import type { Board, BoardContent, FlowObject, FlowObjectType, Person } from './model';
 import {
   ASELO_PEOPLE_CODE,
   designOf,
@@ -549,6 +549,19 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
 
   // ----- Recordings: loaded when the board opens, after every change, and with Refresh
   const [recordingList, setRecordingList] = useState<RecordingsList>();
+  // The helpline's chatbots, offered for Chatbot objects (none for templates or without a design)
+  const [chatbots, setChatbots] = useState<ChatbotChoice[]>([]);
+  useEffect(() => {
+    if (board.code === TEMPLATES_CODE) return;
+    let current = true;
+    client
+      .chatbots(board.code)
+      .then((found) => current && setChatbots(found))
+      .catch(() => {});
+    return () => {
+      current = false;
+    };
+  }, [client, board.code]);
   const [recordingsUnavailable, setRecordingsUnavailable] = useState<string>();
   const [busyFiles, setBusyFiles] = useState<Set<string>>(() => new Set());
   const [refreshing, setRefreshing] = useState(false);
@@ -580,12 +593,17 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
    * every folder the board's flows play from (each variant's), and the widgets stop pointing at the
    * old name. A file not uploaded yet just takes the new name.
    */
-  const renameRecordings = async (objectIds: string[]) => {
+  const renameRecordings = async (
+    objectIds: string[],
+    given: Pick<FlowObject, 'id' | 'studioName' | 'message'>[] = [],
+  ) => {
     const libraries =
       variants.length > 0 ? variants.map((candidate) => `${board.code}/f/${candidate.recordingsFolder}`) : [board.code];
     const renamed = new Set<string>();
     for (const id of objectIds) {
-      const object = content.objects.find((candidate) => candidate.id === id);
+      // As just changed (renamed in the settings), or as on the board
+      const object =
+        given.find((candidate) => candidate.id === id) ?? content.objects.find((candidate) => candidate.id === id);
       const from = object?.message?.recordingFile;
       if (!object?.studioName || !from) continue;
       const to = standardRecordingName(object.studioName, from);
@@ -643,7 +661,7 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
       changeRecording(fileName, () => client.approveRecording(recordingsLibrary, fileName, approved)),
     publish: (fileName) => changeRecording(fileName, () => client.publishRecording(recordingsLibrary, fileName)),
     remove: (fileName) => changeRecording(fileName, () => client.removeRecording(recordingsLibrary, fileName)),
-    rename: (objectIds) => renameRecordings(objectIds),
+    rename: (objectIds, objects) => renameRecordings(objectIds, objects),
   };
   // Who tasks can be assigned to: the helpline's people and the Aselo team
   const [people, setPeople] = useState<Person[]>([]);
@@ -1070,6 +1088,8 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
                 onEndHere={endHere}
                 recordings={recordingActions}
                 variant={variant?.key}
+                chatbots={chatbots}
+                onBoardFlow={setBoardFlow}
               />
             )}
             {sideTab === 'tasks' && (

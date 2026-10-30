@@ -259,6 +259,7 @@ const typeOf = (widget: HclObject): FlowObjectType | undefined => {
       if (/getProfileFlagsForIdentifier/.test(target)) return 'checkClientProfile';
       if (/isSkilledWorkerAvailable/.test(target)) return 'checkQueueAvailability';
       if (/isSkilledWorker(LoggedIn|Online)/.test(target)) return 'checkWorkerLoggedIn';
+      if (/captureChannelWithBot/.test(target)) return 'chatbot';
       return 'function';
     case 'say-play':
       return 'playMessage';
@@ -724,9 +725,17 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
           if (Object.keys(settings).length > 0) object.settings = settings;
         }
       } else if (info.fields) {
-        // The route's settings, from the request body
+        // The route's settings, from the request body, variables kept as written (they're written
+        // back as they're set: ${flow_vars.bot_language} stays that, not its value)
+        const parse = (text: string) => {
+          try {
+            return JSON.parse(text);
+          } catch {
+            return JSON.parse(resolve(text, primary));
+          }
+        };
         try {
-          const body = JSON.parse(resolve(textOf(properties.body) ?? '{}', primary));
+          const body = parse(textOf(properties.body) ?? '{}');
           const settings = Object.fromEntries(
             info.fields
               .filter((field) => typeof body[field.key] === 'string')

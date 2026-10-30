@@ -42,14 +42,23 @@ export type Frame = Position &
     stage?: FlowStage;
     // The Studio flow it was imported from
     studio?: StudioFlowSource;
+    // The channels, languages and services its messages' names are built from
+    naming?: FlowNaming;
   };
+
+/**
+ * What a flow's message widgets' names are built from, set for the flow:
+ * <prefix><channel>_<language>_<service>_<what it is>, e.g. gather_input_voice_en_childhelp_service_menu.
+ * Each part is optional; one value is filled in by itself, several are chosen from.
+ */
+export type FlowNaming = { channels?: string[]; languages?: string[]; services?: string[] };
 
 /**
  * What a flow is (its channel, pre- or post-queue, the Studio flow it was imported from): set on a
  * frame, or on the board itself for the objects outside frames. An imported board is one Studio
  * flow, so its objects sit on the board and the board says what flow it is.
  */
-export type FlowDetails = Pick<Frame, 'channel' | 'stage' | 'studio'> & {
+export type FlowDetails = Pick<Frame, 'channel' | 'stage' | 'studio' | 'naming'> & {
   // Studio flows built from this one template (e.g. the English and Spanish post-call surveys):
   // the board draws the template once, and each variant has what tells them apart
   variants?: FlowVariant[];
@@ -367,7 +376,7 @@ export type FlowObjectType =
   | 'preSurvey'
   | 'sendToQueue'
   | 'setVariable'
-  | 'wait'
+  | 'repeat'
   | 'forwardCall'
   | 'notifyError'
   | 'goToFrame'
@@ -439,8 +448,10 @@ export type ObjectField = {
   hint?: string;
   // A choice between these, instead of free text
   options?: string[];
-  // What's typed: a line of text (default), an address, or a JSON body (several lines)
-  kind?: 'text' | 'url' | 'json';
+  // What's typed: a line of text (default), an address, a JSON body (several lines) or a whole number
+  kind?: 'text' | 'url' | 'json' | 'number';
+  // Values offered as it's typed (any other can still be typed): the helpline's chatbots
+  suggestions?: 'chatbots';
 };
 
 /**
@@ -451,6 +462,7 @@ export type ObjectField = {
  */
 export const fieldProblem = (field: Pick<ObjectField, 'kind'>, value: string): string | undefined => {
   if (!value.trim()) return undefined;
+  if (field.kind === 'number' && !/^d+$/.test(value.trim())) return 'This has to be a whole number.';
   if (field.kind === 'url') {
     if (/^\$\{[^}]+\}(\/\S*)?$/.test(value.trim())) return undefined;
     try {
@@ -682,8 +694,10 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     studioWidget: 'Gather Input on Call',
     studioPrefix: 'gather_input_',
     hasMessage: true,
+    // Studio's own ways out; the options pressed are told apart by a Decision after keypress.
+    // Editable for boards made when the menu's options were its ways out (1, 2, noMatch)
     editableExits: true,
-    exits: ['1', '2', 'noMatch', 'timeout'],
+    exits: ['keypress', 'speech', 'timeout'],
     defaultSize: { width: 220, height: 80 },
   },
   questionMessaging: {
@@ -708,15 +722,65 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     studioPrefix: 'record_voicemail_',
     defaultSize: { width: 200, height: 72 },
   },
+  // channelCapture/captureChannelWithBot: hands the conversation to a Lex bot, which hands it back
+  // by triggering the flow again (with its release flag set)
   chatbot: {
     label: 'Chatbot',
     group: 'Checks and calls',
     shape: 'predefined',
     icon: 'Bot',
     family: 'chatbot',
-    studioWidget: 'Lex chatbot',
-    exits: ['finished', 'failed'],
-    defaultSize: { width: 180, height: 72 },
+    studioWidget: 'HTTP Request (captureChannelWithBot)',
+    studioPrefix: 'f_',
+    studioRoute: 'channelCapture/captureChannelWithBot',
+    nameSuffixFrom: 'botSuffix',
+    fields: [
+      {
+        key: 'botSuffix',
+        label: 'Chatbot',
+        placeholder: 'pre_survey',
+        suggestions: 'chatbots',
+        hint: 'The bot’s name (botSuffix). Lex’s bot is <helpline>_<language>_<name>.',
+      },
+      {
+        key: 'language',
+        label: 'Language',
+        placeholder: 'en-US',
+        hint: 'The bot’s language, e.g. en-USCH, or ${flow_vars.bot_language}.',
+      },
+      {
+        key: 'triggerType',
+        label: 'Starts',
+        options: ['withUserMessage', 'withNextMessage'],
+        hint: 'withUserMessage: the bot replies straight away. withNextMessage: the message is sent and the bot waits for the reply.',
+      },
+      {
+        key: 'message',
+        label: 'Message',
+        placeholder: 'trigger_pre_survey',
+        hint: 'Sent to the bot (withUserMessage) or to the person (withNextMessage).',
+      },
+      {
+        key: 'releaseType',
+        label: 'When it finishes',
+        options: ['triggerStudioFlow', 'postSurveyComplete'],
+        hint: 'triggerStudioFlow: the conversation comes back to this flow, which starts again.',
+      },
+      {
+        key: 'releaseFlag',
+        label: 'Release flag',
+        placeholder: 'preSurveyComplete',
+        hint: 'Set to true when the bot finishes: check it at the top of the flow so it doesn’t start the bot again.',
+      },
+      {
+        key: 'memoryAttribute',
+        label: 'Answers kept in',
+        placeholder: 'memory',
+        hint: 'The conversation attribute holding the answers. Optional (memory).',
+      },
+    ],
+    exits: ['success', 'failed'],
+    defaultSize: { width: 200, height: 72 },
   },
   preSurvey: {
     label: 'Pre-survey form',
@@ -771,14 +835,32 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     studioPrefix: 'set_var_',
     defaultSize: { width: 170, height: 56 },
   },
-  wait: {
-    label: 'Wait / repeat',
-    group: 'Queues',
+  // A counter (Set Variables) and a Split on it: goes back round until it has repeated enough
+  repeat: {
+    label: 'Repeat (counter)',
+    group: 'Decisions',
     shape: 'delay',
-    icon: 'Timer',
-    family: 'neutral',
-    studioWidget: 'Post-queue loop',
-    defaultSize: { width: 170, height: 64 },
+    icon: 'Repeat',
+    family: 'decision',
+    studioWidget: 'Set Variables + Split',
+    studioPrefix: 'set_var_',
+    fields: [
+      {
+        key: 'counter',
+        label: 'Counter',
+        placeholder: 'en_service_counter',
+        hint: 'The flow variable that counts the times round. One per loop.',
+      },
+      {
+        key: 'maxRepeats',
+        label: 'Times to repeat',
+        kind: 'number',
+        placeholder: '2',
+        hint: 'How many times it goes back round before taking “max reached”.',
+      },
+    ],
+    exits: ['repeat', 'max reached'],
+    defaultSize: { width: 190, height: 64 },
   },
   goToFrame: {
     label: 'Go to frame',
@@ -856,6 +938,24 @@ export const exitsOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio'>): 
   return info.exits ?? [''];
 };
 
+/**
+ * Boards saved before a kind was replaced, brought up to date: "Wait / repeat" (a picture only) is
+ * now Repeat, a counter and a split, whose way back round is the one way out it had.
+ */
+export const upgradeContent = (content: BoardContent): BoardContent => {
+  const waits = new Set(
+    content.objects.filter((object) => (object.type as string) === 'wait').map((object) => object.id),
+  );
+  if (waits.size === 0) return content;
+  return {
+    ...content,
+    objects: content.objects.map((object) => (waits.has(object.id) ? { ...object, type: 'repeat' } : object)),
+    connections: content.connections.map((connection) =>
+      waits.has(connection.from) && !connection.exit ? { ...connection, exit: 'repeat' } : connection,
+    ),
+  };
+};
+
 export const CHANNEL_ICONS: Record<Channel, string> = {
   voice: 'Phone',
   sms: 'MessageSquare',
@@ -894,6 +994,8 @@ const toCamel = (text: string) => toSnake(text).replace(/_([a-z0-9])/g, (_, lett
 export const suggestStudioName = (
   object: Pick<FlowObject, 'type' | 'text' | 'message' | 'settings'>,
   frame?: Pick<Frame, 'stage' | 'channel'>,
+  // The flow's names' parts: its only channel, language and service are in every message's name
+  choices?: NamingChoices,
 ): string | undefined => {
   const info = OBJECT_TYPES[object.type];
   if (!info.studioPrefix) return undefined;
@@ -906,19 +1008,152 @@ export const suggestStudioName = (
     }
     return `${postqueue}f_${toCamel(object.text) || 'function'}`;
   }
+  // A loop's counter and split are named after its counter variable
+  if (object.type === 'repeat' && object.settings?.counter) return `set_var_${toSnake(object.settings.counter)}`;
   if (object.type === 'sendToQueue') {
     const queue = toSnake(object.text.replace(/\bqueue\b/i, ''));
     return queue ? `send_to_queue_${queue}` : 'send_to_queue';
   }
-  const channel = info.hasMessage ? (object.message?.channel ?? frame?.channel) : undefined;
-  const language = info.hasMessage ? object.message?.language : undefined;
+  const byParts = isNamedByParts(object.type);
+  const only = (values?: string[]) => (values?.length === 1 ? values[0] : undefined);
+  const channel = byParts
+    ? (object.message?.channel ?? only(choices?.channels) ?? messageChannelOf(object, frame))
+    : undefined;
+  const language = byParts ? (object.message?.language ?? only(choices?.languages)) : undefined;
+  const service = byParts ? only(choices?.services) : undefined;
   // Text that repeats the prefix (e.g. a new "Play message (voice)") doesn't say it twice
   const prefixWords = info.studioPrefix.replace(/_$/, '');
   let described = toSnake(object.text).replace(new RegExp(`^${prefixWords}(_|$)`), '');
-  // ...nor repeats the channel or language (a new voice message's text says "voice")
-  [channel, language].forEach((word) => {
+  // ...nor repeats the channel, language or service (a new voice message's text says "voice")
+  [channel, language, service].forEach((word) => {
     if (word) described = described.replace(new RegExp(`(^|_)${word}(?=_|$)`), '').replace(/^_+/, '');
   });
-  const parts = [channel, language, described].filter(Boolean);
+  const parts = [channel, language, service, described].filter(Boolean);
   return `${postqueue}${info.studioPrefix}${parts.join('_')}`;
+};
+
+// Kinds only calls have: their messages are voice, whatever the flow
+const VOICE_ONLY = new Set<FlowObjectType>(['playMessage', 'menuVoice', 'recordVoicemail']);
+// The channel a message is for: its own, voice for voice-only kinds, or the flow's
+export const messageChannelOf = (
+  object: Pick<FlowObject, 'type' | 'message'>,
+  details?: Pick<Frame, 'channel'>,
+): string | undefined => object.message?.channel ?? (VOICE_ONLY.has(object.type) ? 'voice' : details?.channel);
+
+// Kinds named <prefix><channel>_<language>_<service>_<what it is> (FlowNaming)
+const NAMED_BY_PARTS = new Set<FlowObjectType>([
+  'playMessage',
+  'sendMessage',
+  'menuVoice',
+  'questionMessaging',
+  'recordVoicemail',
+]);
+export const isNamedByParts = (type: FlowObjectType) => NAMED_BY_PARTS.has(type);
+
+export type NamingChoices = { channels: string[]; languages: string[]; services: string[] };
+
+/**
+ * The parts a flow's names can have: as set for the flow, otherwise its channel (or its messages'
+ * channels) and the languages its messages are in. No services unless set.
+ */
+export const namingChoicesOf = (
+  details: Pick<Frame, 'channel' | 'naming'> | undefined,
+  objects: Pick<FlowObject, 'type' | 'message'>[],
+): NamingChoices => {
+  const used = (valueOf: (object: Pick<FlowObject, 'type' | 'message'>) => string | undefined) =>
+    [...new Set(objects.map(valueOf).filter((value): value is string => Boolean(value)))].sort();
+  // Only messages have a channel in their names
+  const messages = objects.filter((object) => isNamedByParts(object.type));
+  return {
+    channels:
+      details?.naming?.channels ??
+      (details?.channel
+        ? [details.channel]
+        : [...new Set(messages.map((object) => messageChannelOf(object)))]
+            .filter((value): value is string => Boolean(value))
+            .sort()),
+    languages: details?.naming?.languages ?? used((object) => object.message?.language),
+    services: details?.naming?.services ?? [],
+  };
+};
+
+export type NameParts = {
+  postqueue: boolean;
+  prefix: string;
+  channel?: string;
+  language?: string;
+  service?: string;
+  // What the widget is, e.g. service_menu
+  rest: string;
+};
+
+/**
+ * A name's parts, in the standard's order (undefined when it doesn't start with the prefix):
+ * gather_input_voice_en_childhelp_service_menu is voice, en, childhelp and service_menu.
+ */
+export const nameParts = (name: string, prefix: string, choices: NamingChoices): NameParts | undefined => {
+  const postqueue = name.startsWith('postqueue_');
+  const unprefixed = postqueue ? name.slice('postqueue_'.length) : name;
+  if (!unprefixed.startsWith(prefix)) return undefined;
+  let rest = unprefixed.slice(prefix.length);
+  const take = (values: string[]) => {
+    const found = [...values]
+      .sort((a, b) => b.length - a.length)
+      .find((value) => rest === value || rest.startsWith(`${value}_`));
+    if (found) rest = rest.slice(found.length).replace(/^_/, '');
+    return found;
+  };
+  const channel = take(choices.channels);
+  const language = take(choices.languages);
+  const service = take(choices.services);
+  return { postqueue, prefix, channel, language, service, rest };
+};
+
+export const composeName = ({ postqueue, prefix, channel, language, service, rest }: NameParts) =>
+  `${postqueue ? 'postqueue_' : ''}${prefix}${[channel, language, service, rest].filter(Boolean).join('_')}`;
+
+/**
+ * The name a message widget has under the standard, from the one it has: its prefix, then its
+ * channel, language and service (found anywhere in the name, or the flow's only one), then the rest.
+ * play_message_childhelp_voice_welcome -> play_message_voice_en_childhelp_welcome. The same name
+ * when it already follows it.
+ */
+export const standardStudioName = (
+  object: Pick<FlowObject, 'type' | 'text' | 'message' | 'studioName'>,
+  details: Pick<Frame, 'stage' | 'channel'> | undefined,
+  choices: NamingChoices,
+): string | undefined => {
+  const prefix = OBJECT_TYPES[object.type].studioPrefix;
+  if (!prefix || !isNamedByParts(object.type) || !object.studioName) return undefined;
+  const postqueue = details?.stage === 'postqueue' || object.studioName.startsWith('postqueue_');
+  const words = toSnake(object.studioName)
+    .replace(/^postqueue_/, '')
+    .split('_');
+  // The prefix, or part of it (play_..., gather_...), at its start
+  const prefixWords = prefix.replace(/_$/, '').split('_');
+  while (words.length > 1 && prefixWords.includes(words[0])) words.shift();
+  // A value found among the words (several words for e.g. tya_calls), taken out of them
+  const pick = (values: (string | undefined)[]) => {
+    const sorted = values.filter((value): value is string => Boolean(value)).sort((a, b) => b.length - a.length);
+    for (const value of sorted) {
+      const valueWords = value.split('_');
+      const at = words.findIndex((_, index) => valueWords.every((word, offset) => words[index + offset] === word));
+      if (at >= 0) {
+        words.splice(at, valueWords.length);
+        return value;
+      }
+    }
+    return undefined;
+  };
+  const only = (values: string[]) => (values.length === 1 ? values[0] : undefined);
+  const channel =
+    pick([messageChannelOf(object, details), ...choices.channels]) ??
+    object.message?.channel ??
+    only(choices.channels) ??
+    messageChannelOf(object, details);
+  const language =
+    pick([object.message?.language, ...choices.languages]) ?? object.message?.language ?? only(choices.languages);
+  const service = pick(choices.services) ?? only(choices.services);
+  const rest = words.join('_');
+  return composeName({ postqueue, prefix, channel, language, service, rest });
 };

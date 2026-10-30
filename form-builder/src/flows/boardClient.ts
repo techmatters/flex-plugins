@@ -61,7 +61,12 @@ export type BoardClient = {
   previewImport(code: string, branch?: string): Promise<HelplineImport & FromBranch>;
   branches(): Promise<BranchChoice[]>;
   importRecording(code: string, recording: ImportedRecording): Promise<RecordingsList>;
+  // The helpline's chatbots (from its chatbots design), for the Chatbot object; none if it has no design
+  chatbots(code: string): Promise<ChatbotChoice[]>;
 };
+
+// A chatbot a flow can start: its name (botSuffix) and language (en_USCH, the configs folder)
+export type ChatbotChoice = { name: string; language: string };
 
 export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetch): BoardClient => {
   const expectOk = async (method: string, path: string, body?: unknown) => {
@@ -105,6 +110,12 @@ export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetc
     previewImport: (code, branch) => expectOk('POST', `/api/flows/import/${code}`, branch ? { branch } : undefined),
     branches: () => expectOk('GET', '/api/branches'),
     importRecording: (code, recording) => expectOk('POST', `/api/recordings/${code}/import`, recording),
+    async chatbots(code) {
+      const response = await send('GET', `/api/chatbots/${code}`);
+      if (response.status >= 400) return [];
+      const bots: ChatbotChoice[] = response.body?.design?.bots ?? [];
+      return bots.map(({ name, language }) => ({ name, language }));
+    },
   };
 };
 

@@ -239,10 +239,36 @@ describe('flow designer', { timeout: 20_000 }, () => {
     fireEvent.click(settings().getByRole('button', { name: 'Use play_message_voice' }));
     fireEvent.click(palette().getByRole('button', { name: /^Play message/ }));
     expect(settings().getByRole('button', { name: 'Use play_message_voice_2' })).toBeTruthy();
-    fireEvent.change(settings().getByRole('textbox', { name: /^Studio name/ }), {
-      target: { value: 'play_message_voice' },
-    });
+    // Its channel (voice) is filled in: with nothing else, it's play_message_voice too
+    fireEvent.change(settings().getByRole('textbox', { name: 'What it is' }), { target: { value: 'x' } });
+    fireEvent.change(settings().getByRole('textbox', { name: 'What it is' }), { target: { value: '' } });
     expect(settings().getByText(/another object in this flow is also named play_message_voice./)).toBeTruthy();
+  });
+
+  test("messages are named by parts: the prefix is set, the flow's channels, languages and services are chosen", async () => {
+    const board = await openNewBoard('Parts');
+    fireEvent.click(palette().getByRole('button', { name: /^Menu \/ question/ }));
+    expect(settings().getByTitle('Set by the kind of widget').textContent).toBe('gather_input_');
+    fireEvent.change(settings().getByRole('textbox', { name: 'What it is' }), { target: { value: 'service_menu' } });
+    expect(settings().getByText('gather_input_voice_service_menu')).toBeTruthy();
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    cleanup();
+
+    // Opened again, nothing selected: the board's names (two languages to choose from, a service)
+    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName={staff.name} />);
+    await screen.findByRole('heading', { name: 'Parts' });
+    const languages = settings().getByRole('textbox', { name: /^Languages/ });
+    fireEvent.change(languages, { target: { value: 'en, es' } });
+    fireEvent.blur(languages);
+    const services = settings().getByRole('textbox', { name: /^Services/ });
+    fireEvent.change(services, { target: { value: 'Childhelp' } });
+    fireEvent.blur(services);
+
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    expect((await boards.get('usnm', board.id))?.content.flow?.naming).toEqual({
+      languages: ['en', 'es'],
+      services: ['childhelp'],
+    });
   });
 
   test('the skilled worker checks hold their route settings and are named after the route', async () => {

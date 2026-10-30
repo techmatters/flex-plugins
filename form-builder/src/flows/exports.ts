@@ -20,7 +20,7 @@
  * - the recordings and scripts list, as a spreadsheet for the helpline.
  * See docs/flow-designer.md, "Outputs".
  */
-import type { Board, BoardContent, Channel, FlowObject, Frame } from './model';
+import type { Board, BoardContent, Channel, FlowNaming, FlowObject, Frame } from './model';
 import { exitsOf, flowDetailsOf, isImportedBoard, OBJECT_TYPES, statusOf, templateTargetOf, toSnake } from './model';
 import type { DesignStatus } from '../designStatus';
 import { statusLabel } from '../designStatus';
@@ -72,6 +72,8 @@ export type ExportedFlow = {
   // Frames with the same channel are one Studio flow
   key: string;
   channel?: Channel;
+  // What its messages' names are built from: <prefix><channel>_<language>_<service>_<what it is>
+  naming?: FlowNaming;
   frames: { id: string; title: string; stage?: Frame['stage'] }[];
   objects: ExportedObject[];
 };
@@ -253,7 +255,13 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
     const key = flowScopeOf(object, content.frames);
     const frame = flowDetailsOf(content, object.frameId);
     if (!flows.has(key))
-      flows.set(key, { key, ...(frame?.channel ? { channel: frame.channel } : {}), frames: [], objects: [] });
+      flows.set(key, {
+        key,
+        ...(frame?.channel ? { channel: frame.channel } : {}),
+        ...(frame?.naming ? { naming: frame.naming } : {}),
+        frames: [],
+        objects: [],
+      });
     return flows.get(key)!;
   };
   content.frames.forEach((frame) =>

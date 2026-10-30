@@ -56,15 +56,15 @@ reads the same way as Studio.
 | Decision | diamond | branch | one per answer, plus "no match" | Split Based On (`split_...`) |
 | Play message (voice) | parallelogram | speaker | 1 | Say/Play (`play_message_...`) |
 | Send message | parallelogram | message | 1 | Send Message (`send_message_...`) |
-| Menu / question (voice) | manual-input shape | dial pad | one per key, timeout | Gather Input on Call (`gather_input_...`) |
+| Menu / question (voice) | manual-input shape | dial pad | keypress, speech, timeout (Studio's) | Gather Input on Call (`gather_input_...`); a Decision after keypress tells the options apart. Boards made when the options were its ways out (1, 2, noMatch) still get a Split for them |
 | Question (messaging) | manual-input shape | message reply | reply, timeout | Send and Wait for Reply (`send_wait_...`) |
 | Record voicemail | parallelogram | voicemail | 1 | Record Voicemail (`record_voicemail_...`) |
-| Chatbot | double-sided box | bot | finished / failed | Lex chatbot (phase 2 designs its script) |
+| Chatbot | double-sided box | bot | success / failed | `channelCapture/captureChannelWithBot` (`f_captureChannelWithBot_<bot>`). Settings: the chatbot (offered from the helpline's chatbot designs; picking one fills in its language, `en_USCH` becoming `en-USCH`), how it starts, its message, what happens when it finishes, the release flag and where the answers are kept. On `success` the flow usually ends: the bot triggers the flow again when it finishes, so check the release flag at the top. Imported requests to that route open as chatbots |
 | Pre-survey form | document shape | clipboard | finished | pre-survey chatbot or webchat form |
 | Send to queue | cylinder | inbox | post-queue (continues), failed to enqueue | Send to Flex (`send_to_queue_...`), with its **task attributes** (below) |
 | Forward call | rounded box | phone forwarded | call completed, hung up | Connect Call To (`connect_to_...`) |
 | Set variable / counter | box | variable | 1 | Set Variables (`set_var_...`) |
-| Wait / repeat | delay shape | timer | 1 | post-queue loop (e.g. every 2 minutes) |
+| Repeat (counter) | delay shape | repeat | repeat / max reached | Set Variables (`set_var_<counter>`) adding one to the counter, and a Split (`split_end_cycle_<name>`): back round (`repeat`) until it's greater than the times to repeat, then `max reached`. E.g. a menu's timeout → Repeat → back to the menu, or on to the queue. Settings: the counter (a flow variable, one per loop) and the times to repeat. Boards with the old “Wait / repeat” open with a Repeat in its place |
 | Go to frame | off-page arrow | link | none | jumps to another frame ("continues in SMS post-queue") |
 | Notify the Aselo team | rounded box | bell | 1 | HTTP Request to `webhook_url_studio_errors` (`http_post_...`), where a flow posts to Slack; optional, since failures are followed in Datadog |
 | Text | no border | text | none | a label or title, no Studio meaning |
@@ -80,6 +80,22 @@ is mostly worked out automatically (see [Recordings and scripts](#recordings-and
 **Studio names** are suggested from the object type, channel, language and what you type
 (`play_message_voice_en_post_queue_closed`), and checked against the standards in
 `twilio-iac/AGENTS.md`. The name is also the recording's filename.
+
+**Messages, menus and questions** (Play message, Send message, Menu, Question, Record voicemail)
+are named by parts: `<prefix><channel>_<language>_<service>_<what it is>`, e.g.
+`gather_input_voice_en_childhelp_service_menu`. Every part but the prefix is optional.
+
+- The flow's **channels, languages and services** are set in its settings (a frame's, or the
+  board's with nothing selected, under **Names**). Left empty, the channels are the flow's channel
+  (or its messages'), and the languages those its messages are in; there are no services.
+- In a message's settings the prefix is fixed (it comes from the kind of widget, plus
+  `postqueue_` after the queue); a part with one value is filled in by itself, one with several is
+  chosen from; then what it is is typed.
+- A name that doesn't follow it (usually imported) gets a warning with the standard one, and
+  **Use the standard name** in its settings. Renaming keeps the widget playing its recording: the
+  file is kept as its recording until it's copied to the new name, straight away for Aselo staff
+  ("Use the standard name"), or later with **Use the standard name(s)** in the recordings. The old
+  file stays.
 
 ### Editing
 
@@ -144,7 +160,7 @@ the Studio flow standards:
   object has (e.g. after a decision's answer was renamed); End has nothing after it.
 - **System down first:** an incoming call or message goes to the system-down subflow before
   anything else.
-- **Menus that repeat** have a counter (Set variable) or a wait on the way round, so a caller
+- **Menus that repeat** have a Repeat (counter) or a Set variable on the way round, so a caller
   can't loop for ever.
 - **Unreachable objects:** nothing leads to them (a post-queue frame may start from its queue).
 - **Ignoring a warning:** a warning that doesn't apply to a board (e.g. "should go to the
@@ -366,8 +382,9 @@ fill in:
   position and transitions); only their connections and the texts or settings changed on the board
   change. An imported board nobody changed gives back exactly the live template: the tests do
   that for every flow of every helpline in the repo.
-- **New objects** become widgets of their kind: a voice menu is a Gather and a Split on its
-  digits, a route check is the HTTP request and a Split on its answer, a message reads its text
+- **New objects** become widgets of their kind: a voice menu is a Gather (its keypress, speech
+  and timeout), a Repeat is a counter and a Split on it, a chatbot is the captureChannelWithBot
+  request, a route check is the HTTP request and a Split on its answer, a message reads its text
   from `flow_vars`. What the board can't know (a split's input, a workflow) is marked `TODO`.
 - **Texts** that a widget reads from a variable (`${flow_vars.x}`, `${channel_flow_vars.x}`) stay
   there: the changes are listed in `variables`, for `staging.hcl` / `production.hcl`.

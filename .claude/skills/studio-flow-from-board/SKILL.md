@@ -37,6 +37,7 @@ A `<helpline>-<board>.flows.json` file. What matters here:
 | `board.helpline` | The helpline code (`usnm`) |
 | `board.status` | Where the design is: `ready` (Ready for Claude) is the one to implement; also `in-progress`, `imported`, `implemented`. `board.isNew`: not imported from the live config |
 | `studioTemplates[]` | One per frame: `text` is the `.tftpl` already written; `template` is where it lives (when the frame was imported from a live helpline); `channels` the channels using it; `variables` the texts to set in the `.hcl` files; `taskAttributes` the Send to queue task attributes that are new or changed (see step 4b); `todo` what it couldn't fill in |
+| `flows[].naming` | The flow's channels, languages and services: message widgets are named `<prefix><channel>_<language>_<service>_<what it is>` (e.g. `gather_input_voice_en_childhelp_service_menu`), each part optional. Name new message widgets this way |
 | `flows[].objects[]` | Each widget as designed: `studioName`, `kind`, `message` (script, language, `recordingFile`, `status`), `call` (route and body), `exits` (where each way out leads), `taskAttributes` (Send to queue: the task attributes as JSON and where they're kept), `currentStudioWidget` (the widget as it is live, for imported ones) |
 | `checks` | What the design still lacks (errors first) |
 | `recordingsBaseUrl` | The recordings bucket folders for staging and production |
@@ -98,6 +99,22 @@ are none.
 | A subflow's `flow_sid` | `${system_down_studio_subflow_sid}`, or the variable the helpline's other templates use |
 | A number to forward to, an HTTP address | Ask the person (put real values in variables, not the template) |
 | Set variables | What the design's text says the counter or variable is for |
+| A Repeat's counter or times to repeat | The board leaves them as `set_var_<counter>` and 2: ask the person if the design doesn't say |
+| A chatbot's settings (language, message, release type...) | `STUDIO_ROUTES.md` (`channelCapture/captureChannelWithBot`) and the helpline's other templates calling it; the bot's name is in `lex_v2_bot_languages` |
+
+Kinds that become more than one widget, as the board writes them:
+
+- **Menu (voice)**: a `gather-input-on-call` whose `keypress`, `speech` and `timeout` go where the
+  board's ways out go. The options pressed are told apart by the Decision (Split on
+  `{{widgets.<gather>.Digits}}`) after `keypress`.
+- **Repeat (counter)**: a `set-variables` (`set_var_<counter>`) whose value is
+  `{% if flow.variables.<counter> %}{{flow.variables.<counter> | plus: 1}}{% else %}1{% endif %}`,
+  then a `split-based-on` (`split_end_cycle_<name>`) on `{{flow.variables.<counter>}}`: `noMatch`
+  goes back round (`repeat`), `greater_than` the times to repeat goes on (`max reached`). Used for
+  unrecognised input and timeouts, e.g. usnm's `set_var_en_service_counter`.
+- **Chatbot**: a `make-http-request` to `${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot`,
+  named `f_captureChannelWithBot_<bot>`, its body from the board's settings. If the chatbot is
+  new, it's built with the chatbot-from-design skill.
 
 When a template already has a widget like the one needed, copy its settings. Ask the person about
 anything you can't find; don't guess.
