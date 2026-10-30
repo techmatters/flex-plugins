@@ -95,7 +95,7 @@ are none.
 |---|---|
 | A split's input and conditions | What the design says (the decision's text and its ways out), and the widget before it (e.g. `{{widgets.<name>.parsed.<field>}}`, `{{trigger.call.From}}`) |
 | A route's request body / response field | `lambdas/account-scoped/STUDIO_ROUTES.md` for that route |
-| Send to queue: workflow, task channel | The helpline's other templates and `common.hcl`: `${workflow_sids.<key>}`, `${task_channel_sids.<channel>}` (attributes: step 4b) |
+| Send to queue: workflow, task channel | Set on the board when chosen; otherwise the helpline's other templates and `common.hcl`: `${workflow_sids.<key>}`, `${task_channel_sids.<channel>}` (attributes: step 4b). When the board names the queue it should end up in, check the workflow's rules (and the task attributes) send it there |
 | A subflow's `flow_sid` | `${system_down_studio_subflow_sid}`, or the variable the helpline's other templates use |
 | A number to forward to, an HTTP address | Ask the person (put real values in variables, not the template) |
 | Set variables | What the design's text says the counter or variable is for |

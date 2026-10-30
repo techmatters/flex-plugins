@@ -32,6 +32,8 @@ type Props = {
   staffMode: boolean;
   userName: string;
   userEmail?: string;
+  // Its area is the one shown (areas stay open, hidden, when another is shown)
+  active?: boolean;
 };
 
 type Open = { code: string; id: string };
@@ -49,7 +51,14 @@ const setBoardInUrl = (open?: Open) => {
   window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
 };
 
-export const FlowsArea = ({ client = httpBoardClient, helplineCodes, staffMode, userName, userEmail }: Props) => {
+export const FlowsArea = ({
+  client = httpBoardClient,
+  helplineCodes,
+  staffMode,
+  userName,
+  userEmail,
+  active = true,
+}: Props) => {
   const [open, setOpen] = useState<Open | undefined>(openFromUrl);
   const [board, setBoard] = useState<Board>();
   const [error, setError] = useState<string>();
@@ -102,6 +111,7 @@ export const FlowsArea = ({ client = httpBoardClient, helplineCodes, staffMode, 
       userEmail={userEmail}
       onClose={() => setOpen(undefined)}
       onReload={() => setLoadCount((count) => count + 1)}
+      active={active}
     />
   );
 };

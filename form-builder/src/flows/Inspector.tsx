@@ -52,12 +52,13 @@ import type {
   Frame,
   NameParts,
   NamingChoices,
+  ObjectField,
   Person,
 } from './model';
 import { hasNonStandardRecording, isVoiceMessage, withStudioName } from './recordings';
 import { AutoTextarea } from '../components/AutoTextarea';
 import { CanvasNode, ConnectionEdge, FrameNode, newId, ObjectNode, StickyNode } from './canvasModel';
-import type { ChatbotChoice } from './boardClient';
+import type { HelplineChoices } from './boardClient';
 import type { Issue } from './checks';
 import { uniqueName } from './checks';
 import { RecordingActions, RecordingSection, ScriptApproval } from './RecordingControls';
@@ -99,8 +100,10 @@ export type InspectorProps = {
   recordings: RecordingActions;
   // The variant shown, for flows sharing a template (FlowDetails.variants): its texts are edited
   variant?: string;
-  // The helpline's chatbots, offered for a Chatbot object
-  chatbots?: ChatbotChoice[];
+  // The helpline's chatbots, queues, workflows and skills, offered in objects' settings
+  helplineChoices?: HelplineChoices;
+  // Read them again (e.g. a skill was just added in Routing)
+  onRefreshChoices?: () => void;
   // The board's own flow's settings changed (its objects outside frames)
   onBoardFlow?: (flow: FlowDetails) => void;
 };
@@ -109,6 +112,30 @@ export type InspectorProps = {
  * A message's name as its parts: the prefix (set by its kind), then the flow's channel, language
  * and service (chosen; filled in when the flow has one), then what it is.
  */
+// Where each kind of suggestion comes from, for when there are none yet
+const SUGGESTIONS_FROM = {
+  chatbots: 'chatbots in the Chatbots designer',
+  queues: 'queues in its routing design',
+  workflows: 'workflows in its routing design',
+  skills: 'skills in its routing design',
+} as const;
+
+// The values offered for a field, with what tells them apart (a bot's languages, a queue's name)
+const suggestionsFor = (source: ObjectField['suggestions'], choices?: HelplineChoices) => {
+  if (!source || !choices) return [];
+  if (source === 'chatbots') {
+    return [...new Set(choices.chatbots.map((bot) => bot.name))].map((name) => ({
+      value: name,
+      detail: choices.chatbots
+        .filter((bot) => bot.name === name)
+        .map((bot) => bot.language)
+        .join(', '),
+    }));
+  }
+  if (source === 'skills') return choices.skills.map((skill) => ({ value: skill, detail: '' }));
+  return choices[source].map(({ key, name }) => ({ value: key, detail: name === key ? '' : name }));
+};
+
 const NamePartsEditor = ({
   name,
   prefix,
@@ -675,12 +702,16 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
           )}
           {info.fields.map((field) => {
             const value = object.settings?.[field.key] ?? '';
-            const suggestions = field.suggestions === 'chatbots' ? (props.chatbots ?? []) : [];
+            const suggestions = suggestionsFor(field.suggestions, props.helplineChoices);
+            // Skills are a comma-separated list: they're added to it, not chosen instead of it
+            const listed = value.split(',').map((item) => item.trim());
             const set = (newValue: string) => {
               const { [field.key]: _removed, ...others } = object.settings ?? {};
               const settings: Record<string, string> = newValue ? { ...others, [field.key]: newValue } : others;
               // A chatbot of the helpline's chosen: its language too (Lex's en_USCH is en-USCH here)
-              const bot = suggestions.find((candidate) => candidate.name === newValue);
+              const bot =
+                field.suggestions === 'chatbots' &&
+                props.helplineChoices?.chatbots.find((candidate) => candidate.name === newValue);
               if (bot && !settings.language) settings.language = bot.language.replace('_', '-');
               update({ settings: Object.keys(settings).length > 0 ? settings : undefined });
             };
@@ -712,7 +743,12 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                     type={field.kind === 'url' ? 'url' : 'text'}
                     inputMode={field.kind === 'number' ? 'numeric' : undefined}
                     className={field.kind === 'url' ? 'flow-field-url' : undefined}
-                    list={suggestions.length > 0 ? `suggestions-${node.id}-${field.key}` : undefined}
+                    list={
+                      suggestions.length > 0 && field.suggestions !== 'skills'
+                        ? `suggestions-${node.id}-${field.key}`
+                        : undefined
+                    }
+                    onFocus={field.suggestions ? props.onRefreshChoices : undefined}
                     value={value}
                     placeholder={field.placeholder}
                     disabled={readOnly}
@@ -721,21 +757,34 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                     onChange={(e) => set(e.target.value)}
                   />
                 )}
-                {suggestions.length > 0 && (
+                {suggestions.length > 0 && field.suggestions !== 'skills' && (
                   <datalist id={`suggestions-${node.id}-${field.key}`}>
-                    {[...new Set(suggestions.map((bot) => bot.name))].map((name) => (
-                      <option key={name} value={name}>
-                        {suggestions
-                          .filter((bot) => bot.name === name)
-                          .map((bot) => bot.language)
-                          .join(', ')}
+                    {suggestions.map(({ value: offered, detail }) => (
+                      <option key={offered} value={offered}>
+                        {detail}
                       </option>
                     ))}
                   </datalist>
                 )}
-                {field.suggestions === 'chatbots' && suggestions.length === 0 && (
+                {field.suggestions === 'skills' && !readOnly && (
+                  <span className="flow-field-choices" aria-label={`Add to ${field.label}`}>
+                    {suggestions
+                      .filter(({ value: skill }) => !listed.includes(skill))
+                      .map(({ value: skill }) => (
+                        <button
+                          key={skill}
+                          type="button"
+                          className="flow-field-choice"
+                          onClick={() => set(value.trim() ? `${value.replace(/,\s*$/, '')},${skill}` : skill)}
+                        >
+                          + {skill}
+                        </button>
+                      ))}
+                  </span>
+                )}
+                {field.suggestions && suggestions.length === 0 && (
                   <span className="field-hint">
-                    This helpline has no chatbots in the designer yet: type the bot’s name.
+                    This helpline has no {SUGGESTIONS_FROM[field.suggestions]} yet: type it.
                   </span>
                 )}
                 {fieldProblem(field, value) && <span className="flow-field-problem">{fieldProblem(field, value)}</span>}

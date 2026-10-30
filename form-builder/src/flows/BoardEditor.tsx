@@ -44,7 +44,8 @@ import { CheckPanel } from './CheckPanel';
 import type { RecordingsList } from './recordings';
 import { standardRecordingName } from './recordings';
 import { RecordingActions, RecordingsPanel } from './RecordingControls';
-import type { BoardClient, ChatbotChoice } from './boardClient';
+import type { BoardClient, HelplineChoices } from './boardClient';
+import { NO_HELPLINE_CHOICES } from './boardClient';
 import type { Board, BoardContent, FlowObject, FlowObjectType, Person } from './model';
 import {
   ASELO_PEOPLE_CODE,
@@ -95,6 +96,8 @@ type Props = {
   staffMode: boolean;
   onClose: () => void;
   onReload: () => void;
+  // Shown (its area is the one open); false while another area is
+  active?: boolean;
 };
 
 type SaveState = 'saved' | 'unsaved' | 'saving' | 'conflict' | 'error';
@@ -120,7 +123,17 @@ const mergePeople = (lists: Person[][]) => {
   return [...byKey.values()].sort((a, b) => a.name.localeCompare(b.name));
 };
 
-const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClose, onReload }: Props) => {
+const Editor = ({
+  board,
+  client,
+  readOnly,
+  userName,
+  userEmail,
+  staffMode,
+  onClose,
+  onReload,
+  active = true,
+}: Props) => {
   const flow = useReactFlow<CanvasNode, ConnectionEdge>();
   const [nodes, setNodes, onNodesChange] = useNodesState<CanvasNode>(toNodes(board.content));
   const [edges, setEdges, onEdgesChange] = useEdgesState<ConnectionEdge>(toEdges(board.content));
@@ -549,19 +562,23 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
 
   // ----- Recordings: loaded when the board opens, after every change, and with Refresh
   const [recordingList, setRecordingList] = useState<RecordingsList>();
-  // The helpline's chatbots, offered for Chatbot objects (none for templates or without a design)
-  const [chatbots, setChatbots] = useState<ChatbotChoice[]>([]);
+  // The helpline's chatbots, queues, workflows and skills, offered in objects' settings (none for
+  // templates or without designs). Read again whenever the board is shown again (e.g. after adding a
+  // skill in Routing) and when one of those settings is picked
+  const [helplineChoices, setHelplineChoices] = useState<HelplineChoices>(NO_HELPLINE_CHOICES);
+  const [choicesCount, setChoicesCount] = useState(0);
+  const refreshChoices = useCallback(() => setChoicesCount((count) => count + 1), []);
   useEffect(() => {
-    if (board.code === TEMPLATES_CODE) return;
+    if (board.code === TEMPLATES_CODE || !active) return;
     let current = true;
     client
-      .chatbots(board.code)
-      .then((found) => current && setChatbots(found))
+      .helplineChoices(board.code)
+      .then((found) => current && setHelplineChoices(found))
       .catch(() => {});
     return () => {
       current = false;
     };
-  }, [client, board.code]);
+  }, [client, board.code, active, choicesCount]);
   const [recordingsUnavailable, setRecordingsUnavailable] = useState<string>();
   const [busyFiles, setBusyFiles] = useState<Set<string>>(() => new Set());
   const [refreshing, setRefreshing] = useState(false);
@@ -1088,7 +1105,8 @@ const Editor = ({ board, client, readOnly, userName, userEmail, staffMode, onClo
                 onEndHere={endHere}
                 recordings={recordingActions}
                 variant={variant?.key}
-                chatbots={chatbots}
+                helplineChoices={helplineChoices}
+                onRefreshChoices={refreshChoices}
                 onBoardFlow={setBoardFlow}
               />
             )}

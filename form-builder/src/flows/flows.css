@@ -21,7 +21,7 @@
   overflow: hidden;
 }
 
-.app-flows > main.flows-home {
+.app-flows main.flows-home {
   overflow: auto;
 }
 
@@ -1280,6 +1280,27 @@
 .flow-field-problem {
   font-size: 12px;
   color: var(--color-error-text);
+}
+
+/* The helpline's skills (its routing design), added to a skills list with a click */
+.flow-field-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.flow-field-choice {
+  padding: 1px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.flow-field-choice:hover {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
 }
 
 /* A message's name by parts: the prefix (fixed), the flow's channel, language and service, what it is */

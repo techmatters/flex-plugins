@@ -712,6 +712,14 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
       if (type === 'sendToQueue') {
         const taskAttributes = taskAttributesOf(name, properties.attributes);
         if (taskAttributes) object.taskAttributes = taskAttributes;
+        // Its workflow and task channel, when they're the helpline's (${workflow_sids.master})
+        const keyIn = (value: HclValue | undefined, variable: string) =>
+          textOf(value)?.match(new RegExp(`^\\$\\{\\s*${variable}\\.([A-Za-z0-9_]+)\\s*\\}$`))?.[1];
+        const workflow = keyIn(properties.workflow, 'workflow_sids');
+        const taskChannel = keyIn(properties.channel, 'task_channel_sids');
+        if (workflow || taskChannel) {
+          object.settings = { ...(workflow ? { workflow } : {}), ...(taskChannel ? { taskChannel } : {}) };
+        }
       }
 
       // Other HTTP requests: their method, address and body as written (variables kept)

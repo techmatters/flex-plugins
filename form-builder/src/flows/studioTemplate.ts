@@ -313,7 +313,16 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
           flowVars.push({ scope: shared[1], name: shared[2], value: own.script, widget: name, flow: key });
         });
       }
-      if (object.type === 'function') {
+      if (object.type === 'sendToQueue') {
+        // Its workflow and task channel as chosen on the board
+        const { workflow, taskChannel } = object.settings ?? {};
+        if (workflow && properties.workflow !== `\${workflow_sids.${workflow}}`) {
+          properties.workflow = `\${workflow_sids.${workflow}}`;
+        }
+        if (taskChannel && properties.channel !== `\${task_channel_sids.${taskChannel}}`) {
+          properties.channel = `\${task_channel_sids.${taskChannel}}`;
+        }
+      } else if (object.type === 'function') {
         // The request as set on the board (method, address, body), where it differs from Studio's
         if (studio.type === 'make-http-request') {
           (['method', 'url', 'body'] as const).forEach((key) => {
@@ -664,7 +673,13 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         ];
       }
       case 'sendToQueue': {
-        todo.push(`${label(object)}: set its workflow and task channel.`);
+        const { queue, workflow, taskChannel } = object.settings ?? {};
+        if (!workflow || !taskChannel) todo.push(`${label(object)}: set its workflow and task channel.`);
+        if (queue) {
+          todo.push(
+            `${label(object)} should end up in the ${queue} queue: check that the ${workflow ?? 'chosen'} workflow's rules send it there (with its task attributes).`,
+          );
+        }
         const attributes = object.taskAttributes;
         if (attributes) listTaskAttributes(object, name, 'new');
         else todo.push(`${label(object)}: set its task attributes.`);
@@ -679,8 +694,8 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
             ],
             properties: {
               offset,
-              workflow: TODO,
-              channel: TODO,
+              workflow: workflow ? `\${workflow_sids.${workflow}}` : TODO,
+              channel: taskChannel ? `\${task_channel_sids.${taskChannel}}` : TODO,
               attributes:
                 attributes?.source.kind === 'inline'
                   ? attributes.json

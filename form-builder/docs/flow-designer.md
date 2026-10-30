@@ -49,7 +49,7 @@ reads the same way as Studio.
 | Other subflow | double-sided box | layers | as defined | Run Subflow (`run_subflow_...`) |
 | Check operating hours | double-sided box (function) | clock | open / closed / holiday | function (`f_...`) + Split |
 | Check client profile | double-sided box | user search | blocked / not blocked | `f_getProfileFlagsForIdentifier` + Split |
-| Skilled worker available? | double-sided box | users | available / not available / failed | `worker/isSkilledWorkerAvailable` (`f_isSkilledWorkerAvailable_<skills>`) + Split; settings: skills, channel |
+| Skilled worker available? | double-sided box | users | available / not available / failed | `worker/isSkilledWorkerAvailable` (`f_isSkilledWorkerAvailable_<skills>`) + Split; settings: skills (typed, or added from the helpline's routing design), channel |
 | Skilled worker logged in? | double-sided box | user check | logged in / not logged in / failed | `worker/isSkilledWorkerLoggedIn` (`f_isSkilledWorkerLoggedIn_<skills>`) + Split; settings: skills, activities not counted |
 | Check country / phone code | diamond | globe | one per country, other | Split (`split_country...`) |
 | Other function / HTTP request | double-sided box | braces / webhook | success / failed | Run Function or HTTP Request (`f_...`, `http_post_...`). Its settings: method, address (https://... or `${variable}/...`) and JSON body (Studio's `{{...}}` allowed), sent as `application/json` without Twilio auth; both checked. Imported from the live widget, and only written back when changed |
@@ -61,7 +61,7 @@ reads the same way as Studio.
 | Record voicemail | parallelogram | voicemail | 1 | Record Voicemail (`record_voicemail_...`) |
 | Chatbot | double-sided box | bot | success / failed | `channelCapture/captureChannelWithBot` (`f_captureChannelWithBot_<bot>`). Settings: the chatbot (offered from the helpline's chatbot designs; picking one fills in its language, `en_USCH` becoming `en-USCH`), how it starts, its message, what happens when it finishes, the release flag and where the answers are kept. On `success` the flow usually ends: the bot triggers the flow again when it finishes, so check the release flag at the top. Imported requests to that route open as chatbots |
 | Pre-survey form | document shape | clipboard | finished | pre-survey chatbot or webchat form |
-| Send to queue | cylinder | inbox | post-queue (continues), failed to enqueue | Send to Flex (`send_to_queue_...`), with its **task attributes** (below) |
+| Send to queue | cylinder | inbox | post-queue (continues), failed to enqueue | Send to Flex (`send_to_queue_<queue>`), with its **task attributes** (below). Settings: the queue it should end up in (offered from the helpline's routing design; the workflow's rules send it there), the workflow (`${workflow_sids.<key>}`) and the task channel (`${task_channel_sids.<key>}`), read from imported widgets |
 | Forward call | rounded box | phone forwarded | call completed, hung up | Connect Call To (`connect_to_...`) |
 | Set variable / counter | box | variable | 1 | Set Variables (`set_var_...`) |
 | Repeat (counter) | delay shape | repeat | repeat / max reached | Set Variables (`set_var_<counter>`) adding one to the counter, and a Split (`split_end_cycle_<name>`): back round (`repeat`) until it's greater than the times to repeat, then `max reached`. E.g. a menu's timeout → Repeat → back to the menu, or on to the queue. Settings: the counter (a flow variable, one per loop) and the times to repeat. Boards with the old “Wait / repeat” open with a Repeat in its place |
@@ -76,6 +76,11 @@ copying its artwork.
 
 **Messages and questions carry their content:** channel, language, the script, and a status that
 is mostly worked out automatically (see [Recordings and scripts](#recordings-and-scripts)).
+
+**What the helpline has elsewhere** is offered in objects' settings: its chatbots (Chatbot), and
+its routing design's queues and workflows (Send to queue) and skills (the skilled worker checks).
+Any other value can be typed. They're read again whenever the board is shown again, so a skill
+added in Routing meanwhile is there.
 
 **Studio names** are suggested from the object type, channel, language and what you type
 (`play_message_voice_en_post_queue_closed`), and checked against the standards in

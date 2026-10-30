@@ -26,6 +26,8 @@ import { MemoryBoardStore } from '../../server/boards';
 import { MemoryPeopleStore } from '../../server/people';
 import { MemoryRecordingFiles, MemoryRecordingLogStore } from '../../server/recordingStores';
 import { MemoryDraftStore } from '../../server/drafts';
+import { MemoryRoutingStore } from '../../server/routingStore';
+import { emptyRouting } from '../routing/model';
 import { boardClientFor } from './boardClient';
 import { FlowsArea } from './FlowsArea';
 import { importHelpline } from '../../server/flowImport';
@@ -107,6 +109,7 @@ beforeEach(() => {
     drafts: new MemoryDraftStore(),
     boards,
     people,
+    routing: new MemoryRoutingStore(),
     recordings: {
       files: recordingFiles,
       log: new MemoryRecordingLogStore(),
@@ -243,6 +246,53 @@ describe('flow designer', { timeout: 20_000 }, () => {
     fireEvent.change(settings().getByRole('textbox', { name: 'What it is' }), { target: { value: 'x' } });
     fireEvent.change(settings().getByRole('textbox', { name: 'What it is' }), { target: { value: '' } });
     expect(settings().getByText(/another object in this flow is also named play_message_voice./)).toBeTruthy();
+  });
+
+  test("queues, workflows and skills come from the helpline's routing design, read again when the board is shown again", async () => {
+    const saveRouting = (revision: number, skills: string[]) =>
+      handleApiRequest(context, {
+        method: 'PUT',
+        path: '/api/routing/usnm',
+        user: staff,
+        body: {
+          expectedRevision: revision,
+          design: {
+            ...emptyRouting('usnm'),
+            skills: skills.map((name) => ({ name })),
+            queues: [{ key: 'en_std', name: 'English', workers: { kind: 'nobody' } }],
+            workflows: [{ key: 'master', name: 'Master', rules: [] }],
+          },
+        },
+      });
+    expect((await saveRouting(0, ['Spanish', 'TYA'])).status).toBeLessThan(300);
+    const board = await clientAs(staff).create('usnm', 'Choices');
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+    const client = clientAs(staff);
+    const area = (active: boolean) => (
+      <FlowsArea client={client} helplineCodes={['usnm']} staffMode userName={staff.name} active={active} />
+    );
+    const { rerender, container } = render(area(true));
+    await screen.findByRole('heading', { name: 'Choices' });
+
+    // Skills are added to the list
+    fireEvent.click(palette().getByRole('button', { name: /^Skilled worker available/ }));
+    fireEvent.click(await settings().findByRole('button', { name: '+ Spanish' }));
+    fireEvent.click(settings().getByRole('button', { name: '+ TYA' }));
+    expect((settings().getByRole('textbox', { name: /^Skills/ }) as HTMLInputElement).value).toBe('Spanish,TYA');
+    expect(settings().queryByRole('button', { name: '+ Spanish' })).toBeNull();
+
+    // Send to queue: the queues and workflows offered, and chosen ones written in the widget
+    fireEvent.click(palette().getByRole('button', { name: /^Send to queue/ }));
+    expect([...container.querySelectorAll('datalist option')].map((option) => option.getAttribute('value'))).toEqual(
+      expect.arrayContaining(['en_std', 'master']),
+    );
+
+    // A skill added in Routing meanwhile: offered once the board is shown again
+    expect((await saveRouting(1, ['Spanish', 'TYA', 'French'])).status).toBeLessThan(300);
+    rerender(area(false));
+    rerender(area(true));
+    fireEvent.click(palette().getByRole('button', { name: /^Skilled worker logged in/ }));
+    expect(await settings().findByRole('button', { name: '+ French' })).toBeTruthy();
   });
 
   test("messages are named by parts: the prefix is set, the flow's channels, languages and services are chosen", async () => {

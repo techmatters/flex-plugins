@@ -160,6 +160,20 @@
   gap: 4px;
 }
 
+/* Each area opened stays as it was left: shown as if it weren't wrapped, or hidden */
+.area-pane {
+  display: contents;
+}
+
+.area-pane[hidden] {
+  display: none;
+}
+
+/* Forms, with a helpline open: the way back to the start page */
+.area-back-bar {
+  padding: 8px 24px 0;
+}
+
 /* The filters above a start page table: helpline, then status */
 .area-home-filters {
   display: flex;

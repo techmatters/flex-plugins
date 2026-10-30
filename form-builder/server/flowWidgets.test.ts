@@ -194,6 +194,33 @@ describe('menus, repeats and chatbots', () => {
     expect(todo.join('\n')).not.toMatch(/captureChannelWithBot/);
   });
 
+  test('send to queue: its workflow and task channel from the board, the queue it should end in for the agent', () => {
+    const content = board(
+      'voice',
+      [
+        object('queue', 'sendToQueue', {
+          studioName: 'send_to_queue_en_std',
+          settings: { queue: 'en_std', workflow: 'master', taskChannel: 'voice' },
+        }),
+      ],
+      [],
+    );
+    const { flow, todo } = toStudioFlow(content, content.frames[0]);
+    expect(flow.states[0].properties).toMatchObject({
+      workflow: '${workflow_sids.master}',
+      channel: '${task_channel_sids.voice}',
+    });
+    expect(todo.join('\n')).not.toMatch(/set its workflow/);
+    expect(todo).toContainEqual(expect.stringContaining('should end up in the en_std queue'));
+  });
+
+  test('imported Send to Flex widgets keep their workflow and task channel as settings', async () => {
+    const { boards } = await importHelpline(helplinesDir, 'usnm');
+    const queues = boards.flatMap(({ content }) => content.objects.filter((o) => o.type === 'sendToQueue'));
+    expect(queues.length).toBeGreaterThan(0);
+    expect(queues.every((queue) => queue.settings?.workflow && queue.settings?.taskChannel)).toBe(true);
+  });
+
   test('imported captureChannelWithBot requests are chatbots, their settings as written (variables kept)', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usch');
     const bots = boards.flatMap(({ content }) => content.objects.filter((candidate) => candidate.type === 'chatbot'));

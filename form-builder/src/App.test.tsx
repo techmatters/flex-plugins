@@ -55,17 +55,26 @@ afterEach(() => {
 });
 
 describe('the app', () => {
-  test('the Forms button goes back to the forms start page from a helpline', async () => {
+  test('areas stay as they were left when another is opened; "All forms" goes back to the start page', async () => {
     render(<App draftClient={clientFor(send)} />);
     expect(await screen.findByRole('heading', { name: 'Forms' })).toBeTruthy();
 
     // Once the helplines are loaded
     await screen.findByRole('option', { name: 'USCH' });
     fireEvent.change(screen.getByRole('combobox', { name: 'Helpline' }), { target: { value: 'usch' } });
-    expect(await screen.findByText('No changes yet', undefined, { timeout: 15000 })).toBeTruthy();
+    const workspace = await screen.findByText('No changes yet', undefined, { timeout: 15000 });
     expect(screen.queryByRole('heading', { name: 'Forms' })).toBeNull();
 
+    // Off to Contact flows: the helpline's forms are kept, hidden
+    fireEvent.click(screen.getByRole('button', { name: 'Contact flows' }));
+    expect(workspace.closest('[hidden]')).not.toBeNull();
+    // ...and back, as they were
     fireEvent.click(screen.getByRole('button', { name: 'Forms' }));
+    expect(workspace.closest('[hidden]')).toBeNull();
+    expect(workspace.isConnected).toBe(true);
+    expect((screen.getByRole('combobox', { name: 'Helpline' }) as HTMLSelectElement).value).toBe('usch');
+
+    fireEvent.click(screen.getByRole('button', { name: /All forms/ }));
     expect(await screen.findByRole('heading', { name: 'Forms' })).toBeTruthy();
     expect((screen.getByRole('combobox', { name: 'Helpline' }) as HTMLSelectElement).value).toBe('');
   }, 30_000);

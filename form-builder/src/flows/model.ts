@@ -450,8 +450,9 @@ export type ObjectField = {
   options?: string[];
   // What's typed: a line of text (default), an address, a JSON body (several lines) or a whole number
   kind?: 'text' | 'url' | 'json' | 'number';
-  // Values offered as it's typed (any other can still be typed): the helpline's chatbots
-  suggestions?: 'chatbots';
+  // Values offered as it's typed (any other can still be typed): the helpline's chatbots, or its
+  // queues, workflows and skills in its routing design (skills are added to the comma-separated list)
+  suggestions?: 'chatbots' | 'queues' | 'workflows' | 'skills';
 };
 
 /**
@@ -569,6 +570,7 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
         key: 'targetSkills',
         label: 'Skills',
         placeholder: 'TYA,Calls',
+        suggestions: 'skills',
         hint: 'Comma-separated. The worker needs all of them.',
       },
       {
@@ -597,6 +599,7 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
         key: 'targetSkills',
         label: 'Skills',
         placeholder: 'Spanish,SMS',
+        suggestions: 'skills',
         hint: 'Comma-separated. The worker needs all of them.',
       },
       {
@@ -799,6 +802,29 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     family: 'queue',
     studioWidget: 'Send to Flex',
     studioPrefix: 'send_to_queue',
+    // The queue is where the contact should end up: the workflow's rules send it there
+    fields: [
+      {
+        key: 'queue',
+        label: 'Queue',
+        placeholder: 'en_std',
+        suggestions: 'queues',
+        hint: 'Where the contact should end up (the workflow’s rules send it there). Names it send_to_queue_<queue>.',
+      },
+      {
+        key: 'workflow',
+        label: 'Workflow',
+        placeholder: 'master',
+        suggestions: 'workflows',
+        hint: 'Its key in workflow_sids.',
+      },
+      {
+        key: 'taskChannel',
+        label: 'Task channel',
+        options: ['voice', 'chat', 'sms', 'default'],
+        hint: 'Its key in task_channel_sids.',
+      },
+    ],
     exits: ['post-queue', 'failed to enqueue'],
     defaultSize: { width: 150, height: 96 },
   },
@@ -1011,7 +1037,7 @@ export const suggestStudioName = (
   // A loop's counter and split are named after its counter variable
   if (object.type === 'repeat' && object.settings?.counter) return `set_var_${toSnake(object.settings.counter)}`;
   if (object.type === 'sendToQueue') {
-    const queue = toSnake(object.text.replace(/\bqueue\b/i, ''));
+    const queue = toSnake(object.settings?.queue ?? object.text.replace(/\bqueue\b/i, ''));
     return queue ? `send_to_queue_${queue}` : 'send_to_queue';
   }
   const byParts = isNamedByParts(object.type);
