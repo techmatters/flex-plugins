@@ -1,0 +1,1452 @@
+${
+  jsonencode({
+    "description": "${flow_description}",
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    },
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "event": "incomingCall"
+          },
+          {
+            "event": "incomingConversationMessage",
+            "next": "run_subflow_system_down"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 60,
+            "y": -340
+          }
+        }
+      },
+      {
+        "name": "send_to_queue_childhelp_failed_chatbot",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          }
+        ],
+        "properties": {
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.chat}",
+          "attributes": "${channel_attributes.default}",
+          "offset": {
+            "x": 1270,
+            "y": 1720
+          }
+        }
+      },
+      {
+        "name": "http_post_webhook_notify_failed_to_enqueue",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "url": "${webhook_url_studio_errors}",
+          "offset": {
+            "x": 1530,
+            "y": 2040
+          }
+        }
+      },
+      {
+        "name": "split_pre_survey_complete",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "f_getProfileFlagsForIdentifier_blocked"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to true",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
+                ],
+                "type": "equal_to",
+                "value": "true"
+              }
+            ],
+            "next": "split_language_chosen"
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
+          "offset": {
+            "x": 290,
+            "y": -80
+          }
+        }
+      },
+      {
+        "name": "send_wait_sms_en_childhelp_sms_language_options",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "event": "incomingMessage",
+            "next": "split_language"
+          },
+          {
+            "event": "timeout",
+            "next": "set_var_language_options_counter"
+          },
+          {
+            "event": "deliveryFailure",
+            "next": "set_var_language_options_counter"
+          }
+        ],
+        "properties": {
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "Bot",
+          "message_type": "custom",
+          "body": "${flow_vars.childhelp_sms_language_message}",
+          "timeout": "3600",
+          "offset": {
+            "x": 240,
+            "y": 760
+          }
+        }
+      },
+      {
+        "name": "split_language",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "f_setFlowMemory_lang_en"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.send_wait_sms_en_childhelp_sms_language_options.inbound.Body}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ],
+            "next": "f_setFlowMemory_lang_en"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 2",
+                "arguments": [
+                  "{{widgets.send_wait_sms_en_childhelp_sms_language_options.inbound.Body}}"
+                ],
+                "type": "equal_to",
+                "value": "2"
+              }
+            ],
+            "next": "f_setFlowMemory_lang_es"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 3",
+                "arguments": [
+                  "{{widgets.send_wait_sms_en_childhelp_sms_language_options.inbound.Body}}"
+                ],
+                "type": "equal_to",
+                "value": "3"
+              }
+            ],
+            "next": "f_sendMessageAndRunJanitor_other_language"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.send_wait_sms_en_childhelp_sms_language_options.inbound.Body}}",
+          "offset": {
+            "x": 440,
+            "y": 1000
+          }
+        }
+      },
+      {
+        "name": "f_chatbotCallbackCleanup",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "send_message_sms_en_childhelp_prequeue_failed_bot"
+          },
+          {
+            "event": "failed",
+            "next": "f_sendMessageAndRunJanitor_en_failure"
+          }
+        ],
+        "properties": {
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"conversationSid\": \"{{flow.channel.address}}\"}",
+          "url": "${lambda_twilio_account_scoped_url}/channelCapture/chatbotCallbackCleanup",
+          "offset": {
+            "x": 860,
+            "y": 2070
+          }
+        }
+      },
+      {
+        "name": "http_post_webhook_notify_error_chatbot",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "f_chatbotCallbackCleanup"
+          },
+          {
+            "event": "failed",
+            "next": "f_chatbotCallbackCleanup"
+          }
+        ],
+        "properties": {
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{ \"text\": \"Issue detected [Chabot Failure] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "url": "${webhook_url_studio_errors}",
+          "offset": {
+            "x": 520,
+            "y": 1890
+          }
+        }
+      },
+      {
+        "name": "run_subflow_system_down",
+        "type": "run-subflow",
+        "transitions": [
+          {
+            "event": "completed",
+            "next": "split_pre_survey_complete"
+          },
+          {
+            "event": "failed",
+            "next": "split_pre_survey_complete"
+          }
+        ],
+        "properties": {
+          "flow_sid": "${system_down_studio_subflow_sid}",
+          "flow_revision": "LatestPublished",
+          "parameters": [
+            {
+              "type": "string",
+              "value": "true",
+              "key": "system_down"
+            }
+          ],
+          "offset": {
+            "x": -200,
+            "y": -170
+          }
+        }
+      },
+      {
+        "name": "send_wait_sms_en_service_options",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "event": "incomingMessage",
+            "next": "split_service_options"
+          },
+          {
+            "event": "timeout",
+            "next": "set_var_service_options_counter"
+          },
+          {
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 160,
+            "y": 2320
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "${helpline}",
+          "message_type": "custom",
+          "body": "${flow_vars.send_wait_sms_en_service_options}",
+          "timeout": "3600"
+        }
+      },
+      {
+        "name": "split_service_options",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "f_setFlowMemory_service_childhelp"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.send_wait_sms_en_service_options.inbound.Body}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ],
+            "next": "f_setFlowMemory_service_childhelp"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 2",
+                "arguments": [
+                  "{{widgets.send_wait_sms_en_service_options.inbound.Body}}"
+                ],
+                "type": "equal_to",
+                "value": "2"
+              }
+            ],
+            "next": "f_setFlowMemory_service_advocate"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.send_wait_sms_en_service_options.inbound.Body}}",
+          "offset": {
+            "x": 200,
+            "y": 2640
+          }
+        }
+      },
+      {
+        "name": "f_captureChannelWithBot_en_pre_survey",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed",
+            "next": "http_post_webhook_notify_error_chatbot"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 210,
+            "y": 3480
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"channelSid\": \"{{flow.channel.address}}\",\n  \"isConversation\": \"true\",\n  \"message\": \"trigger_pre_survey\",\n  \"studioFlowSid\": \"{{flow.flow_sid}}\",\n  \"language\": \"en-USCH\",\n  \"botSuffix\": \"pre_survey\",\n  \"triggerType\": \"withUserMessage\",\n  \"releaseType\": \"triggerStudioFlow\",\n  \"releaseFlag\": \"preSurveyComplete\",\n  \"memoryAttribute\": \"memory\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"\n}",
+          "url": "${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot"
+        }
+      },
+      {
+        "name": "f_sendMessageAndRunJanitor_en_closing_conversation",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed",
+            "next": "http_post_notify_the_aselo_team"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -270,
+            "y": 2080
+          },
+          "method": "POST",
+          "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+          "add_twilio_auth": false,
+          "parameters": [
+            {
+              "value": "{{flow.channel.address}}",
+              "key": "conversationSid"
+            },
+            {
+              "value": "${flow_vars.send_message_en_closing_conversation}",
+              "key": "message"
+            },
+            {
+              "value": "${helpline}",
+              "key": "from"
+            }
+          ],
+          "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
+        }
+      },
+      {
+        "name": "set_var_language_options_counter",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "event": "next",
+            "next": "split_language_options"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "type": "string",
+              "value": "{% if flow.variables.language_options_counter %}{{flow.variables.language_options_counter | plus: 1}}{% else %}1{% endif %}",
+              "key": "language_options_counter"
+            }
+          ],
+          "offset": {
+            "x": 85,
+            "y": 1556
+          }
+        }
+      },
+      {
+        "name": "split_language_options",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_wait_sms_en_childhelp_sms_language_options"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value greater_than 2",
+                "arguments": [
+                  "{{flow.variables.language_options_counter}}"
+                ],
+                "type": "greater_than",
+                "value": "2"
+              }
+            ],
+            "next": "f_sendMessageAndRunJanitor_en_closing_conversation"
+          }
+        ],
+        "properties": {
+          "input": "{{flow.variables.language_options_counter}}",
+          "offset": {
+            "x": 85,
+            "y": 1796
+          }
+        }
+      },
+      {
+        "name": "http_post_notify_the_aselo_team",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -450,
+            "y": 2640
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{ \"text\": \"Issue detected [Send Message and Close Failure] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "url": "${webhook_url_studio_errors}"
+        }
+      },
+      {
+        "name": "set_var_service_options_counter",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "event": "next",
+            "next": "split_service_options_counter"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "type": "string",
+              "value": "{% if flow.variables.service_options_counter %}{{flow.variables.service_options_counter | plus: 1}}{% else %}1{% endif %}",
+              "key": "service_options_counter"
+            }
+          ],
+          "offset": {
+            "x": -95,
+            "y": 2516
+          }
+        }
+      },
+      {
+        "name": "split_service_options_counter",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_wait_sms_en_service_options"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value greater_than 2",
+                "arguments": [
+                  "{{flow.variables.service_options_counter}}"
+                ],
+                "type": "greater_than",
+                "value": "2"
+              }
+            ],
+            "next": "f_sendMessageAndRunJanitor_en_closing_conversation"
+          }
+        ],
+        "properties": {
+          "input": "{{flow.variables.service_options_counter}}",
+          "offset": {
+            "x": -95,
+            "y": 2756
+          }
+        }
+      },
+      {
+        "name": "f_sendMessageAndRunJanitor_en_blocked",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 885,
+            "y": 1248
+          },
+          "method": "POST",
+          "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+          "add_twilio_auth": false,
+          "parameters": [
+            {
+              "value": "{{flow.channel.address}}",
+              "key": "conversationSid"
+            },
+            {
+              "value": "${flow_vars.send_message_en_blocked}",
+              "key": "message"
+            },
+            {
+              "value": "${helpline}",
+              "key": "from"
+            }
+          ],
+          "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
+        }
+      },
+      {
+        "name": "f_sendMessageAndRunJanitor_other_language",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 970,
+            "y": 2000
+          },
+          "method": "POST",
+          "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+          "add_twilio_auth": false,
+          "parameters": [
+            {
+              "value": "{{flow.channel.address}}",
+              "key": "conversationSid"
+            },
+            {
+              "value": "${flow_vars.send_message_other_language}",
+              "key": "message"
+            },
+            {
+              "value": "${helpline}",
+              "key": "from"
+            }
+          ],
+          "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
+        }
+      },
+      {
+        "name": "f_isSkilledWorkerLoggedIn_chattext_spanish",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_is_skilled_worker_logged_in_chattext_spanish"
+          },
+          {
+            "event": "failed",
+            "next": "f_captureChannelWithBot_es_pre_survey"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 640,
+            "y": 2440
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"targetSkills\": \"ChatText,Spanish\"\n}",
+          "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerLoggedIn"
+        }
+      },
+      {
+        "name": "split_is_skilled_worker_logged_in_chattext_spanish",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "f_sendMessageAndRunJanitor_es_no_counselors"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "logged in",
+                "arguments": [
+                  "{{widgets.f_isSkilledWorkerLoggedIn_chattext_spanish.parsed.totalLoggedInWorkers}}"
+                ],
+                "type": "greater_than",
+                "value": "0"
+              }
+            ],
+            "next": "f_captureChannelWithBot_es_pre_survey"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_isSkilledWorkerLoggedIn_chattext_spanish.parsed.totalLoggedInWorkers}}",
+          "offset": {
+            "x": 640,
+            "y": 2680
+          }
+        }
+      },
+      {
+        "name": "f_sendMessageAndRunJanitor_es_no_counselors",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 810,
+            "y": 2880
+          },
+          "method": "POST",
+          "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+          "add_twilio_auth": false,
+          "parameters": [
+            {
+              "value": "{{flow.channel.address}}",
+              "key": "conversationSid"
+            },
+            {
+              "value": "${flow_vars.send_message_es_no_counselors}",
+              "key": "message"
+            },
+            {
+              "value": "${helpline}",
+              "key": "from"
+            }
+          ],
+          "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
+        }
+      },
+      {
+        "name": "f_getProfileFlagsForIdentifier_blocked",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_get_profile_flags_for_identifier_blocked"
+          },
+          {
+            "event": "failed",
+            "next": "send_wait_sms_en_childhelp_sms_language_options"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 470,
+            "y": 860
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"sms\"}",
+          "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
+        }
+      },
+      {
+        "name": "split_get_profile_flags_for_identifier_blocked",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_wait_sms_en_childhelp_sms_language_options"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "blocked",
+                "arguments": [
+                  "{{widgets.f_getProfileFlagsForIdentifier_blocked.parsed.flags}}"
+                ],
+                "type": "equal_to",
+                "value": "blocked"
+              }
+            ],
+            "next": "f_sendMessageAndRunJanitor_en_blocked"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_getProfileFlagsForIdentifier_blocked.parsed.flags}}",
+          "offset": {
+            "x": 470,
+            "y": 1100
+          }
+        }
+      },
+      {
+        "name": "f_captureChannelWithBot_es_pre_survey",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed",
+            "next": "http_post_webhook_notify_error_chatbot"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 560,
+            "y": 2900
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"channelSid\": \"{{flow.channel.address}}\",\n  \"isConversation\": \"true\",\n  \"message\": \"trigger_pre_survey\",\n  \"studioFlowSid\": \"{{flow.flow_sid}}\",\n  \"language\": \"es-USCH\",\n  \"botSuffix\": \"pre_survey\",\n  \"triggerType\": \"withUserMessage\",\n  \"releaseType\": \"triggerStudioFlow\",\n  \"releaseFlag\": \"preSurveyComplete\",\n  \"memoryAttribute\": \"memory\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type | downcase}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"\n}",
+          "url": "${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot"
+        }
+      },
+      {
+        "name": "f_setFlowMemory_service_childhelp",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "f_captureChannelWithBot_en_pre_survey"
+          },
+          {
+            "event": "failed",
+            "next": "f_captureChannelWithBot_en_pre_survey"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -70,
+            "y": 3060
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"conversationSid\": \"{{flow.channel.address}}\",\n  \"flowMemory\": {\n    \"service\": \"childhelp\"\n  }\n}",
+          "url": "${lambda_twilio_account_scoped_url}/conversation/setFlowMemory"
+        }
+      },
+      {
+        "name": "f_setFlowMemory_service_advocate",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "f_captureChannelWithBot_en_pre_survey"
+          },
+          {
+            "event": "failed",
+            "next": "f_captureChannelWithBot_en_pre_survey"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 300,
+            "y": 3040
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"conversationSid\": \"{{flow.channel.address}}\",\n  \"flowMemory\": {\n    \"service\": \"advocate\"\n  }\n}",
+          "url": "${lambda_twilio_account_scoped_url}/conversation/setFlowMemory"
+        }
+      },
+      {
+        "name": "send_message_sms_en_childhelp_prequeue_failed_bot",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent",
+            "next": "send_to_queue_childhelp_failed_chatbot"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1490,
+            "y": 1980
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "${helpline}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "${flow_vars.send_message_sms_en_childhelp_prequeue_failed_bot}"
+        }
+      },
+      {
+        "name": "f_setFlowMemory_lang_en",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "send_wait_sms_en_service_options"
+          },
+          {
+            "event": "failed",
+            "next": "send_wait_sms_en_service_options"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 380,
+            "y": 2040
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"conversationSid\": \"{{flow.channel.address}}\",\n  \"flowMemory\": {\n    \"language\": \"en\"\n  }\n}",
+          "url": "${lambda_twilio_account_scoped_url}/conversation/setFlowMemory"
+        }
+      },
+      {
+        "name": "f_setFlowMemory_lang_es",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "f_isSkilledWorkerLoggedIn_chattext_spanish"
+          },
+          {
+            "event": "failed",
+            "next": "f_isSkilledWorkerLoggedIn_chattext_spanish"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 680,
+            "y": 2140
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"conversationSid\": \"{{flow.channel.address}}\",\n  \"flowMemory\": {\n    \"language\": \"ees\"\n  }\n}",
+          "url": "${lambda_twilio_account_scoped_url}/conversation/setFlowMemory"
+        }
+      },
+      {
+        "name": "split_language_chosen",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "split_service_chosen"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to es",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.flowMemory.language}}"
+                ],
+                "type": "equal_to",
+                "value": "es"
+              }
+            ],
+            "next": "f_isSkilledWorkerAvailable_spanish"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to en",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.flowMemory.language}}"
+                ],
+                "type": "equal_to",
+                "value": "en"
+              }
+            ],
+            "next": "split_service_chosen"
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.conversation.ChannelAttributes.flowMemory.language}}",
+          "offset": {
+            "x": 1130,
+            "y": 740
+          }
+        }
+      },
+      {
+        "name": "f_isSkilledWorkerAvailable_spanish",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_is_skilled_worker_available_spanish"
+          },
+          {
+            "event": "failed",
+            "next": "send_wait_sms_es_childhelp_wait_for_counselor"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1635,
+            "y": 1068
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"targetSkills\": \"ChatText,Spanish\"\n}",
+          "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerAvailable"
+        }
+      },
+      {
+        "name": "split_is_skilled_worker_available_spanish",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_wait_sms_es_childhelp_wait_for_counselor"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "available",
+                "arguments": [
+                  "{{widgets.f_isSkilledWorkerAvailable_spanish.parsed.totalAvailableWorkers}}"
+                ],
+                "type": "greater_than",
+                "value": "0"
+              }
+            ],
+            "next": "send_to_queue_childhelp_spanish"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_isSkilledWorkerAvailable_spanish.parsed.totalAvailableWorkers}}",
+          "offset": {
+            "x": 1635,
+            "y": 1308
+          }
+        }
+      },
+      {
+        "name": "send_to_queue_childhelp_spanish",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.chat}",
+          "attributes": "${channel_attributes.default}",
+          "offset": {
+            "x": 1270,
+            "y": 1720
+          }
+        }
+      },
+      {
+        "name": "send_wait_sms_es_childhelp_wait_for_counselor",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "event": "incomingMessage",
+            "next": "split_es_wait_or_leave"
+          },
+          {
+            "event": "timeout",
+            "next": "set_var_wait_for_counselor_counter"
+          },
+          {
+            "event": "deliveryFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1700,
+            "y": 1460
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "${helpline}",
+          "message_type": "custom",
+          "body": "${flow_vars.send_wait_sms_es_childhelp_wait_for_counselor}",
+          "timeout": "3600"
+        }
+      },
+      {
+        "name": "split_es_wait_or_leave",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "f_sendMessageAndRunJanitor_es_please_call"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to Yes",
+                "arguments": [
+                  "{{widgets.send_wait_sms_es_childhelp_wait_for_counselor.inbound.Body}}"
+                ],
+                "type": "equal_to",
+                "value": "Yes"
+              }
+            ],
+            "next": "send_to_queue_childhelp_spanish"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to No",
+                "arguments": [
+                  "{{widgets.send_wait_sms_es_childhelp_wait_for_counselor.inbound.Body}}"
+                ],
+                "type": "equal_to",
+                "value": "No"
+              }
+            ],
+            "next": "f_sendMessageAndRunJanitor_es_please_call"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.send_wait_sms_es_childhelp_wait_for_counselor.inbound.Body}}",
+          "offset": {
+            "x": 1970,
+            "y": 1620
+          }
+        }
+      },
+      {
+        "name": "set_var_wait_for_counselor_counter",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "event": "next",
+            "next": "split_wait_for_counselor"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "type": "string",
+              "value": "{% if flow.variables.wait_for_counselor_counter %}{{flow.variables.wait_for_counselor_counter | plus: 1}}{% else %}1{% endif %}",
+              "key": "wait_for_counselor_counter"
+            }
+          ],
+          "offset": {
+            "x": 1485,
+            "y": 1576
+          }
+        }
+      },
+      {
+        "name": "split_wait_for_counselor",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_wait_sms_es_childhelp_wait_for_counselor"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value greater_than 1",
+                "arguments": [
+                  "{{flow.variables.wait_for_counselor_counter}}"
+                ],
+                "type": "greater_than",
+                "value": "1"
+              }
+            ],
+            "next": "f_sendMessageAndRunJanitor_es_please_call"
+          }
+        ],
+        "properties": {
+          "input": "{{flow.variables.wait_for_counselor_counter}}",
+          "offset": {
+            "x": 1485,
+            "y": 1816
+          }
+        }
+      },
+      {
+        "name": "f_sendMessageAndRunJanitor_es_please_call",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1750,
+            "y": 1980
+          },
+          "method": "POST",
+          "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+          "add_twilio_auth": false,
+          "parameters": [
+            {
+              "value": "{{flow.channel.address}}",
+              "key": "conversationSid"
+            },
+            {
+              "value": "${flow_vars.send_message_es_please_call}",
+              "key": "message"
+            },
+            {
+              "value": "${helpline}",
+              "key": "from"
+            }
+          ],
+          "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
+        }
+      },
+      {
+        "name": "split_service_chosen",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_message_sms_en_childhelp_prequeue"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to childhelp",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.flowMemory.service}}"
+                ],
+                "type": "equal_to",
+                "value": "childhelp"
+              }
+            ],
+            "next": "send_message_sms_en_childhelp_prequeue"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to advocate",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.flowMemory.service}}"
+                ],
+                "type": "equal_to",
+                "value": "advocate"
+              }
+            ],
+            "next": "send_message_sms_en_advocate_prequeue"
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.conversation.ChannelAttributes.flowMemory.service}}",
+          "offset": {
+            "x": 1340,
+            "y": -140
+          }
+        }
+      },
+      {
+        "name": "f_sendMessageAndRunJanitor_en_failure",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1405,
+            "y": 2928
+          },
+          "method": "POST",
+          "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+          "add_twilio_auth": false,
+          "parameters": [
+            {
+              "value": "{{flow.channel.address}}",
+              "key": "conversationSid"
+            },
+            {
+              "value": "${flow_vars.send_message_en_failure}",
+              "key": "message"
+            },
+            {
+              "value": "${helpline}",
+              "key": "from"
+            }
+          ],
+          "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
+        }
+      },
+      {
+        "name": "send_to_queue_childhelp",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 2170,
+            "y": 100
+          },
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.sms}",
+          "timeout": "3600",
+          "attributes": "${channel_attributes.default}"
+        }
+      },
+      {
+        "name": "send_message_sms_en_childhelp_prequeue",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent",
+            "next": "send_to_queue_childhelp"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1870,
+            "y": -320
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "${helpline}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "${flow_vars.send_message_sms_en_childhelp_prequeue}"
+        }
+      },
+      {
+        "name": "send_message_sms_en_advocate_prequeue",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent",
+            "next": "f_isSkilledWorkerLoggedIn_chattext_advocate"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1550,
+            "y": 420
+          },
+          "service": "{{trigger.message.InstanceSid}}",
+          "channel": "{{trigger.message.ChannelSid}}",
+          "from": "${helpline}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "${flow_vars.send_message_sms_en_advocate_prequeue}"
+        }
+      },
+      {
+        "name": "f_isSkilledWorkerLoggedIn_chattext_advocate",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_is_skilled_worker_logged_in_chattext_advocate"
+          },
+          {
+            "event": "failed",
+            "next": "send_to_queue_childhelp"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1860,
+            "y": 460
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"targetSkills\": \"ChatText,Advocate\"\n}",
+          "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerLoggedIn"
+        }
+      },
+      {
+        "name": "split_is_skilled_worker_logged_in_chattext_advocate",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_to_queue_childhelp"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "logged in",
+                "arguments": [
+                  "{{widgets.f_isSkilledWorkerLoggedIn_chattext_advocate.parsed.totalLoggedInWorkers}}"
+                ],
+                "type": "greater_than",
+                "value": "0"
+              }
+            ],
+            "next": "send_to_queue_advocates"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_isSkilledWorkerLoggedIn_chattext_advocate.parsed.totalLoggedInWorkers}}",
+          "offset": {
+            "x": 1860,
+            "y": 700
+          }
+        }
+      },
+      {
+        "name": "send_to_queue_advocates",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 2140,
+            "y": 700
+          },
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.sms}",
+          "timeout": "3600",
+          "attributes": "${channel_attributes.default}"
+        }
+      }
+    ]
+  })
+}

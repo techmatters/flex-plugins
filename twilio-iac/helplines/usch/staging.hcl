@@ -32,12 +32,23 @@ locals {
       courage_first_sms_failure_message  = "We are sorry, we had a technical issue. Please trying texting again or call 1-888-279-1026"
       courage_first_sms_prequeue_message = "Para hablar con un consejero en Español, llame al 800-422-4453. Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action.  Courage First Athlete Helpline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
       # ChildHelp -  SMS
-      childhelp_sms_language_message             = "Thank you for texting the National Child Abuse Hotline. You'll be connected to a live counselor by SMS. We'll message only to support your conversation (no marketing). Message frequency may vary. Msg&Data rates may apply. Reply STOP to end, HELP for help. Privacy: childhelphotline.org/terms-of-service . For English, reply '1'. For any other language, please reply '2'."
+      childhelp_sms_language_message             = "Thank you for texting the National Child Abuse Hotline. For English, press 1. For Spanish, press 2. For any other language, please press 3."
       childhelp_sms_eng_language_message         = "By continuing, you agree to our terms of service. If you cannot access the terms of service, you can also access help by calling the hotline at 800-422-4453."
       childhelp_sms_other_message                = "Currently, our text messaging platform only works in English. For assistance in other languages, please call our hotline at 1-800-422-4453."
       childhelp_sms_prequeue_message             = "Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
       childhelp_sms_no_response_language_message = "We haven't heard back from you. This conversation will now time out due to inactivity. If you still need support, please reach out again. Crisis counselors are available 24/7. "
       childhelp_sms_failure_message              = "We are sorry, we had a technical issue. Please trying texting again or call 1-800-422-4453"
+      send_wait_sms_en_service_options                  = "If you have questions about resources or making a report please press 1. If you would like to speak to a crisis counselor, please press 2."
+      send_message_en_closing_conversation              = "We haven't heard back from you. This conversation will now time out due to inactivity. If you still need support, please reach out again. Crisis counselors are available 24/7. "
+      send_message_en_blocked                           = "We are unable to take your contact at this time. If this is an emergency please contact 911 or 988."
+      send_message_other_language                       = "Currently, our text messaging platform only works in English and Spanish. For assistance in other languages, please call our hotline at 1-800-422-4453."
+      send_message_es_no_counselors                     = "SP translation pending: There are no Spanish-speaking counselors currently available. Please call our hotline at 1-800-422-4453 for assistance. "
+      send_message_sms_en_childhelp_prequeue_failed_bot = "Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
+      send_wait_sms_es_childhelp_wait_for_counselor     = "Currently there are no Spanish-speaking counselors available. You may wait for the next available bilingual counselor or you can call call our hotline at 1-800-422-4453."
+      send_message_es_please_call                       = "There are no Spanish-speaking counselors currently available. Please call our hotline at 1-800-422-4453 for assistance. "
+      send_message_en_failure                           = "We are sorry, we are experiencing a technical issue. Please trying texting again or call 1-800-422-4453. If this is an emergency please contact 911 or 988."
+      send_message_sms_en_childhelp_prequeue            = "Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
+      send_message_sms_en_advocate_prequeue             = "Please note: A false report is a crime governed by federal and state laws, involving a person who, with intent to deceive, knowingly makes a false statement to a mandated reporter or law enforcement official that results in unwarranted government action. Childhelp's National Child Abuse Hotline is comprised of mandated reporters who will refer malicious or false reports to law enforcement for prosecution."
 
       #Common - Voice
       # Courage First -  Voice
@@ -79,7 +90,7 @@ locals {
         messaging_mode   = "conversations"
         channel_type     = "sms"
         contact_identity = "+14809999197"
-        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-childhelp-lex-sd.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usch/templates/studio-flows/sms-childhelp-lex-staging.tftpl"
         channel_flow_vars = {
 
         }
