@@ -39,7 +39,7 @@ import {
 } from '../../states/contacts/saveContact';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
-import { checkTaskAssignment } from '../../services/twilioTaskService';
+import { checkTaskAssignment, getTaskAndReservations } from '../../services/twilioTaskService';
 import { isOfflineContact } from '../../types/types';
 import { ConfirmDialog } from '../../design-system/modals/ConfirmDialog';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -115,8 +115,8 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
       },
     };
     try {
-      await asyncDispatcher(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact, removeTask));
       setFinalizeRequested(true);
+      await asyncDispatcher(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact, removeTask));
     } catch (error) {
       console.error('Failed to save and finalize contact:', error);
     }
@@ -145,7 +145,13 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
         if (isAssigned === true) {
           setIsFinalizeContactDialogOpen(true);
         } else {
-          await updateTaskAndFinalizeContact();
+          const taskResponse = await getTaskAndReservations(savedContact.taskId);
+          if (taskResponse?.task?.status === 'completed') {
+            setIsFinalizeContactDialogOpen(true);
+          } else {
+            // If the task isn't in an assigned state, trying to complete it is futile
+            setIsRemoveTaskDialogOpen(true);
+          }
         }
       } catch (error) {
         console.error('Failed handleSaveAndEnd:', error);
@@ -167,6 +173,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   const handleCancel = () => {
     setIsFinalizeContactDialogOpen(false);
     setIsRemoveTaskDialogOpen(false);
+    setFinalizeRequested(false);
   };
 
   return (
