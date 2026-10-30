@@ -1,0 +1,50 @@
+{
+  "name": "@tech-matters/form-builder",
+  "version": "0.1.0",
+  "description": "Web app for helpline staff to configure Aselo form definitions",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "preview": "vite preview",
+    "build:lambda": "esbuild server/lambda.ts --bundle --platform=node --target=node22 --format=esm --outfile=dist-lambda/index.mjs --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\""
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1157.0",
+    "@aws-sdk/client-ssm": "^3.1157.0",
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^8.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
+    "jszip": "^3.10.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tar": "^7.5.22",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
+    "@types/aws-lambda": "^8.10.164",
+    "@types/lodash": "^4.17.27",
+    "@types/node": "^20.14.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "jsdom": "^25.0.1",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0",
+    "vitest": "^2.0.5"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "tabWidth": 2,
+    "endOfLine": "auto"
+  }
+}
