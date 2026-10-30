@@ -27,6 +27,7 @@ import {
   fieldProblem,
   fieldShown,
   isNamedByParts,
+  splitInputsOf,
   lockedPrefixesOf,
   composePrefixed,
   prefixedName,
@@ -116,20 +117,23 @@ export type InspectorProps = {
   onBoardFlow?: (flow: FlowDetails) => void;
 };
 
-/**
- * A message's name as its parts: the prefix (set by its kind), then the flow's channel, language
- * and service (chosen; filled in when the flow has one), then what it is.
- */
 // Where each kind of suggestion comes from, for when there are none yet
 const SUGGESTIONS_FROM = {
   chatbots: 'chatbots in the Chatbots designer',
   queues: 'queues in its routing design',
   workflows: 'workflows in its routing design',
   skills: 'skills in its routing design',
+  splitInputs: 'flow memory, variables or chatbot flags on this board',
 } as const;
 
 // The values offered for a field, with what tells them apart (a bot's languages, a queue's name)
-const suggestionsFor = (source: ObjectField['suggestions'], choices?: HelplineChoices) => {
+const suggestionsFor = (
+  source: ObjectField['suggestions'],
+  choices: HelplineChoices | undefined,
+  // What a split can read here (splitInputsOf)
+  splitInputs: { value: string; detail: string }[],
+): { value: string; detail: string }[] => {
+  if (source === 'splitInputs') return splitInputs;
   if (!source || !choices) return [];
   if (source === 'chatbots') {
     return [...new Set(choices.chatbots.map((bot) => bot.name))].map((name) => ({
@@ -144,6 +148,10 @@ const suggestionsFor = (source: ObjectField['suggestions'], choices?: HelplineCh
   return choices[source].map(({ key, name }) => ({ value: key, detail: name === key ? '' : name }));
 };
 
+/**
+ * A message's name as its parts: the prefix (set by its kind), then the flow's channel, language
+ * and service (chosen; filled in when the flow has one), then what it is.
+ */
 const NamePartsEditor = ({
   name,
   prefix,
@@ -317,21 +325,33 @@ const PrefixedNameEditor = ({
  */
 const VariablesSection = ({
   variables = [],
+  flowMemory = false,
   readOnly,
   onChange,
 }: {
   variables?: FlowVariable[];
+  // Set flow memory's values: kept on the conversation, read from the trigger
+  flowMemory?: boolean;
   readOnly: boolean;
   onChange: (variables: FlowVariable[] | undefined) => void;
 }) => {
   const set = (index: number, changes: Partial<FlowVariable>) =>
     onChange(variables.map((variable, at) => (at === index ? { ...variable, ...changes } : variable)));
   return (
-    <section className="flow-inspector-section" aria-label="Variables">
-      <h3>Variables</h3>
+    <section className="flow-inspector-section" aria-label={flowMemory ? 'Flow memory' : 'Variables'}>
+      <h3>{flowMemory ? 'Values to keep' : 'Variables'}</h3>
       <p className="field-hint">
-        Read later as <code>{'{{flow.variables.<key>}}'}</code>. A value can use <code>{'{{…}}'}</code>, e.g.{' '}
-        <code>{'{{widgets.gather_input_voice_en_menu.Digits}}'}</code>.
+        {flowMemory ? (
+          <>
+            Kept on the conversation, also after a chatbot hands it back (a new execution). Read as{' '}
+            <code>{'{{trigger.conversation.ChannelAttributes.flowMemory.<key>}}'}</code>, e.g. in a Decision.
+          </>
+        ) : (
+          <>
+            Read later as <code>{'{{flow.variables.<key>}}'}</code>.
+          </>
+        )}{' '}
+        A value can use <code>{'{{…}}'}</code>, e.g. <code>{'{{widgets.gather_input_voice_en_menu.Digits}}'}</code>.
       </p>
       {variables.map((variable, index) => (
         <div key={index} className="flow-variable-row">
@@ -646,6 +666,8 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
     props.content.objects.filter((candidate) => candidate.frameId === node.parentId),
   );
   const suggested = suggestStudioName(object, details, choices);
+  // What a split can read: the flow memory, variables and chatbot flags set on this board
+  const splitInputs = splitInputsOf(props.content.objects);
   const recordingList = props.recordings.list?.recordings;
   // Renamed, a message keeps playing its recording until the file is copied to the new name
   const rename = (studioName: string | undefined) =>
@@ -866,7 +888,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
 
       {info.fields && (
         <section className="flow-inspector-section">
-          <h3>Call settings</h3>
+          <h3>{info.studioRoute || object.type === 'function' ? 'Call settings' : 'Settings'}</h3>
           {info.studioRoute && (
             <p className="field-hint">
               Calls <code>{info.studioRoute}</code> (see STUDIO_ROUTES.md in the account-scoped lambdas).
@@ -881,7 +903,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
             .filter((field) => fieldShown(field, object.settings))
             .map((field) => {
               const value = object.settings?.[field.key] ?? '';
-              const suggestions = suggestionsFor(field.suggestions, props.helplineChoices);
+              const suggestions = suggestionsFor(field.suggestions, props.helplineChoices, splitInputs);
               // Skills are a comma-separated list: they're added to it, not chosen instead of it
               const listed = value.split(',').map((item) => item.trim());
               const set = (newValue: string) => {
@@ -980,9 +1002,10 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
         <RecordingSection object={object} frame={details} actions={props.recordings} title="Wait music" />
       )}
 
-      {object.type === 'setVariable' && (
+      {(object.type === 'setVariable' || object.type === 'setFlowMemory') && (
         <VariablesSection
           variables={object.variables}
+          flowMemory={object.type === 'setFlowMemory'}
           readOnly={readOnly}
           onChange={(variables) => update({ variables })}
         />

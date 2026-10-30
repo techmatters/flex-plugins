@@ -156,7 +156,12 @@ describe('the board check', () => {
       objects: [
         named('in', 'incoming', 'voice', { text: 'Call' }),
         named('down', 'systemDown', 'voice', { text: 'System down', studioName: 'run_subflow_system_down' }),
-        named('lang', 'decision', 'voice', { text: 'Is English?', studioName: 'split_language', exits: ['Yes', 'No'] }),
+        named('lang', 'decision', 'voice', {
+          text: 'Is English?',
+          studioName: 'split_language',
+          exits: ['Yes', 'No'],
+          settings: { input: '{{flow.variables.language}}' },
+        }),
         named('bye', 'playMessage', 'voice', {
           text: 'Goodbye',
           studioName: 'play_message_voice_en_goodbye',
@@ -184,6 +189,7 @@ describe('the board check', () => {
         named('optIn', 'decision', 'voice', {
           text: 'Opt in',
           studioName: 'split_opt_in',
+          settings: { input: '{{widgets.gather_input_voice_opt_in.Digits}}' },
           exits: ['1', 'speech'],
           endedExits: ['1'],
         }),
@@ -210,6 +216,7 @@ describe('the board check', () => {
         named('a', 'decision', undefined, {
           text: 'A',
           studioName: 'split_a',
+          settings: { input: '{{flow.variables.a}}' },
           exits: ['Yes', 'No'],
           endedExits: ['No'],
         }),

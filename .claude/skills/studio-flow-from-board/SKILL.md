@@ -93,7 +93,7 @@ are none.
 
 | TODO | Where to find it |
 |---|---|
-| A split's input and conditions | What the design says (the decision's text and its ways out), and the widget before it (e.g. `{{widgets.<name>.parsed.<field>}}`, `{{trigger.call.From}}`) |
+| A split's input and conditions | The board's "Splits on" when set; otherwise what the design says (the decision's text and its ways out), and the widget before it (e.g. `{{widgets.<name>.parsed.<field>}}`, `{{trigger.call.From}}`) |
 | A route's request body / response field | `lambdas/account-scoped/STUDIO_ROUTES.md` for that route |
 | Send to queue: workflow, task channel | Set on the board when chosen; otherwise the helpline's other templates and `common.hcl`: `${workflow_sids.<key>}`, `${task_channel_sids.<channel>}` (attributes: step 4b). When the board names the queue it should end up in, check the workflow's rules (and the task attributes) send it there |
 | A subflow's `flow_sid` | `${system_down_studio_subflow_sid}`, or the variable the helpline's other templates use |
@@ -124,6 +124,21 @@ Kinds that become more than one widget, as the board writes them:
 - **Chatbot**: a `make-http-request` to `${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot`,
   named `f_captureChannelWithBot_<bot>`, its body from the board's settings. If the chatbot is
   new, it's built with the chatbot-from-design skill.
+- **Set flow memory**: a `make-http-request` to `${lambda_twilio_account_scoped_url}/conversation/setFlowMemory`,
+  named `f_setFlowMemory_<what>`, body `{"conversationSid": "{{flow.channel.address}}", "flowMemory":
+  {<key>: <value>, ...}}` from the board's values (STUDIO_ROUTES.md). Values are kept on the
+  conversation: use it for anything a later execution needs, e.g. before a chatbot hands the
+  conversation back (`releaseType: triggerStudioFlow` starts a new execution, and `flow.variables`
+  are gone). Later executions read `{{trigger.conversation.ChannelAttributes.flowMemory.<key>}}`;
+  don't use `flowMemory` as a chatbot's `memoryAttribute`. The execution that sets it still has the
+  trigger it started with: it reads `{{widgets.<f_setFlowMemory_...>.parsed.flowMemory.<key>}}`.
+  Each call adds to what's kept (a key set again takes the new value).
+- **Release from chatbot**: a `make-http-request` to
+  `${lambda_twilio_account_scoped_url}/channelCapture/chatbotCallbackCleanup`, body
+  `{"channelSid": "{{flow.channel.address}}"}`; usually on `captureChannelWithBot`'s `failed`.
+- **Decision**: its `input` is the board's "Splits on" when set (each way out but `noMatch` is an
+  `equal_to` condition on it). After a chatbot, the usual first split reads its release flag
+  (`{{trigger.conversation.ChannelAttributes.<releaseFlag>}}` equal to `true`).
 
 When a template already has a widget like the one needed, copy its settings. Ask the person about
 anything you can't find; don't guess.

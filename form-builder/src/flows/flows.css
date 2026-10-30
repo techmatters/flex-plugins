@@ -141,7 +141,12 @@
   padding: 1px 8px;
 }
 
+/* As wide whatever it says ("Saving…", "All changes saved"), so the toolbar and the board below
+   don't move with every save */
 .flow-save-state {
+  display: inline-block;
+  min-width: 9.5em;
+  white-space: nowrap;
   font-size: 13px;
   color: var(--color-muted);
 }

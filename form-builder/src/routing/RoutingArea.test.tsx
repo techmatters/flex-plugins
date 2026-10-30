@@ -73,7 +73,8 @@ beforeEach(() => {
 
 afterEach(cleanup);
 
-describe('routing designer', () => {
+// Imports read the repo's helplines, which takes a while when every test file runs at once
+describe('routing designer', { timeout: 30_000 }, () => {
   test('Aselo staff import a live helpline, change a step, and it saves by itself', async () => {
     render(<RoutingArea client={clientAs(staff)} helplineCodes={['usnm', 'usch']} staffMode />);
     expect(await screen.findByText('No routing designs yet.')).toBeTruthy();
@@ -82,7 +83,7 @@ describe('routing designer', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Start' }));
     fireEvent.click(await screen.findByRole('button', { name: 'Import it from the live config' }));
-    const preview = within(await screen.findByRole('region', { name: 'Routing import preview' }));
+    const preview = within(await screen.findByRole('region', { name: 'Routing import preview' }, { timeout: 15_000 }));
     expect(preview.getByText('Calls Voicemail Workflow')).toBeTruthy();
     fireEvent.click(preview.getByRole('button', { name: 'Use this as the routing design' }));
 

@@ -21,9 +21,11 @@
 import {
   BellRing,
   Bot,
+  BotOff,
   Braces,
   CircleStop,
   ClipboardList,
+  DatabaseZap,
   Clock,
   ExternalLink,
   GitBranch,
@@ -56,9 +58,11 @@ import type { Shape } from './model';
 export const ICONS: Record<string, LucideIcon> = {
   BellRing,
   Bot,
+  BotOff,
   Braces,
   CircleStop,
   ClipboardList,
+  DatabaseZap,
   Clock,
   ExternalLink,
   GitBranch,

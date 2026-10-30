@@ -383,9 +383,11 @@ export type FlowObjectType =
   | 'questionMessaging'
   | 'recordVoicemail'
   | 'chatbot'
+  | 'chatbotCleanup'
   | 'preSurvey'
   | 'sendToQueue'
   | 'setVariable'
+  | 'setFlowMemory'
   | 'repeat'
   | 'forwardCall'
   | 'notifyError'
@@ -464,7 +466,8 @@ export type ObjectField = {
   kind?: 'text' | 'url' | 'json' | 'number';
   // Values offered as it's typed (any other can still be typed): the helpline's chatbots, or its
   // queues, workflows and skills in its routing design (skills are added to the comma-separated list)
-  suggestions?: 'chatbots' | 'queues' | 'workflows' | 'skills';
+  // ...or what a split can read in this flow (flow memory, flow variables, chatbot flags)
+  suggestions?: 'chatbots' | 'queues' | 'workflows' | 'skills' | 'splitInputs';
   // How a choice (options) is shown, when not as it's written
   optionLabels?: Record<string, string>;
   // Only shown (and used) when another of its settings has one of these values
@@ -682,6 +685,16 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     family: 'decision',
     studioWidget: 'Split Based On',
     studioPrefix: 'split_',
+    // What it splits on; each way out (but noMatch) is a value it's equal to
+    fields: [
+      {
+        key: 'input',
+        label: 'Splits on',
+        placeholder: '{{trigger.conversation.ChannelAttributes.flowMemory.entryPoint}}',
+        suggestions: 'splitInputs',
+        hint: 'Choose what this flow keeps (flow memory, variables, a chatbot finishing), or type any {{...}}. Each way out but noMatch is a value it’s equal to.',
+      },
+    ],
     editableExits: true,
     exits: ['Yes', 'No', 'noMatch'],
     defaultSize: { width: 190, height: 110 },
@@ -732,6 +745,15 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     studioWidget: 'Send and Wait for Reply',
     studioPrefix: 'send_wait_',
     hasMessage: true,
+    fields: [
+      {
+        key: 'timeout',
+        label: 'Timeout (seconds)',
+        kind: 'number',
+        placeholder: '3600',
+        hint: 'How long it waits for the reply before taking “timeout”. 3600 (an hour) when not set.',
+      },
+    ],
     exits: ['reply', 'timeout'],
     defaultSize: { width: 220, height: 80 },
   },
@@ -835,6 +857,21 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     ],
     exits: ['success', 'failed'],
     defaultSize: { width: 200, height: 72 },
+  },
+  // channelCapture/chatbotCallbackCleanup: takes the conversation back from a chatbot (ends its
+  // session, removes its webhook and releases it as the bot would), e.g. when starting it failed
+  chatbotCleanup: {
+    label: 'Release from chatbot',
+    group: 'Checks and calls',
+    shape: 'predefined',
+    icon: 'BotOff',
+    family: 'chatbot',
+    studioWidget: 'HTTP Request (chatbotCallbackCleanup)',
+    studioPrefix: 'f_',
+    studioRoute: 'channelCapture/chatbotCallbackCleanup',
+    nameSuffixFromText: true,
+    exits: ['success', 'failed'],
+    defaultSize: { width: 190, height: 72 },
   },
   preSurvey: {
     label: 'Pre-survey form',
@@ -946,6 +983,22 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     studioWidget: 'Set Variables',
     studioPrefix: 'set_var_',
     defaultSize: { width: 170, height: 56 },
+  },
+  // conversation/setFlowMemory: values kept on the conversation (its flowMemory attribute), for the
+  // flow's later executions too, e.g. after a chatbot hands the conversation back. Its values are
+  // the object's variables
+  setFlowMemory: {
+    label: 'Set flow memory',
+    group: 'Other',
+    shape: 'rectangle',
+    icon: 'DatabaseZap',
+    family: 'neutral',
+    studioWidget: 'HTTP Request (setFlowMemory)',
+    studioPrefix: 'f_',
+    studioRoute: 'conversation/setFlowMemory',
+    nameSuffixFromText: true,
+    exits: ['success', 'failed'],
+    defaultSize: { width: 190, height: 64 },
   },
   // A counter (Set Variables) and a Split on it: goes back round until it has repeated enough
   repeat: {
@@ -1369,4 +1422,45 @@ export const standardPrefixedName = (
   while (words.length > 1 && prefixWords.includes(words[0].toLowerCase())) words.shift();
   const rest = prefix.startsWith('f_') ? words.join('_') : toSnake(words.join('_'));
   return composePrefixed({ postqueue, prefix, rest });
+};
+
+// Where Studio reads what a flow keeps: flow memory on the conversation, and Set variable's
+export const FLOW_MEMORY_REFERENCE = '{{trigger.conversation.ChannelAttributes.flowMemory.';
+
+/**
+ * What a split can read in this flow, offered in its settings: the flow memory's keys (kept across
+ * executions), the flow variables set (this execution), Repeat counters and chatbots' release
+ * flags. Each with what it is.
+ */
+export const splitInputsOf = (objects: Pick<FlowObject, 'type' | 'variables' | 'studioName' | 'settings'>[]) => {
+  const inputs = new Map<string, string>();
+  objects.forEach((object) => {
+    (object.variables ?? []).forEach(({ key }) => {
+      if (!key) return;
+      if (object.type === 'setFlowMemory') {
+        inputs.set(`${FLOW_MEMORY_REFERENCE}${key}}}`, `flow memory: ${key} (kept after a chatbot)`);
+        // In the same execution, the trigger still has the attributes it started with: the widget's answer has them
+        if (object.studioName) {
+          inputs.set(
+            `{{widgets.${object.studioName}.parsed.flowMemory.${key}}}`,
+            `flow memory: ${key} (this execution, after ${object.studioName})`,
+          );
+        }
+      } else if (object.type === 'setVariable') {
+        inputs.set(`{{flow.variables.${key}}}`, `flow variable: ${key} (this execution)`);
+      }
+    });
+    if (object.type === 'repeat' && object.studioName) {
+      const { counter } = repeatWidgetNames(object.studioName);
+      inputs.set(`{{flow.variables.${counter}}}`, `times round ${object.studioName}`);
+    }
+    if (object.type === 'chatbot' && object.settings?.releaseFlag) {
+      const flag = object.settings.releaseFlag;
+      inputs.set(
+        `{{trigger.conversation.ChannelAttributes.${flag}}}`,
+        `${object.settings.botSuffix ?? 'chatbot'} finished (true)`,
+      );
+    }
+  });
+  return [...inputs.entries()].map(([value, detail]) => ({ value, detail }));
 };

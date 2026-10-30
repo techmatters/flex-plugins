@@ -30,6 +30,7 @@ import {
   lockedPrefixesOf,
   prefixedName,
   repeatWidgetNames,
+  splitInputsOf,
   standardPrefixedName,
   suggestStudioName,
   upgradeContent,
@@ -450,6 +451,133 @@ describe('menus, repeats and chatbots', () => {
       'postqueue_split_splitlanguage',
     );
     expect(standardPrefixedName({ type: 'setVariable', studioName: 'set_var_ok' })).toBeUndefined();
+  });
+
+  test('flow memory: kept by Set flow memory (setFlowMemory), read by a Decision after a chatbot', () => {
+    const keep = object('Entry point', 'setFlowMemory', {
+      studioName: 'f_setFlowMemory_entry_point',
+      variables: [
+        { key: 'entryPoint', value: 'sms_redirect' },
+        { key: 'menuChoice', value: '{{widgets.send_wait_sms_en_menu.inbound.Body}}' },
+      ],
+    });
+    expect(suggestStudioName(keep)).toBe('f_setFlowMemory_entry_point');
+    const bot = object('Pre-survey', 'chatbot', {
+      studioName: 'f_captureChannelWithBot_pre_survey',
+      settings: { botSuffix: 'pre_survey', releaseFlag: 'preSurveyComplete' },
+    });
+    const split = object('Came from', 'decision', {
+      studioName: 'split_entry_point',
+      exits: ['sms_redirect', 'noMatch'],
+      settings: { input: '{{trigger.conversation.ChannelAttributes.flowMemory.entryPoint}}' },
+    });
+    const content = board('webchat', [keep, bot, split], []);
+
+    // What a split can read here, each with what it is
+    expect(splitInputsOf(content.objects)).toEqual([
+      {
+        value: '{{trigger.conversation.ChannelAttributes.flowMemory.entryPoint}}',
+        detail: 'flow memory: entryPoint (kept after a chatbot)',
+      },
+      // In the same execution, from the widget's answer (the trigger has the attributes it started with)
+      {
+        value: '{{widgets.f_setFlowMemory_entry_point.parsed.flowMemory.entryPoint}}',
+        detail: 'flow memory: entryPoint (this execution, after f_setFlowMemory_entry_point)',
+      },
+      {
+        value: '{{trigger.conversation.ChannelAttributes.flowMemory.menuChoice}}',
+        detail: 'flow memory: menuChoice (kept after a chatbot)',
+      },
+      {
+        value: '{{widgets.f_setFlowMemory_entry_point.parsed.flowMemory.menuChoice}}',
+        detail: 'flow memory: menuChoice (this execution, after f_setFlowMemory_entry_point)',
+      },
+      { value: '{{trigger.conversation.ChannelAttributes.preSurveyComplete}}', detail: 'pre_survey finished (true)' },
+    ]);
+
+    const { flow, todo } = toStudioFlow(content, content.frames[0]);
+    const state = (name: string) => flow.states.find((candidate) => candidate.name === name)!;
+    expect(state('f_setFlowMemory_entry_point').properties).toMatchObject({
+      url: '${lambda_twilio_account_scoped_url}/conversation/setFlowMemory',
+    });
+    expect(JSON.parse(String(state('f_setFlowMemory_entry_point').properties.body))).toEqual({
+      conversationSid: '{{flow.channel.address}}',
+      flowMemory: { entryPoint: 'sms_redirect', menuChoice: '{{widgets.send_wait_sms_en_menu.inbound.Body}}' },
+    });
+    expect(state('split_entry_point')).toMatchObject({
+      properties: { input: '{{trigger.conversation.ChannelAttributes.flowMemory.entryPoint}}' },
+      transitions: [
+        { event: 'noMatch' },
+        {
+          event: 'match',
+          conditions: [
+            {
+              type: 'equal_to',
+              value: 'sms_redirect',
+              arguments: ['{{trigger.conversation.ChannelAttributes.flowMemory.entryPoint}}'],
+            },
+          ],
+        },
+      ],
+    });
+    expect(todo.join('\n')).not.toMatch(/set what it splits on/);
+    // Nothing chosen: pointed out
+    const unset = { ...content, objects: [{ ...split, settings: undefined }] };
+    expect(boardChecks(unset).map((issue) => issue.message)).toContainEqual(
+      expect.stringContaining('choose what it splits on'),
+    );
+  });
+
+  test('imported splits keep what they split on; changed, their conditions read the new input too', async () => {
+    const { boards } = await importHelpline(helplinesDir, 'usnm');
+    const voice = boards.find(({ content: theirs }) =>
+      theirs.objects.some((candidate) => candidate.studioName === 'split_end_cycle_en_no_tya_service'),
+    )!.content;
+    const split = voice.objects.find((candidate) => candidate.studioName === 'split_end_cycle_en_no_tya_service')!;
+    expect(split.settings?.input).toBe('{{flow.variables.en_no_tya_service_counter}}');
+    const changed = {
+      ...voice,
+      objects: voice.objects.map((candidate) =>
+        candidate.id === split.id ? { ...candidate, settings: { input: '{{flow.variables.tries}}' } } : candidate,
+      ),
+    };
+    const state = toStudioFlow(changed).flow.states.find(
+      (candidate) => candidate.name === 'split_end_cycle_en_no_tya_service',
+    )!;
+    expect(state.properties.input).toBe('{{flow.variables.tries}}');
+    expect(JSON.stringify(state.transitions)).not.toContain('en_no_tya_service_counter');
+    // The board's own object isn't changed by generating its flow
+    expect(JSON.stringify(split.studio?.transitions)).toContain('en_no_tya_service_counter');
+  });
+
+  test('send and wait: its timeout; release from chatbot: only the conversation', async () => {
+    const question = object('Menu', 'questionMessaging', {
+      studioName: 'send_wait_sms_en_menu',
+      message: { channel: 'sms', script: 'Reply 1 or 2' },
+      settings: { timeout: '180' },
+    });
+    const cleanup = object('Release', 'chatbotCleanup', { studioName: 'f_chatbotCallbackCleanup' });
+    const content = board('webchat', [question, cleanup], []);
+    const { flow } = toStudioFlow(content, content.frames[0]);
+    expect(flow.states[0].properties.timeout).toBe('180');
+    expect(flow.states[1].properties).toMatchObject({
+      url: '${lambda_twilio_account_scoped_url}/channelCapture/chatbotCallbackCleanup',
+    });
+    expect(JSON.parse(String(flow.states[1].properties.body))).toEqual({ channelSid: '{{flow.channel.address}}' });
+    expect(exitsOf(cleanup)).toEqual(['success', 'failed']);
+
+    // Imported: usnm's questions keep their timeout, and every helpline's cleanups are recognised
+    const { boards } = await importHelpline(helplinesDir, 'usnm');
+    const imported = boards.flatMap(({ content: theirs }) => theirs.objects);
+    expect(
+      imported.filter((candidate) => candidate.type === 'questionMessaging').every((q) => q.settings?.timeout),
+    ).toBe(true);
+    const mt = await importHelpline(helplinesDir, 'mt');
+    expect(
+      mt.boards
+        .flatMap(({ content: theirs }) => theirs.objects)
+        .some((candidate) => candidate.type === 'chatbotCleanup'),
+    ).toBe(true);
   });
 
   test('imported captureChannelWithBot requests are chatbots, their settings as written (variables kept)', async () => {

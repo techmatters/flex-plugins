@@ -276,8 +276,17 @@ export const boardChecks = (
       add({ severity: 'warning', message: `${name} has no address (URL) to call yet.`, objectId }, 'noUrl');
     }
     // What a Set variable sets: something, with keys Studio takes
-    if (object.type === 'setVariable' && !object.studio && !object.variables?.some((variable) => variable.key)) {
-      add({ severity: 'warning', message: `${name}: add the variables it sets.`, objectId }, 'noVariables');
+    if (
+      (object.type === 'setVariable' || object.type === 'setFlowMemory') &&
+      !object.studio &&
+      !object.variables?.some((variable) => variable.key)
+    ) {
+      const what = object.type === 'setFlowMemory' ? 'the values it keeps' : 'the variables it sets';
+      add({ severity: 'warning', message: `${name}: add ${what}.`, objectId }, 'noVariables');
+    }
+    // A new split: what it splits on (imported ones have theirs)
+    if ((object.type === 'decision' || object.type === 'checkCountry') && !object.studio && !object.settings?.input) {
+      add({ severity: 'warning', message: `${name}: choose what it splits on.`, objectId }, 'noInput');
     }
     (object.variables ?? []).forEach((variable, index) => {
       const problem = variable.key ? variableKeyProblem(variable.key) : 'It has no name (key) yet.';

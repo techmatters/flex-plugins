@@ -261,6 +261,8 @@ const typeOf = (widget: HclObject): FlowObjectType | undefined => {
       if (/isSkilledWorkerAvailable/.test(target)) return 'checkQueueAvailability';
       if (/isSkilledWorker(LoggedIn|Online)/.test(target)) return 'checkWorkerLoggedIn';
       if (/captureChannelWithBot/.test(target)) return 'chatbot';
+      if (/setFlowMemory/.test(target)) return 'setFlowMemory';
+      if (/chatbotCallbackCleanup/.test(target)) return 'chatbotCleanup';
       // The lambda's route, or the Serverless function (its sid in a flow_vars like send_message_janitor_function_sid)
       if (/sendMessageAndRunJanitor|send_message_(run_)?janitor/i.test(target)) return 'sendMessageAndClose';
       return 'function';
@@ -716,6 +718,23 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         }
       }
 
+      // Set flow memory: the values it keeps (its body's flowMemory)
+      if (type === 'setFlowMemory') {
+        try {
+          const flowMemory = JSON.parse(textOf(properties.body) ?? '{}').flowMemory ?? {};
+          object.variables = Object.entries(flowMemory).map(([key, value]) => ({
+            key,
+            value: typeof value === 'string' ? value : JSON.stringify(value),
+          }));
+        } catch {
+          // A body that isn't JSON: its values stay in the widget's properties
+        }
+      }
+      // A split: what it splits on
+      if ((type === 'decision' || type === 'checkCountry') && typeof properties.input === 'string') {
+        object.settings = { input: properties.input };
+      }
+
       // Set variable: what it sets
       if (type === 'setVariable' && Array.isArray(properties.variables)) {
         object.variables = properties.variables.filter(isObject).map((variable) => ({
@@ -757,6 +776,10 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
           );
           if (Object.keys(settings).length > 0) object.settings = settings;
         }
+      } else if (type === 'questionMessaging') {
+        // How long it waits for the reply
+        const timeout = properties.timeout;
+        if (typeof timeout === 'string' || typeof timeout === 'number') object.settings = { timeout: String(timeout) };
       } else if (type === 'sendMessageAndClose') {
         // Who it's from, and legacy Programmable Chat (channelSid without conversationSid)
         const values = janitorValuesOf(properties);

@@ -304,6 +304,8 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
     if (object.studio) {
       const { studio } = object;
       const properties: Record<string, unknown> = { ...studio.properties, offset };
+      // Its transitions as live (a split whose input changed reads the new one in its conditions)
+      let liveTransitions = studio.transitions;
       if (object.studioName && object.studioName !== studio.name) {
         todo.push(
           `${label(object)} was ${studio.name} in Studio: renaming a live widget also means its recording file and any monitoring that uses the name.`,
@@ -356,6 +358,49 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         });
         if (object.settings?.timeout && properties.timeout !== object.settings.timeout) {
           properties.timeout = object.settings.timeout;
+        }
+      } else if (
+        (object.type === 'decision' || object.type === 'checkCountry') &&
+        object.settings?.input !== undefined &&
+        object.settings.input !== properties.input
+      ) {
+        // What it splits on, changed on the board: its conditions read the new one too
+        const previous = properties.input;
+        properties.input = object.settings.input;
+        liveTransitions = studio.transitions?.map((transition) =>
+          Array.isArray(transition.conditions)
+            ? {
+                ...transition,
+                conditions: transition.conditions.map((condition: Record<string, unknown>) =>
+                  Array.isArray(condition.arguments)
+                    ? {
+                        ...condition,
+                        arguments: condition.arguments.map((argument) =>
+                          argument === previous ? object.settings!.input : argument,
+                        ),
+                      }
+                    : condition,
+                ),
+              }
+            : transition,
+        );
+      } else if (object.type === 'questionMessaging') {
+        // How long it waits, where changed on the board
+        if (object.settings?.timeout && String(properties.timeout) !== object.settings.timeout) {
+          properties.timeout = object.settings.timeout;
+        }
+      } else if (object.type === 'setFlowMemory' && object.variables && typeof properties.body === 'string') {
+        // The values it keeps, where changed on the board
+        try {
+          const body = JSON.parse(properties.body);
+          const values = Object.fromEntries(
+            object.variables.filter(({ key }) => key).map(({ key, value }) => [key, value]),
+          );
+          if (JSON.stringify(body.flowMemory ?? {}) !== JSON.stringify(values)) {
+            properties.body = JSON.stringify({ ...body, flowMemory: values }, null, 2);
+          }
+        } catch {
+          todo.push(`${label(object)}: its request body isn't JSON; set its flowMemory by hand.`);
         }
       } else if (object.type === 'setVariable' && object.variables && Array.isArray(properties.variables)) {
         // What it sets, where changed on the board (each keeps its type as written)
@@ -417,7 +462,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       if (!studio.transitions) {
         todo.push('This board was imported before the import kept what Studio needs: import the helpline again.');
       }
-      const original = studio.transitions ?? [];
+      const original = liveTransitions ?? [];
       const transitions = original.map((transition, index) => {
         const { next, ...rest } = transition;
         const exit = studio.type === 'trigger' ? String(transition.event) : exits[index];
@@ -528,7 +573,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
               channel: '{{trigger.message.ChannelSid}}',
               from: '{{flow.channel.address}}',
               body: fromFlowVars(),
-              timeout: '3600',
+              timeout: object.settings?.timeout || '3600',
             },
           },
         ];
@@ -656,8 +701,14 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         ];
       }
       case 'decision':
-      case 'checkCountry':
-        todo.push(`${label(object)}: set what it splits on (its input) and its conditions.`);
+      case 'checkCountry': {
+        // What it splits on, as chosen on the board; each way out is a value it's equal to
+        const input = object.settings?.input?.trim() || TODO;
+        todo.push(
+          input === TODO
+            ? `${label(object)}: set what it splits on (its input) and its conditions.`
+            : `${label(object)}: check its conditions (each way out is a value ${input} is equal to).`,
+        );
         return [
           {
             name,
@@ -667,12 +718,58 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
               ...exits
                 .filter((exit) => exit !== 'noMatch')
                 .map((exit) =>
-                  withNext({ event: 'match', conditions: [condition(TODO, 'equal_to', exit, exit)] }, next(exit)),
+                  withNext(
+                    { event: 'match', conditions: [condition(input, 'equal_to', exit, `If value equal_to ${exit}`)] },
+                    next(exit),
+                  ),
                 ),
             ],
-            properties: { input: TODO, offset },
+            properties: { input, offset },
           },
         ];
+      }
+      case 'chatbotCleanup':
+        // Only the conversation: the rest is in what the bot's capture kept on it
+        return [
+          {
+            name,
+            type: 'make-http-request',
+            transitions: [
+              withNext({ event: 'success' }, next('success')),
+              withNext({ event: 'failed' }, next('failed')),
+            ],
+            properties: {
+              offset,
+              ...httpRequest(
+                `${ACCOUNT_SCOPED}/${OBJECT_TYPES.chatbotCleanup.studioRoute}`,
+                JSON.stringify({ channelSid: '{{flow.channel.address}}' }, null, 2),
+              ),
+            },
+          },
+        ];
+      case 'setFlowMemory': {
+        const values = Object.fromEntries(
+          (object.variables ?? []).filter(({ key }) => key).map(({ key, value }) => [key, value]),
+        );
+        if (Object.keys(values).length === 0) todo.push(`${label(object)}: set the values it keeps.`);
+        return [
+          {
+            name,
+            type: 'make-http-request',
+            transitions: [
+              withNext({ event: 'success' }, next('success')),
+              withNext({ event: 'failed' }, next('failed')),
+            ],
+            properties: {
+              offset,
+              ...httpRequest(
+                `${ACCOUNT_SCOPED}/${OBJECT_TYPES.setFlowMemory.studioRoute}`,
+                JSON.stringify({ conversationSid: '{{flow.channel.address}}', flowMemory: values }, null, 2),
+              ),
+            },
+          },
+        ];
+      }
       case 'checkQueueAvailability':
       case 'checkWorkerLoggedIn': {
         const result =
