@@ -17,27 +17,34 @@
 /* eslint-disable no-console */
 import { URLSearchParams } from 'url';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
-import { SSMClient } from '@aws-sdk/client-ssm';
-import {
-  HelplineAccount,
-  HelplineAccounts,
-  loadHelplineAccounts,
-} from './helplineAccounts';
+import { getCachedParameters, loadSsmCache } from '@tech-matters/ssm-cache';
+
+type HelplineAccount = {
+  accountSid: string;
+  environment: string; // e.g. 'production', 'staging', 'development'
+  shortHelpline: string; // e.g. 'AS', 'EUMC'
+};
 
 const PRODUCTION = 'production';
-const HELPLINE_ACCOUNTS_CACHE_DURATION_MILLISECONDS = 60 * 60 * 1000;
 
-const ssm = new SSMClient({});
-let helplineAccountsCache: { accounts: HelplineAccounts; expiryDate: Date } | undefined;
+// Parameters are named /<environment>/twilio/<account sid>/short_helpline
+const SHORT_HELPLINE_PARAMETER_NAME = /^\/([^/]+)\/twilio\/(AC[^/]+)\/short_helpline$/;
 
-const getHelplineAccounts = async (): Promise<HelplineAccounts> => {
-  if (!helplineAccountsCache || new Date() > helplineAccountsCache.expiryDate) {
-    helplineAccountsCache = {
-      accounts: await loadHelplineAccounts(ssm),
-      expiryDate: new Date(Date.now() + HELPLINE_ACCOUNTS_CACHE_DURATION_MILLISECONDS),
-    };
-  }
-  return helplineAccountsCache.accounts;
+const toHelplineAccount = ([name, shortHelpline]: [string, string]): HelplineAccount => {
+  const [, environment, accountSid] = name.match(SHORT_HELPLINE_PARAMETER_NAME) ?? [];
+  return { accountSid, environment, shortHelpline: shortHelpline.toUpperCase() };
+};
+
+const getHelplineAccount = async (
+  accountSid: string,
+): Promise<HelplineAccount | undefined> => {
+  await loadSsmCache({
+    configs: [{ nameContains: '/short_helpline', regex: SHORT_HELPLINE_PARAMETER_NAME }],
+  });
+
+  return Object.entries(getCachedParameters(SHORT_HELPLINE_PARAMETER_NAME))
+    .map(toHelplineAccount)
+    .find(account => account.accountSid === accountSid);
 };
 
 type DebuggerEvent = {
@@ -173,8 +180,8 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
 
   const payloadObject: DebuggerPayload = JSON.parse(Payload);
 
-  const helplineAccounts = await getHelplineAccounts();
-  log(AccountSid, helplineAccounts[AccountSid], Level, payloadObject);
+  const helplineAccount = await getHelplineAccount(AccountSid);
+  log(AccountSid, helplineAccount, Level, payloadObject);
 
   return {
     statusCode: 200,
