@@ -716,6 +716,14 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         }
       }
 
+      // Set variable: what it sets
+      if (type === 'setVariable' && Array.isArray(properties.variables)) {
+        object.variables = properties.variables.filter(isObject).map((variable) => ({
+          key: textOf(variable.key) ?? '',
+          value: textOf(variable.value) ?? '',
+        }));
+      }
+
       if (type === 'sendToQueue') {
         const taskAttributes = taskAttributesOf(name, properties.attributes);
         if (taskAttributes) object.taskAttributes = taskAttributes;

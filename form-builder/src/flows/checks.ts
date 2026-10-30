@@ -28,6 +28,7 @@ import {
   namingChoicesOf,
   OBJECT_TYPES,
   standardStudioName,
+  variableKeyProblem,
   variesByVariant,
 } from './model';
 import type { Recording } from './recordings';
@@ -274,6 +275,23 @@ export const boardChecks = (
     if (object.type === 'function' && !object.studio && !object.settings?.url?.trim()) {
       add({ severity: 'warning', message: `${name} has no address (URL) to call yet.`, objectId }, 'noUrl');
     }
+    // What a Set variable sets: something, with keys Studio takes
+    if (object.type === 'setVariable' && !object.studio && !object.variables?.some((variable) => variable.key)) {
+      add({ severity: 'warning', message: `${name}: add the variables it sets.`, objectId }, 'noVariables');
+    }
+    (object.variables ?? []).forEach((variable, index) => {
+      const problem = variable.key ? variableKeyProblem(variable.key) : 'It has no name (key) yet.';
+      if (problem) {
+        add(
+          {
+            severity: variable.key ? 'error' : 'warning',
+            message: `${name}: variable ${index + 1}: ${problem}`,
+            objectId,
+          },
+          `variable-${index}`,
+        );
+      }
+    });
     if (object.type === 'repeat' && !object.settings?.maxRepeats?.trim()) {
       add({ severity: 'warning', message: `${name}: set how many times it repeats.`, objectId }, 'noCounter');
     }

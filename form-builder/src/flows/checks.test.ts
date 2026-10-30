@@ -237,7 +237,11 @@ describe('the board check', () => {
           taskAttributes: standardTaskAttributes('voice'),
         }),
         named('sorry', 'end', undefined, { text: 'End' }),
-        named('wait', 'setVariable', undefined, { text: 'Wait', studioName: 'set_var_wait' }),
+        named('wait', 'setVariable', undefined, {
+          text: 'Wait',
+          studioName: 'set_var_wait',
+          variables: [{ key: 'waited', value: 'true' }],
+        }),
       ],
       connections: [connect('in', 'q'), connect('q', 'wait', 'callComplete'), connect('q', 'sorry', 'failedToEnqueue')],
     };
@@ -279,7 +283,12 @@ describe('the board check', () => {
           message: { channel: 'voice', script: 'Press 1' },
         }),
         named('again', 'playMessage', 'f1', { text: 'Again', studioName: 'play_message_voice_en_again' }),
-        named('lost', 'setVariable', 'f1', { text: 'Lost', studioName: 'set_var_lost', endedExits: [''] }),
+        named('lost', 'setVariable', 'f1', {
+          text: 'Lost',
+          studioName: 'set_var_lost',
+          variables: [{ key: 'lost', value: 'true' }],
+          endedExits: [''],
+        }),
       ],
       connections: [connect('again', 'menu'), connect('menu', 'again', '1')],
     };

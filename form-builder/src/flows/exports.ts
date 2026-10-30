@@ -59,6 +59,8 @@ export type ExportedObject = {
   };
   // For checks that call an account-scoped lambda route: the route and its request body
   call?: { route: string; urlTemplate: string; body: Record<string, string> };
+  // For "Set variable": what it sets ({{flow.variables.<key>}})
+  variables?: FlowObject['variables'];
   exits: ExportedExit[];
   openComments?: { author: string; text: string }[];
   // For "Send to queue": the task's attributes as JSON (Studio fills in {{…}}; Terraform ${helpline}
@@ -244,6 +246,7 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
             },
           }
         : {}),
+      ...(object.variables?.length ? { variables: object.variables } : {}),
       ...(object.studio ? { currentStudioWidget: object.studio } : {}),
       ...(openComments.length > 0 ? { openComments: openComments.map(({ author, text }) => ({ author, text })) } : {}),
     };

@@ -1303,6 +1303,31 @@
   background: var(--color-accent-soft);
 }
 
+/* Set variable: a key and its value per row */
+.flow-variable-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.4fr) auto;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 6px;
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+}
+
+.flow-variable-row input {
+  min-width: 0;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.flow-variable-row input[aria-invalid='true'] {
+  border-color: var(--color-error-text);
+}
+
+.flow-variable-row .flow-field-problem {
+  grid-column: 1 / -1;
+}
+
 /* A message's name by parts: the prefix (fixed), the flow's channel, language and service, what it is */
 .flow-name-parts {
   display: flex;

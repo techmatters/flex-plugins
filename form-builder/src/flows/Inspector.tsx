@@ -27,6 +27,11 @@ import {
   fieldProblem,
   fieldShown,
   isNamedByParts,
+  lockedPrefixesOf,
+  composePrefixed,
+  prefixedName,
+  standardPrefixedName,
+  variableKeyProblem,
   messageChannelOf,
   messageFor,
   nameParts,
@@ -50,8 +55,10 @@ import type {
   FlowDetails,
   FlowNaming,
   FlowObject,
+  FlowVariable,
   Frame,
   NameParts,
+  PrefixedName,
   NamingChoices,
   ObjectField,
   Person,
@@ -222,6 +229,160 @@ const NamePartsEditor = ({
       </div>
       {name && <code className="flow-name-full">{name}</code>}
     </div>
+  );
+};
+
+/**
+ * A name whose start is fixed by its kind (split_, set_var_, f_isSkilledWorkerAvailable...): only
+ * the rest is typed. Functions and requests choose theirs (f_, http_get_, http_post_).
+ */
+const PrefixedNameEditor = ({
+  name,
+  prefixes,
+  postqueue,
+  placeholder,
+  readOnly,
+  onChange,
+}: {
+  name?: string;
+  prefixes: string[];
+  postqueue: boolean;
+  placeholder?: string;
+  readOnly: boolean;
+  onChange: (name: string | undefined) => void;
+}) => {
+  // The start chosen before anything else is typed (a name isn't kept until then)
+  const [chosen, setChosen] = useState<string>();
+  const parts: PrefixedName = (name && prefixedName(name, prefixes)) || {
+    postqueue,
+    prefix: chosen && prefixes.includes(chosen) ? chosen : prefixes[0],
+    rest: '',
+  };
+  const set = (changes: Partial<PrefixedName>) => {
+    if (changes.prefix) setChosen(changes.prefix);
+    const next = { ...parts, ...changes };
+    // Function names are camelCase (f_getProfileFlagsForIdentifier); the rest is lower case
+    const rest = next.prefix.startsWith('f_')
+      ? next.rest.replace(/[^A-Za-z0-9_]+/g, '_')
+      : next.rest.toLowerCase().replace(/[^a-z0-9_]+/g, '_');
+    // A route's name is complete without a suffix; other kinds need the rest
+    onChange(rest || !next.prefix.endsWith('_') ? composePrefixed({ ...next, rest }) : undefined);
+  };
+  return (
+    <div className="field">
+      <span className="field-label">Studio name</span>
+      <div className="flow-name-parts">
+        {parts.postqueue && (
+          <span className="flow-name-prefix" title="Everything after the queue">
+            postqueue_
+          </span>
+        )}
+        {prefixes.length > 1 ? (
+          <select
+            aria-label="Name's start"
+            value={parts.prefix}
+            disabled={readOnly}
+            onChange={(e) => set({ prefix: e.target.value })}
+          >
+            {prefixes.map((prefix) => (
+              <option key={prefix} value={prefix}>
+                {prefix}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <span className="flow-name-prefix" title="Set by the kind of widget">
+            {parts.prefix}
+            {parts.prefix.endsWith('_') ? '' : '_'}
+          </span>
+        )}
+        <input
+          type="text"
+          aria-label="What it is"
+          value={parts.rest}
+          placeholder={placeholder}
+          disabled={readOnly}
+          spellCheck={false}
+          onChange={(e) => set({ rest: e.target.value })}
+        />
+      </div>
+      {name && <code className="flow-name-full">{name}</code>}
+    </div>
+  );
+};
+
+/**
+ * Set variable: the flow variables it sets, in order. Studio keeps them as text; later widgets
+ * read them as {{flow.variables.<key>}}, and the value can use {{...}} too.
+ */
+const VariablesSection = ({
+  variables = [],
+  readOnly,
+  onChange,
+}: {
+  variables?: FlowVariable[];
+  readOnly: boolean;
+  onChange: (variables: FlowVariable[] | undefined) => void;
+}) => {
+  const set = (index: number, changes: Partial<FlowVariable>) =>
+    onChange(variables.map((variable, at) => (at === index ? { ...variable, ...changes } : variable)));
+  return (
+    <section className="flow-inspector-section" aria-label="Variables">
+      <h3>Variables</h3>
+      <p className="field-hint">
+        Read later as <code>{'{{flow.variables.<key>}}'}</code>. A value can use <code>{'{{…}}'}</code>, e.g.{' '}
+        <code>{'{{widgets.gather_input_voice_en_menu.Digits}}'}</code>.
+      </p>
+      {variables.map((variable, index) => (
+        <div key={index} className="flow-variable-row">
+          <input
+            type="text"
+            aria-label={`Variable ${index + 1} key`}
+            value={variable.key}
+            placeholder="language"
+            disabled={readOnly}
+            spellCheck={false}
+            aria-invalid={Boolean(variable.key && variableKeyProblem(variable.key))}
+            onChange={(e) => set(index, { key: e.target.value.trim() })}
+          />
+          <span aria-hidden>=</span>
+          <input
+            type="text"
+            aria-label={`Variable ${index + 1} value`}
+            value={variable.value}
+            placeholder="es"
+            disabled={readOnly}
+            spellCheck={false}
+            onChange={(e) => set(index, { value: e.target.value })}
+          />
+          {!readOnly && (
+            <button
+              type="button"
+              className="link-button"
+              aria-label={`Remove variable ${index + 1}`}
+              onClick={() => {
+                const rest = variables.filter((_, at) => at !== index);
+                onChange(rest.length > 0 ? rest : undefined);
+              }}
+            >
+              ×
+            </button>
+          )}
+          {variable.key && variableKeyProblem(variable.key) && (
+            <span className="flow-field-problem">{variableKeyProblem(variable.key)}</span>
+          )}
+        </div>
+      ))}
+      {!readOnly && (
+        <button
+          type="button"
+          className="secondary-button"
+          onClick={() => onChange([...variables, { key: '', value: '' }])}
+        >
+          Add a variable
+        </button>
+      )}
+    </section>
   );
 };
 
@@ -489,7 +650,10 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
   // Renamed, a message keeps playing its recording until the file is copied to the new name
   const rename = (studioName: string | undefined) =>
     onNodeData(node.id, { object: withStudioName(object, studioName, recordingList) });
-  const standard = standardStudioName(object, details, choices);
+  // The name it should have: messages' by parts, others' with their kind's start
+  const standard = isNamedByParts(object.type)
+    ? standardStudioName(object, details, choices)
+    : standardPrefixedName(object, details);
   const useStandard = async () => {
     if (!standard) return;
     const renamed = withStudioName(object, standard, recordingList);
@@ -657,7 +821,19 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
               readOnly={readOnly}
               onChange={rename}
             />
+          ) : !isNamedByParts(object.type) &&
+            (!object.studioName || prefixedName(object.studioName, lockedPrefixesOf(object))) ? (
+            <PrefixedNameEditor
+              key={node.id}
+              name={object.studioName}
+              prefixes={lockedPrefixesOf(object)}
+              postqueue={details?.stage === 'postqueue'}
+              placeholder={suggestion && prefixedName(suggestion, lockedPrefixesOf(object))?.rest}
+              readOnly={readOnly}
+              onChange={rename}
+            />
           ) : (
+            // A name that doesn't start as its kind's do (imported): as it is, until it's given one
             <label className="field">
               <span className="field-label">Studio name</span>
               <input
@@ -802,6 +978,14 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
 
       {playsWaitRecording(object) && (
         <RecordingSection object={object} frame={details} actions={props.recordings} title="Wait music" />
+      )}
+
+      {object.type === 'setVariable' && (
+        <VariablesSection
+          variables={object.variables}
+          readOnly={readOnly}
+          onChange={(variables) => update({ variables })}
+        />
       )}
 
       {object.type === 'sendToQueue' && (

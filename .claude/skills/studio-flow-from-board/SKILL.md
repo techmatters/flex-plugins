@@ -98,7 +98,7 @@ are none.
 | Send to queue: workflow, task channel | Set on the board when chosen; otherwise the helpline's other templates and `common.hcl`: `${workflow_sids.<key>}`, `${task_channel_sids.<channel>}` (attributes: step 4b). When the board names the queue it should end up in, check the workflow's rules (and the task attributes) send it there |
 | A subflow's `flow_sid` | `${system_down_studio_subflow_sid}`, or the variable the helpline's other templates use |
 | A number to forward to, an HTTP address | Ask the person (put real values in variables, not the template) |
-| Set variables | What the design's text says the counter or variable is for |
+| Set variables | Set on the board (`variables`: key and value) when given; otherwise what the design's text says the counter or variable is for |
 | A Repeat's times to repeat | The board leaves it at 2: ask the person if the design doesn't say |
 | A chatbot's settings (language, message, release type...) | `STUDIO_ROUTES.md` (`channelCapture/captureChannelWithBot`) and the helpline's other templates calling it; the bot's name is in `lex_v2_bot_languages` |
 

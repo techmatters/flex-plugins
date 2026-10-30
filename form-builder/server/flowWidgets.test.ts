@@ -23,7 +23,17 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { describe, expect, test } from 'vitest';
 import type { BoardContent, FlowObject } from '../src/flows/model';
-import { emptyBoard, exitsOf, repeatWidgetNames, suggestStudioName, upgradeContent } from '../src/flows/model';
+import {
+  composePrefixed,
+  emptyBoard,
+  exitsOf,
+  lockedPrefixesOf,
+  prefixedName,
+  repeatWidgetNames,
+  standardPrefixedName,
+  suggestStudioName,
+  upgradeContent,
+} from '../src/flows/model';
 import { janitorValuesOf } from '../src/flows/janitor';
 import { boardChecks } from '../src/flows/checks';
 import { toStudioFlow } from '../src/flows/studioTemplate';
@@ -370,6 +380,76 @@ describe('menus, repeats and chatbots', () => {
         .filter((candidate) => candidate.type === 'sendMessageAndClose').length;
     }
     expect(found).toBeGreaterThan(3);
+  });
+
+  test('set variable: what it sets, new and imported (changes written back, each keeping its type)', async () => {
+    const content = board(
+      'voice',
+      [
+        object('lang', 'setVariable', {
+          studioName: 'set_var_language',
+          variables: [
+            { key: 'language', value: 'es' },
+            { key: 'menu_choice', value: '{{widgets.gather_input_voice_en_menu.Digits}}' },
+          ],
+        }),
+      ],
+      [],
+    );
+    const { flow, todo } = toStudioFlow(content, content.frames[0]);
+    expect(flow.states[0].properties.variables).toEqual([
+      { type: 'string', value: 'es', key: 'language' },
+      { type: 'string', value: '{{widgets.gather_input_voice_en_menu.Digits}}', key: 'menu_choice' },
+    ]);
+    expect(todo.join('\n')).not.toMatch(/set its variables/);
+    // Keys Studio doesn't take are errors; none at all, a warning
+    const badKey = { ...content, objects: [{ ...content.objects[0], variables: [{ key: '1st', value: 'x' }] }] };
+    expect(boardChecks(badKey).map((issue) => issue.message)).toContainEqual(
+      expect.stringContaining('variable 1: Letters, numbers and underscores'),
+    );
+    const none = { ...content, objects: [{ ...content.objects[0], variables: undefined }] };
+    expect(boardChecks(none).map((issue) => issue.message)).toContainEqual(
+      expect.stringContaining('add the variables it sets'),
+    );
+
+    // usnm's counter: imported with its key and value; a changed value written back
+    const { boards } = await importHelpline(helplinesDir, 'usnm');
+    const voice = boards.find(({ content: theirs }) =>
+      theirs.objects.some((candidate) => candidate.studioName === 'set_var_en_no_tya_service_counter'),
+    )!.content;
+    const counter = voice.objects.find((candidate) => candidate.studioName === 'set_var_en_no_tya_service_counter')!;
+    expect(counter.variables).toEqual([
+      { key: 'en_no_tya_service_counter', value: expect.stringContaining('plus: 1') },
+    ]);
+    const changed = {
+      ...voice,
+      objects: voice.objects.map((candidate) =>
+        candidate.id === counter.id
+          ? { ...candidate, variables: [{ key: 'en_no_tya_service_counter', value: '1' }] }
+          : candidate,
+      ),
+    };
+    const state = toStudioFlow(changed).flow.states.find(
+      (candidate) => candidate.name === 'set_var_en_no_tya_service_counter',
+    )!;
+    expect(state.properties.variables).toEqual([{ type: 'string', value: '1', key: 'en_no_tya_service_counter' }]);
+  });
+
+  test("names start as their kind's do: locked in the settings, given that start when they don't have it", () => {
+    expect(lockedPrefixesOf({ type: 'setVariable' })).toEqual(['set_var_']);
+    expect(lockedPrefixesOf({ type: 'checkQueueAvailability' })).toEqual(['f_isSkilledWorkerAvailable']);
+    expect(lockedPrefixesOf({ type: 'function' })).toEqual(['f_', 'http_get_', 'http_post_']);
+    expect(prefixedName('postqueue_f_isSkilledWorkerAvailable_tya_calls', ['f_isSkilledWorkerAvailable'])).toEqual({
+      postqueue: true,
+      prefix: 'f_isSkilledWorkerAvailable',
+      rest: 'tya_calls',
+    });
+    expect(composePrefixed({ postqueue: false, prefix: 'send_to_queue', rest: 'en_std' })).toBe('send_to_queue_en_std');
+    expect(standardPrefixedName({ type: 'setVariable', studioName: 'var_put_etc' })).toBe('set_var_put_etc');
+    expect(standardPrefixedName({ type: 'decision', studioName: 'splitLanguage' }, { stage: 'postqueue' })).toBe(
+      'postqueue_split_splitlanguage',
+    );
+    expect(standardPrefixedName({ type: 'setVariable', studioName: 'set_var_ok' })).toBeUndefined();
   });
 
   test('imported captureChannelWithBot requests are chatbots, their settings as written (variables kept)', async () => {

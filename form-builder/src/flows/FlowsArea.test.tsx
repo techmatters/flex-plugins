@@ -230,12 +230,22 @@ describe('flow designer', { timeout: 20_000 }, () => {
 
   test('Studio names that break the standards, or repeat, are pointed out', async () => {
     await openNewBoard('Names');
+    // The kind's start is fixed: only the rest is typed, in lower case with underscores
     fireEvent.click(palette().getByRole('button', { name: /^Decision/ }));
-    fireEvent.change(settings().getByRole('textbox', { name: /^Studio name/ }), {
-      target: { value: 'splitsAABBwrong' },
-    });
-    expect(settings().getByText('“Decision”: Decision names start with split_.')).toBeTruthy();
+    expect(settings().getByTitle('Set by the kind of widget').textContent).toBe('split_');
+    fireEvent.change(settings().getByRole('textbox', { name: 'What it is' }), { target: { value: 'Contact Routing' } });
+    expect(settings().getByText('split_contact_routing')).toBeTruthy();
+    fireEvent.change(settings().getByRole('textbox', { name: 'What it is' }), { target: { value: 'routing_' } });
+    expect(settings().getByText('“Decision”: No double or trailing underscores.')).toBeTruthy();
     expect(screen.getByLabelText('Has errors')).toBeTruthy();
+
+    // Functions and requests choose theirs; routes' are the route's name, then a suffix
+    fireEvent.click(palette().getByRole('button', { name: /^Other function/ }));
+    fireEvent.change(settings().getByRole('combobox', { name: "Name's start" }), { target: { value: 'http_post_' } });
+    fireEvent.change(settings().getByRole('textbox', { name: 'What it is' }), { target: { value: 'save survey' } });
+    expect(settings().getByText('http_post_save_survey')).toBeTruthy();
+    fireEvent.click(palette().getByRole('button', { name: /^Skilled worker logged in/ }));
+    expect(settings().getByTitle('Set by the kind of widget').textContent).toBe('f_isSkilledWorkerLoggedIn_');
 
     // Two voice messages: the second one's suggested name doesn't repeat the first
     fireEvent.click(palette().getByRole('button', { name: /^Play message/ }));

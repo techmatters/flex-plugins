@@ -64,7 +64,7 @@ reads the same way as Studio.
 | Pre-survey form | document shape | clipboard | finished | pre-survey chatbot or webchat form |
 | Send to queue | cylinder | inbox | callComplete (the post-queue part continues), failedToEnqueue, callFailure (Studio's; callFailure is usually left unconnected; boards with the older "post-queue" and "failed to enqueue" open with these) | Send to Flex (`send_to_queue_<queue>`), with its **task attributes** (below). Settings: the queue it should end up in (offered from the helpline's routing design; the workflow's rules send it there), the workflow (`${workflow_sids.<key>}`) and the task channel (`${task_channel_sids.<key>}`); its timeout (3600 if not set); and what callers hear while waiting: Twilio's music, a recording uploaded here (named after the widget, like a message's), or an address (`waitUrl` and its method, e.g. usnm's `postQueueMonitor`). All read from imported widgets |
 | Forward call | rounded box | phone forwarded | call completed, hung up | Connect Call To (`connect_to_...`) |
-| Set variable / counter | box | variable | 1 | Set Variables (`set_var_...`) |
+| Set variable / counter | box | variable | 1 | Set Variables (`set_var_...`). Its **variables**, each a key and a value (Studio keeps them as text), read later as `{{flow.variables.<key>}}`; a value can use `{{...}}`. Imported from live widgets, and only written back when changed |
 | Repeat (counter) | delay shape | repeat | repeat / max reached | Named `repeat_<name>` (e.g. `repeat_menu`); becomes a Set Variables (`set_var_<name>_counter`) adding one to `flow.variables.<name>_counter`, and a Split (`split_<name>`): back round (`repeat`) until it's greater than the times to repeat (2 if not set), then `max reached`. E.g. a menu's timeout → Repeat → back to the menu, or on to the queue. Boards with the old “Wait / repeat”, or Repeats named after their counter, open with the new kind and name |
 | Go to frame | off-page arrow | link | none | jumps to another frame ("continues in SMS post-queue") |
 | Notify the Aselo team | rounded box | bell | 1 | HTTP Request to `webhook_url_studio_errors` (`http_post_...`), where a flow posts to Slack; optional, since failures are followed in Datadog |
@@ -82,6 +82,12 @@ is mostly worked out automatically (see [Recordings and scripts](#recordings-and
 its routing design's queues and workflows (Send to queue) and skills (the skilled worker checks).
 Any other value can be typed. They're read again whenever the board is shown again, so a skill
 added in Routing meanwhile is there.
+
+**Every name starts as its kind's do**, and that start is locked in the settings: only the rest is
+typed (lower case with underscores; camelCase after `f_`). A route call's start is the route
+(`f_isSkilledWorkerAvailable`, then a suffix); other functions and requests choose `f_`,
+`http_get_` or `http_post_`; after the queue, `postqueue_` comes first. An imported name that
+doesn't start that way is shown as it is, with **Use the standard name** to give it one.
 
 **Studio names** are suggested from the object type, channel, language and what you type
 (`play_message_voice_en_post_queue_closed`), and checked against the standards in

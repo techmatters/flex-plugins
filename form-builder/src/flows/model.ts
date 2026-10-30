@@ -108,6 +108,13 @@ export const templateTargetOf = (
     ? `${code}/${studio.template}`
     : studio.template;
 
+// A flow variable a Set Variables widget sets (Studio's are all strings), e.g. language = es
+export type FlowVariable = { key: string; value: string };
+
+// What's wrong with a variable's key, in plain words
+export const variableKeyProblem = (key: string) =>
+  /^[A-Za-z_][A-Za-z0-9_]*$/.test(key) ? undefined : 'Letters, numbers and underscores, not starting with a number.';
+
 export type BoardComment = {
   id: string;
   author: string;
@@ -149,6 +156,8 @@ export type FlowObject = Position &
     thread?: CommentThread;
     // The Studio call's parameters, for types that have some (e.g. targetSkills); see ObjectTypeInfo.fields
     settings?: Record<string, string>;
+    // Set variable: what it sets, in order; read later as {{flow.variables.<key>}}
+    variables?: FlowVariable[];
     // Ways out deliberately left unconnected: the flow ends there ('' for a single way out)
     endedExits?: string[];
     // The Studio widget it was imported from: its name, type and settings, as in the template
@@ -1305,4 +1314,59 @@ export const standardStudioName = (
   const service = pick(choices.services) ?? only(choices.services);
   const rest = words.join('_');
   return composeName({ postqueue, prefix, channel, language, service, rest });
+};
+
+/**
+ * The fixed start of an object's name, which its settings show locked: its kind's prefix (split_,
+ * set_var_...), a route's whole name (f_isSkilledWorkerAvailable, then a suffix), or for other
+ * functions and requests one of f_, http_get_ and http_post_. After the queue, postqueue_ comes first.
+ */
+export const lockedPrefixesOf = (object: Pick<FlowObject, 'type'>): string[] => {
+  const info = OBJECT_TYPES[object.type];
+  if (!info.studioPrefix) return [];
+  if (info.studioRoute) return [`f_${routeName(info.studioRoute)}`];
+  if (object.type === 'function') return ['f_', 'http_get_', 'http_post_'];
+  return [info.studioPrefix];
+};
+
+export type PrefixedName = { postqueue: boolean; prefix: string; rest: string };
+
+// A name as its locked start and the rest (undefined when it doesn't start with one of them)
+export const prefixedName = (name: string, prefixes: string[]): PrefixedName | undefined => {
+  const postqueue = name.startsWith('postqueue_');
+  const unprefixed = postqueue ? name.slice('postqueue_'.length) : name;
+  const prefix = [...prefixes]
+    .sort((a, b) => b.length - a.length)
+    .find((candidate) =>
+      candidate.endsWith('_')
+        ? unprefixed.startsWith(candidate)
+        : unprefixed === candidate || unprefixed.startsWith(`${candidate}_`),
+    );
+  if (!prefix) return undefined;
+  return { postqueue, prefix, rest: unprefixed.slice(prefix.length).replace(/^_/, '') };
+};
+
+// The name from its locked start and the rest: a start without a trailing underscore gets one
+export const composePrefixed = ({ postqueue, prefix, rest }: PrefixedName) =>
+  `${postqueue ? 'postqueue_' : ''}${prefix}${rest ? `${prefix.endsWith('_') ? '' : '_'}${rest}` : ''}`;
+
+/**
+ * For kinds not named by parts: the name with its locked start, from one that doesn't have it
+ * (var_put_etc for a Set variable becomes set_var_put_etc). Undefined when it already has it.
+ */
+export const standardPrefixedName = (
+  object: Pick<FlowObject, 'type' | 'studioName'>,
+  details?: Pick<Frame, 'stage'>,
+): string | undefined => {
+  const prefixes = lockedPrefixesOf(object);
+  const name = object.studioName;
+  if (!name || prefixes.length === 0 || isNamedByParts(object.type) || prefixedName(name, prefixes)) return undefined;
+  const postqueue = details?.stage === 'postqueue' || name.startsWith('postqueue_');
+  const [prefix] = prefixes;
+  // Words of the prefix it already starts with (var_..., split...) aren't said twice
+  const prefixWords = prefix.replace(/_$/, '').split('_');
+  const words = name.replace(/^postqueue_/, '').split('_');
+  while (words.length > 1 && prefixWords.includes(words[0].toLowerCase())) words.shift();
+  const rest = prefix.startsWith('f_') ? words.join('_') : toSnake(words.join('_'));
+  return composePrefixed({ postqueue, prefix, rest });
 };

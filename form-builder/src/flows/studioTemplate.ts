@@ -357,6 +357,22 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         if (object.settings?.timeout && properties.timeout !== object.settings.timeout) {
           properties.timeout = object.settings.timeout;
         }
+      } else if (object.type === 'setVariable' && object.variables && Array.isArray(properties.variables)) {
+        // What it sets, where changed on the board (each keeps its type as written)
+        const live = properties.variables as { key?: string; value?: string; type?: string }[];
+        const same =
+          live.length === object.variables.length &&
+          live.every((variable, index) => {
+            const own = object.variables![index];
+            return variable.key === own.key && variable.value === own.value;
+          });
+        if (!same) {
+          properties.variables = object.variables.map(({ key, value }) => ({
+            type: live.find((variable) => variable.key === key)?.type ?? 'string',
+            value,
+            key,
+          }));
+        }
       } else if (object.type === 'sendMessageAndClose') {
         // Its message (in its variable when it reads one, otherwise written in the widget) and author
         const values = janitorValuesOf(properties);
@@ -806,13 +822,16 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
           },
         ];
       case 'setVariable':
-        todo.push(`${label(object)}: set its variables.`);
+        if (!object.variables?.length) todo.push(`${label(object)}: set its variables.`);
         return [
           {
             name,
             type: 'set-variables',
             transitions: [withNext({ event: 'next' }, next())],
-            properties: { variables: [], offset },
+            properties: {
+              variables: (object.variables ?? []).map(({ key, value }) => ({ type: 'string', value, key })),
+              offset,
+            },
           },
         ];
       case 'systemDown':
