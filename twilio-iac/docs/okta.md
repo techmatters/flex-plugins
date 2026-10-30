@@ -1,0 +1,322 @@
+# Okta ⇄ Twilio Flex SSO as code
+
+**Status: proposal for review.** The Terraform below has only been run as read-only `plan`s against
+the live Okta org. Nothing has been applied, and the one-time setup in
+[Before the first apply](#before-the-first-apply-decisions-for-review) is not done yet.
+
+## Why
+
+Every Aselo helpline signs in to Flex through Okta (`techmatters.okta.com`), using one SAML app per
+helpline per environment. Today those apps are created by hand in the Okta console. Comparing them
+showed the cost of that:
+
+- Attribute names with stray trailing spaces (e.g. `"maxMessageCapacity "`) on about 10 apps. Flex
+  then stores the worker attribute under the misspelt name, so features that read it silently get nothing.
+- Group assignments that don't follow the agreed pattern (e.g. the production group on a staging app).
+- Attribute order and optional attributes that vary from app to app for no reason.
+
+The goal is that every Flex app is created from one definition, can be checked automatically, and
+that any drift shows up in a `plan`.
+
+## Design: two layers
+
+Okta has helpline-level objects (shared by both environments) and environment-level objects (one per
+Twilio account). Each kind is managed at its own level:
+
+```text
+Layer 1: okta-org stage            one run for the whole Okta org (no HL / HL_ENV)
+  helpline groups, e.g. "SafeSpot (JM)"     ← helplines/<code>/common.hcl  okta = { ... }
+  protected with prevent_destroy
+  group rules (auto-membership): configured here, created by hand (see "Group rules" below)
+
+Layer 2: okta-app stage            per helpline + environment (HL + HL_ENV, like every other stage)
+  the Flex SAML app ("STG_SafeSpot (JM)")   ← helplines/<code>/<env>.hcl    okta_app = { ... }
+  its group assignments
+  helpline group looked up by name, never created or deleted here
+```
+
+The helpline group outlives either app. Rebuilding or removing the staging app can never touch the
+group that production uses.
+
+### End-to-end flow for one environment
+
+| # | Step | How | Who |
+|---|---|---|---|
+| 1 | Find the account's Flex SSO connection (`JQ...`) | Automatic during `plan` (public Flex endpoint) · `scripts/okta/flexSsoConnection.mjs` | Terraform / script |
+| 2 | Create or adopt the Okta app and its groups | `okta-org` and `okta-app` stages | Terraform |
+| 3 | Enter the friendly name and Okta's issuer, SSO URL and certificate in **Twilio Console › Flex › Users and access › Single sign-on (SSO)** | `scripts/okta/flexSsoHandoff.mjs` prints the 4 values | **Person**: Twilio has no documented API for this page |
+| 4 | Check the app against the standard and config | `scripts/okta/verifySso.mjs` | Script |
+| 5 | Check Okta and Flex point at each other | `verifySso.mjs` (Flex connection check) | Script |
+| 6 | Log a test user in and inspect the real SAML assertion | `verifySso.mjs --login` | Script |
+
+The audit script (`auditSsoDrift.mjs`) runs steps 4 and 5 for every Flex app in the org.
+
+Nothing account-specific is committed. The Twilio account SID comes from the existing SSM secret
+(`/terraform/twilio-iac/<env>/<code>/secrets.json`), the Flex connection is looked up live, and
+existing Okta apps and groups are found by name.
+
+## The standard
+
+### Labels
+
+| Environment | Label |
+|---|---|
+| staging | `STG_<app_name> (<CODE>)` |
+| production | `<app_name> (<CODE>)` |
+
+`app_name` defaults to the helpline's `helpline` value. Override it in `okta.app_name`, or the whole
+label in `okta_app.label`, for older apps whose label differs.
+
+### Group assignments
+
+| App | Groups |
+|---|---|
+| production | `<helpline group>` + `Tech Matters - Production` |
+| staging | `<helpline group>` + `Tech Matters - Staff` + `Tech Matters - Test Accounts` |
+
+**Helpline lifecycle.** A new helpline gets its group and **staging** app first, and those are used
+to configure and test everything. The **production** app is configured close to launch. After launch
+the helpline chooses:
+
+- everyone keeps access to both environments, or
+- the helpline group gets production only (`include_helpline_group = false` on the staging app), and
+  a smaller set of people keeps staging access.
+
+Restricting access this way stops counsellors logging into the wrong environment, so a staging app
+without the helpline group is a valid setup.
+
+### SAML settings
+
+These are fixed in the module: SHA-256 signing and digest, signed response and assertion, no
+assertion encryption (Flex does not support it), name ID `unspecified` / `${user.userName}`, ACS,
+recipient and destination set to the Flex callback, and audience `urn:flex:<JQ...>`.
+
+### Attributes sent to Flex
+
+There is one source of truth,
+[`terraform-modules/okta/flex-saml-app/attribute-statements.json`](../terraform-modules/okta/flex-saml-app/attribute-statements.json),
+read by the Terraform module and by the scripts.
+
+| Attribute | Value (legacy) | Required |
+|---|---|---|
+| `full_name` | `String.join(" ", user.firstName, user.lastName)` | yes |
+| `email` | `user.email` | yes |
+| `image_url` (uri) | `user.profileUrl` | yes |
+| `helpline` | `user.helpline` | yes |
+| `roles` | `user.userType` | yes |
+| `maxMessageCapacity` | `user.maxMessageCapacity` | yes |
+| `waitingOfflineContact.boolean` | `user.waitingOfflineContact` | yes |
+| `channel.default.capacity` | `user.maxMessageCapacity` | yes |
+| `labels.stringarray` | `user.labels` | optional (`optional_attribute_sets = ["labels"]`) |
+| `team` | `user.labels` | optional (`optional_attribute_sets = ["team"]`) |
+
+Helpline-specific attributes (e.g. `location`, `counselorLanguage`) go in
+`okta_app.extra_attribute_statements`. The module rejects names with leading or trailing spaces.
+
+#### Legacy vs new attribute statements
+
+Okta now calls the classic per-app attribute statements the *legacy configuration* and offers new
+**attribute statements** (federated claims, written in Expression Language for Identity Engine). The
+module supports both through `okta_app.attribute_statements_mode`:
+
+- `federated`: **the standard for new helplines** (set in `baseline/`). Creates one
+  `okta_app_federated_claim` per attribute.
+- `legacy` (code default): matches every existing app, so adopting them is a no-op. Existing apps move
+  to `federated` one at a time with [runbook D](#d-move-an-app-to-the-new-attribute-statements); the
+  switch removes the legacy statements **in the same apply**.
+
+**Tested on ASOP staging (2026-10-26):** with a freshly created worker, Flex received the same
+attributes, values and types as with legacy statements (`waitingOfflineContact` boolean, `labels` and
+`roles` lists, `image_url` fine without the `uri` name format). Changing `labels` in Okta
+(Team Blue → Team Green) updated `labels` and `team` on the next login. An empty profile value
+(`helpline`) still ended up as `""` on the new worker.
+
+Things to know:
+
+- **Clearing a value in Okta does not clear it in Flex**, with either kind of statement (tested on
+  ASOP stg with federated claims and USVC stg with legacy statements). Flex updates the attributes
+  it receives at login but keeps attributes that arrive empty or not at all. Removing a counsellor's
+  team label in Okta therefore leaves `team`/`labels` on the worker: clear them on the worker in
+  TaskRouter, or delete the worker so it is recreated at the next login.
+- During the switch apply on an existing app, the app update runs first, so for a few seconds the
+  app sends no attributes. Do production during a quiet period.
+
+## Configuration reference
+
+```hcl
+# helplines/<code>/common.hcl, inside local_config
+okta = {
+  group_name      = "SafeSpot (JM)"   # required
+  app_name        = "SafeSpot"        # optional, defaults to helpline
+  import_existing = true              # adopt the existing group/rule
+
+  # Optional group rule: adds users to the group automatically. Set exactly ONE of:
+  group_rule = {
+    organizations = ["SafeSpot"]                 # -> user.organization=="SafeSpot"
+    # email_domains = ["@paralaconfianza.com"]   # -> String.stringContains(user.email,"@paralaconfianza.com")
+    # expression    = "String.stringContains(user.email,\"barnardos.org.nz\") AND String.stringContains(user.department,\"training\")"
+    # name          = "SafeSpot (JM)"            # optional, defaults to group_name
+  }
+}
+
+# helplines/<code>/staging.hcl or production.hcl, inside local_config
+okta_app = {
+  import_existing            = true          # assert the app already exists (existing apps are always adopted)
+  label                      = "STG_..."     # optional label override
+  include_helpline_group     = true          # false = keep counsellors out of this environment
+  tech_matters_groups        = [...]         # optional override of the Tech Matters groups
+  attribute_statements_mode  = "legacy"      # or "federated"
+  optional_attribute_sets    = ["labels", "team"]
+  extra_attribute_statements = [
+    { name = "location", legacy = "user.location", federated = "user.profile.location" },
+  ]
+}
+```
+
+### Group rules
+
+A group rule adds users to the helpline group automatically from their Okta profile. **Terraform
+does not create rules**: Okta only lets Super Admins and Org Admins edit them, and the Terraform
+service app deliberately has neither role (tested 2026-10-26: a custom role with full group
+permissions still got "You do not have permission"). Instead:
+
+- `okta.group_rule` in `common.hcl` is the source of truth. The okta-org stage prints each rule as
+  the output `group_rules` (name, group, exact expression) on plan/apply, so whoever adds a helpline
+  sees what to create.
+- A person with Super/Org Admin creates it: **Okta Admin › Directory › Groups › Rules › Add rule** ›
+  name, **Use Okta Expression Language**, paste the expression, assign to the group, **Save**, then
+  **Activate**.
+- `verifySso.mjs` fails (❌) when the configured rule is missing, different or inactive, and
+  `auditGroupRules.mjs` checks every helpline and lists rules in Okta that are not in config.
+
+Several `organizations` or `email_domains` are joined with `OR`. Include the `@` in email domains
+(`"@example.org"`), otherwise `"example.org"` also matches addresses like `x@example.org.fake.net`.
+Okta keeps users in a rule-based group only while they match: changing a user's organization or
+email removes them.
+
+Pilot config is in place for **jm, mt, usch, usvc** (all with `import_existing = true`), and
+`baseline/` has blocks to copy for new helplines.
+
+## Runbooks
+
+All `make` targets run on the devops node as for any other stage.
+
+### A. New helpline
+
+1. Add `okta = { group_name = ... }` to `common.hcl` and `okta_app = {}` to `staging.hcl`.
+2. `cd twilio-iac/stages/okta-org && make plan`, review it (it should only add the new group), then
+   `make apply`. This stage uses the production role, so the apply needs someone in the
+   `twilio-iac-production` IAM group.
+   **If the helpline has `okta.group_rule`:** create the rule by hand in Okta from the `group_rules`
+   output (see [Group rules](#group-rules)); it needs a Super/Org Admin. Step 6 fails until it exists.
+3. Open **Twilio Console › Flex › Users and access › Single sign-on (SSO)** for the staging account
+   once. A new account has no Flex SSO connection until this page is opened (confirmed with ASOP:
+   `config_list` was empty before, a `JQ...` connection existed after). The plan fails with a clear
+   message if the connection is missing.
+4. `cd ../okta-app && make plan HL=<code> HL_ENV=staging`, review, then `make apply ...`.
+5. `node twilio-iac/scripts/okta/flexSsoHandoff.mjs --hl <code> --env staging`, then paste the 4
+   values into the Flex SSO page and save. **Friendly name** = the Okta app label (e.g.
+   `STG_<app_name> (<CODE>)`), which also matches the Twilio account name.
+6. `node twilio-iac/scripts/okta/verifySso.mjs --hl <code> --env staging --login`
+7. Near launch, repeat steps 3–6 with `okta_app = {}` in `production.hcl` and `HL_ENV=production`.
+8. After launch, if the helpline chooses production only, set `include_helpline_group = false` in
+   `staging.hcl` and apply.
+
+### B. Adopt an existing helpline
+
+1. Add the `okta` and `okta_app` blocks with `import_existing = true`. Use `verifySso.mjs --label ...`
+   and `auditSsoDrift.mjs` to see its current state first.
+2. Plan `okta-org`, then `okta-app` for each environment. A clean adoption shows only
+   `N to import, 0 to change`. Anything else is a real difference from the standard: fix the config
+   or accept the change.
+3. Apply. The import blocks are no-ops from then on.
+
+The `okta-app` stage never creates a second app with the same label: if an active SAML app with
+that label exists, the plan imports it (shown as "will be imported"), otherwise it creates one.
+`import_existing = true` additionally asserts that the app exists, so a mistyped label fails the
+plan instead of creating a new app.
+
+### C. Check for drift
+
+- Managed helplines: `make plan` shows changes. A `check` block also warns about group assignments
+  added by hand, which Terraform does not remove on its own.
+- Whole org: `node twilio-iac/scripts/okta/auditSsoDrift.mjs --out report.md`
+
+### D. Move an app to the new attribute statements
+
+1. Capture the current assertion: `verifySso.mjs --hl <code> --env staging --login --json > before.json`
+2. Set `attribute_statements_mode = "federated"` in `staging.hcl`, then plan (expect N claims to be
+   created and the legacy statements removed) and apply.
+3. Capture again (`after.json`) and compare. Log in to Flex staging and check the worker attributes in
+   TaskRouter, especially for a user with empty labels.
+4. If anything differs, set the mode back to `legacy` and apply (this is the rollback).
+
+## Before the first apply (decisions for review)
+
+1. **A Terraform service app in Okta.** Create a separate API Services app, e.g. `aselo-terraform`,
+   with private-key JWT and DPoP. Scopes: `okta.apps.read`, `okta.apps.manage`, `okta.groups.read`,
+   `okta.groups.manage`, `okta.policies.read`. Keep it separate from any read-only app used by the
+   scripts. Admin roles: **Application Administrator** plus a **custom role** (Security ›
+   Administrators › Roles) that can create, manage and view groups, scoped to a resource set
+   (Security › Administrators › Resources) with all groups and all applications. The standard
+   **Group Administrator role is not enough**: creating a group failed with "You do not have
+   permission" (tested 2026-10-26). No role short of Super/Org Admin can edit group rules, so rules
+   are created by hand (see [Group rules](#group-rules)).
+2. **SSM parameters** (us-east-1), one per value so they can be entered in the AWS console:
+   `/terraform/okta/terraform_service_app/client_id` (String),
+   `/terraform/okta/terraform_service_app/private_key_id` (String, the key's KID) and
+   `/terraform/okta/terraform_service_app/private_key` (SecureString, the PEM exactly as Okta shows
+   it). Keep the private key only in SSM.
+3. **IAM**: `tf-twilio-iac-staging` and `tf-twilio-iac-production` need `ssm:GetParameter` on
+   `/terraform/okta/*`. Prepared in infrastructure-config, branch
+   `alejandro-c/okta_terraform_ssm_read` (needs its own review, plan and apply).
+4. **Where okta-org state lives.** Proposed: the production state bucket, key
+   `twilio/okta-org/terraform.tfstate`, using the production role, because the Okta org is shared by
+   both environments. It sits under `twilio/` because that is where `tf-twilio-iac-production` can
+   already write state. Alternative: a dedicated bucket or key prefix (needs an IAM change).
+5. **Provider pin**: `okta/okta 7.0.0`, `hashicorp/http 3.6.3`, in `stages/okta-backend.tftpl`.
+   The Okta stages generate their own backend file, because a root module can have only one
+   `required_providers` block and the shared template declares twilio and datadog.
+6. **Which repo owns which Okta config.** flex-plugins is public and infrastructure-config is private. Proposed:
+
+   | What | Repo | Why |
+   |---|---|---|
+   | Flex SAML apps (`okta-app`) | flex-plugins | 1:1 with a Twilio Flex account, configured in the same `helplines/<code>/*.hcl`, same `HL`/`HL_ENV` workflow and SSM secrets as the rest of a helpline |
+   | Helpline groups and group rules (`okta-org`) | flex-plugins | Helpline-scoped and kept next to `common.hcl`. Not secret, though group rules do show customers' email domains and organization names |
+   | Org-level security config: sign-in/access policies, external IdPs, network zones, admin roles | infrastructure-config | The org's security posture (who signs in, from where, when, through which IdP) should not be public. infrastructure-config already holds shared identity and access (IAM, Okta-backed Client VPN) |
+
+   Moving a layer later is cheap. Everything is adopted by name with import blocks, so: add the
+   config in the other repo with `import_existing = true` and apply (imports only), then drop it
+   from the old state with `removed` blocks. Nothing is recreated in Okta.
+
+## What has been verified
+
+Read-only `terraform plan`s against the live org, using a read-only service app, with SSM inputs
+replaced by test values because there are no AWS credentials locally:
+
+| Check | Result |
+|---|---|
+| Okta provider 7.0.0 authenticates with a DPoP-required service app (private key JWT) | ✅ |
+| Flex connection lookup inside Terraform (`http` data source) returns the same `JQ...` the apps use | ✅ |
+| Import IDs from data sources (nothing hard-coded) | ✅ |
+| `okta-app` stage on all 8 pilot apps | 6 × `0 to change`. USCH stg: attribute reorder only. USVC stg: adds the missing *Staff* group, and the check block flags *Production* + *VPN* |
+| `okta-org` stage on the 4 pilot groups + 2 rules | ✅ `6 to import, 0 to change` (rules later moved out of Terraform) |
+| Group rules: structured config renders the exact existing expressions; `auditGroupRules.mjs` | ✅ |
+| Federated mode on ASOP stg (applied, real Flex logins) | ✅ Same worker attributes as legacy; profile changes propagate |
+| New helpline end to end (ASOP stg: group, app, Flex SSO, login) | ✅ |
+| Terragrunt collection of `okta` blocks across all 32 `common.hcl` | ✅ |
+| Scripts: connection, handoff, verify (without `--login`), audit | ✅ |
+| `verifySso --login` | ⚠️ Only the public half was tested (Flex → Okta redirect). Needs a no-MFA test user |
+| Runs inside the pipeline container (Terraform 1.14.3) | ⚠️ Not run. Tested locally with Terraform 1.16.5; uses no features newer than 1.7 |
+
+## Limitations and open questions
+
+- **The Flex SSO page is manual.** There is no documented Twilio API for it; worth asking Twilio support.
+- **Manually added group assignments are only warned about**, not removed, because Terraform manages
+  assignments one group at a time.
+- **Out of scope for now:** app sign-in/access policies (all pilot apps use *Classic Migrated*),
+  external IdPs, network zones, helpline "Group Admins" sub-groups, Okta user profile attribute
+  definitions. They are candidates for Layer 1 later.
+- One org app still uses legacy `iam.twilio.com` SSO; the audit flags it.
+- `okta-org` covers every helpline in one state. Review its plan carefully. Groups are protected by
+  `prevent_destroy`.

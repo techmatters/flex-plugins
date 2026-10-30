@@ -54,5 +54,15 @@ locals {
         chatbot_unique_names = []
       }
     }
+
+    # Okta: helpline-level, shared by staging and production apps (okta-org stage). See twilio-iac/docs/okta.md
+    okta = {
+      group_name = "<helpline name> (<SHORT CODE>)"
+      # Optional: add users automatically. Set exactly one of email_domains, organizations or expression.
+      # Terraform does not create the rule: a Super/Org Admin creates it in Okta (see docs/okta.md "Group rules").
+      # group_rule = { organizations = ["<organization>"] }
+      # group_rule = { email_domains = ["@<domain>"] }
+      # group_rule = { expression = "<Okta Expression Language>" }
+    }
   }
 }
