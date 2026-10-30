@@ -471,7 +471,7 @@ export const fieldShown = (field: Pick<ObjectField, 'shownWhen'>, settings: Reco
  */
 export const fieldProblem = (field: Pick<ObjectField, 'kind'>, value: string): string | undefined => {
   if (!value.trim()) return undefined;
-  if (field.kind === 'number' && !/^d+$/.test(value.trim())) return 'This has to be a whole number.';
+  if (field.kind === 'number' && !/^\d+$/.test(value.trim())) return 'This has to be a whole number.';
   if (field.kind === 'url') {
     if (/^\$\{[^}]+\}(\/\S*)?$/.test(value.trim())) return undefined;
     try {

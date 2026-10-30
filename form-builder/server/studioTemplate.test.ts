@@ -163,6 +163,12 @@ describe('Other function / HTTP request', () => {
     expect(fieldProblem(url, 'https://example.org/a')).toBeUndefined();
     expect(fieldProblem(url, '${lambda_twilio_account_scoped_url}/hrm/savePostSurvey')).toBeUndefined();
     expect(fieldProblem(url, 'example.org/a')).toMatch(/valid address/);
+    // Whole numbers (a Repeat's times, a queue's timeout)
+    const number = { kind: 'number' as const };
+    expect(fieldProblem(number, '2')).toBeUndefined();
+    expect(fieldProblem(number, ' 3600 ')).toBeUndefined();
+    expect(fieldProblem(number, '2.5')).toMatch(/whole number/);
+    expect(fieldProblem(number, 'two')).toMatch(/whole number/);
     expect(fieldProblem(url, 'ftp://example.org')).toMatch(/https/);
     expect(
       fieldProblem(json, '{ "contactId": "{{trigger.call.contactId}}", "n": {{flow.variables.n}} }'),
