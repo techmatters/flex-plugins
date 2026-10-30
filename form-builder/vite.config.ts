@@ -77,10 +77,20 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        // Libraries change less often than the app, so they're cached separately
+        // Libraries change less often than the app, so they're cached separately. One chunk: split
+        // in two (React's and the flow designer's), Rollup put React in the second, the two chunks
+        // imported each other, and react-dom ran before React was there (a blank page)
         manualChunks: {
-          vendor: ['react', 'react-dom', '@dnd-kit/core', '@dnd-kit/sortable', '@dnd-kit/utilities', 'jszip'],
-          flows: ['@xyflow/react', 'lucide-react'],
+          vendor: [
+            'react',
+            'react-dom',
+            '@dnd-kit/core',
+            '@dnd-kit/sortable',
+            '@dnd-kit/utilities',
+            'jszip',
+            '@xyflow/react',
+            'lucide-react',
+          ],
         },
       },
     },
