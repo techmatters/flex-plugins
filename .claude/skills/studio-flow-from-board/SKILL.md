@@ -99,7 +99,7 @@ are none.
 | A subflow's `flow_sid` | `${system_down_studio_subflow_sid}`, or the variable the helpline's other templates use |
 | A number to forward to, an HTTP address | Ask the person (put real values in variables, not the template) |
 | Set variables | What the design's text says the counter or variable is for |
-| A Repeat's counter or times to repeat | The board leaves them as `set_var_<counter>` and 2: ask the person if the design doesn't say |
+| A Repeat's times to repeat | The board leaves it at 2: ask the person if the design doesn't say |
 | A chatbot's settings (language, message, release type...) | `STUDIO_ROUTES.md` (`channelCapture/captureChannelWithBot`) and the helpline's other templates calling it; the bot's name is in `lex_v2_bot_languages` |
 
 Kinds that become more than one widget, as the board writes them:
@@ -107,11 +107,15 @@ Kinds that become more than one widget, as the board writes them:
 - **Menu (voice)**: a `gather-input-on-call` whose `keypress`, `speech` and `timeout` go where the
   board's ways out go. The options pressed are told apart by the Decision (Split on
   `{{widgets.<gather>.Digits}}`) after `keypress`.
-- **Repeat (counter)**: a `set-variables` (`set_var_<counter>`) whose value is
-  `{% if flow.variables.<counter> %}{{flow.variables.<counter> | plus: 1}}{% else %}1{% endif %}`,
-  then a `split-based-on` (`split_end_cycle_<name>`) on `{{flow.variables.<counter>}}`: `noMatch`
-  goes back round (`repeat`), `greater_than` the times to repeat goes on (`max reached`). Used for
-  unrecognised input and timeouts, e.g. usnm's `set_var_en_service_counter`.
+- **Repeat (counter)**, named `repeat_<name>` on the board: a `set-variables`
+  (`set_var_<name>_counter`) whose value is
+  `{% if flow.variables.<name>_counter %}{{flow.variables.<name>_counter | plus: 1}}{% else %}1{% endif %}`,
+  then a `split-based-on` (`split_<name>`) on `{{flow.variables.<name>_counter}}`: `noMatch` goes
+  back round (`repeat`), `greater_than` the times to repeat goes on (`max reached`). Used for
+  unrecognised input and timeouts (usnm's older `set_var_en_service_counter` / `split_end_cycle_en_service`).
+- **Send to queue**: `send-to-flex` with the board's workflow, task channel, `timeout` (3600 by
+  default) and, when set, `waitUrl` / `waitUrlMethod`: a recording is `<widget name>.mp3` in the
+  flow's recordings folder (it's in the recordings library under that name), an address is as written.
 - **Chatbot**: a `make-http-request` to `${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot`,
   named `f_captureChannelWithBot_<bot>`, its body from the board's settings. If the chatbot is
   new, it's built with the chatbot-from-design skill.

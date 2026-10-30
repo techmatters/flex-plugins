@@ -25,6 +25,7 @@ import {
   exitsOf,
   FlowObjectType,
   fieldProblem,
+  fieldShown,
   isNamedByParts,
   messageChannelOf,
   messageFor,
@@ -55,7 +56,7 @@ import type {
   ObjectField,
   Person,
 } from './model';
-import { hasNonStandardRecording, isVoiceMessage, withStudioName } from './recordings';
+import { hasNonStandardRecording, isVoiceMessage, playsWaitRecording, withStudioName } from './recordings';
 import { AutoTextarea } from '../components/AutoTextarea';
 import { CanvasNode, ConnectionEdge, FrameNode, newId, ObjectNode, StickyNode } from './canvasModel';
 import type { HelplineChoices } from './boardClient';
@@ -700,99 +701,107 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
               A Twilio Function in Studio (<code>run-function</code>): its settings stay as they are live.
             </p>
           )}
-          {info.fields.map((field) => {
-            const value = object.settings?.[field.key] ?? '';
-            const suggestions = suggestionsFor(field.suggestions, props.helplineChoices);
-            // Skills are a comma-separated list: they're added to it, not chosen instead of it
-            const listed = value.split(',').map((item) => item.trim());
-            const set = (newValue: string) => {
-              const { [field.key]: _removed, ...others } = object.settings ?? {};
-              const settings: Record<string, string> = newValue ? { ...others, [field.key]: newValue } : others;
-              // A chatbot of the helpline's chosen: its language too (Lex's en_USCH is en-USCH here)
-              const bot =
-                field.suggestions === 'chatbots' &&
-                props.helplineChoices?.chatbots.find((candidate) => candidate.name === newValue);
-              if (bot && !settings.language) settings.language = bot.language.replace('_', '-');
-              update({ settings: Object.keys(settings).length > 0 ? settings : undefined });
-            };
-            return (
-              <label key={field.key} className="field">
-                <span className="field-label">{field.label}</span>
-                {field.options ? (
-                  <select value={value} disabled={readOnly} onChange={(e) => set(e.target.value)}>
-                    <option value="">Not set</option>
-                    {field.options.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                ) : field.kind === 'json' ? (
-                  <AutoTextarea
-                    className="flow-field-json"
-                    value={value}
-                    minRows={4}
-                    placeholder={field.placeholder}
-                    disabled={readOnly}
-                    spellCheck={false}
-                    aria-invalid={Boolean(fieldProblem(field, value))}
-                    onChange={(e) => set(e.target.value)}
-                  />
-                ) : (
-                  <input
-                    type={field.kind === 'url' ? 'url' : 'text'}
-                    inputMode={field.kind === 'number' ? 'numeric' : undefined}
-                    className={field.kind === 'url' ? 'flow-field-url' : undefined}
-                    list={
-                      suggestions.length > 0 && field.suggestions !== 'skills'
-                        ? `suggestions-${node.id}-${field.key}`
-                        : undefined
-                    }
-                    onFocus={field.suggestions ? props.onRefreshChoices : undefined}
-                    value={value}
-                    placeholder={field.placeholder}
-                    disabled={readOnly}
-                    spellCheck={field.kind === 'url' ? false : undefined}
-                    aria-invalid={Boolean(fieldProblem(field, value))}
-                    onChange={(e) => set(e.target.value)}
-                  />
-                )}
-                {suggestions.length > 0 && field.suggestions !== 'skills' && (
-                  <datalist id={`suggestions-${node.id}-${field.key}`}>
-                    {suggestions.map(({ value: offered, detail }) => (
-                      <option key={offered} value={offered}>
-                        {detail}
-                      </option>
-                    ))}
-                  </datalist>
-                )}
-                {field.suggestions === 'skills' && !readOnly && (
-                  <span className="flow-field-choices" aria-label={`Add to ${field.label}`}>
-                    {suggestions
-                      .filter(({ value: skill }) => !listed.includes(skill))
-                      .map(({ value: skill }) => (
-                        <button
-                          key={skill}
-                          type="button"
-                          className="flow-field-choice"
-                          onClick={() => set(value.trim() ? `${value.replace(/,\s*$/, '')},${skill}` : skill)}
-                        >
-                          + {skill}
-                        </button>
+          {info.fields
+            .filter((field) => fieldShown(field, object.settings))
+            .map((field) => {
+              const value = object.settings?.[field.key] ?? '';
+              const suggestions = suggestionsFor(field.suggestions, props.helplineChoices);
+              // Skills are a comma-separated list: they're added to it, not chosen instead of it
+              const listed = value.split(',').map((item) => item.trim());
+              const set = (newValue: string) => {
+                const { [field.key]: _removed, ...others } = object.settings ?? {};
+                const settings: Record<string, string> = newValue ? { ...others, [field.key]: newValue } : others;
+                // A chatbot of the helpline's chosen: its language too (Lex's en_USCH is en-USCH here)
+                const bot =
+                  field.suggestions === 'chatbots' &&
+                  props.helplineChoices?.chatbots.find((candidate) => candidate.name === newValue);
+                if (bot && !settings.language) settings.language = bot.language.replace('_', '-');
+                update({ settings: Object.keys(settings).length > 0 ? settings : undefined });
+              };
+              return (
+                <label key={field.key} className="field">
+                  <span className="field-label">{field.label}</span>
+                  {field.options ? (
+                    <select value={value} disabled={readOnly} onChange={(e) => set(e.target.value)}>
+                      <option value="">{field.optionLabels?.[''] ?? 'Not set'}</option>
+                      {field.options.map((option) => (
+                        <option key={option} value={option}>
+                          {field.optionLabels?.[option] ?? option}
+                        </option>
                       ))}
-                  </span>
-                )}
-                {field.suggestions && suggestions.length === 0 && (
-                  <span className="field-hint">
-                    This helpline has no {SUGGESTIONS_FROM[field.suggestions]} yet: type it.
-                  </span>
-                )}
-                {fieldProblem(field, value) && <span className="flow-field-problem">{fieldProblem(field, value)}</span>}
-                {field.hint && <span className="field-hint">{field.hint}</span>}
-              </label>
-            );
-          })}
+                    </select>
+                  ) : field.kind === 'json' ? (
+                    <AutoTextarea
+                      className="flow-field-json"
+                      value={value}
+                      minRows={4}
+                      placeholder={field.placeholder}
+                      disabled={readOnly}
+                      spellCheck={false}
+                      aria-invalid={Boolean(fieldProblem(field, value))}
+                      onChange={(e) => set(e.target.value)}
+                    />
+                  ) : (
+                    <input
+                      type={field.kind === 'url' ? 'url' : 'text'}
+                      inputMode={field.kind === 'number' ? 'numeric' : undefined}
+                      className={field.kind === 'url' ? 'flow-field-url' : undefined}
+                      list={
+                        suggestions.length > 0 && field.suggestions !== 'skills'
+                          ? `suggestions-${node.id}-${field.key}`
+                          : undefined
+                      }
+                      onFocus={field.suggestions ? props.onRefreshChoices : undefined}
+                      value={value}
+                      placeholder={field.placeholder}
+                      disabled={readOnly}
+                      spellCheck={field.kind === 'url' ? false : undefined}
+                      aria-invalid={Boolean(fieldProblem(field, value))}
+                      onChange={(e) => set(e.target.value)}
+                    />
+                  )}
+                  {suggestions.length > 0 && field.suggestions !== 'skills' && (
+                    <datalist id={`suggestions-${node.id}-${field.key}`}>
+                      {suggestions.map(({ value: offered, detail }) => (
+                        <option key={offered} value={offered}>
+                          {detail}
+                        </option>
+                      ))}
+                    </datalist>
+                  )}
+                  {field.suggestions === 'skills' && !readOnly && (
+                    <span className="flow-field-choices" aria-label={`Add to ${field.label}`}>
+                      {suggestions
+                        .filter(({ value: skill }) => !listed.includes(skill))
+                        .map(({ value: skill }) => (
+                          <button
+                            key={skill}
+                            type="button"
+                            className="flow-field-choice"
+                            onClick={() => set(value.trim() ? `${value.replace(/,\s*$/, '')},${skill}` : skill)}
+                          >
+                            + {skill}
+                          </button>
+                        ))}
+                    </span>
+                  )}
+                  {field.suggestions && suggestions.length === 0 && (
+                    <span className="field-hint">
+                      This helpline has no {SUGGESTIONS_FROM[field.suggestions]} yet: type it.
+                    </span>
+                  )}
+                  {fieldProblem(field, value) && (
+                    <span className="flow-field-problem">{fieldProblem(field, value)}</span>
+                  )}
+                  {field.hint && <span className="field-hint">{field.hint}</span>}
+                </label>
+              );
+            })}
         </section>
+      )}
+
+      {playsWaitRecording(object) && (
+        <RecordingSection object={object} frame={details} actions={props.recordings} title="Wait music" />
       )}
 
       {object.type === 'sendToQueue' && (

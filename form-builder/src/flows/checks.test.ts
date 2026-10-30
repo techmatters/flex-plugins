@@ -239,7 +239,7 @@ describe('the board check', () => {
         named('sorry', 'end', undefined, { text: 'End' }),
         named('wait', 'setVariable', undefined, { text: 'Wait', studioName: 'set_var_wait' }),
       ],
-      connections: [connect('in', 'q'), connect('q', 'wait', 'post-queue'), connect('q', 'sorry', 'failed to enqueue')],
+      connections: [connect('in', 'q'), connect('q', 'wait', 'callComplete'), connect('q', 'sorry', 'failedToEnqueue')],
     };
     expect(messagesOf(content)).toEqual([
       '“Call” should go to the system-down subflow before anything else.',
@@ -260,8 +260,8 @@ describe('the board check', () => {
       connections: [
         connect('in', 'down'),
         connect('down', 'q'),
-        connect('q', 'wait', 'post-queue'),
-        connect('q', 'sorry', 'failed to enqueue'),
+        connect('q', 'wait', 'callComplete'),
+        connect('q', 'sorry', 'failedToEnqueue'),
         connect('wait', 'sorry'),
       ],
     };

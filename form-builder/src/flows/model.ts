@@ -453,7 +453,15 @@ export type ObjectField = {
   // Values offered as it's typed (any other can still be typed): the helpline's chatbots, or its
   // queues, workflows and skills in its routing design (skills are added to the comma-separated list)
   suggestions?: 'chatbots' | 'queues' | 'workflows' | 'skills';
+  // How a choice (options) is shown, when not as it's written
+  optionLabels?: Record<string, string>;
+  // Only shown (and used) when another of its settings has one of these values
+  shownWhen?: { key: string; values: string[] };
 };
+
+// Whether a field applies, given the object's other settings (ObjectField.shownWhen)
+export const fieldShown = (field: Pick<ObjectField, 'shownWhen'>, settings: Record<string, string> = {}) =>
+  !field.shownWhen || field.shownWhen.values.includes(settings[field.shownWhen.key] ?? '');
 
 /**
  * What's wrong with a field's value, in plain words (empty values are fine here: what's missing
@@ -824,8 +832,43 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
         options: ['voice', 'chat', 'sms', 'default'],
         hint: 'Its key in task_channel_sids.',
       },
+      {
+        key: 'timeout',
+        label: 'Timeout (seconds)',
+        kind: 'number',
+        placeholder: '3600',
+        hint: 'How long it can wait in the queue. 3600 (an hour) when not set.',
+      },
+      // What callers hear while they wait (waitUrl)
+      {
+        key: 'waitMusic',
+        label: 'While waiting (calls)',
+        options: ['recording', 'address'],
+        optionLabels: {
+          '': 'Twilio’s music',
+          recording: 'A recording (uploaded here)',
+          address: 'An address (waitUrl)',
+        },
+        hint: 'A recording is named after the widget, like a message’s, and played from the recordings folder.',
+      },
+      {
+        key: 'waitUrl',
+        label: 'Wait address (waitUrl)',
+        kind: 'url',
+        placeholder: '${flow_vars.custom_functions_url}/postQueueMonitor?Language=english',
+        hint: 'What Twilio plays while the caller waits: TwiML (e.g. a function), or an audio file.',
+        shownWhen: { key: 'waitMusic', values: ['address'] },
+      },
+      {
+        key: 'waitUrlMethod',
+        label: 'Its method',
+        options: ['GET', 'POST'],
+        shownWhen: { key: 'waitMusic', values: ['address'] },
+      },
     ],
-    exits: ['post-queue', 'failed to enqueue'],
+    // Studio's events: callComplete (the contact left the queue: the post-queue flow continues),
+    // failedToEnqueue, callFailure (usually left unconnected)
+    exits: ['callComplete', 'failedToEnqueue', 'callFailure'],
     defaultSize: { width: 150, height: 96 },
   },
   forwardCall: {
@@ -869,14 +912,9 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     icon: 'Repeat',
     family: 'decision',
     studioWidget: 'Set Variables + Split',
-    studioPrefix: 'set_var_',
+    // repeat_menu becomes set_var_menu_counter (counting in menu_counter) and split_menu
+    studioPrefix: 'repeat_',
     fields: [
-      {
-        key: 'counter',
-        label: 'Counter',
-        placeholder: 'en_service_counter',
-        hint: 'The flow variable that counts the times round. One per loop.',
-      },
       {
         key: 'maxRepeats',
         label: 'Times to repeat',
@@ -972,13 +1010,61 @@ export const upgradeContent = (content: BoardContent): BoardContent => {
   const waits = new Set(
     content.objects.filter((object) => (object.type as string) === 'wait').map((object) => object.id),
   );
-  if (waits.size === 0) return content;
+  // Send to queue's ways out are Studio's events now (imported ones always were)
+  const queues = new Set(
+    content.objects.filter((object) => object.type === 'sendToQueue' && !object.studio).map((object) => object.id),
+  );
+  const queueExit = (exit?: string) => QUEUE_EXITS_BEFORE[exit ?? ''] ?? exit;
+  const changes = (connection: Connection) =>
+    (waits.has(connection.from) && !connection.exit) ||
+    (queues.has(connection.from) && queueExit(connection.exit) !== connection.exit);
+  // Repeats named after their counter (set_var_menu_counter) are named repeat_menu now
+  const oldRepeat = (object: FlowObject) =>
+    object.type === 'repeat' && Boolean(object.studioName?.match(/^(postqueue_)?set_var_/));
+  const objectChanges = (object: FlowObject) =>
+    waits.has(object.id) ||
+    oldRepeat(object) ||
+    (queues.has(object.id) && (object.endedExits ?? []).some((exit) => queueExit(exit) !== exit));
+  if (!content.connections.some(changes) && !content.objects.some(objectChanges)) return content;
   return {
     ...content,
-    objects: content.objects.map((object) => (waits.has(object.id) ? { ...object, type: 'repeat' } : object)),
-    connections: content.connections.map((connection) =>
-      waits.has(connection.from) && !connection.exit ? { ...connection, exit: 'repeat' } : connection,
-    ),
+    objects: content.objects.map((object) => {
+      if (waits.has(object.id)) return { ...object, type: 'repeat' };
+      if (oldRepeat(object)) {
+        const { counter: _counter, ...settings } = object.settings ?? {};
+        const studioName = object.studioName!.replace(/set_var_(.*?)(_counter)?$/, 'repeat_$1');
+        return { ...object, studioName, settings: Object.keys(settings).length > 0 ? settings : undefined };
+      }
+      if (queues.has(object.id) && object.endedExits) {
+        return { ...object, endedExits: object.endedExits.map((exit) => queueExit(exit)!) };
+      }
+      return object;
+    }),
+    connections: content.connections.map((connection) => {
+      if (waits.has(connection.from) && !connection.exit) return { ...connection, exit: 'repeat' };
+      if (queues.has(connection.from)) return { ...connection, exit: queueExit(connection.exit) };
+      return connection;
+    }),
+  };
+};
+
+// Send to queue's ways out before they were Studio's events
+const QUEUE_EXITS_BEFORE: Record<string, string> = {
+  'post-queue': 'callComplete',
+  'failed to enqueue': 'failedToEnqueue',
+};
+
+/**
+ * The two widgets a Repeat becomes, from its name: repeat_menu is set_var_menu_counter (adding one
+ * to flow.variables.menu_counter) then split_menu. After the queue, both start with postqueue_.
+ */
+export const repeatWidgetNames = (studioName: string) => {
+  const postqueue = studioName.startsWith('postqueue_') ? 'postqueue_' : '';
+  const base = studioName.slice(postqueue.length).replace(/^repeat_/, '') || 'repeat';
+  return {
+    setVar: `${postqueue}set_var_${base}_counter`,
+    split: `${postqueue}split_${base}`,
+    counter: `${base}_counter`,
   };
 };
 
@@ -1034,8 +1120,6 @@ export const suggestStudioName = (
     }
     return `${postqueue}f_${toCamel(object.text) || 'function'}`;
   }
-  // A loop's counter and split are named after its counter variable
-  if (object.type === 'repeat' && object.settings?.counter) return `set_var_${toSnake(object.settings.counter)}`;
   if (object.type === 'sendToQueue') {
     const queue = toSnake(object.settings?.queue ?? object.text.replace(/\bqueue\b/i, ''));
     return queue ? `send_to_queue_${queue}` : 'send_to_queue';

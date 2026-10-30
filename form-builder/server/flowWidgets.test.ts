@@ -16,14 +16,14 @@
 
 /**
  * The menu's ways out (Studio's: keypress, speech, timeout), Repeat (a counter and a split, like
- * usnm's set_var_en_service_counter and split_end_cycle_en_service) and Chatbot (a
+ * usnm's set_var_en_service_counter and split_en_service) and Chatbot (a
  * captureChannelWithBot request), new and imported.
  */
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { describe, expect, test } from 'vitest';
 import type { BoardContent, FlowObject } from '../src/flows/model';
-import { emptyBoard, exitsOf, upgradeContent } from '../src/flows/model';
+import { emptyBoard, exitsOf, repeatWidgetNames, upgradeContent } from '../src/flows/model';
 import { boardChecks } from '../src/flows/checks';
 import { toStudioFlow } from '../src/flows/studioTemplate';
 import { importHelpline } from './flowImport';
@@ -84,8 +84,8 @@ describe('menus, repeats and chatbots', () => {
           message: { channel: 'voice', language: 'en', script: 'Press 1 or 2' },
         }),
         object('loop', 'repeat', {
-          studioName: 'set_var_en_service_counter',
-          settings: { counter: 'en_service_counter', maxRepeats: '2' },
+          studioName: 'repeat_en_service',
+          settings: { maxRepeats: '2' },
         }),
         object('queue', 'playMessage', { studioName: 'play_message_voice_en_prequeue_std' }),
       ],
@@ -100,7 +100,7 @@ describe('menus, repeats and chatbots', () => {
     const state = (name: string) => flow.states.find((candidate) => candidate.name === name);
     expect(state('set_var_en_service_counter')).toMatchObject({
       type: 'set-variables',
-      transitions: [{ event: 'next', next: 'split_end_cycle_en_service' }],
+      transitions: [{ event: 'next', next: 'split_en_service' }],
       properties: {
         variables: [
           {
@@ -112,7 +112,7 @@ describe('menus, repeats and chatbots', () => {
         ],
       },
     });
-    expect(state('split_end_cycle_en_service')).toMatchObject({
+    expect(state('split_en_service')).toMatchObject({
       type: 'split-based-on',
       transitions: [
         { event: 'noMatch', next: 'gather_input_voice_en_service' },
@@ -132,7 +132,7 @@ describe('menus, repeats and chatbots', () => {
 
     const unset = { ...content, objects: content.objects.map((o) => (o.id === 'loop' ? { ...o, settings: {} } : o)) };
     expect(boardChecks(unset).map((issue) => issue.message)).toContainEqual(
-      expect.stringContaining('set its counter and how many times it repeats.'),
+      expect.stringContaining('set how many times it repeats.'),
     );
   });
 
@@ -192,6 +192,94 @@ describe('menus, repeats and chatbots', () => {
       releaseFlag: 'preSurveyComplete',
     });
     expect(todo.join('\n')).not.toMatch(/captureChannelWithBot/);
+  });
+
+  test("send to queue's ways out are Studio's events; boards with the old ones open with these", () => {
+    const old = board(
+      'voice',
+      [
+        object('queue', 'sendToQueue', { endedExits: ['failed to enqueue'] }),
+        object('wait', 'playMessage', { studioName: 'postqueue_play_message_voice_wait' }),
+      ],
+      [connect('queue', 'wait', 'post-queue')],
+    );
+    const upgraded = upgradeContent(old);
+    expect(exitsOf(upgraded.objects[0])).toEqual(['callComplete', 'failedToEnqueue', 'callFailure']);
+    expect(upgraded.connections[0].exit).toBe('callComplete');
+    expect(upgraded.objects[0].endedExits).toEqual(['failedToEnqueue']);
+
+    const [sendToFlex] = toStudioFlow(
+      { ...upgraded, objects: [{ ...upgraded.objects[0], studioName: 'send_to_queue' }, upgraded.objects[1]] },
+      upgraded.frames[0],
+    ).flow.states;
+    expect(sendToFlex.transitions).toEqual([
+      { event: 'callComplete', next: 'postqueue_play_message_voice_wait' },
+      { event: 'failedToEnqueue' },
+      { event: 'callFailure' },
+    ]);
+    // callFailure is left unconnected on purpose, as in nearly every live flow
+    expect(boardChecks(upgraded).map((issue) => issue.message)).not.toContainEqual(
+      expect.stringContaining('callFailure'),
+    );
+  });
+
+  test('send to queue: what callers hear while waiting, and for how long', async () => {
+    const queue = (settings: Record<string, string>) =>
+      toStudioFlow(
+        board('voice', [object('queue', 'sendToQueue', { studioName: 'send_to_queue_en_std', settings })], []),
+        { id: 'f', title: 'Flow', x: 0, y: 0, width: 900, height: 600, channel: 'voice' },
+      );
+    // Twilio's music: no waitUrl; an hour unless set
+    expect(queue({}).flow.states[0].properties).toMatchObject({ timeout: '3600' });
+    expect(queue({}).flow.states[0].properties.waitUrl).toBeUndefined();
+    expect(
+      queue({
+        waitMusic: 'address',
+        waitUrl: '${flow_vars.custom_functions_url}/postQueueMonitor',
+        waitUrlMethod: 'POST',
+        timeout: '180',
+      }).flow.states[0].properties,
+    ).toMatchObject({
+      waitUrl: '${flow_vars.custom_functions_url}/postQueueMonitor',
+      waitUrlMethod: 'POST',
+      timeout: '180',
+    });
+    // A recording, named after the widget: from the flow's recordings folder (none here, so marked)
+    const recorded = queue({ waitMusic: 'recording' });
+    expect(recorded.flow.states[0].properties).toMatchObject({ waitUrl: 'TODO', waitUrlMethod: 'GET' });
+    expect(recorded.todo).toContainEqual(expect.stringContaining('send_to_queue_en_std.mp3'));
+
+    // usnm's: its address (postQueueMonitor) and timeout, as settings
+    const { boards } = await importHelpline(helplinesDir, 'usnm');
+    const imported = boards
+      .flatMap(({ content }) => content.objects)
+      .find((candidate) => candidate.studioName === 'send_to_queue_en_std');
+    expect(imported?.settings).toMatchObject({
+      waitMusic: 'address',
+      waitUrl: '${flow_vars.custom_functions_url}/postQueueMonitor?Language=english',
+      waitUrlMethod: 'POST',
+      timeout: '3600',
+    });
+  });
+
+  test('repeats are named repeat_<name>; those named after their counter before open renamed', () => {
+    const old = board(
+      'voice',
+      [
+        object('loop', 'repeat', {
+          studioName: 'set_var_menu_counter',
+          settings: { counter: 'menu_counter', maxRepeats: '3' },
+        }),
+      ],
+      [],
+    );
+    expect(upgradeContent(old).objects[0]).toMatchObject({ studioName: 'repeat_menu', settings: { maxRepeats: '3' } });
+    expect(upgradeContent(old).objects[0].settings).not.toHaveProperty('counter');
+    expect(repeatWidgetNames('postqueue_repeat_menu')).toEqual({
+      setVar: 'postqueue_set_var_menu_counter',
+      split: 'postqueue_split_menu',
+      counter: 'menu_counter',
+    });
   });
 
   test('send to queue: its workflow and task channel from the board, the queue it should end in for the agent', () => {

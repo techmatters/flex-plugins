@@ -717,9 +717,19 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
           textOf(value)?.match(new RegExp(`^\\$\\{\\s*${variable}\\.([A-Za-z0-9_]+)\\s*\\}$`))?.[1];
         const workflow = keyIn(properties.workflow, 'workflow_sids');
         const taskChannel = keyIn(properties.channel, 'task_channel_sids');
-        if (workflow || taskChannel) {
-          object.settings = { ...(workflow ? { workflow } : {}), ...(taskChannel ? { taskChannel } : {}) };
-        }
+        // What callers hear while waiting (an address, as written), and how long they can wait
+        const waitUrl = textOf(properties.waitUrl);
+        const waitUrlMethod = textOf(properties.waitUrlMethod);
+        const timeout =
+          textOf(properties.timeout) ??
+          (typeof properties.timeout === 'number' ? String(properties.timeout) : undefined);
+        const settings: Record<string, string> = {
+          ...(workflow ? { workflow } : {}),
+          ...(taskChannel ? { taskChannel } : {}),
+          ...(timeout ? { timeout } : {}),
+          ...(waitUrl?.trim() ? { waitMusic: 'address', waitUrl, ...(waitUrlMethod ? { waitUrlMethod } : {}) } : {}),
+        };
+        if (Object.keys(settings).length > 0) object.settings = settings;
       }
 
       // Other HTTP requests: their method, address and body as written (variables kept)

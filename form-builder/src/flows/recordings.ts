@@ -83,6 +83,11 @@ export const isPublished = (recording: Recording) =>
 export const isVoiceMessage = (object: Pick<FlowObject, 'type' | 'message'>, frame?: Pick<Frame, 'channel'>) =>
   Boolean(OBJECT_TYPES[object.type].hasMessage) && (object.message?.channel ?? frame?.channel) === 'voice';
 
+// Send to queue's wait music, when it's a recording of the helpline's: named after the widget, as a
+// message's recording is
+export const playsWaitRecording = (object: Pick<FlowObject, 'type' | 'settings'>) =>
+  object.type === 'sendToQueue' && object.settings?.waitMusic === 'recording';
+
 // The object's recording: a file named after its Studio name, MP3 or WAV
 export const recordingOf = (object: Pick<FlowObject, 'studioName' | 'message'>, recordings: Recording[] = []) => {
   // Imported from a helpline whose files aren't named after their widgets

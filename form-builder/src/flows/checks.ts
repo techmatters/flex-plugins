@@ -23,6 +23,7 @@ import type { BoardContent, FlowObject, Frame, NamingChoices } from './model';
 import {
   exitsOf,
   fieldProblem,
+  fieldShown,
   flowDetailsOf,
   namingChoicesOf,
   OBJECT_TYPES,
@@ -34,6 +35,8 @@ import { hasNonStandardRecording, isVoiceMessage, messageStatus } from './record
 import { taskAttributesProblem } from './taskAttributes';
 
 const POSTQUEUE = 'postqueue_';
+
+const UNCONNECTED_ON_PURPOSE = new Set(['speech', 'callfailure']);
 
 // HTTP requests that don't call a function are named http_get_ / http_post_ instead of f_
 const prefixesOf = (object: Pick<FlowObject, 'type'>): string[] => {
@@ -235,8 +238,9 @@ export const boardChecks = (
             `twice-${exit}`,
           );
         }
-        // "speech" is left unconnected on purpose: answers are pressed, rarely said
-        if (leaving.length === 0 && !ended.has(exit) && exit.toLowerCase() !== 'speech') {
+        // Left unconnected on purpose: "speech" (answers are pressed, rarely said) and Send to
+        // Flex's "callFailure" (as in nearly every live flow)
+        if (leaving.length === 0 && !ended.has(exit) && !UNCONNECTED_ON_PURPOSE.has(exit.toLowerCase())) {
           add(
             { severity: 'warning', message: `${name}: “${exit}” isn't connected.`, objectId, openExit: exit },
             `open-${exit}`,
@@ -260,19 +264,18 @@ export const boardChecks = (
     }
 
     // Call settings: valid addresses and JSON
-    (info.fields ?? []).forEach((field) => {
-      const problem = fieldProblem(field, object.settings?.[field.key] ?? '');
-      if (problem)
-        add({ severity: 'error', message: `${name}: ${field.label}: ${problem}`, objectId }, `field-${field.key}`);
-    });
+    (info.fields ?? [])
+      .filter((field) => fieldShown(field, object.settings))
+      .forEach((field) => {
+        const problem = fieldProblem(field, object.settings?.[field.key] ?? '');
+        if (problem)
+          add({ severity: 'error', message: `${name}: ${field.label}: ${problem}`, objectId }, `field-${field.key}`);
+      });
     if (object.type === 'function' && !object.studio && !object.settings?.url?.trim()) {
       add({ severity: 'warning', message: `${name} has no address (URL) to call yet.`, objectId }, 'noUrl');
     }
-    if (object.type === 'repeat' && (!object.settings?.counter?.trim() || !object.settings?.maxRepeats?.trim())) {
-      add(
-        { severity: 'warning', message: `${name}: set its counter and how many times it repeats.`, objectId },
-        'noCounter',
-      );
+    if (object.type === 'repeat' && !object.settings?.maxRepeats?.trim()) {
+      add({ severity: 'warning', message: `${name}: set how many times it repeats.`, objectId }, 'noCounter');
     }
     if (object.type === 'chatbot' && !object.studio && !object.settings?.botSuffix?.trim()) {
       add({ severity: 'warning', message: `${name}: choose the chatbot it starts.`, objectId }, 'noChatbot');

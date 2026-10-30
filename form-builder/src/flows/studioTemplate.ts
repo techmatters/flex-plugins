@@ -29,7 +29,7 @@
  *   (${channel_attributes.default}): new and changed ones are listed, for that template.
  */
 import type { BoardContent, FlowObject, Frame, TaskAttributes } from './model';
-import { exitsOf, OBJECT_TYPES, toSnake } from './model';
+import { exitsOf, OBJECT_TYPES, repeatWidgetNames, toSnake } from './model';
 import { isVoiceMessage, standardRecordingName } from './recordings';
 import { CHANNEL_ATTRIBUTES_REFERENCE } from './taskAttributes';
 
@@ -84,6 +84,9 @@ export type GeneratedStudioFlow = {
 const VARIABLE = /^\$\{\s*([a-z_]*flow_vars)\.([A-Za-z0-9_]+)\s*\}$/;
 const TODO = 'TODO';
 const ACCOUNT_SCOPED = '${lambda_twilio_account_scoped_url}';
+
+// A Repeat's name, or one for it while it has none
+const repeatNameOf = (object: FlowObject) => object.studioName ?? `repeat_todo_${toSnake(object.text) || object.id}`;
 
 // What new flows start with (the baseline templates' settings)
 const DEFAULT_SETTINGS = {
@@ -213,12 +216,34 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
     )
     .find(Boolean);
 
+  // What callers hear while waiting in the queue (Send to queue's waitUrl): Twilio's music (nothing
+  // set), the helpline's recording (named after the widget, played from the recordings folder) or an
+  // address. Imported widgets with an address have it as their setting, so nothing set leaves theirs
+  const waitSettingsOf = (object: FlowObject, name: string): Record<string, string> => {
+    const { waitMusic, waitUrl, waitUrlMethod } = object.settings ?? {};
+    if (waitMusic === 'recording') {
+      if (!recordingsVariable) {
+        todo.push(
+          `${label(object)}: no recordings folder variable found in this flow; point its waitUrl at its recording (${name}.mp3).`,
+        );
+      }
+      return {
+        waitUrl: recordingsVariable ? `\${flow_vars.${recordingsVariable}}/${name}.mp3` : TODO,
+        waitUrlMethod: 'GET',
+      };
+    }
+    if (waitMusic === 'address') return { waitUrl: waitUrl || TODO, ...(waitUrlMethod ? { waitUrlMethod } : {}) };
+    return {};
+  };
+
   // Each object's widget name; kinds that aren't widgets have none
   const NOT_WIDGETS = new Set<FlowObject['type']>(['end', 'text', 'goToFrame', 'preSurvey']);
   const nameOf = (object: FlowObject): string | undefined => {
     if (object.studio) return object.studioName ?? object.studio.name;
     if (object.type === 'incoming') return 'Trigger';
     if (NOT_WIDGETS.has(object.type)) return undefined;
+    // A Repeat is reached through its counter (set_var_<name>_counter)
+    if (object.type === 'repeat') return repeatWidgetNames(repeatNameOf(object)).setVar;
     return object.studioName ?? `todo_${toSnake(object.text) || object.id}`;
   };
   // Design objects that stand for something built some other way
@@ -321,6 +346,13 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         }
         if (taskChannel && properties.channel !== `\${task_channel_sids.${taskChannel}}`) {
           properties.channel = `\${task_channel_sids.${taskChannel}}`;
+        }
+        // What's heard while waiting, and for how long, where changed on the board
+        Object.entries(waitSettingsOf(object, name)).forEach(([key, value]) => {
+          if (properties[key] !== value) properties[key] = value;
+        });
+        if (object.settings?.timeout && properties.timeout !== object.settings.timeout) {
+          properties.timeout = object.settings.timeout;
         }
       } else if (object.type === 'function') {
         // The request as set on the board (method, address, body), where it differs from Studio's
@@ -502,13 +534,12 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       }
       case 'repeat': {
         // The counter goes up each time round; past the maximum, the loop's way out
-        const counter = object.settings?.counter?.trim() || name.replace(/^set_var_/, '');
+        const { counter, split: endName } = repeatWidgetNames(repeatNameOf(object));
         const maxRepeats = object.settings?.maxRepeats?.trim() || '2';
-        if (!object.settings?.counter || !object.settings?.maxRepeats) {
-          todo.push(`${label(object)}: check its counter (${counter}) and how many times it repeats (${maxRepeats}).`);
+        if (!object.settings?.maxRepeats) {
+          todo.push(`${label(object)}: check how many times it repeats (${maxRepeats}).`);
         }
         const value = `flow.variables.${counter}`;
-        const endName = `split_end_cycle_${name.replace(/^set_var_/, '').replace(/_counter$/, '')}`;
         return [
           {
             name,
@@ -688,14 +719,16 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
             name,
             type: 'send-to-flex',
             transitions: [
-              withNext({ event: 'callComplete' }, next('post-queue')),
-              withNext({ event: 'failedToEnqueue' }, next('failed to enqueue')),
-              { event: 'callFailure' },
+              withNext({ event: 'callComplete' }, next('callComplete')),
+              withNext({ event: 'failedToEnqueue' }, next('failedToEnqueue')),
+              withNext({ event: 'callFailure' }, next('callFailure')),
             ],
             properties: {
               offset,
               workflow: workflow ? `\${workflow_sids.${workflow}}` : TODO,
               channel: taskChannel ? `\${task_channel_sids.${taskChannel}}` : TODO,
+              ...waitSettingsOf(object, name),
+              timeout: object.settings?.timeout || '3600',
               attributes:
                 attributes?.source.kind === 'inline'
                   ? attributes.json

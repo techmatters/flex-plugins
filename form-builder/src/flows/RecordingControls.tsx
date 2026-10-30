@@ -31,6 +31,7 @@ import {
   isVoiceMessage,
   MAX_RECORDING_BYTES,
   messageStatus,
+  playsWaitRecording,
   RECORDING_EXTENSIONS,
   recordingOf,
   standardRecordingName,
@@ -148,16 +149,23 @@ export const RecordingSection = ({
   object,
   frame,
   actions,
+  title,
 }: {
-  object: Pick<FlowObject, 'id' | 'type' | 'message' | 'studioName'>;
+  object: Pick<FlowObject, 'id' | 'type' | 'message' | 'studioName' | 'settings'>;
   frame?: Pick<Frame, 'channel'>;
   actions: RecordingActions;
+  title?: string;
 }) => {
   const [problem, setProblem] = useState<string>();
   const [renaming, setRenaming] = useState(false);
-  if (!isVoiceMessage(object, frame)) return null;
+  // A voice message's recording, or Send to queue's wait music (no script: recorded, or not yet)
+  const waitMusic = playsWaitRecording(object);
+  if (!isVoiceMessage(object, frame) && !waitMusic) return null;
   const recording = recordingOf(object, actions.list?.recordings);
-  const status = messageStatus(object, frame, actions.list?.recordings);
+  const status = waitMusic
+    ? recording &&
+      messageStatus({ ...object, type: 'playMessage', message: { channel: 'voice' } }, frame, actions.list?.recordings)
+    : messageStatus(object, frame, actions.list?.recordings);
   const busy = recording ? actions.busy.has(recording.fileName) : false;
 
   const upload = (file: File) => {
@@ -167,9 +175,9 @@ export const RecordingSection = ({
   };
 
   return (
-    <section className="flow-inspector-section" aria-label="Recording">
+    <section className="flow-inspector-section" aria-label={title ?? 'Recording'}>
       <h3>
-        Recording <StatusChip status={status} />
+        {title ?? 'Recording'} {status && <StatusChip status={status} />}
       </h3>
       {actions.unavailable && <p className="field-hint">{actions.unavailable}</p>}
       {!actions.unavailable && !object.studioName && (
