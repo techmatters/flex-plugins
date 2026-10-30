@@ -587,3 +587,134 @@ describe('menus, repeats and chatbots', () => {
     expect(bots[0].settings).toMatchObject({ botSuffix: 'pre_survey', language: 'en-USCH' });
   });
 });
+
+describe('what a split splits on', () => {
+  test("not set, a split reads the answer of the widget before it; typed, what's typed", () => {
+    const question = object('welcome', 'questionMessaging', { studioName: 'send_wait_welcome' });
+    const menu = object('language', 'menuVoice', { studioName: 'gather_input_voice_language' });
+    const afterReply = object('reply', 'decision', { studioName: 'split_welcome', exits: ['yes', 'noMatch'] });
+    const afterKeys = object('keys', 'decision', { studioName: 'split_language', exits: ['1', '2', 'noMatch'] });
+    const afterSpeech = object('speech', 'decision', {
+      studioName: 'split_language_speech',
+      exits: ['english', 'noMatch'],
+    });
+    const typed = object('typed', 'decision', {
+      studioName: 'split_service',
+      exits: ['tya', 'noMatch'],
+      settings: { input: '{{trigger.conversation.ChannelAttributes.flowMemory.service}}' },
+    });
+    const content = board(
+      'webchat',
+      [question, menu, afterReply, afterKeys, afterSpeech, typed],
+      [
+        connect('welcome', 'reply', 'reply'),
+        connect('language', 'keys', 'keypress'),
+        connect('language', 'speech', 'speech'),
+        connect('welcome', 'typed', 'reply'),
+      ],
+    );
+    const { flow } = toStudioFlow(content, content.frames[0]);
+    const inputOf = (name: string) => flow.states.find((state) => state.name === name)!.properties.input;
+    expect(inputOf('split_welcome')).toBe('{{widgets.send_wait_welcome.inbound.Body}}');
+    expect(inputOf('split_language')).toBe('{{widgets.gather_input_voice_language.Digits}}');
+    expect(inputOf('split_language_speech')).toBe('{{widgets.gather_input_voice_language.SpeechResult}}');
+    expect(inputOf('split_service')).toBe('{{trigger.conversation.ChannelAttributes.flowMemory.service}}');
+    const keys = flow.states.find((state) => state.name === 'split_language')!;
+    expect(JSON.stringify(keys.transitions)).toContain(
+      '"arguments":["{{widgets.gather_input_voice_language.Digits}}"]',
+    );
+    // With a default, nothing to choose
+    expect(
+      boardChecks(content)
+        .map((issue) => issue.message)
+        .join('\n'),
+    ).not.toMatch(/choose what it splits on/);
+    // Reached from widgets with different answers: no default
+    const two = { ...content, connections: [...content.connections, connect('language', 'reply', 'keypress')] };
+    expect(boardChecks(two).map((issue) => issue.message)).toContainEqual(
+      expect.stringContaining('“reply”: choose what it splits on'),
+    );
+  });
+
+  test('imported splits\' ways out are their values ("2"), also on boards imported before', async () => {
+    const { boards } = await importHelpline(helplinesDir, 'usnm');
+    const voice = boards.find(({ content }) =>
+      content.objects.some((candidate) => candidate.studioName === 'split_voice_language'),
+    )!.content;
+    const split = voice.objects.find((candidate) => candidate.studioName === 'split_voice_language')!;
+    expect(split.exits).toContain('2');
+    expect(split.exits!.some((exit) => exit.startsWith('If value'))).toBe(false);
+    expect(voice.connections.filter((connection) => connection.from === split.id).map(({ exit }) => exit)).toContain(
+      '2',
+    );
+    // Unchanged, it's generated as it is live
+    const live = toStudioFlow(voice).flow.states.find((state) => state.name === 'split_voice_language')!;
+    expect(live.transitions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ conditions: [expect.objectContaining({ friendly_name: 'If value equal_to 2' })] }),
+      ]),
+    );
+
+    // A board imported before: its ways out (and connections) are renamed when it's opened
+    const before = (exit?: string) => (exit && /^\d$/.test(exit) ? `If value equal_to ${exit}` : exit);
+    const old = {
+      ...voice,
+      objects: voice.objects.map((candidate) =>
+        candidate.id === split.id ? { ...candidate, exits: candidate.exits!.map((exit) => before(exit)!) } : candidate,
+      ),
+      connections: voice.connections.map((connection) =>
+        connection.from === split.id ? { ...connection, exit: before(connection.exit) } : connection,
+      ),
+    };
+    const upgraded = upgradeContent(old);
+    expect(upgraded.objects.find((candidate) => candidate.id === split.id)!.exits).toEqual(split.exits);
+    expect(upgraded.connections).toEqual(voice.connections);
+    expect(upgradeContent(voice)).toBe(voice);
+  });
+});
+
+describe('who a message is from', () => {
+  test("new messages are from the helpline unless chosen (Bot, or typed), with Studio's other attributes set", () => {
+    const send = object('send', 'sendMessage', { studioName: 'send_message_sms_en_info' });
+    const ask = object('ask', 'questionMessaging', { studioName: 'send_wait_sms_en_name', settings: { from: 'Bot' } });
+    const close = object('close', 'sendMessageAndClose', {
+      studioName: 'f_sendMessageAndRunJanitor_blocked',
+      settings: { from: 'NAMI' },
+    });
+    const content = board('webchat', [send, ask, close], [connect('send', 'ask'), connect('ask', 'close', 'reply')]);
+    const { flow } = toStudioFlow(content, content.frames[0]);
+    const state = (name: string) => flow.states.find((candidate) => candidate.name === name)!;
+    expect(state('send_message_sms_en_info').properties).toMatchObject({
+      service: '{{trigger.message.InstanceSid}}',
+      channel: '{{trigger.message.ChannelSid}}',
+      from: '${helpline}',
+      message_type: 'custom',
+      to: '{{contact.channel.address}}',
+    });
+    expect(state('send_wait_sms_en_name').properties).toMatchObject({ from: 'Bot', message_type: 'custom' });
+    expect(JSON.parse(String(state('f_sendMessageAndRunJanitor_blocked').properties.body))).toMatchObject({
+      from: 'NAMI',
+    });
+  });
+
+  test("imported messages show who they're from; changed on the board, the widget says so", async () => {
+    const { boards } = await importHelpline(helplinesDir, 'usnm');
+    const sms = boards.find(({ content }) =>
+      content.objects.some((candidate) => candidate.studioName === 'send_wait_sms_name_request'),
+    )!.content;
+    const ask = sms.objects.find((candidate) => candidate.studioName === 'send_wait_sms_name_request')!;
+    expect(ask.settings).toMatchObject({ from: 'NAMI', timeout: '180' });
+    const changed = {
+      ...sms,
+      objects: sms.objects.map((candidate) =>
+        candidate.id === ask.id
+          ? { ...candidate, settings: { ...candidate.settings, from: '${helpline}' } }
+          : candidate,
+      ),
+    };
+    const state = toStudioFlow(changed).flow.states.find(
+      (candidate) => candidate.name === 'send_wait_sms_name_request',
+    )!;
+    expect(state.properties).toMatchObject({ from: '${helpline}', message_type: 'custom', timeout: '180' });
+  });
+});

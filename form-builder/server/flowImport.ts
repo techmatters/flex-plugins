@@ -43,7 +43,7 @@ import type {
   Side,
   TaskAttributes,
 } from '../src/flows/model';
-import { emptyBoard, OBJECT_TYPES, variesByVariant } from '../src/flows/model';
+import { conditionExitName, emptyBoard, OBJECT_TYPES, variesByVariant } from '../src/flows/model';
 import { importedRecordingKey, RECORDING_FILE_PATTERN } from '../src/flows/recordings';
 import { janitorValuesOf } from '../src/flows/janitor';
 import { studioNameProblems } from '../src/flows/checks';
@@ -293,7 +293,7 @@ const typeOf = (widget: HclObject): FlowObjectType | undefined => {
 const exitNameOf = (transition: HclObject, index: number) => {
   if (transition.event !== 'match') return textOf(transition.event) ?? `event ${index + 1}`;
   const [condition] = Array.isArray(transition.conditions) ? transition.conditions.filter(isObject) : [];
-  return textOf(condition?.friendly_name) ?? textOf(condition?.value) ?? `match ${index + 1}`;
+  return conditionExitName(textOf(condition?.friendly_name), textOf(condition?.value)) ?? `match ${index + 1}`;
 };
 
 const sidesBetween = (from: { x: number; y: number }, to: { x: number; y: number }): [Side, Side] => {
@@ -776,10 +776,14 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
           );
           if (Object.keys(settings).length > 0) object.settings = settings;
         }
-      } else if (type === 'questionMessaging') {
-        // How long it waits for the reply
-        const timeout = properties.timeout;
-        if (typeof timeout === 'string' || typeof timeout === 'number') object.settings = { timeout: String(timeout) };
+      } else if (type === 'questionMessaging' || type === 'sendMessage') {
+        // Who it's from, and how long it waits for the reply
+        const { from, timeout } = properties;
+        const settings = {
+          ...(typeof from === 'string' ? { from } : {}),
+          ...(typeof timeout === 'string' || typeof timeout === 'number' ? { timeout: String(timeout) } : {}),
+        };
+        if (Object.keys(settings).length > 0) object.settings = settings;
       } else if (type === 'sendMessageAndClose') {
         // Who it's from, and legacy Programmable Chat (channelSid without conversationSid)
         const values = janitorValuesOf(properties);

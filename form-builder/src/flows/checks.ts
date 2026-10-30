@@ -21,6 +21,7 @@
  */
 import type { BoardContent, FlowObject, Frame, NamingChoices } from './model';
 import {
+  defaultSplitInputOf,
   exitsOf,
   fieldProblem,
   fieldShown,
@@ -284,8 +285,13 @@ export const boardChecks = (
       const what = object.type === 'setFlowMemory' ? 'the values it keeps' : 'the variables it sets';
       add({ severity: 'warning', message: `${name}: add ${what}.`, objectId }, 'noVariables');
     }
-    // A new split: what it splits on (imported ones have theirs)
-    if ((object.type === 'decision' || object.type === 'checkCountry') && !object.studio && !object.settings?.input) {
+    // A new split: what it splits on (imported ones have theirs; otherwise the answer of the widget before it)
+    if (
+      (object.type === 'decision' || object.type === 'checkCountry') &&
+      !object.studio &&
+      !object.settings?.input &&
+      !defaultSplitInputOf(content, object.id)
+    ) {
       add({ severity: 'warning', message: `${name}: choose what it splits on.`, objectId }, 'noInput');
     }
     (object.variables ?? []).forEach((variable, index) => {

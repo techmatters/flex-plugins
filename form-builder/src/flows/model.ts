@@ -472,6 +472,22 @@ export type ObjectField = {
   optionLabels?: Record<string, string>;
   // Only shown (and used) when another of its settings has one of these values
   shownWhen?: { key: string; values: string[] };
+  // With options: what it is when not set, and that any other value can be typed (Custom)
+  defaultValue?: string;
+  custom?: boolean;
+};
+
+// Who a message is from, as the person sees it: the helpline's name (${helpline}, from its
+// common.hcl), Bot, or anything typed
+export const MESSAGE_FROM_DEFAULT = '${helpline}';
+const FROM_FIELD: ObjectField = {
+  key: 'from',
+  label: 'From',
+  options: [MESSAGE_FROM_DEFAULT, 'Bot'],
+  optionLabels: { [MESSAGE_FROM_DEFAULT]: 'Helpline (${helpline})', Bot: 'Bot' },
+  defaultValue: MESSAGE_FROM_DEFAULT,
+  custom: true,
+  hint: 'Who the message is from, as the person sees it: the helpline’s name, Bot, or your own.',
 };
 
 // Whether a field applies, given the object's other settings (ObjectField.shownWhen)
@@ -692,7 +708,7 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
         label: 'Splits on',
         placeholder: '{{trigger.conversation.ChannelAttributes.flowMemory.entryPoint}}',
         suggestions: 'splitInputs',
-        hint: 'Choose what this flow keeps (flow memory, variables, a chatbot finishing), or type any {{...}}. Each way out but noMatch is a value it’s equal to.',
+        hint: 'Empty, it splits on the answer of the widget before it (a reply’s text, the keys pressed). Or choose what this flow keeps (flow memory, variables, a chatbot finishing), or type any {{...}}. Each way out but noMatch is a value it’s equal to.',
       },
     ],
     editableExits: true,
@@ -719,6 +735,7 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     studioWidget: 'Send Message',
     studioPrefix: 'send_message_',
     hasMessage: true,
+    fields: [FROM_FIELD],
     defaultSize: { width: 220, height: 72 },
   },
   menuVoice: {
@@ -746,6 +763,7 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     studioPrefix: 'send_wait_',
     hasMessage: true,
     fields: [
+      FROM_FIELD,
       {
         key: 'timeout',
         label: 'Timeout (seconds)',
@@ -771,12 +789,7 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     nameSuffixFromText: true,
     hasMessage: true,
     fields: [
-      {
-        key: 'from',
-        label: 'From',
-        placeholder: '${helpline}',
-        hint: 'Who the message is from, as the person sees it (e.g. the helpline’s name). Optional.',
-      },
+      FROM_FIELD,
       {
         key: 'conversation',
         label: 'Conversation',
@@ -1111,21 +1124,42 @@ export const upgradeContent = (content: BoardContent): BoardContent => {
     content.objects.filter((object) => object.type === 'sendToQueue' && !object.studio).map((object) => object.id),
   );
   const queueExit = (exit?: string) => QUEUE_EXITS_BEFORE[exit ?? ''] ?? exit;
-  const changes = (connection: Connection) =>
-    (waits.has(connection.from) && !connection.exit) ||
-    (queues.has(connection.from) && queueExit(connection.exit) !== connection.exit);
   // Repeats named after their counter (set_var_menu_counter) are named repeat_menu now
   const oldRepeat = (object: FlowObject) =>
     object.type === 'repeat' && Boolean(object.studioName?.match(/^(postqueue_)?set_var_/));
+  // Imported splits' ways out are their values ("2"), not Studio's names for them ("If value equal_to 2")
+  const splitExits = new Map<string, Map<string, string>>();
+  content.objects.forEach((object) => {
+    if (object.studio?.type !== 'split-based-on' || !object.exits) return;
+    const renamed = new Map<string, string>();
+    object.exits.forEach((exit) => {
+      const value = exit.match(STUDIO_CONDITION_NAME)?.[1];
+      if (value && !object.exits!.includes(value) && ![...renamed.values()].includes(value)) renamed.set(exit, value);
+    });
+    if (renamed.size > 0) splitExits.set(object.id, renamed);
+  });
+  const splitExit = (id: string, exit: string) => splitExits.get(id)?.get(exit) ?? exit;
+  const changes = (connection: Connection) =>
+    (waits.has(connection.from) && !connection.exit) ||
+    (queues.has(connection.from) && queueExit(connection.exit) !== connection.exit) ||
+    splitExits.has(connection.from);
   const objectChanges = (object: FlowObject) =>
     waits.has(object.id) ||
     oldRepeat(object) ||
+    splitExits.has(object.id) ||
     (queues.has(object.id) && (object.endedExits ?? []).some((exit) => queueExit(exit) !== exit));
   if (!content.connections.some(changes) && !content.objects.some(objectChanges)) return content;
   return {
     ...content,
     objects: content.objects.map((object) => {
       if (waits.has(object.id)) return { ...object, type: 'repeat' };
+      if (splitExits.has(object.id)) {
+        return {
+          ...object,
+          exits: object.exits!.map((exit) => splitExit(object.id, exit)),
+          ...(object.endedExits ? { endedExits: object.endedExits.map((exit) => splitExit(object.id, exit)) } : {}),
+        };
+      }
       if (oldRepeat(object)) {
         const { counter: _counter, ...settings } = object.settings ?? {};
         const studioName = object.studioName!.replace(/set_var_(.*?)(_counter)?$/, 'repeat_$1');
@@ -1139,6 +1173,9 @@ export const upgradeContent = (content: BoardContent): BoardContent => {
     connections: content.connections.map((connection) => {
       if (waits.has(connection.from) && !connection.exit) return { ...connection, exit: 'repeat' };
       if (queues.has(connection.from)) return { ...connection, exit: queueExit(connection.exit) };
+      if (splitExits.has(connection.from) && connection.exit) {
+        return { ...connection, exit: splitExit(connection.from, connection.exit) };
+      }
       return connection;
     }),
   };
@@ -1464,3 +1501,38 @@ export const splitInputsOf = (objects: Pick<FlowObject, 'type' | 'variables' | '
   });
   return [...inputs.entries()].map(([value, detail]) => ({ value, detail }));
 };
+
+// A widget's answer, for a split right after it: a reply's text, the keys pressed or what was said
+const answerOf = (object: FlowObject, exit?: string) => {
+  const name = object.studio ? (object.studioName ?? object.studio.name) : object.studioName;
+  if (!name) return undefined;
+  if (object.type === 'questionMessaging') return `{{widgets.${name}.inbound.Body}}`;
+  if (object.type === 'menuVoice') {
+    return exit === 'speech' ? `{{widgets.${name}.SpeechResult}}` : `{{widgets.${name}.Digits}}`;
+  }
+  return undefined;
+};
+
+/**
+ * What a split splits on when it isn't set: the answer of the widget before it, e.g.
+ * {{widgets.send_wait_welcome.inbound.Body}} or {{widgets.gather_input_voice_language.Digits}}. Only
+ * when everything leading to it gives the same one.
+ */
+export const defaultSplitInputOf = (content: Pick<BoardContent, 'objects' | 'connections'>, objectId: string) => {
+  const byId = new Map(content.objects.map((object) => [object.id, object]));
+  const answers = new Set(
+    content.connections
+      .filter((connection) => connection.to === objectId)
+      .map((connection) => {
+        const from = byId.get(connection.from);
+        return from && answerOf(from, connection.exit);
+      }),
+  );
+  const [answer] = answers;
+  return answers.size === 1 ? answer : undefined;
+};
+
+// Studio names a split's conditions itself ("If value equal_to 2"): those ways out are their value ("2")
+const STUDIO_CONDITION_NAME = /^If value \S+ (.+)$/i;
+export const conditionExitName = (friendlyName: string | undefined, value: string | undefined) =>
+  friendlyName && !(value && STUDIO_CONDITION_NAME.test(friendlyName)) ? friendlyName : value;

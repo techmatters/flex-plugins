@@ -113,6 +113,9 @@ Kinds that become more than one widget, as the board writes them:
   then a `split-based-on` (`split_<name>`) on `{{flow.variables.<name>_counter}}`: `noMatch` goes
   back round (`repeat`), `greater_than` the times to repeat goes on (`max reached`). Used for
   unrecognised input and timeouts (usnm's older `set_var_en_service_counter` / `split_end_cycle_en_service`).
+- **Messages' `from`** (Send message, Question, Send message and close): the board's From, `${helpline}`
+  (the helpline's name, passed to every flow template) when not set. Send Message / Send and Wait for
+  Reply also get `message_type: "custom"`.
 - **Send message and close**: a `make-http-request` to
   `${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor` named
   `f_sendMessageAndRunJanitor_<what>`, body `conversationSid` (or `channelSid` for legacy Programmable
@@ -136,7 +139,8 @@ Kinds that become more than one widget, as the board writes them:
 - **Release from chatbot**: a `make-http-request` to
   `${lambda_twilio_account_scoped_url}/channelCapture/chatbotCallbackCleanup`, body
   `{"channelSid": "{{flow.channel.address}}"}`; usually on `captureChannelWithBot`'s `failed`.
-- **Decision**: its `input` is the board's "Splits on" when set (each way out but `noMatch` is an
+- **Decision**: its `input` is the board's "Splits on" when set, otherwise the answer of the widget
+  before it (`{{widgets.<send_wait_...>.inbound.Body}}`, `{{widgets.<gather_input_...>.Digits}}`) (each way out but `noMatch` is an
   `equal_to` condition on it). After a chatbot, the usual first split reads its release flag
   (`{{trigger.conversation.ChannelAttributes.<releaseFlag>}}` equal to `true`).
 

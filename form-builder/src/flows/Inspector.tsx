@@ -28,6 +28,7 @@ import {
   fieldShown,
   isNamedByParts,
   splitInputsOf,
+  defaultSplitInputOf,
   lockedPrefixesOf,
   composePrefixed,
   prefixedName,
@@ -507,6 +508,55 @@ const NamingSection = ({
   );
 };
 
+// One of the usual values, or one typed (Custom): who a message is from
+const CUSTOM = '__custom';
+const ChoiceOrText = ({
+  field,
+  value,
+  disabled,
+  onChange,
+}: {
+  field: ObjectField;
+  value: string;
+  disabled: boolean;
+  onChange: (value: string) => void;
+}) => {
+  const options = field.options ?? [];
+  const chosen = value || field.defaultValue || '';
+  const [typing, setTyping] = useState(!options.includes(chosen));
+  return (
+    <>
+      <select
+        value={typing ? CUSTOM : chosen}
+        disabled={disabled}
+        onChange={(e) => {
+          const picked = e.target.value;
+          setTyping(picked === CUSTOM);
+          if (picked !== CUSTOM) onChange(picked);
+          else if (options.includes(value)) onChange('');
+        }}
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>
+            {field.optionLabels?.[option] ?? option}
+          </option>
+        ))}
+        <option value={CUSTOM}>Custom…</option>
+      </select>
+      {typing && (
+        <input
+          type="text"
+          value={options.includes(value) ? '' : value}
+          placeholder="e.g. NAMI or ${flow_vars.widget_from}"
+          aria-label={`${field.label} (custom)`}
+          disabled={disabled}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      )}
+    </>
+  );
+};
+
 const ChannelSelect = ({
   value,
   disabled,
@@ -668,6 +718,8 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
   const suggested = suggestStudioName(object, details, choices);
   // What a split can read: the flow memory, variables and chatbot flags set on this board
   const splitInputs = splitInputsOf(props.content.objects);
+  // Not set, a split reads the answer of the widget before it
+  const defaultSplitInput = defaultSplitInputOf(props.content, object.id);
   const recordingList = props.recordings.list?.recordings;
   // Renamed, a message keeps playing its recording until the file is copied to the new name
   const rename = (studioName: string | undefined) =>
@@ -903,7 +955,16 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
             .filter((field) => fieldShown(field, object.settings))
             .map((field) => {
               const value = object.settings?.[field.key] ?? '';
-              const suggestions = suggestionsFor(field.suggestions, props.helplineChoices, splitInputs);
+              // A split's default comes first, then what else it can read
+              const fromBefore = field.suggestions === 'splitInputs' ? defaultSplitInput : undefined;
+              const suggestions = [
+                ...(fromBefore
+                  ? [{ value: fromBefore, detail: 'the answer of the widget before it (the default)' }]
+                  : []),
+                ...suggestionsFor(field.suggestions, props.helplineChoices, splitInputs).filter(
+                  (suggestion) => suggestion.value !== fromBefore,
+                ),
+              ];
               // Skills are a comma-separated list: they're added to it, not chosen instead of it
               const listed = value.split(',').map((item) => item.trim());
               const set = (newValue: string) => {
@@ -919,7 +980,9 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
               return (
                 <label key={field.key} className="field">
                   <span className="field-label">{field.label}</span>
-                  {field.options ? (
+                  {field.custom ? (
+                    <ChoiceOrText key={node.id} field={field} value={value} disabled={readOnly} onChange={set} />
+                  ) : field.options ? (
                     <select value={value} disabled={readOnly} onChange={(e) => set(e.target.value)}>
                       <option value="">{field.optionLabels?.[''] ?? 'Not set'}</option>
                       {field.options.map((option) => (
@@ -951,7 +1014,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                       }
                       onFocus={field.suggestions ? props.onRefreshChoices : undefined}
                       value={value}
-                      placeholder={field.placeholder}
+                      placeholder={fromBefore ?? field.placeholder}
                       disabled={readOnly}
                       spellCheck={field.kind === 'url' ? false : undefined}
                       aria-invalid={Boolean(fieldProblem(field, value))}
@@ -990,6 +1053,12 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                   )}
                   {fieldProblem(field, value) && (
                     <span className="flow-field-problem">{fieldProblem(field, value)}</span>
+                  )}
+                  {fromBefore && !value && (
+                    <span className="field-hint">
+                      Splits on <code>{fromBefore}</code>, the answer of the widget before it. Type or choose another to
+                      use that instead.
+                    </span>
                   )}
                   {field.hint && <span className="field-hint">{field.hint}</span>}
                 </label>

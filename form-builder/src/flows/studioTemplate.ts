@@ -29,10 +29,13 @@
  *   (${channel_attributes.default}): new and changed ones are listed, for that template.
  */
 import type { BoardContent, FlowObject, Frame, TaskAttributes } from './model';
-import { exitsOf, OBJECT_TYPES, repeatWidgetNames, toSnake } from './model';
+import { defaultSplitInputOf, exitsOf, MESSAGE_FROM_DEFAULT, OBJECT_TYPES, repeatWidgetNames, toSnake } from './model';
 import { janitorValuesOf, withJanitorValues } from './janitor';
 import { isVoiceMessage, standardRecordingName } from './recordings';
 import { CHANNEL_ATTRIBUTES_REFERENCE } from './taskAttributes';
+
+// Who a message is from: as chosen on the board, otherwise the helpline's name
+const fromOf = (object: FlowObject) => object.settings?.from?.trim() || MESSAGE_FROM_DEFAULT;
 
 export type StudioTransition = Record<string, unknown> & { event: string; next?: string };
 export type StudioState = {
@@ -384,11 +387,12 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
               }
             : transition,
         );
-      } else if (object.type === 'questionMessaging') {
-        // How long it waits, where changed on the board
+      } else if (object.type === 'questionMessaging' || object.type === 'sendMessage') {
+        // How long it waits, and who it's from, where changed on the board
         if (object.settings?.timeout && String(properties.timeout) !== object.settings.timeout) {
           properties.timeout = object.settings.timeout;
         }
+        if (object.settings?.from && properties.from !== object.settings.from) properties.from = object.settings.from;
       } else if (object.type === 'setFlowMemory' && object.variables && typeof properties.body === 'string') {
         // The values it keeps, where changed on the board
         try {
@@ -551,7 +555,8 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
               offset,
               service: '{{trigger.message.InstanceSid}}',
               channel: '{{trigger.message.ChannelSid}}',
-              from: '{{flow.channel.address}}',
+              from: fromOf(object),
+              message_type: 'custom',
               to: '{{contact.channel.address}}',
               body: fromFlowVars(),
             },
@@ -571,7 +576,8 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
               offset,
               service: '{{trigger.message.InstanceSid}}',
               channel: '{{trigger.message.ChannelSid}}',
-              from: '{{flow.channel.address}}',
+              from: fromOf(object),
+              message_type: 'custom',
               body: fromFlowVars(),
               timeout: object.settings?.timeout || '3600',
             },
@@ -702,8 +708,10 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       }
       case 'decision':
       case 'checkCountry': {
-        // What it splits on, as chosen on the board; each way out is a value it's equal to
-        const input = object.settings?.input?.trim() || TODO;
+        // What it splits on, as chosen on the board (or the answer of the widget before it); each way
+        // out is a value it's equal to
+        const input =
+          object.settings?.input?.trim() || defaultSplitInputOf({ objects, connections }, object.id) || TODO;
         todo.push(
           input === TODO
             ? `${label(object)}: set what it splits on (its input) and its conditions.`
@@ -822,7 +830,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         const body = {
           [settings.conversation === 'channelSid' ? 'channelSid' : 'conversationSid']: '{{flow.channel.address}}',
           message: `\${flow_vars.${variable}}`,
-          ...(settings.from ? { from: settings.from } : {}),
+          from: fromOf(object),
         };
         return [
           {
