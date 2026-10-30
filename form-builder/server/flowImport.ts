@@ -785,15 +785,9 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         };
         if (Object.keys(settings).length > 0) object.settings = settings;
       } else if (type === 'sendMessageAndClose') {
-        // Who it's from, and legacy Programmable Chat (channelSid without conversationSid)
-        const values = janitorValuesOf(properties);
-        const settings = {
-          ...(values.from !== undefined ? { from: values.from } : {}),
-          ...(values.channelSid !== undefined && values.conversationSid === undefined
-            ? { conversation: 'channelSid' }
-            : {}),
-        };
-        if (Object.keys(settings).length > 0) object.settings = settings;
+        // Who it's from (legacy Programmable Chat ones keep their channelSid, as they are live)
+        const { from } = janitorValuesOf(properties);
+        if (from !== undefined) object.settings = { from };
       } else if (info.fields) {
         // The route's settings, from the request body, variables kept as written (they're written
         // back as they're set: ${flow_vars.bot_language} stays that, not its value)

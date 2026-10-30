@@ -823,15 +823,9 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         ];
       }
       case 'sendMessageAndClose': {
-        const settings = object.settings ?? {};
         // Its message from flow_vars, named as the helplines' are (send_message_<what>)
         const variable = `send_message_${name.replace(/^(postqueue_)?f_sendMessageAndRunJanitor_?/, '') || 'janitor'}`;
         flowVars.push({ scope: 'flow_vars', name: variable, value: message, widget: name });
-        const body = {
-          [settings.conversation === 'channelSid' ? 'channelSid' : 'conversationSid']: '{{flow.channel.address}}',
-          message: `\${flow_vars.${variable}}`,
-          from: fromOf(object),
-        };
         return [
           {
             name,
@@ -840,9 +834,18 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
               withNext({ event: 'success' }, next('success')),
               withNext({ event: 'failed' }, next('failed')),
             ],
+            // As the helplines' are: form parameters with the flow's conversation, its message and who it's from
             properties: {
               offset,
-              ...httpRequest(`${ACCOUNT_SCOPED}/${info.studioRoute}`, JSON.stringify(body, null, 2)),
+              method: 'POST',
+              content_type: 'application/x-www-form-urlencoded;charset=utf-8',
+              add_twilio_auth: false,
+              parameters: [
+                { value: '{{flow.channel.address}}', key: 'conversationSid' },
+                { value: `\${flow_vars.${variable}}`, key: 'message' },
+                { value: fromOf(object), key: 'from' },
+              ],
+              url: `${ACCOUNT_SCOPED}/${info.studioRoute}`,
             },
           },
         ];

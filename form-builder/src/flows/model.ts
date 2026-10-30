@@ -788,16 +788,8 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     studioRoute: 'conversation/sendMessageAndRunJanitor',
     nameSuffixFromText: true,
     hasMessage: true,
-    fields: [
-      FROM_FIELD,
-      {
-        key: 'conversation',
-        label: 'Conversation',
-        options: ['channelSid'],
-        optionLabels: { '': 'Conversations (conversationSid)', channelSid: 'Legacy Programmable Chat (channelSid)' },
-        hint: 'Conversations for every helpline on Conversations; channelSid only for legacy Programmable Chat.',
-      },
-    ],
+    // Its conversation (conversationSid) is the flow's: only who it's from is chosen
+    fields: [FROM_FIELD],
     exits: ['success', 'failed'],
     defaultSize: { width: 230, height: 72 },
   },

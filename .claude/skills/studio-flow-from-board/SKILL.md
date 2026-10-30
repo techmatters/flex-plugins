@@ -118,8 +118,10 @@ Kinds that become more than one widget, as the board writes them:
   Reply also get `message_type: "custom"`.
 - **Send message and close**: a `make-http-request` to
   `${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor` named
-  `f_sendMessageAndRunJanitor_<what>`, body `conversationSid` (or `channelSid` for legacy Programmable
-  Chat), `message` (`${flow_vars.send_message_<what>}`, set in `variables`) and `from`. Imported ones
+  `f_sendMessageAndRunJanitor_<what>`, form `parameters` (as USNM's, `application/x-www-form-urlencoded`):
+  `conversationSid` = `{{flow.channel.address}}`, `message` (`${flow_vars.send_message_<what>}`, set in
+  `variables`) and `from` (the board's From, `${helpline}` when not set). Imported ones keep theirs
+  (legacy Programmable Chat ones their `channelSid`); imported ones
   calling the Serverless function keep it; changes are written in its `parameters`.
 - **Send to queue**: `send-to-flex` with the board's workflow, task channel, `timeout` (3600 by
   default) and, when set, `waitUrl` / `waitUrlMethod`: a recording is `<widget name>.mp3` in the

@@ -332,13 +332,20 @@ describe('menus, repeats and chatbots', () => {
     expect(flow.states[0]).toMatchObject({
       name: 'f_sendMessageAndRunJanitor_blocked',
       type: 'make-http-request',
-      properties: { url: '${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor' },
+      // As usnm's: form parameters, the conversation added by itself
+      properties: {
+        url: '${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor',
+        method: 'POST',
+        content_type: 'application/x-www-form-urlencoded;charset=utf-8',
+        add_twilio_auth: false,
+        parameters: [
+          { value: '{{flow.channel.address}}', key: 'conversationSid' },
+          { value: '${flow_vars.send_message_blocked}', key: 'message' },
+          { value: '${helpline}', key: 'from' },
+        ],
+      },
     });
-    expect(JSON.parse(String(flow.states[0].properties.body))).toEqual({
-      conversationSid: '{{flow.channel.address}}',
-      message: '${flow_vars.send_message_blocked}',
-      from: '${helpline}',
-    });
+    expect(flow.states[0].properties).not.toHaveProperty('body');
     expect(flowVars).toContainEqual(
       expect.objectContaining({ name: 'send_message_blocked', value: 'This number is blocked.' }),
     );
@@ -692,8 +699,9 @@ describe('who a message is from', () => {
       to: '{{contact.channel.address}}',
     });
     expect(state('send_wait_sms_en_name').properties).toMatchObject({ from: 'Bot', message_type: 'custom' });
-    expect(JSON.parse(String(state('f_sendMessageAndRunJanitor_blocked').properties.body))).toMatchObject({
-      from: 'NAMI',
+    expect(state('f_sendMessageAndRunJanitor_blocked').properties.parameters).toContainEqual({
+      value: 'NAMI',
+      key: 'from',
     });
   });
 
