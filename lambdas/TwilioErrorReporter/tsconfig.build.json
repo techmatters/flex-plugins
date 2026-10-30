@@ -4,6 +4,7 @@
   "files": [],
   "references": [
     { "path": "packages/ssm-cache" },
+    { "path": "packages/dynamo-cache" },
     { "path": "TwilioErrorReporter" },
   ]
 }

@@ -18,11 +18,25 @@
 import { URLSearchParams } from 'url';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { getCachedParameters, loadSsmCacheByName } from '@tech-matters/ssm-cache';
+import {
+  DynamoCacheTable,
+  getCachedItem,
+  putCachedItems,
+} from '@tech-matters/dynamo-cache';
 
 type HelplineAccount = {
   accountSid: string;
   environment: string; // e.g. 'production', 'staging', 'development'
   shortHelpline: string; // e.g. 'AS', 'EUMC'
+};
+
+// Accounts without a short_helpline parameter are stored with just their SID,
+// since that points to a broken helpline provisioning. They are still treated as unknown.
+type UnknownAccount = Pick<HelplineAccount, 'accountSid'>;
+
+const HELPLINE_ACCOUNTS_TABLE: DynamoCacheTable = {
+  tableName: 'TwilioErrorReporter-HelplineAccounts',
+  keyName: 'accountSid',
 };
 
 const PRODUCTION = 'production';
@@ -35,16 +49,41 @@ const toHelplineAccount = ([name, shortHelpline]: [string, string]): HelplineAcc
   return { accountSid, environment, shortHelpline: shortHelpline.toUpperCase() };
 };
 
-const getHelplineAccount = async (
-  accountSid: string,
-): Promise<HelplineAccount | undefined> => {
+const loadHelplineAccountsFromSsm = async (): Promise<HelplineAccount[]> => {
   await loadSsmCacheByName({
     configs: [{ nameContains: '/short_helpline', regex: SHORT_HELPLINE_PARAMETER_NAME }],
   });
 
-  return Object.entries(getCachedParameters(SHORT_HELPLINE_PARAMETER_NAME))
-    .map(toHelplineAccount)
-    .find(account => account.accountSid === accountSid);
+  return Object.entries(getCachedParameters(SHORT_HELPLINE_PARAMETER_NAME)).map(
+    toHelplineAccount,
+  );
+};
+
+const isHelplineAccount = (
+  account: HelplineAccount | UnknownAccount,
+): account is HelplineAccount => 'shortHelpline' in account;
+
+const getHelplineAccount = async (
+  accountSid: string,
+): Promise<HelplineAccount | undefined> => {
+  const storedAccount = await getCachedItem<HelplineAccount | UnknownAccount>(
+    HELPLINE_ACCOUNTS_TABLE,
+    accountSid,
+  );
+  if (storedAccount) {
+    return isHelplineAccount(storedAccount) ? storedAccount : undefined;
+  }
+
+  // Store every account loaded, so the other accounts don't need to read SSM again
+  const helplineAccounts = await loadHelplineAccountsFromSsm();
+  const helplineAccount = helplineAccounts.find(
+    account => account.accountSid === accountSid,
+  );
+  await putCachedItems<HelplineAccount | UnknownAccount>(
+    HELPLINE_ACCOUNTS_TABLE,
+    helplineAccount ? helplineAccounts : [...helplineAccounts, { accountSid }],
+  );
+  return helplineAccount;
 };
 
 type DebuggerEvent = {

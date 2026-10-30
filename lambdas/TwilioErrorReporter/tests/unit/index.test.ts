@@ -15,14 +15,21 @@
  */
 
 import type { ALBEvent } from 'aws-lambda';
+import { getCachedItem, putCachedItems } from '@tech-matters/dynamo-cache';
 import { getCachedParameters, loadSsmCacheByName } from '@tech-matters/ssm-cache';
 import { handler } from '../../index';
 
+jest.mock('@tech-matters/dynamo-cache', () => ({
+  getCachedItem: jest.fn(),
+  putCachedItems: jest.fn(),
+}));
 jest.mock('@tech-matters/ssm-cache', () => ({
   getCachedParameters: jest.fn(),
   loadSsmCacheByName: jest.fn(),
 }));
 
+const mockGetCachedItem = getCachedItem as jest.MockedFunction<typeof getCachedItem>;
+const mockPutCachedItems = putCachedItems as jest.MockedFunction<typeof putCachedItems>;
 const mockGetCachedParameters = getCachedParameters as jest.MockedFunction<
   typeof getCachedParameters
 >;
@@ -59,26 +66,30 @@ afterEach(() => {
 });
 
 describe('handler', () => {
-  test('logs the event with the account loaded from SSM', async () => {
-    mockGetCachedParameters.mockReturnValue({
-      [`/staging/twilio/${ACCOUNT_SID}/short_helpline`]: 'eumc',
-      '/production/twilio/ACother/short_helpline': 'zm',
+  test('uses the account stored in DynamoDB without reading SSM', async () => {
+    mockGetCachedItem.mockResolvedValue({
+      accountSid: ACCOUNT_SID,
+      environment: 'production',
+      shortHelpline: 'ZM',
     });
 
     await handler(debuggerEvent());
 
+    expect(mockLoadSsmCacheByName).not.toHaveBeenCalled();
+    expect(mockPutCachedItems).not.toHaveBeenCalled();
     expect(consoleLog).toHaveBeenCalledWith(
-      '[STAGING Error]: ',
-      `EUMC_STAGING (${ACCOUNT_SID})`,
+      '[PRODUCTION Error]: ',
+      `ZM_PRODUCTION (${ACCOUNT_SID})`,
       PAYLOAD,
     );
   });
 
-  test('logs the event as unknown when the account is not in SSM', async () => {
-    mockGetCachedParameters.mockReturnValue({});
+  test('treats an account stored without a short helpline as unknown, without reading SSM', async () => {
+    mockGetCachedItem.mockResolvedValue({ accountSid: ACCOUNT_SID });
 
     await handler(debuggerEvent());
 
+    expect(mockLoadSsmCacheByName).not.toHaveBeenCalled();
     expect(consoleLog).toHaveBeenCalledWith(
       '[UNKNOWN Error]: ',
       `UNRECOGNISED_ACCOUNT (${ACCOUNT_SID})`,
@@ -86,13 +97,54 @@ describe('handler', () => {
     );
   });
 
-  test('still logs the event, as unknown, when the account lookup fails', async () => {
+  test('loads an account missing from DynamoDB from SSM and stores every loaded account', async () => {
+    mockGetCachedItem.mockResolvedValue(undefined);
+    mockGetCachedParameters.mockReturnValue({
+      [`/staging/twilio/${ACCOUNT_SID}/short_helpline`]: 'eumc',
+      '/production/twilio/ACother/short_helpline': 'zm',
+    });
+
+    await handler(debuggerEvent());
+
+    expect(mockPutCachedItems).toHaveBeenCalledWith(expect.anything(), [
+      { accountSid: ACCOUNT_SID, environment: 'staging', shortHelpline: 'EUMC' },
+      { accountSid: 'ACother', environment: 'production', shortHelpline: 'ZM' },
+    ]);
+    expect(consoleLog).toHaveBeenCalledWith(
+      '[STAGING Error]: ',
+      `EUMC_STAGING (${ACCOUNT_SID})`,
+      PAYLOAD,
+    );
+  });
+
+  test('stores an account missing from both DynamoDB and SSM with just its SID, with the loaded accounts', async () => {
+    mockGetCachedItem.mockResolvedValue(undefined);
+    mockGetCachedParameters.mockReturnValue({
+      '/production/twilio/ACother/short_helpline': 'zm',
+    });
+
+    await handler(debuggerEvent());
+
+    expect(mockPutCachedItems).toHaveBeenCalledWith(expect.anything(), [
+      { accountSid: 'ACother', environment: 'production', shortHelpline: 'ZM' },
+      { accountSid: ACCOUNT_SID },
+    ]);
+    expect(consoleLog).toHaveBeenCalledWith(
+      '[UNKNOWN Error]: ',
+      `UNRECOGNISED_ACCOUNT (${ACCOUNT_SID})`,
+      PAYLOAD,
+    );
+  });
+
+  test('still logs the event, as unknown, without storing anything when the SSM lookup fails', async () => {
     const lookupError = new Error('Throttled');
+    mockGetCachedItem.mockResolvedValue(undefined);
     mockLoadSsmCacheByName.mockRejectedValue(lookupError);
 
     const response = await handler(debuggerEvent());
 
     expect(response.statusCode).toBe(200);
+    expect(mockPutCachedItems).not.toHaveBeenCalled();
     expect(consoleError).toHaveBeenCalledWith(
       `Failed to look up the helpline account for ${ACCOUNT_SID}`,
       lookupError,
