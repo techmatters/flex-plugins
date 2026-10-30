@@ -1193,6 +1193,42 @@ export const repeatWidgetNames = (studioName: string) => {
   };
 };
 
+// The split some new widgets are followed by (split_<what>), from the widget's name
+export const followingSplitName = (name: string) =>
+  `split_${toSnake(name.replace(/^(postqueue_)?(f_|gather_input_)/, '$1').replace(/([a-z])([A-Z])/g, '$1_$2'))}`;
+
+// Kinds a new widget of is followed by its split (what the call answered)
+const FOLLOWED_BY_SPLIT = new Set<FlowObjectType>([
+  'checkQueueAvailability',
+  'checkWorkerLoggedIn',
+  'checkOperatingHours',
+  'checkClientProfile',
+]);
+// The ways out of a voice menu that are Studio's own; others (1, 2) are told apart by its split
+const MENU_EVENTS = ['keypress', 'speech', 'noMatch', 'timeout'];
+
+/**
+ * Every Studio widget an object becomes, by name (it has to be unique in its flow): its own, and
+ * for new ones also what comes with it (a Repeat's set_var and split, the split after a check or
+ * after a menu whose options are its ways out). Imported ones are rebuilt as the one widget they are.
+ * `name` is the object's when it has none yet (the template's todo_... ones).
+ */
+export const widgetNamesOf = (
+  object: Pick<FlowObject, 'type' | 'exits' | 'studio' | 'studioName'>,
+  name = object.studioName ?? object.studio?.name,
+): string[] => {
+  if (!name) return [];
+  if (object.studio) return [name];
+  if (object.type === 'repeat') {
+    const { setVar, split } = repeatWidgetNames(name);
+    return [setVar, split];
+  }
+  const splitAfter =
+    FOLLOWED_BY_SPLIT.has(object.type) ||
+    (object.type === 'menuVoice' && exitsOf(object).some((exit) => !MENU_EVENTS.includes(exit)));
+  return splitAfter ? [name, followingSplitName(name)] : [name];
+};
+
 export const CHANNEL_ICONS: Record<Channel, string> = {
   voice: 'Phone',
   sms: 'MessageSquare',

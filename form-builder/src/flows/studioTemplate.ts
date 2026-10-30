@@ -29,7 +29,16 @@
  *   (${channel_attributes.default}): new and changed ones are listed, for that template.
  */
 import type { BoardContent, FlowObject, Frame, TaskAttributes } from './model';
-import { defaultSplitInputOf, exitsOf, MESSAGE_FROM_DEFAULT, OBJECT_TYPES, repeatWidgetNames, toSnake } from './model';
+import {
+  defaultSplitInputOf,
+  exitsOf,
+  followingSplitName,
+  MESSAGE_FROM_DEFAULT,
+  OBJECT_TYPES,
+  repeatWidgetNames,
+  toSnake,
+  widgetNamesOf,
+} from './model';
 import { janitorValuesOf, withJanitorValues } from './janitor';
 import { isVoiceMessage, standardRecordingName } from './recordings';
 import { CHANNEL_ATTRIBUTES_REFERENCE } from './taskAttributes';
@@ -247,7 +256,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
     if (object.type === 'incoming') return 'Trigger';
     if (NOT_WIDGETS.has(object.type)) return undefined;
     // A Repeat is reached through its counter (set_var_<name>_counter)
-    if (object.type === 'repeat') return repeatWidgetNames(repeatNameOf(object)).setVar;
+    if (object.type === 'repeat') return widgetNamesOf(object, repeatNameOf(object))[0];
     return object.studioName ?? `todo_${toSnake(object.text) || object.id}`;
   };
   // Design objects that stand for something built some other way
@@ -515,7 +524,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       properties: { input, offset: { x: offset.x, y: offset.y + 240 } },
     });
     // Its Split, e.g. f_isSkilledWorkerAvailable_tya_calls -> split_is_skilled_worker_available_tya_calls
-    const splitName = `split_${toSnake(name.replace(/^(postqueue_)?(f_|gather_input_)/, '$1').replace(/([a-z])([A-Z])/g, '$1_$2'))}`;
+    const splitName = followingSplitName(name);
 
     switch (object.type) {
       case 'incoming': {
@@ -625,7 +634,8 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       }
       case 'repeat': {
         // The counter goes up each time round; past the maximum, the loop's way out
-        const { counter, split: endName } = repeatWidgetNames(repeatNameOf(object));
+        const { counter } = repeatWidgetNames(repeatNameOf(object));
+        const [, endName] = widgetNamesOf(object, repeatNameOf(object));
         const maxRepeats = object.settings?.maxRepeats?.trim() || '2';
         if (!object.settings?.maxRepeats) {
           todo.push(`${label(object)}: check how many times it repeats (${maxRepeats}).`);

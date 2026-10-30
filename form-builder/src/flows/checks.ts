@@ -31,6 +31,7 @@ import {
   standardStudioName,
   variableKeyProblem,
   variesByVariant,
+  widgetNamesOf,
 } from './model';
 import type { Recording } from './recordings';
 import { hasNonStandardRecording, isVoiceMessage, messageStatus } from './recordings';
@@ -94,32 +95,63 @@ export const flowScopeOf = (object: Pick<FlowObject, 'frameId'>, frames: Pick<Fr
   return frame ? `frame:${frame.id}` : 'board';
 };
 
-// Objects whose Studio name another object in the same flow also has
-export const duplicateNames = (content: Pick<BoardContent, 'objects' | 'frames'>): Set<string> => {
-  const seen = new Map<string, string[]>();
+// How an object is called in messages: its text, or its kind
+const labelOf = (object: FlowObject) => `“${object.text.trim() || OBJECT_TYPES[object.type].label}”`;
+
+/**
+ * Objects whose Studio widgets (widgetNamesOf) another object in the same flow also has, by
+ * object: e.g. a Repeat repeat_x becomes split_x, which a Decision may be named. Each with the
+ * message saying which name and where it comes from.
+ */
+export const nameClashes = (content: Pick<BoardContent, 'objects' | 'frames'>): Map<string, string[]> => {
+  const seen = new Map<string, { object: FlowObject; generated: boolean }[]>();
   content.objects.forEach((object) => {
-    if (!object.studioName) return;
-    const key = `${flowScopeOf(object, content.frames)}|${object.studioName}`;
-    seen.set(key, [...(seen.get(key) ?? []), object.id]);
+    const own = object.studioName ?? object.studio?.name;
+    widgetNamesOf(object).forEach((widget) => {
+      const key = `${flowScopeOf(object, content.frames)}|${widget}`;
+      seen.set(key, [...(seen.get(key) ?? []), { object, generated: widget !== own }]);
+    });
   });
-  return new Set([...seen.values()].filter((ids) => ids.length > 1).flat());
+  const clashes = new Map<string, string[]>();
+  seen.forEach((users, key) => {
+    if (users.length < 2) return;
+    const widget = key.slice(key.indexOf('|') + 1);
+    users.forEach((user) =>
+      users
+        .filter((other) => other !== user)
+        .forEach((other) => {
+          const message =
+            user.generated || other.generated
+              ? `${labelOf(user.object)} ${user.generated ? 'becomes' : 'is named'} ${widget}, which ${labelOf(other.object)} ${other.generated ? 'also becomes' : 'is also named'}.`
+              : `Another object in this flow is also named ${widget}.`;
+          const messages = clashes.get(user.object.id) ?? [];
+          if (!messages.includes(message)) clashes.set(user.object.id, [...messages, message]);
+        }),
+    );
+  });
+  return clashes;
 };
 
-// The name, or the name with _2, _3... when another object in the same flow already has it
+// The name, or the name with _2, _3... when another object in the same flow already has it, or a
+// widget it becomes (or one this object would become with it, e.g. a Repeat's split)
 export const uniqueName = (
   name: string,
-  object: Pick<FlowObject, 'id' | 'frameId'>,
+  object: Pick<FlowObject, 'id' | 'frameId'> & Partial<Pick<FlowObject, 'type' | 'exits' | 'studio'>>,
   content: Pick<BoardContent, 'objects' | 'frames'>,
 ): string => {
   const scope = flowScopeOf(object, content.frames);
   const taken = new Set(
     content.objects
-      .filter((other) => other.id !== object.id && other.studioName && flowScopeOf(other, content.frames) === scope)
-      .map((other) => other.studioName),
+      .filter((other) => other.id !== object.id && flowScopeOf(other, content.frames) === scope)
+      .flatMap((other) => widgetNamesOf(other)),
   );
-  if (!taken.has(name)) return name;
+  const free = (candidate: string) =>
+    (object.type ? widgetNamesOf({ ...object, type: object.type }, candidate) : [candidate]).every(
+      (widget) => !taken.has(widget),
+    );
+  if (free(name)) return name;
   let count = 2;
-  while (taken.has(`${name}_${count}`)) count += 1;
+  while (!free(`${name}_${count}`)) count += 1;
   return `${name}_${count}`;
 };
 
@@ -158,10 +190,10 @@ export const boardChecks = (
   const byId = new Map(content.objects.map((object) => [object.id, object]));
   // The object's frame, or the board's own flow for objects outside frames
   const frameOf = (object: FlowObject) => flowDetailsOf(content, object.frameId);
-  const nameOf = (object: FlowObject) => `“${object.text.trim() || OBJECT_TYPES[object.type].label}”`;
+  const nameOf = labelOf;
   const outgoing = (id: string) => content.connections.filter((connection) => connection.from === id);
   const targets = new Set(content.connections.map((connection) => connection.to));
-  const duplicates = duplicateNames(content);
+  const clashes = nameClashes(content);
   // Each flow's names' parts (FlowNaming), by frame (undefined: the board's own flow)
   const choices = new Map<string | undefined, NamingChoices>();
   const choicesOf = (frameId?: string) => {
@@ -197,16 +229,17 @@ export const boardChecks = (
         'nameStandard',
       );
     }
-    if (duplicates.has(objectId)) {
+    // Names (its own, or of widgets it becomes) another object in this flow has too
+    (clashes.get(objectId) ?? []).forEach((message, index) =>
       add(
         {
           severity: 'error',
-          message: `${name}: another object in this flow is also named ${object.studioName}.`,
+          message: message.startsWith('Another') ? `${name}: a${message.slice(1)}` : message,
           objectId,
         },
-        'duplicate',
-      );
-    }
+        `duplicate${index}`,
+      ),
+    );
 
     // Ways out: each one leads to one place, or ends the flow on purpose
     const exits = exitsOf(object);
@@ -475,14 +508,14 @@ export const issuesByObject = (issues: Issue[]): Map<string, Issue[]> => {
  * and names used twice in a flow.
  */
 export const objectProblems = (content: Pick<BoardContent, 'objects' | 'frames' | 'flow'>): Map<string, string[]> => {
-  const duplicates = duplicateNames(content);
+  const clashes = nameClashes(content);
   const problems = new Map<string, string[]>();
   content.objects.forEach((object) => {
     const frame = flowDetailsOf(content, object.frameId);
     const found = studioNameProblems(object, frame);
     // Everything that becomes a Studio widget needs a name (its recording's too, for voice)
     if (!object.studioName && OBJECT_TYPES[object.type].studioPrefix) found.push('No Studio name yet.');
-    if (duplicates.has(object.id)) found.push(`Another object in this flow is also named ${object.studioName}.`);
+    found.push(...(clashes.get(object.id) ?? []));
     if (found.length > 0) problems.set(object.id, found);
   });
   return problems;

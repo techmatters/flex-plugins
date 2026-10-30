@@ -129,6 +129,80 @@ describe('Studio names', () => {
     // An object keeps its own name
     expect(uniqueName('send_to_queue', { id: 'c', frameId: 'voice-pre' }, content)).toBe('send_to_queue');
   });
+
+  describe('are unique counting the widgets an object becomes', () => {
+    // USCH sms-childhelp-lex-sd: the Repeat's split (split_service_options) was the Decision's name
+    const usch = (repeatFrame = 'sms') => ({
+      frames: [frame('sms', 'sms'), frame('webchat', 'webchat')],
+      objects: [
+        { ...object('d', 'decision', 'split_service_options', 'sms'), text: 'Service choice' },
+        { ...object('r', 'repeat', 'repeat_service_options', repeatFrame), text: 'Repeat (counter)' },
+      ],
+      connections: [] as Connection[],
+    });
+
+    test("a Repeat's split named as a Decision is: an error on both, saying where the name comes from", () => {
+      const problems = objectProblems(usch());
+      expect(problems.get('r')).toContain(
+        '“Repeat (counter)” becomes split_service_options, which “Service choice” is also named.',
+      );
+      expect(problems.get('d')).toContain(
+        '“Service choice” is named split_service_options, which “Repeat (counter)” also becomes.',
+      );
+      // In the board's checks (and so the export's), as errors
+      const errors = boardChecks(usch()).filter((issue) => issue.severity === 'error' && /becomes/.test(issue.message));
+      expect(errors.map((issue) => issue.objectId).sort()).toEqual(['d', 'r']);
+    });
+
+    test('in different flows, the same names are fine', () => {
+      expect(objectProblems(usch('webchat')).size).toBe(0);
+    });
+
+    test('two Repeats becoming the same set_var (and split) are', () => {
+      const content = {
+        frames: [frame('voice', 'voice')],
+        objects: [
+          object('a', 'repeat', 'repeat_menu', 'voice'),
+          // A Decision can't be named like a set_var, but another Repeat's name can lead to one
+          { ...object('b', 'repeat', 'repeat_menu', 'voice'), text: 'Again' },
+        ],
+      };
+      const problems = objectProblems(content);
+      expect(problems.get('a')).toContain('“a” becomes set_var_menu_counter, which “Again” also becomes.');
+      expect(problems.get('b')).toContain('“Again” becomes split_menu, which “a” also becomes.');
+    });
+
+    test('after the queue too: postqueue_repeat_x becomes postqueue_split_x', () => {
+      const content = {
+        frames: [frame('voice', 'voice', 'postqueue')],
+        objects: [
+          object('r', 'repeat', 'postqueue_repeat_x', 'voice'),
+          object('d', 'decision', 'postqueue_split_x', 'voice'),
+        ],
+      };
+      expect(objectProblems(content).get('d')).toContain('“d” is named postqueue_split_x, which “r” also becomes.');
+    });
+
+    test("the split after a check, and new names skip names others' widgets have", () => {
+      const content = {
+        frames: [frame('voice', 'voice')],
+        objects: [
+          object('w', 'checkWorkerLoggedIn', 'f_isSkilledWorkerLoggedIn_tya', 'voice'),
+          object('d', 'decision', 'split_is_skilled_worker_logged_in_tya', 'voice'),
+          object('r', 'repeat', 'repeat_menu', 'voice'),
+        ],
+      };
+      expect(objectProblems(content).get('w')).toContain(
+        '“w” becomes split_is_skilled_worker_logged_in_tya, which “d” is also named.',
+      );
+      // A Decision named as the Repeat's split, or a Repeat whose split a Decision has
+      expect(uniqueName('split_menu', { id: 'new', frameId: 'voice', type: 'decision' }, content)).toBe('split_menu_2');
+      expect(
+        uniqueName('repeat_is_skilled_worker_logged_in_tya', { id: 'new', frameId: 'voice', type: 'repeat' }, content),
+      ).toBe('repeat_is_skilled_worker_logged_in_tya_2');
+      expect(uniqueName('split_other', { id: 'new', frameId: 'voice', type: 'decision' }, content)).toBe('split_other');
+    });
+  });
 });
 
 const named = (

@@ -177,6 +177,9 @@ the Studio flow standards:
 - **Menus that repeat** have a Repeat (counter) or a Set variable on the way round, so a caller
   can't loop for ever.
 - **Unreachable objects:** nothing leads to them (a post-queue frame may start from its queue).
+- **Unique widget names:** within a flow, counting every widget an object becomes (a Repeat
+  `repeat_x` is `set_var_x_counter` and `split_x`; checks and old-style menus add `split_...`), so
+  a Decision named `split_x` next to it is an error on both. New names skip them too.
 - **Ignoring a warning:** a warning that doesn't apply to a board (e.g. "should go to the
   system-down subflow" on a post-survey flow) can be ignored in the Check panel by Aselo staff. It's
   then listed apart under "ignored", isn't counted or exported for Claude, and can be brought back.

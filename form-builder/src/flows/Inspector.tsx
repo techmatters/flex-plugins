@@ -737,7 +737,13 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
       await props.recordings.rename([node.id], [renamed]);
   };
   // Not one another object in the same flow already has
-  const suggestion = suggested && uniqueName(suggested, { id: node.id, frameId: node.parentId }, props.content);
+  const suggestion =
+    suggested &&
+    uniqueName(
+      suggested,
+      { id: node.id, frameId: node.parentId, type: object.type, exits: object.exits, studio: object.studio },
+      props.content,
+    );
   const problems = props.problems.get(node.id) ?? [];
   const showsChannel = info.hasMessage || object.type === 'incoming';
   // The message as the shown variant has it (flows sharing a template), and changing it there
