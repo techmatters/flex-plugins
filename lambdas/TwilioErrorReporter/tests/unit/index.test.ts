@@ -39,6 +39,8 @@ const mockLoadSsmCacheByName = loadSsmCacheByName as jest.MockedFunction<
 
 const ACCOUNT_SID = 'ACtest';
 const PAYLOAD = { error_code: '11200' };
+const NOW_SECONDS = 1_800_000_000;
+const THREE_DAYS_SECONDS = 3 * 24 * 60 * 60;
 
 const debuggerEvent = (): ALBEvent =>
   ({
@@ -56,13 +58,14 @@ let consoleError: jest.SpyInstance;
 
 beforeEach(() => {
   jest.resetAllMocks();
+  mockPutCachedItems.mockResolvedValue();
+  jest.spyOn(Date, 'now').mockReturnValue(NOW_SECONDS * 1000);
   consoleLog = jest.spyOn(console, 'log').mockImplementation(() => {});
   consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
 });
 
 afterEach(() => {
-  consoleLog.mockRestore();
-  consoleError.mockRestore();
+  jest.restoreAllMocks();
 });
 
 describe('handler', () => {
@@ -85,7 +88,10 @@ describe('handler', () => {
   });
 
   test('treats an account stored without a short helpline as unknown, without reading SSM', async () => {
-    mockGetCachedItem.mockResolvedValue({ accountSid: ACCOUNT_SID });
+    mockGetCachedItem.mockResolvedValue({
+      accountSid: ACCOUNT_SID,
+      expiresAt: NOW_SECONDS + 60,
+    });
 
     await handler(debuggerEvent());
 
@@ -93,6 +99,27 @@ describe('handler', () => {
     expect(consoleLog).toHaveBeenCalledWith(
       '[UNKNOWN Error]: ',
       `UNRECOGNISED_ACCOUNT (${ACCOUNT_SID})`,
+      PAYLOAD,
+    );
+  });
+
+  test('reads SSM again once an account stored as unknown has expired', async () => {
+    mockGetCachedItem.mockResolvedValue({
+      accountSid: ACCOUNT_SID,
+      expiresAt: NOW_SECONDS - 1,
+    });
+    mockGetCachedParameters.mockReturnValue({
+      [`/staging/twilio/${ACCOUNT_SID}/short_helpline`]: 'eumc',
+    });
+
+    await handler(debuggerEvent());
+
+    expect(mockPutCachedItems).toHaveBeenCalledWith(expect.anything(), [
+      { accountSid: ACCOUNT_SID, environment: 'staging', shortHelpline: 'EUMC' },
+    ]);
+    expect(consoleLog).toHaveBeenCalledWith(
+      '[STAGING Error]: ',
+      `EUMC_STAGING (${ACCOUNT_SID})`,
       PAYLOAD,
     );
   });
@@ -117,7 +144,7 @@ describe('handler', () => {
     );
   });
 
-  test('stores an account missing from both DynamoDB and SSM with just its SID, with the loaded accounts', async () => {
+  test('stores an account missing from both DynamoDB and SSM with just its SID, expiring in 3 days, with the loaded accounts', async () => {
     mockGetCachedItem.mockResolvedValue(undefined);
     mockGetCachedParameters.mockReturnValue({
       '/production/twilio/ACother/short_helpline': 'zm',
@@ -127,7 +154,7 @@ describe('handler', () => {
 
     expect(mockPutCachedItems).toHaveBeenCalledWith(expect.anything(), [
       { accountSid: 'ACother', environment: 'production', shortHelpline: 'ZM' },
-      { accountSid: ACCOUNT_SID },
+      { accountSid: ACCOUNT_SID, expiresAt: NOW_SECONDS + THREE_DAYS_SECONDS },
     ]);
     expect(consoleLog).toHaveBeenCalledWith(
       '[UNKNOWN Error]: ',
@@ -152,6 +179,28 @@ describe('handler', () => {
     expect(consoleLog).toHaveBeenCalledWith(
       '[UNKNOWN Error]: ',
       `UNRECOGNISED_ACCOUNT (${ACCOUNT_SID})`,
+      PAYLOAD,
+    );
+  });
+
+  test('still logs the event with the account loaded from SSM when storing it fails', async () => {
+    const storeError = new Error('Throttled');
+    mockGetCachedItem.mockResolvedValue(undefined);
+    mockGetCachedParameters.mockReturnValue({
+      [`/staging/twilio/${ACCOUNT_SID}/short_helpline`]: 'eumc',
+    });
+    mockPutCachedItems.mockRejectedValue(storeError);
+
+    const response = await handler(debuggerEvent());
+
+    expect(response.statusCode).toBe(200);
+    expect(consoleError).toHaveBeenCalledWith(
+      'Failed to store the helpline accounts',
+      storeError,
+    );
+    expect(consoleLog).toHaveBeenCalledWith(
+      '[STAGING Error]: ',
+      `EUMC_STAGING (${ACCOUNT_SID})`,
       PAYLOAD,
     );
   });

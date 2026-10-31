@@ -32,7 +32,19 @@ type HelplineAccount = {
 
 // Accounts without a short_helpline parameter are stored with just their SID,
 // since that points to a broken helpline provisioning. They are still treated as unknown.
-type UnknownAccount = Pick<HelplineAccount, 'accountSid'>;
+// They expire, so an account provisioned later (or after the SSM snapshot was taken) is picked up.
+type UnknownAccount = Pick<HelplineAccount, 'accountSid'> & {
+  expiresAt: number; // Epoch seconds, the format DynamoDB TTL uses
+};
+
+const UNKNOWN_ACCOUNT_EXPIRY_SECONDS = 3 * 24 * 60 * 60; // 3 days
+
+const toUnknownAccount = (accountSid: string): UnknownAccount => ({
+  accountSid,
+  expiresAt: Math.floor(Date.now() / 1000) + UNKNOWN_ACCOUNT_EXPIRY_SECONDS,
+});
+
+const hasExpired = ({ expiresAt }: UnknownAccount) => Date.now() / 1000 > expiresAt;
 
 const HELPLINE_ACCOUNTS_TABLE: DynamoCacheTable = {
   tableName: 'TwilioErrorReporter-HelplineAccounts',
@@ -70,19 +82,23 @@ const getHelplineAccount = async (
     HELPLINE_ACCOUNTS_TABLE,
     accountSid,
   );
-  if (storedAccount) {
-    return isHelplineAccount(storedAccount) ? storedAccount : undefined;
-  }
+  if (storedAccount && isHelplineAccount(storedAccount)) return storedAccount;
+  if (storedAccount && !hasExpired(storedAccount)) return undefined;
 
   // Store every account loaded, so the other accounts don't need to read SSM again
   const helplineAccounts = await loadHelplineAccountsFromSsm();
   const helplineAccount = helplineAccounts.find(
     account => account.accountSid === accountSid,
   );
+  // Storing is best-effort: the accounts were loaded, so a failed write shouldn't lose them
   await putCachedItems<HelplineAccount | UnknownAccount>(
     HELPLINE_ACCOUNTS_TABLE,
-    helplineAccount ? helplineAccounts : [...helplineAccounts, { accountSid }],
-  );
+    helplineAccount
+      ? helplineAccounts
+      : [...helplineAccounts, toUnknownAccount(accountSid)],
+  ).catch(error => {
+    console.error('Failed to store the helpline accounts', error);
+  });
   return helplineAccount;
 };
 
