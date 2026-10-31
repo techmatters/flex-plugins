@@ -150,6 +150,7 @@ const getHelplineAccount = async (
   if (storedAccount && isHelplineAccount(storedAccount)) return storedAccount;
 
   if (storedAccount) {
+    // An unknown account, kept as unknown for UNKNOWN_ACCOUNT_EXPIRY_SECONDS before checking SSM again
     if (!hasExpired(storedAccount)) return undefined;
     // Only one invocation at a time checks this account again, since an unknown account
     // may well be the one sending lots of errors. The others keep treating it as unknown.
