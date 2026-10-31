@@ -51,6 +51,8 @@ export const BoardEditingContext = createContext<{
   readOnly: boolean;
   problems?: Map<string, Issue[]>;
   simulation?: SimulationView;
+  // Sketch mode: lighter colours and dashed outlines
+  sketch?: boolean;
 }>({
   readOnly: false,
 });
@@ -150,9 +152,17 @@ const InlineText = ({
 const openComments = (thread?: { comments: unknown[]; resolved: boolean }) =>
   thread && !thread.resolved ? thread.comments.length : 0;
 
+// Halfway to white, so a sketch keeps its colours but reads as a draft
+const lighter = (color: string) => {
+  const hex = /^#([0-9a-f]{6})$/i.exec(color)?.[1];
+  if (!hex) return color;
+  const channel = (at: number) => Math.round((parseInt(hex.slice(at, at + 2), 16) + 255) / 2);
+  return `rgb(${channel(0)}, ${channel(2)}, ${channel(4)})`;
+};
+
 export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<ObjectNode>) => {
   const { updateNodeData } = useReactFlow();
-  const { readOnly, problems, simulation } = useContext(BoardEditingContext);
+  const { readOnly, problems, simulation, sketch } = useContext(BoardEditingContext);
   const { object } = data;
   const info = OBJECT_TYPES[object.type];
   const comments = openComments(object.thread);
@@ -160,7 +170,7 @@ export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<
   const objectProblems = simulation ? [] : (problems?.get(id) ?? []);
   const steps = simulation?.visited.get(id);
   const tested = Boolean(simulation?.tested?.objects.has(id));
-  let stroke = '#37474f';
+  let stroke = sketch ? '#78909c' : '#37474f';
   const hasErrors = objectProblems.some((issue) => issue.severity === 'error');
   if (objectProblems.length > 0) stroke = hasErrors ? '#c62828' : '#e65100';
   if (tested) stroke = '#2e7d32';
@@ -184,8 +194,9 @@ export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<
         shape={info.shape}
         width={width ?? info.defaultSize.width}
         height={height ?? info.defaultSize.height}
-        fill={objectColor(object)}
+        fill={sketch ? lighter(objectColor(object)) : objectColor(object)}
         stroke={stroke}
+        dashed={sketch}
       />
       {objectProblems.length > 0 && (
         <span

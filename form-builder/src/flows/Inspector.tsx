@@ -116,6 +116,8 @@ export type InspectorProps = {
   onRefreshChoices?: () => void;
   // The board's own flow's settings changed (its objects outside frames)
   onBoardFlow?: (flow: FlowDetails) => void;
+  // Sketch mode: only what a high-level design needs (kind, text, name, ways out, Repeat's times)
+  sketch?: boolean;
 };
 
 // Where each kind of suggestion comes from, for when there are none yet
@@ -702,9 +704,11 @@ const ExitsEditor = ({
 );
 
 const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorProps }) => {
-  const { readOnly, onNodeData } = props;
+  const { readOnly, onNodeData, sketch } = props;
   const { object } = node.data;
   const info = OBJECT_TYPES[object.type];
+  // Its settings shown (in a sketch, only those a high-level design needs)
+  const fields = (info.fields ?? []).filter((field) => fieldShown(field, object.settings) && (!sketch || field.sketch));
   const frame = props.nodes.find((candidate): candidate is FrameNode => candidate.id === node.parentId);
   const update = (changes: Partial<ObjectNode['data']['object']>) =>
     onNodeData(node.id, { object: { ...object, ...changes } });
@@ -802,30 +806,32 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
             onChange={(e) => update({ text: e.target.value })}
           />
         </label>
-        <div className="field">
-          <span className="field-label">Colour</span>
-          <div className="flow-swatches">
-            {OBJECT_COLORS.map((color) => (
-              <button
-                key={color}
-                type="button"
-                className={`flow-swatch ${objectColor(object) === color ? 'selected' : ''}`}
-                style={{ background: color }}
-                aria-label={`Colour ${color}`}
-                disabled={readOnly}
-                onClick={() => update({ color })}
-              />
-            ))}
-            {object.color && !readOnly && (
-              <button type="button" className="link-button" onClick={() => update({ color: undefined })}>
-                Default
-              </button>
-            )}
+        {!sketch && (
+          <div className="field">
+            <span className="field-label">Colour</span>
+            <div className="flow-swatches">
+              {OBJECT_COLORS.map((color) => (
+                <button
+                  key={color}
+                  type="button"
+                  className={`flow-swatch ${objectColor(object) === color ? 'selected' : ''}`}
+                  style={{ background: color }}
+                  aria-label={`Colour ${color}`}
+                  disabled={readOnly}
+                  onClick={() => update({ color })}
+                />
+              ))}
+              {object.color && !readOnly && (
+                <button type="button" className="link-button" onClick={() => update({ color: undefined })}>
+                  Default
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </section>
 
-      {showsChannel && (
+      {showsChannel && !sketch && (
         <section className="flow-inspector-section">
           <h3>{object.type === 'incoming' ? 'Contact' : 'Message'}</h3>
           <ChannelSelect
@@ -873,7 +879,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
         </section>
       )}
 
-      {info.hasMessage && (
+      {info.hasMessage && !sketch && (
         <>
           <RecordingSection object={shown} frame={details} actions={props.recordings} />
           <ScriptApproval
@@ -944,10 +950,10 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
         </section>
       )}
 
-      {info.fields && (
+      {fields.length > 0 && (
         <section className="flow-inspector-section">
           <h3>{info.studioRoute || object.type === 'function' ? 'Call settings' : 'Settings'}</h3>
-          {info.studioRoute && (
+          {info.studioRoute && !sketch && (
             <p className="field-hint">
               Calls <code>{info.studioRoute}</code> (see STUDIO_ROUTES.md in the account-scoped lambdas).
             </p>
@@ -957,127 +963,123 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
               A Twilio Function in Studio (<code>run-function</code>): its settings stay as they are live.
             </p>
           )}
-          {info.fields
-            .filter((field) => fieldShown(field, object.settings))
-            .map((field) => {
-              const value = object.settings?.[field.key] ?? '';
-              // A split's default comes first, then what else it can read
-              const fromBefore = field.suggestions === 'splitInputs' ? defaultSplitInput : undefined;
-              const suggestions = [
-                ...(fromBefore
-                  ? [{ value: fromBefore, detail: 'the answer of the widget before it (the default)' }]
-                  : []),
-                ...suggestionsFor(field.suggestions, props.helplineChoices, splitInputs).filter(
-                  (suggestion) => suggestion.value !== fromBefore,
-                ),
-              ];
-              // Skills are a comma-separated list: they're added to it, not chosen instead of it
-              const listed = value.split(',').map((item) => item.trim());
-              const set = (newValue: string) => {
-                const { [field.key]: _removed, ...others } = object.settings ?? {};
-                const settings: Record<string, string> = newValue ? { ...others, [field.key]: newValue } : others;
-                // A chatbot of the helpline's chosen: its language too (Lex's en_USCH is en-USCH here)
-                const bot =
-                  field.suggestions === 'chatbots' &&
-                  props.helplineChoices?.chatbots.find((candidate) => candidate.name === newValue);
-                if (bot && !settings.language) settings.language = bot.language.replace('_', '-');
-                update({ settings: Object.keys(settings).length > 0 ? settings : undefined });
-              };
-              return (
-                <label key={field.key} className="field">
-                  <span className="field-label">{field.label}</span>
-                  {field.custom ? (
-                    <ChoiceOrText key={node.id} field={field} value={value} disabled={readOnly} onChange={set} />
-                  ) : field.options ? (
-                    <select value={value} disabled={readOnly} onChange={(e) => set(e.target.value)}>
-                      <option value="">{field.optionLabels?.[''] ?? 'Not set'}</option>
-                      {field.options.map((option) => (
-                        <option key={option} value={option}>
-                          {field.optionLabels?.[option] ?? option}
-                        </option>
+          {fields.map((field) => {
+            const value = object.settings?.[field.key] ?? '';
+            // A split's default comes first, then what else it can read
+            const fromBefore = field.suggestions === 'splitInputs' ? defaultSplitInput : undefined;
+            const suggestions = [
+              ...(fromBefore
+                ? [{ value: fromBefore, detail: 'the answer of the widget before it (the default)' }]
+                : []),
+              ...suggestionsFor(field.suggestions, props.helplineChoices, splitInputs).filter(
+                (suggestion) => suggestion.value !== fromBefore,
+              ),
+            ];
+            // Skills are a comma-separated list: they're added to it, not chosen instead of it
+            const listed = value.split(',').map((item) => item.trim());
+            const set = (newValue: string) => {
+              const { [field.key]: _removed, ...others } = object.settings ?? {};
+              const settings: Record<string, string> = newValue ? { ...others, [field.key]: newValue } : others;
+              // A chatbot of the helpline's chosen: its language too (Lex's en_USCH is en-USCH here)
+              const bot =
+                field.suggestions === 'chatbots' &&
+                props.helplineChoices?.chatbots.find((candidate) => candidate.name === newValue);
+              if (bot && !settings.language) settings.language = bot.language.replace('_', '-');
+              update({ settings: Object.keys(settings).length > 0 ? settings : undefined });
+            };
+            return (
+              <label key={field.key} className="field">
+                <span className="field-label">{field.label}</span>
+                {field.custom ? (
+                  <ChoiceOrText key={node.id} field={field} value={value} disabled={readOnly} onChange={set} />
+                ) : field.options ? (
+                  <select value={value} disabled={readOnly} onChange={(e) => set(e.target.value)}>
+                    <option value="">{field.optionLabels?.[''] ?? 'Not set'}</option>
+                    {field.options.map((option) => (
+                      <option key={option} value={option}>
+                        {field.optionLabels?.[option] ?? option}
+                      </option>
+                    ))}
+                  </select>
+                ) : field.kind === 'json' ? (
+                  <AutoTextarea
+                    className="flow-field-json"
+                    value={value}
+                    minRows={4}
+                    placeholder={field.placeholder}
+                    disabled={readOnly}
+                    spellCheck={false}
+                    aria-invalid={Boolean(fieldProblem(field, value))}
+                    onChange={(e) => set(e.target.value)}
+                  />
+                ) : (
+                  <input
+                    type={field.kind === 'url' ? 'url' : 'text'}
+                    inputMode={field.kind === 'number' ? 'numeric' : undefined}
+                    className={field.kind === 'url' ? 'flow-field-url' : undefined}
+                    list={
+                      suggestions.length > 0 && field.suggestions !== 'skills'
+                        ? `suggestions-${node.id}-${field.key}`
+                        : undefined
+                    }
+                    onFocus={field.suggestions ? props.onRefreshChoices : undefined}
+                    value={value}
+                    placeholder={fromBefore ?? field.placeholder}
+                    disabled={readOnly}
+                    spellCheck={field.kind === 'url' ? false : undefined}
+                    aria-invalid={Boolean(fieldProblem(field, value))}
+                    onChange={(e) => set(e.target.value)}
+                  />
+                )}
+                {suggestions.length > 0 && field.suggestions !== 'skills' && (
+                  <datalist id={`suggestions-${node.id}-${field.key}`}>
+                    {suggestions.map(({ value: offered, detail }) => (
+                      <option key={offered} value={offered}>
+                        {detail}
+                      </option>
+                    ))}
+                  </datalist>
+                )}
+                {field.suggestions === 'skills' && !readOnly && (
+                  <span className="flow-field-choices" aria-label={`Add to ${field.label}`}>
+                    {suggestions
+                      .filter(({ value: skill }) => !listed.includes(skill))
+                      .map(({ value: skill }) => (
+                        <button
+                          key={skill}
+                          type="button"
+                          className="flow-field-choice"
+                          onClick={() => set(value.trim() ? `${value.replace(/,\s*$/, '')},${skill}` : skill)}
+                        >
+                          + {skill}
+                        </button>
                       ))}
-                    </select>
-                  ) : field.kind === 'json' ? (
-                    <AutoTextarea
-                      className="flow-field-json"
-                      value={value}
-                      minRows={4}
-                      placeholder={field.placeholder}
-                      disabled={readOnly}
-                      spellCheck={false}
-                      aria-invalid={Boolean(fieldProblem(field, value))}
-                      onChange={(e) => set(e.target.value)}
-                    />
-                  ) : (
-                    <input
-                      type={field.kind === 'url' ? 'url' : 'text'}
-                      inputMode={field.kind === 'number' ? 'numeric' : undefined}
-                      className={field.kind === 'url' ? 'flow-field-url' : undefined}
-                      list={
-                        suggestions.length > 0 && field.suggestions !== 'skills'
-                          ? `suggestions-${node.id}-${field.key}`
-                          : undefined
-                      }
-                      onFocus={field.suggestions ? props.onRefreshChoices : undefined}
-                      value={value}
-                      placeholder={fromBefore ?? field.placeholder}
-                      disabled={readOnly}
-                      spellCheck={field.kind === 'url' ? false : undefined}
-                      aria-invalid={Boolean(fieldProblem(field, value))}
-                      onChange={(e) => set(e.target.value)}
-                    />
-                  )}
-                  {suggestions.length > 0 && field.suggestions !== 'skills' && (
-                    <datalist id={`suggestions-${node.id}-${field.key}`}>
-                      {suggestions.map(({ value: offered, detail }) => (
-                        <option key={offered} value={offered}>
-                          {detail}
-                        </option>
-                      ))}
-                    </datalist>
-                  )}
-                  {field.suggestions === 'skills' && !readOnly && (
-                    <span className="flow-field-choices" aria-label={`Add to ${field.label}`}>
-                      {suggestions
-                        .filter(({ value: skill }) => !listed.includes(skill))
-                        .map(({ value: skill }) => (
-                          <button
-                            key={skill}
-                            type="button"
-                            className="flow-field-choice"
-                            onClick={() => set(value.trim() ? `${value.replace(/,\s*$/, '')},${skill}` : skill)}
-                          >
-                            + {skill}
-                          </button>
-                        ))}
-                    </span>
-                  )}
-                  {field.suggestions && suggestions.length === 0 && (
-                    <span className="field-hint">
-                      This helpline has no {SUGGESTIONS_FROM[field.suggestions]} yet: type it.
-                    </span>
-                  )}
-                  {fieldProblem(field, value) && (
-                    <span className="flow-field-problem">{fieldProblem(field, value)}</span>
-                  )}
-                  {fromBefore && !value && (
-                    <span className="field-hint">
-                      Splits on <code>{fromBefore}</code>, the answer of the widget before it. Type or choose another to
-                      use that instead.
-                    </span>
-                  )}
-                  {field.hint && <span className="field-hint">{field.hint}</span>}
-                </label>
-              );
-            })}
+                  </span>
+                )}
+                {field.suggestions && suggestions.length === 0 && (
+                  <span className="field-hint">
+                    This helpline has no {SUGGESTIONS_FROM[field.suggestions]} yet: type it.
+                  </span>
+                )}
+                {fieldProblem(field, value) && <span className="flow-field-problem">{fieldProblem(field, value)}</span>}
+                {fromBefore && !value && (
+                  <span className="field-hint">
+                    Splits on <code>{fromBefore}</code>, the answer of the widget before it. Type or choose another to
+                    use that instead.
+                  </span>
+                )}
+                {field.hint && <span className="field-hint">{field.hint}</span>}
+              </label>
+            );
+          })}
         </section>
       )}
 
-      {playsWaitRecording(object) && (
+      {playsWaitRecording(object) && !sketch && (
         <RecordingSection object={object} frame={details} actions={props.recordings} title="Wait music" />
       )}
 
-      {(object.type === 'setVariable' || object.type === 'setFlowMemory') && (
+      {(object.type === 'setVariable' || object.type === 'setFlowMemory') && !sketch && (
         <VariablesSection
           variables={object.variables}
           flowMemory={object.type === 'setFlowMemory'}
@@ -1086,7 +1088,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
         />
       )}
 
-      {object.type === 'sendToQueue' && (
+      {object.type === 'sendToQueue' && !sketch && (
         <TaskAttributesSection
           attributes={object.taskAttributes}
           channel={details?.channel}
@@ -1135,7 +1137,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
         />
       )}
 
-      {object.studio && (
+      {object.studio && !sketch && (
         <section className="flow-inspector-section">
           <h3>In Studio today</h3>
           <p className="field-hint">

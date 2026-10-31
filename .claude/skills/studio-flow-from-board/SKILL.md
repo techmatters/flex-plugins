@@ -41,7 +41,6 @@ A `<helpline>-<board>.flows.json` file. What matters here:
 | `flows[].objects[]` | Each widget as designed: `studioName`, `kind`, `message` (script, language, `recordingFile`, `status`), `call` (route and body), `exits` (where each way out leads), `taskAttributes` (Send to queue: the task attributes as JSON and where they're kept), `currentStudioWidget` (the widget as it is live, for imported ones) |
 | `checks` | What the design still lacks (errors first) |
 | `recordingsBaseUrl` | The recordings bucket folders for staging and production |
-| `notes` | Sticky notes and tasks from the board |
 
 Widgets imported from the live flow and not changed on the board come out **exactly** as they are
 in the template today (the form builder tests this for every helpline), so a diff only shows what

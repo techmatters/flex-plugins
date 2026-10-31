@@ -43,13 +43,14 @@ import {
   FlaskConical,
   Languages,
   PencilRuler,
+  PenLine,
   Redo2,
   RefreshCw,
   Trash2,
   Undo2,
   Users,
 } from 'lucide-react';
-import { boardChecks, issuesByObject, splitIgnored } from './checks';
+import { boardChecks, issuesByObject, sketchIssues, splitIgnored } from './checks';
 import { downloadFlowExport, downloadScripts } from './exports';
 import { CheckPanel } from './CheckPanel';
 import type { RecordingsList } from './recordings';
@@ -114,6 +115,8 @@ type Props = {
   active?: boolean;
 };
 
+type BoardMode = 'sketch' | 'design' | 'test';
+
 type SaveState = 'saved' | 'unsaved' | 'saving' | 'conflict' | 'error';
 
 const AUTOSAVE_DELAY_MS = 1200;
@@ -149,8 +152,20 @@ const Editor = ({
   active = true,
 }: Props) => {
   const flow = useReactFlow<CanvasNode, ConnectionEdge>();
-  // Design: the board is changed; Test: flows are run (simulate.ts) and the board can't be changed
-  const [mode, setMode] = useState<'design' | 'test'>('design');
+  // Sketch: the flow's shape only (kinds, names, ways out); Build (design): every detail; Test: flows
+  // are run (simulate.ts) and the board can't be changed. Remembered per board in this browser; a new
+  // board starts as a sketch
+  const modeKey = `flow-mode:${board.code}/${board.id}`;
+  const [mode, setMode] = useState<BoardMode>(() => {
+    try {
+      const kept = window.localStorage.getItem(modeKey);
+      // Test isn't kept: the board opens to be worked on
+      if (kept === 'sketch' || kept === 'design') return kept;
+    } catch {
+      // No storage (private window): the default
+    }
+    return board.content.objects.length === 0 ? 'sketch' : 'design';
+  });
   const locked = readOnly || mode === 'test';
   const [nodes, setNodes, onNodesChange] = useNodesState<CanvasNode>(toNodes(board.content));
   const [edges, setEdges, onEdgesChange] = useEdgesState<ConnectionEdge>(toEdges(board.content));
@@ -710,10 +725,11 @@ const Editor = ({
     );
   }, [client, board.code]);
   const allIssues = useMemo(() => boardChecks(content, recordingList?.recordings), [content, recordingList]);
-  const { active: issues, ignored: ignoredIssues } = useMemo(
-    () => splitIgnored(allIssues, ignoredChecks),
-    [allIssues, ignoredChecks],
-  );
+  // In a sketch, only what's about the flow's shape (no scripts, recordings, settings...)
+  const { active: issues, ignored: ignoredIssues } = useMemo(() => {
+    const split = splitIgnored(allIssues, ignoredChecks);
+    return mode === 'sketch' ? { active: sketchIssues(split.active), ignored: sketchIssues(split.ignored) } : split;
+  }, [allIssues, ignoredChecks, mode]);
   const ignoreCheck = (key: string, ignore: boolean) =>
     setIgnoredChecks((current) =>
       ignore ? [...new Set([...current, key])] : current.filter((other) => other !== key),
@@ -753,11 +769,20 @@ const Editor = ({
       tested: coverage && { objects: coverage.objects, connections: coverage.connections },
     };
   }, [mode, run, showTested, content, validPaths]);
-  const switchMode = (next: 'design' | 'test') => {
+  const switchMode = (next: BoardMode) => {
     setMode(next);
+    try {
+      window.localStorage.setItem(modeKey, next);
+    } catch {
+      // Not kept: fine
+    }
     setRun(undefined);
     setRunHistory([]);
-    setSideTab(next === 'test' ? 'test' : 'settings');
+    setSideTab(
+      next === 'test'
+        ? 'test'
+        : (current) => (current === 'test' || (next === 'sketch' && current === 'recordings') ? 'settings' : current),
+    );
     setNodes((current) => current.map((node) => (node.selected ? { ...node, selected: false } : node)));
   };
   const markTested = () => {
@@ -775,7 +800,10 @@ const Editor = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [follow]);
 
-  const editingContext = useMemo(() => ({ readOnly: locked, problems, simulation }), [locked, problems, simulation]);
+  const editingContext = useMemo(
+    () => ({ readOnly: locked, problems, simulation, sketch: mode === 'sketch' }),
+    [locked, problems, simulation, mode],
+  );
   const errorCount = issues.filter((issue) => issue.severity === 'error').length;
 
   // A way out left unconnected on purpose: the flow ends there
@@ -815,7 +843,7 @@ const Editor = ({
 
   return (
     <BoardEditingContext.Provider value={editingContext}>
-      <div className="flow-editor" onKeyDown={onKeyDown}>
+      <div className={`flow-editor ${mode}`} onKeyDown={onKeyDown}>
         <div className="flow-toolbar">
           <button type="button" className="link-button" onClick={close}>
             ← Boards
@@ -834,8 +862,23 @@ const Editor = ({
             />
           )}
           <span className="flow-variants flow-mode" role="tablist" aria-label="Mode">
-            <button type="button" role="tab" aria-selected={mode === 'design'} onClick={() => switchMode('design')}>
-              <PencilRuler size={14} aria-hidden /> Design
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === 'sketch'}
+              title="The flow's shape: kinds, names and ways out (no scripts, recordings or settings)"
+              onClick={() => switchMode('sketch')}
+            >
+              <PenLine size={14} aria-hidden /> Sketch
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={mode === 'design'}
+              title="Every detail: scripts, recordings, settings, task attributes"
+              onClick={() => switchMode('design')}
+            >
+              <PencilRuler size={14} aria-hidden /> Build
             </button>
             <button type="button" role="tab" aria-selected={mode === 'test'} onClick={() => switchMode('test')}>
               <FlaskConical size={14} aria-hidden /> Test
@@ -866,15 +909,17 @@ const Editor = ({
               )}
             </span>
           )}
-          <button
-            type="button"
-            className="secondary-button flow-refresh"
-            title="Check for recordings uploaded or published since the board opened"
-            disabled={refreshing || board.code === TEMPLATES_CODE}
-            onClick={loadRecordings}
-          >
-            <RefreshCw size={15} aria-hidden /> {refreshing ? 'Refreshing…' : 'Recordings'}
-          </button>
+          {mode !== 'sketch' && (
+            <button
+              type="button"
+              className="secondary-button flow-refresh"
+              title="Check for recordings uploaded or published since the board opened"
+              disabled={refreshing || board.code === TEMPLATES_CODE}
+              onClick={loadRecordings}
+            >
+              <RefreshCw size={15} aria-hidden /> {refreshing ? 'Refreshing…' : 'Recordings'}
+            </button>
+          )}
           <span className="flow-export">
             <button
               type="button"
@@ -1143,14 +1188,16 @@ const Editor = ({
               >
                 Check{issues.length > 0 ? ` (${issues.length})` : ''}
               </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={sideTab === 'recordings'}
-                onClick={() => setSideTab('recordings')}
-              >
-                Recordings
-              </button>
+              {mode !== 'sketch' && (
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected={sideTab === 'recordings'}
+                  onClick={() => setSideTab('recordings')}
+                >
+                  Recordings
+                </button>
+              )}
             </div>
             {sideTab === 'test' && mode === 'test' && (
               <SimulatorPanel
@@ -1234,6 +1281,7 @@ const Editor = ({
                 helplineChoices={helplineChoices}
                 onRefreshChoices={refreshChoices}
                 onBoardFlow={setBoardFlow}
+                sketch={mode === 'sketch'}
               />
             )}
             {sideTab === 'tasks' && (

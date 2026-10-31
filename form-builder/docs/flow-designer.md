@@ -29,7 +29,7 @@ Board (one per helpline topic, e.g. "USNM contact flows")
  ├─ Frames        named areas, e.g. "Voice: pre-queue", "SMS: post-queue (every 2 minutes)"
  │   ├─ Objects   typed boxes (below), with text, colour, icon and an optional Studio name
  │   └─ Connectors  arrow from one object (and one of its exits) to another
- ├─ Stickies     free notes, like the yellow/pink post-its ("TBD when the check happens")
+ ├─ Stickies     free notes, like the yellow/pink post-its ("TBD when the check happens"); not exported, only widgets' comments are
  └─ Comments     threads pinned to an object or a spot, can be resolved
 ```
 
@@ -195,9 +195,23 @@ still lacks: open ends, missing names and scripts, system down first, unreachabl
 objects. Objects get a red badge for errors and an orange one for warnings; the panel can hide
 warnings.
 
+### Sketch, Build and Test
+
+Three modes in the toolbar, in the order a flow is made (remembered per board in the browser; a
+new board starts as a sketch):
+
+- **Sketch**: the flow's shape, agreed first. Objects are drawn lighter, with dashed outlines, and
+  their settings only show the kind, text, Studio name, ways out (and where they go), a Repeat's
+  times and comments: no scripts, recordings, languages, call settings, variables or task
+  attributes. The Check panel only lists what's about the shape (ways out, names, unreachable
+  objects, system down), and the Recordings tab is hidden. Nothing is lost: the details are kept,
+  only not shown.
+- **Build**: every detail, as before.
+- **Test**: runs the flow (below); the board can't be changed.
+
 ### Test the flow
 
-**Design / Test** in the toolbar. In Test mode the board can't be changed (no palette, no moving or
+In **Test** mode the board can't be changed (no palette, no moving or
 connecting); the **Test** panel runs a flow from its trigger (`src/flows/simulate.ts`), without
 Twilio, to check its logic (not its texts or recordings):
 
@@ -398,7 +412,6 @@ can ignore it. `about` tells the agent what the file is and which standards to f
       ]
     }
   ],
-  "notes": [{ "text": "Record the welcome", "frame": "f-pre", "task": { "status": "todo", "assignee": "Ale" } }],
   "checks": [{ "severity": "warning", "message": "“Closed” has no Studio name yet.", "objectId": "o-closed" }],
   "layout": { "o-tya": { "x": 40, "y": 200, "width": 210, "height": 72, "frame": "f-pre" } }
 }

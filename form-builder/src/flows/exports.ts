@@ -113,7 +113,6 @@ export type FlowExport = {
   // A flow split off from a shared template: make it a template of its own
   ownTemplate?: { from: string; suggested: string; studioFlow?: string };
   flows: ExportedFlow[];
-  notes: { text: string; frame?: string; task?: NonNullable<BoardContent['stickies'][number]['task']> }[];
   checks: { severity: string; message: string; objectId?: string }[];
   // The Studio flow template generated for each frame, ready to write into twilio-iac
   studioTemplates: {
@@ -277,7 +276,8 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
   content.objects.forEach((object) => flowFor(object).objects.push(exportObject(object)));
 
   const layout: FlowExport['layout'] = {};
-  [...content.frames, ...content.objects, ...content.stickies].forEach((item) => {
+  // Sticky notes are the team's own (comments on widgets are exported with them)
+  [...content.frames, ...content.objects].forEach((item) => {
     const { x, y, width, height } = item;
     const frame = 'frameId' in item ? item.frameId : undefined;
     const color = 'color' in item ? item.color : undefined;
@@ -300,13 +300,6 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
     ...(recordings ? { recordingsBaseUrl: recordings.baseUrls } : {}),
     ...sharedTemplateOf(content, recordings),
     flows: [...flows.values()].filter((flow) => flow.objects.length > 0 || flow.frames.length > 0),
-    notes: content.stickies
-      .filter((sticky) => sticky.text.trim())
-      .map((sticky) => ({
-        text: sticky.text,
-        ...(sticky.frameId ? { frame: sticky.frameId } : {}),
-        ...(sticky.task ? { task: sticky.task } : {}),
-      })),
     studioTemplates: toStudioFlows(content).map(
       ({ title, template, sharedWith, changeShared, channels, text, flowVars, taskAttributes, todo }) => ({
         title,

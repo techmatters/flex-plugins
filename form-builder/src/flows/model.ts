@@ -488,6 +488,8 @@ export type ObjectField = {
   // With options: what it is when not set, and that any other value can be typed (Custom)
   defaultValue?: string;
   custom?: boolean;
+  // Shown in a sketch too (Sketch mode leaves the other settings for later)
+  sketch?: boolean;
 };
 
 // Who a message is from, as the person sees it: the helpline's name (${helpline}, from its
@@ -1033,6 +1035,7 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
         key: 'maxRepeats',
         label: 'Times to repeat',
         kind: 'number',
+        sketch: true,
         placeholder: '2',
         hint: 'How many times it goes back round before taking “max reached”.',
       },

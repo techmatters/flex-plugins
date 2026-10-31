@@ -495,6 +495,14 @@ export const splitIgnored = (issues: Issue[], ignoredKeys: string[] = []) => {
   return { active: issues.filter((issue) => !isIgnored(issue)), ignored: issues.filter(isIgnored) };
 };
 
+// What a sketch (Sketch mode) leaves for later: scripts, recordings, languages, the names' standard
+// parts, call settings, variables and task attributes
+const DETAIL_CHECKS =
+  /^(nameStandard|noScript|recording|scriptApproval|language|oldRecordingName|taskAttributes|noUrl|noVariables|noInput|noChatbot|field-.*|variable-.*)$/;
+
+/** The issues that matter in a sketch: the flow's shape (ways out, names, what's unreachable...). */
+export const sketchIssues = (issues: Issue[]) => issues.filter((issue) => !DETAIL_CHECKS.test(issue.key.split('|')[1]));
+
 export const issuesByObject = (issues: Issue[]): Map<string, Issue[]> => {
   const result = new Map<string, Issue[]>();
   issues.forEach((issue) => {

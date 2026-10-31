@@ -1823,3 +1823,25 @@
   align-items: center;
   gap: 5px;
 }
+
+/* Sketch mode: the flow's shape only, lighter and quieter (dashed outlines, faded icons) */
+.flow-editor.sketch .flow-object-icon {
+  opacity: 0.5;
+}
+
+.flow-editor.sketch .flow-object-text {
+  font-weight: 500;
+}
+
+.flow-editor.sketch .flow-object-caption {
+  opacity: 0.7;
+}
+
+.flow-editor.sketch .flow-edge:not(.selected) {
+  stroke: #90a4ae !important;
+}
+
+.flow-editor.sketch .flow-edge-label:not(.selected) {
+  border-color: #cfd8dc;
+  color: #546e7a;
+}

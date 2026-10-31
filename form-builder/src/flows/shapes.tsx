@@ -101,14 +101,22 @@ type ShapeProps = {
   height: number;
   fill: string;
   stroke: string;
+  // Sketch mode draws a dashed, pencil-like outline
+  dashed?: boolean;
 };
 
 // Half the stroke, so lines aren't cut at the edges
 const S = 1.5;
 
-export const ShapeOutline = ({ shape, width: w, height: h, fill, stroke }: ShapeProps) => {
+export const ShapeOutline = ({ shape, width: w, height: h, fill, stroke, dashed }: ShapeProps) => {
   if (shape === 'none' || w <= 0 || h <= 0) return null;
-  const common = { fill, stroke, strokeWidth: 2 * S, vectorEffect: 'non-scaling-stroke' as const };
+  const common = {
+    fill,
+    stroke,
+    strokeWidth: 2 * S,
+    vectorEffect: 'non-scaling-stroke' as const,
+    ...(dashed ? { strokeDasharray: '6 4' } : {}),
+  };
   const r = S;
   const right = w - S;
   const bottom = h - S;

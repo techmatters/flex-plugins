@@ -213,7 +213,8 @@ describe('flow designer', { timeout: 20_000 }, () => {
     expect((await boards.get('usnm', board.id))?.content.title).toBe('Renamed elsewhere');
   });
 
-  const openNewBoard = async (title: string, user = staff) => {
+  // A new board opens as a sketch; these tests work with every detail (Build)
+  const openNewBoard = async (title: string, user = staff, mode: 'Sketch' | 'Build' = 'Build') => {
     const board = await clientAs(staff).create('usnm', title);
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
     render(
@@ -225,8 +226,31 @@ describe('flow designer', { timeout: 20_000 }, () => {
       />,
     );
     await screen.findByRole('heading', { name: title });
+    fireEvent.click(within(screen.getByRole('tablist', { name: 'Mode' })).getByRole('tab', { name: new RegExp(mode) }));
     return board;
   };
+
+  test('a new board opens as a sketch: kinds, names and ways out only; Build shows every detail', async () => {
+    await openNewBoard('Sketched', staff, 'Sketch');
+    expect(
+      within(screen.getByRole('tablist', { name: 'Mode' }))
+        .getByRole('tab', { name: /Sketch/ })
+        .getAttribute('aria-selected'),
+    ).toBe('true');
+    expect(screen.queryByRole('tab', { name: 'Recordings' })).toBeNull();
+    fireEvent.click(palette().getByRole('button', { name: /^Play message/ }));
+    expect(settings().queryByRole('textbox', { name: 'Script' })).toBeNull();
+    expect(settings().queryByRole('region', { name: 'Recording' })).toBeNull();
+    expect(settings().getByRole('heading', { name: 'Where it goes' })).toBeTruthy();
+    // A Repeat keeps how many times it repeats
+    fireEvent.click(palette().getByRole('button', { name: /^Repeat/ }));
+    expect(settings().getByRole('textbox', { name: /^Times to repeat/ })).toBeTruthy();
+
+    fireEvent.click(within(screen.getByRole('tablist', { name: 'Mode' })).getByRole('tab', { name: /Build/ }));
+    fireEvent.click(palette().getByRole('button', { name: /^Play message/ }));
+    expect(settings().getByRole('textbox', { name: 'Script' })).toBeTruthy();
+    expect(screen.getByRole('tab', { name: 'Recordings' })).toBeTruthy();
+  });
   const palette = () => within(screen.getByRole('complementary', { name: 'Objects' }));
   const settings = () => within(screen.getByRole('region', { name: 'Settings' }));
 
@@ -285,6 +309,7 @@ describe('flow designer', { timeout: 20_000 }, () => {
     );
     const { rerender, container } = render(area(true));
     await screen.findByRole('heading', { name: 'Choices' });
+    fireEvent.click(within(screen.getByRole('tablist', { name: 'Mode' })).getByRole('tab', { name: /Build/ }));
 
     // Skills are added to the list
     fireEvent.click(palette().getByRole('button', { name: /^Skilled worker available/ }));

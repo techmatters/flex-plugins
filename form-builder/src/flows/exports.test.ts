@@ -178,9 +178,9 @@ describe('JSON for Claude', () => {
       status: 'Script ready',
     });
 
-    expect(exported.notes).toEqual([
-      { text: 'Record the welcome', frame: 'f-pre', task: { status: 'todo', assignee: 'Ale' } },
-    ]);
+    // Sticky notes (and their tasks) stay on the board: only widgets' comments are exported
+    expect(exported).not.toHaveProperty('notes');
+    expect(JSON.stringify(exported)).not.toContain('Record the welcome');
     expect(exported.checks).toContainEqual({
       severity: 'warning',
       message: '“Closed” has no Studio name yet.',
