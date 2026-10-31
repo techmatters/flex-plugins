@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test:unit": "jest tests/unit",
     "test:e2e": "jest tests/e2e",
     "docker:build": "docker build -t twilioerrorreporter --build-arg lambda_name=TwilioErrorReporter --build-arg lambda_dir=. -f ../Dockerfile ../"
   },

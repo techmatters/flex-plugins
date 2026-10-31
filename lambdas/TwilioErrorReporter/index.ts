@@ -180,7 +180,11 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
 
   const payloadObject: DebuggerPayload = JSON.parse(Payload);
 
-  const helplineAccount = await getHelplineAccount(AccountSid);
+  // A failed lookup shouldn't stop the event from being logged, so it's logged as unknown instead
+  const helplineAccount = await getHelplineAccount(AccountSid).catch(error => {
+    console.error(`Failed to look up the helpline account for ${AccountSid}`, error);
+    return undefined;
+  });
   log(AccountSid, helplineAccount, Level, payloadObject);
 
   return {
