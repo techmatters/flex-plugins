@@ -32,7 +32,8 @@ type Props = {
 };
 
 export const PeopleManager = ({ client, helplineCodes, isAseloStaff }: Props) => {
-  const codes = isAseloStaff ? [ASELO_PEOPLE_CODE, ...helplineCodes] : helplineCodes;
+  // Helplines first: their lists are the ones boards offer
+  const codes = isAseloStaff ? [...helplineCodes, ASELO_PEOPLE_CODE] : helplineCodes;
   const [code, setCode] = useState(codes[0] ?? '');
   const [people, setPeople] = useState<Person[]>();
   const [name, setName] = useState('');
@@ -103,7 +104,9 @@ export const PeopleManager = ({ client, helplineCodes, isAseloStaff }: Props) =>
         <select value={code} onChange={(e) => setCode(e.target.value)}>
           {codes.map((candidate) => (
             <option key={candidate} value={candidate}>
-              {candidate === ASELO_PEOPLE_CODE ? 'Aselo team' : candidate.toUpperCase()}
+              {candidate === ASELO_PEOPLE_CODE
+                ? 'Aselo team (to add to helplines, and templates)'
+                : candidate.toUpperCase()}
             </option>
           ))}
         </select>

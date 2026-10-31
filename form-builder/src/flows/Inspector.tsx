@@ -93,6 +93,8 @@ export type InspectorProps = {
   problems: Map<string, Issue[]>;
   // Who tasks can be assigned to: the helpline's people and the Aselo team
   people: Person[];
+  // Whose list that is, to say where to add someone
+  peopleList?: string;
   nodes: CanvasNode[];
   edges: ConnectionEdge[];
   readOnly: boolean;
@@ -1297,8 +1299,9 @@ const StickySettings = ({ node, props }: { node: StickyNode; props: InspectorPro
                 ))}
               </select>
               <span className="field-hint">
-                This helpline&apos;s people. Someone missing (Aselo staff too)? Add them to its list under People on the
-                boards page.
+                {props.people.length === 0 ? 'Nobody on' : 'People on'} the {props.peopleList ?? 'helpline'} list.
+                Someone missing (Aselo staff too)? On the boards page, choose {props.peopleList ?? 'the helpline'} under
+                People › List and add them.
               </span>
             </label>
             <label className="field">

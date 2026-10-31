@@ -1258,6 +1258,7 @@ const Editor = ({
                 content={content}
                 problems={problems}
                 people={people}
+                peopleList={board.code === TEMPLATES_CODE ? 'the Aselo team' : board.code.toUpperCase()}
                 nodes={nodes}
                 edges={edges}
                 readOnly={locked}
