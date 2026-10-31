@@ -60,7 +60,7 @@ const loadShortHelplines = () =>
 
 beforeEach(() => {
   ssmCache.values = {};
-  ssmCache.expiryDate = undefined;
+  ssmCache.byNameExpiryDates = {};
 });
 
 afterEach(() => {
@@ -144,5 +144,28 @@ describe('loadSsmCacheByName', () => {
       '/staging/twilio/AC2/short_helpline': 'EUMC',
       '/development/twilio/AC3/short_helpline': 'AS',
     });
+  });
+
+  test('loads even when other parameters are already in the cache', async () => {
+    ssmCache.values['/production/other/parameter'] = {
+      value: 'already cached',
+      expiryDate: new Date(Date.now() + 60000),
+    };
+    mockSsm({ '/production/twilio/AC1/short_helpline': 'ZM' });
+
+    await loadShortHelplines();
+
+    expect(getCachedParameters(SHORT_HELPLINE_REGEX)).toStrictEqual({
+      '/production/twilio/AC1/short_helpline': 'ZM',
+    });
+  });
+
+  test('loads a different config while another one has not expired', async () => {
+    const send = mockSsm({ '/production/twilio/AC1/short_helpline': 'ZM' });
+
+    await loadShortHelplines();
+    await loadSsmCacheByName({ configs: [{ nameContains: '/helpline_name' }] });
+
+    expect(sentCommands(send, DescribeParametersCommand)).toHaveLength(2);
   });
 });

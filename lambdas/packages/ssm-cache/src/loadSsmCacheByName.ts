@@ -24,9 +24,7 @@ import {
   ssmCache,
   getSsmClient,
   addToCache,
-  hasCacheExpired,
   setCacheDurationMilliseconds,
-  isConfigNotEmpty,
 } from './ssmCache';
 
 const MAX_NAMES_PER_GET_PARAMETERS = 10; // 10 is max allowed by AWS
@@ -95,21 +93,30 @@ export type LoadSsmCacheByNameParameters = {
   // We accept an array of types to allow loading parameters matching different names
   configs: SsmCacheByNameConfig[];
 };
+const toConfigKey = ({ nameContains, regex }: SsmCacheByNameConfig) =>
+  `${nameContains}|${regex?.source ?? ''}`;
+
+const hasConfigExpired = (config: SsmCacheByNameConfig) => {
+  const expiryDate = ssmCache.byNameExpiryDates[toConfigKey(config)];
+  return !expiryDate || new Date() > expiryDate;
+};
+
+// Each config is loaded unless it was loaded successfully before and hasn't expired,
+// regardless of what else is in the cache
 export const loadSsmCacheByName = async ({
   cacheDurationMilliseconds,
   configs,
 }: LoadSsmCacheByNameParameters) => {
-  if (isConfigNotEmpty() && !hasCacheExpired()) return;
+  const expiredConfigs = configs.filter(hasConfigExpired);
+  if (!expiredConfigs.length) return;
   if (cacheDurationMilliseconds) setCacheDurationMilliseconds(cacheDurationMilliseconds);
 
-  ssmCache.expiryDate = new Date(Date.now() + ssmCache.cacheDurationMilliseconds);
+  const expiryDate = new Date(Date.now() + ssmCache.cacheDurationMilliseconds);
 
-  const promises = configs.map(async config => loadPaginatedByName(config));
-  try {
-    await Promise.all(promises);
-  } catch (e) {
-    // Expire the cache so the next call retries, rather than using a partial load until it expires
-    ssmCache.expiryDate = new Date(0);
-    throw e;
-  }
+  const promises = expiredConfigs.map(async config => {
+    await loadPaginatedByName(config);
+    // Only set once loaded, so a failed or partial load is retried on the next call
+    ssmCache.byNameExpiryDates[toConfigKey(config)] = expiryDate;
+  });
+  await Promise.all(promises);
 };

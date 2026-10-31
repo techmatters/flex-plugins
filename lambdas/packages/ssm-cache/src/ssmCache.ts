@@ -61,11 +61,14 @@ export type SsmCacheParameter = {
 export type SsmCache = {
   values: Record<string, SsmCacheParameter | undefined>;
   expiryDate?: Date;
+  // When each loadSsmCacheByName config needs loading again, keyed by config
+  byNameExpiryDates: Record<string, Date | undefined>;
   cacheDurationMilliseconds: number;
 };
 
 export const ssmCache: SsmCache = {
   values: {},
+  byNameExpiryDates: {},
   cacheDurationMilliseconds: 3600000,
 };
 
@@ -82,11 +85,6 @@ export class SsmParameterNotFound extends Error {
 const hasParameterExpired = (parameter: SsmCacheParameter | undefined) => {
   return !!(parameter?.expiryDate && new Date() > parameter.expiryDate);
 };
-
-export const hasCacheExpired = () =>
-  !!(ssmCache.expiryDate && new Date() > ssmCache.expiryDate);
-
-export const isConfigNotEmpty = () => !!Object.keys(ssmCache.values).length;
 
 export const setCacheDurationMilliseconds = (cacheDurationMilliseconds: number) => {
   ssmCache.cacheDurationMilliseconds = cacheDurationMilliseconds;
