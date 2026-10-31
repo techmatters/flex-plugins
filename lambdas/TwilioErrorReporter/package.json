@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test:unit": "jest tests/unit",
     "test:e2e": "jest tests/e2e",
     "docker:build": "docker build -t twilioerrorreporter --build-arg lambda_name=TwilioErrorReporter --build-arg lambda_dir=. -f ../Dockerfile ../"
   },
@@ -14,5 +15,8 @@
     "@types/node": "^24.19.2",
     "@types/aws-lambda": "^8.10.108",
     "ts-node": "^10.9.1"
+  },
+  "dependencies": {
+    "@tech-matters/ssm-cache": "^1.0.0"
   }
 }
