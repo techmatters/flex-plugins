@@ -33,12 +33,12 @@ type HelplineAccount = {
 
 // Accounts without a short_helpline parameter are stored with just their SID,
 // since that points to a broken helpline provisioning. They are still treated as unknown.
-// They expire, so an account provisioned later (or after the SSM snapshot was taken) is picked up.
+// They expire, and only that account is then checked again in SSM, so an account provisioned later is picked up.
 type UnknownAccount = Pick<HelplineAccount, 'accountSid'> & {
   expiresAt: number; // Epoch seconds, the format DynamoDB TTL uses
 };
 
-const UNKNOWN_ACCOUNT_EXPIRY_SECONDS = 3 * 24 * 60 * 60; // 3 days
+const UNKNOWN_ACCOUNT_EXPIRY_SECONDS = 6 * 60 * 60; // 6 hours
 
 const toUnknownAccount = (accountSid: string): UnknownAccount => ({
   accountSid,
@@ -73,9 +73,12 @@ const getHelplineAccountsInMemory = (): HelplineAccount[] =>
     toHelplineAccount,
   );
 
-const loadHelplineAccountsFromSsm = async (): Promise<HelplineAccount[]> => {
+// Loads every account by default, or only the parameters whose name contains nameContains
+const loadHelplineAccountsFromSsm = async (
+  nameContains = '/short_helpline',
+): Promise<HelplineAccount[]> => {
   await loadSsmCacheByName({
-    configs: [{ nameContains: '/short_helpline', regex: SHORT_HELPLINE_PARAMETER_NAME }],
+    configs: [{ nameContains, regex: SHORT_HELPLINE_PARAMETER_NAME }],
   });
   return getHelplineAccountsInMemory();
 };
@@ -87,21 +90,41 @@ const isHelplineAccount = (
   account: HelplineAccount | UnknownAccount,
 ): account is HelplineAccount => 'shortHelpline' in account;
 
+const tryLock = (lockName: string): Promise<boolean> =>
+  acquireLock(HELPLINE_ACCOUNTS_TABLE, lockName, SSM_LOAD_LOCK_SECONDS).catch(error => {
+    console.error(`Failed to acquire the ${lockName} lock`, error);
+    return false;
+  });
+
+// Storing is best-effort: the accounts were loaded, so a failed write shouldn't lose them
+const storeHelplineAccounts = (accounts: (HelplineAccount | UnknownAccount)[]) =>
+  putCachedItems(HELPLINE_ACCOUNTS_TABLE, accounts).catch(error => {
+    console.error('Failed to store the helpline accounts', error);
+  });
+
 // Loads every account from SSM and stores them all, so the other accounts don't need to read SSM again
 const repopulateHelplineAccounts = async (
   accountSid: string,
 ): Promise<HelplineAccount | undefined> => {
   const helplineAccounts = await loadHelplineAccountsFromSsm();
   const helplineAccount = findHelplineAccount(helplineAccounts, accountSid);
-  // Storing is best-effort: the accounts were loaded, so a failed write shouldn't lose them
-  await putCachedItems<HelplineAccount | UnknownAccount>(
-    HELPLINE_ACCOUNTS_TABLE,
+  await storeHelplineAccounts(
     helplineAccount
       ? helplineAccounts
       : [...helplineAccounts, toUnknownAccount(accountSid)],
-  ).catch(error => {
-    console.error('Failed to store the helpline accounts', error);
-  });
+  );
+  return helplineAccount;
+};
+
+// Looks up only this account in SSM, so the accounts already stored aren't reloaded
+const recheckUnknownAccount = async (
+  accountSid: string,
+): Promise<HelplineAccount | undefined> => {
+  const helplineAccount = findHelplineAccount(
+    await loadHelplineAccountsFromSsm(`/twilio/${accountSid}/short_helpline`),
+    accountSid,
+  );
+  await storeHelplineAccounts([helplineAccount ?? toUnknownAccount(accountSid)]);
   return helplineAccount;
 };
 
@@ -118,17 +141,16 @@ const getHelplineAccount = async (
     return findHelplineAccount(await loadHelplineAccountsFromSsm(), accountSid);
   }
   if (storedAccount && isHelplineAccount(storedAccount)) return storedAccount;
-  if (storedAccount && !hasExpired(storedAccount)) return undefined;
 
-  const hasLock = await acquireLock(
-    HELPLINE_ACCOUNTS_TABLE,
-    SSM_LOAD_LOCK,
-    SSM_LOAD_LOCK_SECONDS,
-  ).catch(error => {
-    console.error('Failed to acquire the SSM load lock', error);
-    return false;
-  });
-  if (hasLock) return repopulateHelplineAccounts(accountSid);
+  if (storedAccount) {
+    if (!hasExpired(storedAccount)) return undefined;
+    // Only one invocation at a time checks this account again, since an unknown account
+    // may well be the one sending lots of errors. The others keep treating it as unknown.
+    const hasAccountLock = await tryLock(`${SSM_LOAD_LOCK}:${accountSid}`);
+    return hasAccountLock ? recheckUnknownAccount(accountSid) : undefined;
+  }
+
+  if (await tryLock(SSM_LOAD_LOCK)) return repopulateHelplineAccounts(accountSid);
 
   // Another invocation is repopulating the table, so use what this container has, if anything
   return findHelplineAccount(getHelplineAccountsInMemory(), accountSid);

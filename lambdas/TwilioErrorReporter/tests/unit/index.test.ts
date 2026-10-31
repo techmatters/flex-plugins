@@ -42,7 +42,7 @@ const mockLoadSsmCacheByName = loadSsmCacheByName as jest.MockedFunction<
 const ACCOUNT_SID = 'ACtest';
 const PAYLOAD = { error_code: '11200' };
 const NOW_SECONDS = 1_800_000_000;
-const THREE_DAYS_SECONDS = 3 * 24 * 60 * 60;
+const SIX_HOURS_SECONDS = 6 * 60 * 60;
 
 const debuggerEvent = (): ALBEvent =>
   ({
@@ -107,23 +107,79 @@ describe('handler', () => {
     );
   });
 
-  test('reads SSM again once an account stored as unknown has expired', async () => {
+  test('looks up only that account in SSM, under its own lock, once an account stored as unknown has expired', async () => {
     mockGetCachedItem.mockResolvedValue({
       accountSid: ACCOUNT_SID,
       expiresAt: NOW_SECONDS - 1,
     });
     mockGetCachedParameters.mockReturnValue({
       [`/staging/twilio/${ACCOUNT_SID}/short_helpline`]: 'eumc',
+      '/production/twilio/ACother/short_helpline': 'zm',
     });
 
     await handler(debuggerEvent());
 
+    expect(mockAcquireLock).toHaveBeenCalledTimes(1);
+    expect(mockAcquireLock).toHaveBeenCalledWith(
+      expect.anything(),
+      `lock:ssm-load:${ACCOUNT_SID}`,
+      30,
+    );
+    expect(mockLoadSsmCacheByName).toHaveBeenCalledWith({
+      configs: [
+        {
+          nameContains: `/twilio/${ACCOUNT_SID}/short_helpline`,
+          regex: expect.any(RegExp),
+        },
+      ],
+    });
+    // Only this account is stored, not the others the container has in memory
     expect(mockPutCachedItems).toHaveBeenCalledWith(expect.anything(), [
       { accountSid: ACCOUNT_SID, environment: 'staging', shortHelpline: 'EUMC' },
     ]);
     expect(consoleLog).toHaveBeenCalledWith(
       '[STAGING Error]: ',
       `EUMC_STAGING (${ACCOUNT_SID})`,
+      PAYLOAD,
+    );
+  });
+
+  test('stores an expired unknown account as unknown for another 6 hours when it is still not in SSM', async () => {
+    mockGetCachedItem.mockResolvedValue({
+      accountSid: ACCOUNT_SID,
+      expiresAt: NOW_SECONDS - 1,
+    });
+    mockGetCachedParameters.mockReturnValue({});
+
+    await handler(debuggerEvent());
+
+    expect(mockPutCachedItems).toHaveBeenCalledWith(expect.anything(), [
+      { accountSid: ACCOUNT_SID, expiresAt: NOW_SECONDS + SIX_HOURS_SECONDS },
+    ]);
+    expect(consoleLog).toHaveBeenCalledWith(
+      '[UNKNOWN Error]: ',
+      `UNRECOGNISED_ACCOUNT (${ACCOUNT_SID})`,
+      PAYLOAD,
+    );
+  });
+
+  test('keeps an expired unknown account as unknown, without reading SSM, when another invocation is checking it', async () => {
+    mockGetCachedItem.mockResolvedValue({
+      accountSid: ACCOUNT_SID,
+      expiresAt: NOW_SECONDS - 1,
+    });
+    mockAcquireLock.mockResolvedValue(false);
+    mockGetCachedParameters.mockReturnValue({
+      [`/staging/twilio/${ACCOUNT_SID}/short_helpline`]: 'eumc',
+    });
+
+    await handler(debuggerEvent());
+
+    expect(mockLoadSsmCacheByName).not.toHaveBeenCalled();
+    expect(mockPutCachedItems).not.toHaveBeenCalled();
+    expect(consoleLog).toHaveBeenCalledWith(
+      '[UNKNOWN Error]: ',
+      `UNRECOGNISED_ACCOUNT (${ACCOUNT_SID})`,
       PAYLOAD,
     );
   });
@@ -148,7 +204,7 @@ describe('handler', () => {
     );
   });
 
-  test('stores an account missing from both DynamoDB and SSM with just its SID, expiring in 3 days, with the loaded accounts', async () => {
+  test('stores an account missing from both DynamoDB and SSM with just its SID, expiring in 6 hours, with the loaded accounts', async () => {
     mockGetCachedItem.mockResolvedValue(undefined);
     mockGetCachedParameters.mockReturnValue({
       '/production/twilio/ACother/short_helpline': 'zm',
@@ -158,7 +214,7 @@ describe('handler', () => {
 
     expect(mockPutCachedItems).toHaveBeenCalledWith(expect.anything(), [
       { accountSid: 'ACother', environment: 'production', shortHelpline: 'ZM' },
-      { accountSid: ACCOUNT_SID, expiresAt: NOW_SECONDS + THREE_DAYS_SECONDS },
+      { accountSid: ACCOUNT_SID, expiresAt: NOW_SECONDS + SIX_HOURS_SECONDS },
     ]);
     expect(consoleLog).toHaveBeenCalledWith(
       '[UNKNOWN Error]: ',
@@ -280,7 +336,7 @@ describe('handler', () => {
 
     expect(mockLoadSsmCacheByName).not.toHaveBeenCalled();
     expect(consoleError).toHaveBeenCalledWith(
-      'Failed to acquire the SSM load lock',
+      'Failed to acquire the lock:ssm-load lock',
       lockError,
     );
   });
