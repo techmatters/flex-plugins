@@ -19,6 +19,7 @@ import { URLSearchParams } from 'url';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { getCachedParameters, loadSsmCacheByName } from '@tech-matters/ssm-cache';
 import {
+  acquireLock,
   DynamoCacheTable,
   getCachedItem,
   putCachedItems,
@@ -61,35 +62,37 @@ const toHelplineAccount = ([name, shortHelpline]: [string, string]): HelplineAcc
   return { accountSid, environment, shortHelpline: shortHelpline.toUpperCase() };
 };
 
+// Only one invocation at a time repopulates the table from SSM, so a missing account doesn't make
+// every concurrent invocation hit SSM. The lock expires, so a failed repopulation is retried.
+const SSM_LOAD_LOCK = 'lock:ssm-load';
+const SSM_LOAD_LOCK_SECONDS = 30;
+
+// The accounts this container already loaded from SSM, without calling SSM
+const getHelplineAccountsInMemory = (): HelplineAccount[] =>
+  Object.entries(getCachedParameters(SHORT_HELPLINE_PARAMETER_NAME)).map(
+    toHelplineAccount,
+  );
+
 const loadHelplineAccountsFromSsm = async (): Promise<HelplineAccount[]> => {
   await loadSsmCacheByName({
     configs: [{ nameContains: '/short_helpline', regex: SHORT_HELPLINE_PARAMETER_NAME }],
   });
-
-  return Object.entries(getCachedParameters(SHORT_HELPLINE_PARAMETER_NAME)).map(
-    toHelplineAccount,
-  );
+  return getHelplineAccountsInMemory();
 };
+
+const findHelplineAccount = (helplineAccounts: HelplineAccount[], accountSid: string) =>
+  helplineAccounts.find(account => account.accountSid === accountSid);
 
 const isHelplineAccount = (
   account: HelplineAccount | UnknownAccount,
 ): account is HelplineAccount => 'shortHelpline' in account;
 
-const getHelplineAccount = async (
+// Loads every account from SSM and stores them all, so the other accounts don't need to read SSM again
+const repopulateHelplineAccounts = async (
   accountSid: string,
 ): Promise<HelplineAccount | undefined> => {
-  const storedAccount = await getCachedItem<HelplineAccount | UnknownAccount>(
-    HELPLINE_ACCOUNTS_TABLE,
-    accountSid,
-  );
-  if (storedAccount && isHelplineAccount(storedAccount)) return storedAccount;
-  if (storedAccount && !hasExpired(storedAccount)) return undefined;
-
-  // Store every account loaded, so the other accounts don't need to read SSM again
   const helplineAccounts = await loadHelplineAccountsFromSsm();
-  const helplineAccount = helplineAccounts.find(
-    account => account.accountSid === accountSid,
-  );
+  const helplineAccount = findHelplineAccount(helplineAccounts, accountSid);
   // Storing is best-effort: the accounts were loaded, so a failed write shouldn't lose them
   await putCachedItems<HelplineAccount | UnknownAccount>(
     HELPLINE_ACCOUNTS_TABLE,
@@ -100,6 +103,35 @@ const getHelplineAccount = async (
     console.error('Failed to store the helpline accounts', error);
   });
   return helplineAccount;
+};
+
+const getHelplineAccount = async (
+  accountSid: string,
+): Promise<HelplineAccount | undefined> => {
+  let storedAccount: HelplineAccount | UnknownAccount | undefined;
+  try {
+    storedAccount = await getCachedItem(HELPLINE_ACCOUNTS_TABLE, accountSid);
+  } catch (error) {
+    // The table is missing (its creation has been requested) or unavailable:
+    // skip it rather than wait for it, and don't store anything
+    console.warn('Helpline accounts table unavailable, reading SSM directly', error);
+    return findHelplineAccount(await loadHelplineAccountsFromSsm(), accountSid);
+  }
+  if (storedAccount && isHelplineAccount(storedAccount)) return storedAccount;
+  if (storedAccount && !hasExpired(storedAccount)) return undefined;
+
+  const hasLock = await acquireLock(
+    HELPLINE_ACCOUNTS_TABLE,
+    SSM_LOAD_LOCK,
+    SSM_LOAD_LOCK_SECONDS,
+  ).catch(error => {
+    console.error('Failed to acquire the SSM load lock', error);
+    return false;
+  });
+  if (hasLock) return repopulateHelplineAccounts(accountSid);
+
+  // Another invocation is repopulating the table, so use what this container has, if anything
+  return findHelplineAccount(getHelplineAccountsInMemory(), accountSid);
 };
 
 type DebuggerEvent = {

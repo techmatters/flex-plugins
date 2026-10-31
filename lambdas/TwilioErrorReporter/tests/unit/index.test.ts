@@ -15,11 +15,12 @@
  */
 
 import type { ALBEvent } from 'aws-lambda';
-import { getCachedItem, putCachedItems } from '@tech-matters/dynamo-cache';
+import { acquireLock, getCachedItem, putCachedItems } from '@tech-matters/dynamo-cache';
 import { getCachedParameters, loadSsmCacheByName } from '@tech-matters/ssm-cache';
 import { handler } from '../../index';
 
 jest.mock('@tech-matters/dynamo-cache', () => ({
+  acquireLock: jest.fn(),
   getCachedItem: jest.fn(),
   putCachedItems: jest.fn(),
 }));
@@ -28,6 +29,7 @@ jest.mock('@tech-matters/ssm-cache', () => ({
   loadSsmCacheByName: jest.fn(),
 }));
 
+const mockAcquireLock = acquireLock as jest.MockedFunction<typeof acquireLock>;
 const mockGetCachedItem = getCachedItem as jest.MockedFunction<typeof getCachedItem>;
 const mockPutCachedItems = putCachedItems as jest.MockedFunction<typeof putCachedItems>;
 const mockGetCachedParameters = getCachedParameters as jest.MockedFunction<
@@ -59,9 +61,11 @@ let consoleError: jest.SpyInstance;
 beforeEach(() => {
   jest.resetAllMocks();
   mockPutCachedItems.mockResolvedValue();
+  mockAcquireLock.mockResolvedValue(true);
   jest.spyOn(Date, 'now').mockReturnValue(NOW_SECONDS * 1000);
   consoleLog = jest.spyOn(console, 'log').mockImplementation(() => {});
   consoleError = jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
 afterEach(() => {
@@ -202,6 +206,82 @@ describe('handler', () => {
       '[STAGING Error]: ',
       `EUMC_STAGING (${ACCOUNT_SID})`,
       PAYLOAD,
+    );
+  });
+
+  test('reads SSM directly, without waiting or storing, when the table is unavailable', async () => {
+    mockGetCachedItem.mockRejectedValue(new Error('Table not found'));
+    mockGetCachedParameters.mockReturnValue({
+      [`/staging/twilio/${ACCOUNT_SID}/short_helpline`]: 'eumc',
+    });
+
+    await handler(debuggerEvent());
+
+    expect(mockLoadSsmCacheByName).toHaveBeenCalled();
+    expect(mockAcquireLock).not.toHaveBeenCalled();
+    expect(mockPutCachedItems).not.toHaveBeenCalled();
+    expect(consoleLog).toHaveBeenCalledWith(
+      '[STAGING Error]: ',
+      `EUMC_STAGING (${ACCOUNT_SID})`,
+      PAYLOAD,
+    );
+  });
+
+  test('takes the SSM load lock for 30 seconds before repopulating the table', async () => {
+    mockGetCachedItem.mockResolvedValue(undefined);
+    mockGetCachedParameters.mockReturnValue({});
+
+    await handler(debuggerEvent());
+
+    expect(mockAcquireLock).toHaveBeenCalledWith(expect.anything(), 'lock:ssm-load', 30);
+  });
+
+  test('uses only what the container has in memory, without reading SSM or storing, when another invocation holds the lock', async () => {
+    mockGetCachedItem.mockResolvedValue(undefined);
+    mockAcquireLock.mockResolvedValue(false);
+    mockGetCachedParameters.mockReturnValue({
+      [`/staging/twilio/${ACCOUNT_SID}/short_helpline`]: 'eumc',
+    });
+
+    await handler(debuggerEvent());
+
+    expect(mockLoadSsmCacheByName).not.toHaveBeenCalled();
+    expect(mockPutCachedItems).not.toHaveBeenCalled();
+    expect(consoleLog).toHaveBeenCalledWith(
+      '[STAGING Error]: ',
+      `EUMC_STAGING (${ACCOUNT_SID})`,
+      PAYLOAD,
+    );
+  });
+
+  test('logs the event as unknown, without storing it, when another invocation holds the lock and the container has nothing in memory', async () => {
+    mockGetCachedItem.mockResolvedValue(undefined);
+    mockAcquireLock.mockResolvedValue(false);
+    mockGetCachedParameters.mockReturnValue({});
+
+    await handler(debuggerEvent());
+
+    expect(mockLoadSsmCacheByName).not.toHaveBeenCalled();
+    expect(mockPutCachedItems).not.toHaveBeenCalled();
+    expect(consoleLog).toHaveBeenCalledWith(
+      '[UNKNOWN Error]: ',
+      `UNRECOGNISED_ACCOUNT (${ACCOUNT_SID})`,
+      PAYLOAD,
+    );
+  });
+
+  test('does not read SSM when taking the lock fails', async () => {
+    const lockError = new Error('Throttled');
+    mockGetCachedItem.mockResolvedValue(undefined);
+    mockAcquireLock.mockRejectedValue(lockError);
+    mockGetCachedParameters.mockReturnValue({});
+
+    await handler(debuggerEvent());
+
+    expect(mockLoadSsmCacheByName).not.toHaveBeenCalled();
+    expect(consoleError).toHaveBeenCalledWith(
+      'Failed to acquire the SSM load lock',
+      lockError,
     );
   });
 });
