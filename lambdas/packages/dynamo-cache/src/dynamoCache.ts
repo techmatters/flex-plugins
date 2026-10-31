@@ -15,16 +15,17 @@
  */
 
 import {
+  ConditionalCheckFailedException,
   CreateTableCommand,
   DynamoDBClient,
   ResourceInUseException,
   ResourceNotFoundException,
-  waitUntilTableExists,
 } from '@aws-sdk/client-dynamodb';
 import {
   BatchWriteCommand,
   DynamoDBDocumentClient,
   GetCommand,
+  PutCommand,
 } from '@aws-sdk/lib-dynamodb';
 
 // A disposable table: it is created on first use, so it can be deleted at any time to clear the cache
@@ -33,8 +34,11 @@ export type DynamoCacheTable = {
   keyName: string; // String partition key
 };
 
-const TABLE_CREATION_MAX_WAIT_SECONDS = 60;
 const MAX_ITEMS_PER_BATCH_WRITE = 25; // 25 is max allowed by AWS
+const TABLE_CREATION_REQUEST_INTERVAL_MILLISECONDS = 60 * 1000;
+
+// When this container last asked for each table to be created (epoch milliseconds), so it doesn't ask on every call
+const tableCreationRequestTimes: Record<string, number | undefined> = {};
 
 let dynamoDbClient: DynamoDBClient;
 let documentClient: DynamoDBDocumentClient;
@@ -58,7 +62,15 @@ const getDocumentClient = () => {
   return documentClient;
 };
 
-const createTable = async ({ tableName, keyName }: DynamoCacheTable) => {
+const requestTableCreation = async ({ tableName, keyName }: DynamoCacheTable) => {
+  const lastRequestTime = tableCreationRequestTimes[tableName];
+  if (
+    lastRequestTime !== undefined &&
+    Date.now() - lastRequestTime < TABLE_CREATION_REQUEST_INTERVAL_MILLISECONDS
+  )
+    return;
+  tableCreationRequestTimes[tableName] = Date.now();
+
   try {
     await getDynamoDbClient().send(
       new CreateTableCommand({
@@ -69,16 +81,15 @@ const createTable = async ({ tableName, keyName }: DynamoCacheTable) => {
       }),
     );
   } catch (e) {
-    // Another Lambda is already creating it, so just wait for it below
+    // Another Lambda is already creating it
     if (!(e instanceof ResourceInUseException)) throw e;
   }
-  await waitUntilTableExists(
-    { client: getDynamoDbClient(), maxWaitTime: TABLE_CREATION_MAX_WAIT_SECONDS },
-    { TableName: tableName },
-  );
 };
 
-// Runs the operation, creating the table and retrying once if it doesn't exist yet
+/**
+ * Runs the operation. If the table doesn't exist, asks for it to be created and rethrows
+ * without waiting for it, so callers can skip the cache until the table is ready.
+ */
 const withTable = async <T>(
   table: DynamoCacheTable,
   operation: () => Promise<T>,
@@ -86,9 +97,8 @@ const withTable = async <T>(
   try {
     return await operation();
   } catch (e) {
-    if (!(e instanceof ResourceNotFoundException)) throw e;
-    await createTable(table);
-    return operation();
+    if (e instanceof ResourceNotFoundException) await requestTableCreation(table);
+    throw e;
   }
 };
 
@@ -127,3 +137,31 @@ export const putCachedItems = async <T extends Record<string, unknown>>(
     await Promise.all(promises);
   });
 };
+
+/**
+ * Tries to take the lock named lockName, stored as an item in the table, for durationSeconds.
+ * Returns whether it was taken. The lock isn't released, it just expires.
+ */
+export const acquireLock = async (
+  table: DynamoCacheTable,
+  lockName: string,
+  durationSeconds: number,
+): Promise<boolean> =>
+  withTable(table, async () => {
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    try {
+      await getDocumentClient().send(
+        new PutCommand({
+          TableName: table.tableName,
+          Item: { [table.keyName]: lockName, expiresAt: nowSeconds + durationSeconds },
+          ConditionExpression: 'attribute_not_exists(#key) OR expiresAt < :now',
+          ExpressionAttributeNames: { '#key': table.keyName },
+          ExpressionAttributeValues: { ':now': nowSeconds },
+        }),
+      );
+      return true;
+    } catch (e) {
+      if (e instanceof ConditionalCheckFailedException) return false;
+      throw e;
+    }
+  });
