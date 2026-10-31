@@ -149,6 +149,32 @@ Kinds that become more than one widget, as the board writes them:
 When a template already has a widget like the one needed, copy its settings. Ask the person about
 anything you can't find; don't guess.
 
+### 3b. Lay out the widgets
+
+The board's positions become each widget's `offset`, and widgets the board turns into several
+(Repeat, Menu) get positions it works out. They can land on top of each other or touch. Studio
+shows each widget as a card about 280 wide and 150–200 tall (more with many ways out), so after
+writing the template, move the new or changed widgets' `offset` until:
+
+- **No two widgets overlap or touch.** Side by side (less than 150 apart vertically): at least
+  **290** apart horizontally. One above the other (less than 150 apart horizontally): at least
+  **210** apart vertically. Diagonal neighbours: at least 150 apart both ways.
+- **Repeat (counter)**: the loop sits **beside its Question, to its left**, so the loop is a short
+  circle and doesn't cross the main path. Relative to the Question's offset:
+  - `split_<name>` about **350 left, at the Question's height** (−120 to +30), so `noMatch`
+    goes straight back into the Question;
+  - `set_var_<name>_counter` about **220–320 left and 120–200 below**, under the split;
+  - the Question's own Decision (what the answer means) goes **below the Question** (about
+    100 right, 230–390 down), on the main path;
+  - the split's `max reached` way out (e.g. a "Send message and close") goes further left or below,
+    away from the main path.
+  If the left is taken, mirror it to the right; never stack the loop on the main path.
+- Keep the flow reading **top to bottom**, branches spreading sideways; leave a widget where it is
+  when it already fits these rules (imported widgets keep the position they have live).
+
+Only offsets change here: never names, ways out or properties. The check in step 6 lists what
+still overlaps.
+
 ### 4. Set the texts
 
 For each entry in `variables` (`scope`, `name`, `value`, and `flow` for shared templates):
@@ -244,6 +270,24 @@ at Serverless, say so and ask before writing the template for production.
 cd form-builder && npx vitest run server/hcl.test.ts   # reads every helpline's templates and .hcl files
 grep -rn "TODO" twilio-iac/helplines/<code>/templates/studio-flows/
 git diff --stat
+```
+
+Widgets too close (step 3b), for the template just written:
+
+```bash
+python -I - <path-to>.tftpl <<'EOF'
+import itertools, re, sys
+text = open(sys.argv[1], encoding='utf-8').read()
+pos = {}
+for state in re.split(r'\n\s*\{\s*\n\s*"name": ', text)[1:]:
+    name = re.match(r'"([^"]+)"', state).group(1)
+    o = re.search(r'"offset": \{\s*"x": (-?\d+),\s*"y": (-?\d+)', state)
+    if o: pos[name] = (int(o.group(1)), int(o.group(2)))
+for (a, (ax, ay)), (b, (bx, by)) in itertools.combinations(pos.items(), 2):
+    dx, dy = abs(ax - bx), abs(ay - by)
+    if (dy < 150 and dx < 290) or (dx < 150 and dy < 210):
+        print(f'too close: {a} <-> {b} (dx={dx}, dy={dy})')
+EOF
 ```
 
 ### 7. Plan (staging)
