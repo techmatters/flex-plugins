@@ -19,7 +19,12 @@ import {
   GetParametersCommand,
   SSMClient,
 } from '@aws-sdk/client-ssm';
-import { getCachedParameters, loadSsmCacheByName, ssmCache } from '../../src';
+import {
+  getCachedParameters,
+  loadSsmCacheByName,
+  ssmCache,
+  SsmLoadBackingOff,
+} from '../../src';
 
 const SHORT_HELPLINE_REGEX = /^\/[^/]+\/twilio\/AC[^/]+\/short_helpline$/;
 // Fakes SSM, returning the listed parameter names in pages of pageSize
@@ -61,6 +66,7 @@ const loadShortHelplines = () =>
 beforeEach(() => {
   ssmCache.values = {};
   ssmCache.byNameExpiryDates = {};
+  ssmCache.byNameRetryDates = {};
 });
 
 afterEach(() => {
@@ -113,7 +119,9 @@ describe('loadSsmCacheByName', () => {
     expect(sentCommands(send, DescribeParametersCommand)).toHaveLength(1);
   });
 
-  test('loads everything again on the next call after a partially failed load', async () => {
+  test('backs off after a partially failed load, then loads everything again', async () => {
+    const now = Date.now();
+    const dateNow = jest.spyOn(Date, 'now').mockReturnValue(now);
     const send = mockSsm({
       '/production/twilio/AC1/short_helpline': 'ZM',
       '/staging/twilio/AC2/short_helpline': 'EUMC',
@@ -137,6 +145,13 @@ describe('loadSsmCacheByName', () => {
     await expect(loadShortHelplines()).rejects.toThrow('Throttled');
     expect(Object.keys(getCachedParameters(SHORT_HELPLINE_REGEX))).toHaveLength(2);
 
+    // Within the backoff, SSM isn't called again
+    send.mockClear();
+    dateNow.mockReturnValue(now + 29 * 1000);
+    await expect(loadShortHelplines()).rejects.toThrow(SsmLoadBackingOff);
+    expect(send).not.toHaveBeenCalled();
+
+    dateNow.mockReturnValue(now + 31 * 1000);
     await loadShortHelplines();
 
     expect(getCachedParameters(SHORT_HELPLINE_REGEX)).toStrictEqual({
