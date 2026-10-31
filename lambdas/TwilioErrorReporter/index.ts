@@ -17,7 +17,7 @@
 /* eslint-disable no-console */
 import { URLSearchParams } from 'url';
 import type { ALBEvent, ALBResult } from 'aws-lambda';
-import { getCachedParameters, loadSsmCache } from '@tech-matters/ssm-cache';
+import { getCachedParameters, loadSsmCacheByName } from '@tech-matters/ssm-cache';
 
 type HelplineAccount = {
   accountSid: string;
@@ -38,7 +38,7 @@ const toHelplineAccount = ([name, shortHelpline]: [string, string]): HelplineAcc
 const getHelplineAccount = async (
   accountSid: string,
 ): Promise<HelplineAccount | undefined> => {
-  await loadSsmCache({
+  await loadSsmCacheByName({
     configs: [{ nameContains: '/short_helpline', regex: SHORT_HELPLINE_PARAMETER_NAME }],
   });
 

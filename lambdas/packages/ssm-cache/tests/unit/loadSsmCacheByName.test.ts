@@ -19,7 +19,7 @@ import {
   GetParametersCommand,
   SSMClient,
 } from '@aws-sdk/client-ssm';
-import { getCachedParameters, loadSsmCache, ssmCache } from '../../src';
+import { getCachedParameters, loadSsmCacheByName, ssmCache } from '../../src';
 
 const SHORT_HELPLINE_REGEX = /^\/[^/]+\/twilio\/AC[^/]+\/short_helpline$/;
 // Fakes SSM, returning the listed parameter names in pages of pageSize
@@ -54,7 +54,7 @@ const sentCommands = <T>(
     .filter(command => command instanceof commandType);
 
 const loadShortHelplines = () =>
-  loadSsmCache({
+  loadSsmCacheByName({
     configs: [{ nameContains: '/short_helpline', regex: SHORT_HELPLINE_REGEX }],
   });
 
@@ -67,7 +67,7 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-describe('loadSsmCache', () => {
+describe('loadSsmCacheByName', () => {
   test('caches the values of every listed parameter matching the regex, across pages', async () => {
     mockSsm({
       '/production/twilio/AC1/short_helpline': 'ZM',

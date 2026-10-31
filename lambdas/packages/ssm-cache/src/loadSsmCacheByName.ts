@@ -49,17 +49,18 @@ const loadParameters = async (names: string[]): Promise<void> => {
   await Promise.all(promises);
 };
 
-type LoadPaginatedParameters = {
+type LoadPaginatedByNameParameters = {
   nameContains: string;
   regex?: RegExp;
   nextToken?: string;
 };
-// Lists the parameters by name rather than by path, so only the matching values are read
-export const loadPaginated = async ({
+// Like loadPaginated in the HRM ssm-cache, which loads by path, but lists the parameters by name instead,
+// so only the matching values are read
+export const loadPaginatedByName = async ({
   nameContains,
   regex,
   nextToken,
-}: LoadPaginatedParameters): Promise<void> => {
+}: LoadPaginatedByNameParameters): Promise<void> => {
   const params: DescribeParametersCommandInput = {
     MaxResults: 50, // 50 is max allowed by AWS
     ParameterFilters: [{ Key: 'Name', Option: 'Contains', Values: [nameContains] }],
@@ -77,7 +78,7 @@ export const loadPaginated = async ({
   await loadParameters(names);
 
   if (resp.NextToken) {
-    await loadPaginated({
+    await loadPaginatedByName({
       nameContains,
       regex,
       nextToken: resp.NextToken,
@@ -85,24 +86,24 @@ export const loadPaginated = async ({
   }
 };
 
-export type SsmCacheConfig = {
+export type SsmCacheByNameConfig = {
   nameContains: string;
   regex?: RegExp;
 };
-export type LoadSsmCacheParameters = {
+export type LoadSsmCacheByNameParameters = {
   cacheDurationMilliseconds?: number;
   // We accept an array of types to allow loading parameters matching different names
-  configs: SsmCacheConfig[];
+  configs: SsmCacheByNameConfig[];
 };
-export const loadSsmCache = async ({
+export const loadSsmCacheByName = async ({
   cacheDurationMilliseconds,
   configs,
-}: LoadSsmCacheParameters) => {
+}: LoadSsmCacheByNameParameters) => {
   if (isConfigNotEmpty() && !hasCacheExpired()) return;
   if (cacheDurationMilliseconds) setCacheDurationMilliseconds(cacheDurationMilliseconds);
 
   ssmCache.expiryDate = new Date(Date.now() + ssmCache.cacheDurationMilliseconds);
 
-  const promises = configs.map(async config => loadPaginated(config));
+  const promises = configs.map(async config => loadPaginatedByName(config));
   await Promise.all(promises);
 };

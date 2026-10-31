@@ -16,4 +16,4 @@
 
 export * from './ssmCache';
 
-export * from './loadSsmCache';
+export * from './loadSsmCacheByName';
