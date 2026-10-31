@@ -15,9 +15,11 @@
  */
 
 /**
- * The people lists tasks are assigned from: one per helpline, and the Aselo team's. People are
- * added when they open a board; here they can also be added (before they've signed in) or
- * removed. Helpline staff manage their own helpline's list; the Aselo team's is Aselo staff's.
+ * The people lists tasks are assigned from: one per helpline, the only one its boards offer. Helpline
+ * staff are added to theirs when they open a board; here people can also be added (before they've
+ * signed in) or removed. The Aselo team's list is where Aselo staff are picked from to join the
+ * helplines they work on. Helpline staff manage their own helpline's list; the Aselo team's is
+ * Aselo staff's.
  */
 import { useEffect, useState } from 'react';
 import type { BoardClient } from './boardClient';
@@ -36,7 +38,17 @@ export const PeopleManager = ({ client, helplineCodes, isAseloStaff }: Props) =>
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string>();
+  // The Aselo team, to add to a helpline's list
+  const [team, setTeam] = useState<Person[]>([]);
   const canEdit = code !== ASELO_PEOPLE_CODE || isAseloStaff;
+
+  useEffect(() => {
+    if (!isAseloStaff) return;
+    client
+      .people(ASELO_PEOPLE_CODE)
+      .catch((): Person[] => [])
+      .then(setTeam);
+  }, [client, isAseloStaff]);
 
   useEffect(() => {
     if (!code) return;
@@ -69,14 +81,22 @@ export const PeopleManager = ({ client, helplineCodes, isAseloStaff }: Props) =>
     }
   };
 
+  const onList = (person: Person) =>
+    people?.some((other) =>
+      other.email && person.email
+        ? other.email === person.email
+        : other.name.toLowerCase() === person.name.toLowerCase(),
+    );
+  const teamToAdd = code === ASELO_PEOPLE_CODE ? [] : team.filter((person) => !onList(person));
+
   if (codes.length === 0) return null;
 
   return (
     <section className="flows-people">
       <h3>People</h3>
       <p className="field-hint">
-        Who tasks on the boards can be assigned to. Everyone is added when they first open a board; add people here
-        before then, or remove those who&apos;ve left.
+        Who tasks on a helpline&apos;s boards can be assigned to. Helpline staff are added when they first open a board;
+        add people here before then (and the Aselo staff working on the helpline), or remove those who&apos;ve left.
       </p>
       <label className="field">
         <span className="field-label">List</span>
@@ -131,6 +151,25 @@ export const PeopleManager = ({ client, helplineCodes, isAseloStaff }: Props) =>
             Add
           </button>
         </form>
+      )}
+      {people && canEdit && teamToAdd.length > 0 && (
+        <label className="field">
+          <span className="field-label">Add from the Aselo team</span>
+          <select
+            value=""
+            onChange={(e) => {
+              const person = teamToAdd.find((candidate) => (candidate.email ?? candidate.name) === e.target.value);
+              if (person) void save([...people, person]);
+            }}
+          >
+            <option value="">Choose someone…</option>
+            {teamToAdd.map((person) => (
+              <option key={person.email ?? person.name} value={person.email ?? person.name}>
+                {person.name}
+              </option>
+            ))}
+          </select>
+        </label>
       )}
     </section>
   );

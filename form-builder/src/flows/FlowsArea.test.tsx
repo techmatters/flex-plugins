@@ -697,8 +697,9 @@ describe('flow designer', { timeout: 20_000 }, () => {
     });
     fireEvent.click(settings().getByRole('button', { name: 'Make it a task' }));
     const assignee = settings().getByRole('combobox', { name: /^For/ });
-    await waitFor(() => expect(within(assignee).getAllByRole('option')).toHaveLength(4));
-    expect(within(assignee).getByRole('option', { name: 'Aselo lead (aselo@example.org)' })).toBeTruthy();
+    // Only the helpline's people: the Aselo team isn't offered until added to the helpline's list
+    await waitFor(() => expect(within(assignee).getAllByRole('option')).toHaveLength(2));
+    expect(within(assignee).queryByRole('option', { name: /Aselo lead/ })).toBeNull();
     fireEvent.change(assignee, { target: { value: 'ale@example.org' } });
 
     fireEvent.click(screen.getByRole('tab', { name: 'Tasks (1)' }));
@@ -718,6 +719,30 @@ describe('flow designer', { timeout: 20_000 }, () => {
       assignee: 'Ale',
       assigneeEmail: 'ale@example.org',
     });
+  });
+});
+
+describe('people lists', { timeout: 20_000 }, () => {
+  test('Aselo staff are added to a helpline from the Aselo team, and only then offered on its boards', async () => {
+    await people.put('usnm', [{ name: 'Ale', email: 'ale@example.org' }]);
+    await people.put('_aselo', [
+      { name: 'Aselo lead', email: 'aselo@example.org' },
+      { name: 'Other staff', email: 'other@example.org' },
+    ]);
+    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    fireEvent.change(await screen.findByRole('combobox', { name: 'List' }), { target: { value: 'usnm' } });
+    const addFromTeam = await screen.findByRole('combobox', { name: 'Add from the Aselo team' });
+    fireEvent.change(addFromTeam, { target: { value: 'aselo@example.org' } });
+    await waitFor(() =>
+      expect(within(screen.getByRole('list', { name: 'People' })).getByText('Aselo lead')).toBeTruthy(),
+    );
+    expect((await people.get('usnm')).map((person) => person.name)).toEqual(['Ale', 'Aselo lead']);
+    // Whoever is already on the list isn't offered again
+    expect(
+      within(screen.getByRole('combobox', { name: 'Add from the Aselo team' }))
+        .getAllByRole('option')
+        .map((option) => option.textContent),
+    ).toEqual(['Choose someone…', 'Other staff']);
   });
 });
 

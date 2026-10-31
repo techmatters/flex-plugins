@@ -133,13 +133,6 @@ const withContents = (nodes: CanvasNode[], selected: CanvasNode[]) => {
   return nodes.filter((node) => ids.has(node.id) || (node.parentId && ids.has(node.parentId)));
 };
 
-// One list, without repeats: the same email (or name, without one) is the same person
-const mergePeople = (lists: Person[][]) => {
-  const byKey = new Map<string, Person>();
-  lists.flat().forEach((person) => byKey.set((person.email ?? person.name).toLowerCase(), person));
-  return [...byKey.values()].sort((a, b) => a.name.localeCompare(b.name));
-};
-
 const Editor = ({
   board,
   client,
@@ -715,14 +708,16 @@ const Editor = ({
     remove: (fileName) => changeRecording(fileName, () => client.removeRecording(recordingsLibrary, fileName)),
     rename: (objectIds, objects) => renameRecordings(objectIds, objects),
   };
-  // Who tasks can be assigned to: the helpline's people and the Aselo team
+  // Who tasks can be assigned to: only the board's helpline's people (Aselo staff included, once
+  // added to it). Templates belong to no helpline, so theirs are the Aselo team's.
   const [people, setPeople] = useState<Person[]>([]);
 
   useEffect(() => {
-    const codes = board.code === TEMPLATES_CODE ? [ASELO_PEOPLE_CODE] : [board.code, ASELO_PEOPLE_CODE];
-    Promise.all(codes.map((code) => client.people(code).catch((): Person[] => []))).then((lists) =>
-      setPeople(mergePeople(lists)),
-    );
+    const code = board.code === TEMPLATES_CODE ? ASELO_PEOPLE_CODE : board.code;
+    client
+      .people(code)
+      .catch((): Person[] => [])
+      .then(setPeople);
   }, [client, board.code]);
   const allIssues = useMemo(() => boardChecks(content, recordingList?.recordings), [content, recordingList]);
   // In a sketch, only what's about the flow's shape (no scripts, recordings, settings...)

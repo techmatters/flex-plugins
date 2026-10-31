@@ -1297,8 +1297,8 @@ const StickySettings = ({ node, props }: { node: StickyNode; props: InspectorPro
                 ))}
               </select>
               <span className="field-hint">
-                The helpline&apos;s people and the Aselo team. Someone missing? Add them under People on the boards
-                page.
+                This helpline&apos;s people. Someone missing (Aselo staff too)? Add them to its list under People on the
+                boards page.
               </span>
             </label>
             <label className="field">

@@ -149,8 +149,10 @@ export const handleBoardRequest = async (
 
   if (method === 'GET') {
     if (!existing) return fail(404, 'This board no longer exists.');
-    // Whoever opens a board can be assigned its tasks: Aselo staff on the Aselo list, helpline
-    // staff on their helpline's. A failure here doesn't stop the board from opening.
+    // Helpline staff who open a board join their helpline's list. Aselo staff join the Aselo
+    // team's, which only lists them to be added to the helplines they work on (on the boards
+    // page): a board only offers its helpline's people. A failure here doesn't stop the board
+    // from opening.
     const listCode = isStaff(user) ? ASELO_PEOPLE_CODE : code;
     if (people && listCode !== TEMPLATES_CODE) {
       await registerPerson(people, listCode, { name: user.name, ...(user.email ? { email: user.email } : {}) }).catch(

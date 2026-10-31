@@ -148,8 +148,9 @@ marked *Ready for Claude*.
 ### Tasks
 
 A sticky note can be made a task: who it's for, a status (*To do*, *In progress*, *Done*) and an
-optional due date. "Who it's for" is picked from the helpline's people and the Aselo team's (see
-[Storage and access](#storage-and-access)). The **Tasks** tab next to the settings lists them (open, mine, all); clicking
+optional due date. "Who it's for" is picked from the board's helpline's people only, so each
+helpline's tasks go to its own team (see [Storage and access](#storage-and-access)). Aselo staff
+working on a helpline are added to its list on the boards page (**People › Add from the Aselo team**). The **Tasks** tab next to the settings lists them (open, mine, all); clicking
 one shows its note. Done tasks stay on the board, greyed out and ticked, as a record. Assigning a
 task doesn't notify anyone yet (a Slack message is a phase 4 idea).
 
@@ -531,8 +532,10 @@ Not built yet:
 - People lists (who tasks can be assigned to): `people/<helpline code>.json` and
   `people/_aselo.json` in the drafts bucket, each a list of names and emails. Whoever opens a board
   is added to their list (helpline staff to their helpline's, Aselo staff to the Aselo team's) with
-  the name and email from Okta. The lists can also be edited on the boards page: helpline staff
-  edit their own helpline's, Aselo staff all of them.
+  the name and email from Okta. A board's tasks can only be assigned to its helpline's list
+  (templates: the Aselo team's); the Aselo team's list is where Aselo staff are picked from to join
+  a helpline's. The lists can also be edited on the boards page: helpline staff edit their own
+  helpline's, Aselo staff all of them.
 - Checks that call an account-scoped lambda route keep its parameters (e.g. the skills) on the
   object and are named after the route (`f_isSkilledWorkerAvailable_tya_calls`), as
   `lambdas/account-scoped/STUDIO_ROUTES.md` says.
