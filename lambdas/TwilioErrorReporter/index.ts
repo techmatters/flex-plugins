@@ -86,6 +86,15 @@ const loadHelplineAccountsFromSsm = async (
 const findHelplineAccount = (helplineAccounts: HelplineAccount[], accountSid: string) =>
   helplineAccounts.find(account => account.accountSid === accountSid);
 
+// Looks up only this account in SSM (or what this container already has in memory)
+const loadHelplineAccountFromSsm = async (
+  accountSid: string,
+): Promise<HelplineAccount | undefined> =>
+  findHelplineAccount(
+    await loadHelplineAccountsFromSsm(`/twilio/${accountSid}/short_helpline`),
+    accountSid,
+  );
+
 const isHelplineAccount = (
   account: HelplineAccount | UnknownAccount,
 ): account is HelplineAccount => 'shortHelpline' in account;
@@ -120,10 +129,7 @@ const repopulateHelplineAccounts = async (
 const recheckUnknownAccount = async (
   accountSid: string,
 ): Promise<HelplineAccount | undefined> => {
-  const helplineAccount = findHelplineAccount(
-    await loadHelplineAccountsFromSsm(`/twilio/${accountSid}/short_helpline`),
-    accountSid,
-  );
+  const helplineAccount = await loadHelplineAccountFromSsm(accountSid);
   await storeHelplineAccounts([helplineAccount ?? toUnknownAccount(accountSid)]);
   return helplineAccount;
 };
@@ -136,9 +142,10 @@ const getHelplineAccount = async (
     storedAccount = await getCachedItem(HELPLINE_ACCOUNTS_TABLE, accountSid);
   } catch (error) {
     // The table is missing (its creation has been requested) or unavailable:
-    // skip it rather than wait for it, and don't store anything
+    // skip it rather than wait for it, and don't store anything.
+    // Only this account is looked up, to keep the SSM calls of concurrent invocations low.
     console.warn('Helpline accounts table unavailable, reading SSM directly', error);
-    return findHelplineAccount(await loadHelplineAccountsFromSsm(), accountSid);
+    return loadHelplineAccountFromSsm(accountSid);
   }
   if (storedAccount && isHelplineAccount(storedAccount)) return storedAccount;
 

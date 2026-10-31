@@ -265,7 +265,7 @@ describe('handler', () => {
     );
   });
 
-  test('reads SSM directly, without waiting or storing, when the table is unavailable', async () => {
+  test('looks up only that account in SSM, without waiting or storing, when the table is unavailable', async () => {
     mockGetCachedItem.mockRejectedValue(new Error('Table not found'));
     mockGetCachedParameters.mockReturnValue({
       [`/staging/twilio/${ACCOUNT_SID}/short_helpline`]: 'eumc',
@@ -273,7 +273,14 @@ describe('handler', () => {
 
     await handler(debuggerEvent());
 
-    expect(mockLoadSsmCacheByName).toHaveBeenCalled();
+    expect(mockLoadSsmCacheByName).toHaveBeenCalledWith({
+      configs: [
+        {
+          nameContains: `/twilio/${ACCOUNT_SID}/short_helpline`,
+          regex: expect.any(RegExp),
+        },
+      ],
+    });
     expect(mockAcquireLock).not.toHaveBeenCalled();
     expect(mockPutCachedItems).not.toHaveBeenCalled();
     expect(consoleLog).toHaveBeenCalledWith(
