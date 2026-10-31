@@ -35,9 +35,33 @@ import { iconOf, OBJECT_TYPES, objectColor, STICKY_COLORS } from './model';
 import type { ConnectionEdge, FrameNode, ObjectNode, StickyNode } from './canvasModel';
 import { ObjectIcon, ShapeOutline } from './shapes';
 
-export const BoardEditingContext = createContext<{ readOnly: boolean; problems?: Map<string, Issue[]> }>({
+// A run of the simulator on the board, and the tested paths shown (Test mode)
+export type SimulationView = {
+  // Each object it went through, with its step numbers; the connections it took
+  visited: Map<string, number[]>;
+  connections: Set<string>;
+  current?: string;
+  activeConnection?: string;
+  // Where it stopped on a way out that isn't connected
+  deadEnd?: string;
+  tested?: { objects: Set<string>; connections: Set<string> };
+};
+
+export const BoardEditingContext = createContext<{
+  readOnly: boolean;
+  problems?: Map<string, Issue[]>;
+  simulation?: SimulationView;
+}>({
   readOnly: false,
 });
+
+// How an object or connection shows in Test mode: the run's way, tested ones, the rest faded
+const simulationClass = (simulation: SimulationView | undefined, visited: boolean, tested: boolean) => {
+  if (!simulation) return '';
+  if (visited) return 'sim-visited';
+  if (tested) return 'sim-tested';
+  return simulation.visited.size > 0 ? 'sim-dimmed' : '';
+};
 
 const HANDLES: { id: string; position: Position }[] = [
   { id: 'top', position: Position.Top },
@@ -128,17 +152,33 @@ const openComments = (thread?: { comments: unknown[]; resolved: boolean }) =>
 
 export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<ObjectNode>) => {
   const { updateNodeData } = useReactFlow();
-  const { readOnly, problems } = useContext(BoardEditingContext);
+  const { readOnly, problems, simulation } = useContext(BoardEditingContext);
   const { object } = data;
   const info = OBJECT_TYPES[object.type];
   const comments = openComments(object.thread);
-  const objectProblems = problems?.get(id) ?? [];
+  // In Test mode the run's way and tested paths show instead of problems
+  const objectProblems = simulation ? [] : (problems?.get(id) ?? []);
+  const steps = simulation?.visited.get(id);
+  const tested = Boolean(simulation?.tested?.objects.has(id));
   let stroke = '#37474f';
   const hasErrors = objectProblems.some((issue) => issue.severity === 'error');
   if (objectProblems.length > 0) stroke = hasErrors ? '#c62828' : '#e65100';
+  if (tested) stroke = '#2e7d32';
+  if (steps) stroke = '#1565c0';
+  if (simulation?.deadEnd === id) stroke = '#c62828';
   if (selected) stroke = '#1565c0';
+  const simulated = [
+    simulationClass(simulation, Boolean(steps), tested),
+    simulation?.current === id ? 'sim-current' : '',
+    simulation?.deadEnd === id ? 'sim-dead-end' : '',
+  ].join(' ');
   return (
-    <div className={`flow-object flow-shape-${info.shape} ${selected ? 'selected' : ''}`}>
+    <div className={`flow-object flow-shape-${info.shape} ${selected ? 'selected' : ''} ${simulated}`}>
+      {steps && (
+        <span className="flow-sim-badge" title={`Step${steps.length === 1 ? '' : 's'} ${steps.join(', ')}`}>
+          {steps.length > 3 ? `${steps.slice(0, 2).join(', ')}…${steps[steps.length - 1]}` : steps.join(', ')}
+        </span>
+      )}
       {!readOnly && <NodeResizer isVisible={selected} minWidth={60} minHeight={32} />}
       <ShapeOutline
         shape={info.shape}
@@ -261,6 +301,15 @@ export const ConnectionEdgeView = ({
   selected,
   data,
 }: EdgeProps<ConnectionEdge>) => {
+  const { simulation } = useContext(BoardEditingContext);
+  const simulated = [
+    simulationClass(
+      simulation,
+      Boolean(simulation?.connections.has(id)),
+      Boolean(simulation?.tested?.connections.has(id)),
+    ),
+    simulation?.activeConnection === id ? 'sim-active' : '',
+  ].join(' ');
   const [path, labelX, labelY] = getSmoothStepPath({
     sourceX,
     sourceY,
@@ -273,11 +322,16 @@ export const ConnectionEdgeView = ({
   });
   return (
     <>
-      <BaseEdge id={id} path={path} markerEnd={markerEnd} className={selected ? 'flow-edge selected' : 'flow-edge'} />
+      <BaseEdge
+        id={id}
+        path={path}
+        markerEnd={markerEnd}
+        className={`flow-edge ${selected ? 'selected' : ''} ${simulated}`}
+      />
       {data?.exit && (
         <EdgeLabelRenderer>
           <div
-            className={`flow-edge-label nodrag nopan ${selected ? 'selected' : ''}`}
+            className={`flow-edge-label nodrag nopan ${selected ? 'selected' : ''} ${simulated}`}
             style={{ transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)` }}
           >
             {data.exit}

@@ -195,6 +195,37 @@ still lacks: open ends, missing names and scripts, system down first, unreachabl
 objects. Objects get a red badge for errors and an orange one for warnings; the panel can hide
 warnings.
 
+### Test the flow
+
+**Design / Test** in the toolbar. In Test mode the board can't be changed (no palette, no moving or
+connecting); the **Test** panel runs a flow from its trigger (`src/flows/simulate.ts`), without
+Twilio, to check its logic (not its texts or recordings):
+
+- **Asked for:** a chat reply (Question, messaging) or keys on a dialpad / words said (Menu,
+  voice), or their other ways out (timeout). What a lambda answers (operating hours, skilled worker,
+  client profile, Send to queue, Set flow memory...) is chosen from its ways out.
+- **Worked out:** Decisions split on what the run knows (replies, Digits, SpeechResult, flow
+  variables, Repeat counters, flow memory, the conversation's attributes), with the live
+  conditions on imported splits; one reading something the run can't know (e.g. a lambda's
+  `parsed.flags`) asks which way. Repeats count, Set variable sets (simple Liquid: `{{ }}`,
+  filters such as `plus`, `{% if %}`), Set flow memory keeps its values.
+- **Pause at every widget** (on by default): messages, splits worked out, Set variable and Repeat
+  stop too, showing the widget's script and its recording (to play) and what a split read, until
+  **Next**; turned off, they go on by themselves. **Back** goes back one answer (e.g. to take
+  another way at a split); **Test another path** starts again from the trigger.
+- **Chatbots:** when one starts, its memory can be typed in; handing back (`triggerStudioFlow`)
+  starts **execution 2** from the trigger, with the release flag `true`, the bot's memory and the
+  flow memory kept (flow variables start empty), so the way back from the bot is tested too.
+- **On the board:** the current widget pulses, the way taken is blue with step numbers, the
+  connection being followed moves, everything else fades. A way out that isn't connected stops the
+  run in red ("It ends here on purpose" marks it, as in Check); a last message, Send message and
+  close, Send to queue and Forward call end it normally.
+- **Tested paths:** a run that ended normally can be **marked as tested**; with "Show tested
+  paths", widgets and connections on tested paths are green, and the panel counts the ways out
+  tested and lists those that aren't. Saved on the board (`testedPaths`), each with a fingerprint
+  of what decides its way (kinds, names, ways out, settings, conditions): when any of that changes
+  on the path, it's dropped and has to be tested again. Texts, scripts and positions don't count.
+
 ## Recordings and scripts
 
 A voice message's recording is the file named after its Studio name: the widget

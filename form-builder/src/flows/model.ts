@@ -241,6 +241,19 @@ export type BoardContent = {
   // Warnings marked as not needed for this board (their keys, checks.ts Issue.key), e.g. the
   // system-down one on a post-survey flow; they're listed apart and not counted
   ignoredChecks?: string[];
+  // Runs of the simulator marked as tested (simulate.ts); shown green while nothing on them changes
+  testedPaths?: TestedPath[];
+};
+
+export type TestedPath = {
+  id: string;
+  testedAt: string;
+  testedBy: string;
+  // The trigger it started from, and each object it went through, with the way out it took
+  startId: string;
+  steps: { objectId: string; exit?: string; connectionId?: string }[];
+  // What decided its way when it was tested (simulate.ts pathFingerprint): it no longer counts when changed
+  fingerprint: string;
 };
 
 export type BoardMeta = {

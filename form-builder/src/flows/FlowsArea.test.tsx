@@ -31,6 +31,8 @@ import { emptyRouting } from '../routing/model';
 import { boardClientFor } from './boardClient';
 import { FlowsArea } from './FlowsArea';
 import { importHelpline } from '../../server/flowImport';
+import type { FlowObject } from './model';
+import { emptyBoard } from './model';
 
 // What React Flow needs from a browser that jsdom doesn't have (see reactflow.dev/learn/advanced-use/testing)
 beforeAll(() => {
@@ -691,5 +693,81 @@ describe('flow designer', { timeout: 20_000 }, () => {
       assignee: 'Ale',
       assigneeEmail: 'ale@example.org',
     });
+  });
+});
+
+describe('testing a flow (Test mode)', { timeout: 20_000 }, () => {
+  test('a run asks for the reply, follows the split on it, and a finished path is saved as tested', async () => {
+    const object = (id: string, type: FlowObject['type'], extra: Partial<FlowObject> = {}): FlowObject => ({
+      id,
+      type,
+      frameId: 'f',
+      text: id,
+      x: 100,
+      y: 100,
+      width: 200,
+      height: 70,
+      ...extra,
+    });
+    const board = await clientAs(staff).create('usnm', 'Language menu', undefined, {
+      ...emptyBoard('Language menu'),
+      frames: [{ id: 'f', title: 'SMS', x: 0, y: 0, width: 900, height: 600, channel: 'sms' }],
+      objects: [
+        object('Start', 'incoming'),
+        object('Language', 'questionMessaging', { studioName: 'send_wait_sms_language' }),
+        object('Which', 'decision', { studioName: 'split_language', exits: ['1', 'noMatch'] }),
+        object('English', 'sendMessage', { studioName: 'send_message_sms_en_welcome' }),
+      ],
+      connections: [
+        { id: 'c1', from: 'Start', to: 'Language' },
+        { id: 'c2', from: 'Language', to: 'Which', exit: 'reply' },
+        { id: 'c3', from: 'Which', to: 'English', exit: '1' },
+        { id: 'c4', from: 'Which', to: 'Language', exit: 'noMatch' },
+      ],
+    });
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    await screen.findByRole('heading', { name: 'Language menu' });
+
+    // Test mode: the board can't be changed, the Test panel is open
+    fireEvent.click(within(screen.getByRole('tablist', { name: 'Mode' })).getByRole('tab', { name: /Test/ }));
+    expect(screen.queryByRole('complementary', { name: 'Objects' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /Play/ }));
+
+    // "2" isn't an answer: the split (paused on, to check it) goes back to the question; "1" is
+    const steps = () => within(screen.getByRole('list', { name: 'Steps' }));
+    fireEvent.change(screen.getByRole('textbox', { name: 'Their reply' }), { target: { value: '2' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    expect(screen.getByText(/inbound.Body}} = “2”/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /^Next: noMatch/ }));
+    expect(steps().getAllByText('Language')).toHaveLength(2);
+    fireEvent.change(screen.getByRole('textbox', { name: 'Their reply' }), { target: { value: '1' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send' }));
+    fireEvent.click(screen.getByRole('button', { name: /^Next: 1/ }));
+    // Paused on the message, to check it, then the end
+    expect(steps().getByText('English')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /^Next/ }));
+    expect(screen.getByText(/The flow ends after English/)).toBeTruthy();
+    // Back one step: paused on the message again; on to the end again
+    fireEvent.click(screen.getByRole('button', { name: 'Back one step' }));
+    expect(screen.queryByText(/The flow ends after English/)).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: /^Next/ }));
+    expect(screen.getByText(/The flow ends after English/)).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Mark path as tested' }));
+    expect(screen.getByText(/4 of 4 ways out tested, in 1 path/)).toBeTruthy();
+    await waitFor(() => expect(screen.getByText('All changes saved')).toBeTruthy(), { timeout: 4000 });
+    const saved = await boards.get('usnm', board.id);
+    expect(saved?.content.testedPaths).toHaveLength(1);
+    expect(saved?.content.testedPaths?.[0].steps.map((step) => step.exit)).toEqual([
+      '',
+      'reply',
+      'noMatch',
+      'reply',
+      '1',
+      '',
+    ]);
+    // Testing doesn't make the design "in progress" again
+    expect(saved?.content.status).toBe(board.content.status);
   });
 });

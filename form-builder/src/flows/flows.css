@@ -1479,3 +1479,347 @@
   margin-left: auto;
   white-space: nowrap;
 }
+
+/* Design / Test mode */
+.flow-mode button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 14px;
+}
+
+/* Test mode on the canvas: the run's way (blue, the current widget pulsing), tested paths (green),
+   the rest faded while a run is shown */
+.flow-object.sim-dimmed,
+.flow-edge.sim-dimmed,
+.flow-edge-label.sim-dimmed {
+  opacity: 0.35;
+}
+
+.flow-object.sim-current .flow-shape {
+  animation: flow-sim-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes flow-sim-pulse {
+  0%,
+  100% {
+    filter: drop-shadow(0 0 2px rgba(21, 101, 192, 0.6));
+  }
+  50% {
+    filter: drop-shadow(0 0 12px rgba(21, 101, 192, 0.95));
+  }
+}
+
+.flow-object.sim-dead-end .flow-shape {
+  filter: drop-shadow(0 0 8px rgba(198, 40, 40, 0.85));
+}
+
+.flow-object.sim-tested .flow-shape {
+  filter: drop-shadow(0 0 4px rgba(46, 125, 50, 0.55));
+}
+
+.flow-sim-badge {
+  position: absolute;
+  top: -10px;
+  right: -8px;
+  z-index: 2;
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 10px;
+  background: #1565c0;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.flow-edge.sim-visited {
+  stroke: #1565c0 !important;
+  stroke-width: 2.6 !important;
+}
+
+.flow-edge.sim-tested {
+  stroke: #2e7d32 !important;
+  stroke-width: 2.4 !important;
+}
+
+.flow-edge.sim-active {
+  stroke-dasharray: 8 6;
+  animation: flow-sim-dash 0.6s linear infinite;
+}
+
+@keyframes flow-sim-dash {
+  to {
+    stroke-dashoffset: -14;
+  }
+}
+
+.flow-edge-label.sim-visited {
+  border-color: #1565c0;
+  color: #1565c0;
+  font-weight: 600;
+}
+
+.flow-edge-label.sim-tested {
+  border-color: #2e7d32;
+  color: #2e7d32;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow-object.sim-current .flow-shape,
+  .flow-edge.sim-active {
+    animation: none;
+  }
+}
+
+/* The Test panel */
+.flow-simulator {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 14px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flow-simulator h3 {
+  margin: 0 0 6px;
+  font-size: 14px;
+}
+
+.flow-sim-controls,
+.flow-sim-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.flow-sim-controls .primary-button,
+.flow-sim-controls .secondary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.flow-sim-choices .secondary-button {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flow-sim-steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 340px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
+.flow-sim-steps li + li {
+  border-top: 1px solid var(--color-border);
+}
+
+.flow-sim-steps li.current {
+  background: var(--color-accent-soft);
+}
+
+.flow-sim-execution {
+  display: block;
+  padding: 4px 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #6a1b9a;
+  background: #f3e5f5;
+}
+
+.flow-sim-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: none;
+  background: none;
+  font: inherit;
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.flow-sim-step:hover {
+  background: var(--color-accent-soft);
+}
+
+.flow-sim-step-number {
+  flex-shrink: 0;
+  min-width: 20px;
+  padding: 1px 5px;
+  border-radius: 10px;
+  background: #1565c0;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.flow-sim-step-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.flow-sim-step-name {
+  font-weight: 600;
+}
+
+.flow-sim-step-body code,
+.flow-sim-note {
+  font-size: 11.5px;
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+}
+
+.flow-sim-exit {
+  flex-shrink: 0;
+  max-width: 40%;
+  padding: 1px 7px;
+  border: 1px solid #1565c0;
+  border-radius: 10px;
+  color: #1565c0;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flow-sim-prompt {
+  padding: 10px;
+  border: 2px solid #1565c0;
+  border-radius: var(--radius);
+  background: var(--color-accent-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.flow-sim-chat {
+  display: flex;
+  gap: 6px;
+}
+
+.flow-sim-chat input {
+  flex: 1;
+  min-width: 0;
+}
+
+.flow-sim-dialpad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  max-width: 200px;
+}
+
+.flow-sim-dialpad button {
+  font: inherit;
+  font-size: 18px;
+  font-weight: 600;
+  padding: 8px 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  aspect-ratio: 1;
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.flow-sim-dialpad button:hover {
+  border-color: #1565c0;
+  color: #1565c0;
+}
+
+.flow-sim-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  border-radius: var(--radius);
+  font-size: 13px;
+}
+
+.flow-sim-end.end {
+  background: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #a5d6a7;
+}
+
+.flow-sim-end.deadEnd,
+.flow-sim-end.loop {
+  background: var(--color-error-bg);
+  color: var(--color-error-text);
+  border: 1px solid #ef9a9a;
+}
+
+.flow-sim-state dl {
+  margin: 6px 0 0;
+  font-size: 12px;
+}
+
+.flow-sim-state dt {
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.flow-sim-state dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.flow-sim-coverage {
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+}
+
+.flow-sim-untested,
+.flow-sim-paths {
+  margin: 4px 0;
+  padding-left: 18px;
+  font-size: 12.5px;
+}
+
+.flow-sim-paths li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.flow-sim-widget {
+  font-size: 11.5px;
+  color: var(--color-muted);
+  overflow-wrap: anywhere;
+}
+
+.flow-sim-message blockquote {
+  margin: 0 0 6px;
+  padding: 6px 10px;
+  border-left: 3px solid #1565c0;
+  background: var(--color-surface);
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.flow-sim-message audio {
+  width: 100%;
+  height: 32px;
+}
+
+.flow-sim-choices .primary-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}

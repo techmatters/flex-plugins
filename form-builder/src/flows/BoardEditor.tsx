@@ -37,7 +37,18 @@ import {
   useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
-import { Copy, Download, Languages, Redo2, RefreshCw, Trash2, Undo2, Users } from 'lucide-react';
+import {
+  Copy,
+  Download,
+  FlaskConical,
+  Languages,
+  PencilRuler,
+  Redo2,
+  RefreshCw,
+  Trash2,
+  Undo2,
+  Users,
+} from 'lucide-react';
 import { boardChecks, issuesByObject, splitIgnored } from './checks';
 import { downloadFlowExport, downloadScripts } from './exports';
 import { CheckPanel } from './CheckPanel';
@@ -46,7 +57,7 @@ import { standardRecordingName } from './recordings';
 import { RecordingActions, RecordingsPanel } from './RecordingControls';
 import type { BoardClient, HelplineChoices } from './boardClient';
 import { NO_HELPLINE_CHOICES } from './boardClient';
-import type { Board, BoardContent, FlowObject, FlowObjectType, Person } from './model';
+import type { Board, BoardContent, FlowObject, FlowObjectType, Person, TestedPath } from './model';
 import {
   ASELO_PEOPLE_CODE,
   designOf,
@@ -85,6 +96,9 @@ import { BoardEditingContext, EDGE_TYPES, NODE_TYPES } from './nodes';
 import { Palette, PALETTE_MIME, PaletteItem } from './Palette';
 import { Inspector } from './Inspector';
 import { openTaskCount, TasksPanel } from './TasksPanel';
+import { SimulatorPanel } from './SimulatorPanel';
+import type { SimRun } from './simulate';
+import { coverageOf, testedPathOf, validTestedPaths, visitedBy } from './simulate';
 
 type Props = {
   board: Board;
@@ -135,6 +149,9 @@ const Editor = ({
   active = true,
 }: Props) => {
   const flow = useReactFlow<CanvasNode, ConnectionEdge>();
+  // Design: the board is changed; Test: flows are run (simulate.ts) and the board can't be changed
+  const [mode, setMode] = useState<'design' | 'test'>('design');
+  const locked = readOnly || mode === 'test';
   const [nodes, setNodes, onNodesChange] = useNodesState<CanvasNode>(toNodes(board.content));
   const [edges, setEdges, onEdgesChange] = useEdgesState<ConnectionEdge>(toEdges(board.content));
   const [title, setTitle] = useState(board.content.title);
@@ -145,6 +162,8 @@ const Editor = ({
   const [status, setStatus] = useState<DesignStatus>(() => statusOf(board.content));
   // Warnings marked as not needed here; like the status, not part of the canvas (nor of undo)
   const [ignoredChecks, setIgnoredChecks] = useState<string[]>(() => board.content.ignoredChecks ?? []);
+  // Runs marked as tested; like the status, not part of the canvas (nor of undo)
+  const [testedPaths, setTestedPaths] = useState<TestedPath[]>(() => board.content.testedPaths ?? []);
   // What's on the canvas; the status isn't part of it (nor of undo)
   const canvasContent = useMemo(() => toContent(title, nodes, edges), [title, nodes, edges]);
   const canvasJson = useMemo(() => JSON.stringify(canvasContent), [canvasContent]);
@@ -161,8 +180,9 @@ const Editor = ({
       status,
       ...(boardFlow ? { flow: boardFlow } : {}),
       ...(ignoredChecks.length > 0 ? { ignoredChecks } : {}),
+      ...(testedPaths.length > 0 ? { testedPaths } : {}),
     }),
-    [canvasContent, status, boardFlow, ignoredChecks],
+    [canvasContent, status, boardFlow, ignoredChecks, testedPaths],
   );
   const json = useMemo(() => JSON.stringify(content), [content]);
   const dragging = nodes.some((node) => node.dragging);
@@ -202,13 +222,13 @@ const Editor = ({
   const canUndo = history.current.index > 0;
   const canRedo = history.current.index < history.current.stack.length - 1;
   const undo = () => {
-    if (!canUndo || readOnly) return;
+    if (!canUndo || locked) return;
     history.current.index -= 1;
     restore(history.current.stack[history.current.index]);
     setHistoryVersion((version) => version + 1);
   };
   const redo = () => {
-    if (!canRedo || readOnly) return;
+    if (!canRedo || locked) return;
     history.current.index += 1;
     restore(history.current.stack[history.current.index]);
     setHistoryVersion((version) => version + 1);
@@ -290,7 +310,7 @@ const Editor = ({
   };
 
   const add = (item: PaletteItem, at = viewCentre()) => {
-    if (readOnly) return;
+    if (locked) return;
     let node: CanvasNode;
     if (item.kind === 'frame') {
       node = createFrameNode({ x: at.x - 450, y: at.y - 300 });
@@ -382,7 +402,7 @@ const Editor = ({
   const objectNode = (id: string) => nodes.find((node): node is ObjectNode => node.id === id && node.type === 'object');
 
   const connect = (params: FlowConnection) => {
-    if (readOnly || params.source === params.target) return;
+    if (locked || params.source === params.target) return;
     const source = objectNode(params.source);
     if (!source || !objectNode(params.target)) return;
     const next = nextExit(source, edges);
@@ -426,7 +446,7 @@ const Editor = ({
    */
   const onConnectEnd = (event: MouseEvent | TouchEvent, state: FinalConnectionState) => {
     setConnecting(false);
-    if (readOnly || state.isValid || !state.fromNode) return;
+    if (locked || state.isValid || !state.fromNode) return;
     const pointer = 'changedTouches' in event ? event.changedTouches[0] : event;
     if (!pointer) return;
     const at = flow.screenToFlowPosition({ x: pointer.clientX, y: pointer.clientY });
@@ -447,7 +467,7 @@ const Editor = ({
   };
 
   const onReconnect = (oldEdge: ConnectionEdge, connection: FlowConnection) => {
-    if (readOnly || !isValidConnection(connection)) return;
+    if (locked || !isValidConnection(connection)) return;
     let exit = oldEdge.data?.exit;
     if (connection.source !== oldEdge.source) {
       const next = nextExit(objectNode(connection.source), edges, oldEdge.id);
@@ -497,7 +517,7 @@ const Editor = ({
     setEdges((current) => current.map((edge) => (edge.id === id ? { ...edge, data: { exit } } : edge)));
 
   const deleteSelected = () => {
-    if (readOnly) return;
+    if (locked) return;
     flow.deleteElements({
       nodes: nodes.filter((node) => node.selected),
       edges: edges.filter((edge) => edge.selected),
@@ -517,7 +537,7 @@ const Editor = ({
   };
 
   const paste = (source = clipboard.current) => {
-    if (!source || readOnly) return;
+    if (!source || locked) return;
     source.pastes += 1;
     const step = 40 * source.pastes;
     const copies = duplicate(source.nodes, source.edges, new Set(nodes.map((node) => node.id)), { x: step, y: step });
@@ -558,7 +578,7 @@ const Editor = ({
   };
 
   // ----- Side panel, problems and tasks
-  const [sideTab, setSideTab] = useState<'settings' | 'tasks' | 'check' | 'recordings'>('settings');
+  const [sideTab, setSideTab] = useState<'test' | 'settings' | 'tasks' | 'check' | 'recordings'>('settings');
 
   // ----- Recordings: loaded when the board opens, after every change, and with Refresh
   const [recordingList, setRecordingList] = useState<RecordingsList>();
@@ -699,7 +719,63 @@ const Editor = ({
       ignore ? [...new Set([...current, key])] : current.filter((other) => other !== key),
     );
   const problems = useMemo(() => issuesByObject(issues), [issues]);
-  const editingContext = useMemo(() => ({ readOnly, problems }), [readOnly, problems]);
+  // ----- Test mode: a run of the flow, and the tested paths (those nothing on has changed since)
+  const [run, setRun] = useState<SimRun>();
+  // The run as it was before each answer, for Back
+  const [runHistory, setRunHistory] = useState<SimRun[]>([]);
+  const changeRun = (next?: SimRun, how?: 'fresh' | 'replace') => {
+    if (how === 'fresh' || !next) setRunHistory([]);
+    else if (how !== 'replace' && run) setRunHistory((history) => [...history, run]);
+    setRun(next);
+  };
+  const backRun = () => {
+    const previous = runHistory[runHistory.length - 1];
+    if (!previous) return;
+    setRunHistory(runHistory.slice(0, -1));
+    setRun(previous);
+  };
+  const [showTested, setShowTested] = useState(true);
+  const validPaths = useMemo(() => validTestedPaths(canvasContent, testedPaths), [canvasContent, testedPaths]);
+  // A change on a tested path means it has to be tested again
+  useEffect(() => {
+    if (!readOnly && validPaths.length !== testedPaths.length) setTestedPaths(validPaths);
+  }, [validPaths, testedPaths, readOnly]);
+  const simulation = useMemo(() => {
+    if (mode !== 'test') return undefined;
+    const visited = run ? visitedBy(run) : undefined;
+    const coverage = showTested ? coverageOf(content, validPaths) : undefined;
+    return {
+      visited: visited?.objects ?? new Map<string, number[]>(),
+      connections: visited?.connections ?? new Set<string>(),
+      current: run?.current,
+      activeConnection: visited?.activeConnection,
+      deadEnd: run?.ended?.kind === 'deadEnd' ? run.ended.objectId : undefined,
+      tested: coverage && { objects: coverage.objects, connections: coverage.connections },
+    };
+  }, [mode, run, showTested, content, validPaths]);
+  const switchMode = (next: 'design' | 'test') => {
+    setMode(next);
+    setRun(undefined);
+    setRunHistory([]);
+    setSideTab(next === 'test' ? 'test' : 'settings');
+    setNodes((current) => current.map((node) => (node.selected ? { ...node, selected: false } : node)));
+  };
+  const markTested = () => {
+    if (!run) return;
+    setTestedPaths((current) => [...current, testedPathOf(canvasContent, run, userName, newId('t'))]);
+    setNotice('Path marked as tested: it shows green while nothing on it changes.');
+  };
+  // The run's current widget kept in view
+  const follow = run?.current;
+  useEffect(() => {
+    if (!follow) return;
+    const rect = rectOf(follow);
+    if (rect)
+      flow.setCenter(rect.x + rect.width / 2, rect.y + rect.height / 2, { zoom: flow.getZoom(), duration: 300 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [follow]);
+
+  const editingContext = useMemo(() => ({ readOnly: locked, problems, simulation }), [locked, problems, simulation]);
   const errorCount = issues.filter((issue) => issue.severity === 'error').length;
 
   // A way out left unconnected on purpose: the flow ends there
@@ -757,6 +833,14 @@ const Editor = ({
               label="Board status"
             />
           )}
+          <span className="flow-variants flow-mode" role="tablist" aria-label="Mode">
+            <button type="button" role="tab" aria-selected={mode === 'design'} onClick={() => switchMode('design')}>
+              <PencilRuler size={14} aria-hidden /> Design
+            </button>
+            <button type="button" role="tab" aria-selected={mode === 'test'} onClick={() => switchMode('test')}>
+              <FlaskConical size={14} aria-hidden /> Test
+            </button>
+          </span>
           {/* The Studio flow the board is (an imported board's), as its frame used to say */}
           {boardFlow?.studio && (
             <span
@@ -827,7 +911,7 @@ const Editor = ({
               </span>
             )}
           </span>
-          {!readOnly && (
+          {!locked && (
             <span className="flow-toolbar-buttons">
               <button
                 type="button"
@@ -961,7 +1045,7 @@ const Editor = ({
         {saveState === 'error' && saveError && <div className="alert alert-error">{saveError}</div>}
 
         <div className="flow-workspace">
-          {!readOnly && <Palette onAdd={(item) => add(item)} />}
+          {!locked && <Palette onAdd={(item) => add(item)} />}
           <div
             className={connecting ? 'flow-canvas connecting' : 'flow-canvas'}
             ref={wrapper}
@@ -985,10 +1069,10 @@ const Editor = ({
               onConnectEnd={onConnectEnd}
               connectionRadius={36}
               isValidConnection={isValidConnection}
-              onNodeClick={() => setSideTab('settings')}
-              onEdgeClick={() => setSideTab('settings')}
+              onNodeClick={() => mode === 'design' && setSideTab('settings')}
+              onEdgeClick={() => mode === 'design' && setSideTab('settings')}
               onNodeDragStop={(_, __, dragged) => {
-                if (readOnly) return;
+                if (locked) return;
                 setNodes((current) =>
                   dragged.reduce(
                     (result, node) => (node.type === 'frame' ? result : reparent(result, node.id)),
@@ -999,11 +1083,11 @@ const Editor = ({
               connectionMode={ConnectionMode.Loose}
               connectionLineType={ConnectionLineType.SmoothStep}
               defaultEdgeOptions={{ type: 'connection', markerEnd: ARROW }}
-              nodesDraggable={!readOnly}
-              nodesConnectable={!readOnly}
-              edgesReconnectable={!readOnly}
+              nodesDraggable={!locked}
+              nodesConnectable={!locked}
+              edgesReconnectable={!locked}
               onReconnect={onReconnect}
-              deleteKeyCode={readOnly ? null : ['Backspace', 'Delete']}
+              deleteKeyCode={locked ? null : ['Backspace', 'Delete']}
               selectionKeyCode="Shift"
               multiSelectionKeyCode={['Meta', 'Control']}
               snapToGrid
@@ -1034,6 +1118,11 @@ const Editor = ({
           </div>
           <aside className="flow-sidebar" aria-label="Side panel">
             <div className="flow-sidebar-tabs" role="tablist">
+              {mode === 'test' && (
+                <button type="button" role="tab" aria-selected={sideTab === 'test'} onClick={() => setSideTab('test')}>
+                  Test
+                </button>
+              )}
               <button
                 type="button"
                 role="tab"
@@ -1063,6 +1152,43 @@ const Editor = ({
                 Recordings
               </button>
             </div>
+            {sideTab === 'test' && mode === 'test' && (
+              <SimulatorPanel
+                content={content}
+                run={run}
+                onRun={changeRun}
+                onBack={runHistory.length > 0 ? backRun : undefined}
+                variant={variant?.key}
+                mainVariant={mainVariant}
+                recordings={recordingList?.recordings}
+                testedPaths={validPaths}
+                showTested={showTested}
+                onShowTested={setShowTested}
+                onMarkTested={readOnly ? undefined : markTested}
+                onForget={
+                  readOnly
+                    ? undefined
+                    : (pathId) =>
+                        setTestedPaths((current) => (pathId ? current.filter((path) => path.id !== pathId) : []))
+                }
+                onEndHere={
+                  readOnly
+                    ? undefined
+                    : (objectId, exit) => {
+                        // A way out left unconnected on purpose (a design change): the run ended as it should
+                        endHere(objectId, exit);
+                        setRun(
+                          (current) =>
+                            current && {
+                              ...current,
+                              ended: { kind: 'end', message: 'Ends here on purpose.', objectId, exit },
+                            },
+                        );
+                      }
+                }
+                onShow={showNode}
+              />
+            )}
             {sideTab === 'recordings' && (
               <RecordingsPanel
                 messages={content.objects.map((object) => ({
@@ -1078,7 +1204,7 @@ const Editor = ({
               <CheckPanel
                 issues={issues}
                 ignored={ignoredIssues}
-                readOnly={readOnly}
+                readOnly={locked}
                 onShow={showNode}
                 onEndHere={endHere}
                 onIgnore={ignoreCheck}
@@ -1092,7 +1218,7 @@ const Editor = ({
                 people={people}
                 nodes={nodes}
                 edges={edges}
-                readOnly={readOnly}
+                readOnly={locked}
                 userName={userName}
                 onTitleChange={setTitle}
                 onNodeData={onNodeData}

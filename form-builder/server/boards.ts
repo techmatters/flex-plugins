@@ -66,6 +66,7 @@ export const isBoardContent = (value: unknown): value is BoardContent => {
     (candidate.flow === undefined || (typeof candidate.flow === 'object' && candidate.flow !== null)) &&
     (candidate.ignoredChecks === undefined ||
       (Array.isArray(candidate.ignoredChecks) && candidate.ignoredChecks.every((key) => typeof key === 'string'))) &&
+    (candidate.testedPaths === undefined || isArrayOfObjects(candidate.testedPaths)) &&
     ['frames', 'objects', 'connections', 'stickies'].every((key) =>
       isArrayOfObjects(candidate[key as keyof BoardContent]),
     )
