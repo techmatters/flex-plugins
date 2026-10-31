@@ -112,4 +112,37 @@ describe('loadSsmCacheByName', () => {
 
     expect(sentCommands(send, DescribeParametersCommand)).toHaveLength(1);
   });
+
+  test('loads everything again on the next call after a partially failed load', async () => {
+    const send = mockSsm({
+      '/production/twilio/AC1/short_helpline': 'ZM',
+      '/staging/twilio/AC2/short_helpline': 'EUMC',
+      '/development/twilio/AC3/short_helpline': 'AS',
+    });
+    const fakeSsm = send.getMockImplementation()!;
+    // Fail listing the second page once, after the first page has been cached
+    let hasFailed = false;
+    send.mockImplementation(async (command: unknown) => {
+      if (
+        !hasFailed &&
+        command instanceof DescribeParametersCommand &&
+        command.input.NextToken
+      ) {
+        hasFailed = true;
+        throw new Error('Throttled');
+      }
+      return fakeSsm(command as any);
+    });
+
+    await expect(loadShortHelplines()).rejects.toThrow('Throttled');
+    expect(Object.keys(getCachedParameters(SHORT_HELPLINE_REGEX))).toHaveLength(2);
+
+    await loadShortHelplines();
+
+    expect(getCachedParameters(SHORT_HELPLINE_REGEX)).toStrictEqual({
+      '/production/twilio/AC1/short_helpline': 'ZM',
+      '/staging/twilio/AC2/short_helpline': 'EUMC',
+      '/development/twilio/AC3/short_helpline': 'AS',
+    });
+  });
 });

@@ -105,5 +105,11 @@ export const loadSsmCacheByName = async ({
   ssmCache.expiryDate = new Date(Date.now() + ssmCache.cacheDurationMilliseconds);
 
   const promises = configs.map(async config => loadPaginatedByName(config));
-  await Promise.all(promises);
+  try {
+    await Promise.all(promises);
+  } catch (e) {
+    // Expire the cache so the next call retries, rather than using a partial load until it expires
+    ssmCache.expiryDate = new Date(0);
+    throw e;
+  }
 };
