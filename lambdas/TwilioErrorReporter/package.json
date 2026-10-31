@@ -17,6 +17,7 @@
     "ts-node": "^10.9.1"
   },
   "dependencies": {
+    "@tech-matters/dynamo-cache": "^1.0.0",
     "@tech-matters/ssm-cache": "^1.0.0"
   }
 }

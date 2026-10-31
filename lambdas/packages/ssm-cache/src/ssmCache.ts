@@ -63,12 +63,15 @@ export type SsmCache = {
   expiryDate?: Date;
   // When each loadSsmCacheByName config needs loading again, keyed by config
   byNameExpiryDates: Record<string, Date | undefined>;
+  // When each loadSsmCacheByName config can be retried after a failed load, keyed by config
+  byNameRetryDates: Record<string, Date | undefined>;
   cacheDurationMilliseconds: number;
 };
 
 export const ssmCache: SsmCache = {
   values: {},
   byNameExpiryDates: {},
+  byNameRetryDates: {},
   cacheDurationMilliseconds: 3600000,
 };
 
@@ -79,6 +82,16 @@ export class SsmParameterNotFound extends Error {
     // see: https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
     Object.setPrototypeOf(this, SsmParameterNotFound.prototype);
     this.name = 'SsmParameterNotFound';
+  }
+}
+
+export class SsmLoadBackingOff extends Error {
+  constructor(message: string) {
+    super(message);
+
+    // see: https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
+    Object.setPrototypeOf(this, SsmLoadBackingOff.prototype);
+    this.name = 'SsmLoadBackingOff';
   }
 }
 

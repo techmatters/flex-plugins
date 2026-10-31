@@ -25,9 +25,11 @@ import {
   getSsmClient,
   addToCache,
   setCacheDurationMilliseconds,
+  SsmLoadBackingOff,
 } from './ssmCache';
 
 const MAX_NAMES_PER_GET_PARAMETERS = 10; // 10 is max allowed by AWS
+const FAILED_LOAD_BACKOFF_MILLISECONDS = 30 * 1000;
 
 const loadParameters = async (names: string[]): Promise<void> => {
   const batches = Array.from(
@@ -98,24 +100,48 @@ const toConfigKey = ({ nameContains, regex }: SsmCacheByNameConfig) =>
 
 const hasConfigExpired = (config: SsmCacheByNameConfig) => {
   const expiryDate = ssmCache.byNameExpiryDates[toConfigKey(config)];
-  return !expiryDate || new Date() > expiryDate;
+  return !expiryDate || Date.now() > expiryDate.getTime();
 };
 
-// Each config is loaded unless it was loaded successfully before and hasn't expired,
-// regardless of what else is in the cache
+const isConfigBackingOff = (config: SsmCacheByNameConfig) => {
+  const retryDate = ssmCache.byNameRetryDates[toConfigKey(config)];
+  return !!retryDate && Date.now() < retryDate.getTime();
+};
+
+/**
+ * Each config is loaded unless it was loaded successfully before and hasn't expired,
+ * regardless of what else is in the cache.
+ * After a failed load, that config isn't retried for a while, so a throttled SSM isn't hit on every call:
+ * calls in that time throw SsmLoadBackingOff rather than leave callers with a partial cache.
+ */
 export const loadSsmCacheByName = async ({
   cacheDurationMilliseconds,
   configs,
 }: LoadSsmCacheByNameParameters) => {
   const expiredConfigs = configs.filter(hasConfigExpired);
   if (!expiredConfigs.length) return;
+
+  const backingOffConfig = expiredConfigs.find(isConfigBackingOff);
+  if (backingOffConfig) {
+    throw new SsmLoadBackingOff(
+      `Loading parameters containing ${backingOffConfig.nameContains} failed recently, not retrying yet`,
+    );
+  }
+
   if (cacheDurationMilliseconds) setCacheDurationMilliseconds(cacheDurationMilliseconds);
 
   const expiryDate = new Date(Date.now() + ssmCache.cacheDurationMilliseconds);
 
   const promises = expiredConfigs.map(async config => {
-    await loadPaginatedByName(config);
-    // Only set once loaded, so a failed or partial load is retried on the next call
+    try {
+      await loadPaginatedByName(config);
+    } catch (e) {
+      ssmCache.byNameRetryDates[toConfigKey(config)] = new Date(
+        Date.now() + FAILED_LOAD_BACKOFF_MILLISECONDS,
+      );
+      throw e;
+    }
+    // Only set once loaded, so a failed or partial load is retried once the backoff is over
     ssmCache.byNameExpiryDates[toConfigKey(config)] = expiryDate;
   });
   await Promise.all(promises);
