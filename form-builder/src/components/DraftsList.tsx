@@ -22,6 +22,7 @@ import { useEffect, useState } from 'react';
 import type { DraftSummary } from '../../server/drafts';
 import type { FlagKind } from '../../server/reviews';
 import type { DraftClient } from '../draftClient';
+import { Loading } from './Loading';
 import { HelplineFilter } from './HelplineFilter';
 import '../designStatus.css';
 
@@ -68,7 +69,8 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
       .catch(() => setDrafts([]));
   }, [draftClient]);
 
-  if (!drafts || drafts.length === 0) return null;
+  if (!drafts) return <Loading text="Loading drafts…" />;
+  if (drafts.length === 0) return null;
 
   return (
     <section className="drafts-list">

@@ -19,6 +19,7 @@ import { ArrowLeft } from 'lucide-react';
 import type { DefinitionFiles, HelplineSummary } from '../server/definitionsApi';
 import type { Me } from '../server/api';
 import { fetchDefinitionFiles, fetchHelplines } from './api';
+import { Loading } from './components/Loading';
 import { isSignInEnabled, signOut } from './auth';
 import { DraftClient, httpDraftClient } from './draftClient';
 import { HelplineWorkspace } from './components/HelplineWorkspace';
@@ -252,6 +253,7 @@ export const App = ({ draftClient = httpDraftClient, boardClient, routingClient,
               The forms counselors fill in for each contact and case, the webchat form, and how contacts are filled in
               from the chatbot. Choose a helpline (at the top) to see and edit its forms.
             </p>
+            {!user && <Loading text="Loading helplines…" />}
             {user && (
               <DraftsList
                 draftClient={draftClient}
@@ -262,7 +264,11 @@ export const App = ({ draftClient = httpDraftClient, boardClient, routingClient,
           </main>
         )}
 
-        {loading && <main className="empty-state">Loading forms…</main>}
+        {loading && (
+          <main className="empty-state">
+            <Loading text="Loading forms…" />
+          </main>
+        )}
 
         {definitions && user && (
           <HelplineWorkspace

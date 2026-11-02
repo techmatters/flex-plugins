@@ -34,6 +34,7 @@ import {
   getReferenceData,
 } from '../definitions';
 import { validateSections } from '../sections';
+import { Loading } from './Loading';
 import { SaveState, useDraft } from '../useDraft';
 import type { DraftClient } from '../draftClient';
 import { validateContactTab, ValidationIssue } from '../validation';
@@ -351,7 +352,7 @@ export const HelplineWorkspace = ({
 
   const renderMain = () => {
     // Editors build their state from the files when they open, so wait for the saved draft
-    if (draft.saveState === 'loading') return <p className="muted">Loading the draft…</p>;
+    if (draft.saveState === 'loading') return <Loading text="Loading the draft…" />;
     if (view.kind === 'contactTab') return renderContactTab(view.tabKey);
     const editorKey = `${view.kind}-${editorRevision}`;
     if (view.kind === 'callTypes') {

@@ -26,6 +26,7 @@ import { ArrowLeft, Bot, CircleAlert, Download, Plus, TriangleAlert } from 'luci
 import type { ChatbotImport } from '../../server/chatbotImport';
 import type { FromBranch } from '../../server/branches';
 import { BranchPicker, ImportedFrom } from '../components/BranchPicker';
+import { Loading } from '../components/Loading';
 import type { DesignStatus } from '../designStatus';
 import { DESIGN_STATUSES } from '../designStatus';
 import { DesignStatusBadge, DesignStatusPicker } from '../components/DesignStatusPicker';
@@ -696,7 +697,7 @@ const ChatbotsHome = ({
         </button>
       </div>
 
-      {!summaries && !error && <p>Loading chatbots…</p>}
+      {!summaries && !error && <Loading text="Loading chatbots…" />}
       {summaries && allRows.length === 0 && <p>No chatbot designs yet.</p>}
       {allRows.length > 0 && (
         <>
@@ -797,12 +798,17 @@ export const ChatbotsArea = ({ client = httpChatbotClient, helplineCodes, staffM
       .catch((err: Error) => setError(err.message));
   }, [client, code, loadCount]);
 
+  // Reading the live config takes a while: said while it does
+  const [importing, setImporting] = useState(false);
   const previewImport = async () => {
     setError(undefined);
+    setImporting(true);
     try {
       setPreview(await client.previewImport(code, branch));
     } catch (err) {
       setError((err as Error).message);
+    } finally {
+      setImporting(false);
     }
   };
 
@@ -853,7 +859,7 @@ export const ChatbotsArea = ({ client = httpChatbotClient, helplineCodes, staffM
           {staffMode && stored && !preview && (
             <>
               <BranchPicker load={client.branches} value={branch} onChange={setBranch} />
-              <button type="button" className="link-button" onClick={previewImport}>
+              <button type="button" className="link-button" disabled={importing} onClick={previewImport}>
                 Import again from the live config
               </button>
             </>
@@ -861,13 +867,20 @@ export const ChatbotsArea = ({ client = httpChatbotClient, helplineCodes, staffM
         </div>
       )}
       {error && <div className="alert alert-error">{error}</div>}
+      {importing && <Loading text="Reading the live config…" />}
+      {stored === undefined && !error && <Loading text={`Loading ${code.toUpperCase()}'s chatbots…`} />}
       {stored === null && !preview && (
         <div className="routing-empty">
           <p>{code.toUpperCase()} has no chatbots design yet.</p>
           {staffMode ? (
             <div className="chatbot-start-options">
               <BranchPicker load={client.branches} value={branch} onChange={setBranch} />
-              <button type="button" className="primary-button" disabled={working} onClick={previewImport}>
+              <button
+                type="button"
+                className="primary-button"
+                disabled={working || importing}
+                onClick={previewImport}
+              >
                 Import them from the live config
               </button>
               <button

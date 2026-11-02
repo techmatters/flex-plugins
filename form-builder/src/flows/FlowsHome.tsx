@@ -21,6 +21,7 @@
  */
 import { useEffect, useState } from 'react';
 import { HelplineFilter } from '../components/HelplineFilter';
+import { Loading } from '../components/Loading';
 import type { BoardClient } from './boardClient';
 import { BoardSummary, TEMPLATES_CODE } from './model';
 import type { DesignStatus } from '../designStatus';
@@ -176,7 +177,7 @@ export const FlowsHome = ({ client, helplineCodes, isAseloStaff, onOpen }: Props
         </div>
       )}
 
-      {!boards && !error && <p>Loading boards…</p>}
+      {!boards && !error && <Loading text="Loading boards…" />}
       {boards && (
         <section aria-label="Boards">
           <div className="area-home-filters">

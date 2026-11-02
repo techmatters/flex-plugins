@@ -47,6 +47,7 @@ import {
   withBuiltinType,
 } from './edit';
 import type { ChatbotIssue } from './chatbotChecks';
+import { Loading } from '../components/Loading';
 import type { ContactForms } from './formMappings';
 import { renameFormTargets, setFormTargets, targetLabel, unmatchedAnswers } from './formMappings';
 import { AutoTextarea } from '../components/AutoTextarea';
@@ -422,7 +423,7 @@ const FormFieldsRow = ({
             <FieldOptions forms={forms} exclude={targets} />
           </select>
         )}
-        {!forms && <span className="field-hint">Loading the contact form…</span>}
+        {!forms && <Loading inline text="Loading the contact form…" />}
       </div>
     </div>
   );

@@ -22,6 +22,7 @@ import { useEffect, useState } from 'react';
 import { BoardClient, httpBoardClient } from './boardClient';
 import { Board, TEMPLATES_CODE } from './model';
 import { FlowsHome } from './FlowsHome';
+import { Loading } from '../components/Loading';
 import { BoardEditor } from './BoardEditor';
 import './flows.css';
 
@@ -97,7 +98,12 @@ export const FlowsArea = ({
     );
   }
 
-  if (!board) return <main className="empty-state">Loading the board…</main>;
+  if (!board)
+    return (
+      <main className="empty-state">
+        <Loading text="Loading the board…" />
+      </main>
+    );
 
   return (
     <BoardEditor

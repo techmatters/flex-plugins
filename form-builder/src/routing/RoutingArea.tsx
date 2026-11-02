@@ -39,6 +39,7 @@ import { ArrowLeft, ChevronsDownUp, ChevronsUpDown, Download } from 'lucide-reac
 import type { RoutingImport } from '../../server/routingImport';
 import type { FromBranch } from '../../server/branches';
 import { BranchPicker, ImportedFrom } from '../components/BranchPicker';
+import { Loading } from '../components/Loading';
 import type { DesignStatus } from '../designStatus';
 import { DESIGN_STATUSES, STATUS_AFTER_CHANGE } from '../designStatus';
 import { DesignStatusBadge, DesignStatusPicker } from '../components/DesignStatusPicker';
@@ -532,7 +533,7 @@ const RoutingHome = ({
           {code && !withDesign.has(code) && staffMode ? 'Start' : 'Open'}
         </button>
       </div>
-      {!summaries && !error && <p>Loading routing designs…</p>}
+      {!summaries && !error && <Loading text="Loading routing designs…" />}
       {summaries && allRows.length === 0 && <p>No routing designs yet.</p>}
       {allRows.length > 0 && (
         <>
@@ -602,12 +603,17 @@ export const RoutingArea = ({ client = httpRoutingClient, helplineCodes, staffMo
   const [error, setError] = useState<string>();
   const [preview, setPreview] = useState<RoutingImport & FromBranch>();
   const [branch, setBranch] = useState('');
+  // Reading the live config takes a while: said while it does
+  const [importing, setImporting] = useState(false);
   const previewImport = async () => {
     setError(undefined);
+    setImporting(true);
     try {
       setPreview(await client.previewImport(code, branch));
     } catch (err) {
       setError((err as Error).message);
+    } finally {
+      setImporting(false);
     }
   };
   const [loadCount, setLoadCount] = useState(0);
@@ -654,19 +660,26 @@ export const RoutingArea = ({ client = httpRoutingClient, helplineCodes, staffMo
         {staffMode && code && stored && !preview && (
           <>
             <BranchPicker load={client.branches} value={branch} onChange={setBranch} />
-            <button type="button" className="link-button" onClick={previewImport}>
+            <button type="button" className="link-button" disabled={importing} onClick={previewImport}>
               Import again from the live config
             </button>
           </>
         )}
       </div>
       {error && <div className="alert alert-error">{error}</div>}
+      {importing && <Loading text="Reading the live config…" />}
+      {stored === undefined && !error && <Loading text={`Loading ${code.toUpperCase()}'s routing…`} />}
       {code && stored === null && !preview && (
         <div className="routing-empty">
           <p>{code.toUpperCase()} has no routing design yet.</p>
           {staffMode && <BranchPicker load={client.branches} value={branch} onChange={setBranch} />}
           {staffMode && (
-            <button type="button" className="primary-button" disabled={working} onClick={previewImport}>
+            <button
+              type="button"
+              className="primary-button"
+              disabled={working || importing}
+              onClick={previewImport}
+            >
               Import it from the live config
             </button>
           )}

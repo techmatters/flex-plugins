@@ -22,6 +22,7 @@
  */
 import { useEffect, useState } from 'react';
 import type { BoardClient } from './boardClient';
+import { Loading } from '../components/Loading';
 import { ASELO_PEOPLE_CODE, Person } from './model';
 
 type Props = {
@@ -111,7 +112,7 @@ export const PeopleManager = ({ client, helplineCodes, isAseloStaff }: Props) =>
         </select>
       </label>
       {error && <div className="alert alert-error">{error}</div>}
-      {!people && !error && <p>Loading…</p>}
+      {!people && !error && <Loading text="Loading…" />}
       {people && (
         <ul className="flows-list" aria-label="People">
           {people.length === 0 && <li className="field-hint">Nobody yet.</li>}
