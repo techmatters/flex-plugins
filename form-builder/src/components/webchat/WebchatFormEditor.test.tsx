@@ -113,6 +113,20 @@ describe('webchat form editor', () => {
     expect(screen.getByText('The “District” dropdown depends on it')).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Edit answers' })).toBeTruthy();
   });
+
+  test('sets the answer a dropdown starts with, shown in the preview', async () => {
+    await openWebchat(as);
+    fireEvent.click(screen.getByRole('button', { name: /^Gender/ }));
+    const chosen = screen.getByRole('combobox', { name: /^Chosen at first/ });
+    expect((chosen as HTMLSelectElement).value).toBe('');
+    fireEvent.change(chosen, { target: { value: 'Girl' } });
+
+    const saved = await savedDraft(as, PRE_ENGAGEMENT_FILE);
+    expect(saved.fields.find((field: { name: string }) => field.name === 'gender')).toMatchObject({
+      defaultValue: 'Girl',
+    });
+    expect((within(preview()).getByLabelText(/^Gender/) as HTMLSelectElement).value).toBe('Girl');
+  });
 });
 
 describe('filling in the contact form', () => {

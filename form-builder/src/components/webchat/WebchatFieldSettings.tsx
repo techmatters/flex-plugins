@@ -23,6 +23,7 @@ import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
 import {
   changeWebchatFieldType,
   isRequired,
+  plainText,
   WEBCHAT_FIELD_TYPE_INFO,
   WebchatField,
   WebchatFieldType,
@@ -100,9 +101,7 @@ export const WebchatFieldSettings = ({
   const requiredMessage = typeof field.required === 'object' ? (field.required.message ?? '') : '';
   const setCheckboxRequired = (mustTick: boolean, message = requiredMessage) => {
     const { required, ...rest } = field;
-    onChange(
-      mustTick ? { ...rest, required: { value: true, ...(message ? { message } : {}) } } : rest,
-    );
+    onChange(mustTick ? { ...rest, required: { value: true, ...(message ? { message } : {}) } } : rest);
   };
 
   const confirmRemove = () => {
@@ -137,13 +136,10 @@ export const WebchatFieldSettings = ({
         />
         {field.type === 'checkbox' && (
           <span className="field-hint">
-            To link to a page, write for example{' '}
-            <code>{'I accept the <a href="https://…">terms</a>'}</code>
+            To link to a page, write for example <code>{'I accept the <a href="https://…">terms</a>'}</code>
           </span>
         )}
-        {textIsShared && (
-          <span className="field-hint">This text isn't translated: it shows in every language.</span>
-        )}
+        {textIsShared && <span className="field-hint">This text isn't translated: it shows in every language.</span>}
       </label>
 
       <label className="field">
@@ -191,11 +187,7 @@ export const WebchatFieldSettings = ({
           {isRequired(field) && (
             <label className="field">
               <span className="field-label">Message if it isn't ticked (optional)</span>
-              <input
-                type="text"
-                value={requiredMessage}
-                onChange={(e) => setCheckboxRequired(true, e.target.value)}
-              />
+              <input type="text" value={requiredMessage} onChange={(e) => setCheckboxRequired(true, e.target.value)} />
             </label>
           )}
         </>
@@ -231,15 +223,46 @@ export const WebchatFieldSettings = ({
             options={field.options as SelectOption[]}
             originalValues={
               new Set(
-                (Array.isArray(originalField?.options) ? (originalField.options as SelectOption[]) : []).map(
-                  (option) => String(option.value),
+                (Array.isArray(originalField?.options) ? (originalField.options as SelectOption[]) : []).map((option) =>
+                  String(option.value),
                 ),
               )
             }
             staffMode={staffMode}
-            onChange={(options) => onChange({ ...field, options })}
+            onChange={(options) =>
+              // An answer that's gone can't stay the one chosen at first
+              onChange({
+                ...field,
+                options,
+                ...(options.some((option) => String(option.value) === String(field.defaultValue ?? ''))
+                  ? {}
+                  : { defaultValue: '' }),
+              })
+            }
           />
         </div>
+      )}
+
+      {field.type === 'select' && !isLinkedTop && Array.isArray(field.options) && (
+        <label className="field">
+          <span className="field-label">Chosen at first</span>
+          <select
+            value={String(field.defaultValue ?? '')}
+            onChange={(e) => onChange({ ...field, defaultValue: e.target.value })}
+          >
+            {!(field.options as SelectOption[]).some((option) => String(option.value) === '') && (
+              <option value="">Nothing (visitors choose)</option>
+            )}
+            {(field.options as SelectOption[]).map((option) => (
+              <option key={String(option.value)} value={String(option.value)}>
+                {String(option.value) === ''
+                  ? 'Nothing (visitors choose)'
+                  : plainText(option.label) || String(option.value)}
+              </option>
+            ))}
+          </select>
+          <span className="field-hint">The answer already selected when the form opens.</span>
+        </label>
       )}
 
       <div className="field">
@@ -271,8 +294,8 @@ export const WebchatFieldSettings = ({
                 )}
                 {unmatched.length > 0 && (
                   <span className="field-hint prepopulate-warning">
-                    That field has no answer for {unmatched.map((value) => `“${value}”`).join(', ')}, so
-                    it's left empty when visitors choose {unmatched.length === 1 ? 'it' : 'them'}.
+                    That field has no answer for {unmatched.map((value) => `“${value}”`).join(', ')}, so it's left empty
+                    when visitors choose {unmatched.length === 1 ? 'it' : 'them'}.
                   </span>
                 )}
               </li>
@@ -303,8 +326,8 @@ export const WebchatFieldSettings = ({
         )}
         {!prepopulate.inUse && (
           <span className="field-hint">
-            This helpline still fills in contacts the old way (PrepopulateKeys.json), so this takes
-            effect once Aselo staff turn on “use_prepopulate_mappings”.
+            This helpline still fills in contacts the old way (PrepopulateKeys.json), so this takes effect once Aselo
+            staff turn on “use_prepopulate_mappings”.
           </span>
         )}
       </div>

@@ -45,7 +45,7 @@ const validate = (field: WebchatField, value: Value): string | undefined => {
 };
 
 const initialValue = (field: WebchatField): Value =>
-  field.type === 'checkbox' ? Boolean(field.initialChecked) : '';
+  field.type === 'checkbox' ? Boolean(field.initialChecked) : String(field.defaultValue ?? '');
 
 type Props = {
   form: PreEngagementForm;
