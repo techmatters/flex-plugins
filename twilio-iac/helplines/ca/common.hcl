@@ -11,7 +11,7 @@ locals {
     enable_external_recordings        = true
     contacts_waiting_channels         = ["voice", "web"]
     permission_config                 = "ca"
-    enable_lambda_event_callback_url = true
+    enable_lambda_event_callback_url = false
     workflows = {
       master : {
         friendly_name = "Master Workflow"
