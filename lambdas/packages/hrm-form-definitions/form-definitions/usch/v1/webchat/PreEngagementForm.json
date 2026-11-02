@@ -276,6 +276,63 @@
       ]
     },
     {
+      "type": "select",
+      "name": "advocateService",
+      "label": "Do you have questions about resources or making a report?",
+      "required": false,
+      "defaultValue": "No",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    },
+    {
+      "label": "Are you reaching out on behalf of yourself or another person?",
+      "type": "select",
+      "defaultValue": "Yes",
+      "name": "aboutSelf",
+      "options": [
+        {
+          "value": "Yes",
+          "label": "Myself"
+        },
+        {
+          "value": "No",
+          "label": "Someone else"
+        }
+      ]
+    },
+    {
+      "label": "What is your preferred language?",
+      "type": "select",
+      "defaultValue": "en-US",
+      "name": "language",
+      "options": [
+        {
+          "value": "en-US",
+          "label": "English"
+        },
+        {
+          "value": "es-US",
+          "label": "Spanish"
+        },
+        {
+          "value": "en",
+          "label": "Other"
+        }
+      ]
+    },
+    {
       "label": "How did you hear about this hotline?",
       "name": "howTheHelpseekerHeardAboutUs",
       "type": "select",
@@ -384,38 +441,6 @@
         {
           "value": "Unknown / Prefer Not to Answer",
           "label": "Unknown / Prefer Not to Answer"
-        }
-      ]
-    },
-    {
-      "label": "Are you reaching out on behalf of yourself or another person?",
-      "type": "select",
-      "defaultValue": "Yes",
-      "name": "aboutSelf",
-      "options": [
-        {
-          "value": "Yes",
-          "label": "Myself"
-        },
-        {
-          "value": "No",
-          "label": "Someone else"
-        }
-      ]
-    },
-    {
-      "label": "What is your preferred language?",
-      "type": "select",
-      "defaultValue": "en-US",
-      "name": "language",
-      "options": [
-        {
-          "value": "en-US",
-          "label": "English"
-        },
-        {
-          "value": "en",
-          "label": "Other"
         }
       ]
     },
