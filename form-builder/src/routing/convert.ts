@@ -26,11 +26,11 @@ type Json = Record<string, unknown>;
 
 // ${task_queues.en_std}, or ${task_queues["988_en"]} for keys that aren't plain names
 const QUEUE_REFERENCE = /^\$\{\s*task_queues(?:\.([A-Za-z_][A-Za-z0-9_]*)|\["([^"]+)"\])\s*\}$/;
-const queueKeyOf = (queue: string) => {
+export const queueKeyOf = (queue: string) => {
   const found = queue.match(QUEUE_REFERENCE);
   return found ? (found[1] ?? found[2]) : undefined;
 };
-const queueReference = (key: string) =>
+export const queueReference = (key: string) =>
   /^[A-Za-z_][A-Za-z0-9_]*$/.test(key) ? `\${task_queues.${key}}` : `\${task_queues["${key}"]}`;
 const KEY = /^[A-Za-z0-9_]+$/;
 

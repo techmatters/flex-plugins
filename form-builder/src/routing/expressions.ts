@@ -244,7 +244,9 @@ export const readConditions = (expression: string | undefined): Condition[][] =>
   return splitTopLevel(unwrap(expression), 'OR').map(readGroup);
 };
 
-const writeValue = (value: string | number | boolean) => (typeof value === 'string' ? `'${value}'` : String(value));
+// A condition still missing its value is written as empty text (it matches nothing; the checks say so)
+const writeValue = (value: string | number | boolean | undefined) =>
+  value === undefined ? "''" : typeof value === 'string' ? `'${value}'` : String(value);
 
 const writeGroup = (conditions: Condition[]): string =>
   conditions.length === 0

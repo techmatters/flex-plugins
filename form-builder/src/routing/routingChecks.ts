@@ -83,6 +83,14 @@ export const routingChecks = (design: RoutingDesign): RoutingIssue[] => {
           ...where,
         });
       }
+      if (rule.when.some((group) => group.some((condition) => condition.kind === 'compare' && condition.values.length === 0))) {
+        issues.push({
+          key: `${rule.id}-novalue`,
+          severity: 'error',
+          message: `${label}: a task condition has no value yet.`,
+          ...where,
+        });
+      }
       const everyTask = rule.when.length === 0 || rule.when.some((group) => group.length === 0);
       if (everyTask && !catchAll) catchAll = rule.name || `rule ${index + 1}`;
       const offlineRule = isOfflineContactsRule(rule);

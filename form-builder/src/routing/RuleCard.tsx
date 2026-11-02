@@ -26,7 +26,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, GripVertical, Trash2, X } from 'lucide-react';
 import type { Condition, MoveOn, Role, RoutingDesign, Rule, Target } from './model';
 import { ATTRIBUTE_LABELS, attributeLabel, valueLabel, VALUE_LABELS } from './model';
-import { writeRule } from './convert';
+import { queueKeyOf, queueReference, writeRule } from './convert';
 import { describeConditions, describeOrderBy, levelOrder, queueName } from './describe';
 import { hasBlock, newTarget, rolesOf, setRoles, setSkills, skillsOf, toggleBlock, updateTarget } from './edit';
 import { isOfflineContactsRule } from './routingChecks';
@@ -185,6 +185,32 @@ const ConditionRow = ({
   const values = knownValues(design, condition.attribute);
   const listId = `values-${condition.attribute}`;
   const single = condition.operator === '==' || condition.operator === '!=';
+  // The queue a task was transferred to: picked from the design's queues (new ones too), written
+  // as TaskRouter reads it, '${task_queues.<key>}'
+  const queueValues = condition.attribute === 'targetSid';
+  const textOf = (value: string | number | boolean) => {
+    const key = typeof value === 'string' ? queueKeyOf(value) : undefined;
+    return key ? queueName(design, key) : valueLabel(value);
+  };
+  const addTyped = (input: HTMLInputElement) => {
+    if (!input.value.trim()) return;
+    onChange({ ...condition, values: [...condition.values, input.value.trim()] });
+    input.value = '';
+  };
+  const queueOptions = (current?: string) => (
+    <>
+      {current !== undefined && !design.queues.some((queue) => queueReference(queue.key) === current) && (
+        <option value={current}>{textOf(current)}</option>
+      )}
+      {design.queues
+        .filter((queue) => queueReference(queue.key) === current || !condition.values.includes(queueReference(queue.key)))
+        .map((queue) => (
+          <option key={queue.key} value={queueReference(queue.key)}>
+            {queue.name}
+          </option>
+        ))}
+    </>
+  );
   return (
     <li className="routing-condition" data-family={familyOf(condition.attribute)}>
       <AttributePicker
@@ -216,11 +242,11 @@ const ConditionRow = ({
       <span className="routing-values">
         {condition.values.map((value, index) => (
           <span key={`${String(value)}-${index}`} className="routing-chip value">
-            {valueLabel(value)}
+            {textOf(value)}
             {!readOnly && !(single && condition.values.length === 1) && (
               <button
                 type="button"
-                aria-label={`Remove ${valueLabel(value)}`}
+                aria-label={`Remove ${textOf(value)}`}
                 onClick={() => onChange({ ...condition, values: condition.values.filter((_, i) => i !== index) })}
               >
                 ×
@@ -228,7 +254,26 @@ const ConditionRow = ({
             )}
           </span>
         ))}
-        {!readOnly && (!single || condition.values.length === 0) && (
+        {!readOnly && queueValues && (!single || condition.values.length === 0) && (
+          <select
+            value=""
+            aria-label="Add a queue"
+            onChange={(e) => e.target.value && onChange({ ...condition, values: [...condition.values, e.target.value] })}
+          >
+            <option value="">Choose a queue…</option>
+            {queueOptions()}
+          </select>
+        )}
+        {!readOnly && queueValues && single && condition.values.length === 1 && (
+          <select
+            value={String(condition.values[0])}
+            aria-label="Transferred to queue"
+            onChange={(e) => onChange({ ...condition, values: [e.target.value] })}
+          >
+            {queueOptions(String(condition.values[0]))}
+          </select>
+        )}
+        {!readOnly && !queueValues && (!single || condition.values.length === 0) && (
           <>
             <input
               type="text"
@@ -236,13 +281,13 @@ const ConditionRow = ({
               aria-label="Add a value"
               placeholder="Add…"
               onKeyDown={(e) => {
-                const input = e.currentTarget;
-                if (e.key === 'Enter' && input.value.trim()) {
+                if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                   e.preventDefault();
-                  onChange({ ...condition, values: [...condition.values, input.value.trim()] });
-                  input.value = '';
+                  addTyped(e.currentTarget);
                 }
               }}
+              // What was typed counts when leaving the box too, not only with Enter
+              onBlur={(e) => addTyped(e.currentTarget)}
               onChange={(e) => {
                 // Picking one of the suggestions adds it straight away
                 if (values.includes(e.target.value)) {
@@ -258,7 +303,7 @@ const ConditionRow = ({
             </datalist>
           </>
         )}
-        {!readOnly && single && condition.values.length === 1 && (
+        {!readOnly && !queueValues && single && condition.values.length === 1 && (
           <select
             value={String(condition.values[0])}
             aria-label="Value"
