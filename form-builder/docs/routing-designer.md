@@ -60,8 +60,12 @@ workflows and queues.
 - **A workflow**: its rules as cards in order. Each card: *Task conditions* (which tasks it takes:
   one or more groups of conditions, any group can match) and *Worker conditions* (its targets in
   order: queue, skill chips, who, who to prefer, priority, what if nobody takes it). A **JSON** tab
-  on each card shows the filter as it will be written. Drag a card to change the order; drag skill
-  chips onto a target or a queue.
+  on each card shows the filter as it will be written. Cards start collapsed (name and a one-line
+  summary; *Expand all* / *Collapse all*); drag a card to change the order. **Common rules** adds
+  in one click the rules most helplines have, written as in the shared `master.tftpl`: *Direct
+  Transfers*, *Offline Contacts* and *E2E Test* (to `e2e_test` if the helpline has it) before the
+  helpline's own rules, and *Everyone else* (a catch-all to the main queue) after them. A value no
+  rule uses yet (e.g. a new service) is typed after choosing *Another value…*.
 - **Task attributes**: the list offers the generic ones (channel, service, language, voicemail
   service and language, transfers, offline contact) plus those the helpline's rules already use;
   "Other (type it)…" adds any other (e.g. NZ's `clinical`), shown as the helpline's own.
@@ -69,7 +73,8 @@ workflows and queues.
   rule → *match* → queue, *No match* ↓ next rule, *Next target* ↓. Clicking something in the
   diagram opens its card.
 - **Test a task**: click what the contact looks like (channel, service, language; transfers and
-  offline contacts under "More details") and read what happens: the rule that takes it, each step
+  offline contacts under "More details", or type any other value under *Other…*) and read what
+  happens: the rule that takes it, each step
   (queue, who, what if nobody takes it), and why the rules before it didn't.
 - **Check**: rules that can never match (an earlier rule catches everything they would), queues
   nobody can work in, skills no queue uses, targets missing a queue, the offline-contact

@@ -26,7 +26,11 @@ import {
   writeQueueWorkers,
   writeWho,
 } from '../src/routing/expressions';
+import { addCommonRule, COMMON_RULES, commonRule, hasCommonRule } from '../src/routing/commonRules';
+import { writeRule } from '../src/routing/convert';
+import { newRule } from '../src/routing/edit';
 import { generateRouting } from '../src/routing/generate';
+import { emptyRouting, Workflow } from '../src/routing/model';
 import { routingChecks } from '../src/routing/routingChecks';
 import { readHelplineConfigs } from './flowImport';
 import { parseHcl, parseTemplate } from './hcl';
@@ -216,5 +220,40 @@ describe('a routing design from a live helpline', () => {
     });
     // The other target wasn't changed: as it was
     expect(first.targets[1].expression).toMatch(/^\(\s+worker\.waitingOfflineContact/);
+  });
+});
+
+describe('common rules', () => {
+  const masterFilters = () => {
+    const text = readFileSync(path.join(helplinesDir, 'templates/workflows/master.tftpl'), 'utf8');
+    return (JSON.parse(text) as { task_routing: { filters: Record<string, unknown>[] } }).task_routing.filters;
+  };
+  const design = (queues: string[]) => ({
+    ...emptyRouting('xx'),
+    queues: queues.map((key) => ({ key, name: key, workers: { kind: 'nobody' as const } })),
+  });
+
+  test('are written as in the shared master workflow, to the helpline’s queues', () => {
+    const live = Object.fromEntries(masterFilters().map((filter) => [filter.filter_friendly_name, filter]));
+    const withE2e = design(['master', 'e2e_test']);
+    ['Direct Transfers', 'Offline Contacts', 'E2E Test'].forEach((name) => {
+      const common = COMMON_RULES.find((candidate) => candidate.name === name)!;
+      expect(writeRule(commonRule(withE2e, common))).toEqual(live[name]);
+    });
+    // Without an E2E queue, the E2E tests go to the main queue
+    const e2e = COMMON_RULES.find((candidate) => candidate.name === 'E2E Test')!;
+    expect(writeRule(commonRule(design(['en_std']), e2e)).targets).toMatchObject([{ queue: '${task_queues.en_std}' }]);
+  });
+
+  test('go before the helpline’s own rules (the catch-all after them), and are only added once', () => {
+    const routing = design(['master']);
+    const named = (name: string) => COMMON_RULES.find((candidate) => candidate.name === name)!;
+    let workflow: Workflow = { key: 'master', name: 'Master', rules: [{ ...newRule('Calls') }] };
+    workflow = addCommonRule(workflow, routing, named('E2E Test'));
+    workflow = addCommonRule(workflow, routing, named('Everyone else'));
+    workflow = addCommonRule(workflow, routing, named('Direct Transfers'));
+    expect(workflow.rules.map((rule) => rule.name)).toEqual(['Direct Transfers', 'E2E Test', 'Calls', 'Everyone else']);
+    expect(hasCommonRule(workflow, routing, named('E2E Test'))).toBe(true);
+    expect(hasCommonRule(workflow, routing, named('Offline Contacts'))).toBe(false);
   });
 });

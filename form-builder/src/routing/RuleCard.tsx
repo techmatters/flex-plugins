@@ -23,11 +23,11 @@
 import { useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
-import { ArrowDown, ArrowUp, GripVertical, Trash2, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, GripVertical, Trash2, X } from 'lucide-react';
 import type { Condition, MoveOn, Role, RoutingDesign, Rule, Target } from './model';
 import { ATTRIBUTE_LABELS, attributeLabel, valueLabel, VALUE_LABELS } from './model';
 import { writeRule } from './convert';
-import { describeOrderBy, levelOrder } from './describe';
+import { describeConditions, describeOrderBy, levelOrder, queueName } from './describe';
 import { hasBlock, newTarget, rolesOf, setRoles, setSkills, skillsOf, toggleBlock, updateTarget } from './edit';
 import { isOfflineContactsRule } from './routingChecks';
 import { familyOf } from './ConditionChip';
@@ -40,9 +40,18 @@ type Props = {
   design: RoutingDesign;
   readOnly: boolean;
   selected: boolean;
+  // Collapsed, a card only shows its name and a one-line summary
+  expanded: boolean;
+  onToggle: () => void;
   onChange: (rule: Rule) => void;
   onRemove: () => void;
   onSelect: () => void;
+};
+
+// "Channel: Voice · Service: TYA → TYA queue"
+const summaryOf = (rule: Rule, design: RoutingDesign) => {
+  const queues = [...new Set(rule.targets.map((target) => queueName(design, target.queue)))];
+  return `${describeConditions(rule.when)}${queues.length > 0 ? ` → ${queues.join(', then ')}` : ''}`;
 };
 
 const OPERATORS: { value: '==' | '!=' | 'IN' | 'NOT IN'; label: string }[] = [
@@ -51,6 +60,9 @@ const OPERATORS: { value: '==' | '!=' | 'IN' | 'NOT IN'; label: string }[] = [
   { value: 'IN', label: 'is one of' },
   { value: 'NOT IN', label: 'is none of' },
 ];
+
+// Not a value: picked to type one that isn't in the design yet
+const ANOTHER_VALUE = '__another value__';
 
 // The values seen for an attribute anywhere in the design, to choose from
 const knownValues = (design: RoutingDesign, attribute: string) => {
@@ -250,13 +262,17 @@ const ConditionRow = ({
           <select
             value={String(condition.values[0])}
             aria-label="Value"
-            onChange={(e) => onChange({ ...condition, values: [e.target.value] })}
+            // "Another value…" empties it, so a new one (e.g. a new service) can be typed
+            onChange={(e) =>
+              onChange({ ...condition, values: e.target.value === ANOTHER_VALUE ? [] : [e.target.value] })
+            }
           >
             {[...new Set([String(condition.values[0]), ...values])].map((value) => (
               <option key={value} value={value}>
                 {valueLabel(value)}
               </option>
             ))}
+            <option value={ANOTHER_VALUE}>Another value…</option>
           </select>
         )}
       </span>
@@ -714,7 +730,18 @@ const TaskConditions = ({
   );
 };
 
-export const RuleCard = ({ rule, index, design, readOnly, selected, onChange, onRemove, onSelect }: Props) => {
+export const RuleCard = ({
+  rule,
+  index,
+  design,
+  readOnly,
+  selected,
+  expanded,
+  onToggle,
+  onChange,
+  onRemove,
+  onSelect,
+}: Props) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: rule.id,
     disabled: readOnly,
@@ -733,10 +760,19 @@ export const RuleCard = ({ rule, index, design, readOnly, selected, onChange, on
       ref={setNodeRef}
       id={`rule-${rule.id}`}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={`routing-rule-card ${selected ? 'selected' : ''}`}
+      className={`routing-rule-card ${selected ? 'selected' : ''} ${expanded ? '' : 'collapsed'}`}
       onClick={onSelect}
     >
       <div className="routing-rule-head">
+        <button
+          type="button"
+          className="icon-button"
+          aria-expanded={expanded}
+          aria-label={`${expanded ? 'Collapse' : 'Expand'} ${rule.name || 'rule'}`}
+          onClick={onToggle}
+        >
+          {expanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+        </button>
         {!readOnly && (
           <button type="button" className="drag-handle" aria-label="Drag to reorder" {...attributes} {...listeners}>
             <GripVertical size={16} />
@@ -752,26 +788,28 @@ export const RuleCard = ({ rule, index, design, readOnly, selected, onChange, on
           disabled={readOnly}
           onChange={(e) => onChange({ ...rule, name: e.target.value })}
         />
-        <span className="routing-rule-tabs" role="tablist" aria-label="View">
-          <button
-            type="button"
-            role="tab"
-            aria-selected={view === 'design'}
-            className={view === 'design' ? 'active' : ''}
-            onClick={() => setView('design')}
-          >
-            Rule
-          </button>
-          <button
-            type="button"
-            role="tab"
-            aria-selected={view === 'json'}
-            className={view === 'json' ? 'active' : ''}
-            onClick={() => setView('json')}
-          >
-            JSON
-          </button>
-        </span>
+        {expanded && (
+          <span className="routing-rule-tabs" role="tablist" aria-label="View">
+            <button
+              type="button"
+              role="tab"
+              aria-selected={view === 'design'}
+              className={view === 'design' ? 'active' : ''}
+              onClick={() => setView('design')}
+            >
+              Rule
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={view === 'json'}
+              className={view === 'json' ? 'active' : ''}
+              onClick={() => setView('json')}
+            >
+              JSON
+            </button>
+          </span>
+        )}
         {!readOnly && (
           <button type="button" className="icon-button" aria-label="Remove rule" onClick={onRemove}>
             <Trash2 size={15} />
@@ -779,7 +817,9 @@ export const RuleCard = ({ rule, index, design, readOnly, selected, onChange, on
         )}
       </div>
 
-      {view === 'json' ? (
+      {!expanded ? (
+        <p className="routing-rule-summary">{summaryOf(rule, design)}</p>
+      ) : view === 'json' ? (
         <div className="routing-section">
           <p className="field-hint">The filter as it will be written in the workflow template, for TaskRouter.</p>
           <pre className="routing-json" aria-label="Filter JSON">

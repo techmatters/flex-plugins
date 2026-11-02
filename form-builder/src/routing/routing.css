@@ -865,3 +865,59 @@
   color: #546e7a;
   font-size: 11px;
 }
+
+/* Common rules, added in one click */
+.routing-common-rules {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  background: #f1f8e9;
+  border: 1px dashed #9ccc65;
+  border-radius: 8px;
+}
+
+.routing-chip.common-rule {
+  border: 1px solid #9ccc65;
+  background: #fff;
+  color: #33691e;
+  cursor: pointer;
+}
+
+.routing-chip.common-rule:disabled {
+  border-color: #c5e1a5;
+  color: #7c9a5e;
+  cursor: default;
+}
+
+.routing-rules-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.routing-rules-head .field-hint {
+  flex: 1;
+}
+
+.routing-rules-head .link-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+/* A collapsed card: its name and what it does in one line */
+.routing-rule-summary {
+  margin: 4px 0 0 32px;
+  color: var(--color-muted, #607080);
+  font-size: 13px;
+}
+
+.routing-test-other {
+  width: 110px;
+  font-size: 12.5px;
+  padding: 2px 8px;
+}

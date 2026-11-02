@@ -35,7 +35,7 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import { ArrowLeft, Download } from 'lucide-react';
+import { ArrowLeft, ChevronsDownUp, ChevronsUpDown, Download } from 'lucide-react';
 import type { RoutingImport } from '../../server/routingImport';
 import type { FromBranch } from '../../server/branches';
 import { BranchPicker, ImportedFrom } from '../components/BranchPicker';
@@ -49,7 +49,8 @@ import { httpRoutingClient, RoutingClient } from './routingClient';
 import { newRule, updateRule, updateWorkflow } from './edit';
 import { RuleCard } from './RuleCard';
 import { RoutingDiagram } from './RoutingDiagram';
-import { CheckList, QueuesPanel, SkillsBar, SkillsPanel, TestTaskPanel, workflowLabel } from './RoutingPanels';
+import { CheckList, QueuesPanel, SkillsPanel, TestTaskPanel, workflowLabel } from './RoutingPanels';
+import { addCommonRule, COMMON_RULES, hasCommonRule } from './commonRules';
 import { routingChecks, RoutingIssue } from './routingChecks';
 import { generateRouting } from './generate';
 import './routing.css';
@@ -84,6 +85,21 @@ const WorkflowPage = ({
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
+  // Cards start collapsed; opened ones are remembered while the page is open
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const expand = (ruleId: string, open = true) =>
+    setExpanded((current) => {
+      const next = new Set(current);
+      if (open) next.add(ruleId);
+      else next.delete(ruleId);
+      return next;
+    });
+  // A rule just added opens, to be filled in
+  const addRule = (rule: Rule, rules: Rule[]) => {
+    onChange({ ...workflow, rules });
+    expand(rule.id);
+    onSelectRule(rule.id);
+  };
   if (workflow.templateText) {
     return (
       <div className="routing-panel">
@@ -103,7 +119,30 @@ const WorkflowPage = ({
   return (
     <div className="routing-workflow">
       <div className="routing-cards">
-        <SkillsBar design={design} />
+        {!readOnly && (
+          <div className="routing-common-rules" aria-label="Common rules">
+            <span className="field-hint">Common rules:</span>
+            {COMMON_RULES.map((common) => {
+              const added = hasCommonRule(workflow, design, common);
+              return (
+                <button
+                  key={common.name}
+                  type="button"
+                  className="routing-chip common-rule"
+                  title={added ? `${common.name} is already in this workflow` : common.description}
+                  disabled={added}
+                  onClick={() => {
+                    const changed = addCommonRule(workflow, design, common);
+                    const rule = changed.rules.find((candidate) => !workflow.rules.includes(candidate))!;
+                    addRule(rule, changed.rules);
+                  }}
+                >
+                  {added ? '✓' : '+'} {common.name}
+                </button>
+              );
+            })}
+          </div>
+        )}
         {workflow.shared && (
           <p className="alert alert-info">
             Other helplines use this workflow&apos;s template ({workflow.template}): changes here are written to a
@@ -135,10 +174,22 @@ const WorkflowPage = ({
             }
           />
         </label>
-        <p className="field-hint">
-          A new task goes through these rules in order; the first one it matches decides where it goes. Drag the cards
-          to change the order.
-        </p>
+        <div className="routing-rules-head">
+          <p className="field-hint">
+            A new task goes through these rules in order; the first one it matches decides where it goes. Drag the cards
+            to change the order.
+          </p>
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => setExpanded(new Set(workflow.rules.map((rule) => rule.id)))}
+          >
+            <ChevronsUpDown size={14} /> Expand all
+          </button>
+          <button type="button" className="link-button" onClick={() => setExpanded(new Set())}>
+            <ChevronsDownUp size={14} /> Collapse all
+          </button>
+        </div>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
           <SortableContext items={workflow.rules.map((rule) => rule.id)} strategy={verticalListSortingStrategy}>
             <ol className="routing-rule-list">
@@ -150,6 +201,8 @@ const WorkflowPage = ({
                   design={design}
                   readOnly={readOnly}
                   selected={rule.id === selectedRuleId}
+                  expanded={expanded.has(rule.id)}
+                  onToggle={() => expand(rule.id, !expanded.has(rule.id))}
                   onSelect={() => onSelectRule(rule.id)}
                   onChange={(changed: Rule) => onChange(updateRule(workflow, rule.id, () => changed))}
                   onRemove={() =>
@@ -167,12 +220,10 @@ const WorkflowPage = ({
           <button
             type="button"
             className="secondary-button"
-            onClick={() =>
-              onChange({
-                ...workflow,
-                rules: [...workflow.rules, newRule(`Rule ${workflow.rules.length + 1}`)],
-              })
-            }
+            onClick={() => {
+              const rule = newRule(`Rule ${workflow.rules.length + 1}`);
+              addRule(rule, [...workflow.rules, rule]);
+            }}
           >
             + Add a rule
           </button>
@@ -185,6 +236,7 @@ const WorkflowPage = ({
           selectedRuleId={selectedRuleId}
           onSelectRule={(ruleId) => {
             onSelectRule(ruleId);
+            expand(ruleId);
             document.getElementById(`rule-${ruleId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }}
         />

@@ -509,6 +509,15 @@ export const TestTaskPanel = ({
             {testValueLabel(design, value)}
           </button>
         ))}
+        {/* A value no rule names (e.g. a service not routed yet), to see where it ends up */}
+        <input
+          type="text"
+          className="routing-test-other"
+          aria-label={`Another ${attributeLabel(attribute)}`}
+          placeholder="Other…"
+          value={task[attribute] !== undefined && !values.includes(task[attribute]) ? String(task[attribute]) : ''}
+          onChange={(e) => set(attribute, e.target.value || undefined)}
+        />
       </span>
     </div>
   );

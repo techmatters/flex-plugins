@@ -93,8 +93,12 @@ describe('routing designer', { timeout: 30_000 }, () => {
       (screen.getByRole('combobox', { name: 'Status of the routing design' }) as HTMLSelectElement).value;
     expect(status()).toBe('imported');
 
-    // The ES TYA Call rule's first step asks for one more skill
+    // Cards start collapsed, with a one-line summary
     const card = (await screen.findByDisplayValue('ES TYA Call')).closest('li')!;
+    expect(within(card as HTMLElement).getByText(/Voice · Service: .*TYA.*Spanish/i)).toBeTruthy();
+    expect(within(card as HTMLElement).queryByRole('listitem')).toBeNull();
+    // The ES TYA Call rule's first step asks for one more skill
+    fireEvent.click(within(card as HTMLElement).getByRole('button', { name: 'Expand ES TYA Call' }));
     const [firstStep] = within(card as HTMLElement)
       .getAllByRole('listitem')
       .filter((item) => item.className === 'routing-target-row');
@@ -125,14 +129,35 @@ describe('routing designer', { timeout: 30_000 }, () => {
     pick('Service', 'TYA');
     pick('Language', 'Spanish');
     expect(tester.getByText('ES TYA Call', { selector: 'strong' })).toBeTruthy();
+    // A value no rule names can be typed
+    fireEvent.change(tester.getByRole('textbox', { name: 'Another Service' }), { target: { value: 'Advocates' } });
+    expect(tester.getByText(/isn't taken by any rule/)).toBeTruthy();
+    fireEvent.click(
+      within(
+        tester.getByText('Service', { selector: '.routing-test-label' }).closest('.routing-test-row') as HTMLElement,
+      ).getByRole('button', { name: 'TYA' }),
+    );
+    expect(tester.getByText('ES TYA Call', { selector: 'strong' })).toBeTruthy();
 
     // A rule card's JSON tab shows the filter as written for TaskRouter
     fireEvent.click(screen.getByRole('tab', { name: 'Calls Voicemail Workflow' }));
     const esTya = (await screen.findByDisplayValue('ES TYA Call')).closest('li')!;
+    if (!within(esTya as HTMLElement).queryByRole('button', { name: 'Collapse ES TYA Call' })) {
+      fireEvent.click(within(esTya as HTMLElement).getByRole('button', { name: 'Expand ES TYA Call' }));
+    }
+    // A value no rule uses yet (a new service) is typed after choosing "Another value…"
+    const service = within(esTya as HTMLElement)
+      .getAllByRole('combobox', { name: 'Value' })
+      .find((select) => (select as HTMLSelectElement).value === 'tya')!;
+    fireEvent.change(service, { target: { value: '__another value__' } });
+    const newValue = within(esTya as HTMLElement).getByRole('combobox', { name: 'Add a value' });
+    fireEvent.change(newValue, { target: { value: 'Advocates' } });
+    fireEvent.keyDown(newValue, { key: 'Enter' });
     fireEvent.click(within(esTya as HTMLElement).getByRole('tab', { name: 'JSON' }));
     expect(within(esTya as HTMLElement).getByLabelText('Filter JSON').textContent).toContain(
       '"filter_friendly_name": "ES TYA Call"',
     );
+    expect(within(esTya as HTMLElement).getByLabelText('Filter JSON').textContent).toContain('Advocates');
     expect(screen.getByRole('button', { name: /Export for Claude/ })).toBeTruthy();
   });
 
