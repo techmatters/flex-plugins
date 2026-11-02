@@ -93,7 +93,8 @@ are none.
 | TODO | Where to find it |
 |---|---|
 | A split's input and conditions | The board's "Splits on" when set; otherwise what the design says (the decision's text and its ways out), and the widget before it (e.g. `{{widgets.<name>.parsed.<field>}}`, `{{trigger.call.From}}`) |
-| A route's request body / response field | `lambdas/account-scoped/STUDIO_ROUTES.md` for that route |
+| A route's request body / response field | `lambdas/account-scoped/STUDIO_ROUTES.md` for that route. Check client profile (`getProfileFlagsForIdentifier`, split on `parsed.flags` contains `blocked`), Check operating hours (`parsed.status`) and Notify the Aselo team come with the helplines' standard bodies already: only check them (operating hours: the channel is in the helpline's operating info, and its language and office) |
+| A split's conditions | Already written from the board: each way out is compared with the operator chosen for it, or `matches_any_of` for a comma-separated list (`Si,si,ok`), `equal_to` otherwise. Don't change them unless the design says otherwise |
 | Send to queue: workflow, task channel | Set on the board when chosen; otherwise the helpline's other templates and `common.hcl`: `${workflow_sids.<key>}`, `${task_channel_sids.<channel>}` (attributes: step 4b). When the board names the queue it should end up in, check the workflow's rules (and the task attributes) send it there |
 | A subflow's `flow_sid` | `${system_down_studio_subflow_sid}`, or the variable the helpline's other templates use |
 | A number to forward to, an HTTP address | Ask the person (put real values in variables, not the template) |

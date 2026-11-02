@@ -145,6 +145,16 @@ describe('flow designer', { timeout: 20_000 }, () => {
     const settings = screen.getByRole('region', { name: 'Settings' });
     expect(within(settings).getByRole('combobox', { name: /^Kind/ })).toHaveProperty('value', 'decision');
     fireEvent.click(within(settings).getByRole('button', { name: /^Use split_decision/ }));
+    // Each way out says how it's compared: a list of values matches any of them
+    const [yes] = within(settings).getAllByRole('textbox', { name: 'Way out' });
+    fireEvent.change(yes, { target: { value: 'Yes,yes,ok' } });
+    expect(within(settings).getByRole('combobox', { name: 'Comparison for Yes,yes,ok' })).toHaveProperty(
+      'value',
+      'matches_any_of',
+    );
+    fireEvent.change(within(settings).getByRole('combobox', { name: 'Comparison for No' }), {
+      target: { value: 'starts_with' },
+    });
 
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
     const [summary] = await boards.list();
@@ -152,7 +162,13 @@ describe('flow designer', { timeout: 20_000 }, () => {
     expect(saved?.meta.updatedBy).toBe('Aselo person');
     expect(saved?.content.frames).toHaveLength(1);
     expect(saved?.content.objects).toMatchObject([
-      { type: 'decision', text: 'Decision', studioName: 'split_decision', exits: ['Yes', 'No', 'noMatch'] },
+      {
+        type: 'decision',
+        text: 'Decision',
+        studioName: 'split_decision',
+        exits: ['Yes,yes,ok', 'No', 'noMatch'],
+        exitOperators: { No: 'starts_with' },
+      },
     ]);
     // Added in the middle of the view, which is inside the new frame
     expect(saved?.content.objects[0].frameId).toBe(saved?.content.frames[0].id);

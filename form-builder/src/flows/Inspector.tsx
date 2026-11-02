@@ -22,7 +22,10 @@ import {
   Channel,
   CommentThread,
   composeName,
+  exitConditionOf,
   exitsOf,
+  isSplitObject,
+  SPLIT_OPERATORS,
   FlowObjectType,
   fieldProblem,
   fieldShown,
@@ -657,17 +660,42 @@ const ExitsEditor = ({
   exits,
   readOnly,
   onChange,
+  operatorOf,
+  onOperator,
 }: {
   exits: string[];
   readOnly: boolean;
   onChange: (exits: string[], renamed?: { from: string; to: string }) => void;
+  // A split's: how each way out is compared with what it splits on
+  operatorOf?: (exit: string) => string | undefined;
+  onOperator?: (exit: string, type: string) => void;
 }) => (
   <section className="flow-inspector-section">
     <h3>Ways out</h3>
     <p className="field-hint">The answers or results this can lead to. Each connection from it is one of these.</p>
+    {operatorOf && (
+      <p className="field-hint">
+        Several values separated by commas (Si,si,ok) match any of them. Pick another comparison where needed.
+      </p>
+    )}
     <ul className="flow-exits">
       {exits.map((exit, index) => (
         <li key={index}>
+          {operatorOf?.(exit) && (
+            <select
+              className="flow-exit-operator"
+              aria-label={`Comparison for ${exit}`}
+              value={operatorOf(exit)}
+              disabled={readOnly}
+              onChange={(e) => onOperator?.(exit, e.target.value)}
+            >
+              {SPLIT_OPERATORS.map((operator) => (
+                <option key={operator.type} value={operator.type}>
+                  {operator.label}
+                </option>
+              ))}
+            </select>
+          )}
           <input
             type="text"
             value={exit}
@@ -1145,6 +1173,13 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
           exits={exitsOf(object)}
           readOnly={readOnly}
           onChange={(exits, renamed) => props.onRenameExit(node.id, exits, renamed)}
+          {...(isSplitObject(object)
+            ? {
+                operatorOf: (exit: string) => exitConditionOf(object, exit)?.type,
+                onOperator: (exit: string, type: string) =>
+                  update({ exitOperators: { ...object.exitOperators, [exit]: type } }),
+              }
+            : {})}
         />
       )}
 

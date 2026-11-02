@@ -239,3 +239,123 @@ describe('Other function / HTTP request', () => {
     });
   });
 });
+
+describe('Splits and the standard requests', () => {
+  const object = (id: string, type: FlowObject['type'], extra: Partial<FlowObject> = {}): FlowObject => ({
+    id,
+    type,
+    frameId: 'f',
+    text: id,
+    x: 100,
+    y: 100,
+    width: 200,
+    height: 70,
+    ...extra,
+  });
+  const smsBoard = (objects: FlowObject[]): BoardContent => ({
+    ...emptyBoard('New'),
+    frames: [{ id: 'f', title: 'SMS', x: 0, y: 0, width: 900, height: 600, channel: 'sms' }],
+    objects,
+    connections: [],
+  });
+
+  test('a way out listing values matches any of them; another comparison can be chosen', () => {
+    const content = smsBoard([
+      object('answer', 'decision', {
+        studioName: 'split_answer',
+        settings: { input: '{{widgets.send_wait_sms_question.inbound.Body}}' },
+        exits: ['Si,si,Sí,sí,ok', 'No,nop,no', 'help', 'noMatch'],
+        exitOperators: { help: 'contains' },
+      }),
+    ]);
+    const generated = toStudioFlow(content, content.frames[0]);
+    const split = generated.flow.states.find((state) => state.name === 'split_answer')!;
+    expect(split.transitions.map((transition) => transition.conditions)).toEqual([
+      undefined,
+      [
+        {
+          friendly_name: 'If value matches_any_of Si,si,Sí,sí,ok',
+          arguments: ['{{widgets.send_wait_sms_question.inbound.Body}}'],
+          type: 'matches_any_of',
+          value: 'Si,si,Sí,sí,ok',
+        },
+      ],
+      [expect.objectContaining({ type: 'matches_any_of', value: 'No,nop,no' })],
+      [expect.objectContaining({ friendly_name: 'If value contains help', type: 'contains', value: 'help' })],
+    ]);
+  });
+
+  test("an imported split's renamed way out, or its new comparison, rewrites its condition", () => {
+    const condition = (value: string, friendlyName: string) => ({
+      friendly_name: friendlyName,
+      arguments: ['{{widgets.send_wait_language.inbound.Body}}'],
+      type: 'equal_to',
+      value,
+    });
+    const studio = {
+      name: 'split_language',
+      type: 'split-based-on',
+      properties: { input: '{{widgets.send_wait_language.inbound.Body}}' },
+      transitions: [
+        { event: 'noMatch' },
+        { event: 'match', conditions: [condition('1', 'If value equal_to 1')] },
+        { event: 'match', conditions: [condition('2', 'Spanish')] },
+      ],
+    };
+    const imported = (extra: Partial<FlowObject>) => {
+      const content = smsBoard([object('language', 'decision', { studioName: 'split_language', studio, ...extra })]);
+      return toStudioFlow(content, content.frames[0]).flow.states.find((state) => state.name === 'split_language')!;
+    };
+
+    // Unchanged: as live
+    expect(imported({ exits: ['noMatch', '1', 'Spanish'] }).transitions).toEqual(studio.transitions);
+    // "1" renamed to a list: any of them; "Spanish" (the name of 2) keeps its value, with the comparison chosen
+    const changed = imported({
+      exits: ['noMatch', '1,uno,one', 'Spanish'],
+      exitOperators: { Spanish: 'starts_with' },
+    });
+    expect(changed.transitions[1].conditions).toEqual([
+      { ...condition('1,uno,one', 'If value matches_any_of 1,uno,one'), type: 'matches_any_of' },
+    ]);
+    expect(changed.transitions[2].conditions).toEqual([{ ...condition('2', 'Spanish'), type: 'starts_with' }]);
+    // A way out added on the board compares with what it splits on
+    const added = imported({ exits: ['noMatch', '1', 'Spanish', 'tres,3'] });
+    expect(added.transitions[3].conditions).toEqual([
+      { ...condition('tres,3', 'If value matches_any_of tres,3'), type: 'matches_any_of' },
+    ]);
+  });
+
+  test('the profile check, operating hours and the team alert send what the helplines send', () => {
+    const content = smsBoard([
+      object('blocked', 'checkClientProfile', { studioName: 'f_getProfileFlagsForIdentifier_blocked' }),
+      object('hours', 'checkOperatingHours', { studioName: 'f_operatingHours' }),
+      object('alert', 'notifyError', {
+        studioName: 'http_post_notify_the_aselo_team',
+        text: 'Failed to close conversation',
+      }),
+    ]);
+    const generated = toStudioFlow(content, content.frames[0]);
+    const state = (name: string) => generated.flow.states.find((candidate) => candidate.name === name)!;
+
+    expect(state('f_getProfileFlagsForIdentifier_blocked').properties.body).toBe(
+      '{ "trigger": {{trigger | to_json}}, "channelType": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}"}',
+    );
+    const flags = state('split_get_profile_flags_for_identifier_blocked');
+    expect(flags.properties.input).toBe('{{widgets.f_getProfileFlagsForIdentifier_blocked.parsed.flags}}');
+    expect(flags.transitions[1].conditions).toEqual([expect.objectContaining({ type: 'contains', value: 'blocked' })]);
+
+    expect(JSON.parse(String(state('f_operatingHours').properties.body))).toEqual({
+      channel: 'sms',
+      includeMessageTextInResponse: 'true',
+      language: 'en-US',
+      from: '{{trigger.conversation.From}}',
+    });
+    expect(state('split_operating_hours').properties.input).toBe('{{widgets.f_operatingHours.parsed.status}}');
+
+    expect(state('http_post_notify_the_aselo_team').properties).toMatchObject({
+      url: '${webhook_url_studio_errors}',
+      body: '{ "text": "Issue detected [Failed to close conversation] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  " }',
+    });
+    expect(generated.text).not.toMatch(/"TODO"|parsed\.TODO/);
+  });
+});

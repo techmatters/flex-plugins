@@ -203,6 +203,8 @@ export type FlowObject = Position &
     message?: MessageContent;
     // Ways out, for types whose exits are set per object (decisions, menus...)
     exits?: string[];
+    // A split's way out compared with an operator other than its default (SPLIT_OPERATORS), by way out
+    exitOperators?: Record<string, string>;
     thread?: CommentThread;
     // The Studio call's parameters, for types that have some (e.g. targetSkills); see ObjectTypeInfo.fields
     settings?: Record<string, string>;
@@ -643,6 +645,15 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     studioWidget: 'Function + Split',
     studioPrefix: 'f_',
     studioRoute: 'operatingHours',
+    fields: [
+      {
+        key: 'body',
+        label: 'Request body (JSON)',
+        kind: 'json',
+        placeholder: '{\n  "channel": "sms",\n  "language": "en-US",\n  "office": "preClosing"\n}',
+        hint: 'Empty: the flow’s channel, en-US and who it’s from. channel, language, office and from are what it reads.',
+      },
+    ],
     exits: ['open', 'closed', 'holiday', 'failed'],
     defaultSize: { width: 190, height: 72 },
   },
@@ -1042,6 +1053,15 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     family: 'voicemail',
     studioWidget: 'HTTP Request (Studio errors webhook)',
     studioPrefix: 'http_post_',
+    fields: [
+      {
+        key: 'body',
+        label: 'Alert (JSON)',
+        kind: 'json',
+        placeholder: '{ "text": "Issue detected [what went wrong] on ${short_helpline} ${short_environment} ..." }',
+        hint: 'Empty: “Issue detected [its text on the board] on” the helpline and environment, with the flow and execution, as the helplines’ alerts are.',
+      },
+    ],
     defaultSize: { width: 190, height: 64 },
   },
   setVariable: {
@@ -1630,3 +1650,70 @@ export const defaultSplitInputOf = (content: Pick<BoardContent, 'objects' | 'con
 const STUDIO_CONDITION_NAME = /^If value \S+ (.+)$/i;
 export const conditionExitName = (friendlyName: string | undefined, value: string | undefined) =>
   friendlyName && !(value && STUDIO_CONDITION_NAME.test(friendlyName)) ? friendlyName : value;
+
+// Studio's Split Based On operators, as its editor names them
+export const SPLIT_OPERATORS: { type: string; label: string }[] = [
+  { type: 'equal_to', label: 'Equal to' },
+  { type: 'not_equal_to', label: 'Not equal to' },
+  { type: 'matches_any_of', label: 'Matches any of' },
+  { type: 'does_not_match_any_of', label: 'Does not match any of' },
+  { type: 'contains', label: 'Contains' },
+  { type: 'does_not_contain', label: 'Does not contain' },
+  { type: 'starts_with', label: 'Starts with' },
+  { type: 'does_not_start_with', label: 'Does not start with' },
+  { type: 'is_blank', label: 'Is blank' },
+  { type: 'is_not_blank', label: 'Is not blank' },
+  { type: 'greater_than', label: 'Greater than' },
+  { type: 'less_than', label: 'Less than' },
+  { type: 'regex', label: 'Regex' },
+];
+
+// Whether its ways out are a split's conditions (each compared with what it splits on)
+export const isSplitObject = (object: Pick<FlowObject, 'type' | 'studio'>) =>
+  object.studio ? object.studio.type === 'split-based-on' : ['decision', 'checkCountry'].includes(object.type);
+
+type SplitCondition = { friendly_name?: string; arguments?: unknown[]; type?: string; value?: string };
+
+// An imported split's live condition for a way out (a match with a single condition), if it has one
+const liveConditionOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio'>, exit: string) => {
+  const transition = object.studio?.transitions?.[exitsOf(object).indexOf(exit)];
+  const conditions = transition?.event === 'match' ? (transition.conditions as SplitCondition[]) : undefined;
+  // (A value written as an expression, e.g. channel_flow_vars["en_number"], stays as it is)
+  return Array.isArray(conditions) && conditions.length === 1 && typeof conditions[0].value === 'string'
+    ? conditions[0]
+    : undefined;
+};
+
+/**
+ * What a split's way out matches: the operator chosen for it, or (imported) the live one, otherwise
+ * "matches any of" for a list of values ("Si,si,ok") and "equal to" for one. Its value is the way
+ * out's name, except an imported condition whose way out is named otherwise (e.g. "Spanish" for 2).
+ * Undefined for noMatch and conditions that aren't a single comparison.
+ */
+export const exitConditionOf = (
+  object: Pick<FlowObject, 'type' | 'exits' | 'studio' | 'exitOperators'>,
+  exit: string,
+): { type: string; value: string; changed: boolean } | undefined => {
+  if (!isSplitObject(object) || !exit || exit === 'noMatch') return undefined;
+  const live = liveConditionOf(object, exit);
+  const liveValue = live?.value === undefined ? undefined : String(live.value);
+  // A live condition named after something else than its value keeps its value, and so does a way
+  // out still named as imported (repeated names were told apart with " (3)")
+  const importedName = live && conditionExitName(live.friendly_name, liveValue);
+  const namedOtherwise =
+    live !== undefined && (importedName !== liveValue || exit.replace(/ \(\d+\)$/, '') === importedName);
+  if (object.studio && !live && exitsOf(object).indexOf(exit) < (object.studio.transitions?.length ?? 0)) {
+    // A condition Studio writes some other way (several conditions): as it is live
+    return undefined;
+  }
+  const value = namedOtherwise ? liveValue! : exit;
+  const automatic = !namedOtherwise && value.includes(',') ? 'matches_any_of' : 'equal_to';
+  // A way out renamed to a list of values matches any of them, though it was "equal to" live
+  const listed = live?.type === 'equal_to' && automatic === 'matches_any_of' && value !== liveValue;
+  const liveType = live?.type && !listed ? live.type : undefined;
+  const type = object.exitOperators?.[exit] ?? liveType ?? automatic;
+  return { type, value, changed: !live || type !== live.type || value !== liveValue };
+};
+
+// A Studio condition's name for it, as Studio writes them
+export const studioConditionName = (type: string, value: string) => `If value ${type} ${value}`;

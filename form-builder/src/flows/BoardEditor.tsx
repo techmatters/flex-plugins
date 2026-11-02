@@ -541,9 +541,15 @@ const Editor = ({
 
   const onRenameExit = (id: string, exits: string[], renamed?: { from: string; to: string }) => {
     setNodes((current) =>
-      current.map((node) =>
-        node.id === id && node.type === 'object' ? { ...node, data: { object: { ...node.data.object, exits } } } : node,
-      ),
+      current.map((node) => {
+        if (node.id !== id || node.type !== 'object') return node;
+        // A split's operators follow their way out (and go with it)
+        const operators = Object.entries(node.data.object.exitOperators ?? {})
+          .map(([exit, type]) => [exit === renamed?.from ? renamed.to : exit, type])
+          .filter(([exit]) => exits.includes(exit));
+        const exitOperators = operators.length > 0 ? Object.fromEntries(operators) : undefined;
+        return { ...node, data: { object: { ...node.data.object, exits, exitOperators } } };
+      }),
     );
     if (renamed) {
       setEdges((current) =>

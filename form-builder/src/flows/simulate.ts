@@ -25,7 +25,7 @@
  * Also the tested paths: runs marked as tested, kept on the board while nothing on them changes.
  */
 import type { BoardContent, FlowObject, TestedPath } from './model';
-import { defaultSplitInputOf, exitsOf, OBJECT_TYPES, repeatWidgetNames } from './model';
+import { defaultSplitInputOf, exitConditionOf, exitsOf, OBJECT_TYPES, repeatWidgetNames } from './model';
 
 // ---------------------------------------------------------------------------------------------
 // A tiny Liquid: {{ path | filter: arg }}, {% if %}/{% elsif %}/{% else %}/{% endif %}
@@ -319,12 +319,21 @@ const splitMatchesOf = (object: FlowObject, input: string) => {
           value: String(candidate.value ?? ''),
         };
       });
-      return [{ exit: exits[index] ?? `match ${index + 1}`, conditions }];
+      const exit = exits[index] ?? `match ${index + 1}`;
+      // Renamed or given another operator on the board, as it will be exported
+      const changed = exitConditionOf(object, exit);
+      if (changed?.changed && conditions.length === 1) {
+        Object.assign(conditions[0], { type: changed.type, value: changed.value });
+      }
+      return [{ exit, conditions }];
     });
   }
   return exits
     .filter((exit) => exit && exit !== 'noMatch')
-    .map((exit) => ({ exit, conditions: [{ argument: input, type: 'equal_to', value: exit }] }));
+    .map((exit) => ({
+      exit,
+      conditions: [{ argument: input, type: exitConditionOf(object, exit)?.type ?? 'equal_to', value: exit }],
+    }));
 };
 
 // Studio's split conditions (text compared without minding case)

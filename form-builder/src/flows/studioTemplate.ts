@@ -30,12 +30,15 @@
  */
 import type { BoardContent, FlowObject, Frame, TaskAttributes } from './model';
 import {
+  conditionExitName,
   defaultSplitInputOf,
+  exitConditionOf,
   exitsOf,
   followingSplitName,
   MESSAGE_FROM_DEFAULT,
   OBJECT_TYPES,
   repeatWidgetNames,
+  studioConditionName,
   toSnake,
   widgetNamesOf,
 } from './model';
@@ -123,6 +126,34 @@ const httpRequest = (url: string, body: string) => ({
   body,
   url,
 });
+
+// The bodies the helplines send (see lambdas/account-scoped/STUDIO_ROUTES.md)
+const profileFlagsBody = (channel?: string) =>
+  channel === 'voice'
+    ? '{ "trigger": {{trigger | to_json}}, "channelType": "voice"}'
+    : '{ "trigger": {{trigger | to_json}}, "channelType": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}"}';
+
+const operatingHoursBody = (channel: string | undefined, todo: string[], name: string) => {
+  todo.push(
+    `${name}: check its channel is in the helpline's operating info, and its language (the closed message's) and office.`,
+  );
+  const from = channel === 'voice' ? '{{trigger.call.From}}' : '{{trigger.conversation.From}}';
+  return JSON.stringify({
+    channel: channel ?? TODO,
+    includeMessageTextInResponse: 'true',
+    language: 'en-US',
+    from,
+  });
+};
+
+const notifyErrorBody = (text: string) => {
+  // What the object on the board says, e.g. "Failed to close conversation" (fit for a JSON string)
+  const what = text
+    .replace(/[[\]"\\]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return `{ "text": "Issue detected ${what ? `[${what}] ` : ''}on \${short_helpline} \${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  " }`;
+};
 
 const condition = (input: string, type: string, value: string, friendlyName: string) => ({
   friendly_name: friendlyName,
@@ -452,7 +483,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
           changes.from = object.settings.from;
         }
         Object.assign(properties, withJanitorValues(properties, changes));
-      } else if (object.type === 'function') {
+      } else if (['function', 'notifyError', 'checkOperatingHours', 'checkClientProfile'].includes(object.type)) {
         // The request as set on the board (method, address, body), where it differs from Studio's
         if (studio.type === 'make-http-request') {
           (['method', 'url', 'body'] as const).forEach((key) => {
@@ -479,13 +510,40 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       const transitions = original.map((transition, index) => {
         const { next, ...rest } = transition;
         const exit = studio.type === 'trigger' ? String(transition.event) : exits[index];
+        // A split's way out renamed or given another operator on the board: its condition too
+        const changed = exit === undefined ? undefined : exitConditionOf(object, exit);
+        if (changed?.changed && Array.isArray(rest.conditions) && rest.conditions.length === 1) {
+          const [live] = rest.conditions as Record<string, unknown>[];
+          const liveName = typeof live.friendly_name === 'string' ? live.friendly_name : undefined;
+          const namedByValue = !liveName || conditionExitName(liveName, String(live.value ?? '')) === live.value;
+          rest.conditions = [
+            {
+              ...live,
+              friendly_name: namedByValue ? studioConditionName(changed.type, changed.value) : liveName,
+              type: changed.type,
+              value: changed.value,
+            },
+          ];
+        }
         return withNext(rest, exit === undefined ? undefined : nextOf(object, exit));
       });
       // Ways out added on the board (e.g. a decision's new answer)
+      const splitInput =
+        studio.type === 'split-based-on' && typeof properties.input === 'string' ? properties.input : '';
       exits.slice(original.length).forEach((exit) => {
-        todo.push(`${label(object)} has a new way out “${exit}”: set the condition it stands for.`);
+        const added = exitConditionOf(object, exit);
+        if (!splitInput || !added) {
+          todo.push(`${label(object)} has a new way out “${exit}”: set the condition it stands for.`);
+        }
+        const type = added?.type ?? 'equal_to';
         transitions.push(
-          withNext({ event: 'match', conditions: [condition(TODO, 'equal_to', exit, exit)] }, nextOf(object, exit)),
+          withNext(
+            {
+              event: 'match',
+              conditions: [condition(splitInput || TODO, type, added?.value ?? exit, studioConditionName(type, exit))],
+            },
+            nextOf(object, exit),
+          ),
         );
       });
       return [{ name, type: studio.type, transitions, properties }];
@@ -725,7 +783,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         todo.push(
           input === TODO
             ? `${label(object)}: set what it splits on (its input) and its conditions.`
-            : `${label(object)}: check its conditions (each way out is a value ${input} is equal to).`,
+            : `${label(object)}: check its conditions (each way out is compared with ${input}).`,
         );
         return [
           {
@@ -735,12 +793,14 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
               withNext({ event: 'noMatch' }, next('noMatch')),
               ...exits
                 .filter((exit) => exit !== 'noMatch')
-                .map((exit) =>
-                  withNext(
-                    { event: 'match', conditions: [condition(input, 'equal_to', exit, `If value equal_to ${exit}`)] },
+                .map((exit) => {
+                  // Equal to it, or any of a list ("Si,si,ok"), or the operator chosen on the board
+                  const type = exitConditionOf(object, exit)?.type ?? 'equal_to';
+                  return withNext(
+                    { event: 'match', conditions: [condition(input, type, exit, studioConditionName(type, exit))] },
                     next(exit),
-                  ),
-                ),
+                  );
+                }),
             ],
             properties: { input, offset },
           },
@@ -813,21 +873,29 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       case 'checkOperatingHours':
       case 'checkClientProfile': {
         const route = info.studioRoute!;
-        todo.push(
-          `${label(object)}: set its request body and what its split reads from the response, from STUDIO_ROUTES.md (${route}).`,
-        );
+        const channel = details?.channel;
+        const body =
+          object.settings?.body?.trim() ||
+          (object.type === 'checkClientProfile'
+            ? profileFlagsBody(channel)
+            : operatingHoursBody(channel, todo, label(object)));
         const results = exits.filter((exit) => exit !== 'failed');
+        // As the helplines' are: blocked when the profile's flags include "blocked"; open, closed or holiday
+        const matches =
+          object.type === 'checkClientProfile'
+            ? [{ exit: results[0], type: 'contains', value: 'blocked' }]
+            : results.slice(0, -1).map((exit) => ({ exit, type: 'equal_to', value: exit }));
         return [
           {
             name,
             type: 'make-http-request',
             transitions: [{ event: 'success', next: splitName }, withNext({ event: 'failed' }, next('failed'))],
-            properties: { offset, ...httpRequest(`${ACCOUNT_SCOPED}/${route}`, TODO) },
+            properties: { offset, ...httpRequest(`${ACCOUNT_SCOPED}/${route}`, body) },
           },
           split(
             splitName,
-            `{{widgets.${name}.parsed.${TODO}}}`,
-            results.slice(0, -1).map((exit) => ({ exit, type: 'equal_to', value: exit })),
+            `{{widgets.${name}.parsed.${object.type === 'checkClientProfile' ? 'flags' : 'status'}}}`,
+            matches,
             results[results.length - 1],
           ),
         ];
@@ -863,8 +931,11 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       case 'function':
       case 'notifyError': {
         const url = object.type === 'function' ? object.settings?.url?.trim() : undefined;
-        const body = object.type === 'function' ? object.settings?.body?.trim() : undefined;
-        if (object.type === 'notifyError' || !url || !body) {
+        // The team's alert: the helplines' text, labelled with what went wrong
+        const body =
+          object.settings?.body?.trim() ||
+          (object.type === 'notifyError' ? notifyErrorBody(object.text === info.label ? '' : object.text) : undefined);
+        if (object.type === 'function' && (!url || !body)) {
           todo.push(`${label(object)}: set the address it calls and its request body.`);
         }
         return [

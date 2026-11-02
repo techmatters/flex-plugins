@@ -261,6 +261,24 @@ describe('a run', () => {
     });
   });
 
+  test('a way out listing values matches any of them (any case); another comparison works as Studio', () => {
+    const listed = {
+      ...content,
+      objects: content.objects.map((candidate) =>
+        candidate.id === 'lang'
+          ? { ...candidate, exits: ['1,one,English', 'help', 'noMatch'], exitOperators: { help: 'contains' } }
+          : candidate,
+      ),
+      connections: content.connections.map((connection) =>
+        connection.from === 'lang' && connection.exit === '1' ? { ...connection, exit: '1,one,English' } : connection,
+      ),
+    };
+    let run = answer(listed, startRun(listed, 'trigger'), { kind: 'reply', text: 'english' });
+    expect(path(run)).toContain('lang:1,one,English');
+    run = answer(listed, startRun(listed, 'trigger'), { kind: 'reply', text: 'I need help' });
+    expect(run.ended).toMatchObject({ kind: 'deadEnd', objectId: 'lang', exit: 'help' });
+  });
+
   test('tested paths: green while nothing on them changes, and what of the board they cover', () => {
     let run = startRun(content, 'trigger');
     run = answer(content, run, { kind: 'reply', text: 'hello' });

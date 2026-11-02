@@ -461,8 +461,18 @@ body.flow-resizing {
   margin-bottom: 4px;
 }
 
+.flow-exits .flow-exit-operator {
+  flex: 0 0 auto;
+  max-width: 45%;
+  font: inherit;
+  padding: 4px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+}
+
 .flow-exits input {
   flex: 1;
+  min-width: 0;
   font: inherit;
   padding: 4px 6px;
   border: 1px solid var(--color-border);
