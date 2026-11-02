@@ -243,26 +243,17 @@ export const WebchatFieldSettings = ({
         </div>
       )}
 
-      {field.type === 'select' && !isLinkedTop && Array.isArray(field.options) && (
-        <label className="field">
-          <span className="field-label">Chosen at first</span>
-          <select
-            value={String(field.defaultValue ?? '')}
-            onChange={(e) => onChange({ ...field, defaultValue: e.target.value })}
-          >
-            {!(field.options as SelectOption[]).some((option) => String(option.value) === '') && (
-              <option value="">Nothing (visitors choose)</option>
-            )}
-            {(field.options as SelectOption[]).map((option) => (
-              <option key={String(option.value)} value={String(option.value)}>
-                {String(option.value) === ''
-                  ? 'Nothing (visitors choose)'
-                  : plainText(option.label) || String(option.value)}
-              </option>
-            ))}
-          </select>
-          <span className="field-hint">The answer already selected when the form opens.</span>
-        </label>
+      {/* The webchat doesn't read defaultValue: its dropdowns always open with nothing chosen */}
+      {field.type === 'select' && String(field.defaultValue ?? '') !== '' && (
+        <div className="field">
+          <span className="field-hint prepopulate-warning">
+            This question is set to start on “{String(field.defaultValue)}”, but the webchat doesn't
+            use that: visitors see nothing chosen until they pick an answer.
+          </span>
+          <button type="button" className="secondary-button" onClick={() => onChange({ ...field, defaultValue: '' })}>
+            Remove the starting answer
+          </button>
+        </div>
       )}
 
       <div className="field">

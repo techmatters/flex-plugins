@@ -114,18 +114,21 @@ describe('webchat form editor', () => {
     expect(screen.getByRole('button', { name: 'Edit answers' })).toBeTruthy();
   });
 
-  test('sets the answer a dropdown starts with, shown in the preview', async () => {
+  test("a dropdown's starting answer isn't used, as in the webchat, and can be removed", async () => {
+    const fields = as.files[PRE_ENGAGEMENT_FILE] as { fields: { name: string; defaultValue?: string }[] };
+    fields.fields.find((field) => field.name === 'gender')!.defaultValue = 'Girl';
     await openWebchat(as);
+    expect((within(preview()).getByLabelText(/^Gender/) as HTMLSelectElement).value).toBe('');
+
     fireEvent.click(screen.getByRole('button', { name: /^Gender/ }));
-    const chosen = screen.getByRole('combobox', { name: /^Chosen at first/ });
-    expect((chosen as HTMLSelectElement).value).toBe('');
-    fireEvent.change(chosen, { target: { value: 'Girl' } });
+    expect(screen.getByText(/set to start on “Girl”, but the webchat doesn't use that/)).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Remove the starting answer' }));
 
     const saved = await savedDraft(as, PRE_ENGAGEMENT_FILE);
     expect(saved.fields.find((field: { name: string }) => field.name === 'gender')).toMatchObject({
-      defaultValue: 'Girl',
+      defaultValue: '',
     });
-    expect((within(preview()).getByLabelText(/^Gender/) as HTMLSelectElement).value).toBe('Girl');
+    expect(screen.queryByText(/but the webchat doesn't use that/)).toBeNull();
   });
 });
 

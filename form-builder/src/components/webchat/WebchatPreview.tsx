@@ -44,8 +44,9 @@ const validate = (field: WebchatField, value: Value): string | undefined => {
   return undefined;
 };
 
+// As the webchat does: every question but a checkbox starts empty (it doesn't read defaultValue)
 const initialValue = (field: WebchatField): Value =>
-  field.type === 'checkbox' ? Boolean(field.initialChecked) : String(field.defaultValue ?? '');
+  field.type === 'checkbox' ? Boolean(field.initialChecked) : '';
 
 type Props = {
   form: PreEngagementForm;
