@@ -27,6 +27,7 @@ import {
   fixedExitsOf,
   isSplitObject,
   SPLIT_OPERATORS,
+  taskChannelOf,
   FlowObjectType,
   fieldProblem,
   fieldShown,
@@ -1010,6 +1011,12 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
           )}
           {fields.map((field) => {
             const value = object.settings?.[field.key] ?? '';
+            // Not chosen: a Send to queue's task channel follows the flow's channel
+            const automatic = field.key === 'taskChannel' ? taskChannelOf({}, details?.channel) : undefined;
+            const emptyChoiceLabel = (choice: typeof field) =>
+              automatic
+                ? `Automatic: ${automatic} (from the flow’s channel)`
+                : (choice.optionLabels?.[''] ?? 'Not set');
             // A split's default comes first, then what else it can read
             const fromBefore = field.suggestions === 'splitInputs' ? defaultSplitInput : undefined;
             const suggestions = [
@@ -1034,12 +1041,17 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
             };
             return (
               <label key={field.key} className="field">
-                <span className="field-label">{field.label}</span>
+                <span className="field-label">
+                  {field.label}
+                  {field.required && !object.studio && <span className="field-required"> (required)</span>}
+                </span>
                 {field.custom ? (
                   <ChoiceOrText key={node.id} field={field} value={value} disabled={readOnly} onChange={set} />
                 ) : field.options ? (
                   <select value={value} disabled={readOnly} onChange={(e) => set(e.target.value)}>
-                    <option value="">{field.optionLabels?.[''] ?? 'Not set'}</option>
+                    <option value="">{emptyChoiceLabel(field)}</option>
+                    {/* A value set before (e.g. imported) that isn't one of the choices any more */}
+                    {value && !field.options.includes(value) && <option value={value}>{value}</option>}
                     {field.options.map((option) => (
                       <option key={option} value={option}>
                         {field.optionLabels?.[option] ?? option}

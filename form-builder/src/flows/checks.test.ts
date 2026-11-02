@@ -307,6 +307,38 @@ describe('the board check', () => {
     ]);
   });
 
+  test('Send to queue needs its workflow; its task channel follows the flow, voice, chat or voicemail', () => {
+    const queue = (id: string, frameId?: string, extra: Partial<FlowObject> = {}) =>
+      named(id, 'sendToQueue', frameId, {
+        text: id,
+        studioName: `send_to_queue_${id}`,
+        taskAttributes: standardTaskAttributes('sms'),
+        ...extra,
+      });
+    const content = {
+      frames: [frame('sms', 'sms')],
+      objects: [
+        queue('noWorkflow', 'sms'),
+        queue('automatic', 'sms', { settings: { workflow: 'master' } }),
+        queue('outside', undefined, { settings: { workflow: 'master' } }),
+        queue('imported', 'sms', {
+          settings: { workflow: 'master', taskChannel: 'sms' },
+          studio: { name: 'send_to_queue_imported', type: 'send-to-flex' },
+        }),
+      ],
+      connections: [],
+    };
+    const messages = boardChecks(content).map((issue) => issue.message);
+    expect(messages).toContain('“noWorkflow”: set its workflow.');
+    // In an SMS flow it's chat without choosing it; outside a flow, it has to be chosen
+    expect(messages).not.toContain('“automatic”: set its task channel.');
+    expect(messages).toContain('“outside”: set its task channel.');
+    // Imported ones keep theirs, but a task channel helplines don't use is pointed out
+    expect(messages).toContain(
+      '“imported” sends its task to the “sms” task channel: helplines use voice, chat, voicemail.',
+    );
+  });
+
   test('incoming contacts go to the system-down subflow first; failures need no notification object', () => {
     const content = {
       frames: [],
@@ -315,6 +347,7 @@ describe('the board check', () => {
         named('q', 'sendToQueue', undefined, {
           text: 'Queue',
           studioName: 'send_to_queue',
+          settings: { workflow: 'master', taskChannel: 'voice' },
           taskAttributes: standardTaskAttributes('voice'),
         }),
         named('sorry', 'end', undefined, { text: 'End' }),

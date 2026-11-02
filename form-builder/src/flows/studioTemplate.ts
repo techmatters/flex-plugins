@@ -39,6 +39,7 @@ import {
   OBJECT_TYPES,
   repeatWidgetNames,
   studioConditionName,
+  taskChannelOf,
   toSnake,
   widgetNamesOf,
 } from './model';
@@ -956,7 +957,8 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         ];
       }
       case 'sendToQueue': {
-        const { queue, workflow, taskChannel } = object.settings ?? {};
+        const { queue, workflow } = object.settings ?? {};
+        const taskChannel = taskChannelOf(object, details?.channel);
         if (!workflow || !taskChannel) todo.push(`${label(object)}: set its workflow and task channel.`);
         if (queue) {
           todo.push(

@@ -29,6 +29,8 @@ import {
   namingChoicesOf,
   OBJECT_TYPES,
   standardStudioName,
+  TASK_CHANNELS,
+  taskChannelOf,
   variableKeyProblem,
   variesByVariant,
   widgetNamesOf,
@@ -306,6 +308,32 @@ export const boardChecks = (
         if (problem)
           add({ severity: 'error', message: `${name}: ${field.label}: ${problem}`, objectId }, `field-${field.key}`);
       });
+    // What has to be set (a new widget's: imported ones have Studio's)
+    if (!object.studio) {
+      (info.fields ?? [])
+        .filter((field) => field.required && fieldShown(field, object.settings))
+        .filter((field) =>
+          field.key === 'taskChannel' ? !taskChannelOf(object, frame?.channel) : !object.settings?.[field.key]?.trim(),
+        )
+        .forEach((field) =>
+          add(
+            { severity: 'error', message: `${name}: set its ${field.label.toLowerCase()}.`, objectId },
+            `required-${field.key}`,
+          ),
+        );
+    }
+    // Tasks go to voice, chat or voicemail: other task channels (sms, default) don't get the same capacity
+    const taskChannel = object.type === 'sendToQueue' ? object.settings?.taskChannel : undefined;
+    if (taskChannel && !TASK_CHANNELS.includes(taskChannel)) {
+      add(
+        {
+          severity: 'warning',
+          message: `${name} sends its task to the “${taskChannel}” task channel: helplines use ${TASK_CHANNELS.join(', ')}.`,
+          objectId,
+        },
+        'taskChannel',
+      );
+    }
     if (object.type === 'function' && !object.studio && !object.settings?.url?.trim()) {
       add({ severity: 'warning', message: `${name} has no address (URL) to call yet.`, objectId }, 'noUrl');
     }
@@ -498,7 +526,7 @@ export const splitIgnored = (issues: Issue[], ignoredKeys: string[] = []) => {
 // What a sketch (Sketch mode) leaves for later: scripts, recordings, languages, the names' standard
 // parts, call settings, variables and task attributes
 const DETAIL_CHECKS =
-  /^(nameStandard|noScript|recording|scriptApproval|language|oldRecordingName|taskAttributes|noUrl|noVariables|noInput|noChatbot|field-.*|variable-.*)$/;
+  /^(nameStandard|noScript|recording|scriptApproval|language|oldRecordingName|taskAttributes|noUrl|noVariables|noInput|noChatbot|field-.*|required-.*|taskChannel|variable-.*)$/;
 
 /** The issues that matter in a sketch: the flow's shape (ways out, names, what's unreachable...). */
 export const sketchIssues = (issues: Issue[]) => issues.filter((issue) => !DETAIL_CHECKS.test(issue.key.split('|')[1]));

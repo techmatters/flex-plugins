@@ -384,6 +384,24 @@ describe('Splits and the standard requests', () => {
     expect(generated.text).not.toMatch(/"TODO"|parsed\.TODO/);
   });
 
+  test("a Send to queue's task channel is the flow's when not chosen: chat for messaging, voice for calls", () => {
+    const content = smsBoard([
+      object('q', 'sendToQueue', { studioName: 'send_to_queue', settings: { workflow: 'master' } }),
+    ]);
+    const channelIn = (board: BoardContent) =>
+      toStudioFlow(board, board.frames[0]).flow.states.find((state) => state.name === 'send_to_queue')!.properties
+        .channel;
+    expect(channelIn(content)).toBe('${task_channel_sids.chat}');
+    expect(channelIn({ ...content, frames: [{ ...content.frames[0], channel: 'voice' }] })).toBe(
+      '${task_channel_sids.voice}',
+    );
+    const voicemail = {
+      ...content,
+      objects: [{ ...content.objects[0], settings: { workflow: 'master', taskChannel: 'voicemail' } }],
+    };
+    expect(channelIn(voicemail)).toBe('${task_channel_sids.voicemail}');
+  });
+
   test('the skilled worker checks split on what each route answers', () => {
     const content = smsBoard([
       object('available', 'checkQueueAvailability', { studioName: 'f_isSkilledWorkerAvailable_spanish' }),

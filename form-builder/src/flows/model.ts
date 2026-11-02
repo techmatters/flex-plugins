@@ -542,7 +542,17 @@ export type ObjectField = {
   custom?: boolean;
   // Shown in a sketch too (Sketch mode leaves the other settings for later)
   sketch?: boolean;
+  // Has to be set before the flow can be built (the Check panel says so)
+  required?: boolean;
 };
+
+// The task channels Send to queue gives tasks, across the helplines (task_channel_sids)
+export const TASK_CHANNELS = ['voice', 'chat', 'voicemail'];
+
+// A Send to queue's task channel: the one chosen, otherwise the flow's (voice for calls, chat for
+// messaging); undefined while the flow's channel isn't known
+export const taskChannelOf = (object: Pick<FlowObject, 'settings'>, channel?: Channel) =>
+  object.settings?.taskChannel || (channel ? (channel === 'voice' ? 'voice' : 'chat') : undefined);
 
 // Who a message is from, as the person sees it: the helpline's name (${helpline}, from its
 // common.hcl), Bot, or anything typed
@@ -986,12 +996,14 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
         placeholder: 'master',
         suggestions: 'workflows',
         hint: 'Its key in workflow_sids.',
+        required: true,
       },
       {
         key: 'taskChannel',
         label: 'Task channel',
-        options: ['voice', 'chat', 'sms', 'default'],
-        hint: 'Its key in task_channel_sids.',
+        options: TASK_CHANNELS,
+        hint: 'Its key in task_channel_sids. Automatic: voice for calls, chat for every messaging channel.',
+        required: true,
       },
       {
         key: 'timeout',

@@ -269,6 +269,11 @@ body {
   font-size: 13px;
 }
 
+.field-required {
+  font-weight: 400;
+  color: var(--color-muted, #666);
+}
+
 .required {
   color: #c62828;
   margin-left: 2px;
