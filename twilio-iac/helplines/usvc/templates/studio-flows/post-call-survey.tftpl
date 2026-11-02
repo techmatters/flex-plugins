@@ -75,7 +75,7 @@ ${
               "event": "noMatch"
             },
             {
-              "next": "gather_input_voice_connected_to_vas",
+              "next": "gather_input_voice_specialist_knowledge_satisfaction",
               "event": "match",
               "conditions": [
                 {
@@ -94,152 +94,6 @@ ${
             "offset": {
               "x": 0,
               "y": 420
-            }
-          }
-        },
-        {
-          "name": "gather_input_voice_connected_to_vas",
-          "type": "gather-input-on-call",
-          "transitions": [
-            {
-              "next": "split_connected_to_vas_response",
-              "event": "keypress"
-            },
-            {
-              "event": "speech"
-            },
-            {
-              "next": "split_connected_to_vas_response",
-              "event": "timeout"
-            }
-          ],
-          "properties": {
-            "play": "${flow_vars.post_survey_assets_url}/gather_input_voice_connected_to_vas.mp3",
-            "number_of_digits": 1,
-            "speech_timeout": "5",
-            "offset": {
-              "x": 0,
-              "y": 650
-            },
-            "loop": 1,
-            "finish_on_key": "#",
-            "stop_gather": true,
-            "gather_language": "${flow_vars.gather_language}",
-            "speech_model": "default",
-            "timeout": 5
-          }
-        },
-        {
-          "name": "split_connected_to_vas_response",
-          "type": "split-based-on",
-          "transitions": [
-            {
-              "next": "set_var_connected_to_vas_unrecognized",
-              "event": "noMatch"
-            },
-            {
-              "next": "set_var_connected_to_vas_yes",
-              "event": "match",
-              "conditions": [
-                {
-                  "friendly_name": "If value equal_to 1",
-                  "arguments": [
-                    "{{widgets.gather_input_voice_connected_to_vas.Digits}}"
-                  ],
-                  "type": "equal_to",
-                  "value": "1"
-                }
-              ]
-            },
-            {
-              "next": "set_var_connected_to_vas_no",
-              "event": "match",
-              "conditions": [
-                {
-                  "friendly_name": "If value equal_to 2",
-                  "arguments": [
-                    "{{widgets.gather_input_voice_connected_to_vas.Digits}}"
-                  ],
-                  "type": "equal_to",
-                  "value": "2"
-                }
-              ]
-            }
-          ],
-          "properties": {
-            "input": "{{widgets.gather_input_voice_connected_to_vas.Digits}}",
-            "offset": {
-              "x": 0,
-              "y": 870
-            }
-          }
-        },
-        {
-          "name": "set_var_connected_to_vas_unrecognized",
-          "type": "set-variables",
-          "transitions": [
-            {
-              "next": "gather_input_voice_specialist_knowledge_satisfaction",
-              "event": "next"
-            }
-          ],
-          "properties": {
-            "variables": [
-              {
-                "type": "string",
-                "value": "Unrecognized or no input",
-                "key": "connected_to_vas"
-              }
-            ],
-            "offset": {
-              "x": -400,
-              "y": 1100
-            }
-          }
-        },
-        {
-          "name": "set_var_connected_to_vas_yes",
-          "type": "set-variables",
-          "transitions": [
-            {
-              "next": "gather_input_voice_specialist_knowledge_satisfaction",
-              "event": "next"
-            }
-          ],
-          "properties": {
-            "variables": [
-              {
-                "type": "string",
-                "value": "Yes",
-                "key": "connected_to_vas"
-              }
-            ],
-            "offset": {
-              "x": 0,
-              "y": 1100
-            }
-          }
-        },
-        {
-          "name": "set_var_connected_to_vas_no",
-          "type": "set-variables",
-          "transitions": [
-            {
-              "next": "gather_input_voice_specialist_knowledge_satisfaction",
-              "event": "next"
-            }
-          ],
-          "properties": {
-            "variables": [
-              {
-                "type": "string",
-                "value": "No",
-                "key": "connected_to_vas"
-              }
-            ],
-            "offset": {
-              "x": 400,
-              "y": 1100
             }
           }
         },
@@ -1138,7 +992,7 @@ ${
             "method": "POST",
             "content_type": "application/json;charset=utf-8",
             "add_twilio_auth": false,
-            "body": "{\n  \"contactId\": \"{{trigger.call.contactId}}\",\n  \"contactTaskSid\": \"{{trigger.call.taskSid}}\",\n  \"postSurveyAnswers\": {\n    \"connected_to_vas\": \"{{flow.variables.connected_to_vas}}\",\n    \"specialist_knowledge_satisfaction\": \"{{flow.variables.specialist_knowledge_satisfaction}}\",\n    \"will_follow_advice\": \"{{flow.variables.will_follow_advice}}\",\n    \"would_recommend\": \"{{flow.variables.would_recommend}}\",\n    \"overall_satisfaction\": \"{{flow.variables.overall_satisfaction}}\",\n    \"self_or_other\": \"{{flow.variables.self_or_other}}\",\n    \"victim_service_profesional\": \"{{flow.variables.victim_service_profesional}}\",\n    \"was_first_time\": \"{{flow.variables.was_first_time}}\"\n  }\n}",
+            "body": "{\n  \"contactId\": \"{{trigger.call.contactId}}\",\n  \"contactTaskSid\": \"{{trigger.call.taskSid}}\",\n  \"postSurveyAnswers\": {\n    \"specialist_knowledge_satisfaction\": \"{{flow.variables.specialist_knowledge_satisfaction}}\",\n    \"will_follow_advice\": \"{{flow.variables.will_follow_advice}}\",\n    \"would_recommend\": \"{{flow.variables.would_recommend}}\",\n    \"overall_satisfaction\": \"{{flow.variables.overall_satisfaction}}\",\n    \"self_or_other\": \"{{flow.variables.self_or_other}}\",\n    \"victim_service_profesional\": \"{{flow.variables.victim_service_profesional}}\",\n    \"was_first_time\": \"{{flow.variables.was_first_time}}\"\n  }\n}",
             "url": "${lambda_twilio_account_scoped_url}/hrm/savePostSurvey"
           }
         },
