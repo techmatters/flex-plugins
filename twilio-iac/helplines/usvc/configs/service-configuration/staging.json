@@ -1,14 +1,36 @@
 {
-    "attributes": {
-        "system_down" : false,
-        "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
-        "resources_base_url": "",
-        "logo_url" : "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png",
-        "feature_flags": {
-            "use_twilio_lambda_adjust_capacity": false,
-            "use_twilio_lambda_janitor": false,
-            "use_twilio_lambda_to_transition_participants": false,
-            "use_twilio_lambda_transfers": false
-        }
+  "attributes": {
+    "system_down": false,
+    "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
+    "resources_base_url": "",
+    "logo_url": "https://aselo-logo.s3.amazonaws.com/200+transparent+background+no+TM+staging.png",
+    "feature_flags": {
+      "use_twilio_lambda_adjust_capacity": false,
+      "use_twilio_lambda_janitor": false,
+      "use_twilio_lambda_to_transition_participants": false,
+      "use_twilio_lambda_transfers": false
+    },
+    "postStudioFlows": {
+      "${task_queues.vc}": {
+        "flowTrigger": "inProgressCall",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.dcvh}": {
+        "flowTrigger": "inProgressCall",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.dc_dispatch}": {
+        "flowTrigger": "inProgressCall",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+      },
+      "${task_queues.vc_sp}": {
+        "flowTrigger": "inProgressCall",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+      },
+      "${task_queues.dcvh_sp}": {
+        "flowTrigger": "inProgressCall",
+        "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+      }
     }
+  }
 }
