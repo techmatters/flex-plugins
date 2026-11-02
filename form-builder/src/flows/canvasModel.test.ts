@@ -21,6 +21,8 @@ import {
   CanvasNode,
   duplicate,
   facingSide,
+  labelOffsetOf,
+  labelSlot,
   nextExit,
   ObjectNode,
   reparent,
@@ -250,5 +252,21 @@ describe('board status', () => {
     const studio = { template: 'usnm/templates/studio-flows/voice.tftpl', channels: ['voice'], settings: {} };
     expect(statusOf({ ...base, frames: [{ ...frame, studio }] })).toBe('imported');
     expect(statusOf({ ...base, frames: [{ ...frame, studio }], status: 'ready' })).toBe('ready');
+  });
+});
+
+describe('connection labels', () => {
+  test('labels of ways out sharing a path are stacked around its middle, so none hides another', () => {
+    const edges = [
+      { id: 'english', source: 'menu', target: 'next', data: { exit: 'English' } },
+      { id: 'other', source: 'menu', target: 'elsewhere', data: { exit: 'Spanish' } },
+      { id: 'noMatch', source: 'menu', target: 'next', data: { exit: 'No match' } },
+      { id: 'unlabelled', source: 'menu', target: 'next', data: {} },
+    ];
+    const offset = (id: string) => labelOffsetOf(labelSlot(edges, edges.find((edge) => edge.id === id)!));
+    expect(offset('english')).toBe(-11);
+    expect(offset('noMatch')).toBe(11);
+    // Alone on its path: where it always was
+    expect(offset('other')).toBe(0);
   });
 });

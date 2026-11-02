@@ -99,6 +99,7 @@ import {
 import { BoardEditingContext, EDGE_TYPES, NODE_TYPES } from './nodes';
 import { Palette, PALETTE_MIME, PaletteItem } from './Palette';
 import { Inspector } from './Inspector';
+import { SidebarResizer, useSidebarWidth } from './SidebarResizer';
 import { openTaskCount, TasksPanel } from './TasksPanel';
 import { SimulatorPanel } from './SimulatorPanel';
 import type { SimRun } from './simulate';
@@ -163,6 +164,8 @@ const Editor = ({
     return board.content.objects.length === 0 ? 'sketch' : 'design';
   });
   const locked = readOnly || mode === 'test';
+  // The side panel's width: dragged wider for long JSON and scripts
+  const sidebar = useSidebarWidth();
   const [nodes, setNodes, onNodesChange] = useNodesState<CanvasNode>(toNodes(board.content));
   const [edges, setEdges, onEdgesChange] = useEdgesState<ConnectionEdge>(toEdges(board.content));
   const [title, setTitle] = useState(board.content.title);
@@ -1217,7 +1220,8 @@ const Editor = ({
               </div>
             )}
           </div>
-          <aside className="flow-sidebar" aria-label="Side panel">
+          <aside className="flow-sidebar" aria-label="Side panel" style={{ width: sidebar.width }}>
+            <SidebarResizer width={sidebar.width} onResize={sidebar.setWidth} onDone={sidebar.keep} />
             <div className="flow-sidebar-tabs" role="tablist">
               {mode === 'test' && (
                 <button type="button" role="tab" aria-selected={sideTab === 'test'} onClick={() => setSideTab('test')}>

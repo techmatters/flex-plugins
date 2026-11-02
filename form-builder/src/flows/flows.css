@@ -251,8 +251,9 @@
   position: relative;
 }
 
-/* Side panel: settings and tasks */
+/* Side panel: settings and tasks; its width is set by SidebarResizer (300px at least) */
 .flow-sidebar {
+  position: relative;
   width: 300px;
   flex-shrink: 0;
   display: flex;
@@ -260,6 +261,31 @@
   min-height: 0;
   background: var(--color-surface);
   border-left: 1px solid var(--color-border);
+}
+
+/* Its left edge: drag to make the panel wider */
+.flow-sidebar-resizer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -4px;
+  width: 8px;
+  cursor: col-resize;
+  z-index: 5;
+  touch-action: none;
+}
+
+.flow-sidebar-resizer:hover,
+.flow-sidebar-resizer:focus-visible {
+  background: var(--color-accent-soft);
+  outline: none;
+  box-shadow: inset 2px 0 0 var(--color-accent);
+}
+
+/* While dragging: no text selection, and the resize cursor everywhere */
+body.flow-resizing {
+  cursor: col-resize;
+  user-select: none;
 }
 
 .flow-sidebar-tabs {

@@ -43,6 +43,31 @@ export type StickyNode = Node<{ sticky: Without<Sticky> }, 'sticky'>;
 export type CanvasNode = FrameNode | ObjectNode | StickyNode;
 export type ConnectionEdge = Edge<{ exit?: string }, 'connection'>;
 
+// Ways out sharing a path (from the same object to the same one, e.g. "English" and "No match"
+// both going to a menu) have their labels stacked this far apart around its middle, so each
+// can be read
+const LABEL_GAP = 22;
+
+// A connection's place among the labelled ones with its source and target, as "index/count"
+export const labelSlot = (
+  edges: Pick<ConnectionEdge, 'id' | 'source' | 'target' | 'data'>[],
+  edge: Pick<ConnectionEdge, 'id' | 'source' | 'target'>,
+) => {
+  const sharing = edges.filter(
+    (candidate) => candidate.source === edge.source && candidate.target === edge.target && candidate.data?.exit,
+  );
+  return `${Math.max(
+    sharing.findIndex((candidate) => candidate.id === edge.id),
+    0,
+  )}/${sharing.length}`;
+};
+
+// How far a label moves down (up when negative) from the middle of its path
+export const labelOffsetOf = (slot: string) => {
+  const [index, count] = slot.split('/').map(Number);
+  return count > 1 ? (index - (count - 1) / 2) * LABEL_GAP : 0;
+};
+
 export const newId = (prefix: string) =>
   `${prefix}-${(globalThis.crypto?.randomUUID?.() ?? Math.random().toString(16).slice(2)).replace(/-/g, '').slice(0, 8)}`;
 

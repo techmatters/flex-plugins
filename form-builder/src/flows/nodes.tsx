@@ -28,11 +28,13 @@ import {
   NodeResizer,
   Position,
   useReactFlow,
+  useStore,
 } from '@xyflow/react';
 import { Check, MessageSquareText, Square, SquareCheck, TriangleAlert } from 'lucide-react';
 import type { Issue } from './checks';
 import { iconOf, OBJECT_TYPES, objectColor, STICKY_COLORS } from './model';
 import type { ConnectionEdge, FrameNode, ObjectNode, StickyNode } from './canvasModel';
+import { labelOffsetOf, labelSlot } from './canvasModel';
 import { ObjectIcon, ShapeOutline } from './shapes';
 
 // A run of the simulator on the board, and the tested paths shown (Test mode)
@@ -311,9 +313,16 @@ export const StickyNodeView = ({ id, data, selected }: NodeProps<StickyNode>) =>
   );
 };
 
+// Where this connection's label goes among those with the same source and target (as
+// "index/count", so the edge only re-renders when that changes)
+const useLabelSlot = (id: string, source: string, target: string) =>
+  useStore((state) => labelSlot(state.edges as ConnectionEdge[], { id, source, target }));
+
 // Straight lines with rounded corners, an arrow, and the exit it stands for
 export const ConnectionEdgeView = ({
   id,
+  source,
+  target,
   sourceX,
   sourceY,
   sourcePosition,
@@ -325,6 +334,7 @@ export const ConnectionEdgeView = ({
   data,
 }: EdgeProps<ConnectionEdge>) => {
   const { simulation } = useContext(BoardEditingContext);
+  const labelOffset = labelOffsetOf(useLabelSlot(id, source, target));
   const simulated = [
     simulationClass(
       simulation,
@@ -355,7 +365,7 @@ export const ConnectionEdgeView = ({
         <EdgeLabelRenderer>
           <div
             className={`flow-edge-label nodrag nopan ${selected ? 'selected' : ''} ${simulated}`}
-            style={{ transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)` }}
+            style={{ transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY + labelOffset}px)` }}
           >
             {data.exit}
           </div>
