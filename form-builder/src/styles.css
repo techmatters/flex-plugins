@@ -526,6 +526,132 @@ body {
   padding: 0 7px;
 }
 
+/* Aselo staff reviewing a draft: a check per reviewed section in the menu */
+.nav-reviewed {
+  color: #2e7d32;
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+.nav-review-changed {
+  color: var(--color-muted);
+  font-size: 10px;
+  margin-right: 6px;
+}
+
+/* A section the reviewer asked to change: what the helpline has to fix */
+.nav-changes-needed {
+  color: #ef6c00;
+  margin-right: 6px;
+  vertical-align: -2px;
+}
+
+.review-progress {
+  color: var(--color-muted);
+}
+
+.review-progress-done {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.review-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+  border-radius: 6px;
+  border: 1px solid var(--color-border);
+}
+
+.review-bar-reviewed {
+  background: #e8f5e9;
+  border-color: #a5d6a7;
+}
+
+.review-bar-changes-needed {
+  background: #fff3e0;
+  border-color: #ffcc80;
+}
+
+/* Comments on a draft's section, above its editor */
+.section-comments-empty {
+  margin: -8px 0 12px;
+}
+
+.section-comments {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-bottom: 16px;
+}
+
+.section-comments h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+
+.section-comments ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.section-comments li {
+  padding: 6px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.section-comments li.resolved {
+  opacity: 0.6;
+}
+
+.section-comments li p {
+  margin: 4px 0 0;
+  white-space: pre-wrap;
+}
+
+.section-comment-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.section-comment-for {
+  background: var(--color-accent-soft);
+  border-radius: 10px;
+  padding: 0 8px;
+  font-size: 12px;
+}
+
+.section-comment-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.section-comment-add {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.section-comment-add textarea {
+  flex: 1 1 260px;
+}
+
+.section-comment-assignee {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+}
+
 .try-it-out-row {
   display: flex;
   align-items: center;
@@ -2086,4 +2212,9 @@ body {
 
 .config-post-flows-warning {
   color: var(--color-pii-text);
+}
+
+.drafts-changes-needed {
+  color: #ef6c00;
+  font-weight: 600;
 }

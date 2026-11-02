@@ -32,6 +32,34 @@ import path from 'path';
 
 export type DraftStatus = 'editing' | 'submitted';
 
+// What an Aselo reviewer said about a section: it's fine, or it needs changes (said in comments)
+export type ReviewStatus = 'reviewed' | 'changes-needed';
+
+export const REVIEW_STATUSES: ReviewStatus[] = ['reviewed', 'changes-needed'];
+
+// An Aselo reviewer's mark on one section of the builder (e.g. `contactTab:callerInformation`).
+// `fingerprint` is a hash of the section's files then: when they change, a "reviewed" no longer
+// counts, and a "changes needed" shows the section changed since. No status: an older "reviewed"
+export type SectionReview = {
+  status?: ReviewStatus;
+  by: string;
+  at: string;
+  fingerprint: string;
+};
+
+// A comment on one section of a draft, for the helpline's staff or the Aselo team; `assignee` is
+// who should act on it (from the people lists, see server/people.ts)
+export type SectionComment = {
+  id: string;
+  section: string;
+  text: string;
+  author: string;
+  at: string;
+  resolved?: boolean;
+  assignee?: string;
+  assigneeEmail?: string;
+};
+
 export type DraftMeta = {
   // Goes up by one with every save, so two people can't overwrite each other unknowingly
   revision: number;
@@ -40,6 +68,10 @@ export type DraftMeta = {
   updatedBy: string;
   submittedAt?: string;
   submittedBy?: string;
+  // Sections Aselo staff marked as reviewed or needing changes, by section id
+  reviews?: Record<string, SectionReview>;
+  // Comments on the draft's sections, oldest first
+  comments?: SectionComment[];
   // Hash of each file as it was when the draft started, to spot changes made underneath it
   baseHashes: Record<string, string>;
 };
@@ -67,6 +99,16 @@ const FILE_PATH_PATTERN = /^[A-Za-z0-9_-]+(\/[A-Za-z0-9_-]+)*\.json$/;
 
 export const isValidDraftKey = (code: string, version: string) =>
   CODE_PATTERN.test(code) && VERSION_PATTERN.test(version);
+
+// Section ids (see src/sectionReviews.ts) and the hashes of their files
+const SECTION_ID_PATTERN = /^[A-Za-z][A-Za-z0-9_-]*(:[A-Za-z0-9_-]+)?$/;
+const FINGERPRINT_PATTERN = /^[0-9a-f]{1,16}$/;
+
+export const isValidSectionId = (section: unknown): section is string =>
+  typeof section === 'string' && section.length <= 100 && SECTION_ID_PATTERN.test(section);
+
+export const isValidFingerprint = (fingerprint: unknown): fingerprint is string =>
+  typeof fingerprint === 'string' && FINGERPRINT_PATTERN.test(fingerprint);
 
 // The webchat's translation files (see filePaths.ts), e.g. webchat-app/translations/en-US.json
 const WEBCHAT_FILE_PATH_PATTERN = /^webchat-app\/translations\/[A-Za-z0-9_-]+\.json$/;

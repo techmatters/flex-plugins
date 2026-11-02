@@ -153,6 +153,79 @@ describe('HelplineWorkspace', () => {
     expect(within(dialog).getByText(/open a PR .*Once it is merged, discard this draft/)).toBeTruthy();
   });
 
+  test('Aselo staff mark sections as reviewed, and a later change to the section undoes it', async () => {
+    const { renderWorkspace } = createHarness();
+    renderWorkspace(usnm, { user: aseloStaff });
+    await renameRelationship('Relationship');
+    await screen.findByText(/All changes saved/);
+    const progress = screen.getByText(/^Reviewed: 0 of \d+ sections$/);
+    const sectionCount = progress.textContent!.match(/of (\d+)/)![1];
+
+    fireEvent.click(screen.getByRole('button', { name: 'Mark as reviewed' }));
+    expect(await screen.findByText(/^Reviewed by Aselo person/)).toBeTruthy();
+    expect(screen.getByText(`Reviewed: 1 of ${sectionCount} sections`)).toBeTruthy();
+    const sidebar = screen.getByRole('navigation');
+    const callerItem = within(sidebar).getByRole('button', { name: /Caller information/i });
+    expect(within(callerItem).getByRole('img', { name: 'Reviewed' })).toBeTruthy();
+
+    // Changing the reviewed section takes the check away until it's reviewed again
+    fireEvent.change(screen.getByDisplayValue('Relationship'), { target: { value: 'Relationship to caller' } });
+    expect(await within(callerItem).findByRole('img', { name: 'Changed since reviewed' })).toBeTruthy();
+    expect(screen.getByText(`Reviewed: 0 of ${sectionCount} sections`)).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: 'Mark as reviewed again' }));
+    expect(await within(callerItem).findByRole('img', { name: 'Reviewed' })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
+    expect(await screen.findByRole('button', { name: 'Mark as reviewed' })).toBeTruthy();
+    expect(within(callerItem).queryByRole('img', { name: 'Reviewed' })).toBeNull();
+  });
+
+  test('Aselo staff ask for changes with a comment for someone; the helpline sees what to fix', async () => {
+    const { renderWorkspace } = createHarness();
+    const loadPeople = vi.fn(async (list: string) =>
+      list === 'usnm' ? [{ name: 'NAMI person', email: 'nami@example.org' }] : [{ name: 'Aselo person' }],
+    );
+    const { unmount } = renderWorkspace(usnm, { user: aseloStaff, loadPeople });
+    await renameRelationship('Relationship');
+    await screen.findByText(/All changes saved/);
+
+    fireEvent.click(screen.getByRole('button', { name: 'Changes needed' }));
+    expect(await screen.findByText(/^Changes needed, asked by Aselo person/)).toBeTruthy();
+    expect(screen.getByText(/1 needs changes/)).toBeTruthy();
+    const callerItem = within(screen.getByRole('navigation')).getByRole('button', { name: /Caller information/i });
+    expect(within(callerItem).getByRole('img', { name: 'Changes needed' })).toBeTruthy();
+
+    fireEvent.change(screen.getByRole('textbox', { name: 'New comment' }), {
+      target: { value: 'Use “Relationship to the help seeker”' },
+    });
+    fireEvent.change(await screen.findByRole('combobox', { name: 'For' }), {
+      target: { value: 'nami@example.org' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Comment' }));
+    expect(await screen.findByText('For NAMI person')).toBeTruthy();
+    unmount();
+
+    // The helpline's staff open the same draft
+    renderWorkspace(usnm, { loadPeople });
+    expect(await screen.findByText(/The Aselo team asked for changes here/)).toBeTruthy();
+    expect(screen.getByText('Use “Relationship to the help seeker”')).toBeTruthy();
+    const theirCallerItem = within(screen.getByRole('navigation')).getByRole('button', { name: /Caller information/i });
+    expect(within(theirCallerItem).getByRole('img', { name: 'Changes needed' })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Mark as reviewed' })).toBeNull();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Resolve' }));
+    expect(await screen.findByRole('button', { name: 'Show 1 resolved' })).toBeTruthy();
+  });
+
+  test('helpline staff see no review marks', async () => {
+    const { renderWorkspace } = createHarness();
+    renderWorkspace(usnm);
+    await renameRelationship('Relationship');
+    await screen.findByText(/All changes saved/);
+    expect(screen.queryByRole('button', { name: 'Mark as reviewed' })).toBeNull();
+    expect(screen.queryByText(/^Reviewed: /)).toBeNull();
+  });
+
   test('restores the saved draft when the helpline is opened again', async () => {
     const { renderWorkspace } = createHarness();
     const { unmount } = renderWorkspace(usnm);

@@ -26,10 +26,10 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ApplyResult } from '../server/api';
-import type { DraftMeta } from '../server/drafts';
+import type { DraftMeta, ReviewStatus } from '../server/drafts';
 import type { DefinitionFileMap } from './definitions';
 import { getChangedFilePaths } from './changes';
-import type { DraftClient } from './draftClient';
+import type { CommentChange, DraftClient } from './draftClient';
 
 export type SaveState = 'loading' | 'saved' | 'pending' | 'saving' | 'conflict' | 'error';
 
@@ -193,6 +193,20 @@ export const useDraft = (
     setMeta(submitted);
   };
 
+  // Aselo staff: mark a section as reviewed or needing changes (with its fingerprint), or clear
+  // the mark (null). Saves first, so there's a draft to keep the mark in
+  const review = async (section: string, fingerprint: string | null, status?: ReviewStatus) => {
+    await flush();
+    const reviewed = await client.review(code, version, section, fingerprint, status);
+    setMeta((previous) => ({ ...previous, reviews: reviewed.reviews, comments: reviewed.comments }));
+  };
+
+  const comment = async (change: CommentChange) => {
+    await flush();
+    const commented = await client.comment(code, version, change);
+    setMeta((previous) => ({ ...previous, reviews: commented.reviews, comments: commented.comments }));
+  };
+
   const apply = async (description?: string): Promise<ApplyResult> => {
     await flush();
     return client.apply(code, version, description);
@@ -209,6 +223,8 @@ export const useDraft = (
     updateFiles,
     discardChanges,
     submit,
+    review,
+    comment,
     apply,
   };
 };

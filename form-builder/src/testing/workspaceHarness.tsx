@@ -28,6 +28,7 @@ import { MemoryDraftStore } from '../../server/drafts';
 import { repoPathOf } from '../../server/filePaths';
 import { inProcessDraftClient } from '../draftClient.inProcess';
 import { HelplineWorkspace } from '../components/HelplineWorkspace';
+import type { Person } from '../flows/model';
 
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 export const formDefinitionsDir = path.join(
@@ -62,7 +63,13 @@ export const createHarness = () => {
       user = helplineStaff,
       onReload = () => {},
       applyInBuilder = true,
-    }: { user?: ApiUser; onReload?: () => void; applyInBuilder?: boolean } = {},
+      loadPeople,
+    }: {
+      user?: ApiUser;
+      onReload?: () => void;
+      applyInBuilder?: boolean;
+      loadPeople?: (code: string) => Promise<Person[]>;
+    } = {},
   ) =>
     render(
       <HelplineWorkspace
@@ -72,6 +79,8 @@ export const createHarness = () => {
         applyInBuilder={applyInBuilder}
         draftClient={inProcessDraftClient(context, user)}
         onReload={onReload}
+        userName={user.name}
+        loadPeople={loadPeople}
         saveDelayMs={0}
       />,
     );

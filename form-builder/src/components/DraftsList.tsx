@@ -24,6 +24,13 @@ import type { DraftClient } from '../draftClient';
 import { HelplineFilter } from './HelplineFilter';
 import '../designStatus.css';
 
+// e.g. "2 sections need changes": what the Aselo reviewer sent back
+const changesNeededText = (draft: DraftSummary) => {
+  const count = Object.values(draft.meta.reviews ?? {}).filter((review) => review.status === 'changes-needed').length;
+  if (count === 0) return undefined;
+  return count === 1 ? '1 section needs changes' : `${count} sections need changes`;
+};
+
 type Props = {
   draftClient: DraftClient;
   isAseloStaff: boolean;
@@ -85,6 +92,9 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
                     </span>
                   ) : (
                     <span className="design-status design-status-in-progress">In progress</span>
+                  )}
+                  {changesNeededText(draft) && (
+                    <span className="drafts-changes-needed"> · {changesNeededText(draft)}</span>
                   )}
                 </td>
                 <td>

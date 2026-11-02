@@ -20,8 +20,14 @@
  * ends up in the browser bundle.
  */
 import type { ApplyResult, Me } from '../server/api';
-import type { Draft, DraftMeta, DraftSummary } from '../server/drafts';
+import type { Draft, DraftMeta, DraftSummary, ReviewStatus } from '../server/drafts';
 import { apiFetch } from './auth';
+
+// A change to a draft's section comments (server/api.ts, POST .../comments)
+export type CommentChange =
+  | { action: 'add'; section: string; text: string; assignee?: string; assigneeEmail?: string }
+  | { action: 'resolve'; id: string; resolved: boolean }
+  | { action: 'delete'; id: string };
 
 export type SaveDraftRequest = {
   expectedRevision: number;
@@ -40,6 +46,15 @@ export type DraftClient = {
   // The draft's revision afterwards: 0, unless it still holds changes this person can't see
   discard(code: string, version: string): Promise<number>;
   submit(code: string, version: string): Promise<DraftMeta>;
+  // Aselo staff: mark a section as reviewed or needing changes, with its fingerprint, or clear the mark (null)
+  review(
+    code: string,
+    version: string,
+    section: string,
+    fingerprint: string | null,
+    status?: ReviewStatus,
+  ): Promise<DraftMeta>;
+  comment(code: string, version: string, change: CommentChange): Promise<DraftMeta>;
   // description: the change log, for the PR the deployed Apply opens
   apply(code: string, version: string, description?: string): Promise<ApplyResult>;
   list(): Promise<DraftSummary[]>;
@@ -73,6 +88,9 @@ export const clientFor = (send: Send): DraftClient => {
     },
     discard: async (code, version) => (await expectOk('DELETE', `/api/drafts/${code}/${version}`))?.revision ?? 0,
     submit: (code, version) => expectOk('POST', `/api/drafts/${code}/${version}/submit`),
+    review: (code, version, section, fingerprint, status) =>
+      expectOk('POST', `/api/drafts/${code}/${version}/review`, { section, fingerprint, status }),
+    comment: (code, version, change) => expectOk('POST', `/api/drafts/${code}/${version}/comments`, change),
     apply: (code, version, description) =>
       expectOk('POST', `/api/drafts/${code}/${version}/apply`, description === undefined ? undefined : { description }),
     list: () => expectOk('GET', '/api/drafts'),

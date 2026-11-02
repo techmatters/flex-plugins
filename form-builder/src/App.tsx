@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import type { DefinitionFiles, HelplineSummary } from '../server/definitionsApi';
 import type { Me } from '../server/api';
@@ -29,7 +29,7 @@ import { RoutingArea } from './routing/RoutingArea';
 import type { RoutingClient } from './routing/routingClient';
 import { ChatbotsArea } from './chatbots/ChatbotsArea';
 import type { ChatbotClient } from './chatbots/chatbotClient';
-import type { BoardClient } from './flows/boardClient';
+import { BoardClient, httpBoardClient } from './flows/boardClient';
 
 type Area = 'forms' | 'flows' | 'routing' | 'chatbots';
 
@@ -64,6 +64,8 @@ export const App = ({ draftClient = httpDraftClient, boardClient, routingClient,
   const [error, setError] = useState<string>();
   // Bumped to load the helpline again (after applying, or when someone else changed the draft)
   const [reloadCount, setReloadCount] = useState(0);
+  // The flow designer's people lists, for who a form comment is for (stable, so it loads once)
+  const loadPeople = useCallback((list: string) => (boardClient ?? httpBoardClient).people(list), [boardClient]);
   // Aselo staff can see the app as helpline staff do
   const [viewAsHelplineStaff, setViewAsHelplineStaff] = useState(false);
 
@@ -271,6 +273,8 @@ export const App = ({ draftClient = httpDraftClient, boardClient, routingClient,
             applyInBuilder={user?.applyInBuilder !== false}
             draftClient={draftClient}
             onReload={() => setReloadCount((count) => count + 1)}
+            userName={user.name}
+            loadPeople={loadPeople}
           />
         )}
       </div>

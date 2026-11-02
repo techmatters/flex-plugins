@@ -111,8 +111,12 @@ when you're done.
 
 ### 4. What happens next
 
-The Aselo team reviews the draft. They may fix small things themselves, or contact you. Once it's
-approved and published, counselors see the changes, and the draft is cleared from the builder.
+The Aselo team reviews the draft. They may fix small things themselves, or ask you for changes:
+the draft's line on the start page says how many sections need changes, and in the draft those
+sections have an orange ⚠ in the menu. Open each one, read the comments at the top (those marked
+**For** you are yours to do), make the changes, resolve the comment (✓) or answer it, and submit
+again. Once it's approved and published, counselors see the changes, and the draft is cleared
+from the builder.
 Ask support@aselo.org if you want to know where a change is.
 
 ## For Aselo staff
@@ -152,6 +156,21 @@ also posted in the Slack channel.
 3. To look closer, open the changed sections; **Try it out in Aselo** shows the contact form as
    counselors will use it.
 4. Fix anything small directly in the draft (it saves for everyone), or ask the helpline.
+5. To keep track, mark each section at the top once you've checked it:
+   - **Mark as reviewed**: it gets a green ✓ in the menu. If the section changes afterwards (by
+     you or the helpline), the ✓ turns into a grey ● until you mark it again.
+   - **Changes needed**: it gets an orange ⚠ in the menu, for you and for the helpline, and the
+     comment box opens: say what to change and, under **For**, who should do it (from the
+     helpline's people list and the Aselo team's, the same lists as the flow designer's tasks).
+     Once they've changed it, the bar says so; check it and **Mark as reviewed**.
+   - **Undo** clears the mark.
+
+   The top bar counts the sections reviewed and those needing changes. Marks and comments are
+   kept with the draft, so the rest of the Aselo team sees them, and go away when the draft is
+   discarded or applied.
+
+Anyone can comment on any section (**+ Add a comment** at the top of it), resolve a comment
+(✓), or delete their own; Aselo staff can delete any comment.
 
 ### Publishing (for now, by hand)
 

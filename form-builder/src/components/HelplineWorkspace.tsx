@@ -18,7 +18,9 @@
  * Everything for one loaded helpline: navigation, the draft, editing, previews and export.
  * Rendered with a code/version key so switching helpline starts fresh.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { AlertTriangle } from 'lucide-react';
+import type { ReviewStatus } from '../../server/drafts';
 import type { DefinitionFiles } from '../../server/definitionsApi';
 import {
   CATEGORIES_FILE,
@@ -55,22 +57,19 @@ import { WebchatFormEditor } from './webchat/WebchatFormEditor';
 import { PRE_ENGAGEMENT_FILE } from '../webchat';
 import { FormSelectorEditor } from './sections/FormSelectorEditor';
 import { checkFormSelectorFlag, FORM_SELECTOR_PREFIX } from '../formSelector';
+import {
+  changedSinceReview,
+  ReviewState,
+  reviewState,
+  sectionFingerprint,
+  sectionId,
+  SectionView,
+} from '../sectionReviews';
+import { ASELO_PEOPLE_CODE, Person } from '../flows/model';
+import { SectionComments } from './SectionComments';
 
 // Which screen is showing in the main area
-type View =
-  | { kind: 'contactTab'; tabKey: string }
-  | { kind: 'categories' }
-  | { kind: 'callTypes' }
-  | { kind: 'cannedResponses' }
-  | { kind: 'messages' }
-  | { kind: 'webchat' }
-  | { kind: 'formSelector' }
-  | { kind: 'caseStatus' }
-  | { kind: 'caseSections' }
-  | { kind: 'features' }
-  | { kind: 'serviceConfig' }
-  | { kind: 'profiles' }
-  | { kind: 'caseSection'; sectionKey: string };
+type View = SectionView;
 
 const sameView = (a: View, b: View) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -81,24 +80,45 @@ const NavItem = ({
   target,
   label,
   errors,
+  reviewOf,
 }: {
   current: View;
   onSelect: (view: View) => void;
   target: View;
   label: string;
   errors?: number;
-}) => (
-  <li>
-    <button
-      type="button"
-      className={sameView(current, target) ? 'nav-item active' : 'nav-item'}
-      onClick={() => onSelect(target)}
-    >
-      {label}
-      {Boolean(errors) && <span className="nav-error-count">{errors}</span>}
-    </button>
-  </li>
-);
+  // Whether the section is reviewed; undefined unless Aselo staff are reviewing a draft
+  reviewOf: (target: View) => ReviewState | undefined;
+}) => {
+  const review = reviewOf(target);
+  return (
+    <li>
+      <button
+        type="button"
+        className={sameView(current, target) ? 'nav-item active' : 'nav-item'}
+        onClick={() => onSelect(target)}
+      >
+        {review === 'reviewed' && (
+          <span className="nav-reviewed" role="img" aria-label="Reviewed" title="Reviewed">
+            ✓
+          </span>
+        )}
+        {review === 'changes-needed' && (
+          <span className="nav-changes-needed" role="img" aria-label="Changes needed" title="Changes needed">
+            <AlertTriangle size={13} aria-hidden />
+          </span>
+        )}
+        {review === 'changed' && (
+          <span className="nav-review-changed" role="img" aria-label="Changed since reviewed" title="Changed since reviewed">
+            ●
+          </span>
+        )}
+        {label}
+        {Boolean(errors) && <span className="nav-error-count">{errors}</span>}
+      </button>
+    </li>
+  );
+};
 
 type Props = {
   definitions: DefinitionFiles;
@@ -111,6 +131,10 @@ type Props = {
   draftClient: DraftClient;
   // Reload the helpline from the server (after applying, or when someone else changed the draft)
   onReload: () => void;
+  // Who's signed in, for their own comments
+  userName?: string;
+  // A people list (a helpline's, or the Aselo team's), to say who a comment is for
+  loadPeople?: (code: string) => Promise<Person[]>;
   saveDelayMs?: number;
 };
 
@@ -130,6 +154,8 @@ export const HelplineWorkspace = ({
   applyInBuilder = true,
   draftClient,
   onReload,
+  userName = '',
+  loadPeople,
   saveDelayMs,
 }: Props) => {
   const { code, version, files: originalFiles } = definitions;
@@ -185,6 +211,149 @@ export const HelplineWorkspace = ({
   const referenceData = getReferenceData(files);
   const caseSections = getCaseSections(files);
   const changeCount = draft.changedPaths.length;
+
+  // Reviews and comments live in the draft, so they're there while it has changes. Aselo staff
+  // mark sections as reviewed or needing changes; helpline staff see what needs changes
+  const hasDraft = changeCount > 0 && draft.saveState !== 'loading';
+  const canReview = canApply && hasDraft;
+  const reviews = draft.meta?.reviews;
+  const reviewOf = (target: View): ReviewState | undefined => {
+    if (!hasDraft) return undefined;
+    const state = reviewState(target, reviews, files, caseTargets);
+    return canReview || state === 'changes-needed' ? state : undefined;
+  };
+  // Every section in the menu, to count how many are reviewed
+  const menuSections: View[] = canReview
+    ? [
+        { kind: 'features' },
+        { kind: 'serviceConfig' },
+        ...CONTACT_TABS.filter((tab) => files[tab.filePath]).map((tab): View => ({ kind: 'contactTab', tabKey: tab.key })),
+        ...(files[CATEGORIES_FILE] !== undefined ? [{ kind: 'categories' } as View] : []),
+        { kind: 'formSelector' },
+        { kind: 'callTypes' },
+        { kind: 'cannedResponses' },
+        { kind: 'messages' },
+        ...(originalFiles[PRE_ENGAGEMENT_FILE] !== undefined ? [{ kind: 'webchat' } as View] : []),
+        { kind: 'caseSections' },
+        { kind: 'caseStatus' },
+        ...caseSections.map((section): View => ({ kind: 'caseSection', sectionKey: section.key })),
+        ...(hasProfiles(originalFiles) ? [{ kind: 'profiles' } as View] : []),
+      ]
+    : [];
+  const reviewedCount = menuSections.filter((target) => reviewOf(target) === 'reviewed').length;
+  const changesNeededCount = menuSections.filter((target) => reviewOf(target) === 'changes-needed').length;
+  const [reviewBusy, setReviewBusy] = useState(false);
+  const [reviewError, setReviewError] = useState<string>();
+  // null clears the mark
+  const setReview = async (status: ReviewStatus | null) => {
+    setReviewBusy(true);
+    setReviewError(undefined);
+    try {
+      await draft.review(
+        sectionId(view),
+        status ? sectionFingerprint(view, files, caseTargets) : null,
+        status ?? undefined,
+      );
+    } catch (err) {
+      setReviewError(`Couldn't save the review: ${(err as Error).message}`);
+    } finally {
+      setReviewBusy(false);
+    }
+  };
+
+  // Who comments can be for: the helpline's people and the Aselo team (the flow designer's lists)
+  const [people, setPeople] = useState<Person[]>([]);
+  useEffect(() => {
+    if (!loadPeople) return undefined;
+    let current = true;
+    Promise.all([code, ASELO_PEOPLE_CODE].map((list) => loadPeople(list).catch((): Person[] => [])))
+      .then((lists) => {
+        if (!current) return;
+        const seen = new Set<string>();
+        setPeople(
+          lists.flat().filter((person) => {
+            const key = person.email ?? person.name;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          }),
+        );
+      })
+      .catch(() => {});
+    return () => {
+      current = false;
+    };
+  }, [code, loadPeople]);
+
+  const reviewButton = (status: ReviewStatus, label: string) => (
+    <button type="button" className="secondary-button" disabled={reviewBusy} onClick={() => setReview(status)}>
+      {label}
+    </button>
+  );
+
+  const renderReviewBar = () => {
+    const state = reviewOf(view);
+    if (!state) return null;
+    const review = reviews?.[sectionId(view)];
+    const when = review ? new Date(review.at).toLocaleString() : '';
+    const undo = (
+      <button type="button" className="link-button" disabled={reviewBusy} onClick={() => setReview(null)}>
+        Undo
+      </button>
+    );
+    // Helpline staff only get here for a section that needs changes
+    if (!canReview) {
+      return (
+        <div className="review-bar review-bar-changes-needed">
+          <AlertTriangle size={16} className="nav-changes-needed" aria-hidden />
+          <span>
+            The Aselo team asked for changes here ({review?.by}, {when}). See the comments below.
+          </span>
+        </div>
+      );
+    }
+    return (
+      <div className={`review-bar review-bar-${state}`}>
+        {state === 'reviewed' && (
+          <>
+            <span>
+              <span className="nav-reviewed" aria-hidden="true">
+                ✓
+              </span>
+              Reviewed by {review?.by}, {when}
+            </span>
+            {undo}
+          </>
+        )}
+        {state === 'changed' && (
+          <>
+            <span>Changed since {review?.by} reviewed it ({when}).</span>
+            {reviewButton('reviewed', 'Mark as reviewed again')}
+            {reviewButton('changes-needed', 'Changes needed')}
+          </>
+        )}
+        {state === 'changes-needed' && review && (
+          <>
+            <AlertTriangle size={16} className="nav-changes-needed" aria-hidden />
+            <span>
+              Changes needed, asked by {review.by} ({when})
+              {changedSinceReview(review, view, files, caseTargets) ? '. It has changed since: check it again.' : '.'}
+            </span>
+            {reviewButton('reviewed', 'Mark as reviewed')}
+            {undo}
+          </>
+        )}
+        {state === 'none' && (
+          <>
+            <span className="muted">Not reviewed yet.</span>
+            {reviewButton('reviewed', 'Mark as reviewed')}
+            {reviewButton('changes-needed', 'Changes needed')}
+          </>
+        )}
+        {reviewError && <span className="issue issue-error">{reviewError}</span>}
+      </div>
+    );
+  };
 
   const discard = async () => {
     if (window.confirm('Discard all the draft changes for this helpline? This can’t be undone.')) {
@@ -444,6 +613,12 @@ export const HelplineWorkspace = ({
             {draft.meta.updatedAt ? `, ${new Date(draft.meta.updatedAt).toLocaleString()}` : ''}
           </span>
         )}
+        {canReview && (
+          <span className={reviewedCount === menuSections.length ? 'review-progress review-progress-done' : 'review-progress'}>
+            Reviewed: {reviewedCount} of {menuSections.length} sections
+            {changesNeededCount > 0 ? ` · ${changesNeededCount} need${changesNeededCount === 1 ? 's' : ''} changes` : ''}
+          </span>
+        )}
         {changeCount > 0 && (
           <button type="button" className="link-button" onClick={discard}>
             Discard draft
@@ -487,10 +662,10 @@ export const HelplineWorkspace = ({
             <>
               <h3>Helpline</h3>
               <ul>
-                <NavItem current={view} onSelect={setView} target={{ kind: 'features' }} label="Features" />
+                <NavItem current={view} onSelect={setView} reviewOf={reviewOf} target={{ kind: 'features' }} label="Features" />
                 <NavItem
                   current={view}
-                  onSelect={setView}
+                  onSelect={setView} reviewOf={reviewOf}
                   target={{ kind: 'serviceConfig' }}
                   label="Service configuration"
                 />
@@ -500,7 +675,7 @@ export const HelplineWorkspace = ({
           <h3>Contact forms</h3>
           <ul>
             {CONTACT_TABS.filter((tab) => files[tab.filePath]).map((tab) => (
-              <NavItem current={view} onSelect={setView}
+              <NavItem current={view} onSelect={setView} reviewOf={reviewOf}
                 key={tab.key}
                 target={{ kind: 'contactTab', tabKey: tab.key }}
                 label={tab.title}
@@ -508,7 +683,7 @@ export const HelplineWorkspace = ({
               />
             ))}
             {files[CATEGORIES_FILE] !== undefined && (
-              <NavItem current={view} onSelect={setView}
+              <NavItem current={view} onSelect={setView} reviewOf={reviewOf}
                 target={{ kind: 'categories' }}
                 label="Issue categories"
                 errors={sectionErrorCount('Issue categories')}
@@ -516,7 +691,7 @@ export const HelplineWorkspace = ({
             )}
             <NavItem
               current={view}
-              onSelect={setView}
+              onSelect={setView} reviewOf={reviewOf}
               target={{ kind: 'formSelector' }}
               label={FORM_SELECTOR_PREFIX}
               errors={sectionErrorCount(FORM_SELECTOR_PREFIX)}
@@ -524,19 +699,19 @@ export const HelplineWorkspace = ({
           </ul>
           <h3>Chats and calls</h3>
           <ul>
-            <NavItem current={view} onSelect={setView}
+            <NavItem current={view} onSelect={setView} reviewOf={reviewOf}
               target={{ kind: 'callTypes' }}
               label="Call types"
               errors={sectionErrorCount('Call types')}
             />
-            <NavItem current={view} onSelect={setView}
+            <NavItem current={view} onSelect={setView} reviewOf={reviewOf}
               target={{ kind: 'cannedResponses' }}
               label="Canned responses"
               errors={sectionErrorCount('Canned responses')}
             />
-            <NavItem current={view} onSelect={setView} target={{ kind: 'messages' }} label="Automatic messages" />
+            <NavItem current={view} onSelect={setView} reviewOf={reviewOf} target={{ kind: 'messages' }} label="Automatic messages" />
             {originalFiles[PRE_ENGAGEMENT_FILE] !== undefined && (
-              <NavItem current={view} onSelect={setView}
+              <NavItem current={view} onSelect={setView} reviewOf={reviewOf}
                 target={{ kind: 'webchat' }}
                 label="Webchat form"
                 errors={sectionErrorCount('Webchat form')}
@@ -545,18 +720,18 @@ export const HelplineWorkspace = ({
           </ul>
           <h3>Cases</h3>
           <ul>
-            <NavItem current={view} onSelect={setView}
+            <NavItem current={view} onSelect={setView} reviewOf={reviewOf}
               target={{ kind: 'caseSections' }}
               label="Sections"
               errors={sectionErrorCount('Case sections')}
             />
-            <NavItem current={view} onSelect={setView}
+            <NavItem current={view} onSelect={setView} reviewOf={reviewOf}
               target={{ kind: 'caseStatus' }}
               label="Case statuses"
               errors={sectionErrorCount('Case statuses')}
             />
             {caseSections.map((section) => (
-              <NavItem current={view} onSelect={setView}
+              <NavItem current={view} onSelect={setView} reviewOf={reviewOf}
                 key={section.key}
                 target={{ kind: 'caseSection', sectionKey: section.key }}
                 label={section.label}
@@ -568,7 +743,7 @@ export const HelplineWorkspace = ({
             <>
               <h3>Client profiles</h3>
               <ul>
-                <NavItem current={view} onSelect={setView}
+                <NavItem current={view} onSelect={setView} reviewOf={reviewOf}
                   target={{ kind: 'profiles' }}
                   label="Profiles"
                   errors={sectionErrorCount('Client profiles')}
@@ -589,6 +764,19 @@ export const HelplineWorkspace = ({
                 ))}
               </ul>
             </div>
+          )}
+          {renderReviewBar()}
+          {hasDraft && (
+            <SectionComments
+              key={sectionId(view)}
+              section={sectionId(view)}
+              comments={draft.meta?.comments ?? []}
+              people={people}
+              userName={userName}
+              isAseloStaff={canApply}
+              expanded={reviewOf(view) === 'changes-needed'}
+              onChange={draft.comment}
+            />
           )}
           {renderMain()}
         </main>
