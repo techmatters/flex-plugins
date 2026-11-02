@@ -1651,6 +1651,17 @@ const STUDIO_CONDITION_NAME = /^If value \S+ (.+)$/i;
 export const conditionExitName = (friendlyName: string | undefined, value: string | undefined) =>
   friendlyName && !(value && STUDIO_CONDITION_NAME.test(friendlyName)) ? friendlyName : value;
 
+// Ways out Studio always has (a split's noMatch, a Gather's timeout, a request's failed...): they're
+// kept, as named. Imported widgets: those that aren't a split's conditions
+export const fixedExitsOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio'>): string[] => {
+  const exits = exitsOf(object);
+  const transitions = object.studio?.transitions;
+  if (transitions) return exits.filter((_, index) => transitions[index] && transitions[index].event !== 'match');
+  if (object.type === 'other') return [];
+  const own = isSplitObject(object) ? [] : (OBJECT_TYPES[object.type].exits ?? []);
+  return exits.filter((exit) => exit === 'noMatch' || own.includes(exit));
+};
+
 // Studio's Split Based On operators, as its editor names them
 export const SPLIT_OPERATORS: { type: string; label: string }[] = [
   { type: 'equal_to', label: 'Equal to' },

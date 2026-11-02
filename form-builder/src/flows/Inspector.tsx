@@ -24,6 +24,7 @@ import {
   composeName,
   exitConditionOf,
   exitsOf,
+  fixedExitsOf,
   isSplitObject,
   SPLIT_OPERATORS,
   FlowObjectType,
@@ -658,12 +659,15 @@ const Comments = ({
 
 const ExitsEditor = ({
   exits,
+  fixed,
   readOnly,
   onChange,
   operatorOf,
   onOperator,
 }: {
   exits: string[];
+  // Those Studio always has: neither renamed nor removed
+  fixed: string[];
   readOnly: boolean;
   onChange: (exits: string[], renamed?: { from: string; to: string }) => void;
   // A split's: how each way out is compared with what it splits on
@@ -672,7 +676,10 @@ const ExitsEditor = ({
 }) => (
   <section className="flow-inspector-section">
     <h3>Ways out</h3>
-    <p className="field-hint">The answers or results this can lead to. Each connection from it is one of these.</p>
+    <p className="field-hint">
+      The answers or results this can lead to. Each connection from it is one of these. Those Studio always has (no
+      match, timeout, failed...) can't be removed.
+    </p>
     {operatorOf && (
       <p className="field-hint">
         Several values separated by commas (Si,si,ok) match any of them. Pick another comparison where needed.
@@ -700,7 +707,8 @@ const ExitsEditor = ({
             type="text"
             value={exit}
             aria-label="Way out"
-            disabled={readOnly}
+            disabled={readOnly || fixed.includes(exit)}
+            title={fixed.includes(exit) ? 'Studio always has this way out' : undefined}
             onChange={(e) =>
               onChange(
                 exits.map((candidate, i) => (i === index ? e.target.value : candidate)),
@@ -708,7 +716,7 @@ const ExitsEditor = ({
               )
             }
           />
-          {!readOnly && (
+          {!readOnly && !fixed.includes(exit) && (
             <button
               type="button"
               className="icon-button"
@@ -1171,6 +1179,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
       {info.editableExits && (
         <ExitsEditor
           exits={exitsOf(object)}
+          fixed={fixedExitsOf(object)}
           readOnly={readOnly}
           onChange={(exits, renamed) => props.onRenameExit(node.id, exits, renamed)}
           {...(isSplitObject(object)

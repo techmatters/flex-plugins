@@ -19,7 +19,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { describe, expect, test } from 'vitest';
 import type { BoardContent, FlowObject } from '../src/flows/model';
-import { emptyBoard, fieldProblem } from '../src/flows/model';
+import { emptyBoard, fieldProblem, fixedExitsOf } from '../src/flows/model';
 import { toStudioFlow, toStudioFlows } from '../src/flows/studioTemplate';
 import { importHelpline } from './flowImport';
 import { parseTemplate } from './hcl';
@@ -323,6 +323,31 @@ describe('Splits and the standard requests', () => {
     expect(added.transitions[3].conditions).toEqual([
       { ...condition('tres,3', 'If value matches_any_of tres,3'), type: 'matches_any_of' },
     ]);
+  });
+
+  test("the ways out Studio always has can't be removed", () => {
+    expect(fixedExitsOf(object('d', 'decision', { exits: ['Yes', 'No', 'noMatch'] }))).toEqual(['noMatch']);
+    expect(fixedExitsOf(object('m', 'menuVoice', { exits: ['keypress', 'speech', 'timeout'] }))).toEqual([
+      'keypress',
+      'speech',
+      'timeout',
+    ]);
+    expect(fixedExitsOf(object('m', 'menuVoice', { exits: ['1', '2', 'noMatch', 'timeout'] }))).toEqual([
+      'noMatch',
+      'timeout',
+    ]);
+    expect(fixedExitsOf(object('f', 'function', { exits: ['success', 'failed', 'other'] }))).toEqual([
+      'success',
+      'failed',
+    ]);
+    expect(fixedExitsOf(object('o', 'other', { exits: ['next'] }))).toEqual([]);
+    // Imported: what isn't one of its conditions
+    const studio = {
+      name: 'split_x',
+      type: 'split-based-on',
+      transitions: [{ event: 'noMatch' }, { event: 'match', conditions: [] }],
+    };
+    expect(fixedExitsOf(object('i', 'decision', { studio, exits: ['noMatch', '1'] }))).toEqual(['noMatch']);
   });
 
   test('the profile check, operating hours and the team alert send what the helplines send', () => {

@@ -146,7 +146,10 @@ describe('flow designer', { timeout: 20_000 }, () => {
     expect(within(settings).getByRole('combobox', { name: /^Kind/ })).toHaveProperty('value', 'decision');
     fireEvent.click(within(settings).getByRole('button', { name: /^Use split_decision/ }));
     // Each way out says how it's compared: a list of values matches any of them
-    const [yes] = within(settings).getAllByRole('textbox', { name: 'Way out' });
+    const [yes, , noMatch] = within(settings).getAllByRole('textbox', { name: 'Way out' });
+    // noMatch is Studio's: kept, as named
+    expect(noMatch).toHaveProperty('disabled', true);
+    expect(within(settings).getAllByRole('button', { name: 'Remove way out' })).toHaveLength(2);
     fireEvent.change(yes, { target: { value: 'Yes,yes,ok' } });
     expect(within(settings).getByRole('combobox', { name: 'Comparison for Yes,yes,ok' })).toHaveProperty(
       'value',
