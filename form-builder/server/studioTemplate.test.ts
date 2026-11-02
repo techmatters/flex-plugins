@@ -383,4 +383,18 @@ describe('Splits and the standard requests', () => {
     });
     expect(generated.text).not.toMatch(/"TODO"|parsed\.TODO/);
   });
+
+  test('the skilled worker checks split on what each route answers', () => {
+    const content = smsBoard([
+      object('available', 'checkQueueAvailability', { studioName: 'f_isSkilledWorkerAvailable_spanish' }),
+      object('loggedIn', 'checkWorkerLoggedIn', { studioName: 'f_isSkilledWorkerLoggedIn_chattext_spanish' }),
+    ]);
+    const inputs = toStudioFlow(content, content.frames[0])
+      .flow.states.filter((state) => state.type === 'split-based-on')
+      .map((state) => state.properties.input);
+    expect(inputs).toEqual([
+      '{{widgets.f_isSkilledWorkerAvailable_spanish.parsed.totalAvailableWorkers}}',
+      '{{widgets.f_isSkilledWorkerLoggedIn_chattext_spanish.parsed.totalLoggedInWorkers}}',
+    ]);
+  });
 });

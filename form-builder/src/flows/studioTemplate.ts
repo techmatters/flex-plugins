@@ -852,11 +852,9 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       case 'checkWorkerLoggedIn': {
         const result =
           object.type === 'checkQueueAvailability' ? ['available', 'not available'] : ['logged in', 'not logged in'];
-        const input = `{{widgets.${name}.parsed.totalAvailableWorkers}}`;
-        if (object.type === 'checkWorkerLoggedIn')
-          todo.push(
-            `${label(object)}: check the field its split reads in STUDIO_ROUTES.md (worker/isSkilledWorkerLoggedIn).`,
-          );
+        // What each route answers (STUDIO_ROUTES.md): how many could take it now, or are logged in
+        const field = object.type === 'checkQueueAvailability' ? 'totalAvailableWorkers' : 'totalLoggedInWorkers';
+        const input = `{{widgets.${name}.parsed.${field}}}`;
         return [
           {
             name,
