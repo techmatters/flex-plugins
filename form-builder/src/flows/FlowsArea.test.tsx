@@ -434,6 +434,23 @@ describe('flow designer', { timeout: 20_000 }, () => {
       expect(recordingFiles.files.get('usnm/staging/survey_es/play_message_voice_thanks.mp3')?.content).toBe('gracias'),
     );
     expect(recordingFiles.files.has('usnm/staging/survey_en/play_message_voice_thanks.mp3')).toBe(false);
+    // Replaced: the same file, and the player asks for the new version, not the one the browser kept
+    const player = () => recording().getByLabelText('Staging recording') as HTMLAudioElement;
+    const before = (await waitFor(() => player())).getAttribute('src');
+    fireEvent.change(recording().getByLabelText('Replace recording'), {
+      target: { files: [new File(['otra'], 'thanks.wav', { type: 'audio/wav' })] },
+    });
+    expect(recording().getByText(/plays play_message_voice_thanks.mp3: upload the new recording as MP3/)).toBeTruthy();
+    fireEvent.change(recording().getByLabelText('Replace recording'), {
+      target: { files: [new File(['muchas gracias'], 'nuevo.mp3', { type: 'audio/mpeg' })] },
+    });
+    await waitFor(() =>
+      expect(recordingFiles.files.get('usnm/staging/survey_es/play_message_voice_thanks.mp3')?.content).toBe(
+        'muchas gracias',
+      ),
+    );
+    await waitFor(() => expect(player().getAttribute('src')).not.toBe(before));
+    expect(player().getAttribute('src')).toMatch(/play_message_voice_thanks\.mp3\?v=/);
 
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
     const thanks = (await boards.get('usnm', board.id))!.content.objects.find(

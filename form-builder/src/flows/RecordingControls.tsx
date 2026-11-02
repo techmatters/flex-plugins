@@ -32,6 +32,7 @@ import {
   MAX_RECORDING_BYTES,
   messageStatus,
   playsWaitRecording,
+  playUrl,
   RECORDING_EXTENSIONS,
   recordingOf,
   standardRecordingName,
@@ -65,6 +66,19 @@ export const recordingFileProblem = (file: File) => {
   }
   if (file.size > MAX_RECORDING_BYTES) return `${file.name} is too big for a recording.`;
   return undefined;
+};
+
+/**
+ * The file an upload for this widget goes to: the one it plays now (a replacement keeps its name,
+ * which is what Studio plays), or one named after its Studio name. A different kind (a WAV for an
+ * MP3) can't replace it: Studio would keep playing the old file.
+ */
+export const uploadTarget = (file: File, studioName: string, current?: Recording) => {
+  if (!current) return { fileName: `${studioName}.${extensionOf(file)}` };
+  const kind = current.fileName.split('.').pop()?.toLowerCase();
+  return kind === extensionOf(file)
+    ? { fileName: current.fileName }
+    : { problem: `This widget plays ${current.fileName}: upload the new recording as ${kind?.toUpperCase()} too.` };
 };
 
 export const StatusChip = ({ status }: { status: MessageStatus }) => (
@@ -169,9 +183,11 @@ export const RecordingSection = ({
   const busy = recording ? actions.busy.has(recording.fileName) : false;
 
   const upload = (file: File) => {
-    const found = recordingFileProblem(file);
+    if (!object.studioName) return;
+    const target = uploadTarget(file, object.studioName, recording);
+    const found = recordingFileProblem(file) ?? target.problem;
     setProblem(found);
-    if (!found && object.studioName) actions.upload(`${object.studioName}.${extensionOf(file)}`, file);
+    if (!found && target.fileName) actions.upload(target.fileName, file);
   };
 
   return (
@@ -216,7 +232,7 @@ export const RecordingSection = ({
                 Staging · uploaded{recording.uploadedBy ? ` by ${recording.uploadedBy}` : ''}{' '}
                 {when(recording.uploadedAt)}
               </span>
-              <audio controls preload="none" src={recording.staging.url} aria-label="Staging recording" />
+              <audio controls preload="none" src={playUrl(recording.staging)} aria-label="Staging recording" />
               {recording.approvedBy && (
                 <span className="field-hint">
                   Approved by {recording.approvedBy} {when(recording.approvedAt)}
@@ -232,7 +248,7 @@ export const RecordingSection = ({
                 {recording.publishedBy ? ` · published by ${recording.publishedBy} ${when(recording.publishedAt)}` : ''}
               </span>
               {!isPublished(recording) && (
-                <audio controls preload="none" src={recording.production.url} aria-label="Production recording" />
+                <audio controls preload="none" src={playUrl(recording.production)} aria-label="Production recording" />
               )}
             </div>
           )}
@@ -350,7 +366,12 @@ export const RecordingsPanel = ({
         leftOver.push(file);
         continue;
       }
-      await actions.upload(`${base}.${extensionOf(file)}`, file);
+      const target = uploadTarget(file, base, recordingOf(match.object, recordings));
+      if (!target.fileName) {
+        lines.push(`${file.name}: ${target.problem}`);
+        continue;
+      }
+      await actions.upload(target.fileName, file);
       lines.push(`${file.name} uploaded.`);
     }
     setReport(lines);
@@ -477,7 +498,7 @@ export const RecordingsPanel = ({
                 <audio
                   controls
                   preload="none"
-                  src={recording.staging.url}
+                  src={playUrl(recording.staging)}
                   aria-label={`${recording.fileName} (staging)`}
                 />
               )}
@@ -508,7 +529,7 @@ export const RecordingsPanel = ({
                   <audio
                     controls
                     preload="none"
-                    src={recording.staging.url}
+                    src={playUrl(recording.staging)}
                     aria-label={`${recording.fileName} (staging)`}
                   />
                 )}

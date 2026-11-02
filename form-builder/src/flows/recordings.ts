@@ -75,6 +75,10 @@ export type RecordingsList = {
   recordings: Recording[];
 };
 
+// Where the page plays it from: a replaced file keeps its address, so the version makes the browser
+// fetch the new one instead of playing the old one it kept
+export const playUrl = (stored: StoredRecording) => `${stored.url}?v=${stored.etag}`;
+
 // The staging file is the one approved, and production has it too
 export const isApproved = (recording: Recording) => Boolean(recording.approvedBy && recording.staging);
 export const isPublished = (recording: Recording) =>

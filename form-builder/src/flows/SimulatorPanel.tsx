@@ -24,7 +24,7 @@ import { ArrowRight, CheckCheck, CircleAlert, Play, RotateCcw, Square, Trash2, U
 import type { BoardContent, FlowObject, TestedPath } from './model';
 import { messageFor, OBJECT_TYPES } from './model';
 import type { Recording } from './recordings';
-import { recordingOf } from './recordings';
+import { playUrl, recordingOf } from './recordings';
 import { answer, coverageOf, SimAnswer, SimRun, startRun, widgetNameOf } from './simulate';
 
 type Props = {
@@ -211,7 +211,7 @@ export const SimulatorPanel = ({
                 <p className="field-hint">No script yet.</p>
               )}
               {recording?.staging ? (
-                <audio controls preload="none" src={recording.staging.url} aria-label="Recording" />
+                <audio controls preload="none" src={playUrl(recording.staging)} aria-label="Recording" />
               ) : (
                 message.recordingFile && (
                   <p className="field-hint">Plays {message.recordingFile} (not uploaded here).</p>
