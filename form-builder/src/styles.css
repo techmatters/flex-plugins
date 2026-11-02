@@ -1365,12 +1365,19 @@ body {
   border-top: 1px solid var(--color-border);
 }
 
+/* The frame wraps the webchat window, so only the window's form scrolls (as in the real webchat) */
 .section-preview-frame.webchat-preview-frame {
   display: flex;
   justify-content: center;
   padding: 24px 12px;
   background: var(--color-bg);
-  overflow: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+.webchat-preview-frame .webchat-window {
+  height: min(590px, calc(100vh - 260px));
+  min-height: 360px;
 }
 
 .prepopulate-targets {
