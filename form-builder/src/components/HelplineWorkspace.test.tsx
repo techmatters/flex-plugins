@@ -153,77 +153,72 @@ describe('HelplineWorkspace', () => {
     expect(within(dialog).getByText(/open a PR .*Once it is merged, discard this draft/)).toBeTruthy();
   });
 
-  test('Aselo staff mark sections as reviewed, and a later change to the section undoes it', async () => {
-    const { renderWorkspace } = createHarness();
-    renderWorkspace(usnm, { user: aseloStaff });
-    await renameRelationship('Relationship');
-    await screen.findByText(/All changes saved/);
-    const progress = screen.getByText(/^Reviewed: 0 of \d+ sections$/);
-    const sectionCount = progress.textContent!.match(/of (\d+)/)![1];
-
-    fireEvent.click(screen.getByRole('button', { name: 'Mark as reviewed' }));
-    expect(await screen.findByText(/^Reviewed by Aselo person/)).toBeTruthy();
-    expect(screen.getByText(`Reviewed: 1 of ${sectionCount} sections`)).toBeTruthy();
-    const sidebar = screen.getByRole('navigation');
-    const callerItem = within(sidebar).getByRole('button', { name: /Caller information/i });
-    expect(within(callerItem).getByRole('img', { name: 'Reviewed' })).toBeTruthy();
-
-    // Changing the reviewed section takes the check away until it's reviewed again
-    fireEvent.change(screen.getByDisplayValue('Relationship'), { target: { value: 'Relationship to caller' } });
-    expect(await within(callerItem).findByRole('img', { name: 'Changed since reviewed' })).toBeTruthy();
-    expect(screen.getByText(`Reviewed: 0 of ${sectionCount} sections`)).toBeTruthy();
-    fireEvent.click(screen.getByRole('button', { name: 'Mark as reviewed again' }));
-    expect(await within(callerItem).findByRole('img', { name: 'Reviewed' })).toBeTruthy();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
-    expect(await screen.findByRole('button', { name: 'Mark as reviewed' })).toBeTruthy();
-    expect(within(callerItem).queryByRole('img', { name: 'Reviewed' })).toBeNull();
-  });
-
-  test('Aselo staff ask for changes with a comment for someone; the helpline sees what to fix', async () => {
+  test('a helpline question on a field shows until Aselo answers and resolves it', async () => {
     const { renderWorkspace } = createHarness();
     const loadPeople = vi.fn(async (list: string) =>
-      list === 'usnm' ? [{ name: 'NAMI person', email: 'nami@example.org' }] : [{ name: 'Aselo person' }],
+      list === 'usnm' ? [{ name: 'NAMI person' }] : [{ name: 'Aselo person', email: 'aselo@example.org' }],
     );
-    const { unmount } = renderWorkspace(usnm, { user: aseloStaff, loadPeople });
-    await renameRelationship('Relationship');
-    await screen.findByText(/All changes saved/);
+    const { unmount } = renderWorkspace(usnm, { loadPeople });
 
-    fireEvent.click(screen.getByRole('button', { name: 'Changes needed' }));
-    expect(await screen.findByText(/^Changes needed, asked by Aselo person/)).toBeTruthy();
-    expect(screen.getByText(/1 needs changes/)).toBeTruthy();
-    const callerItem = within(screen.getByRole('navigation')).getByRole('button', { name: /Caller information/i });
-    expect(within(callerItem).getByRole('img', { name: 'Changes needed' })).toBeTruthy();
-
-    fireEvent.change(screen.getByRole('textbox', { name: 'New comment' }), {
-      target: { value: 'Use “Relationship to the help seeker”' },
+    // No change needed first: the question starts the draft
+    fireEvent.click(await findFieldCard('Relationship to Help Seeker'));
+    const fieldReview = screen.getByRole('region', { name: 'Review: Relationship to Help Seeker' });
+    fireEvent.click(within(fieldReview).getByRole('button', { name: '+ Flag or comment' }));
+    expect((within(fieldReview).getByRole('combobox', { name: 'Kind' }) as HTMLSelectElement).value).toBe('question');
+    fireEvent.change(within(fieldReview).getByRole('textbox', { name: 'New comment' }), {
+      target: { value: 'Should “Other” be an option?' },
     });
-    fireEvent.change(await screen.findByRole('combobox', { name: 'For' }), {
-      target: { value: 'nami@example.org' },
+    fireEvent.change(await within(fieldReview).findByRole('combobox', { name: 'For' }), {
+      target: { value: 'aselo@example.org' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Comment' }));
-    expect(await screen.findByText('For NAMI person')).toBeTruthy();
+    fireEvent.click(within(fieldReview).getByRole('button', { name: 'Add' }));
+    expect(await within(fieldReview).findByText('Should “Other” be an option?')).toBeTruthy();
+    expect(within(fieldReview).getByText('For Aselo person')).toBeTruthy();
+    expect(within(fieldCard('Relationship to Help Seeker')).getByRole('img', { name: 'Question' })).toBeTruthy();
+    const callerItem = () => within(screen.getByRole('navigation')).getByRole('button', { name: /Caller information/i });
+    expect(within(callerItem()).getByRole('img', { name: 'Question' })).toBeTruthy();
+    expect(screen.getByText(/1 open flag$/)).toBeTruthy();
     unmount();
 
-    // The helpline's staff open the same draft
-    renderWorkspace(usnm, { loadPeople });
-    expect(await screen.findByText(/The Aselo team asked for changes here/)).toBeTruthy();
-    expect(screen.getByText('Use “Relationship to the help seeker”')).toBeTruthy();
-    const theirCallerItem = within(screen.getByRole('navigation')).getByRole('button', { name: /Caller information/i });
-    expect(within(theirCallerItem).getByRole('img', { name: 'Changes needed' })).toBeTruthy();
-    expect(screen.queryByRole('button', { name: 'Mark as reviewed' })).toBeNull();
-
-    fireEvent.click(screen.getByRole('button', { name: 'Resolve' }));
-    expect(await screen.findByRole('button', { name: 'Show 1 resolved' })).toBeTruthy();
+    // Aselo answers it and resolves it in one go: the icon goes
+    renderWorkspace(usnm, { user: aseloStaff, loadPeople });
+    expect(await within(callerItem()).findByRole('img', { name: 'Question' })).toBeTruthy();
+    fireEvent.click(await findFieldCard('Relationship to Help Seeker'));
+    const aseloReview = screen.getByRole('region', { name: 'Review: Relationship to Help Seeker' });
+    fireEvent.change(within(aseloReview).getByRole('textbox', { name: 'Reply' }), { target: { value: 'Yes, added' } });
+    fireEvent.click(within(aseloReview).getByRole('button', { name: 'Reply and resolve' }));
+    expect(await within(aseloReview).findByRole('button', { name: 'Show 1 resolved' })).toBeTruthy();
+    expect(within(callerItem()).queryByRole('img', { name: 'Question' })).toBeNull();
+    expect(within(fieldCard('Relationship to Help Seeker')).queryByRole('img', { name: 'Question' })).toBeNull();
   });
 
-  test('helpline staff see no review marks', async () => {
+  test('the helpline and Aselo approve a form each, and a later change shows', async () => {
     const { renderWorkspace } = createHarness();
-    renderWorkspace(usnm);
+    const { unmount } = renderWorkspace(usnm);
+    const formReview = await screen.findByRole('region', { name: 'Review: Caller information' });
+    // Each person approves for their own side only
+    expect(within(formReview).getAllByRole('button', { name: 'Approve form' })).toHaveLength(1);
+    fireEvent.click(within(formReview).getByRole('button', { name: 'Approve form' }));
+    expect(await within(formReview).findByText(/^Helpline: approved by Helpline person/)).toBeTruthy();
+    const callerItem = () => within(screen.getByRole('navigation')).getByRole('button', { name: /Caller information/i });
+    expect(within(callerItem()).getByRole('img', { name: 'Approved by Helpline' })).toBeTruthy();
+    unmount();
+
+    renderWorkspace(usnm, { user: aseloStaff });
+    const aseloFormReview = await screen.findByRole('region', { name: 'Review: Caller information' });
+    fireEvent.click(within(aseloFormReview).getByRole('button', { name: 'Approve form' }));
+    expect(await within(callerItem()).findByRole('img', { name: 'Approved by Aselo' })).toBeTruthy();
+    expect(screen.getByText(/^Forms approved: Helpline 1\/\d+ · Aselo 1\/\d+$/)).toBeTruthy();
+
+    // Changing the form after both approved it: both approvals show it changed since
     await renameRelationship('Relationship');
-    await screen.findByText(/All changes saved/);
-    expect(screen.queryByRole('button', { name: 'Mark as reviewed' })).toBeNull();
-    expect(screen.queryByText(/^Reviewed: /)).toBeNull();
+    expect(await within(callerItem()).findByRole('img', { name: 'Changed since Helpline approved it' })).toBeTruthy();
+    expect(within(callerItem()).getByRole('img', { name: 'Changed since Aselo approved it' })).toBeTruthy();
+    expect(within(aseloFormReview).getByRole('button', { name: 'Approve form again' })).toBeTruthy();
+
+    // Only forms are reviewed
+    fireEvent.click(within(screen.getByRole('navigation')).getByRole('button', { name: 'Call types' }));
+    expect(screen.queryByRole('region', { name: /^Review: / })).toBeNull();
   });
 
   test('restores the saved draft when the helpline is opened again', async () => {

@@ -526,94 +526,76 @@ body {
   padding: 0 7px;
 }
 
-/* Aselo staff reviewing a draft: a check per reviewed section in the menu */
-.nav-reviewed {
-  color: #2e7d32;
-  font-weight: 700;
-  margin-right: 6px;
+/* Reviewing forms (formReviews.ts): a check per side, a grey dot once what was approved
+   changed, and an icon per kind of flag; the same in the menu, on field cards and in threads */
+.review-icon {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: -2px;
+  margin-right: 4px;
 }
 
-.nav-review-changed {
+.approval-helpline.approval-approved {
+  color: #1565c0;
+}
+
+.approval-aselo.approval-approved {
+  color: #2e7d32;
+}
+
+.approval-changed {
   color: var(--color-muted);
   font-size: 10px;
-  margin-right: 6px;
 }
 
-/* A section the reviewer asked to change: what the helpline has to fix */
-.nav-changes-needed {
+.flag-question {
+  color: #1565c0;
+}
+
+.flag-attention {
+  color: #b28704;
+}
+
+.flag-changes {
   color: #ef6c00;
-  margin-right: 6px;
-  vertical-align: -2px;
+}
+
+.flag-note {
+  color: var(--color-muted);
+}
+
+.flag-answered {
+  opacity: 0.55;
+}
+
+.nav-review {
+  margin-right: 4px;
 }
 
 .review-progress {
   color: var(--color-muted);
 }
 
-.review-progress-done {
-  color: #2e7d32;
-  font-weight: 600;
-}
-
-.review-bar {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 8px 12px;
-  margin-bottom: 16px;
-  border-radius: 6px;
-  border: 1px solid var(--color-border);
-}
-
-.review-bar-reviewed {
-  background: #e8f5e9;
-  border-color: #a5d6a7;
-}
-
-.review-bar-changes-needed {
-  background: #fff3e0;
-  border-color: #ffcc80;
-}
-
-/* Comments on a draft's section, above its editor */
-.section-comments-empty {
-  margin: -8px 0 12px;
-}
-
-.section-comments {
+.review-panel {
   border: 1px solid var(--color-border);
   border-radius: 6px;
   padding: 8px 12px;
   margin-bottom: 16px;
 }
 
-.section-comments h3 {
-  margin: 0 0 8px;
+.review-panel h3 {
+  margin: 0 0 6px;
   font-size: 14px;
 }
 
-.section-comments ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
+.review-approvals {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 6px;
 }
 
-.section-comments li {
-  padding: 6px 0;
-  border-bottom: 1px solid var(--color-border);
-}
-
-.section-comments li.resolved {
-  opacity: 0.6;
-}
-
-.section-comments li p {
-  margin: 4px 0 0;
-  white-space: pre-wrap;
-}
-
-.section-comment-head {
+.review-approval {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -621,35 +603,77 @@ body {
   font-size: 13px;
 }
 
-.section-comment-for {
+.review-threads {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.review-thread {
+  padding: 6px 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.review-thread.resolved {
+  opacity: 0.6;
+}
+
+.review-thread p {
+  margin: 4px 0 0;
+  white-space: pre-wrap;
+}
+
+.review-thread-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+
+.review-thread-for {
   background: var(--color-accent-soft);
   border-radius: 10px;
   padding: 0 8px;
   font-size: 12px;
 }
 
-.section-comment-actions {
+.review-thread-actions {
   margin-left: auto;
   display: flex;
   gap: 4px;
 }
 
-.section-comment-add {
+.review-reply {
+  margin: 6px 0 0 18px;
+  padding-left: 8px;
+  border-left: 2px solid var(--color-border);
+}
+
+.review-reply-add,
+.review-flag-add {
   display: flex;
   align-items: flex-end;
   gap: 8px;
   flex-wrap: wrap;
-  margin-top: 8px;
+  margin-top: 6px;
 }
 
-.section-comment-add textarea {
-  flex: 1 1 260px;
+.review-reply-add textarea,
+.review-flag-add textarea {
+  flex: 1 1 220px;
 }
 
-.section-comment-assignee {
+.review-flag-field {
   display: flex;
   flex-direction: column;
   font-size: 12px;
+}
+
+.review-flag-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 
 .try-it-out-row {

@@ -19,8 +19,7 @@
  * Rendered with a code/version key so switching helpline starts fresh.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { AlertTriangle } from 'lucide-react';
-import type { ReviewStatus } from '../../server/drafts';
+import type { FlagKind, ReviewSide } from '../../server/reviews';
 import type { DefinitionFiles } from '../../server/definitionsApi';
 import {
   CATEGORIES_FILE,
@@ -58,18 +57,39 @@ import { PRE_ENGAGEMENT_FILE } from '../webchat';
 import { FormSelectorEditor } from './sections/FormSelectorEditor';
 import { checkFormSelectorFlag, FORM_SELECTOR_PREFIX } from '../formSelector';
 import {
-  changedSinceReview,
-  ReviewState,
-  reviewState,
-  sectionFingerprint,
-  sectionId,
-  SectionView,
-} from '../sectionReviews';
+  ApprovalState,
+  approvalState,
+  flagKinds,
+  formFingerprint,
+  formTargetOf,
+  FormView,
+  isFormView,
+  isOpen,
+  openThreadsInForm,
+  SIDE_LABELS,
+  SIDES,
+} from '../formReviews';
 import { ASELO_PEOPLE_CODE, Person } from '../flows/model';
-import { SectionComments } from './SectionComments';
+import { ReviewContext, ReviewPanel } from './ReviewPanel';
+import { ApprovalIcon, FlagIcon } from './ReviewIcons';
 
 // Which screen is showing in the main area
-type View = SectionView;
+type View =
+  | FormView
+  | { kind: 'categories' }
+  | { kind: 'callTypes' }
+  | { kind: 'cannedResponses' }
+  | { kind: 'messages' }
+  | { kind: 'webchat' }
+  | { kind: 'formSelector' }
+  | { kind: 'caseStatus' }
+  | { kind: 'caseSections' }
+  | { kind: 'features' }
+  | { kind: 'serviceConfig' }
+  | { kind: 'profiles' };
+
+// What the menu shows of a form's review
+type NavReview = { approvals: Partial<Record<ReviewSide, ApprovalState>>; flags: FlagKind[] };
 
 const sameView = (a: View, b: View) => JSON.stringify(a) === JSON.stringify(b);
 
@@ -87,8 +107,8 @@ const NavItem = ({
   target: View;
   label: string;
   errors?: number;
-  // Whether the section is reviewed; undefined unless Aselo staff are reviewing a draft
-  reviewOf: (target: View) => ReviewState | undefined;
+  // Forms only: their approvals and open flags
+  reviewOf: (target: View) => NavReview | undefined;
 }) => {
   const review = reviewOf(target);
   return (
@@ -98,19 +118,14 @@ const NavItem = ({
         className={sameView(current, target) ? 'nav-item active' : 'nav-item'}
         onClick={() => onSelect(target)}
       >
-        {review === 'reviewed' && (
-          <span className="nav-reviewed" role="img" aria-label="Reviewed" title="Reviewed">
-            ✓
-          </span>
-        )}
-        {review === 'changes-needed' && (
-          <span className="nav-changes-needed" role="img" aria-label="Changes needed" title="Changes needed">
-            <AlertTriangle size={13} aria-hidden />
-          </span>
-        )}
-        {review === 'changed' && (
-          <span className="nav-review-changed" role="img" aria-label="Changed since reviewed" title="Changed since reviewed">
-            ●
+        {review && (
+          <span className="nav-review">
+            {SIDES.map((side) => (
+              <ApprovalIcon key={side} side={side} state={review.approvals[side]} size={13} />
+            ))}
+            {review.flags.map((kind) => (
+              <FlagIcon key={kind} kind={kind} size={13} />
+            ))}
           </span>
         )}
         {label}
@@ -212,56 +227,12 @@ export const HelplineWorkspace = ({
   const caseSections = getCaseSections(files);
   const changeCount = draft.changedPaths.length;
 
-  // Reviews and comments live in the draft, so they're there while it has changes. Aselo staff
-  // mark sections as reviewed or needing changes; helpline staff see what needs changes
-  const hasDraft = changeCount > 0 && draft.saveState !== 'loading';
-  const canReview = canApply && hasDraft;
-  const reviews = draft.meta?.reviews;
-  const reviewOf = (target: View): ReviewState | undefined => {
-    if (!hasDraft) return undefined;
-    const state = reviewState(target, reviews, files, caseTargets);
-    return canReview || state === 'changes-needed' ? state : undefined;
-  };
-  // Every section in the menu, to count how many are reviewed
-  const menuSections: View[] = canReview
-    ? [
-        { kind: 'features' },
-        { kind: 'serviceConfig' },
-        ...CONTACT_TABS.filter((tab) => files[tab.filePath]).map((tab): View => ({ kind: 'contactTab', tabKey: tab.key })),
-        ...(files[CATEGORIES_FILE] !== undefined ? [{ kind: 'categories' } as View] : []),
-        { kind: 'formSelector' },
-        { kind: 'callTypes' },
-        { kind: 'cannedResponses' },
-        { kind: 'messages' },
-        ...(originalFiles[PRE_ENGAGEMENT_FILE] !== undefined ? [{ kind: 'webchat' } as View] : []),
-        { kind: 'caseSections' },
-        { kind: 'caseStatus' },
-        ...caseSections.map((section): View => ({ kind: 'caseSection', sectionKey: section.key })),
-        ...(hasProfiles(originalFiles) ? [{ kind: 'profiles' } as View] : []),
-      ]
-    : [];
-  const reviewedCount = menuSections.filter((target) => reviewOf(target) === 'reviewed').length;
-  const changesNeededCount = menuSections.filter((target) => reviewOf(target) === 'changes-needed').length;
-  const [reviewBusy, setReviewBusy] = useState(false);
-  const [reviewError, setReviewError] = useState<string>();
-  // null clears the mark
-  const setReview = async (status: ReviewStatus | null) => {
-    setReviewBusy(true);
-    setReviewError(undefined);
-    try {
-      await draft.review(
-        sectionId(view),
-        status ? sectionFingerprint(view, files, caseTargets) : null,
-        status ?? undefined,
-      );
-    } catch (err) {
-      setReviewError(`Couldn't save the review: ${(err as Error).message}`);
-    } finally {
-      setReviewBusy(false);
-    }
-  };
+  // Reviewing the forms (formReviews.ts), kept in the draft: both sides see it, and each
+  // approves for their own side
+  const reviewReady = draft.saveState !== 'loading';
+  const side: ReviewSide = canApply ? 'aselo' : 'helpline';
 
-  // Who comments can be for: the helpline's people and the Aselo team (the flow designer's lists)
+  // Who flags can be for: the helpline's people and the Aselo team (the flow designer's lists)
   const [people, setPeople] = useState<Person[]>([]);
   useEffect(() => {
     if (!loadPeople) return undefined;
@@ -285,75 +256,58 @@ export const HelplineWorkspace = ({
     };
   }, [code, loadPeople]);
 
-  const reviewButton = (status: ReviewStatus, label: string) => (
-    <button type="button" className="secondary-button" disabled={reviewBusy} onClick={() => setReview(status)}>
-      {label}
-    </button>
-  );
-
-  const renderReviewBar = () => {
-    const state = reviewOf(view);
-    if (!state) return null;
-    const review = reviews?.[sectionId(view)];
-    const when = review ? new Date(review.at).toLocaleString() : '';
-    const undo = (
-      <button type="button" className="link-button" disabled={reviewBusy} onClick={() => setReview(null)}>
-        Undo
-      </button>
-    );
-    // Helpline staff only get here for a section that needs changes
-    if (!canReview) {
-      return (
-        <div className="review-bar review-bar-changes-needed">
-          <AlertTriangle size={16} className="nav-changes-needed" aria-hidden />
-          <span>
-            The Aselo team asked for changes here ({review?.by}, {when}). See the comments below.
-          </span>
-        </div>
-      );
-    }
-    return (
-      <div className={`review-bar review-bar-${state}`}>
-        {state === 'reviewed' && (
-          <>
-            <span>
-              <span className="nav-reviewed" aria-hidden="true">
-                ✓
-              </span>
-              Reviewed by {review?.by}, {when}
-            </span>
-            {undo}
-          </>
-        )}
-        {state === 'changed' && (
-          <>
-            <span>Changed since {review?.by} reviewed it ({when}).</span>
-            {reviewButton('reviewed', 'Mark as reviewed again')}
-            {reviewButton('changes-needed', 'Changes needed')}
-          </>
-        )}
-        {state === 'changes-needed' && review && (
-          <>
-            <AlertTriangle size={16} className="nav-changes-needed" aria-hidden />
-            <span>
-              Changes needed, asked by {review.by} ({when})
-              {changedSinceReview(review, view, files, caseTargets) ? '. It has changed since: check it again.' : '.'}
-            </span>
-            {reviewButton('reviewed', 'Mark as reviewed')}
-            {undo}
-          </>
-        )}
-        {state === 'none' && (
-          <>
-            <span className="muted">Not reviewed yet.</span>
-            {reviewButton('reviewed', 'Mark as reviewed')}
-            {reviewButton('changes-needed', 'Changes needed')}
-          </>
-        )}
-        {reviewError && <span className="issue issue-error">{reviewError}</span>}
-      </div>
-    );
+  const reviewContext: ReviewContext = {
+    approvals: draft.meta?.approvals,
+    threads: draft.meta?.threads,
+    userName,
+    side,
+    isAseloStaff: canApply,
+    people,
+    onApprove: draft.approve,
+    onThread: draft.thread,
   };
+  const formTargetFor = (view: FormView) =>
+    view.kind === 'contactTab'
+      ? CONTACT_TABS.find((tab) => tab.key === view.tabKey)
+      : caseTargets.find((target) => target.key === view.sectionKey);
+  const formFingerprintOf = (view: FormView) => {
+    const target = formTargetFor(view);
+    return formFingerprint(target ? getForm(files, target.filePath) : undefined);
+  };
+  // What the menu shows for a form: each side's approval, and the open flags on it or its fields
+  const reviewOf = (target: View): NavReview | undefined => {
+    if (!reviewReady || !isFormView(target)) return undefined;
+    const formTarget = formTargetOf(target);
+    const fingerprint = formFingerprintOf(target);
+    return {
+      approvals: Object.fromEntries(
+        SIDES.map((reviewSide) => [reviewSide, approvalState(draft.meta?.approvals, reviewSide, formTarget, fingerprint)]),
+      ),
+      flags: flagKinds(openThreadsInForm(draft.meta?.threads, formTarget)),
+    };
+  };
+  const formViews: FormView[] = [
+    ...CONTACT_TABS.filter((tab) => files[tab.filePath]).map((tab): FormView => ({ kind: 'contactTab', tabKey: tab.key })),
+    ...caseSections.map((section): FormView => ({ kind: 'caseSection', sectionKey: section.key })),
+  ];
+  const approvedForms = (reviewSide: ReviewSide) =>
+    formViews.filter((formView) => reviewOf(formView)?.approvals[reviewSide] === 'approved').length;
+  const openFlags = (draft.meta?.threads ?? []).filter((thread) => isOpen(thread) && thread.kind !== 'note').length;
+
+  // The form's own review, above its editor; its fields' reviews are in the editor
+  const renderFormReview = (formView: FormView, title: string) =>
+    reviewReady && (
+      <ReviewPanel
+        key={formTargetOf(formView)}
+        review={reviewContext}
+        target={formTargetOf(formView)}
+        fingerprint={formFingerprintOf(formView)}
+        what="form"
+        title={`Review: ${title}`}
+      />
+    );
+  const fieldReview = (formView: FormView) =>
+    reviewReady ? { ...reviewContext, formTarget: formTargetOf(formView) } : undefined;
 
   const discard = async () => {
     if (window.confirm('Discard all the draft changes for this helpline? This can’t be undone.')) {
@@ -369,6 +323,7 @@ export const HelplineWorkspace = ({
     if (!form) return <p className="muted">This helpline has no {tab.title} form.</p>;
     return (
       <>
+        {renderFormReview({ kind: 'contactTab', tabKey: tab.key }, tab.title)}
         <div className="try-it-out-row">
           <button
             type="button"
@@ -388,6 +343,7 @@ export const HelplineWorkspace = ({
           helplineLanguage={definitions.helplineLanguage}
           issues={issuesByTab[tab.key] ?? []}
           onChangeFiles={draft.updateFiles}
+          review={fieldReview({ kind: 'contactTab', tabKey: tab.key })}
         />
       </>
     );
@@ -546,6 +502,7 @@ export const HelplineWorkspace = ({
     if (!target || !form) return <p className="muted">This case section has no form.</p>;
     return (
       <>
+        {renderFormReview({ kind: 'caseSection', sectionKey: target.key }, target.title)}
         <div className="try-it-out-row">
           <button type="button" className="secondary-button" onClick={() => setPreviewingSection(target.key)}>
             Preview in Aselo
@@ -561,6 +518,7 @@ export const HelplineWorkspace = ({
           helplineLanguage={definitions.helplineLanguage}
           issues={issuesByTab[`case:${target.key}`] ?? []}
           onChangeFiles={draft.updateFiles}
+          review={fieldReview({ kind: 'caseSection', sectionKey: target.key })}
         />
         {previewingSection === target.key && (
           <div className="modal-backdrop" role="presentation" onClick={() => setPreviewingSection(undefined)}>
@@ -613,10 +571,11 @@ export const HelplineWorkspace = ({
             {draft.meta.updatedAt ? `, ${new Date(draft.meta.updatedAt).toLocaleString()}` : ''}
           </span>
         )}
-        {canReview && (
-          <span className={reviewedCount === menuSections.length ? 'review-progress review-progress-done' : 'review-progress'}>
-            Reviewed: {reviewedCount} of {menuSections.length} sections
-            {changesNeededCount > 0 ? ` · ${changesNeededCount} need${changesNeededCount === 1 ? 's' : ''} changes` : ''}
+        {reviewReady && formViews.length > 0 && (
+          <span className="review-progress">
+            Forms approved:{' '}
+            {SIDES.map((reviewSide) => `${SIDE_LABELS[reviewSide]} ${approvedForms(reviewSide)}/${formViews.length}`).join(' · ')}
+            {openFlags > 0 ? ` · ${openFlags} open flag${openFlags === 1 ? '' : 's'}` : ''}
           </span>
         )}
         {changeCount > 0 && (
@@ -764,19 +723,6 @@ export const HelplineWorkspace = ({
                 ))}
               </ul>
             </div>
-          )}
-          {renderReviewBar()}
-          {hasDraft && (
-            <SectionComments
-              key={sectionId(view)}
-              section={sectionId(view)}
-              comments={draft.meta?.comments ?? []}
-              people={people}
-              userName={userName}
-              isAseloStaff={canApply}
-              expanded={reviewOf(view) === 'changes-needed'}
-              onChange={draft.comment}
-            />
           )}
           {renderMain()}
         </main>

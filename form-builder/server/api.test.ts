@@ -115,72 +115,78 @@ describe('drafts', () => {
     expect(edited.body).toMatchObject({ status: 'editing', revision: 2 });
   });
 
-  test('Aselo staff mark sections as reviewed; the marks outlast saves and can be undone', async () => {
-    const review = (user: ApiUser, body: unknown) => call(user, 'POST', '/api/drafts/usnm/v1/review', body);
-    const callerReview = { section: 'contactTab:callerInformation', fingerprint: '1a2b3c' };
-    expect((await review(staff, callerReview)).status).toBe(404);
+  test('each side approves forms and fields for itself, and every review action is logged', async () => {
+    const approve = (user: ApiUser, body: unknown) => call(user, 'POST', '/api/drafts/usnm/v1/approve', body);
+    const field = 'contactTab:CallerInformationTab#firstName';
+    expect((await approve(usnmStaff, { target: 'categories', fingerprint: 'abc' })).status).toBe(400);
+    expect((await approve(usnmStaff, { target: field, fingerprint: 'not hex' })).status).toBe(400);
 
-    await call(usnmStaff, 'PUT', '/api/drafts/usnm/v1', saveBody(0));
-    expect((await review(usnmStaff, callerReview)).status).toBe(403);
-    expect((await review(staff, { ...callerReview, section: '../x' })).status).toBe(400);
-    expect((await review(staff, { ...callerReview, fingerprint: 'not hex' })).status).toBe(400);
+    // Reviewing can start before anything changed: it starts the draft
+    const helpline = await approve(usnmStaff, { target: field, fingerprint: 'abc' });
+    expect(helpline.body).toMatchObject({
+      revision: 0,
+      approvals: { [`helpline|${field}`]: { side: 'helpline', by: 'NAMI person', at: '2026-10-26T12:00:00.000Z', fingerprint: 'abc' } },
+    });
+    const aselo = await approve(staff, { target: field, fingerprint: 'abc' });
+    expect(Object.keys((aselo.body as { approvals: object }).approvals).sort()).toEqual([`aselo|${field}`, `helpline|${field}`]);
 
-    const reviewed = await review(staff, callerReview);
-    expect(reviewed.body).toMatchObject({
-      // Not a content change: no new revision, so nobody editing gets a conflict
+    // Saves keep the review; a save with nothing changed keeps a draft that holds one
+    expect((await call(usnmStaff, 'PUT', '/api/drafts/usnm/v1', saveBody(0))).body).toMatchObject({
       revision: 1,
-      reviews: { 'contactTab:callerInformation': { by: 'Aselo person', at: '2026-10-26T12:00:00.000Z', fingerprint: '1a2b3c' } },
+      approvals: { [`aselo|${field}`]: { by: 'Aselo person' } },
     });
+    await call(usnmStaff, 'PUT', '/api/drafts/usnm/v1', { ...saveBody(1), files: {} });
+    expect((await call(usnmStaff, 'GET', '/api/drafts/usnm/v1')).status).toBe(200);
 
-    // Saving keeps the marks (the builder works out whether the section changed since)
-    const saved = await call(usnmStaff, 'PUT', '/api/drafts/usnm/v1', saveBody(1));
-    expect(saved.body).toMatchObject({ revision: 2, reviews: { 'contactTab:callerInformation': { fingerprint: '1a2b3c' } } });
-
-    const undone = await review(staff, { section: 'contactTab:callerInformation', fingerprint: null });
-    expect((undone.body as { reviews: unknown }).reviews).toEqual({});
-
-    const needsChanges = await review(staff, { ...callerReview, status: 'changes-needed' });
-    expect(needsChanges.body).toMatchObject({
-      reviews: { 'contactTab:callerInformation': { status: 'changes-needed', by: 'Aselo person' } },
-    });
-    expect((await review(staff, { ...callerReview, status: 'approved?' })).status).toBe(400);
+    const undone = await approve(usnmStaff, { target: field, fingerprint: null });
+    expect(Object.keys((undone.body as { approvals: object }).approvals)).toEqual([`aselo|${field}`]);
+    expect((undone.body as { reviewLog: unknown[] }).reviewLog).toEqual([
+      expect.objectContaining({ by: 'NAMI person', side: 'helpline', action: 'approved', target: field }),
+      expect.objectContaining({ by: 'Aselo person', side: 'aselo', action: 'approved', target: field }),
+      expect.objectContaining({ by: 'NAMI person', side: 'helpline', action: 'unapproved', target: field }),
+    ]);
   });
 
-  test('anyone on the helpline comments on a section, for someone; comments outlast saves', async () => {
-    const comment = (user: ApiUser, body: unknown) => call(user, 'POST', '/api/drafts/usnm/v1/comments', body);
-    const ask = { action: 'add', section: 'categories', text: ' Rename “Other” ', assignee: 'NAMI person', assigneeEmail: 'nami@example.org' };
-    expect((await comment(staff, ask)).status).toBe(404);
+  test('a helpline question on a field, answered and resolved by Aselo', async () => {
+    const thread = (user: ApiUser, body: unknown) => call(user, 'POST', '/api/drafts/usnm/v1/threads', body);
+    const field = 'contactTab:CallerInformationTab#age';
+    const ask = { action: 'add', target: field, kind: 'question', text: ' Can this be a range? ', assignee: 'Aselo person' };
+    expect((await thread(usnmStaff, { ...ask, kind: 'rant' })).status).toBe(400);
+    expect((await thread(usnmStaff, { ...ask, text: '  ' })).status).toBe(400);
+    expect((await thread(usnmStaff, { ...ask, target: 'no such target' })).status).toBe(400);
 
-    await call(usnmStaff, 'PUT', '/api/drafts/usnm/v1', saveBody(0));
-    expect((await comment(staff, { ...ask, text: '   ' })).status).toBe(400);
-    expect((await comment(staff, { ...ask, section: 'no such/section' })).status).toBe(400);
-    expect((await comment(staff, { ...ask, action: 'shout' })).status).toBe(400);
-
-    const asked = await comment(staff, ask);
-    const [added] = (asked.body as { comments: { id: string }[] }).comments;
-    expect(added).toMatchObject({
-      section: 'categories',
-      text: 'Rename “Other”',
-      author: 'Aselo person',
-      assignee: 'NAMI person',
-      assigneeEmail: 'nami@example.org',
+    const asked = await thread(usnmStaff, ask);
+    const [question] = (asked.body as { threads: { id: string }[] }).threads;
+    expect(question).toMatchObject({
+      target: field,
+      kind: 'question',
+      text: 'Can this be a range?',
+      author: 'NAMI person',
+      side: 'helpline',
+      assignee: 'Aselo person',
     });
 
-    // The helpline answers and resolves it; a save keeps the comments
-    await comment(usnmStaff, { action: 'add', section: 'categories', text: 'Done' });
-    await call(usnmStaff, 'PUT', '/api/drafts/usnm/v1', saveBody(1));
-    const resolved = await comment(usnmStaff, { action: 'resolve', id: added.id, resolved: true });
-    const afterResolve = (resolved.body as { comments: { id: string; resolved?: boolean; author: string }[] }).comments;
-    expect(afterResolve).toEqual([
-      expect.objectContaining({ id: added.id, resolved: true }),
-      expect.objectContaining({ author: 'NAMI person', text: 'Done' }),
+    const answered = await thread(staff, { action: 'reply', id: question.id, text: 'Yes: use a dropdown', resolve: true });
+    const [done] = (answered.body as { threads: Record<string, unknown>[] }).threads;
+    expect(done).toMatchObject({
+      replies: [expect.objectContaining({ text: 'Yes: use a dropdown', author: 'Aselo person', side: 'aselo' })],
+      resolvedBy: 'Aselo person',
+    });
+    expect((answered.body as { reviewLog: { action: string }[] }).reviewLog.map((entry) => entry.action)).toEqual([
+      'flagged',
+      'replied',
+      'resolved',
     ]);
 
-    // Only its author or Aselo staff delete a comment
-    expect((await comment(usnmStaff, { action: 'delete', id: added.id })).status).toBe(403);
-    const deleted = await comment(staff, { action: 'delete', id: added.id });
-    expect((deleted.body as { comments: unknown[] }).comments).toHaveLength(1);
-    expect((await comment(staff, { action: 'resolve', id: 'gone', resolved: true })).status).toBe(404);
+    const reopened = await thread(usnmStaff, { action: 'resolve', id: question.id, resolved: false });
+    expect((reopened.body as { threads: Record<string, unknown>[] }).threads[0].resolvedAt).toBeUndefined();
+
+    // Only its author or Aselo staff delete a thread
+    const aseloNote = await thread(staff, { action: 'add', target: field, kind: 'note', text: 'FYI' });
+    const note = (aseloNote.body as { threads: { id: string }[] }).threads[1];
+    expect((await thread(usnmStaff, { action: 'delete', id: note.id })).status).toBe(403);
+    expect((await thread(usnmStaff, { action: 'delete', id: question.id })).status).toBe(200);
+    expect((await thread(staff, { action: 'resolve', id: 'gone', resolved: true })).status).toBe(404);
   });
 });
 

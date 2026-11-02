@@ -80,6 +80,9 @@ import { baseLanguageOf, setSubstitution } from '../caseSections';
 import { AddFieldMenu } from './AddFieldMenu';
 import { LinkedAnswersEditor } from './LinkedAnswersEditor';
 import { LinkedDropdownsWizard } from './LinkedDropdownsWizard';
+import { ReviewContext, ReviewPanel } from './ReviewPanel';
+import { ApprovalIcon, FlagIcon } from './ReviewIcons';
+import { approvalState, fieldFingerprint, fieldTargetOf, flagKinds, SIDES, threadsOn } from '../formReviews';
 
 type ColumnKey = 'left' | 'right';
 const COLUMN_KEYS: ColumnKey[] = ['left', 'right'];
@@ -97,7 +100,12 @@ type Props = {
   helplineLanguage?: string;
   issues: ValidationIssue[];
   onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
+  // Reviewing the form (formReviews.ts): approvals and flags on its fields
+  review?: ReviewContext & { formTarget: string };
 };
+
+// What a field card shows of its review: each side's approval, and its open flags
+type CardReview = { approvals: Partial<Record<'helpline' | 'aselo', 'approved' | 'changed'>>; flags: ReturnType<typeof flagKinds> };
 
 let nextEntryId = 0;
 const toEntry = (item: FormItemJsonDefinition): Entry => {
@@ -112,14 +120,19 @@ const FieldCard = ({
   referenceData,
   status,
   hasError,
+  review,
 }: {
   entry: Entry;
   referenceData: Record<string, unknown>;
   status?: 'new' | 'edited';
   hasError: boolean;
+  review?: CardReview;
 }) => (
   <>
     <div className="field-card-badges">
+      {review &&
+        SIDES.map((side) => <ApprovalIcon key={side} side={side} state={review.approvals[side]} />)}
+      {review?.flags.map((kind) => <FlagIcon key={kind} kind={kind} />)}
       {hasError && <span className="badge badge-error">Needs attention</span>}
       {status === 'new' && <span className="badge badge-new">New</span>}
       {status === 'edited' && <span className="badge badge-edited">Edited</span>}
@@ -144,6 +157,7 @@ const SortableFieldCard = ({
   referenceData: Record<string, unknown>;
   status?: 'new' | 'edited';
   hasError: boolean;
+  review?: CardReview;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: entry.id,
@@ -186,6 +200,7 @@ export const ContactFormEditor = ({
   helplineLanguage,
   issues,
   onChangeFiles,
+  review,
 }: Props) => {
   const originalForm = useMemo(
     () => getForm(originalFiles, tab.filePath) ?? [],
@@ -224,6 +239,18 @@ export const ContactFormEditor = ({
   const fieldsWithErrors = new Set(
     issues.filter((issue) => issue.severity === 'error').map((issue) => issue.fieldName),
   );
+
+  const reviewOfCard = (entry: Entry): CardReview | undefined => {
+    if (!review) return undefined;
+    const target = fieldTargetOf(review.formTarget, entry.item.name);
+    const fingerprint = fieldFingerprint(entry.item);
+    return {
+      approvals: Object.fromEntries(
+        SIDES.map((side) => [side, approvalState(review.approvals, side, target, fingerprint)]),
+      ),
+      flags: flagKinds(threadsOn(review.threads, target)),
+    };
+  };
 
   const statusOf = (entry: Entry): 'new' | 'edited' | undefined => {
     const original = originalByName.get(entry.item.name);
@@ -488,6 +515,7 @@ export const ContactFormEditor = ({
                       referenceData={referenceData}
                       status={statusOf(entry)}
                       hasError={fieldsWithErrors.has(entry.item.name)}
+                      review={reviewOfCard(entry)}
                     />
                   ))}
                   {addingTo === columnKey ? (
@@ -528,6 +556,16 @@ export const ContactFormEditor = ({
       </section>
 
       <aside className="panel editor-settings">
+        {selectedEntry && review && (
+          <ReviewPanel
+            key={selectedEntry.id}
+            review={review}
+            target={fieldTargetOf(review.formTarget, selectedEntry.item.name)}
+            fingerprint={fieldFingerprint(selectedEntry.item)}
+            what="field"
+            title={`Review: ${selectedEntry.item.label || selectedEntry.item.name}`}
+          />
+        )}
         {selectedEntry ? (
           <FieldSettings
             // Remount per field (and type) so local state like option ids starts fresh

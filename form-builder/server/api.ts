@@ -29,8 +29,8 @@
  *   DELETE /api/drafts/:code/:version               discard a draft
  *   POST   /api/drafts/:code/:version/submit        helpline staff: send for review
  *   POST   /api/drafts/:code/:version/apply         Aselo staff only: apply a draft
- *   POST   /api/drafts/:code/:version/review        Aselo staff only: mark a section reviewed / changes needed
- *   POST   /api/drafts/:code/:version/comments      comment on a section, resolve or delete a comment
+ *   POST   /api/drafts/:code/:version/approve       approve a form or field for your side (reviews.ts)
+ *   POST   /api/drafts/:code/:version/threads       flag a form or field, reply, resolve or delete
  *   ...    /api/boards..., /api/people/...          the flow designer (boardsApi.ts)
  *   ...    /api/recordings/...                      its recordings (recordingsApi.ts)
  *   POST   /api/flows/import/:code                  Aselo staff: a board from a live helpline (flowImport.ts)
@@ -48,12 +48,9 @@ import {
   DraftStore,
   isValidDraftFilePath,
   isValidDraftKey,
-  isValidFingerprint,
-  isValidSectionId,
-  REVIEW_STATUSES,
-  ReviewStatus,
-  SectionComment,
+  DraftMeta,
 } from './drafts';
+import { applyApproval, applyThreadChange, DraftReview, sideOf } from './reviews';
 import type { BoardStore } from './boards';
 import type { PeopleStore } from './people';
 import { handleBoardRequest } from './boardsApi';
@@ -151,9 +148,15 @@ export const canOpenHelpline = (user: ApiUser, code: string) =>
 // current files or in drafts
 const isStaff = (user: ApiUser) => user.role === 'aselo-staff';
 
-// Section comments: enough for a real review, small enough to keep a draft's metadata light
-const MAX_COMMENT_LENGTH = 5000;
-const MAX_COMMENTS = 500;
+const hasReview = (meta?: DraftMeta) =>
+  Boolean(meta && (Object.keys(meta.approvals ?? {}).length > 0 || (meta.threads ?? []).length > 0));
+
+// The review data in a draft's metadata (reviews.ts), to carry over to a new version of it
+const reviewOf = ({ approvals, threads, reviewLog }: DraftMeta): DraftReview => ({
+  ...(approvals ? { approvals } : {}),
+  ...(threads ? { threads } : {}),
+  ...(reviewLog ? { reviewLog } : {}),
+});
 const pickFiles = <T>(files: Record<string, T>, serviceConfig: boolean) =>
   Object.fromEntries(Object.entries(files).filter(([filePath]) => isServiceConfigPath(filePath) === serviceConfig));
 
@@ -310,7 +313,7 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       return ok({ ...definitions, files: pickFiles(definitions.files, false), serviceConfigDefaults: undefined });
     }
 
-    const draftMatch = route.match(/^(GET|PUT|DELETE|POST) \/api\/drafts\/([^/]+)\/([^/]+)(\/submit|\/apply|\/review|\/comments)?$/);
+    const draftMatch = route.match(/^(GET|PUT|DELETE|POST) \/api\/drafts\/([^/]+)\/([^/]+)(\/submit|\/apply|\/approve|\/threads)?$/);
     if (!draftMatch) return fail(404, `Unknown API route ${route}`);
 
     const [, method, code, version, action] = draftMatch;
@@ -346,8 +349,9 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
         });
       }
 
-      // Nothing left that differs from the current files: no draft
-      if (Object.keys(files).length === 0) {
+      // Nothing left that differs from the current files: no draft, unless it holds a review
+      // (e.g. a question asked before anything changed)
+      if (Object.keys(files).length === 0 && !hasReview(existing?.meta)) {
         if (existing) await context.drafts.remove(code, version);
         return ok({ revision: 0, status: 'editing' });
       }
@@ -363,9 +367,8 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
           updatedAt: now,
           updatedBy: user.name,
           baseHashes: { ...(existing?.meta.baseHashes ?? {}), ...baseHashes },
-          // Kept: a review only stops counting when its section's files change (src/sectionReviews.ts)
-          ...(existing?.meta.reviews ? { reviews: existing.meta.reviews } : {}),
-          ...(existing?.meta.comments ? { comments: existing.meta.comments } : {}),
+          // Kept: an approval only stops counting when what it approved changes (src/formReviews.ts)
+          ...(existing ? reviewOf(existing.meta) : {}),
         },
       };
       await context.drafts.put(draft);
@@ -410,82 +413,26 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       return ok(submitted.meta);
     }
 
-    // Aselo staff mark a section as reviewed or needing changes (with a fingerprint of its files),
-    // or clear the mark (fingerprint null). Not a change to the draft's content, so the revision
-    // stays and nobody gets a conflict
-    if (method === 'POST' && action === '/review') {
-      if (!isStaff(user)) return fail(403, 'Only Aselo staff can review changes.');
-      if (!existing) return fail(404, 'There are no changes to review.');
-      const { section, fingerprint, status = 'reviewed' } = (request.body ?? {}) as {
-        section?: unknown;
-        fingerprint?: unknown;
-        status?: unknown;
+    // Reviewing the forms (reviews.ts): approvals for the user's side, and flags with their
+    // threads. Not a change to the draft's content, so the revision stays and nobody gets a conflict
+    if (method === 'POST' && (action === '/approve' || action === '/threads')) {
+      // A review can start before anything changed: it starts the draft
+      const base: Draft = existing ?? {
+        code,
+        version,
+        files: {},
+        meta: { revision: 0, status: 'editing', updatedAt: now, updatedBy: user.name, baseHashes: {} },
       };
-      if (!isValidSectionId(section)) return fail(400, 'Invalid section');
-      if (fingerprint !== null && !isValidFingerprint(fingerprint)) return fail(400, 'Invalid fingerprint');
-      if (!REVIEW_STATUSES.includes(status as ReviewStatus)) return fail(400, 'Invalid review status');
-      const { [section]: _previous, ...otherReviews } = existing.meta.reviews ?? {};
-      const reviews =
-        fingerprint === null
-          ? otherReviews
-          : { ...otherReviews, [section]: { status: status as ReviewStatus, by: user.name, at: now, fingerprint } };
-      const reviewed: Draft = { ...existing, meta: { ...existing.meta, reviews } };
+      const actor = { name: user.name, side: sideOf(user), isStaff: isStaff(user) };
+      const review = reviewOf(base.meta);
+      const outcome =
+        action === '/approve'
+          ? applyApproval(review, request.body, actor, now)
+          : applyThreadChange(review, request.body, actor, now, randomUUID);
+      if (!outcome.ok) return fail(outcome.status, outcome.message);
+      const reviewed: Draft = { ...base, meta: { ...base.meta, ...outcome.review } };
       await context.drafts.put(reviewed);
-      return ok(reviewed.meta);
-    }
-
-    // Comments on a section, from anyone who can open the helpline: add one (for someone), resolve
-    // or reopen it, or delete it (its author, or Aselo staff). Like reviews, not a content change
-    if (method === 'POST' && action === '/comments') {
-      if (!existing) return fail(404, 'There is no draft to comment on.');
-      const body = (request.body ?? {}) as Record<string, unknown>;
-      const comments = existing.meta.comments ?? [];
-      let next: SectionComment[];
-      if (body.action === 'add') {
-        const { section, text, assignee, assigneeEmail } = body;
-        if (!isValidSectionId(section)) return fail(400, 'Invalid section');
-        if (typeof text !== 'string' || !text.trim() || text.length > MAX_COMMENT_LENGTH) {
-          return fail(400, `A comment needs text, up to ${MAX_COMMENT_LENGTH} characters.`);
-        }
-        if (assignee !== undefined && (typeof assignee !== 'string' || !assignee.trim() || assignee.length > 200)) {
-          return fail(400, 'Invalid assignee');
-        }
-        if (assigneeEmail !== undefined && (typeof assigneeEmail !== 'string' || assigneeEmail.length > 200)) {
-          return fail(400, 'Invalid assignee email');
-        }
-        if (comments.length >= MAX_COMMENTS) return fail(400, 'This draft has too many comments.');
-        next = [
-          ...comments,
-          {
-            id: randomUUID(),
-            section,
-            text: text.trim(),
-            author: user.name,
-            at: now,
-            ...(assignee ? { assignee: assignee.trim() } : {}),
-            ...(assignee && assigneeEmail ? { assigneeEmail } : {}),
-          },
-        ];
-      } else if (body.action === 'resolve' || body.action === 'delete') {
-        const comment = comments.find((candidate) => candidate.id === body.id);
-        if (!comment) return fail(404, 'No such comment');
-        if (body.action === 'delete' && !isStaff(user) && comment.author !== user.name) {
-          return fail(403, 'Only its author or Aselo staff can delete a comment.');
-        }
-        next =
-          body.action === 'delete'
-            ? comments.filter((candidate) => candidate !== comment)
-            : comments.map((candidate) => {
-                if (candidate !== comment) return candidate;
-                const { resolved: _resolved, ...open } = candidate;
-                return body.resolved === true ? { ...open, resolved: true } : open;
-              });
-      } else {
-        return fail(400, 'Unknown comment action');
-      }
-      const commented: Draft = { ...existing, meta: { ...existing.meta, comments: next } };
-      await context.drafts.put(commented);
-      return ok(draftForUser(commented, user).meta);
+      return ok(draftForUser(reviewed, user).meta);
     }
 
     if (method === 'POST' && action === '/apply') {

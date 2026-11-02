@@ -20,12 +20,14 @@
  * ends up in the browser bundle.
  */
 import type { ApplyResult, Me } from '../server/api';
-import type { Draft, DraftMeta, DraftSummary, ReviewStatus } from '../server/drafts';
+import type { Draft, DraftMeta, DraftSummary } from '../server/drafts';
+import type { FlagKind } from '../server/reviews';
 import { apiFetch } from './auth';
 
-// A change to a draft's section comments (server/api.ts, POST .../comments)
-export type CommentChange =
-  | { action: 'add'; section: string; text: string; assignee?: string; assigneeEmail?: string }
+// A change to a draft's review threads (server/reviews.ts, POST .../threads)
+export type ThreadChange =
+  | { action: 'add'; target: string; kind: FlagKind; text: string; assignee?: string; assigneeEmail?: string }
+  | { action: 'reply'; id: string; text: string; resolve?: boolean }
   | { action: 'resolve'; id: string; resolved: boolean }
   | { action: 'delete'; id: string };
 
@@ -46,15 +48,9 @@ export type DraftClient = {
   // The draft's revision afterwards: 0, unless it still holds changes this person can't see
   discard(code: string, version: string): Promise<number>;
   submit(code: string, version: string): Promise<DraftMeta>;
-  // Aselo staff: mark a section as reviewed or needing changes, with its fingerprint, or clear the mark (null)
-  review(
-    code: string,
-    version: string,
-    section: string,
-    fingerprint: string | null,
-    status?: ReviewStatus,
-  ): Promise<DraftMeta>;
-  comment(code: string, version: string, change: CommentChange): Promise<DraftMeta>;
+  // Approve a form or field for the user's side, with its fingerprint, or take it back (null)
+  approve(code: string, version: string, target: string, fingerprint: string | null): Promise<DraftMeta>;
+  thread(code: string, version: string, change: ThreadChange): Promise<DraftMeta>;
   // description: the change log, for the PR the deployed Apply opens
   apply(code: string, version: string, description?: string): Promise<ApplyResult>;
   list(): Promise<DraftSummary[]>;
@@ -88,9 +84,9 @@ export const clientFor = (send: Send): DraftClient => {
     },
     discard: async (code, version) => (await expectOk('DELETE', `/api/drafts/${code}/${version}`))?.revision ?? 0,
     submit: (code, version) => expectOk('POST', `/api/drafts/${code}/${version}/submit`),
-    review: (code, version, section, fingerprint, status) =>
-      expectOk('POST', `/api/drafts/${code}/${version}/review`, { section, fingerprint, status }),
-    comment: (code, version, change) => expectOk('POST', `/api/drafts/${code}/${version}/comments`, change),
+    approve: (code, version, target, fingerprint) =>
+      expectOk('POST', `/api/drafts/${code}/${version}/approve`, { target, fingerprint }),
+    thread: (code, version, change) => expectOk('POST', `/api/drafts/${code}/${version}/threads`, change),
     apply: (code, version, description) =>
       expectOk('POST', `/api/drafts/${code}/${version}/apply`, description === undefined ? undefined : { description }),
     list: () => expectOk('GET', '/api/drafts'),

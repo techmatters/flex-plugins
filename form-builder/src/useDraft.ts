@@ -26,10 +26,10 @@
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { ApplyResult } from '../server/api';
-import type { DraftMeta, ReviewStatus } from '../server/drafts';
+import type { DraftMeta } from '../server/drafts';
 import type { DefinitionFileMap } from './definitions';
 import { getChangedFilePaths } from './changes';
-import type { CommentChange, DraftClient } from './draftClient';
+import type { DraftClient, ThreadChange } from './draftClient';
 
 export type SaveState = 'loading' | 'saved' | 'pending' | 'saving' | 'conflict' | 'error';
 
@@ -193,18 +193,20 @@ export const useDraft = (
     setMeta(submitted);
   };
 
-  // Aselo staff: mark a section as reviewed or needing changes (with its fingerprint), or clear
-  // the mark (null). Saves first, so there's a draft to keep the mark in
-  const review = async (section: string, fingerprint: string | null, status?: ReviewStatus) => {
+  // Reviewing the forms (server/reviews.ts). Saves first, so there's a draft to keep it in
+  const keepReview = ({ approvals, threads, reviewLog }: DraftMeta) =>
+    setMeta((previous) => ({ ...previous, approvals, threads, reviewLog }));
+
+  // Approve a form or field for the user's side (with the fingerprint of what they approved), or
+  // take the approval back (null)
+  const approve = async (target: string, fingerprint: string | null) => {
     await flush();
-    const reviewed = await client.review(code, version, section, fingerprint, status);
-    setMeta((previous) => ({ ...previous, reviews: reviewed.reviews, comments: reviewed.comments }));
+    keepReview(await client.approve(code, version, target, fingerprint));
   };
 
-  const comment = async (change: CommentChange) => {
+  const thread = async (change: ThreadChange) => {
     await flush();
-    const commented = await client.comment(code, version, change);
-    setMeta((previous) => ({ ...previous, reviews: commented.reviews, comments: commented.comments }));
+    keepReview(await client.thread(code, version, change));
   };
 
   const apply = async (description?: string): Promise<ApplyResult> => {
@@ -223,8 +225,8 @@ export const useDraft = (
     updateFiles,
     discardChanges,
     submit,
-    review,
-    comment,
+    approve,
+    thread,
     apply,
   };
 };

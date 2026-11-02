@@ -20,15 +20,25 @@
  */
 import { useEffect, useState } from 'react';
 import type { DraftSummary } from '../../server/drafts';
+import type { FlagKind } from '../../server/reviews';
 import type { DraftClient } from '../draftClient';
 import { HelplineFilter } from './HelplineFilter';
 import '../designStatus.css';
 
-// e.g. "2 sections need changes": what the Aselo reviewer sent back
+// e.g. "2 open questions · 1 change needed": the flags still open on its forms (formReviews.ts)
 const changesNeededText = (draft: DraftSummary) => {
-  const count = Object.values(draft.meta.reviews ?? {}).filter((review) => review.status === 'changes-needed').length;
-  if (count === 0) return undefined;
-  return count === 1 ? '1 section needs changes' : `${count} sections need changes`;
+  const open = (draft.meta.threads ?? []).filter((thread) => !thread.resolvedAt);
+  const count = (kind: FlagKind) => open.filter((thread) => thread.kind === kind).length;
+  const parts = [
+    [count('question'), 'open question', 'open questions'],
+    [count('changes'), 'change needed', 'changes needed'],
+    [count('attention'), 'needs attention', 'need attention'],
+  ] as const;
+  const text = parts
+    .filter(([n]) => n > 0)
+    .map(([n, one, many]) => `${n} ${n === 1 ? one : many}`)
+    .join(' · ');
+  return text || undefined;
 };
 
 type Props = {

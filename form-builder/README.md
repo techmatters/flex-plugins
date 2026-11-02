@@ -13,6 +13,7 @@ It reads and writes the same files the Flex plugin uses:
 
 - [docs/user-guide.md](docs/user-guide.md): how to use it, for helpline staff and Aselo staff
   (editing, submitting for review, reviewing and publishing).
+- [docs/form-review.md](docs/form-review.md): how the helpline and Aselo review forms, and what could come next
 - [docs/architecture.md](docs/architecture.md): how it works (each part, sign-in, permissions,
   future steps), with diagrams.
 - [terraform/README.md](terraform/README.md): setting it up and deploying it.
