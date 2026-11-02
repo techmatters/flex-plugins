@@ -54,7 +54,7 @@ import { boardChecks, issuesByObject, sketchIssues, splitIgnored } from './check
 import { downloadFlowExport, downloadScripts } from './exports';
 import { CheckPanel } from './CheckPanel';
 import type { RecordingsList } from './recordings';
-import { standardRecordingName } from './recordings';
+import { approvalOf, standardRecordingName } from './recordings';
 import { RecordingActions, RecordingsPanel } from './RecordingControls';
 import type { BoardClient, HelplineChoices } from './boardClient';
 import { NO_HELPLINE_CHOICES } from './boardClient';
@@ -70,6 +70,9 @@ import {
   statusOf,
   STICKY_COLORS,
   TEMPLATES_CODE,
+  VARIANT_LANGUAGES,
+  variantInLanguage,
+  variesByVariant,
 } from './model';
 import type { DesignStatus } from '../designStatus';
 import { STATUS_AFTER_CHANGE } from '../designStatus';
@@ -346,6 +349,33 @@ const Editor = ({
   // ----- Connecting
   // Why a connection wasn't made, shown for a few seconds
   const [notice, setNotice] = useState<string>();
+
+  // Another language for the flows sharing this template: a new studio_flows entry (the export asks
+  // for it), with its own scripts and recordings folder, empty until written and recorded
+  const addLanguage = (locale: string) => {
+    const language = VARIANT_LANGUAGES.find((candidate) => candidate.locale === locale);
+    if (!language || !boardFlow || variants.length === 0) return;
+    const added = variantInLanguage(variants[0], language.locale, language.label);
+    if (variants.some((candidate) => candidate.key === added.key)) {
+      setNotice(`There is already a flow called ${added.key}.`);
+      return;
+    }
+    const code = language.locale.split('-')[0];
+    setBoardFlow({ ...boardFlow, variants: [...variants, added] });
+    setNodes((current) =>
+      current.map((node) => {
+        if (node.type !== 'object' || !variesByVariant(node.data.object)) return node;
+        const { object } = node.data;
+        return {
+          ...node,
+          data: {
+            object: { ...object, variantMessages: { ...object.variantMessages, [added.key]: { language: code } } },
+          },
+        };
+      }),
+    );
+    setVariantKey(added.key);
+  };
 
   // A variant made its own Studio flow: a new board where its texts are the board's own (its recordings
   // stay in its folder), flagged so the export asks for a template of its own; it leaves this board
@@ -795,9 +825,22 @@ const Editor = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [follow]);
 
+  // Approved scripts and recordings, in the flow shown: a check on the object
+  const approvals = useMemo(() => {
+    const found = new Map<string, 'Approved' | 'Published'>();
+    content.objects.forEach((object) => {
+      const approval = approvalOf(
+        { ...object, message: messageFor(object, variant?.key, mainVariant) },
+        flowDetailsOf(content, object.frameId),
+        recordingList?.recordings,
+      );
+      if (approval) found.set(object.id, approval);
+    });
+    return found;
+  }, [content, variant?.key, mainVariant, recordingList]);
   const editingContext = useMemo(
-    () => ({ readOnly: locked, problems, simulation, sketch: mode === 'sketch' }),
-    [locked, problems, simulation, mode],
+    () => ({ readOnly: locked, problems, simulation, sketch: mode === 'sketch', approvals }),
+    [locked, problems, simulation, mode, approvals],
   );
   const errorCount = issues.filter((issue) => issue.severity === 'error').length;
 
@@ -1036,7 +1079,7 @@ const Editor = ({
         )}
 
         {/* Studio flows sharing this template: whose texts and recordings are shown */}
-        {variants.length > 1 && (
+        {(variants.length > 1 || (variants.length === 1 && !readOnly)) && (
           <div className="flow-variant-bar">
             <span className="flow-variant-bar-label">
               <Languages size={15} aria-hidden /> Flows sharing this template
@@ -1055,6 +1098,24 @@ const Editor = ({
                 </button>
               ))}
             </span>
+            {!readOnly && (
+              <select
+                className="flow-variant-add"
+                aria-label="Add a language"
+                value=""
+                onChange={(e) => addLanguage(e.target.value)}
+              >
+                <option value="">+ Add a language</option>
+                {VARIANT_LANGUAGES.filter(
+                  ({ locale }) =>
+                    !variants.some((candidate) => candidate.key === variantInLanguage(variants[0], locale, '').key),
+                ).map(({ locale, label }) => (
+                  <option key={locale} value={locale}>
+                    {label} ({locale})
+                  </option>
+                ))}
+              </select>
+            )}
             {variant && (
               <span className="field-hint flow-variant-bar-hint">
                 Scripts and recordings shown: <code>{variant.key}</code>. Widgets and connections are the same for all.

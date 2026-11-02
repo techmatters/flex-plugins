@@ -82,6 +82,56 @@ export type FlowVariant = {
   recordingsFolder: string;
   // Its own flow_vars (its studio_flows entry's), per environment, as written
   flowVars?: Partial<Record<'staging' | 'production', Record<string, string>>>;
+  // Added on the board (Add a language): not in the helpline's config yet, a studio_flows entry to add
+  added?: boolean;
+};
+
+// Languages a flow can be added in: what Twilio's voice widgets speak and listen in (gather_language)
+export const VARIANT_LANGUAGES = [
+  { locale: 'en-US', label: 'English' },
+  { locale: 'es-US', label: 'Spanish' },
+  { locale: 'fr-CA', label: 'French (Canada)' },
+  { locale: 'fr-FR', label: 'French (France)' },
+  { locale: 'pt-BR', label: 'Portuguese' },
+  { locale: 'vi-VN', label: 'Vietnamese' },
+] as const;
+
+// A flow's key or recordings folder in another language: its language ending changed (_en → _fr),
+// or the language added
+const inLanguage = (name: string, language: string) =>
+  /_[a-z]{2}$/.test(name) ? name.replace(/_[a-z]{2}$/, `_${language}`) : `${name}_${language}`;
+
+/**
+ * Another language for flows sharing a template: a new studio_flows entry, its key and recordings
+ * folder after the main flow's, and the main flow's flow_vars with its language and recordings
+ * address changed (its texts stay the main flow's until written on the board).
+ */
+export const variantInLanguage = (main: FlowVariant, locale: string, label: string): FlowVariant => {
+  const language = locale.split('-')[0].toLowerCase();
+  const recordingsFolder = inLanguage(main.recordingsFolder, language);
+  const flowVars = main.flowVars
+    ? Object.fromEntries(
+        Object.entries(main.flowVars).map(([environment, vars]) => [
+          environment,
+          Object.fromEntries(
+            Object.entries(vars ?? {}).map(([name, value]) => {
+              if (/language/i.test(name)) return [name, locale];
+              if (value.endsWith(`/${main.recordingsFolder}`)) {
+                return [name, `${value.slice(0, -main.recordingsFolder.length)}${recordingsFolder}`];
+              }
+              return [name, value];
+            }),
+          ),
+        ]),
+      )
+    : undefined;
+  return {
+    key: inLanguage(main.key, language),
+    label,
+    recordingsFolder,
+    ...(flowVars ? { flowVars } : {}),
+    added: true,
+  };
 };
 
 export type StudioFlowSource = {

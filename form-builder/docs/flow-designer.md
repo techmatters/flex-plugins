@@ -264,6 +264,9 @@ message needs its Studio name before its recording can be uploaded.
   themselves.
 - **Messaging scripts** get approved by Aselo staff in the object's settings (**Approve script**);
   the approval holds while the script stays the same.
+- **On the board**, a message whose script (messaging) or recording (voice, and Send to queue's
+  wait music) is approved shows a green check in its top right corner, for the flow tab shown;
+  hovering says whether it's published to production too.
 - **The Check panel** says what's left: voice messages without a recording, recordings waiting
   for approval, approved ones not published yet, messaging scripts not approved.
 - **The exports** carry it too: the spreadsheet's Status column, and in the JSON each message's
@@ -328,6 +331,12 @@ tab per flow (English / Spanish) in the board's header:
   Its recordings are in its own folder (`<code>/<environment>/<flow>/`, so the same file names
   don't overwrite each other); the export gives each folder's URL, for the flow's recordings URL
   variable (e.g. `post_survey_assets_url`), and each text change with the flow it belongs to.
+- **+ Add a language** (next to the tabs): another flow on the same template, e.g.
+  `post_call_survey_fr`. Its key and recordings folder follow the first flow's (its language ending
+  changed), and its `flow_vars` are the first flow's with the language (`gather_language`) and the
+  recordings folder changed. Its scripts start empty, to be written and recorded on its tab; the
+  export marks it `added`, so Claude adds its `studio_flows` entry (staging first). The list is the
+  languages Twilio's voice widgets speak and listen in that helplines use (`VARIANT_LANGUAGES`).
 - **Make <language> its own flow** (on that flow's tab): when one flow really has to differ. It
   becomes a board of its own (its texts, the same recordings folder), flagged so the export asks for
   a template of its own (e.g. `post-call-survey-es.tftpl`) and to point its `studio_flows` entry at

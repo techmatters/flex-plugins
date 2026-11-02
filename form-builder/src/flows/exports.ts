@@ -108,6 +108,8 @@ export type FlowExport = {
       label: string;
       flowVars?: Partial<Record<'staging' | 'production', Record<string, string>>>;
       recordingsUrls?: Partial<RecordingsList['baseUrls']>;
+      // Added on the board (another language): its studio_flows entry has to be added
+      added?: boolean;
     }[];
   };
   // A flow split off from a shared template: make it a template of its own
@@ -160,7 +162,10 @@ const ABOUT = [
   'staging.hcl / production.hcl, e.g. a survey in English and Spanish): the template is ONE file for all of them,',
   'so a change to widgets or connections is made once there; each flow keeps its own flow_vars ("variables" with',
   '"flow" say which entry a text goes in), and its recordings folder: set recordingsUrlVariable in each flow\'s',
-  'flow_vars to its recordingsUrls for that environment. "ownTemplate" (when present) means this flow was split',
+  'flow_vars to its recordingsUrls for that environment. A flow with "added" is a new language: add its',
+  'studio_flows entry (its key, the same templatefile, its flowVars: those of the first flow, with its language and',
+  'recordings folder changed), and list as TODO any text still in the language of the first flow.',
+  '"ownTemplate" (when present) means this flow was split',
   'off a shared template: write it as a new template (suggested name), a copy of "from" with the board\'s changes,',
   'and point its studio_flows entry at it; the other flows keep the old template.',
   'A template under templates/ can be shared by helplines ("sharedWith"): if its text changed (more than widget',
@@ -361,6 +366,7 @@ const sharedTemplateOf = (content: BoardContent, recordings?: RecordingsList): P
       key: variant.key,
       label: variant.label,
       ...(variant.flowVars ? { flowVars: variant.flowVars } : {}),
+      ...(variant.added ? { added: true } : {}),
       ...(recordings
         ? {
             recordingsUrls: {

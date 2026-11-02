@@ -143,6 +143,23 @@ export const withStudioName = <T extends Pick<FlowObject, 'studioName' | 'messag
   return { ...object, studioName, message: keep ? { ...message, recordingFile: played } : message };
 };
 
+// The check shown on an object: its script or recording approved, or published (voice). Send to
+// queue's wait music counts once its recording is
+export const approvalOf = (
+  object: Pick<FlowObject, 'type' | 'message' | 'studioName' | 'settings'>,
+  frame?: Pick<Frame, 'channel'>,
+  recordings?: Recording[],
+): 'Approved' | 'Published' | undefined => {
+  if (playsWaitRecording(object)) {
+    const recording = recordingOf(object, recordings);
+    if (recording && isPublished(recording)) return 'Published';
+    return recording && isApproved(recording) ? 'Approved' : undefined;
+  }
+  if (!OBJECT_TYPES[object.type].hasMessage) return undefined;
+  const status = messageStatus(object, frame, recordings);
+  return status === 'Approved' || status === 'Published' ? status : undefined;
+};
+
 export type MessageStatus = 'No script' | 'Script ready' | 'Recorded' | 'Approved' | 'Published';
 
 /**

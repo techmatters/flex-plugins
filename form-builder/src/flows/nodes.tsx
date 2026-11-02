@@ -29,7 +29,7 @@ import {
   Position,
   useReactFlow,
 } from '@xyflow/react';
-import { MessageSquareText, Square, SquareCheck, TriangleAlert } from 'lucide-react';
+import { Check, MessageSquareText, Square, SquareCheck, TriangleAlert } from 'lucide-react';
 import type { Issue } from './checks';
 import { iconOf, OBJECT_TYPES, objectColor, STICKY_COLORS } from './model';
 import type { ConnectionEdge, FrameNode, ObjectNode, StickyNode } from './canvasModel';
@@ -53,6 +53,8 @@ export const BoardEditingContext = createContext<{
   simulation?: SimulationView;
   // Sketch mode: lighter colours and dashed outlines
   sketch?: boolean;
+  // Objects whose script or recording is approved (or published), in the flow shown
+  approvals?: Map<string, 'Approved' | 'Published'>;
 }>({
   readOnly: false,
 });
@@ -162,8 +164,9 @@ const lighter = (color: string) => {
 
 export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<ObjectNode>) => {
   const { updateNodeData } = useReactFlow();
-  const { readOnly, problems, simulation, sketch } = useContext(BoardEditingContext);
+  const { readOnly, problems, simulation, sketch, approvals } = useContext(BoardEditingContext);
   const { object } = data;
+  const approval = approvals?.get(id);
   const info = OBJECT_TYPES[object.type];
   const comments = openComments(object.thread);
   // In Test mode the run's way and tested paths show instead of problems
@@ -225,6 +228,15 @@ export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<
           info.studioWidget && <span className="flow-object-caption">{info.studioWidget}</span>
         )}
       </div>
+      {approval && (
+        <span
+          className={`flow-approved-badge ${comments > 0 ? 'beside-comments' : ''}`}
+          title={approval === 'Published' ? 'Approved and published to production' : 'Approved'}
+          aria-label={approval}
+        >
+          <Check size={12} strokeWidth={3} aria-hidden />
+        </span>
+      )}
       {comments > 0 && (
         <span className="flow-comment-badge" title={`${comments} open comment${comments === 1 ? '' : 's'}`}>
           <MessageSquareText size={12} aria-hidden /> {comments}

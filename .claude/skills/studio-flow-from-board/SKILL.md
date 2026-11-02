@@ -243,6 +243,12 @@ post-call survey in English and Spanish). The board shows them as one, with a ta
   its `flow`. Each flow keeps its recordings in its own folder: set `recordingsUrlVariable` in each
   flow's `flow_vars` to its `recordingsUrls.staging` / `.production` (replacing placeholders like
   `<ADD_SPANISH_RECORDINGS_URL>`), in the environment being done.
+- A flow with **`added: true`** is a language added on the board: it has no `studio_flows` entry
+  yet. Add one in the environment being done (staging first), keyed `key`, with the same
+  `templatefile` as the others and `flowVars` for that environment (already the first flow's with
+  its language and recordings folder changed). Its texts come from `variables` with its `flow`; any
+  text left out is still in the first flow's language: say so in the hand-off. Its recordings have
+  to be uploaded (and published, for production) before callers can hear it.
 - **`ownTemplate`**: this flow was split off a shared template on purpose. Write a new template
   (`ownTemplate.suggested`, e.g. `post-call-survey-es.tftpl`), a copy of `ownTemplate.from` with
   the board's changes; point `studio_flows.<ownTemplate.studioFlow>.templatefile` at it. Leave the

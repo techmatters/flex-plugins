@@ -459,6 +459,24 @@ describe('flow designer', { timeout: 20_000 }, () => {
     expect(thanks.message?.script).toBe('Thank you for your answers.');
     expect(thanks.variantMessages?.survey_es?.script).toBe('Muchas gracias.');
 
+    // Another language: a new flow on the same template, its scripts empty and its own recordings folder
+    fireEvent.change(screen.getByRole('combobox', { name: 'Add a language' }), { target: { value: 'fr-CA' } });
+    expect(screen.getByRole('tab', { name: 'French (Canada)' }).getAttribute('aria-selected')).toBe('true');
+    expect(script().value).toBe('');
+    expect(
+      [...(screen.getByRole('combobox', { name: 'Add a language' }) as HTMLSelectElement).options].map((o) => o.value),
+    ).not.toContain('fr-FR');
+    await waitFor(
+      async () =>
+        expect((await boards.get('usnm', board.id))!.content.flow?.variants?.[2]).toMatchObject({
+          key: 'survey_fr',
+          label: 'French (Canada)',
+          recordingsFolder: 'survey_fr',
+          added: true,
+        }),
+      { timeout: 4000 },
+    );
+
     // Back to English: its own script
     fireEvent.click(screen.getByRole('tab', { name: 'English' }));
     expect(script().value).toBe('Thank you for your answers.');
@@ -569,8 +587,11 @@ describe('flow designer', { timeout: 20_000 }, () => {
     await waitFor(() => expect(panel.getByText('Recorded')).toBeTruthy());
     fireEvent.click(panel.getByRole('button', { name: 'Approve' }));
     await waitFor(() => expect(panel.getByText('Approved')).toBeTruthy());
+    // A green check on the object
+    expect(document.querySelector('.flow-approved-badge')?.getAttribute('aria-label')).toBe('Approved');
     fireEvent.click(panel.getByRole('button', { name: 'Publish to production' }));
     await waitFor(() => expect(panel.getByText('Published')).toBeTruthy());
+    expect(document.querySelector('.flow-approved-badge')?.getAttribute('aria-label')).toBe('Published');
     expect(recordingFiles.files.get('usnm/production/play_message_voice.mp3')?.content).toBe('take one');
   });
 
