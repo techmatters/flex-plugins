@@ -357,8 +357,8 @@ export const isImportedBoard = (content: Pick<BoardContent, 'frames' | 'flow'>) 
  * message. A voice message's script (what's recorded, in each language) and a text from flow_vars
  * are each variant's; any other text is written in the shared template, so it's the same for all.
  */
-export const variesByVariant = (object: Pick<FlowObject, 'message' | 'studio'>) => {
-  if (object.message?.channel === 'voice') return true;
+export const variesByVariant = (object: Pick<FlowObject, 'type' | 'message' | 'studio'>) => {
+  if (object.message?.channel === 'voice' || VOICE_ONLY.has(object.type)) return true;
   const written = object.studio?.properties?.say ?? object.studio?.properties?.body;
   return typeof written === 'string' && /^\$\{\s*[a-z_]*flow_vars\./.test(written.trim());
 };
@@ -366,7 +366,7 @@ export const variesByVariant = (object: Pick<FlowObject, 'message' | 'studio'>) 
 // The message as a variant has it: the main variant's (or no variant's) is the object's own; another
 // variant has its own script and language where the message varies (none yet: empty, to be written)
 export const messageFor = (
-  object: Pick<FlowObject, 'message' | 'variantMessages' | 'studio'>,
+  object: Pick<FlowObject, 'type' | 'message' | 'variantMessages' | 'studio'>,
   variant?: string,
   mainVariant?: string,
 ): MessageContent | undefined => {

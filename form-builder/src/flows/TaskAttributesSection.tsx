@@ -19,6 +19,7 @@
  * rules read), where twilio-iac keeps it, and the other channels' when the flow is shared.
  */
 import type { Channel, TaskAttributes } from './model';
+import { JsonTextarea } from './JsonTextarea';
 import {
   standardTaskAttributes,
   standardTemplateFor,
@@ -78,14 +79,15 @@ export const TaskAttributesSection = ({
           'Written in the widget itself.'
         )}
       </p>
-      <textarea
+      <JsonTextarea
         className="flow-task-attributes"
         value={attributes.json}
         rows={Math.min(18, Math.max(6, attributes.json.split('\n').length + 1))}
         spellCheck={false}
         aria-label="Task attributes JSON"
         disabled={readOnly}
-        onChange={(e) => onChange({ ...attributes, json: e.target.value })}
+        isValid={(json) => !taskAttributesProblem(json)}
+        onValueChange={(json) => onChange({ ...attributes, json })}
       />
       {problem ? (
         <p className="field-hint flow-task-attributes-problem">Not valid JSON: {problem}</p>

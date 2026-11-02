@@ -24,7 +24,7 @@
  * Studio flows play.
  */
 import type { FlowObject, Frame } from './model';
-import { OBJECT_TYPES } from './model';
+import { messageChannelOf, OBJECT_TYPES } from './model';
 
 export type RecordingEnvironment = 'staging' | 'production';
 
@@ -85,7 +85,7 @@ export const isPublished = (recording: Recording) =>
   Boolean(recording.staging && recording.production && recording.staging.etag === recording.production.etag);
 
 export const isVoiceMessage = (object: Pick<FlowObject, 'type' | 'message'>, frame?: Pick<Frame, 'channel'>) =>
-  Boolean(OBJECT_TYPES[object.type].hasMessage) && (object.message?.channel ?? frame?.channel) === 'voice';
+  Boolean(OBJECT_TYPES[object.type].hasMessage) && messageChannelOf(object, frame) === 'voice';
 
 // Send to queue's wait music, when it's a recording of the helpline's: named after the widget, as a
 // message's recording is

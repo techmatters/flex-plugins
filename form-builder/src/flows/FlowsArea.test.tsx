@@ -384,12 +384,13 @@ describe('flow designer', { timeout: 20_000 }, () => {
 
     fireEvent.click(screen.getByRole('tab', { name: /^Check/ }));
     const check = within(screen.getByRole('region', { name: 'Check' }));
-    expect(check.getByText('0 errors, 4 warnings')).toBeTruthy();
+    // A play message is voice: it has no recording yet
+    expect(check.getByText('0 errors, 5 warnings')).toBeTruthy();
     expect(check.getByRole('button', { name: 'Nothing comes after “Play message (voice)”.' })).toBeTruthy();
 
     fireEvent.click(check.getByRole('button', { name: 'The flow ends here on purpose' }));
     expect(check.queryByText(/Nothing comes after/)).toBeNull();
-    expect(check.getByText('0 errors, 3 warnings')).toBeTruthy();
+    expect(check.getByText('0 errors, 4 warnings')).toBeTruthy();
 
     // The warnings can be hidden, leaving only errors
     fireEvent.click(check.getByRole('checkbox', { name: 'Show warnings' }));
@@ -559,7 +560,6 @@ describe('flow designer', { timeout: 20_000 }, () => {
   test('a voice message is recorded, approved and published', async () => {
     const board = await openNewBoard('Recordings');
     fireEvent.click(palette().getByRole('button', { name: /^Play message/ }));
-    fireEvent.change(settings().getByRole('combobox', { name: /^Channel/ }), { target: { value: 'voice' } });
     fireEvent.change(settings().getByRole('textbox', { name: 'Script' }), {
       target: { value: 'Welcome to the helpline.' },
     });

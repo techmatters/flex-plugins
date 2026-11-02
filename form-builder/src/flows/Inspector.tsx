@@ -66,7 +66,7 @@ import type {
   Person,
 } from './model';
 import { hasNonStandardRecording, isVoiceMessage, playsWaitRecording, withStudioName } from './recordings';
-import { AutoTextarea } from '../components/AutoTextarea';
+import { JsonTextarea } from './JsonTextarea';
 import { CanvasNode, ConnectionEdge, FrameNode, newId, ObjectNode, StickyNode } from './canvasModel';
 import type { HelplineChoices } from './boardClient';
 import type { Issue } from './checks';
@@ -836,36 +836,43 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
       {showsChannel && !sketch && (
         <section className="flow-inspector-section">
           <h3>{object.type === 'incoming' ? 'Contact' : 'Message'}</h3>
-          <ChannelSelect
-            value={object.message?.channel}
-            disabled={readOnly}
-            onChange={(channel) => update({ message: { ...object.message, channel } })}
-          />
+          {/* What starts the flow (a call or a message); a message's channel is the flow's (messageChannelOf) */}
+          {object.type === 'incoming' && (
+            <ChannelSelect
+              value={object.message?.channel}
+              disabled={readOnly}
+              onChange={(channel) => update({ message: { ...object.message, channel } })}
+            />
+          )}
           {info.hasMessage && variants.length > 1 && shownVariant && (
             <p className="field-hint flow-variant-hint">
               {sharedText
                 ? 'This text is written in the template the flows share: changing it changes every one of them.'
-                : `${shownVariant.label} (${shownVariant.key}): this flow's own script${message?.channel === 'voice' ? ' and recording' : ''}.`}
+                : `${shownVariant.label} (${shownVariant.key}): this flow's own script${messageChannelOf(object, details) === 'voice' ? ' and recording' : ''}.`}
             </p>
           )}
           {info.hasMessage && (
             <>
-              <label className="field">
-                <span className="field-label">Language</span>
-                <input
-                  type="text"
-                  list="flow-languages"
-                  value={message?.language ?? ''}
-                  disabled={readOnly}
-                  placeholder="en"
-                  onChange={(e) => setMessage({ ...message, language: e.target.value || undefined })}
-                />
-                <datalist id="flow-languages">
-                  {['en', 'es', 'fr', 'pt', 'mt', 'zh'].map((language) => (
-                    <option key={language} value={language} />
-                  ))}
-                </datalist>
-              </label>
+              {/* Only a voice menu's language reaches Studio (gather_language); the name's is set below */}
+              {object.type === 'menuVoice' && (
+                <label className="field">
+                  <span className="field-label">Speech recognition language</span>
+                  <input
+                    type="text"
+                    list="flow-languages"
+                    value={message?.language ?? ''}
+                    disabled={readOnly}
+                    placeholder="en"
+                    onChange={(e) => setMessage({ ...message, language: e.target.value || undefined })}
+                  />
+                  <datalist id="flow-languages">
+                    {['en', 'es', 'fr', 'pt', 'mt', 'zh'].map((language) => (
+                      <option key={language} value={language} />
+                    ))}
+                  </datalist>
+                  <span className="field-hint">What Studio listens for when the caller answers by speaking.</span>
+                </label>
+              )}
               <label className="field">
                 <span className="field-label">Script</span>
                 <textarea
@@ -935,7 +942,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
           )}
           <span className="field-hint">
             The widget&apos;s name in Studio
-            {info.hasMessage && object.message?.channel === 'voice' ? ' and its recording file' : ''}.
+            {info.hasMessage && messageChannelOf(object, details) === 'voice' ? ' and its recording file' : ''}.
             {isNamedByParts(object.type) && ' Channels, languages and services are set for the flow (its settings).'}
           </span>
           {!readOnly && standard && standard !== object.studioName && (
@@ -1004,7 +1011,8 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                     ))}
                   </select>
                 ) : field.kind === 'json' ? (
-                  <AutoTextarea
+                  <JsonTextarea
+                    autoGrow
                     className="flow-field-json"
                     value={value}
                     minRows={4}
@@ -1012,7 +1020,8 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                     disabled={readOnly}
                     spellCheck={false}
                     aria-invalid={Boolean(fieldProblem(field, value))}
-                    onChange={(e) => set(e.target.value)}
+                    isValid={(text) => Boolean(text.trim()) && !fieldProblem(field, text)}
+                    onValueChange={set}
                   />
                 ) : (
                   <input

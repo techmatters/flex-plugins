@@ -21,7 +21,16 @@
  * See docs/flow-designer.md, "Outputs".
  */
 import type { Board, BoardContent, Channel, FlowNaming, FlowObject, Frame } from './model';
-import { exitsOf, flowDetailsOf, isImportedBoard, OBJECT_TYPES, statusOf, templateTargetOf, toSnake } from './model';
+import {
+  exitsOf,
+  flowDetailsOf,
+  isImportedBoard,
+  messageChannelOf,
+  OBJECT_TYPES,
+  statusOf,
+  templateTargetOf,
+  toSnake,
+} from './model';
 import type { DesignStatus } from '../designStatus';
 import { statusLabel } from '../designStatus';
 import { boardChecks, flowScopeOf, splitIgnored } from './checks';
@@ -177,7 +186,7 @@ const ABOUT = [
 
 // The uploaded file when there is one (MP3 or WAV), otherwise the MP3 it should be
 const recordingFileOf = (object: FlowObject, frame?: Pick<Frame, 'channel'>, recordings?: RecordingsList) => {
-  const channel = object.message?.channel ?? frame?.channel;
+  const channel = messageChannelOf(object, frame);
   if (!OBJECT_TYPES[object.type].hasMessage || channel !== 'voice' || !object.studioName) return undefined;
   return recordingOf(object, recordings?.recordings)?.fileName ?? `${object.studioName}.mp3`;
 };
@@ -419,7 +428,7 @@ export const scriptRows = (content: BoardContent, recordings?: RecordingsList): 
         'Studio name': object.studioName ?? '',
         'Recording file': recordingFileOf(object, details, recordings) ?? '',
         Kind: OBJECT_TYPES[object.type].label,
-        Channel: object.message?.channel ?? details?.channel ?? '',
+        Channel: messageChannelOf(object, details) ?? '',
         Language: object.message?.language ?? '',
         'Text on the board': object.text,
         Script: object.message?.script ?? '',
