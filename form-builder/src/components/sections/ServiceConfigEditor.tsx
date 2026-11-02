@@ -42,6 +42,9 @@ import {
   SettingRow,
 } from '../../serviceConfig';
 import { isServiceConfigPath, repoServiceConfigDir, ServiceConfigFileName } from '../../../server/filePaths';
+import type { PostFlowChoices } from '../../../server/postStudioFlowChoices';
+import { fetchPostFlowChoices } from '../../api';
+import { PostStudioFlowsEditor } from './PostStudioFlowsEditor';
 
 type Props = {
   code: string;
@@ -49,6 +52,8 @@ type Props = {
   originalFiles: DefinitionFileMap;
   defaults?: ConfigObject;
   onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
+  // The queues and post-call survey flows postStudioFlows can point at (replaced in tests)
+  loadPostFlowChoices?: (code: string) => Promise<PostFlowChoices>;
 };
 
 type Filter = 'helpline' | 'all' | 'differs' | 'changed';
@@ -398,7 +403,14 @@ const FileJsonEditor = ({
   );
 };
 
-export const ServiceConfigEditor = ({ code, draftFiles, originalFiles, defaults, onChangeFiles }: Props) => {
+export const ServiceConfigEditor = ({
+  code,
+  draftFiles,
+  originalFiles,
+  defaults,
+  onChangeFiles,
+  loadPostFlowChoices = fetchPostFlowChoices,
+}: Props) => {
   const [mode, setMode] = useState<'settings' | 'files'>('settings');
   const [filter, setFilter] = useState<Filter>('helpline');
   const [search, setSearch] = useState('');
@@ -548,6 +560,8 @@ export const ServiceConfigEditor = ({ code, draftFiles, originalFiles, defaults,
             );
           })}
           {visible.length === 0 && <p className="muted">No settings match.</p>}
+
+          <PostStudioFlowsEditor code={code} draftFiles={draftFiles} change={change} loadChoices={loadPostFlowChoices} />
 
           <AddSetting
             rows={rows}

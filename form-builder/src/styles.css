@@ -2068,3 +2068,22 @@ body {
   padding: 8px 12px;
   overflow-x: auto;
 }
+
+/* Post-call surveys (postStudioFlows) in the service configuration */
+.config-post-flows {
+  border-top: 1px solid var(--color-border);
+  margin-top: 24px;
+}
+
+.config-post-flows h3 {
+  font-size: 14px;
+  margin: 20px 0 8px;
+}
+
+.config-post-flows-table select {
+  max-width: 100%;
+}
+
+.config-post-flows-warning {
+  color: var(--color-pii-text);
+}

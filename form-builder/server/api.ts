@@ -22,6 +22,7 @@
  *   GET    /api/helplines                           helplines this person can open
  *   GET    /api/branches                            Aselo staff: the flex-plugins branches imports can read ({ value, label }[])
  *   GET    /api/definitions/:code/:version          the current (applied) files
+ *   GET    /api/service-config/:code/post-flow-choices  Aselo staff: queues and post-call survey flows for postStudioFlows
  *   GET    /api/drafts                              drafts this person can see
  *   GET    /api/drafts/:code/:version               a draft (404 if there's none)
  *   PUT    /api/drafts/:code/:version               save a draft
@@ -51,6 +52,7 @@ import type { BranchSource } from './branches';
 import { isValidBranch } from './branches';
 import type { RoutingStore } from './routingStore';
 import { isServiceConfigPath } from './filePaths';
+import { loadPostFlowChoices } from './postStudioFlowChoices';
 
 export type ApiUser = {
   name: string;
@@ -267,6 +269,13 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       if (!context.boards) return fail(501, "The flow designer isn't set up here.");
       const stores = { boards: context.boards, people: context.people };
       return await handleBoardRequest(stores, request.method.toUpperCase(), boardsPath, request.body, user, now);
+    }
+
+    // What postStudioFlows can point at (the service configuration is Aselo staff's)
+    const choicesMatch = route.match(/^GET \/api\/service-config\/([a-z0-9]+)\/post-flow-choices$/);
+    if (choicesMatch) {
+      if (!isStaff(user)) return fail(403, 'Only Aselo staff change the service configuration.');
+      return ok(await loadPostFlowChoices(context, choicesMatch[1]));
     }
 
     const definitionsMatch = route.match(/^GET \/api\/definitions\/([^/]+)\/([^/]+)$/);

@@ -15,6 +15,7 @@
  */
 
 import type { DefinitionFiles, HelplineSummary } from '../server/definitionsApi';
+import type { PostFlowChoices } from '../server/postStudioFlowChoices';
 import { apiFetch } from './auth';
 
 const getJson = async <T>(url: string): Promise<T> => {
@@ -30,3 +31,6 @@ export const fetchHelplines = () => getJson<HelplineSummary[]>('/api/helplines')
 
 export const fetchDefinitionFiles = (code: string, version: string) =>
   getJson<DefinitionFiles>(`/api/definitions/${code}/${version}`);
+
+export const fetchPostFlowChoices = (code: string) =>
+  getJson<PostFlowChoices>(`/api/service-config/${code}/post-flow-choices`);

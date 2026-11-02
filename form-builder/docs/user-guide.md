@@ -131,6 +131,11 @@ also posted in the Slack channel.
   production get, and which file it comes from (Aselo defaults, `common.json`, or the environment's
   file). Edit per file, add settings, or edit the files as JSON. Helpline staff never see this, and
   can't overwrite or discard your service configuration changes in a shared draft.
+  **Post-call surveys** (`postStudioFlows`) has its own list: pick a queue (from the helpline's
+  config or its routing design), when the survey starts (*during the call*, `inProgressCall`, or
+  *after the contact*, `rest`), a `post_call_survey_*` flow (from the config or a board), and
+  staging, production or both. It warns when an environment's config doesn't have the queue or
+  flow yet.
 - **Locked settings unlocked**: saved field names, PII on existing fields, switching an existing
   field's kind, renaming existing call types, categories, sections and statuses, removing existing
   sections. These affect saved data and reporting: check before changing them.

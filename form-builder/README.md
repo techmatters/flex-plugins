@@ -98,7 +98,10 @@ It reads and writes the same files the Flex plugin uses:
   `null` removes. Filters: set by the helpline, all (including defaults), different between
   environments, changed in this draft. Each file's value is edited in place (on/off, text,
   number, or JSON), new settings are added with suggestions from the plugin's `FeatureFlags.ts`,
-  and each file can be edited as JSON. `defaults.json` is read-only. The files travel in the
+  and each file can be edited as JSON. *Post-call surveys* edits `postStudioFlows`: a queue (the
+  config's or the routing design's), the trigger (`inProgressCall` or `rest`), a
+  `post_call_survey_*` flow (the config's or a board's) and staging, production or both
+  (`common.json`). `defaults.json` is read-only. The files travel in the
   draft as `service-configuration/<file>.json`. The API never sends them to helpline staff, and
   refuses them from helpline staff. Helpline staff saving or discarding a shared draft keeps
   Aselo staff's changes. The review lists each changed setting and the
