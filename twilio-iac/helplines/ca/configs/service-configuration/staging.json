@@ -5,7 +5,7 @@
              "use_twilio_lambda_adjust_capacity": true,
             "use_twilio_lambda_janitor": true,
             "use_twilio_lambda_to_transition_participants": true,
-            "use_twilio_lambda_transfers": true,
+            "use_twilio_lambda_transfers": false,
             "use_twilio_lambda_to_issue_sync_token": false
     },
     "form_definitions_base_url": "https://assets-staging.tl.techmatters.org/form-definitions/",
