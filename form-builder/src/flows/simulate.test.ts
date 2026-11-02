@@ -185,6 +185,53 @@ describe('a run', () => {
     expect(run.ended).toMatchObject({ kind: 'end' });
   });
 
+  test('a split on what the contact brought (the webchat form) is asked, and later splits on it agree', () => {
+    const language = '{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}';
+    const webchat = board(
+      [
+        object('trigger', 'incoming'),
+        object('lang', 'decision', {
+          studioName: 'split_language_childhelp',
+          exits: ['English', 'Spanish', 'noMatch'],
+          settings: { input: language },
+        }),
+        object('hello', 'sendMessage', { studioName: 'send_message_hello' }),
+        object('again', 'decision', {
+          studioName: 'split_language_queue',
+          exits: ['English', 'Spanish', 'noMatch'],
+          settings: { input: language },
+        }),
+        object('queueEn', 'sendToQueue', { studioName: 'send_to_queue_en' }),
+        object('queueEs', 'sendToQueue', { studioName: 'send_to_queue_es' }),
+      ],
+      [
+        connect('trigger', 'lang'),
+        connect('lang', 'hello', 'Spanish'),
+        connect('lang', 'hello', 'noMatch'),
+        connect('hello', 'again'),
+        connect('again', 'queueEn', 'English'),
+        connect('again', 'queueEs', 'Spanish'),
+      ],
+    );
+    // Before, it read as empty and always took noMatch
+    let run = startRun(webchat, 'trigger');
+    expect(run.prompt).toMatchObject({
+      kind: 'choose',
+      objectId: 'lang',
+      exits: ['English', 'Spanish', 'noMatch'],
+      assumes: { path: ['pre_engagement_data', 'language'], values: { English: 'English', Spanish: 'Spanish' } },
+    });
+    run = answer(webchat, run, { kind: 'exit', exit: 'Spanish' });
+    // The second split knows it now
+    expect(run.attributes).toEqual({ pre_engagement_data: { language: 'Spanish' } });
+    expect(path(run).slice(0, 4)).toEqual(['trigger', 'lang:Spanish', 'hello', 'again:Spanish']);
+    expect(run.steps[3].note).toBe('{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}} = “Spanish”');
+
+    // No match: the next split doesn't know either, so it's asked too
+    run = answer(webchat, startRun(webchat, 'trigger'), { kind: 'exit', exit: 'noMatch' });
+    expect(run.prompt).toMatchObject({ kind: 'choose', objectId: 'again' });
+  });
+
   test("an unconnected way out is a dead end; one marked as ending isn't; a split it can't read is asked", () => {
     let run = startRun(content, 'trigger');
     run = answer(content, run, { kind: 'reply', text: '2' });

@@ -220,9 +220,12 @@ Twilio, to check its logic (not its texts or recordings):
   voice), or their other ways out (timeout). What a lambda answers (operating hours, skilled worker,
   client profile, Send to queue, Set flow memory...) is chosen from its ways out.
 - **Worked out:** Decisions split on what the run knows (replies, Digits, SpeechResult, flow
-  variables, Repeat counters, flow memory, the conversation's attributes), with the live
-  conditions on imported splits; one reading something the run can't know (e.g. a lambda's
-  `parsed.flags`) asks which way. Repeats count, Set variable sets (simple Liquid: `{{ }}`,
+  variables, Repeat counters, flow memory, the attributes the flow writes: its chatbots' memory
+  and release flags), with the live conditions on imported splits; one reading something the run
+  can't know (e.g. a lambda's `parsed.flags`) asks which way. So does one reading what the contact
+  brings, such as the webchat form's answers
+  (`{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}`): the way out chosen
+  sets it for the rest of the run, so later splits on it go the same way. Repeats count, Set variable sets (simple Liquid: `{{ }}`,
   filters such as `plus`, `{% if %}`), Set flow memory keeps its values.
 - **Pause at every widget** (on by default): messages, splits worked out, Set variable and Repeat
   stop too, showing the widget's script and its recording (to play) and what a split read, until

@@ -174,8 +174,16 @@ export type SimPrompt =
   | { kind: 'reply'; objectId: string; exits: string[] }
   // Keys pressed or words said (Menu, voice), or its other ways out
   | { kind: 'dialpad'; objectId: string; exits: string[]; digits: number }
-  // A way out chosen: what a lambda answered, a split on something the run can't know...
-  | { kind: 'choose'; objectId: string; exits: string[]; why: string }
+  // A way out chosen: what a lambda answered, a split on something the run can't know... For a
+  // split on what the contact brings (e.g. the webchat form's answers), what each way out means
+  // it is, kept for the rest of the run so later splits on it agree
+  | {
+      kind: 'choose';
+      objectId: string;
+      exits: string[];
+      why: string;
+      assumes?: { path: string[]; values: Record<string, string> };
+    }
   // A chatbot has the conversation: what it keeps, and whether it starts the flow again
   | { kind: 'release'; objectId: string; memoryAttribute: string; releaseFlag?: string; triggersFlow: boolean }
   // Paused on a widget that goes on by itself (a message, a split worked out), to check it first
@@ -244,18 +252,40 @@ const at = (record: unknown, path: string[]): unknown =>
     record,
   );
 
+// A path in nested records set to a value, making the records on the way
+const setAt = (record: Record<string, unknown>, [key, ...rest]: string[], value: unknown): Record<string, unknown> => ({
+  ...record,
+  [key]: rest.length === 0 ? value : setAt((record[key] as Record<string, unknown>) ?? {}, rest, value),
+});
+
+const CHANNEL_ATTRIBUTES = ['trigger', 'conversation', 'ChannelAttributes'];
+
+// The conversation's attributes the flow itself writes: flow memory, and its chatbots' memory and
+// release flags. Not there yet means empty; any other attribute is what the contact brought
+const flowWrittenAttributes = (content: Pick<BoardContent, 'objects'>) =>
+  new Set([
+    'flowMemory',
+    ...content.objects
+      .filter((object) => object.type === 'chatbot')
+      .flatMap((object) => [object.settings?.memoryAttribute?.trim() || 'memory', object.settings?.releaseFlag?.trim()])
+      .filter((name): name is string => Boolean(name)),
+  ]);
+
 /**
  * What a Liquid path means in the run. Known (or empty, as Studio would have it): flow variables,
- * the conversation's attributes, and the answers of the questions, menus and flow memory widgets.
- * Anything else (a lambda's answer, the caller's number) is Unknown.
+ * the attributes the flow writes, and the answers of the questions, menus and flow memory widgets.
+ * Anything else (what the contact brought, e.g. the webchat form's answers; a lambda's answer;
+ * the caller's number) is Unknown, unless the run was told it.
  */
 const lookupIn =
   (run: SimRun, content: Pick<BoardContent, 'objects'>): Lookup =>
   (path) => {
     const parts = path.split('.');
     if (parts[0] === 'flow' && parts[1] === 'variables') return run.variables[parts[2]];
-    if (parts[0] === 'trigger' && parts[1] === 'conversation' && parts[2] === 'ChannelAttributes') {
-      return at(run.attributes, parts.slice(3));
+    if (CHANNEL_ATTRIBUTES.every((part, index) => parts[index] === part)) {
+      const value = at(run.attributes, parts.slice(3));
+      if (value !== undefined || flowWrittenAttributes(content).has(parts[3])) return value;
+      throw new Unknown(path);
     }
     if (parts[0] === 'widgets') {
       const name = parts[1];
@@ -410,6 +440,25 @@ const leave = (content: BoardContent, run: SimRun, exit: string, note?: string):
 
 const ask = (run: SimRun, prompt: SimPrompt): SimRun => nextRun(run, { prompt });
 
+// A split reading just one of the contact's attributes ({{trigger.conversation.ChannelAttributes.x}}):
+// what each way out means it is, from its "equal to" conditions
+const assumedBy = (
+  input: string,
+  unknownPath: string,
+  matches: { exit: string; conditions: { argument: string; type: string; value: string }[] }[],
+): { assumes?: { path: string[]; values: Record<string, string> } } => {
+  const read = input.match(/^\{\{\s*([\w.]+)\s*\}\}$/)?.[1];
+  const parts = read?.split('.') ?? [];
+  if (read !== unknownPath || !CHANNEL_ATTRIBUTES.every((part, index) => parts[index] === part)) return {};
+  const values = Object.fromEntries(
+    matches.flatMap(({ exit, conditions }) => {
+      const equal = conditions.find((condition) => condition.argument === input && condition.type === 'equal_to');
+      return equal && conditions.length === 1 ? [[exit, equal.value]] : [];
+    }),
+  );
+  return Object.keys(values).length > 0 ? { assumes: { path: parts.slice(3), values } } : {};
+};
+
 /** On from the current object, as far as it goes without asking. */
 const advance = (content: BoardContent, start: SimRun): SimRun => {
   let run = start;
@@ -503,11 +552,15 @@ const advance = (content: BoardContent, start: SimRun): SimRun => {
           run = goOn(content, run, found?.exit ?? noMatch, `${input} = “${value}”`);
         } catch (err) {
           if (!(err instanceof Unknown)) throw err;
+          const assumed = assumedBy(input ?? '', err.path, matches);
           return ask(run, {
             kind: 'choose',
             objectId: object.id,
             exits: named,
-            why: `It splits on ${err.path}, which this run can't know: which way does it go?`,
+            why: assumed.assumes
+              ? `It splits on ${err.path}, which the contact brings (e.g. from the webchat form): which way does it go? The rest of this run takes it as that.`
+              : `It splits on ${err.path}, which this run can't know: which way does it go?`,
+            ...assumed,
           });
         }
         break;
@@ -629,6 +682,13 @@ export const answer = (content: BoardContent, run: SimRun, given: SimAnswer): Si
       });
     }
     let changed = run;
+    // A split on what the contact brought: the way out chosen tells the run what it is
+    const assumed = prompt.kind === 'choose' ? prompt.assumes : undefined;
+    if (assumed && assumed.values[given.exit] !== undefined) {
+      const value = assumed.values[given.exit];
+      changed = nextRun(run, { attributes: setAt(run.attributes, assumed.path, value) });
+      return advance(content, leave(content, changed, given.exit, `${assumed.path.join('.')} = “${value}”`));
+    }
     if (object.type === 'setFlowMemory' && given.exit === 'success') {
       const values = keptValues(object, run, content);
       const flowMemory = { ...((run.attributes.flowMemory as Record<string, unknown>) ?? {}), ...values };
