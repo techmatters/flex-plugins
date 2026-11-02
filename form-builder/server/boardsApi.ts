@@ -28,7 +28,8 @@
  *
  * Helpline staff see and edit their own helplines' boards and people, and can copy the
  * templates. Only Aselo staff change the templates (code _templates) and the Aselo team's list,
- * or delete boards. Opening a board adds the person to their list (see people.ts).
+ * or delete boards. Nobody is added to a people list by signing in or opening a board: every list
+ * is filled by hand on the boards page.
  */
 import { randomUUID } from 'crypto';
 import type { Board, BoardContent } from '../src/flows/model';
@@ -36,7 +37,7 @@ import { emptyBoard, statusOf, TEMPLATES_CODE, upgradeContent } from '../src/flo
 import { STATUS_AFTER_CHANGE } from '../src/designStatus';
 import type { ApiResponse, ApiUser } from './api';
 import { BoardStore, isBoardContent, isValidBoardKey } from './boards';
-import { ASELO_PEOPLE_CODE, isValidPeopleCode, normalizePeople, PeopleStore, registerPerson } from './people';
+import { ASELO_PEOPLE_CODE, isValidPeopleCode, normalizePeople, PeopleStore } from './people';
 
 // Boards are saved whole on every change; this keeps a runaway board from filling the bucket
 const MAX_BOARD_BYTES = 2_000_000;
@@ -149,19 +150,6 @@ export const handleBoardRequest = async (
 
   if (method === 'GET') {
     if (!existing) return fail(404, 'This board no longer exists.');
-    // Helpline staff who open a board join their helpline's list. Aselo staff join the Aselo
-    // team's, which only lists them to be added to the helplines they work on (on the boards
-    // page): a board only offers its helpline's people. A failure here doesn't stop the board
-    // from opening.
-    const listCode = isStaff(user) ? ASELO_PEOPLE_CODE : code;
-    if (people && listCode !== TEMPLATES_CODE) {
-      await registerPerson(people, listCode, { name: user.name, ...(user.email ? { email: user.email } : {}) }).catch(
-        (err) => {
-          // eslint-disable-next-line no-console
-          console.error(`[form-builder] Could not add ${user.name} to the ${listCode} people list:`, err);
-        },
-      );
-    }
     return ok({ ...existing, content: upgradeContent(existing.content) });
   }
 

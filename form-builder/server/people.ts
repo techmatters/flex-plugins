@@ -16,8 +16,8 @@
 
 /**
  * Who works on each helpline, so tasks can be assigned to them: one list per helpline, plus one
- * for the Aselo team (ASELO_PEOPLE_CODE). People are added when they open a board, and the lists
- * can be edited in the builder.
+ * for the Aselo team (ASELO_PEOPLE_CODE). Every list is filled by hand in the builder: nobody is
+ * added by signing in.
  *
  *   <root>/<code>.json      locally, in form-builder/people (gitignored)
  *   people/<code>.json      deployed, in the private drafts bucket
@@ -55,25 +55,6 @@ export const normalizePeople = (people: unknown): Person[] | undefined => {
     result.push(email ? { name, email } : { name });
   }
   return result.sort((a, b) => a.name.localeCompare(b.name));
-};
-
-// The same person: by email when both have one, otherwise by name
-export const samePerson = (a: Person, b: Person) =>
-  a.email && b.email ? a.email.toLowerCase() === b.email.toLowerCase() : a.name.toLowerCase() === b.name.toLowerCase();
-
-/**
- * Adds the person to the list if they aren't on it yet (filling in an email that was missing).
- * Returns whether the list changed.
- */
-export const registerPerson = async (store: PeopleStore, code: string, person: Person): Promise<boolean> => {
-  const people = await store.get(code);
-  const existing = people.find((candidate) => samePerson(candidate, person) || candidate.name === person.name);
-  if (existing && (existing.email || !person.email)) return false;
-  const updated = existing
-    ? people.map((candidate) => (candidate === existing ? { ...candidate, email: person.email } : candidate))
-    : [...people, person];
-  await store.put(code, normalizePeople(updated) ?? people);
-  return true;
 };
 
 export class LocalPeopleStore implements PeopleStore {

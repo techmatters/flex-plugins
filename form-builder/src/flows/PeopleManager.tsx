@@ -15,11 +15,10 @@
  */
 
 /**
- * The people lists tasks are assigned from: one per helpline, the only one its boards offer. Helpline
- * staff are added to theirs when they open a board; here people can also be added (before they've
- * signed in) or removed. The Aselo team's list is where Aselo staff are picked from to join the
- * helplines they work on. Helpline staff manage their own helpline's list; the Aselo team's is
- * Aselo staff's.
+ * The people lists tasks are assigned from: one per helpline, the only one its boards offer. Every
+ * list is filled by hand here; nobody is added by signing in. The Aselo team's list is where Aselo
+ * staff are picked from to join the helplines they work on. Helpline staff manage their own
+ * helpline's list; the Aselo team's is Aselo staff's.
  */
 import { useEffect, useState } from 'react';
 import type { BoardClient } from './boardClient';
@@ -96,8 +95,8 @@ export const PeopleManager = ({ client, helplineCodes, isAseloStaff }: Props) =>
     <section className="flows-people">
       <h3>People</h3>
       <p className="field-hint">
-        Who tasks on a helpline&apos;s boards can be assigned to. Helpline staff are added when they first open a board;
-        add people here before then (and the Aselo staff working on the helpline), or remove those who&apos;ve left.
+        Who tasks on a helpline&apos;s boards can be assigned to. Nobody is added automatically: add each
+        helpline&apos;s team members (and the Aselo staff working on it) here, and remove those who&apos;ve left.
       </p>
       <label className="field">
         <span className="field-label">List</span>

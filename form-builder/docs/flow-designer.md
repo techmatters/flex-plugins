@@ -530,12 +530,11 @@ Not built yet:
   The bucket is versioned, so earlier saves can be recovered.
 - Recordings: see [Where recordings are stored](#where-recordings-are-stored).
 - People lists (who tasks can be assigned to): `people/<helpline code>.json` and
-  `people/_aselo.json` in the drafts bucket, each a list of names and emails. Whoever opens a board
-  is added to their list (helpline staff to their helpline's, Aselo staff to the Aselo team's) with
-  the name and email from Okta. A board's tasks can only be assigned to its helpline's list
-  (templates: the Aselo team's); the Aselo team's list is where Aselo staff are picked from to join
-  a helpline's. The lists can also be edited on the boards page: helpline staff edit their own
-  helpline's, Aselo staff all of them.
+  `people/_aselo.json` in the drafts bucket, each a list of names and emails. Every list is filled
+  by hand on the boards page: nobody is added by signing in or opening a board. A board's tasks can
+  only be assigned to its helpline's list (templates: the Aselo team's); the Aselo team's list is
+  where Aselo staff are picked from to join a helpline's. Helpline staff edit their own helpline's
+  list, Aselo staff all of them.
 - Checks that call an account-scoped lambda route keep its parameters (e.g. the skills) on the
   object and are named after the route (`f_isSkilledWorkerAvailable_tya_calls`), as
   `lambdas/account-scoped/STUDIO_ROUTES.md` says.

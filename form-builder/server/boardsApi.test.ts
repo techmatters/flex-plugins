@@ -202,17 +202,13 @@ describe('boards', () => {
     expect((await call(staff, 'POST', '/api/boards/usnm', { title: '  ' })).status).toBe(400);
   });
 
-  test('people lists: each helpline its own, the Aselo team for Aselo staff, and openers are added', async () => {
-    const usnmWithEmail = { ...usnmStaff, email: 'nami.person@example.org' };
+  test('people lists: each helpline its own, the Aselo team for Aselo staff, all filled by hand', async () => {
     const board = await create(staff, 'usnm', 'USNM flows');
-    await call(usnmWithEmail, 'GET', `/api/boards/usnm/${board.id}`);
+    await call({ ...usnmStaff, email: 'nami.person@example.org' }, 'GET', `/api/boards/usnm/${board.id}`);
     await call({ ...staff, email: 'aselo.person@example.org' }, 'GET', `/api/boards/usnm/${board.id}`);
-    expect((await call(usnmStaff, 'GET', '/api/people/usnm')).body).toEqual([
-      { name: 'NAMI person', email: 'nami.person@example.org' },
-    ]);
-    expect((await call(usnmStaff, 'GET', '/api/people/_aselo')).body).toEqual([
-      { name: 'Aselo person', email: 'aselo.person@example.org' },
-    ]);
+    // Opening a board adds nobody
+    expect((await call(usnmStaff, 'GET', '/api/people/usnm')).body).toEqual([]);
+    expect((await call(usnmStaff, 'GET', '/api/people/_aselo')).body).toEqual([]);
 
     // Helpline staff edit their own list, not others' or the Aselo team's
     const list = [

@@ -688,8 +688,8 @@ describe('flow designer', { timeout: 20_000 }, () => {
     await people.put('usnm', [{ name: 'Ale', email: 'ale@example.org' }]);
     await people.put('_aselo', [{ name: 'Aselo lead', email: 'aselo@example.org' }]);
     const board = await openNewBoard('Tasks');
-    // Opening the board put this Aselo person on the Aselo team's list, not the helpline's
-    expect((await people.get('_aselo')).map((person) => person.name)).toEqual(['Aselo lead', 'Aselo person']);
+    // Opening the board adds nobody: the lists are filled by hand
+    expect((await people.get('_aselo')).map((person) => person.name)).toEqual(['Aselo lead']);
     expect((await people.get('usnm')).map((person) => person.name)).toEqual(['Ale']);
     fireEvent.click(palette().getByRole('button', { name: /^Sticky note/ }));
     fireEvent.change(settings().getByRole('textbox', { name: 'Note' }), {
