@@ -45,7 +45,8 @@ const changesNeededText = (draft: DraftSummary) => {
 type Props = {
   draftClient: DraftClient;
   isAseloStaff: boolean;
-  onOpen: (code: string, version: string) => void;
+  // branch: the flex-plugins branch the draft was started from ('' for the default)
+  onOpen: (code: string, version: string, branch: string) => void;
 };
 
 export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
@@ -95,6 +96,12 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
               <tr key={`${draft.code}/${draft.version}`}>
                 <td className="area-home-name">
                   {draft.code.toUpperCase()} {draft.version}
+                  {draft.meta.source && (
+                    <>
+                      {' '}
+                      <code className="drafts-branch">{draft.meta.source.branch}</code>
+                    </>
+                  )}
                 </td>
                 <td>
                   {/* Forms have their own review: submitted drafts are applied by Aselo staff in the builder */}
@@ -114,7 +121,11 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
                 </td>
                 <td>{draft.changedFiles.length}</td>
                 <td className="area-home-open">
-                  <button type="button" className="secondary-button" onClick={() => onOpen(draft.code, draft.version)}>
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={() => onOpen(draft.code, draft.version, draft.meta.source?.branch ?? '')}
+                  >
                     {isAseloStaff && draft.meta.status === 'submitted' ? 'Review' : 'Open'}
                   </button>
                 </td>

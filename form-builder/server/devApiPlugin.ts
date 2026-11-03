@@ -110,7 +110,7 @@ const readBody = (req: IncomingMessage): Promise<unknown> =>
 const middleware =
   (context: ApiContext, recordingFiles: LocalRecordingFiles) =>
   async (req: IncomingMessage, res: ServerResponse, next: () => void) => {
-    const { pathname } = new URL(req.url ?? '/', 'http://localhost');
+    const { pathname, searchParams } = new URL(req.url ?? '/', 'http://localhost');
     if (!pathname.startsWith('/api/')) {
       next();
       return;
@@ -125,6 +125,7 @@ const middleware =
       const response = await handleApiRequest(context, {
         method: req.method ?? 'GET',
         path: pathname,
+        query: Object.fromEntries(searchParams),
         body,
         user: localUser(),
       });

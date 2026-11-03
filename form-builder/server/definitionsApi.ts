@@ -24,6 +24,7 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { ImportSource } from './branches';
 import { SERVICE_CONFIG_FILE_NAMES, serviceConfigPath, WEBCHAT_TRANSLATIONS_PREFIX } from './filePaths';
 
 export type HelplineSummary = {
@@ -54,6 +55,8 @@ export type DefinitionFiles = {
   // service-configuration/defaults.json). Read-only here; Aselo staff only, like the helpline's
   // own service configuration files (service-configuration/*.json in files).
   serviceConfigDefaults?: Record<string, unknown>;
+  // The flex-plugins branch they were read from, when not the default (server/branches.ts)
+  source?: ImportSource;
 };
 
 export type WebchatSettings = {

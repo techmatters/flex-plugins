@@ -19,6 +19,7 @@
  * the same server code directly. Only types are imported from the server here, so no Node code
  * ends up in the browser bundle.
  */
+import type { ImportSource } from '../server/branches';
 import type { ApplyResult, Me } from '../server/api';
 import type { Draft, DraftMeta, DraftSummary } from '../server/drafts';
 import type { FlagKind } from '../server/reviews';
@@ -35,11 +36,15 @@ export type SaveDraftRequest = {
   expectedRevision: number;
   files: Record<string, unknown>;
   baseHashes: Record<string, string>;
+  // The flex-plugins branch the files were read from, when not the default
+  source?: ImportSource;
 };
 
+// Someone else saved the draft meanwhile, or (branch) it was started from another branch
+export type DraftConflict = { updatedBy?: string; updatedAt?: string; branch?: string };
+
 export type SaveOutcome =
-  | { ok: true; meta: Partial<DraftMeta> & { revision: number } }
-  | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
+  { ok: true; meta: Partial<DraftMeta> & { revision: number } } | { ok: false; conflict: DraftConflict };
 
 export type DraftClient = {
   me(): Promise<Me>;
@@ -77,7 +82,8 @@ export const clientFor = (send: Send): DraftClient => {
     async save(code, version, request) {
       const response = await send('PUT', `/api/drafts/${code}/${version}`, request);
       if (response.status === 409) {
-        return { ok: false, conflict: { updatedBy: response.body?.updatedBy, updatedAt: response.body?.updatedAt } };
+        const { updatedBy, updatedAt, branch } = response.body ?? {};
+        return { ok: false, conflict: { updatedBy, updatedAt, ...(branch ? { branch } : {}) } };
       }
       if (response.status >= 400) throw new Error(response.body?.message ?? 'Could not save the draft');
       return { ok: true, meta: response.body };

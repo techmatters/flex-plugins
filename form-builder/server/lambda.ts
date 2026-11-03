@@ -136,7 +136,13 @@ export const handler = async (event: APIGatewayProxyEventV2WithJWTAuthorizer): P
         helplinesConfigDir: snapshot.helplinesConfigDir,
         webchatConfigDir: snapshot.webchatConfigDir,
       },
-      { method: event.requestContext.http.method, path: event.rawPath, body, user },
+      {
+        method: event.requestContext.http.method,
+        path: event.rawPath,
+        query: event.queryStringParameters ?? {},
+        body,
+        user,
+      },
     );
     return json(response.status, response.body);
   } catch (err) {

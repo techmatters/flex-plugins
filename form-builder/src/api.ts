@@ -14,6 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import type { BranchChoice } from '../server/branches';
 import type { DefinitionFiles, HelplineSummary } from '../server/definitionsApi';
 import type { PostFlowChoices } from '../server/postStudioFlowChoices';
 import { apiFetch } from './auth';
@@ -27,10 +28,15 @@ const getJson = async <T>(url: string): Promise<T> => {
   return response.json();
 };
 
-export const fetchHelplines = () => getJson<HelplineSummary[]>('/api/helplines');
+// branch: read from that flex-plugins branch instead of the default (Aselo staff)
+const branchQuery = (branch?: string) => (branch ? `?branch=${encodeURIComponent(branch)}` : '');
 
-export const fetchDefinitionFiles = (code: string, version: string) =>
-  getJson<DefinitionFiles>(`/api/definitions/${code}/${version}`);
+export const fetchHelplines = (branch?: string) => getJson<HelplineSummary[]>(`/api/helplines${branchQuery(branch)}`);
+
+export const fetchDefinitionFiles = (code: string, version: string, branch?: string) =>
+  getJson<DefinitionFiles>(`/api/definitions/${code}/${version}${branchQuery(branch)}`);
+
+export const fetchBranches = () => getJson<BranchChoice[]>('/api/branches');
 
 export const fetchPostFlowChoices = (code: string) =>
   getJson<PostFlowChoices>(`/api/service-config/${code}/post-flow-choices`);

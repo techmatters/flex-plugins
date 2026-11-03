@@ -22,6 +22,7 @@
  *   GET    /api/helplines                           helplines this person can open
  *   GET    /api/branches                            Aselo staff: the flex-plugins branches imports can read ({ value, label }[])
  *   GET    /api/definitions/:code/:version          the current (applied) files
+ *          (both with ?branch=<branch>, Aselo staff: read from that flex-plugins branch instead)
  *   GET    /api/service-config/:code/post-flow-choices  Aselo staff: queues and post-call survey flows for postStudioFlows
  *   GET    /api/drafts                              drafts this person can see
  *   GET    /api/drafts/:code/:version               a draft (404 if there's none)
@@ -58,7 +59,7 @@ import { handleRecordingRequest, RecordingStores } from './recordingsApi';
 import { importHelpline } from './flowImport';
 import { handleRoutingRequest } from './routingApi';
 import { ChatbotStore, handleChatbotRequest } from './chatbotApi';
-import type { BranchSource } from './branches';
+import type { BranchSource, ImportSource } from './branches';
 import { isValidBranch } from './branches';
 import type { RoutingStore } from './routingStore';
 import { isServiceConfigPath } from './filePaths';
@@ -80,6 +81,8 @@ export type ApiRequest = {
   method: string;
   path: string;
   body?: unknown;
+  // The query string's values, e.g. { branch: 'alejandro-c/as/update_1103' }
+  query?: Record<string, string | undefined>;
   user: ApiUser;
 };
 
@@ -133,7 +136,15 @@ type SaveDraftBody = {
   expectedRevision: number;
   files: Record<string, unknown>;
   baseHashes: Record<string, string>;
+  // The branch the files were read from, when not the default
+  source?: ImportSource;
 };
+
+const branchOf = (meta?: Pick<DraftMeta, 'source'>) => meta?.source?.branch ?? '';
+const isImportSource = (value: unknown): value is ImportSource =>
+  typeof (value as ImportSource)?.branch === 'string' &&
+  isValidBranch((value as ImportSource).branch) &&
+  typeof (value as ImportSource).sha === 'string';
 
 const ok = (body: unknown, status = 200): ApiResponse => ({ status, body });
 const fail = (status: number, message: string, extra: object = {}): ApiResponse => ({
@@ -189,6 +200,34 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
     if (route === 'GET /api/me') {
       const me: Me = { ...user, applyInBuilder: context.applier !== undefined };
       return ok(me);
+    }
+
+    // The forms read from another branch (?branch=): the helplines and versions there, and their files
+    const readsForms = route === 'GET /api/helplines' || /^GET \/api\/definitions\/[^/]+\/[^/]+$/.test(route);
+    const formsBranch = readsForms ? request.query?.branch : undefined;
+    if (formsBranch) {
+      if (!isStaff(user)) return fail(403, 'Only Aselo staff read other branches.');
+      if (!isValidBranch(formsBranch)) return fail(400, `Invalid branch ${formsBranch}`);
+      if (!context.branches) return fail(501, "Other branches can't be read here.");
+      let snapshot;
+      try {
+        snapshot = await context.branches.snapshot(formsBranch);
+      } catch (err) {
+        return fail(404, `Couldn't read the branch ${formsBranch}: ${(err as Error).message}`);
+      }
+      const response = await handleApiRequest(
+        {
+          ...context,
+          formDefinitionsDir: snapshot.formDefinitionsDir,
+          helplinesConfigDir: snapshot.helplinesConfigDir,
+          webchatConfigDir: snapshot.webchatConfigDir,
+          branches: undefined,
+        },
+        { ...request, query: {} },
+      );
+      return response.status === 200 && route !== 'GET /api/helplines'
+        ? { ...response, body: { ...(response.body as object), source: { branch: formsBranch, sha: snapshot.sha } } }
+        : response;
     }
 
     if (route === 'GET /api/helplines') {
@@ -328,6 +367,18 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
     if (method === 'PUT' && !action) {
       if (!isSaveDraftBody(request.body)) return fail(400, 'Invalid draft');
       const { expectedRevision, baseHashes } = request.body;
+      const source = isImportSource(request.body.source) ? request.body.source : undefined;
+      if (request.body.source !== undefined && !source) return fail(400, 'Invalid branch');
+      if (source && !isStaff(user)) return fail(403, 'Only Aselo staff read other branches.');
+      // One draft per helpline version: changes started from one branch can't be mixed with another's
+      if (existing && Object.keys(existing.files).length > 0 && branchOf(existing.meta) !== (source?.branch ?? '')) {
+        return fail(409, `There's already a draft of ${code} ${version} started from ${branchOf(existing.meta) || 'master'}.`, {
+          updatedBy: existing.meta.updatedBy,
+          updatedAt: existing.meta.updatedAt,
+          revision: existing.meta.revision,
+          branch: branchOf(existing.meta) || 'master',
+        });
+      }
       let { files } = request.body;
       if (!isStaff(user)) {
         if (Object.keys(files).some(isServiceConfigPath)) {
@@ -367,6 +418,7 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
           updatedAt: now,
           updatedBy: user.name,
           baseHashes: { ...(existing?.meta.baseHashes ?? {}), ...baseHashes },
+          ...(source ? { source } : {}),
           // Kept: an approval only stops counting when what it approved changes (src/formReviews.ts)
           ...(existing ? reviewOf(existing.meta) : {}),
         },
@@ -438,6 +490,9 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
     if (method === 'POST' && action === '/apply') {
       if (user.role !== 'aselo-staff') return fail(403, 'Only Aselo staff can apply changes.');
       if (!existing) return fail(404, 'There are no changes to apply.');
+      if (existing.meta.source) {
+        return fail(400, `These changes were made to ${existing.meta.source.branch}: download them and commit them to that branch.`);
+      }
       if (!context.applier) {
         return fail(501, "Applying from the builder isn't set up. Download the changes and open a PR instead.");
       }

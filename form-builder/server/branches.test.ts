@@ -84,8 +84,8 @@ describe('branches', () => {
     };
     const staff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
     const uschStaff: ApiUser = { name: 'Childhelp person', role: 'helpline-staff', helplines: ['usch'] };
-    const call = (user: ApiUser, method: string, apiPath: string, body?: unknown) =>
-      handleApiRequest(context, { method, path: apiPath, body, user });
+    const call = (user: ApiUser, method: string, apiPath: string, body?: unknown, query?: Record<string, string>) =>
+      handleApiRequest(context, { method, path: apiPath, body, user, query });
 
     test('chatbots, routing and flows read the branch, and say so', async () => {
       const chatbots = await call(staff, 'POST', '/api/chatbots/usch/import', { branch: 'alejandro-c/usch/x' });
@@ -110,6 +110,38 @@ describe('branches', () => {
       const missing = await call(staff, 'POST', '/api/chatbots/usch/import', { branch: 'missing' });
       expect(missing.status).toBe(404);
       expect((missing.body as { message: string }).message).toMatch(/Couldn't read the branch missing/);
+    });
+
+    test("forms: a branch's helplines, versions and files; its drafts remember it and aren't applied", async () => {
+      const branch = 'alejandro-c/usch/forms';
+      const helplines = await call(staff, 'GET', '/api/helplines', undefined, { branch });
+      expect(helplines.status).toBe(200);
+      expect(helplines.body).toContainEqual(expect.objectContaining({ code: 'usch' }));
+
+      const definitions = await call(staff, 'GET', '/api/definitions/usch/v1', undefined, { branch });
+      expect(definitions.status).toBe(200);
+      expect(definitions.body).toMatchObject({ code: 'usch', version: 'v1', source: { branch, sha: SHA } });
+      // Aselo staff only
+      expect((await call(uschStaff, 'GET', '/api/definitions/usch/v1', undefined, { branch })).status).toBe(403);
+      expect((await call(staff, 'GET', '/api/helplines', undefined, { branch: 'missing' })).status).toBe(404);
+
+      const save = (source?: { branch: string; sha: string }, expectedRevision = 0) =>
+        call(staff, 'PUT', '/api/drafts/usch/v1', {
+          expectedRevision,
+          files: { 'CaseStatus.json': {} },
+          baseHashes: {},
+          ...(source ? { source } : {}),
+        });
+      expect((await save({ branch, sha: SHA })).status).toBe(200);
+      expect((await context.drafts.get('usch', 'v1'))?.meta.source).toEqual({ branch, sha: SHA });
+      // The same version from master (or another branch) doesn't mix with it
+      const fromMaster = await save(undefined, 1);
+      expect(fromMaster.status).toBe(409);
+      expect(fromMaster.body).toMatchObject({ branch });
+      // Changes to a branch are downloaded and committed there, not applied
+      const applied = await call(staff, 'POST', '/api/drafts/usch/v1/apply');
+      expect(applied.status).toBe(400);
+      expect((applied.body as { message: string }).message).toMatch(/commit them to that branch/);
     });
   });
 });

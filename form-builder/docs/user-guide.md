@@ -224,6 +224,20 @@ You can also make changes directly, without a helpline submitting them: open the
 then publish as above. Your draft is shared with the helpline's staff, so tell them if you're
 working on their helpline.
 
+### Forms from another branch
+
+The forms are read from master unless you type another `flex-plugins` branch in **Branch**, at the
+top next to Helpline and Version (it suggests branches as you type). The helplines and versions are
+then that branch's, so a version that only exists there (e.g. `as/v3`) can be opened and edited. The
+page says which branch and commit it was read from.
+
+- The draft remembers its branch: the drafts list shows it, and **Open** opens it from that branch.
+- A version has one draft at a time. If there's already a draft of it from another branch (or from
+  master), the page says so and nothing is saved until that draft is opened from its branch or
+  discarded there.
+- Changes to a branch aren't applied from the builder: **Download as zip**, unzip it in a checkout
+  of that branch (not master), check `git diff`, run the tests and commit to that branch.
+
 ## Questions
 
 **Do counselors see my changes straight away?** No. Only after the Aselo team publishes them and

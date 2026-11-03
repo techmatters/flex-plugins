@@ -29,7 +29,8 @@ import type { ApplyResult } from '../server/api';
 import type { DraftMeta } from '../server/drafts';
 import type { DefinitionFileMap } from './definitions';
 import { getChangedFilePaths } from './changes';
-import type { DraftClient, ThreadChange } from './draftClient';
+import type { ImportSource } from '../server/branches';
+import type { DraftClient, DraftConflict, ThreadChange } from './draftClient';
 
 export type SaveState = 'loading' | 'saved' | 'pending' | 'saving' | 'conflict' | 'error';
 
@@ -44,7 +45,11 @@ export const hashJson = (value: unknown) => {
 const changedFiles = (original: DefinitionFileMap, files: DefinitionFileMap) =>
   Object.fromEntries(getChangedFilePaths(original, files).map((filePath) => [filePath, files[filePath]]));
 
-type Options = { saveDelayMs?: number };
+type Options = {
+  saveDelayMs?: number;
+  // The flex-plugins branch the files were read from, when not the default
+  source?: ImportSource;
+};
 
 /**
  * Use with a `key` of code/version on the owning component, so switching helpline starts
@@ -55,13 +60,13 @@ export const useDraft = (
   version: string,
   original: DefinitionFileMap,
   client: DraftClient,
-  { saveDelayMs = 800 }: Options = {},
+  { saveDelayMs = 800, source }: Options = {},
 ) => {
   const [files, setFiles] = useState<DefinitionFileMap>(original);
   const [saveState, setSaveState] = useState<SaveState>('loading');
   const [meta, setMeta] = useState<Partial<DraftMeta>>();
   const [notice, setNotice] = useState<string>();
-  const [conflict, setConflict] = useState<{ updatedBy?: string; updatedAt?: string }>();
+  const [conflict, setConflict] = useState<DraftConflict>();
 
   const filesRef = useRef(files);
   filesRef.current = files;
@@ -83,6 +88,14 @@ export const useDraft = (
       .load(code, version)
       .then((draft) => {
         if (!current) return;
+        // A draft started from another branch: not mixed with these files, and nothing saved over it
+        const draftBranch = draft?.meta.source?.branch ?? '';
+        if (draft && Object.keys(draft.files).length > 0 && draftBranch !== (source?.branch ?? '')) {
+          setMeta(draft.meta);
+          setConflict({ updatedBy: draft.meta.updatedBy, updatedAt: draft.meta.updatedAt, branch: draftBranch || 'master' });
+          setSaveState('conflict');
+          return;
+        }
         if (draft) {
           const restored = { ...original };
           const outdated: string[] = [];
@@ -130,6 +143,7 @@ export const useDraft = (
         baseHashes: Object.fromEntries(
           Object.keys(changed).map((filePath) => [filePath, hashJson(original[filePath])]),
         ),
+        ...(source ? { source } : {}),
       });
       if (!outcome.ok) {
         setConflict(outcome.conflict);

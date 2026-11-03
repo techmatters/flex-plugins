@@ -29,6 +29,7 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { ImportSource } from './branches';
 import type { DraftReview } from './reviews';
 
 export type DraftStatus = 'editing' | 'submitted';
@@ -43,6 +44,8 @@ export type DraftMeta = DraftReview & {
   submittedBy?: string;
   // Hash of each file as it was when the draft started, to spot changes made underneath it
   baseHashes: Record<string, string>;
+  // The flex-plugins branch the files were read from, when not the default (Aselo staff only)
+  source?: ImportSource;
 };
 
 export type Draft = {

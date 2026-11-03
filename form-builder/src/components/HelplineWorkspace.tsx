@@ -18,6 +18,7 @@
  * Everything for one loaded helpline: navigation, the draft, editing, previews and export.
  * Rendered with a code/version key so switching helpline starts fresh.
  */
+import { ImportedFrom } from './BranchPicker';
 import { useEffect, useMemo, useState } from 'react';
 import type { FlagKind, ReviewSide } from '../../server/reviews';
 import type { DefinitionFiles } from '../../server/definitionsApi';
@@ -174,8 +175,8 @@ export const HelplineWorkspace = ({
   loadPeople,
   saveDelayMs,
 }: Props) => {
-  const { code, version, files: originalFiles } = definitions;
-  const draft = useDraft(code, version, originalFiles, draftClient, { saveDelayMs });
+  const { code, version, files: originalFiles, source } = definitions;
+  const draft = useDraft(code, version, originalFiles, draftClient, { saveDelayMs, source });
   const files = draft.files;
 
   const [view, setView] = useState<View>({ kind: 'contactTab', tabKey: CONTACT_TABS[0].key });
@@ -594,7 +595,18 @@ export const HelplineWorkspace = ({
         </button>
       </div>
 
-      {draft.conflict && (
+      <ImportedFrom source={source} />
+
+      {draft.conflict?.branch && (
+        <div className="alert alert-error">
+          There&apos;s already a draft of {code.toUpperCase()} {version} started from{' '}
+          <code>{draft.conflict.branch}</code>
+          {draft.conflict.updatedBy ? ` (last changed by ${draft.conflict.updatedBy})` : ''}, so changes made here
+          aren&apos;t saved. Open it from that branch to keep working on it, or discard it there first.
+        </div>
+      )}
+
+      {draft.conflict && !draft.conflict.branch && (
         <div className="alert alert-error">
           {draft.conflict.updatedBy ?? 'Someone else'} changed this draft
           {draft.conflict.updatedAt ? ` at ${new Date(draft.conflict.updatedAt).toLocaleString()}` : ''}{' '}
