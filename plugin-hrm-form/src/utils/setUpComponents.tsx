@@ -36,6 +36,8 @@ import ManualPullButton from '../components/ManualPullButton';
 import ProfileList from '../components/profileList';
 import ProfileListSideLink from '../components/sideLinks/ProfileListSideLink';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
+import QueueGreetingPill from '../components/queueGreetings/QueueGreetingPill';
+import QueueGreetingPopover from '../components/queueGreetings/QueueGreetingPopover';
 import { chatCapacityUpdated } from '../states/configuration/actions';
 import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles';
 import HrmTheme from '../styles/HrmTheme';
@@ -120,16 +122,12 @@ export const setUpQueuesStatus = (setupObject: SetupObject) => {
   });
 };
 
+/**
+ * Adds the guidance pill to task list items and the greeting popover to the agent desktop, for queues with a greeting configured
+ */
 export const setUpQueueGreetings = () => {
-  // const manager = Flex.Manager.getInstance();
-
-  Flex.TaskListItem.Content.add(
-    <div key="queue-greeting-guidance" style={{ width: '100px', height: '32px', backgroundColor: 'yellow' }} />,
-    {
-      align: 'end',
-      // if: props => isIncomingOfflineContact(props.task),
-    },
-  );
+  Flex.TaskListItem.Content.add(<QueueGreetingPill key="queue-greeting-pill" />, { align: 'end' });
+  Flex.AgentDesktopView.Panel1.Content.add(<QueueGreetingPopover key="queue-greeting-popover" />);
 };
 
 const setUpManualPulling = () => {
