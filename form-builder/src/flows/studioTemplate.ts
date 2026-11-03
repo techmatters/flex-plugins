@@ -38,7 +38,6 @@ import {
   exitConditionOf,
   exitsOf,
   followingSplitName,
-  MESSAGE_FROM_FALLBACK,
   OBJECT_TYPES,
   repeatWidgetNames,
   studioConditionName,
@@ -316,25 +315,8 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
   const taskAttributes: TaskAttributesChange[] = [];
   const label = (object: FlowObject) => `“${object.studioName ?? object.text}”`;
 
-  // Who new messages are from when the board doesn't say: as the flow's other messages (the one
-  // most of them use), Bot when there are none
-  const fromValues = objects.flatMap((object) => {
-    const chosen = object.settings?.from?.trim();
-    if (chosen) return [chosen];
-    const properties = object.studio?.properties;
-    if (!properties) return [];
-    const live = object.type === 'sendMessageAndClose' ? janitorValuesOf(properties).from : properties.from;
-    return typeof live === 'string' &&
-      live &&
-      ['sendMessage', 'questionMessaging', 'sendMessageAndClose'].includes(object.type)
-      ? [live]
-      : [];
-  });
-  const flowFrom =
-    [...new Set(fromValues)].sort(
-      (a, b) => fromValues.filter((value) => value === b).length - fromValues.filter((value) => value === a).length,
-    )[0] ?? MESSAGE_FROM_FALLBACK;
-  const fromOf = (object: FlowObject) => object.settings?.from?.trim() || flowFrom;
+  // Who a message is from: the board's From, always set (checks.ts: an error when it isn't)
+  const fromOf = (object: FlowObject) => object.settings?.from ?? '';
 
   // Task attributes that are new or changed: the channel's template as it is (the widget says
   // ${channel_attributes.default}), or the widget's own, written in it

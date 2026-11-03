@@ -26,6 +26,7 @@ import {
   fieldProblem,
   fieldShown,
   flowDetailsOf,
+  hasFromField,
   namingChoicesOf,
   OBJECT_TYPES,
   standardStudioName,
@@ -218,6 +219,17 @@ export const boardChecks = (
     );
     if (!object.studioName && info.studioPrefix) {
       add({ severity: 'warning', message: `${name} has no Studio name yet.`, objectId }, 'noName');
+    }
+    // Who a message is from: Helpline, Bot or Custom (with its text)
+    if (hasFromField(object.type) && !object.settings?.from?.trim()) {
+      add(
+        {
+          severity: 'error',
+          message: `${name}: choose who the message is from (Helpline, Bot or Custom).`,
+          objectId,
+        },
+        'noFrom',
+      );
     }
     // Messages: <prefix><channel>_<language>_<service>_<what it is>, from the flow's parts
     const standard = standardStudioName(object, frame, choicesOf(object.frameId));
@@ -526,7 +538,7 @@ export const splitIgnored = (issues: Issue[], ignoredKeys: string[] = []) => {
 // What a sketch (Sketch mode) leaves for later: scripts, recordings, languages, the names' standard
 // parts, call settings, variables and task attributes
 const DETAIL_CHECKS =
-  /^(nameStandard|noScript|recording|scriptApproval|language|oldRecordingName|taskAttributes|noUrl|noVariables|noInput|noChatbot|field-.*|required-.*|taskChannel|variable-.*)$/;
+  /^(nameStandard|noFrom|noScript|recording|scriptApproval|language|oldRecordingName|taskAttributes|noUrl|noVariables|noInput|noChatbot|field-.*|required-.*|taskChannel|variable-.*)$/;
 
 /** The issues that matter in a sketch: the flow's shape (ways out, names, what's unreachable...). */
 export const sketchIssues = (issues: Issue[]) => issues.filter((issue) => !DETAIL_CHECKS.test(issue.key.split('|')[1]));

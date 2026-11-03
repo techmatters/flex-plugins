@@ -24,6 +24,7 @@
 
 import type { DesignStatus } from '../designStatus';
 import { STATUS_AFTER_CHANGE } from '../designStatus';
+import { janitorValuesOf } from './janitor';
 
 export const BOARD_SCHEMA_VERSION = 1;
 
@@ -557,18 +558,31 @@ export const TASK_CHANNELS = ['voice', 'chat', 'voicemail'];
 export const taskChannelOf = (object: Pick<FlowObject, 'settings'>, channel?: Channel) =>
   object.settings?.taskChannel || (channel ? (channel === 'voice' ? 'voice' : 'chat') : undefined);
 
-// Who a message is from, as the person sees it: as the flow's other messages (not set; Bot when
-// there are none), the helpline's name (${helpline}, from its common.hcl), Bot, or anything typed
+// Who a message is from, as the person sees it: the helpline's name (${helpline}, from its
+// common.hcl), Bot, or anything typed (Custom). Always set: new messages are from Bot, imported
+// ones from whoever their live widget says (checks.ts flags one left empty)
 export const MESSAGE_FROM_HELPLINE = '${helpline}';
-export const MESSAGE_FROM_FALLBACK = 'Bot';
+export const MESSAGE_FROM_BOT = 'Bot';
 const FROM_FIELD: ObjectField = {
   key: 'from',
   label: 'From',
-  options: ['', MESSAGE_FROM_HELPLINE, 'Bot'],
-  optionLabels: { '': 'As the flow’s other messages', [MESSAGE_FROM_HELPLINE]: 'Helpline (${helpline})', Bot: 'Bot' },
-  defaultValue: '',
+  options: [MESSAGE_FROM_HELPLINE, MESSAGE_FROM_BOT],
+  optionLabels: { [MESSAGE_FROM_HELPLINE]: 'Helpline (${helpline})', [MESSAGE_FROM_BOT]: 'Bot' },
   custom: true,
-  hint: 'Who the message is from, as the person sees it: the same as the flow’s other messages (Bot if there are none), the helpline’s name, Bot, or your own.',
+  hint: 'Who the message is from, as the person sees it: the helpline’s name, Bot, or your own (Custom).',
+};
+
+// The kinds whose messages say who they're from (FROM_FIELD); kinds since replaced have no type info
+export const hasFromField = (type: FlowObjectType) =>
+  Boolean(OBJECT_TYPES[type]?.fields?.some((field) => field.key === FROM_FIELD.key));
+
+// Who an imported widget's message is from, as it is live: a Send Message's or Send and Wait for
+// Reply's from, or the from a sendMessageAndRunJanitor call is given (none: undefined)
+export const liveFromOf = (object: Pick<FlowObject, 'type' | 'studio'>): string | undefined => {
+  const properties = object.studio?.properties;
+  if (!properties) return undefined;
+  const live = object.type === 'sendMessageAndClose' ? janitorValuesOf(properties).from : properties.from;
+  return typeof live === 'string' ? live : undefined;
 };
 
 // Whether a field applies, given the object's other settings (ObjectField.shownWhen)
@@ -1237,7 +1251,11 @@ export const upgradeContent = (content: BoardContent): BoardContent => {
     (waits.has(connection.from) && !connection.exit) ||
     (queues.has(connection.from) && queueExit(connection.exit) !== connection.exit) ||
     splitExits.has(connection.from);
+  // Messages saved before From was always set: the live widget's (none: left empty, for the checks)
+  const liveFrom = (object: FlowObject) =>
+    hasFromField(object.type) && !object.settings?.from ? liveFromOf(object) : undefined;
   const objectChanges = (object: FlowObject) =>
+    liveFrom(object) !== undefined ||
     waits.has(object.id) ||
     oldRepeat(object) ||
     splitExits.has(object.id) ||
@@ -1245,7 +1263,9 @@ export const upgradeContent = (content: BoardContent): BoardContent => {
   if (!content.connections.some(changes) && !content.objects.some(objectChanges)) return content;
   return {
     ...content,
-    objects: content.objects.map((object) => {
+    objects: content.objects.map((given) => {
+      const from = liveFrom(given);
+      const object = from === undefined ? given : { ...given, settings: { ...given.settings, from } };
       if (waits.has(object.id)) return { ...object, type: 'repeat' };
       if (splitExits.has(object.id)) {
         return {

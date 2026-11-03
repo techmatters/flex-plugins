@@ -28,6 +28,8 @@ import {
   FlowObject,
   FlowObjectType,
   Frame,
+  hasFromField,
+  MESSAGE_FROM_BOT,
   OBJECT_TYPES,
   Position,
   Side,
@@ -194,6 +196,8 @@ export const createObjectNode = (type: FlowObjectType, position: Position, paren
         type,
         text: type === 'text' ? 'Text' : info.label,
         ...(info.editableExits && info.exits ? { exits: [...info.exits] } : {}),
+        // Messages say who they're from: Bot unless chosen
+        ...(hasFromField(type) ? { settings: { from: MESSAGE_FROM_BOT } } : {}),
       },
     },
   };

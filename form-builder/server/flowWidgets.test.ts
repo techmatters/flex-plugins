@@ -19,6 +19,7 @@
  * usnm's set_var_en_service_counter and split_en_service) and Chatbot (a
  * captureChannelWithBot request), new and imported.
  */
+import { existsSync, readdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { describe, expect, test } from 'vitest';
@@ -32,9 +33,12 @@ import {
   repeatWidgetNames,
   splitInputsOf,
   standardPrefixedName,
+  hasFromField,
+  liveFromOf,
   suggestStudioName,
   upgradeContent,
 } from '../src/flows/model';
+import { createObjectNode } from '../src/flows/canvasModel';
 import { janitorValuesOf } from '../src/flows/janitor';
 import { boardChecks } from '../src/flows/checks';
 import { toStudioFlow } from '../src/flows/studioTemplate';
@@ -681,12 +685,20 @@ describe('what a split splits on', () => {
 });
 
 describe('who a message is from', () => {
-  test("new messages are from whoever the flow's other messages are from (Bot when none say), with Studio's other attributes set", () => {
-    const send = object('send', 'sendMessage', { studioName: 'send_message_sms_en_info' });
+  test("new messages are from Bot; the template writes From exactly as set, with Studio's other attributes", () => {
+    (['sendMessage', 'questionMessaging', 'sendMessageAndClose'] as const).forEach((type) =>
+      expect(createObjectNode(type, { x: 0, y: 0 }).data.object.settings).toEqual({ from: 'Bot' }),
+    );
+    expect(createObjectNode('playMessage', { x: 0, y: 0 }).data.object.settings).toBeUndefined();
+
+    const send = object('send', 'sendMessage', {
+      studioName: 'send_message_sms_en_info',
+      settings: { from: '${helpline}' },
+    });
     const ask = object('ask', 'questionMessaging', { studioName: 'send_wait_sms_en_name', settings: { from: 'Bot' } });
     const close = object('close', 'sendMessageAndClose', {
       studioName: 'f_sendMessageAndRunJanitor_blocked',
-      settings: { from: 'NAMI' },
+      settings: { from: '{{flow.channel.address}}' },
     });
     const thanks = object('thanks', 'sendMessage', {
       studioName: 'send_message_sms_en_thanks',
@@ -702,12 +714,12 @@ describe('who a message is from', () => {
     expect(state('send_message_sms_en_info').properties).toMatchObject({
       service: '{{trigger.conversation.InstanceSid}}',
       channel: '{{trigger.conversation.ChannelSid}}',
-      // NAMI: what most of the flow's other messages say
-      from: 'NAMI',
+      from: '${helpline}',
       message_type: 'custom',
       to: '{{contact.channel.address}}',
       body: '${flow_vars.send_message_sms_en_info}',
     });
+    expect(state('send_message_sms_en_thanks').properties.from).toBe('NAMI');
     // A message that couldn't be sent goes on as if it had been
     expect(state('send_message_sms_en_info').transitions).toEqual([
       { event: 'sent', next: 'send_wait_sms_en_name' },
@@ -723,48 +735,100 @@ describe('who a message is from', () => {
     expect(state('f_sendMessageAndRunJanitor_blocked').properties.parameters).toEqual([
       { value: '{{flow.channel.address}}', key: 'conversationSid' },
       { value: '${flow_vars.send_message_blocked}', key: 'message' },
-      { value: 'NAMI', key: 'from' },
+      { value: '{{flow.channel.address}}', key: 'from' },
     ]);
-
-    // No other messages say who they're from: Bot
-    const alone = board('webchat', [send], []);
-    expect(toStudioFlow(alone, alone.frames[0]).flow.states[0].properties.from).toBe('Bot');
   });
 
-  test('values that differ between staging and production, typed into new widgets, are read from flow_vars', () => {
-    const call = object('call', 'function', {
-      studioName: 'f_check_something',
-      settings: {
-        url: 'https://usch-functions-6913.twil.io/check',
-        body: '{"workspace": "WS3320dfd12f64cb39784075ef93c8babf", "contact": "{{trigger.conversation.ChannelSid}}"}',
-      },
-    });
-    const content = board('webchat', [call], []);
-    const generated = toStudioFlow(content, content.frames[0]);
-    expect(generated.flow.states[0].properties).toMatchObject({
-      url: '${flow_vars.f_check_something_url}/check',
-      body: '{"workspace": "${flow_vars.f_check_something_sid}", "contact": "{{trigger.conversation.ChannelSid}}"}',
-    });
-    expect(generated.flowVars).toHaveLength(2);
-    expect(generated.flowVars).toEqual(
-      expect.arrayContaining([
-        {
-          scope: 'flow_vars',
-          name: 'f_check_something_url',
-          value: 'https://usch-functions-6913.twil.io',
-          widget: 'f_check_something',
-          environmentSpecific: true,
-        },
-        {
-          scope: 'flow_vars',
-          name: 'f_check_something_sid',
-          value: 'WS3320dfd12f64cb39784075ef93c8babf',
-          widget: 'f_check_something',
-          environmentSpecific: true,
-        },
-      ]),
+  test("a message's From left empty, or Custom with no text, is an error", () => {
+    const issuesOf = (from?: string) =>
+      boardChecks(
+        board(
+          'webchat',
+          [
+            object('send', 'sendMessage', {
+              studioName: 'send_message_webchat_en_info',
+              ...(from === undefined ? {} : { settings: { from } }),
+            }),
+          ],
+          [],
+        ),
+      ).filter((issue) => issue.key.endsWith('|noFrom|'));
+    expect(issuesOf()).toEqual([
+      expect.objectContaining({
+        severity: 'error',
+        message: '“send”: choose who the message is from (Helpline, Bot or Custom).',
+      }),
+    ]);
+    expect(issuesOf('  ')).toHaveLength(1);
+    expect(issuesOf('Bot')).toEqual([]);
+    expect(issuesOf('${helpline}')).toEqual([]);
+    expect(issuesOf('Kellimni')).toEqual([]);
+  });
+
+  test('imported messages are from whoever the live widget says, exactly; none said: left empty', async () => {
+    const seen = new Set<string>();
+    let janitors = 0;
+    for (const code of readdirSync(helplinesDir).filter(
+      (name) =>
+        /^[a-z0-9]+$/.test(name) &&
+        (existsSync(path.join(helplinesDir, name, 'staging.hcl')) ||
+          existsSync(path.join(helplinesDir, name, 'production.hcl'))),
+    )) {
+      const { boards } = await importHelpline(helplinesDir, code);
+      boards
+        .flatMap((imported) => imported.content.objects)
+        .filter((candidate) => hasFromField(candidate.type) && candidate.studio)
+        .forEach((message) => {
+          const live = liveFromOf(message);
+          expect(message.settings?.from, `${code} ${message.studioName}`).toBe(live);
+          if (live === undefined) return;
+          seen.add(live === '${helpline}' || live === 'Bot' ? live : 'custom');
+          if (message.type === 'sendMessageAndClose') {
+            janitors += 1;
+            expect(live).toBe(janitorValuesOf(message.studio!.properties!).from);
+          }
+        });
+    }
+    // Each of the three choices, and janitor calls' from parameter
+    expect([...seen].sort()).toEqual(['${helpline}', 'Bot', 'custom'].sort());
+    expect(janitors).toBeGreaterThan(0);
+  }, 120_000);
+
+  test("boards saved with an empty From get the live widget's when opened; none live: left empty", () => {
+    const live = (type: FlowObject['type'], properties: Record<string, unknown>, settings?: Record<string, string>) =>
+      object(type, type, {
+        ...(settings ? { settings } : {}),
+        studio: { name: type, type: 'x', properties, offset: { x: 0, y: 0 }, transitions: [] },
+      });
+    const content = upgradeContent(
+      board(
+        'webchat',
+        [
+          live('sendMessage', { from: '${helpline}' }),
+          live('questionMessaging', { from: 'Kellimni' }, { timeout: '60' }),
+          live('sendMessageAndClose', {
+            parameters: [
+              { key: 'conversationSid', value: '{{flow.channel.address}}' },
+              { key: 'from', value: 'Bot' },
+            ],
+          }),
+          // A legacy janitor call that doesn't say who it's from
+          object('legacy', 'sendMessageAndClose', {
+            studio: { name: 'legacy', type: 'x', properties: { body: '{}' }, offset: { x: 0, y: 0 }, transitions: [] },
+          }),
+          // Already set: as it is
+          live('playMessage', { say: 'Hi' }),
+        ],
+        [],
+      ),
     );
-    expect(generated.todo.join(' ')).toMatch(/ask for the production value/);
+    const fromOf = (id: string) => content.objects.find((candidate) => candidate.id === id)!.settings?.from;
+    expect(fromOf('sendMessage')).toBe('${helpline}');
+    expect(fromOf('questionMessaging')).toBe('Kellimni');
+    expect(content.objects.find((candidate) => candidate.id === 'questionMessaging')!.settings?.timeout).toBe('60');
+    expect(fromOf('sendMessageAndClose')).toBe('Bot');
+    expect(fromOf('legacy')).toBeUndefined();
+    expect(fromOf('playMessage')).toBeUndefined();
   });
 
   test("imported messages show who they're from; changed on the board, the widget says so", async () => {

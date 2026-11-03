@@ -24,6 +24,7 @@ import type { Board, BoardContent, Channel, FlowNaming, FlowObject, Frame } from
 import {
   exitsOf,
   flowDetailsOf,
+  hasFromField,
   isImportedBoard,
   messageChannelOf,
   OBJECT_TYPES,
@@ -63,6 +64,9 @@ export type ExportedObject = {
   stage?: Frame['stage'];
   message?: FlowObject['message'] & {
     status?: MessageStatus;
+    // Send message, Question (messaging), Send message and close: who it's from (${helpline}, Bot or
+    // the text chosen; empty when it isn't set, which the checks flag)
+    from?: string;
     recordingFile?: string;
     // Where the recording can be played, when it's been uploaded (staging) or published (production)
     recordingUrls?: { staging?: string; production?: string };
@@ -163,6 +167,8 @@ const ABOUT = [
   'and exits say where each way out leads. Build or update the helpline twilio-iac Studio flow templates (.tftpl)',
   'following twilio-iac/AGENTS.md ("Studio flow standards"); calls to account-scoped lambda routes are described in',
   'lambdas/account-scoped/STUDIO_ROUTES.md. Voice recordings are named after their widget (recordingFile).',
+  'Messages (Send message, Question, Send message and close) say who they are from in message.from: ${helpline},',
+  'Bot or the text chosen, exactly as the template writes it.',
   'Objects imported from a live helpline carry currentStudioWidget: the widget as it is in the template today.',
   '"studioTemplates" has each frame already written as a .tftpl (rebuilt exactly as it is live for widgets nobody',
   'changed), the texts to set in the .hcl variables, and the TODOs it could not fill in: start from those.',
@@ -276,11 +282,12 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
       text: object.text,
       ...(object.frameId ? { frame: object.frameId } : {}),
       ...(frame?.stage ? { stage: frame.stage } : {}),
-      ...(object.message || recordingFile
+      ...(object.message || recordingFile || hasFromField(object.type)
         ? {
             message: {
               ...object.message,
               ...(info.hasMessage ? { status: messageStatus(object, frame, recordings?.recordings) } : {}),
+              ...(hasFromField(object.type) ? { from: object.settings?.from ?? '' } : {}),
               ...(recordingFile ? { recordingFile } : {}),
               ...(recordingUrls ? { recordingUrls } : {}),
             },

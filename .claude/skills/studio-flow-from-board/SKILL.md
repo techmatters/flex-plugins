@@ -121,9 +121,11 @@ Kinds that become more than one widget, as the board writes them:
   then a `split-based-on` (`split_<name>`) on `{{flow.variables.<name>_counter}}`: `noMatch` goes
   back round (`repeat`), `greater_than` the times to repeat goes on (`max reached`). Used for
   unrecognised input and timeouts (usnm's older `set_var_en_service_counter` / `split_end_cycle_en_service`).
-- **Messages' `from`** (Send message, Question, Send message and close): the board's From; when not
-  set, what most of the flow's other messages say (`Bot` when none do). Send Message / Send and Wait
-  for Reply also get `message_type: "custom"`, and Send Message `to: "{{contact.channel.address}}"`.
+- **Messages' `from`** (Send message, Question, Send message and close): the board's From, always
+  set (`${helpline}`, `Bot` or the text chosen; `message.from` in the export, and `text` already
+  writes it). An empty one is an error in `checks`: fixed on the board, not here. Send Message /
+  Send and Wait for Reply also get `message_type: "custom"`, and Send Message
+  `to: "{{contact.channel.address}}"`.
 - **Messages' ways out**: a Send Message's `failed` goes where `sent` goes; a Send and Wait for
   Reply's `deliveryFailure` goes where `timeout` goes. The Decision after a Question splits on
   `{{widgets.<name>.inbound.Body}}`. `text` already has all of this: don't change it.

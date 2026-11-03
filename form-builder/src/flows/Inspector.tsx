@@ -532,7 +532,7 @@ const ChoiceOrText = ({
 }) => {
   const options = field.options ?? [];
   const chosen = value || field.defaultValue || '';
-  const [typing, setTyping] = useState(!options.includes(chosen));
+  const [typing, setTyping] = useState(chosen !== '' && !options.includes(chosen));
   return (
     <>
       <select
@@ -545,12 +545,18 @@ const ChoiceOrText = ({
           else if (options.includes(value)) onChange('');
         }}
       >
+        {/* Nothing chosen yet (an imported widget that didn't say): the check asks for it */}
+        {!typing && chosen === '' && (
+          <option value="" disabled>
+            Choose…
+          </option>
+        )}
         {options.map((option) => (
           <option key={option} value={option}>
             {field.optionLabels?.[option] ?? option}
           </option>
         ))}
-        <option value={CUSTOM}>Custom…</option>
+        <option value={CUSTOM}>Custom</option>
       </select>
       {typing && (
         <input
