@@ -120,6 +120,18 @@ export const setUpQueuesStatus = (setupObject: SetupObject) => {
   });
 };
 
+export const setUpQueueGreetings = () => {
+  // const manager = Flex.Manager.getInstance();
+
+  Flex.TaskListItem.Content.add(
+    <div key="queue-greeting-guidance" style={{ width: '100px', height: '32px', backgroundColor: 'yellow' }} />,
+    {
+      align: 'end',
+      // if: props => isIncomingOfflineContact(props.task),
+    },
+  );
+};
+
 const setUpManualPulling = () => {
   const manager = Flex.Manager.getInstance();
 
