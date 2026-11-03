@@ -155,6 +155,43 @@ describe('Studio templates from boards', () => {
     // The template reads back as the same flow
     expect(parseTemplate(generated.text)).toEqual(generated.flow);
   });
+
+  test('messages changed on the board read trigger.conversation; the ones nobody changed stay as they are', async () => {
+    const { boards } = await importHelpline(helplinesDir, 'usnm');
+    const sms = boards.find((board) => board.content.flow?.studio?.template.endsWith('/sms.tftpl'))!.content;
+    const welcome = sms.objects.find((object) => object.studioName === 'send_wait_sms_welcome')!;
+    const legacy = { service: '{{trigger.message.InstanceSid}}', channel: '{{trigger.message.ChannelSid}}' };
+    const conversation = {
+      service: '{{trigger.conversation.InstanceSid}}',
+      channel: '{{trigger.conversation.ChannelSid}}',
+    };
+    const propertiesOf = (content: BoardContent, studioName: string) =>
+      toStudioFlow(content).flow.states.find((state) => state.name === studioName)!.properties;
+
+    // Untouched, or only its flow_vars text or position changed: exactly as live
+    expect(propertiesOf(sms, 'send_wait_sms_welcome')).toMatchObject(legacy);
+    welcome.message = { ...welcome.message, script: 'Hello from the board' };
+    welcome.x += 40;
+    expect(propertiesOf(sms, 'send_wait_sms_welcome')).toMatchObject(legacy);
+
+    // Changed: the timeout
+    welcome.settings = { ...welcome.settings, timeout: '600' };
+    expect(propertiesOf(sms, 'send_wait_sms_welcome')).toMatchObject({ ...conversation, timeout: '600' });
+    // ...and the others still as they were
+    expect(propertiesOf(sms, 'send_message_sms_tya_info')).not.toMatchObject(conversation);
+
+    // New messages always
+    const added: FlowObject = {
+      ...welcome,
+      id: 'new-message',
+      type: 'sendMessage',
+      studioName: 'send_message_sms_en_new',
+      studio: undefined,
+    };
+    expect(propertiesOf({ ...sms, objects: [...sms.objects, added] }, 'send_message_sms_en_new')).toMatchObject(
+      conversation,
+    );
+  });
 });
 
 describe('Other function / HTTP request', () => {

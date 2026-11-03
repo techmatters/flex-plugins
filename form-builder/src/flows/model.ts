@@ -557,17 +557,18 @@ export const TASK_CHANNELS = ['voice', 'chat', 'voicemail'];
 export const taskChannelOf = (object: Pick<FlowObject, 'settings'>, channel?: Channel) =>
   object.settings?.taskChannel || (channel ? (channel === 'voice' ? 'voice' : 'chat') : undefined);
 
-// Who a message is from, as the person sees it: the helpline's name (${helpline}, from its
-// common.hcl), Bot, or anything typed
-export const MESSAGE_FROM_DEFAULT = '${helpline}';
+// Who a message is from, as the person sees it: as the flow's other messages (not set; Bot when
+// there are none), the helpline's name (${helpline}, from its common.hcl), Bot, or anything typed
+export const MESSAGE_FROM_HELPLINE = '${helpline}';
+export const MESSAGE_FROM_FALLBACK = 'Bot';
 const FROM_FIELD: ObjectField = {
   key: 'from',
   label: 'From',
-  options: [MESSAGE_FROM_DEFAULT, 'Bot'],
-  optionLabels: { [MESSAGE_FROM_DEFAULT]: 'Helpline (${helpline})', Bot: 'Bot' },
-  defaultValue: MESSAGE_FROM_DEFAULT,
+  options: ['', MESSAGE_FROM_HELPLINE, 'Bot'],
+  optionLabels: { '': 'As the flow’s other messages', [MESSAGE_FROM_HELPLINE]: 'Helpline (${helpline})', Bot: 'Bot' },
+  defaultValue: '',
   custom: true,
-  hint: 'Who the message is from, as the person sees it: the helpline’s name, Bot, or your own.',
+  hint: 'Who the message is from, as the person sees it: the same as the flow’s other messages (Bot if there are none), the helpline’s name, Bot, or your own.',
 };
 
 // Whether a field applies, given the object's other settings (ObjectField.shownWhen)

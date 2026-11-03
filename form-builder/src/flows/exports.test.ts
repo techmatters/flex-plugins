@@ -216,13 +216,17 @@ describe('JSON for Claude', () => {
     expect(preQueue.text).toContain('"name": "f_isSkilledWorkerAvailable_tya_calls"');
     // Designed from scratch: no Trigger yet, a send to queue to set up...
     expect(preQueue.todo).toContain('The flow has no incoming call or message (its Trigger).');
-    // ...and the SMS message's text goes in flow_vars
+    // ...and the SMS message's text goes in flow_vars, in both environments' files
     expect(studioTemplates[2].variables).toEqual([
       {
         scope: 'flow_vars',
         name: 'postqueue_send_message_sms_en_keep_waiting',
         value: '',
         widget: 'postqueue_send_message_sms_en_keep_waiting',
+        addTo: [
+          'usnm/staging.hcl: flow_vars.postqueue_send_message_sms_en_keep_waiting',
+          'usnm/production.hcl: flow_vars.postqueue_send_message_sms_en_keep_waiting',
+        ],
       },
     ]);
   });

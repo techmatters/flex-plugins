@@ -26,7 +26,10 @@
  *   studio-flow-from-board skill);
  * - texts that live in flow_vars stay there: the changes are listed, for the helpline's .hcl files;
  * - a "Send to queue" that uses the channel's task attributes says ${channel_attributes.default};
- *   one with attributes of its own (set or changed on the board) gets them written in the widget.
+ *   one with attributes of its own (set or changed on the board) gets them written in the widget;
+ * - messages (send-message, send-and-wait-for-reply) read their service and channel from
+ *   trigger.conversation: new ones, and imported ones changed on the board (their legacy
+ *   trigger.message is replaced). Imported ones nobody changed stay exactly as they are live.
  */
 import type { BoardContent, FlowObject, Frame, TaskAttributes } from './model';
 import {
@@ -35,7 +38,7 @@ import {
   exitConditionOf,
   exitsOf,
   followingSplitName,
-  MESSAGE_FROM_DEFAULT,
+  MESSAGE_FROM_FALLBACK,
   OBJECT_TYPES,
   repeatWidgetNames,
   studioConditionName,
@@ -53,7 +56,6 @@ import {
 } from './taskAttributes';
 
 // Who a message is from: as chosen on the board, otherwise the helpline's name
-const fromOf = (object: FlowObject) => object.settings?.from?.trim() || MESSAGE_FROM_DEFAULT;
 
 export type StudioTransition = Record<string, unknown> & { event: string; next?: string };
 export type StudioState = {
@@ -73,6 +75,9 @@ export type FlowVarChange = {
   widget: string;
   // For flows sharing a template (variants): the studio_flows entry whose flow_vars it goes in
   flow?: string;
+  // Typed into a widget and different in each environment (a SID, a service's address): value is
+  // staging's; production's has to be asked for
+  environmentSpecific?: boolean;
 };
 
 // A "Send to queue" widget's task attributes that are new or changed on the board, and where they're
@@ -105,6 +110,10 @@ export type GeneratedStudioFlow = {
 // A text that is only a variable: ${flow_vars.x}, ${channel_flow_vars.x}...
 const VARIABLE = /^\$\{\s*([a-z_]*flow_vars)\.([A-Za-z0-9_]+)\s*\}$/;
 const TODO = 'TODO';
+// A Twilio SID (two capitals and 32 hex digits), and the address (scheme and host) of a service that
+// differs between staging and production: its host names the environment, or it's a Twilio Function
+const ENVIRONMENT_SID = /\b[A-Z]{2}[0-9a-f]{32}\b/g;
+const ENVIRONMENT_URL = /https?:\/\/[A-Za-z0-9.-]*(?:staging|production|twil\.io)[A-Za-z0-9.-]*/g;
 const ACCOUNT_SCOPED = '${lambda_twilio_account_scoped_url}';
 
 // A Repeat's name, or one for it while it has none
@@ -187,6 +196,39 @@ const interpolationEnd = (text: string, start: number) => {
   return text.length;
 };
 
+// Where messages read their Conversations service and channel from; the legacy trigger.message
+// ones (still in many live flows) are replaced when the widget changes
+export const MESSAGE_SERVICE = '{{trigger.conversation.InstanceSid}}';
+export const MESSAGE_CHANNEL = '{{trigger.conversation.ChannelSid}}';
+const LEGACY_MESSAGE_SOURCE: Record<string, string> = {
+  service: '{{trigger.message.InstanceSid}}',
+  channel: '{{trigger.message.ChannelSid}}',
+};
+const MESSAGE_WIDGET_TYPES = new Set(['send-message', 'send-and-wait-for-reply']);
+
+// The same JSON, whatever the order of its keys
+const canonical = (value: unknown): unknown =>
+  Array.isArray(value)
+    ? value.map(canonical)
+    : value && typeof value === 'object'
+      ? Object.fromEntries(
+          Object.entries(value)
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([key, item]) => [key, canonical(item)]),
+        )
+      : value;
+const sameJson = (a: unknown, b: unknown) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
+
+// A message widget's properties with the legacy service and channel replaced
+export const withConversationSource = (type: string, properties: Record<string, unknown>) => {
+  if (!MESSAGE_WIDGET_TYPES.has(type)) return properties;
+  return {
+    ...properties,
+    ...(properties.service === LEGACY_MESSAGE_SOURCE.service ? { service: MESSAGE_SERVICE } : {}),
+    ...(properties.channel === LEGACY_MESSAGE_SOURCE.channel ? { channel: MESSAGE_CHANNEL } : {}),
+  };
+};
+
 // A quoted HCL string: text escaped, interpolations (${...}) kept exactly as written
 export const hclString = (text: string) => {
   let result = '"';
@@ -242,6 +284,26 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
   const flowVars: FlowVarChange[] = [];
   const taskAttributes: TaskAttributesChange[] = [];
   const label = (object: FlowObject) => `“${object.studioName ?? object.text}”`;
+
+  // Who new messages are from when the board doesn't say: as the flow's other messages (the one
+  // most of them use), Bot when there are none
+  const fromValues = objects.flatMap((object) => {
+    const chosen = object.settings?.from?.trim();
+    if (chosen) return [chosen];
+    const properties = object.studio?.properties;
+    if (!properties) return [];
+    const live = object.type === 'sendMessageAndClose' ? janitorValuesOf(properties).from : properties.from;
+    return typeof live === 'string' &&
+      live &&
+      ['sendMessage', 'questionMessaging', 'sendMessageAndClose'].includes(object.type)
+      ? [live]
+      : [];
+  });
+  const flowFrom =
+    [...new Set(fromValues)].sort(
+      (a, b) => fromValues.filter((value) => value === b).length - fromValues.filter((value) => value === a).length,
+    )[0] ?? MESSAGE_FROM_FALLBACK;
+  const fromOf = (object: FlowObject) => object.settings?.from?.trim() || flowFrom;
 
   // Task attributes that are new or changed: the channel's template as it is (the widget says
   // ${channel_attributes.default}), or the widget's own, written in it
@@ -344,7 +406,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
     }
   };
 
-  const states: StudioState[] = objects.flatMap((object): StudioState[] => {
+  const widgetsOf = (object: FlowObject): StudioState[] => {
     const name = nameOf(object);
     if (!name) {
       const how = BUILT_ELSEWHERE[object.type];
@@ -561,7 +623,19 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
           ),
         );
       });
-      return [{ name, type: studio.type, transitions, properties }];
+      // A message changed on the board (not just moved) reads trigger.conversation now
+      const { offset: _liveOffset, ...live } = studio.properties ?? {};
+      const { offset: _offset, ...rebuilt } = properties;
+      const changed =
+        name !== studio.name || !sameJson(rebuilt, live) || !sameJson(transitions, studio.transitions ?? []);
+      return [
+        {
+          name,
+          type: studio.type,
+          transitions,
+          properties: changed ? withConversationSource(studio.type, properties) : properties,
+        },
+      ];
     }
 
     // New: a widget of its kind
@@ -632,11 +706,12 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
           {
             name,
             type: 'send-message',
-            transitions: [withNext({ event: 'sent' }, next()), { event: 'failed' }],
+            // A message that couldn't be sent goes on as if it had been
+            transitions: [withNext({ event: 'sent' }, next()), withNext({ event: 'failed' }, next())],
             properties: {
               offset,
-              service: '{{trigger.message.InstanceSid}}',
-              channel: '{{trigger.message.ChannelSid}}',
+              service: MESSAGE_SERVICE,
+              channel: MESSAGE_CHANNEL,
               from: fromOf(object),
               message_type: 'custom',
               to: '{{contact.channel.address}}',
@@ -652,12 +727,13 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
             transitions: [
               withNext({ event: 'incomingMessage' }, next('reply')),
               withNext({ event: 'timeout' }, next('timeout')),
-              { event: 'deliveryFailure' },
+              // Not delivered: no reply will come, as on timeout
+              withNext({ event: 'deliveryFailure' }, next('timeout')),
             ],
             properties: {
               offset,
-              service: '{{trigger.message.InstanceSid}}',
-              channel: '{{trigger.message.ChannelSid}}',
+              service: MESSAGE_SERVICE,
+              channel: MESSAGE_CHANNEL,
               from: fromOf(object),
               message_type: 'custom',
               body: fromFlowVars(),
@@ -1074,7 +1150,56 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         todo.push(`${label(object)} (${info.label}) has no Studio widget: build it by hand.`);
         return [];
     }
-  });
+  };
+
+  // Values that differ between staging and production, typed into new widgets (Twilio SIDs, the
+  // addresses of staging/production services and Twilio Functions): read from flow_vars instead
+  const environmentValues = new Map<string, string>();
+  const environmentVariable = (widget: string, value: string) => {
+    if (!environmentValues.has(value)) {
+      const kind = /^[A-Z]{2}[0-9a-f]{32}$/.test(value) ? 'sid' : 'url';
+      const taken = new Set(environmentValues.values());
+      let variable = `${widget}_${kind}`;
+      for (let count = 2; taken.has(variable); count += 1) variable = `${widget}_${kind}_${count}`;
+      environmentValues.set(value, variable);
+      flowVars.push({ scope: 'flow_vars', name: variable, value, widget, environmentSpecific: true });
+      todo.push(
+        `“${widget}” had ${value} written in it: it reads \${flow_vars.${variable}} now. Set that in staging.hcl, and ask for the production value for production.hcl.`,
+      );
+    }
+    return `\${flow_vars.${environmentValues.get(value)}}`;
+  };
+  const withEnvironmentVariables = (widget: string, value: unknown): unknown => {
+    if (typeof value === 'string') {
+      // Only the literal text: what's already a ${...} or {{...}} stays as it is
+      return value
+        .split(/(\$\{[^}]*\}|\{\{[^}]*\}\})/)
+        .map((part, index) =>
+          index % 2 === 1
+            ? part
+            : part
+                .replace(ENVIRONMENT_URL, (url) => environmentVariable(widget, url))
+                .replace(ENVIRONMENT_SID, (sid) => environmentVariable(widget, sid)),
+        )
+        .join('');
+    }
+    if (Array.isArray(value)) return value.map((item) => withEnvironmentVariables(widget, item));
+    if (value && typeof value === 'object') {
+      return Object.fromEntries(
+        Object.entries(value).map(([key, item]) => [key, withEnvironmentVariables(widget, item)]),
+      );
+    }
+    return value;
+  };
+
+  const states: StudioState[] = objects.flatMap((object) =>
+    object.studio
+      ? widgetsOf(object)
+      : widgetsOf(object).map((state) => ({
+          ...state,
+          properties: withEnvironmentVariables(state.name, state.properties) as Record<string, unknown>,
+        })),
+  );
 
   if (!states.some((state) => state.type === 'trigger'))
     todo.push('The flow has no incoming call or message (its Trigger).');

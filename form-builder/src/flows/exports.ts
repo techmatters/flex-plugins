@@ -144,7 +144,8 @@ export type FlowExport = {
     // The .tftpl file's contents
     text: string;
     // Texts to set in the helpline's .hcl files
-    variables: FlowVarChange[];
+    // Each with where it goes in twilio-iac (addTo)
+    variables: (FlowVarChange & { addTo: string[] })[];
     // "Send to queue" task attributes that are new or changed, for the channel-attributes templates
     taskAttributes: TaskAttributesChange[];
     // What still has to be filled in or decided
@@ -165,6 +166,11 @@ const ABOUT = [
   'Objects imported from a live helpline carry currentStudioWidget: the widget as it is in the template today.',
   '"studioTemplates" has each frame already written as a .tftpl (rebuilt exactly as it is live for widgets nobody',
   'changed), the texts to set in the .hcl variables, and the TODOs it could not fill in: start from those.',
+  'Its "variables" are every value the template reads from the helpline config that is new or changed, each with',
+  '"addTo": the file and block to set it in (flow_vars, the flow_vars of a studio_flows entry, or the',
+  'channel_flow_vars of each channel; a few helplines keep these in common.hcl instead). "environmentSpecific" ones',
+  'were typed into a widget (a SID, a staging or Twilio Functions address): value is for staging, ask for the',
+  'production one.',
   '"Send to queue" objects carry taskAttributes: the task attributes as JSON (as Studio sends them: {{…}} is',
   'Liquid filled in from the contact, ${helpline} and ${task_language} come from the helpline config). When their',
   'source is a channel-attributes template, the widget keeps "attributes": "${channel_attributes.default}" and',
@@ -190,6 +196,22 @@ const ABOUT = [
   'about this board. Do each one, or say why not, as part of the work.',
   '"checks" lists what the design still lacks; "layout" is only where things sit on the board.',
 ].join(' ');
+
+// Where a flow variable is set in twilio-iac: flow_vars (the studio_flows entry's, for flows sharing a
+// template), or each channel's channel_flow_vars, in both environments' files
+const variableTargetsOf = (code: string, variable: FlowVarChange, channels: string[]) => {
+  const blocks =
+    variable.scope === 'channel_flow_vars'
+      ? channels.length > 0
+        ? channels.map((channel) => `channels.${channel}.channel_flow_vars`)
+        : ['channels.<channel>.channel_flow_vars']
+      : variable.flow
+        ? [`studio_flows.${variable.flow}.flow_vars`]
+        : ['flow_vars'];
+  return ['staging', 'production'].flatMap((environment) =>
+    blocks.map((block) => `${code}/${environment}.hcl: ${block}.${variable.name}`),
+  );
+};
 
 const mentionsClaude = (text: string) => /@claude\b/i.test(text);
 
@@ -356,7 +378,10 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
         ...(changeShared ? { changeShared } : {}),
         channels,
         text,
-        variables: flowVars,
+        variables: flowVars.map((variable) => ({
+          ...variable,
+          addTo: variableTargetsOf(board.code, variable, channels),
+        })),
         taskAttributes,
         todo,
       }),

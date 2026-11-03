@@ -105,6 +105,7 @@ are none.
 | Send to queue: workflow, task channel | Set on the board when chosen; otherwise the helpline's other templates and `common.hcl`: `${workflow_sids.<key>}`, `${task_channel_sids.<channel>}` (attributes: step 4b). The task channel is `voice`, `chat` or `voicemail` (messaging channels all use `chat`, never `sms` or `default`); the export already picks it from the flow's channel when it wasn't chosen. When the board names the queue it should end up in, check the workflow's rules (and the task attributes) send it there |
 | A subflow's `flow_sid` | `${system_down_studio_subflow_sid}`, or the variable the helpline's other templates use |
 | A number to forward to, an HTTP address | Ask the person (put real values in variables, not the template) |
+| `“<widget>” had <value> written in it: it reads ${flow_vars.<name>} now` | Already done in `text`: the value differs between staging and production (a SID, a staging or Twilio Functions address), so it's a variable (`environmentSpecific` in `variables`). Set it in step 4; ask for the production value |
 | Set variables | Set on the board (`variables`: key and value) when given; otherwise what the design's text says the counter or variable is for |
 | A Repeat's times to repeat | The board leaves it at 2: ask the person if the design doesn't say |
 | A chatbot's settings (language, message, release type...) | `STUDIO_ROUTES.md` (`channelCapture/captureChannelWithBot`) and the helpline's other templates calling it; the bot's name is in `lex_v2_bot_languages` |
@@ -120,9 +121,18 @@ Kinds that become more than one widget, as the board writes them:
   then a `split-based-on` (`split_<name>`) on `{{flow.variables.<name>_counter}}`: `noMatch` goes
   back round (`repeat`), `greater_than` the times to repeat goes on (`max reached`). Used for
   unrecognised input and timeouts (usnm's older `set_var_en_service_counter` / `split_end_cycle_en_service`).
-- **Messages' `from`** (Send message, Question, Send message and close): the board's From, `${helpline}`
-  (the helpline's name, passed to every flow template) when not set. Send Message / Send and Wait for
-  Reply also get `message_type: "custom"`.
+- **Messages' `from`** (Send message, Question, Send message and close): the board's From; when not
+  set, what most of the flow's other messages say (`Bot` when none do). Send Message / Send and Wait
+  for Reply also get `message_type: "custom"`, and Send Message `to: "{{contact.channel.address}}"`.
+- **Messages' ways out**: a Send Message's `failed` goes where `sent` goes; a Send and Wait for
+  Reply's `deliveryFailure` goes where `timeout` goes. The Decision after a Question splits on
+  `{{widgets.<name>.inbound.Body}}`. `text` already has all of this: don't change it.
+- **Messages' `service` and `channel`** (Send Message, Send and Wait for Reply): always
+  `{{trigger.conversation.InstanceSid}}` / `{{trigger.conversation.ChannelSid}}` (all new flows are
+  Conversations). `text` already does this for new widgets and for imported ones changed on the
+  board; imported ones nobody changed keep what they have live, legacy
+  `{{trigger.message.InstanceSid}}` / `{{trigger.message.ChannelSid}}` included. Don't rewrite
+  those by hand: it only makes the diff noisy.
 - **Send message and close**: a `make-http-request` to
   `${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor` named
   `f_sendMessageAndRunJanitor_<what>`, form `parameters` (as USNM's, `application/x-www-form-urlencoded`):
@@ -184,7 +194,12 @@ still overlaps.
 
 ### 4. Set the texts
 
-For each entry in `variables` (`scope`, `name`, `value`, and `flow` for shared templates):
+For each entry in `variables` (`scope`, `name`, `value`, and `flow` for shared templates). Every
+`${flow_vars.*}` / `${channel_flow_vars.*}` that `text` reads and the config doesn't have yet is in
+this list; `addTo` says the file and block for each (`<code>/staging.hcl: flow_vars.<name>`). A few
+helplines keep `flow_vars` or `channels` in `common.hcl`: put it where the helpline has the others.
+`environmentSpecific: true` means `value` is for staging only: ask for the production one before
+production.
 
 - `flow_vars`: set `name` in `flow_vars` in `staging.hcl` (and in `production.hcl` only when the
   person is doing production). With `flow`, it's that `studio_flows` entry's own `flow_vars`
