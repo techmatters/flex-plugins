@@ -165,6 +165,10 @@ export const overrides: ThemeOverrides = {
     },
   },
   AgentDesktopView: {
+    // Anchors absolutely positioned content added to Panel1, like the queue greeting popover
+    Panel1: {
+      position: 'relative',
+    },
     ContentSplitter: {
       background: colors.base1,
       borderColor: colors.base1,
