@@ -52,6 +52,8 @@ export type DraftClient = {
   save(code: string, version: string, request: SaveDraftRequest): Promise<SaveOutcome>;
   // The draft's revision afterwards: 0, unless it still holds changes this person can't see
   discard(code: string, version: string): Promise<number>;
+  // Aselo staff: take an imported version off the list
+  remove(code: string, version: string): Promise<void>;
   submit(code: string, version: string): Promise<DraftMeta>;
   // Approve a form or field for the user's side, with its fingerprint, or take it back (null)
   approve(code: string, version: string, target: string, fingerprint: string | null): Promise<DraftMeta>;
@@ -59,6 +61,8 @@ export type DraftClient = {
   // description: the change log, for the PR the deployed Apply opens
   apply(code: string, version: string, description?: string): Promise<ApplyResult>;
   list(): Promise<DraftSummary[]>;
+  // Aselo staff: a version to work on, from master ('') or a flex-plugins branch
+  importFromBranch(code: string, version: string, branch: string): Promise<DraftMeta>;
 };
 
 export type Send = (method: string, path: string, body?: unknown) => Promise<{ status: number; body: any }>;
@@ -89,6 +93,9 @@ export const clientFor = (send: Send): DraftClient => {
       return { ok: true, meta: response.body };
     },
     discard: async (code, version) => (await expectOk('DELETE', `/api/drafts/${code}/${version}`))?.revision ?? 0,
+    remove: async (code, version) => {
+      await expectOk('DELETE', `/api/drafts/${code}/${version}?remove=true`);
+    },
     submit: (code, version) => expectOk('POST', `/api/drafts/${code}/${version}/submit`),
     approve: (code, version, target, fingerprint) =>
       expectOk('POST', `/api/drafts/${code}/${version}/approve`, { target, fingerprint }),
@@ -96,6 +103,7 @@ export const clientFor = (send: Send): DraftClient => {
     apply: (code, version, description) =>
       expectOk('POST', `/api/drafts/${code}/${version}/apply`, description === undefined ? undefined : { description }),
     list: () => expectOk('GET', '/api/drafts'),
+    importFromBranch: (code, version, branch) => expectOk('POST', `/api/drafts/${code}/${version}/import`, { branch }),
   };
 };
 

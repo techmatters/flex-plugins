@@ -90,7 +90,7 @@ export const useDraft = (
         if (!current) return;
         // A draft started from another branch: not mixed with these files, and nothing saved over it
         const draftBranch = draft?.meta.source?.branch ?? '';
-        if (draft && Object.keys(draft.files).length > 0 && draftBranch !== (source?.branch ?? '')) {
+        if (draft && (Object.keys(draft.files).length > 0 || draft.meta.source) && draftBranch !== (source?.branch ?? '')) {
           setMeta(draft.meta);
           setConflict({ updatedBy: draft.meta.updatedBy, updatedAt: draft.meta.updatedAt, branch: draftBranch || 'master' });
           setSaveState('conflict');

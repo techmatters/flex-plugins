@@ -19,7 +19,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ApiContext, ApiUser } from '../server/api';
 import { handleApiRequest } from '../server/api';
 import { MemoryDraftStore } from '../server/drafts';
@@ -59,9 +59,16 @@ describe('the app', () => {
     render(<App draftClient={clientFor(send)} />);
     expect(await screen.findByRole('heading', { name: 'Forms' })).toBeTruthy();
 
-    // Once the helplines are loaded
-    await screen.findByRole('option', { name: 'USCH' });
-    fireEvent.change(screen.getByRole('combobox', { name: 'Helpline' }), { target: { value: 'usch' } });
+    // Forms are opened from the list; Aselo staff add them with the importer (master here)
+    const importer = await screen.findByRole('region', { name: 'Import forms' });
+    await waitFor(() => expect(within(importer).getAllByRole('option', { name: 'USCH' }).length).toBe(1));
+    expect(screen.queryByRole('combobox', { name: 'Helpline' })).toBeNull();
+    fireEvent.change(within(importer).getByRole('combobox', { name: 'Helpline to import' }), {
+      target: { value: 'usch' },
+    });
+    fireEvent.click(within(importer).getByRole('button', { name: 'Preview' }));
+    fireEvent.click(await within(importer).findByRole('button', { name: 'Import' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Open' }));
     const workspace = await screen.findByText('No changes yet', undefined, { timeout: 15000 });
     expect(screen.queryByRole('heading', { name: 'Forms' })).toBeNull();
 
@@ -72,10 +79,10 @@ describe('the app', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Forms' }));
     expect(workspace.closest('[hidden]')).toBeNull();
     expect(workspace.isConnected).toBe(true);
-    expect((screen.getByRole('combobox', { name: 'Helpline' }) as HTMLSelectElement).value).toBe('usch');
 
     fireEvent.click(screen.getByRole('button', { name: /All forms/ }));
     expect(await screen.findByRole('heading', { name: 'Forms' })).toBeTruthy();
-    expect((screen.getByRole('combobox', { name: 'Helpline' }) as HTMLSelectElement).value).toBe('');
+    // Still in the list until Aselo staff remove it
+    expect(await screen.findByRole('button', { name: 'Open' })).toBeTruthy();
   }, 30_000);
 });

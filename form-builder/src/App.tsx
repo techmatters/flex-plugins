@@ -14,12 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import type { DefinitionFiles, HelplineSummary } from '../server/definitionsApi';
 import type { Me } from '../server/api';
 import { fetchBranches, fetchDefinitionFiles, fetchHelplines } from './api';
-import { BranchPicker } from './components/BranchPicker';
+import { ImportForms } from './components/ImportForms';
 import { Loading } from './components/Loading';
 import { isSignInEnabled, signOut } from './auth';
 import { DraftClient, httpDraftClient } from './draftClient';
@@ -61,10 +61,11 @@ export const App = ({ draftClient = httpDraftClient, boardClient, routingClient,
   const [helplines, setHelplines] = useState<HelplineSummary[]>([]);
   const [code, setCode] = useState('');
   const [version, setVersion] = useState('');
-  // Aselo staff: the flex-plugins branch the forms are read from ('' for the default), as typed and
-  // once settled (a moment after the last keystroke)
-  const [branchInput, setBranchInput] = useState('');
+  // The forms open (chosen in the list): their helpline, version, and the flex-plugins branch they're
+  // read from ('' for the default; a version imported from a branch, ImportForms)
   const [branch, setBranch] = useState('');
+  // Bumped to list the drafts again (after an import)
+  const [draftsCount, setDraftsCount] = useState(0);
   const [definitions, setDefinitions] = useState<DefinitionFiles>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
@@ -78,56 +79,14 @@ export const App = ({ draftClient = httpDraftClient, boardClient, routingClient,
   const isAseloStaff = user?.role === 'aselo-staff';
   const actingAsStaff = isAseloStaff && !viewAsHelplineStaff;
 
-  const selectHelpline = (newCode: string, newVersion?: string) => {
-    setCode(newCode);
-    const versions = helplines.find((helpline) => helpline.code === newCode)?.versions ?? [];
-    setVersion(newVersion ?? versions[0] ?? '');
-  };
-
   useEffect(() => {
     Promise.all([draftClient.me(), fetchHelplines()])
       .then(([me, loadedHelplines]) => {
         setUser(me);
         setHelplines(loadedHelplines);
-        // Allow linking straight to a helpline, e.g. ?helpline=usnm
-        const linkedCode = new URLSearchParams(window.location.search).get('helpline');
-        const linked = loadedHelplines.find((helpline) => helpline.code === linkedCode);
-        if (linked) {
-          setCode(linked.code);
-          setVersion(linked.versions[0]);
-        }
       })
       .catch((err: Error) => setError(err.message));
   }, [draftClient]);
-
-  useEffect(() => {
-    if (branchInput === branch) return undefined;
-    const timer = setTimeout(() => setBranch(branchInput), 700);
-    return () => clearTimeout(timer);
-  }, [branchInput, branch]);
-
-  // Another branch: its helplines and versions (keeping the helpline and version open when it has them)
-  const firstLoad = useRef(true);
-  useEffect(() => {
-    if (firstLoad.current) {
-      firstLoad.current = false;
-      return;
-    }
-    setError(undefined);
-    fetchHelplines(branch)
-      .then((loaded) => {
-        setHelplines(loaded);
-        const helpline = loaded.find((candidate) => candidate.code === code);
-        if (!helpline) {
-          setCode('');
-          setVersion('');
-          setDefinitions(undefined);
-        } else if (!helpline.versions.includes(version)) setVersion(helpline.versions[0] ?? '');
-      })
-      .catch((err: Error) => setError(err.message));
-    // Only when the branch changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [branch]);
 
   useEffect(() => {
     if (!code || !version) return;
@@ -139,8 +98,6 @@ export const App = ({ draftClient = httpDraftClient, boardClient, routingClient,
       .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false));
   }, [code, version, branch, reloadCount]);
-
-  const versions = helplines.find((helpline) => helpline.code === code)?.versions ?? [];
 
   // Areas opened stay as they were left (hidden, not closed): e.g. add a skill in Routing and go
   // back to the board being worked on. Each has its own way back to its start page.
@@ -154,14 +111,12 @@ export const App = ({ draftClient = httpDraftClient, boardClient, routingClient,
     window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
   };
 
-  // Forms' start page: the drafts list, the helpline closed
+  // Forms' start page: the list, the helpline closed
   const closeHelpline = () => {
+    setBranch('');
     setCode('');
     setVersion('');
     setDefinitions(undefined);
-    const params = new URLSearchParams(window.location.search);
-    params.delete('helpline');
-    window.history.replaceState(null, '', `${window.location.pathname}?${params.toString()}`);
   };
 
   return (
@@ -183,34 +138,6 @@ export const App = ({ draftClient = httpDraftClient, boardClient, routingClient,
             </button>
           ))}
         </nav>
-        {area === 'forms' && (
-          <label>
-            Helpline
-            <select value={code} onChange={(e) => selectHelpline(e.target.value)}>
-              <option value="">Choose a helpline…</option>
-              {helplines.map((helpline) => (
-                <option key={helpline.code} value={helpline.code}>
-                  {helpline.code.toUpperCase()}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-        {area === 'forms' && (versions.length > 1 || branch) && (
-          <label>
-            Version
-            <select value={version} onChange={(e) => setVersion(e.target.value)}>
-              {versions.map((v) => (
-                <option key={v} value={v}>
-                  {v}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
-        {area === 'forms' && isAseloStaff && (
-          <BranchPicker load={fetchBranches} value={branchInput} onChange={setBranchInput} />
-        )}
         <span className="top-bar-user">
           {user && (
             <>
@@ -288,15 +215,24 @@ export const App = ({ draftClient = httpDraftClient, boardClient, routingClient,
             <h2>Forms</h2>
             <p className="field-hint area-home-intro">
               The forms counselors fill in for each contact and case, the webchat form, and how contacts are filled in
-              from the chatbot. Choose a helpline (at the top) to see and edit its forms.
+              from the chatbot. Open one from the list to see and edit it.
             </p>
             {!user && <Loading text="Loading helplines…" />}
+            {user && actingAsStaff && (
+              <ImportForms
+                draftClient={draftClient}
+                helplineCodes={helplines.map((helpline) => helpline.code)}
+                loadBranches={fetchBranches}
+                loadHelplines={fetchHelplines}
+                onImported={() => setDraftsCount((count) => count + 1)}
+              />
+            )}
             {user && (
               <DraftsList
+                key={draftsCount}
                 draftClient={draftClient}
                 isAseloStaff={isAseloStaff}
                 onOpen={(draftCode, draftVersion, draftBranch) => {
-                  setBranchInput(draftBranch);
                   setBranch(draftBranch);
                   setCode(draftCode);
                   setVersion(draftVersion);

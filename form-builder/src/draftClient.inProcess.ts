@@ -23,6 +23,14 @@ import { handleApiRequest } from '../server/api';
 import { clientFor, DraftClient } from './draftClient';
 
 export const inProcessDraftClient = (context: ApiContext, user: ApiUser): DraftClient =>
-  clientFor((method, path, body) =>
-    handleApiRequest(context, { method, path, body: structuredClone(body), user }),
-  );
+  clientFor((method, url, body) => {
+    // The query string apart, as the dev server and the Lambda pass it
+    const { pathname, searchParams } = new URL(url, 'http://localhost');
+    return handleApiRequest(context, {
+      method,
+      path: pathname,
+      query: Object.fromEntries(searchParams),
+      body: structuredClone(body),
+      user,
+    });
+  });

@@ -15,8 +15,9 @@
  */
 
 /**
- * Drafts in progress, on the start page. Aselo staff see every helpline's drafts, with those
- * submitted for review first; helpline staff see their own.
+ * The forms to work on, on the start page: the versions Aselo staff imported (from master or a
+ * branch) and the drafts in progress. Aselo staff see every helpline's, with those submitted for
+ * review first; helpline staff see their own helplines'.
  */
 import { useEffect, useState } from 'react';
 import type { DraftSummary } from '../../server/drafts';
@@ -49,6 +50,8 @@ type Props = {
   onOpen: (code: string, version: string, branch: string) => void;
 };
 
+const keyOf = (draft: Pick<DraftSummary, 'code' | 'version'>) => `${draft.code}/${draft.version}`;
+
 export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
   const [drafts, setDrafts] = useState<DraftSummary[]>();
   const [helpline, setHelpline] = useState('');
@@ -70,12 +73,30 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
       .catch(() => setDrafts([]));
   }, [draftClient]);
 
-  if (!drafts) return <Loading text="Loading drafts…" />;
-  if (drafts.length === 0) return null;
+  // Aselo staff: off the list (with its changes, if any)
+  const remove = async (draft: DraftSummary) => {
+    const name = `${draft.code.toUpperCase()} ${draft.version}`;
+    const changes = draft.changedFiles.length;
+    if (changes > 0 && !window.confirm(`Remove ${name} from the list? Its changes (${changes} files) are lost.`))
+      return;
+    await draftClient.remove(draft.code, draft.version);
+    setDrafts((current) => current?.filter((candidate) => keyOf(candidate) !== keyOf(draft)));
+  };
+
+  if (!drafts) return <Loading text="Loading forms…" />;
+  if (drafts.length === 0) {
+    return (
+      <p className="field-hint">
+        {isAseloStaff
+          ? 'Nothing here yet: import a helpline’s forms (above) to work on them.'
+          : 'Nothing here yet: the Aselo team adds your helpline’s forms here when there’s something to work on.'}
+      </p>
+    );
+  }
 
   return (
     <section className="drafts-list">
-      <h3>{isAseloStaff ? 'Drafts' : 'Your drafts'}</h3>
+      <h3>{isAseloStaff ? 'Forms' : 'Your forms'}</h3>
       <div className="area-home-filters">
         <HelplineFilter codes={drafts.map((draft) => draft.code)} value={helpline} onChange={setHelpline} />
       </div>
@@ -93,13 +114,13 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
           {drafts
             .filter((draft) => !helpline || draft.code === helpline)
             .map((draft) => (
-              <tr key={`${draft.code}/${draft.version}`}>
+              <tr key={keyOf(draft)}>
                 <td className="area-home-name">
                   {draft.code.toUpperCase()} {draft.version}
                   {draft.meta.source && (
                     <>
                       {' '}
-                      <code className="drafts-branch">{draft.meta.source.branch}</code>
+                      (<code className="drafts-branch">{draft.meta.source.branch}</code>)
                     </>
                   )}
                 </td>
@@ -109,6 +130,8 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
                     <span className="design-status design-status-ready">
                       Submitted for review{draft.meta.submittedBy ? ` by ${draft.meta.submittedBy}` : ''}
                     </span>
+                  ) : draft.changedFiles.length === 0 ? (
+                    <span className="design-status">No changes yet</span>
                   ) : (
                     <span className="design-status design-status-in-progress">In progress</span>
                   )}
@@ -128,6 +151,11 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
                   >
                     {isAseloStaff && draft.meta.status === 'submitted' ? 'Review' : 'Open'}
                   </button>
+                  {isAseloStaff && (
+                    <button type="button" className="link-button" onClick={() => remove(draft)}>
+                      Remove
+                    </button>
+                  )}
                 </td>
               </tr>
             ))}

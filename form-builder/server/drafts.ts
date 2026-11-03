@@ -46,6 +46,9 @@ export type DraftMeta = DraftReview & {
   baseHashes: Record<string, string>;
   // The flex-plugins branch the files were read from, when not the default (Aselo staff only)
   source?: ImportSource;
+  // Imported by Aselo staff (from the default, or a branch: source): listed until discarded, even
+  // with no changes
+  imported?: boolean;
 };
 
 export type Draft = {

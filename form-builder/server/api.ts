@@ -27,11 +27,12 @@
  *   GET    /api/drafts                              drafts this person can see
  *   GET    /api/drafts/:code/:version               a draft (404 if there's none)
  *   PUT    /api/drafts/:code/:version               save a draft
- *   DELETE /api/drafts/:code/:version               discard a draft
+ *   DELETE /api/drafts/:code/:version               discard a draft's changes (?remove=true, Aselo staff: and take it off the list)
  *   POST   /api/drafts/:code/:version/submit        helpline staff: send for review
  *   POST   /api/drafts/:code/:version/apply         Aselo staff only: apply a draft
  *   POST   /api/drafts/:code/:version/approve       approve a form or field for your side (reviews.ts)
  *   POST   /api/drafts/:code/:version/threads       flag a form or field, reply, resolve or delete
+ *   POST   /api/drafts/:code/:version/import        Aselo staff: a draft of that version to work on, from master or a branch ({ branch })
  *   ...    /api/boards..., /api/people/...          the flow designer (boardsApi.ts)
  *   ...    /api/recordings/...                      its recordings (recordingsApi.ts)
  *   POST   /api/flows/import/:code                  Aselo staff: a board from a live helpline (flowImport.ts)
@@ -141,6 +142,9 @@ type SaveDraftBody = {
 };
 
 const branchOf = (meta?: Pick<DraftMeta, 'source'>) => meta?.source?.branch ?? '';
+// A draft someone is working on: changes, or a version imported
+const holdsWork = (draft: Draft) =>
+  Object.keys(draft.files).length > 0 || Boolean(draft.meta.source) || Boolean(draft.meta.imported);
 const isImportSource = (value: unknown): value is ImportSource =>
   typeof (value as ImportSource)?.branch === 'string' &&
   isValidBranch((value as ImportSource).branch) &&
@@ -352,7 +356,7 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       return ok({ ...definitions, files: pickFiles(definitions.files, false), serviceConfigDefaults: undefined });
     }
 
-    const draftMatch = route.match(/^(GET|PUT|DELETE|POST) \/api\/drafts\/([^/]+)\/([^/]+)(\/submit|\/apply|\/approve|\/threads)?$/);
+    const draftMatch = route.match(/^(GET|PUT|DELETE|POST) \/api\/drafts\/([^/]+)\/([^/]+)(\/submit|\/apply|\/approve|\/threads|\/import)?$/);
     if (!draftMatch) return fail(404, `Unknown API route ${route}`);
 
     const [, method, code, version, action] = draftMatch;
@@ -371,7 +375,7 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       if (request.body.source !== undefined && !source) return fail(400, 'Invalid branch');
       if (source && !isStaff(user)) return fail(403, 'Only Aselo staff read other branches.');
       // One draft per helpline version: changes started from one branch can't be mixed with another's
-      if (existing && Object.keys(existing.files).length > 0 && branchOf(existing.meta) !== (source?.branch ?? '')) {
+      if (existing && holdsWork(existing) && branchOf(existing.meta) !== (source?.branch ?? '')) {
         return fail(409, `There's already a draft of ${code} ${version} started from ${branchOf(existing.meta) || 'master'}.`, {
           updatedBy: existing.meta.updatedBy,
           updatedAt: existing.meta.updatedAt,
@@ -402,7 +406,7 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
 
       // Nothing left that differs from the current files: no draft, unless it holds a review
       // (e.g. a question asked before anything changed)
-      if (Object.keys(files).length === 0 && !hasReview(existing?.meta)) {
+      if (Object.keys(files).length === 0 && !hasReview(existing?.meta) && !existing?.meta.imported && !existing?.meta.source) {
         if (existing) await context.drafts.remove(code, version);
         return ok({ revision: 0, status: 'editing' });
       }
@@ -419,6 +423,7 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
           updatedBy: user.name,
           baseHashes: { ...(existing?.meta.baseHashes ?? {}), ...baseHashes },
           ...(source ? { source } : {}),
+          ...(existing?.meta.imported ? { imported: true } : {}),
           // Kept: an approval only stops counting when what it approved changes (src/formReviews.ts)
           ...(existing ? reviewOf(existing.meta) : {}),
         },
@@ -429,7 +434,9 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
 
     if (method === 'DELETE' && !action) {
       const kept = isStaff(user) ? {} : pickFiles(existing?.files ?? {}, true);
-      if (existing && Object.keys(kept).length > 0) {
+      // Aselo staff take an imported version off the list (?remove=true); discarding keeps it there
+      const removing = isStaff(user) && request.query?.remove === 'true';
+      if (existing && !removing && (Object.keys(kept).length > 0 || existing.meta.imported)) {
         // Helpline staff discard their own changes; Aselo staff's service configuration stays
         const draft: Draft = {
           ...existing,
@@ -485,6 +492,56 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       const reviewed: Draft = { ...base, meta: { ...base.meta, ...outcome.review } };
       await context.drafts.put(reviewed);
       return ok(draftForUser(reviewed, user).meta);
+    }
+
+    // A version to work on, from master ('') or a branch: listed for its helpline until discarded
+    if (method === 'POST' && action === '/import') {
+      if (!isStaff(user)) return fail(403, 'Only Aselo staff import.');
+      const branch = (request.body as { branch?: unknown } | undefined)?.branch ?? '';
+      if (typeof branch !== 'string' || (branch !== '' && !isValidBranch(branch))) {
+        return fail(400, `Invalid branch ${String(branch)}`);
+      }
+      let snapshot: { sha: string; formDefinitionsDir: string } | undefined;
+      if (branch) {
+        if (!context.branches) return fail(501, "Other branches can't be read here.");
+        try {
+          snapshot = await context.branches.snapshot(branch);
+        } catch (err) {
+          return fail(404, `Couldn't read the branch ${branch}: ${(err as Error).message}`);
+        }
+      }
+      const found = (await listHelplines(snapshot?.formDefinitionsDir ?? context.formDefinitionsDir)).find(
+        (helpline) => helpline.code === code,
+      );
+      if (!found?.versions.includes(version)) return fail(404, `${branch || 'master'} has no ${code}/${version}.`);
+      if (existing && branchOf(existing.meta) === branch) {
+        if (existing.meta.imported) return ok(existing.meta);
+        // Already a draft from master: it's listed from now on
+        const listed: Draft = { ...existing, meta: { ...existing.meta, imported: true } };
+        await context.drafts.put(listed);
+        return ok(listed.meta);
+      }
+      if (existing && (holdsWork(existing) || hasReview(existing.meta))) {
+        return fail(409, `There's already a draft of ${code} ${version} started from ${branchOf(existing.meta) || 'master'}.`, {
+          branch: branchOf(existing.meta) || 'master',
+        });
+      }
+      const imported: Draft = {
+        code,
+        version,
+        files: {},
+        meta: {
+          revision: (existing?.meta.revision ?? 0) + 1,
+          status: 'editing',
+          updatedAt: now,
+          updatedBy: user.name,
+          baseHashes: {},
+          imported: true,
+          ...(snapshot ? { source: { branch, sha: snapshot.sha } } : {}),
+        },
+      };
+      await context.drafts.put(imported);
+      return ok(imported.meta);
     }
 
     if (method === 'POST' && action === '/apply') {

@@ -143,5 +143,76 @@ describe('branches', () => {
       expect(applied.status).toBe(400);
       expect((applied.body as { message: string }).message).toMatch(/commit them to that branch/);
     });
+
+    test('importing a version from a branch: a draft in the list, kept until discarded', async () => {
+      const branch = 'alejandro-c/usch/import';
+      const importing = (version: string, chosen = branch, user = staff) =>
+        call(user, 'POST', `/api/drafts/usch/${version}/import`, { branch: chosen });
+      expect((await importing('v1', branch, uschStaff)).status).toBe(403);
+      expect((await importing('v9')).status).toBe(404);
+      expect((await importing('v1', 'missing')).status).toBe(404);
+
+      await context.drafts.remove('usch', 'v1');
+      const imported = await importing('v1');
+      expect(imported.status).toBe(200);
+      expect(imported.body).toMatchObject({ source: { branch, sha: SHA }, revision: 1 });
+      expect((await call(staff, 'GET', '/api/drafts')).body).toContainEqual(
+        expect.objectContaining({
+          code: 'usch',
+          version: 'v1',
+          changedFiles: [],
+          meta: expect.objectContaining({ source: { branch, sha: SHA } }),
+        }),
+      );
+      // Again: the same draft
+      expect((await importing('v1')).body).toMatchObject({ revision: 1 });
+      // Changes made and undone: still there, as imported
+      expect(
+        (
+          await call(staff, 'PUT', '/api/drafts/usch/v1', {
+            expectedRevision: 1,
+            files: {},
+            baseHashes: {},
+            source: { branch, sha: SHA },
+          })
+        ).status,
+      ).toBe(200);
+      expect(await context.drafts.get('usch', 'v1')).toBeDefined();
+      // Another branch, or master, doesn't take it over
+      expect((await importing('v1', 'alejandro-c/other')).status).toBe(409);
+      const fromMaster = await call(staff, 'PUT', '/api/drafts/usch/v1', {
+        expectedRevision: 2,
+        files: { 'CaseStatus.json': {} },
+        baseHashes: {},
+      });
+      expect(fromMaster.status).toBe(409);
+      // Its changes discarded: still listed. Removed by Aselo staff: gone
+      await call(uschStaff, 'DELETE', '/api/drafts/usch/v1');
+      expect((await context.drafts.get('usch', 'v1'))?.meta.imported).toBe(true);
+      await call(uschStaff, 'DELETE', '/api/drafts/usch/v1', undefined, { remove: 'true' });
+      expect(await context.drafts.get('usch', 'v1')).toBeDefined();
+      await call(staff, 'DELETE', '/api/drafts/usch/v1', undefined, { remove: 'true' });
+      expect(await context.drafts.get('usch', 'v1')).toBeUndefined();
+    });
+
+    test('importing from master: listed for the helpline (its staff see it), with no branch', async () => {
+      const masterContext: ApiContext = {
+        ...context,
+        formDefinitionsDir: path.join(repoRoot, 'lambdas/packages/hrm-form-definitions/form-definitions'),
+        drafts: new MemoryDraftStore(),
+      };
+      const callMaster = (user: ApiUser, method: string, apiPath: string, body?: unknown) =>
+        handleApiRequest(masterContext, { method, path: apiPath, body, user });
+      expect((await callMaster(uschStaff, 'POST', '/api/drafts/usch/v1/import', {})).status).toBe(403);
+      const imported = await callMaster(staff, 'POST', '/api/drafts/usch/v1/import', { branch: '' });
+      expect(imported.status).toBe(200);
+      expect(imported.body).toMatchObject({ imported: true });
+      expect(imported.body).not.toHaveProperty('source');
+      const listed = (await callMaster(uschStaff, 'GET', '/api/drafts')).body as { code: string; version: string }[];
+      expect(listed).toEqual([expect.objectContaining({ code: 'usch', version: 'v1' })]);
+      // A change saved and undone: still listed
+      await callMaster(staff, 'PUT', '/api/drafts/usch/v1', { expectedRevision: 1, files: {}, baseHashes: {} });
+      expect((await masterContext.drafts.get('usch', 'v1'))?.meta.imported).toBe(true);
+    });
   });
 });
