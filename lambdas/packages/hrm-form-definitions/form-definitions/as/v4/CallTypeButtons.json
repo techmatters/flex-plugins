@@ -1,21 +1,15 @@
 [
   {
     "name": "child",
-    "label": "Child calling about self",
+    "label": "Gambler calling about self",
     "type": "button",
     "category": "data"
   },
   {
     "name": "caller",
-    "label": "Someone calling about a child",
+    "label": "Someone calling about a gambler",
     "type": "button",
     "category": "data"
-  },
-  {
-    "name": "silent",
-    "label": "Silent",
-    "type": "button",
-    "category": "non-data"
   },
   {
     "name": "hangup",
@@ -24,32 +18,14 @@
     "category": "non-data"
   },
   {
-    "name": "abusive",
-    "label": "Abusive",
+    "name": "wrongnumber",
+    "label": "Wrong Number",
     "type": "button",
     "category": "non-data"
   },
   {
-    "name": "thanks",
-    "label": "Thank you",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "questions",
-    "label": "Questions",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "emergency",
-    "label": "Emergency",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "voicemail",
-    "label": "Complete Voicemail",
+    "name": "prank",
+    "label": "Prank",
     "type": "button",
     "category": "non-data"
   }

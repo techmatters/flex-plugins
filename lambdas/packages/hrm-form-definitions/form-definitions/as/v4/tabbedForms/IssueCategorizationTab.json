@@ -1,5 +1,6 @@
 {
-  "Childline": {
+  "Gambler": {
+    "maxSelections": 50,
     "categories": {
       "Purpose of Call": {
         "color": "#085f63",
@@ -29,34 +30,143 @@
             "label": "Other"
           }
         ]
-      }
-    }
-  },
-  "LifeLine": {
-    "categories": {
-      "Purpose of Call": {
-        "color": "#085f63",
+      },
+      "Referral": {
+        "color": "#14919b",
         "subcategories": [
           {
-            "label": "Help"
+            "label": "None"
           },
           {
-            "label": "Information"
+            "label": "Therapy"
           },
           {
-            "label": "Horse Racing"
+            "label": "Self-Exclusion"
           },
           {
-            "label": "Lottery"
+            "label": "Self Help (GamAnon/Gambler's Anonymous/Etc.)"
           },
           {
-            "label": "Online Casino"
+            "label": "Blocking Apps"
           },
           {
-            "label": "Physical Casino"
+            "label": "Other"
+          }
+        ]
+      },
+      "Therapy Referral": {
+        "color": "#db7a34",
+        "subcategories": [
+          {
+            "label": "Alexia Totoro - Private Practitioner"
           },
           {
-            "label": "Prediction Markets"
+            "label": "Allen Gabriel - Life Compass Consulting"
+          },
+          {
+            "label": "Alyssa Somohano - Harbor Wellness & Recovery"
+          },
+          {
+            "label": "Anna Mullins - Private Practitioner"
+          },
+          {
+            "label": "Barbara Sorace - Supportive Solutions Counseling"
+          },
+          {
+            "label": "Camille Bloomberg - Private Practitioner"
+          },
+          {
+            "label": "Charlie Dragon - Otlowski Center"
+          },
+          {
+            "label": "Dawn Romeo - Private Practitioner"
+          },
+          {
+            "label": "Deshonnda Johnson - Jewish Family Services"
+          },
+          {
+            "label": "Dorys Murillo - Forest Recovery"
+          },
+          {
+            "label": "Elliot Rapaport - Birches Health"
+          },
+          {
+            "label": "Fran Gizzi - Private Practitioner"
+          },
+          {
+            "label": "James Martinez - Stress Free Recovery"
+          },
+          {
+            "label": "Jane Calabrese - Oasis"
+          },
+          {
+            "label": "Jennifer Shipman - Private Practitioner"
+          },
+          {
+            "label": "Joel Levine - Private Practitioner"
+          },
+          {
+            "label": "Jesse Coudray - The Reclaimed Path"
+          },
+          {
+            "label": "Kathleen Healy - Private Practitioner"
+          },
+          {
+            "label": "Kerry Sullivan - Above Water Recovery"
+          },
+          {
+            "label": "Kevin O'Neill - Private Practitioner"
+          },
+          {
+            "label": "Leroy Stanford - Private Practitioner"
+          },
+          {
+            "label": "Lisa Ellis Gavin - Collaborative Therapy Services LLC"
+          },
+          {
+            "label": "Lorraine Barry - Private Practitioner"
+          },
+          {
+            "label": "Luis Sanchez - Vantage Health Center"
+          },
+          {
+            "label": "Luke Roche - Richard Hall"
+          },
+          {
+            "label": "Madelyn Funkhouser - Reverie Therapy"
+          },
+          {
+            "label": "Nicolas DeSimone - Renewed Light"
+          },
+          {
+            "label": "Pamela Dobbs - Private Practitioner"
+          },
+          {
+            "label": "Paul Lavella - New Jersey Recovery & Wellness"
+          },
+          {
+            "label": "Rachele McGowan - Healing Waters"
+          },
+          {
+            "label": "Sal Reyes - Private Practitioner"
+          },
+          {
+            "label": "Shaheed Shabazz - Private Practitioner"
+          },
+          {
+            "label": "Stacey Marowitz - Newbridge Services"
+          },
+          {
+            "label": "Steven Heim - New Hope Foundation"
+          },
+          {
+            "label": "Tatyana Vaynshteyn - Social Recovery"
+          },
+          {
+            "label": "Tina Wittkop - Journey Strength and Sobriety LLC"
+          },
+          {
+            "label": "Tina Wittkop - Right Choice Recovery"
           },
           {
             "label": "Other"

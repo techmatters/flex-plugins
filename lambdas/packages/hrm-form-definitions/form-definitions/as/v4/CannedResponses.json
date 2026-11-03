@@ -1,4 +1,5 @@
-[{
+[
+  {
     "label": "Thank you for contacting.",
     "text": "Thank you for contacting the helpline. We are here to support you. My name is XXX and I am a counselor at the helpline. "
   },
@@ -12,7 +13,7 @@
   },
   {
     "label": "What is the helpline?",
-    "text": "ChildLine is a 24/7 counseling helpline that provides free counselling and psychosocial support to children and teens under the age of 18 years."
+    "text": "Gambler is a counseling helpline that provides free support to people affected by gambling and their loved ones."
   },
   {
     "label": "How did you learn about the helpline?",
