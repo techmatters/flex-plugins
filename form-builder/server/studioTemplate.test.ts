@@ -156,6 +156,45 @@ describe('Studio templates from boards', () => {
     expect(parseTemplate(generated.text)).toEqual(generated.flow);
   });
 
+  test('an imported widget made another kind on the board is built as a new one of that kind', async () => {
+    const { boards } = await importHelpline(helplinesDir, 'usch');
+    const webchat = boards.find((board) =>
+      board.content.flow?.studio?.template.endsWith('/webchat-no-lex-conv-sd.tftpl'),
+    )!.content;
+    const blocked = webchat.objects.find((object) => object.studioName === 'send_message_webchat_blocked_client')!;
+    blocked.type = 'sendMessageAndClose';
+    blocked.studioName = 'f_sendMessageAndRunJanitor_webchat_blocked_client';
+    blocked.message = { ...blocked.message, script: 'We are unable to take your contact at this time.' };
+    const generated = toStudioFlow(webchat);
+    const state = generated.flow.states.find((candidate) => candidate.name === blocked.studioName)!;
+    expect(state.type).toBe('make-http-request');
+    expect(state.properties).toMatchObject({
+      url: '${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor',
+      parameters: [
+        { value: '{{flow.channel.address}}', key: 'conversationSid' },
+        { value: '${flow_vars.send_message_webchat_blocked_client}', key: 'message' },
+        { value: 'Bot', key: 'from' },
+      ],
+      // Where it was on the canvas
+      offset: blocked.studio!.offset,
+    });
+    expect(generated.flowVars).toContainEqual(
+      expect.objectContaining({
+        name: 'send_message_webchat_blocked_client',
+        value: 'We are unable to take your contact at this time.',
+      }),
+    );
+    expect(generated.todo.join(' ')).toMatch(
+      /was send_message_webchat_blocked_client \(send-message\) in Studio .* built as a new one; \$\{flow_vars\.webchat_blocked_client_message\} isn't read by it any more/,
+    );
+    // What led to it leads to it, by its new name
+    expect(
+      generated.flow.states.some((candidate) =>
+        candidate.transitions.some((transition) => transition.next === blocked.studioName),
+      ),
+    ).toBe(true);
+  });
+
   test('messages changed on the board read trigger.conversation; the ones nobody changed stay as they are', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const sms = boards.find((board) => board.content.flow?.studio?.template.endsWith('/sms.tftpl'))!.content;

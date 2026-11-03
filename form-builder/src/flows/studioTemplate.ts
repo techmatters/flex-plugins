@@ -206,6 +206,37 @@ const LEGACY_MESSAGE_SOURCE: Record<string, string> = {
 };
 const MESSAGE_WIDGET_TYPES = new Set(['send-message', 'send-and-wait-for-reply']);
 
+// The Studio widget types each kind is built as (as the import reads them: server/flowImport.ts)
+const REQUEST_TYPES = ['make-http-request', 'run-function'];
+const STUDIO_TYPES: Partial<Record<FlowObject['type'], string[]>> = {
+  incoming: ['trigger'],
+  decision: ['split-based-on'],
+  checkCountry: ['split-based-on'],
+  playMessage: ['say-play'],
+  sendMessage: ['send-message'],
+  questionMessaging: ['send-and-wait-for-reply'],
+  menuVoice: ['gather-input-on-call'],
+  recordVoicemail: ['record-voicemail'],
+  sendToQueue: ['send-to-flex'],
+  setVariable: ['set-variables'],
+  systemDown: ['run-subflow'],
+  subflow: ['run-subflow'],
+  forwardCall: ['connect-call-to'],
+  sendMessageAndClose: REQUEST_TYPES,
+  function: REQUEST_TYPES,
+  notifyError: REQUEST_TYPES,
+  checkOperatingHours: REQUEST_TYPES,
+  checkClientProfile: REQUEST_TYPES,
+  checkQueueAvailability: REQUEST_TYPES,
+  checkWorkerLoggedIn: REQUEST_TYPES,
+  chatbot: REQUEST_TYPES,
+  chatbotCleanup: REQUEST_TYPES,
+  setFlowMemory: REQUEST_TYPES,
+};
+// Whether an imported widget is still of the board object's kind (kinds not listed: always)
+const isStudioTypeOf = (type: FlowObject['type'], studioType: string) =>
+  STUDIO_TYPES[type]?.includes(studioType) ?? true;
+
 // The same JSON, whatever the order of its keys
 const canonical = (value: unknown): unknown =>
   Array.isArray(value)
@@ -415,8 +446,18 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
     }
     const offset = offsetOf(object);
 
+    // Imported, but made another kind on the board (e.g. a Send Message made "Send message and close"):
+    // built as a new widget of its kind
+    const kindChanged = Boolean(object.studio && !isStudioTypeOf(object.type, object.studio.type));
+    if (object.studio && kindChanged) {
+      const variable = String(object.studio.properties?.body ?? object.studio.properties?.say ?? '').match(VARIABLE);
+      todo.push(
+        `${label(object)} was ${object.studio.name} (${object.studio.type}) in Studio and is a ${OBJECT_TYPES[object.type].label} now: built as a new one${variable ? `; \${${variable[1]}.${variable[2]}} isn't read by it any more (remove it from the .hcl files if nothing else uses it)` : ''}.`,
+      );
+    }
+
     // Imported: rebuilt as it was, with the board's connections and changes
-    if (object.studio) {
+    if (object.studio && !kindChanged) {
       const { studio } = object;
       const properties: Record<string, unknown> = { ...studio.properties, offset };
       // Its transitions as live (a split whose input changed reads the new one in its conditions)
