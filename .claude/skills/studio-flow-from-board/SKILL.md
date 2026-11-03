@@ -22,7 +22,11 @@ branch), and the account-scoped lambda routes in
 - **Never** run `apply`, `destroy`, `import` or state commands. Read-only `plan` is fine; the person
   applies.
 - One helpline and environment at a time, **staging first**. Production only when the person says so.
-- Don't rename a widget that's live without asking: monitoring and recordings use the names.
+- **Don't commit or push** until the person asks: write the files and show `git diff`, so they see
+  what's added or changed first. The plan needs the branch pushed, so it waits for that too.
+- Use the board's widget names, renaming live widgets when the board does (the team agreed to
+  always rename). List the renamed ones in the hand-off: monitoring that uses the old names
+  follows them.
 - Never leave `TODO` in a template, and never invent SIDs, numbers or URLs: find them in the
   helpline's config or ask.
 - The repo is public: no account SIDs, tokens or internal URLs in what you write (templates use
@@ -54,6 +58,39 @@ was changed on the board.
 
 ## Workflow
 
+### 0. Ask first
+
+Read the export (step 1), then ask these **together, in one go**, before writing anything. Skip the
+ones that don't apply.
+
+1. **Environment: staging only, or staging and production?** Check which environment files
+   (`staging.hcl`, `production.hcl`) point a channel or `studio_flows` entry at each template.
+   - Staging only, and the template is used by **both**: write the board's template to a staging
+     copy, `<name>-staging.tftpl` next to it (as USCH's `sms-childhelp-lex-staging.tftpl`), point
+     only `staging.hcl` at it, and set texts only in `staging.hcl`. Production keeps the original.
+     When production follows later: write the staging copy over the original, point `staging.hcl`
+     back at it and delete the copy.
+   - Staging only, and only staging uses it: write it in place.
+   - Both: write it in place, texts in both files (production values: question 4).
+2. **Branch: a new one from master, or carry on with an existing one?** And: **is there an
+   unmerged branch already applied to that environment?** A branch from master would undo it on
+   the next apply (USCH staging once ran a builder test branch, not master). New branches follow
+   the person's naming (`alejandro-c/<helpline>/<task>`), from an up-to-date master.
+3. **Texts not approved yet** (`checks` "isn't approved", `message.status` other than `Approved`):
+   put them in anyway or wait? For production they must be approved: stop and say which.
+4. **Production values** (production only): each `variables` entry with `environmentSpecific` has
+   the staging value only (a SID or an address typed into a widget, e.g. an hrm-staging URL). Ask
+   for each production value; never guess it.
+
+**Before the Studio flows: provision and chatbots.** A flow sends to workflows and queues
+(provision stage) and hands contacts to chatbots (lex stage) that must exist first. Check the
+config on the branch: each `${workflow_sids.<key>}` is in `workflows`, each queue the board names
+is in `task_queues` and a workflow rule sends to it (with the widget's task attributes), and each
+chatbot it calls (`captureChannelWithBot` `botName`) is in `lex_v2_bot_languages` with its
+`configs/lex_v2` files. Ask whether those have been applied to the environment. If anything is
+missing or not applied, stop and say what: those steps come first (routing-from-design,
+chatbot-from-design). Go on only if the person says to anyway, and repeat it in the hand-off.
+
 ### 1. Read the export
 
 Ask for the file's path if you don't have it. Check `schemaVersion` is 1, then `board.status`: if
@@ -72,8 +109,8 @@ For each `studioTemplates` entry:
 - **With `template`** (imported): write `text` to `twilio-iac/helplines/<writeTo>`. Show
   `git diff` and explain it in plain terms: connections that moved, texts, new or removed widgets.
   If `text` is the same as the current file (only widget positions differ, or nothing), write nothing.
-- **Without `template`** (designed from scratch): ask which channels it's for and in which
-  environment. Write it to `twilio-iac/helplines/<code>/templates/studio-flows/<name>.tftpl`
+- **Without `template`** (designed from scratch): ask which channels it's for (the environment is
+  question 1 in step 0). Write it to `twilio-iac/helplines/<code>/templates/studio-flows/<name>.tftpl`
   (name after what it does, e.g. `voice.tftpl`, `sms.tftpl`) and point the channels' `templatefile`
   at `/app/twilio-iac/helplines/<code>/templates/studio-flows/<name>.tftpl` in `staging.hcl`.
   Follow the channel conventions in `twilio-iac/AGENTS.md` (e.g. conversations messaging mode).
@@ -283,18 +320,15 @@ post-call survey in English and Spanish). The board shows them as one, with a ta
 
 ### 5. Recordings
 
-Voice widgets play `${flow_vars.<something>_recordings_url}/<file>`. If the export's objects
-show recordings that aren't `Published` yet (`message.status`), say so: production callers would
-hear the old recording, or nothing for a new file. Moving the helpline to the recordings bucket
-means setting that variable to `recordingsBaseUrl.staging` / `.production` in each environment's
-file, only once its recordings are published there; offer it, don't do it unasked.
+Voice widgets play `${flow_vars.<something>_recordings_url}/<file>`. **All recordings come from the
+Aselo recordings bucket**; Twilio Serverless is being retired. For each voice flow, set its
+recordings URL variable to `recordingsBaseUrl.staging` / `.production` (the environment being
+done) in that environment's file, replacing any Serverless address; no need to ask.
 
-A TODO "plays <widget>.mp3 now (was <old>.mp3)" means the recording was given its standard name
-(the widget's) in the builder: the file was copied under the new name **in the Aselo recordings
-bucket only**. The template now plays the new name, so the flow's recordings URL variable has to
-point at the bucket (`recordingsBaseUrl` for that environment) and the file has to be published
-there before production uses it; Twilio Serverless doesn't have it. If the variable still points
-at Serverless, say so and ask before writing the template for production.
+Renamed recordings (a TODO "plays <widget>.mp3 now (was <old>.mp3)") were copied under the
+widget's name in the bucket only, so the bucket is the only place they exist. If the export shows
+recordings that aren't `Published` yet (`message.status`), say which: callers would hear nothing
+for them until they're published in the bucket (for production, before it's applied).
 
 ### 6. Check
 
@@ -324,21 +358,27 @@ EOF
 
 ### 7. Plan (staging)
 
-Plans run on the devops node (stages at `~/flex-plugins.git/twilio-iac/stages`), on the branch with
-these changes pushed:
+Only after the person has seen the diff and asked you to commit and push (the plan reads the
+pushed branch). Switching the devops node to the branch needs their OK each time: say the exact
+`git fetch` / `checkout` / `pull` first. Plans run on the devops node (stages at
+`~/flex-plugins.git/twilio-iac/stages`):
 
 ```bash
 cd ~/flex-plugins.git/twilio-iac/stages/configure && make HL=<code> HL_ENV=staging plan
 ```
 
 (`stages/system-down` for the system-down subflow.) Read the plan back to the person: which Studio
-flows change, and that nothing else does. Then hand over: they review, open the PR, apply, and test
+flows change, and that nothing else does. If it changes more than the board did (widgets the board
+didn't touch, a whole flow being replaced), the environment is running something else (question 2):
+stop and tell them before they apply. Then hand over: they review, open the PR, apply, and test
 a call or message in staging.
 
 ## Hand-off
 
-End with what was changed (files), what the plan shows, what was done for each `forClaude`
-request (or why not), what's left for the person (apply, PR, publishing recordings, production),
+End with what was changed (files, uncommitted unless they asked), what the plan shows, the live
+widgets renamed, a staging copy made (question 1), anything done before provision or chatbots were
+ready, what was done for each `forClaude` request (or why not), what's left for the person
+(commit and push, apply, PR, publishing recordings, production),
 and any design warnings they chose to keep. Remind them to resolve the comments and remove the
 `@claude` notes that were done, so the next export doesn't ask again. Remind them to mark
 the board **Implemented** in the builder (the status next to the board's title), so the team knows

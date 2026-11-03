@@ -17,6 +17,10 @@ TaskRouter config in `twilio-iac`, then shows a plan.
 - **Never** run `apply`, `destroy`, `import` or state commands. Read-only `plan` is fine; the person
   applies.
 - Staging first; production only when the person says so.
+- **Don't commit or push** until the person asks: write the files and show `git diff`, so they see
+  what's added or changed first. The plan needs the branch pushed, so it waits for that too.
+- Routing (the provision stage) comes **before** the Studio flows and chatbots that use it: a flow
+  sending to a queue that doesn't exist yet fails.
 - Never change a **shared** workflow template (`twilio-iac/helplines/templates/workflows/*`):
   other helplines use it. A shared workflow that changed gets a template of this helpline's own.
 - Don't invent SIDs or values; the repo is public (templates use `${...}` variables).
@@ -42,6 +46,20 @@ Anything not changed in the designer comes out **exactly** as it is live (the fo
 this for every helpline), so `git diff` only shows what was designed.
 
 ## Workflow
+
+### 0. Ask first
+
+Read the export (step 1), then ask these **together, in one go**, before writing anything:
+
+1. **Environment: staging only, or staging and production?** `workflows` and `task_queues` are
+   usually in `common.hcl`, which both environments read: written there, production gets the
+   change on its next apply too. For staging only, say so and ask whether to put this helpline's
+   `workflows` / `task_queues` in `staging.hcl` for now (moved back to `common.hcl` when
+   production follows), or keep `common.hcl` and simply not apply production yet.
+2. **Branch: a new one from master, or carry on with an existing one?** And: **is there an
+   unmerged branch already applied to that environment?** A branch from master would undo it on
+   the next apply. New branches follow the person's naming (`alejandro-c/<helpline>/<task>`), from
+   an up-to-date master.
 
 ### 1. Read the export
 
@@ -80,21 +98,27 @@ roles, priority, when it moves on), new or changed queues.
 
 ### 5. Plan (staging)
 
-On the devops node (stages at `~/flex-plugins.git/twilio-iac/stages`), on the branch with these
-changes pushed:
+Only after the person has seen the diff and asked you to commit and push (the plan reads the
+pushed branch). Switching the devops node to the branch needs their OK each time: say the exact
+`git fetch` / `checkout` / `pull` first. Workflows and queues are in the **provision** stage
+(stages at `~/flex-plugins.git/twilio-iac/stages`):
 
 ```bash
-cd ~/flex-plugins.git/twilio-iac/stages/configure && make HL=<code> HL_ENV=staging plan
+cd ~/flex-plugins.git/twilio-iac/stages/provision && make HL=<code> HL_ENV=staging plan
 ```
 
 Read it back: which workflows and queues change, and that nothing is destroyed except what the
-design removed.
+design removed. Whitespace-only changes to workflows are harmless; say so. If it changes rules the
+design didn't, the environment is running something else (question 2): stop and tell them before
+they apply.
 
 ## Hand-off
 
-End with the files changed, what the plan shows, and what's left for the person:
+End with the files changed (uncommitted unless they asked), what the plan shows, and what's left
+for the person:
 
-- apply, open the PR, test a contact in staging;
+- commit and push (when they're happy with the diff), apply, open the PR, test a contact in
+  staging; then the chatbots and Studio flows that use this routing;
 - **in Flex** (each account): the skills in `generated.skills` exist (Teams view), the ones in
   `generated.skillsWithLevels` have levels turned on and counselors have a level set, and the
   counselors' chat capacity (`design.capacity.maxChats`, the `maxMessageCapacity` attribute) if it

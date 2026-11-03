@@ -18,6 +18,10 @@ Lex V2 config files in `twilio-iac`, then shows a plan of the `lex` stage.
 - **Never** run `apply`, `destroy`, `import` or state commands. Read-only `plan` is fine; the person
   applies.
 - Staging first; production only when the person says so.
+- **Don't commit or push** until the person asks: write the files and show `git diff`, so they see
+  what's added or changed first. The plan needs the branch pushed, so it waits for that too.
+- Chatbots (the lex stage) come **before** the Studio flows that call them: a flow handing a
+  contact to a bot that doesn't exist yet fails.
 - **Never edit a shared file** (`twilio-iac/helplines/configs/lex_v2/...`): other helplines use it.
   Each change has a `writeTo`: for a shared file it's a copy of the helpline's own
   (`<code>/configs/lex_v2/<language>/<kind>/<name>.json`), which the lex stage finds first. Copy the
@@ -81,6 +85,18 @@ it that way.
 
 ## Workflow
 
+0. **Ask first.** After reading the export (step 1), ask these **together, in one go**, before
+   writing anything:
+   1. **Environment: staging only, or staging and production?** The `configs/lex_v2` files are
+      read by both environments, and `lex_v2_bot_languages` is often in `common.hcl`: a changed
+      bot reaches production on its next lex apply too. For staging only, say so. A **new** bot or
+      language that's staging only goes in `lex_v2_bot_languages` in `staging.hcl` (copying the
+      whole value from `common.hcl` if that's where it is), not `common.hcl`. Production also needs
+      the bot's alias id there; don't invent it.
+   2. **Branch: a new one from master, or carry on with an existing one?** And: **is there an
+      unmerged branch already applied to that environment?** A branch from master would undo it on
+      the next apply. New branches follow the person's naming (`alejandro-c/<helpline>/<task>`),
+      from an up-to-date master.
 1. **Read the export.** Check `schemaVersion` is 1. Tell the person the helpline, each change in
    plain words, and the `checks` errors. Errors are fixed in the designer, not here: stop.
 2. **For each change**, edit `writeTo` (copying the shared file first when `writeTo` isn't `file`):
@@ -121,17 +137,22 @@ it that way.
    cd form-builder && npx vitest run server/chatbots.test.ts   # imports every helpline's chatbots
    ```
    and re-read each changed file. Show `git diff` and explain it in plain words.
-4. **Plan (staging)** on the devops node (stages at `~/flex-plugins.git/twilio-iac/stages`), on
-   the branch with these changes pushed:
+4. **Plan (staging)**, only after the person has seen the diff and asked you to commit and push
+   (the plan reads the pushed branch). Switching the devops node to the branch needs their OK each
+   time: say the exact `git fetch` / `checkout` / `pull` first. On the devops node (stages at
+   `~/flex-plugins.git/twilio-iac/stages`):
    ```bash
    cd ~/flex-plugins.git/twilio-iac/stages/lex && make HL=<code> HL_ENV=staging plan
    ```
-   Read it back: which bots, intents, slots and slot types change, and that nothing else does.
+   Read it back: which bots, intents, slots and slot types change, and that nothing else does. If
+   it changes bots the design didn't, the environment is running something else (question 2): stop
+   and tell them before they apply.
 
 ## Hand-off
 
-End with the files changed, what the plan shows, and what's left for the person: apply, open the
-PR, test the chatbot in staging (a webchat or SMS contact that goes through it), then production
+End with the files changed (uncommitted unless they asked), what the plan shows, and what's left
+for the person: commit and push (when they're happy with the diff), apply, open the PR, then the
+Studio flows that call the bot, test the chatbot in staging (a webchat or SMS contact that goes through it), then production
 when they're ready, and mark the chatbot **Implemented** in the designer. If a question was renamed
 or added, remind them to check where its answer is read (Studio flows, Insights, prepopulate
 mappings).
