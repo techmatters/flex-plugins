@@ -1,0 +1,276 @@
+[
+  {
+    "name": "precipitatingEvent",
+    "label": "Precipitating Event",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Financial",
+        "label": "Financial"
+      },
+      {
+        "value": "Marital",
+        "label": "Marital"
+      },
+      {
+        "value": "Extended Family",
+        "label": "Extended Family"
+      },
+      {
+        "value": "Mental",
+        "label": "Mental"
+      },
+      {
+        "value": "Employment",
+        "label": "Employment"
+      },
+      {
+        "value": "Legal Issues",
+        "label": "Legal Issues"
+      }
+    ]
+  },
+  {
+    "name": "referral",
+    "label": "Referral",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Therapy",
+        "label": "Therapy"
+      },
+      {
+        "value": "Self-Exclusion",
+        "label": "Self-Exclusion"
+      },
+      {
+        "value": "Self Help (GamAnon/Gambler's Anonymous/Etc.)",
+        "label": "Self Help (GamAnon/Gambler's Anonymous/Etc.)"
+      },
+      {
+        "value": "Blocking Apps",
+        "label": "Blocking Apps"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "referralOther",
+    "label": "Other Referral (specify)",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "therapyReferral",
+    "label": "Therapy Referral",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Alexia Totoro - Private Practitioner",
+        "label": "Alexia Totoro - Private Practitioner"
+      },
+      {
+        "value": "Allen Gabriel - Life Compass Consulting",
+        "label": "Allen Gabriel - Life Compass Consulting"
+      },
+      {
+        "value": "Alyssa Somohano - Harbor Wellness & Recovery",
+        "label": "Alyssa Somohano - Harbor Wellness & Recovery"
+      },
+      {
+        "value": "Anna Mullins - Private Practitioner",
+        "label": "Anna Mullins - Private Practitioner"
+      },
+      {
+        "value": "Barbara Sorace - Supportive Solutions Counseling",
+        "label": "Barbara Sorace - Supportive Solutions Counseling"
+      },
+      {
+        "value": "Camille Bloomberg - Private Practitioner",
+        "label": "Camille Bloomberg - Private Practitioner"
+      },
+      {
+        "value": "Charlie Dragon - Otlowski Center",
+        "label": "Charlie Dragon - Otlowski Center"
+      },
+      {
+        "value": "Dawn Romeo - Private Practitioner",
+        "label": "Dawn Romeo - Private Practitioner"
+      },
+      {
+        "value": "Deshonnda Johnson - Jewish Family Services",
+        "label": "Deshonnda Johnson - Jewish Family Services"
+      },
+      {
+        "value": "Dorys Murillo - Forest Recovery",
+        "label": "Dorys Murillo - Forest Recovery"
+      },
+      {
+        "value": "Elliot Rapaport - Birches Health",
+        "label": "Elliot Rapaport - Birches Health"
+      },
+      {
+        "value": "Fran Gizzi - Private Practitioner",
+        "label": "Fran Gizzi - Private Practitioner"
+      },
+      {
+        "value": "James Martinez - Stress Free Recovery",
+        "label": "James Martinez - Stress Free Recovery"
+      },
+      {
+        "value": "Jane Calabrese - Oasis",
+        "label": "Jane Calabrese - Oasis"
+      },
+      {
+        "value": "Jennifer Shipman - Private Practitioner",
+        "label": "Jennifer Shipman - Private Practitioner"
+      },
+      {
+        "value": "Joel Levine - Private Practitioner",
+        "label": "Joel Levine - Private Practitioner"
+      },
+      {
+        "value": "Jesse Coudray - The Reclaimed Path",
+        "label": "Jesse Coudray - The Reclaimed Path"
+      },
+      {
+        "value": "Kathleen Healy - Private Practitioner",
+        "label": "Kathleen Healy - Private Practitioner"
+      },
+      {
+        "value": "Kerry Sullivan - Above Water Recovery",
+        "label": "Kerry Sullivan - Above Water Recovery"
+      },
+      {
+        "value": "Kevin O'Neill - Private Practitioner",
+        "label": "Kevin O'Neill - Private Practitioner"
+      },
+      {
+        "value": "Leroy Stanford - Private Practitioner",
+        "label": "Leroy Stanford - Private Practitioner"
+      },
+      {
+        "value": "Lisa Ellis Gavin - Collaborative Therapy Services LLC",
+        "label": "Lisa Ellis Gavin - Collaborative Therapy Services LLC"
+      },
+      {
+        "value": "Lorraine Barry - Private Practitioner",
+        "label": "Lorraine Barry - Private Practitioner"
+      },
+      {
+        "value": "Luis Sanchez - Vantage Health Center",
+        "label": "Luis Sanchez - Vantage Health Center"
+      },
+      {
+        "value": "Luke Roche - Richard Hall",
+        "label": "Luke Roche - Richard Hall"
+      },
+      {
+        "value": "Madelyn Funkhouser - Reverie Therapy",
+        "label": "Madelyn Funkhouser - Reverie Therapy"
+      },
+      {
+        "value": "Nicolas DeSimone - Renewed Light",
+        "label": "Nicolas DeSimone - Renewed Light"
+      },
+      {
+        "value": "Pamela Dobbs - Private Practitioner",
+        "label": "Pamela Dobbs - Private Practitioner"
+      },
+      {
+        "value": "Paul Lavella - New Jersey Recovery & Wellness",
+        "label": "Paul Lavella - New Jersey Recovery & Wellness"
+      },
+      {
+        "value": "Rachele McGowan - Healing Waters",
+        "label": "Rachele McGowan - Healing Waters"
+      },
+      {
+        "value": "Sal Reyes - Private Practitioner",
+        "label": "Sal Reyes - Private Practitioner"
+      },
+      {
+        "value": "Shaheed Shabazz - Private Practitioner",
+        "label": "Shaheed Shabazz - Private Practitioner"
+      },
+      {
+        "value": "Stacey Marowitz - Newbridge Services",
+        "label": "Stacey Marowitz - Newbridge Services"
+      },
+      {
+        "value": "Steven Heim - New Hope Foundation",
+        "label": "Steven Heim - New Hope Foundation"
+      },
+      {
+        "value": "Tatyana Vaynshteyn - Social Recovery",
+        "label": "Tatyana Vaynshteyn - Social Recovery"
+      },
+      {
+        "value": "Tina Wittkop - Journey Strength and Sobriety LLC",
+        "label": "Tina Wittkop - Journey Strength and Sobriety LLC"
+      },
+      {
+        "value": "Tina Wittkop - Right Choice Recovery",
+        "label": "Tina Wittkop - Right Choice Recovery"
+      }
+    ],
+    "height": 300
+  },
+  {
+    "name": "heardAboutThrough",
+    "label": "Heard of 800-GAMBLER Through",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Internet",
+        "label": "Internet"
+      },
+      {
+        "value": "Casino Card/Collateral",
+        "label": "Casino Card/Collateral"
+      },
+      {
+        "value": "Billboard",
+        "label": "Billboard"
+      },
+      {
+        "value": "Radio",
+        "label": "Radio"
+      },
+      {
+        "value": "TV",
+        "label": "TV"
+      },
+      {
+        "value": "Lottery Ticket",
+        "label": "Lottery Ticket"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Mental Health Professional",
+        "label": "Mental Health Professional"
+      }
+    ]
+  },
+  {
+    "name": "callSummary",
+    "label": "Notes",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 10
+  }
+]

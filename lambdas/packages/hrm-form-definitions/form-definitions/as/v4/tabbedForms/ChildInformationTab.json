@@ -1,0 +1,522 @@
+[
+  {
+    "name": "firstName",
+    "label": "Gambler's First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Gambler's Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "phone1",
+    "label": "Gambler's Phone Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gender",
+    "label": "Gambler's Sex",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "age",
+    "label": "Gambler's Age",
+    "type": "numeric-input",
+    "isPII": false
+  },
+  {
+    "name": "race",
+    "label": "Gambler's Race",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "Black or African American",
+        "label": "Black or African American"
+      },
+      {
+        "value": "Hispanic/Latino",
+        "label": "Hispanic/Latino"
+      },
+      {
+        "value": "Native American",
+        "label": "Native American"
+      },
+      {
+        "value": "Caucasian",
+        "label": "Caucasian"
+      },
+      {
+        "value": "Mixed Race",
+        "label": "Mixed Race"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "state",
+    "label": "State",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "New Jersey",
+        "label": "New Jersey"
+      },
+      {
+        "value": "Other State",
+        "label": "Other State"
+      }
+    ]
+  },
+  {
+    "name": "county",
+    "label": "County",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Atlantic County",
+        "label": "Atlantic County"
+      },
+      {
+        "value": "Bergen County",
+        "label": "Bergen County"
+      },
+      {
+        "value": "Burlington County",
+        "label": "Burlington County"
+      },
+      {
+        "value": "Camden County",
+        "label": "Camden County"
+      },
+      {
+        "value": "Cape May County",
+        "label": "Cape May County"
+      },
+      {
+        "value": "Cumberland County",
+        "label": "Cumberland County"
+      },
+      {
+        "value": "Essex County",
+        "label": "Essex County"
+      },
+      {
+        "value": "Gloucester County",
+        "label": "Gloucester County"
+      },
+      {
+        "value": "Hudson County",
+        "label": "Hudson County"
+      },
+      {
+        "value": "Hunterdon County",
+        "label": "Hunterdon County"
+      },
+      {
+        "value": "Mercer County",
+        "label": "Mercer County"
+      },
+      {
+        "value": "Middlesex County",
+        "label": "Middlesex County"
+      },
+      {
+        "value": "Monmouth County",
+        "label": "Monmouth County"
+      },
+      {
+        "value": "Morris County",
+        "label": "Morris County"
+      },
+      {
+        "value": "Ocean County",
+        "label": "Ocean County"
+      },
+      {
+        "value": "Passaic County",
+        "label": "Passaic County"
+      },
+      {
+        "value": "Salem County",
+        "label": "Salem County"
+      },
+      {
+        "value": "Somerset County",
+        "label": "Somerset County"
+      },
+      {
+        "value": "Sussex County",
+        "label": "Sussex County"
+      },
+      {
+        "value": "Union County",
+        "label": "Union County"
+      },
+      {
+        "value": "Warren County",
+        "label": "Warren County"
+      },
+      {
+        "value": "Out of State",
+        "label": "Out of State"
+      }
+    ]
+  },
+  {
+    "name": "maritalStatus",
+    "label": "Marital Status",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Single",
+        "label": "Single"
+      },
+      {
+        "value": "Married",
+        "label": "Married"
+      },
+      {
+        "value": "Separated",
+        "label": "Separated"
+      },
+      {
+        "value": "Widowed",
+        "label": "Widowed"
+      },
+      {
+        "value": "Divorced/Annulled",
+        "label": "Divorced/Annulled"
+      },
+      {
+        "value": "Living as Married",
+        "label": "Living as Married"
+      }
+    ]
+  },
+  {
+    "name": "numberOfChildren",
+    "label": "# of Children",
+    "type": "numeric-input",
+    "isPII": false
+  },
+  {
+    "name": "agesOfChildren",
+    "label": "Ages of Children",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "militaryExperience",
+    "label": "Military Experience",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "occupation",
+    "label": "Gambler's Occupation",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Employed",
+        "label": "Employed"
+      },
+      {
+        "value": "Unemployed - Seeking Work",
+        "label": "Unemployed - Seeking Work"
+      },
+      {
+        "value": "Unemployed - Not Seeking Work",
+        "label": "Unemployed - Not Seeking Work"
+      },
+      {
+        "value": "Disabled",
+        "label": "Disabled"
+      },
+      {
+        "value": "Retired",
+        "label": "Retired"
+      },
+      {
+        "value": "Student",
+        "label": "Student"
+      },
+      {
+        "value": "Law (Police/Sheriff/Etc.)",
+        "label": "Law (Police/Sheriff/Etc.)"
+      },
+      {
+        "value": "Professional (Lawyer/CPA/Etc.)",
+        "label": "Professional (Lawyer/CPA/Etc.)"
+      },
+      {
+        "value": "Casino Employee",
+        "label": "Casino Employee"
+      },
+      {
+        "value": "Clergy",
+        "label": "Clergy"
+      },
+      {
+        "value": "Military",
+        "label": "Military"
+      }
+    ]
+  },
+  {
+    "name": "yearsGambling",
+    "label": "Years Gambling",
+    "type": "numeric-input",
+    "isPII": false
+  },
+  {
+    "name": "annualIncome",
+    "label": "Annual Income",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "gamblingDebt",
+    "label": "Gambling Debt",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "bankruptcy",
+    "label": "Bankruptcy",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "primaryGamblingAccess",
+    "label": "Primary Gambling Access",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Brick and Mortar",
+        "label": "Brick and Mortar"
+      },
+      {
+        "value": "Internet",
+        "label": "Internet"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "typesOfGambling",
+    "label": "Types of Gambling",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Slot Machines",
+        "label": "Slot Machines"
+      },
+      {
+        "value": "Table Games",
+        "label": "Table Games"
+      },
+      {
+        "value": "Sports Betting",
+        "label": "Sports Betting"
+      },
+      {
+        "value": "Black Jack",
+        "label": "Black Jack"
+      },
+      {
+        "value": "Poker/Cards",
+        "label": "Poker/Cards"
+      },
+      {
+        "value": "Horse Racing",
+        "label": "Horse Racing"
+      },
+      {
+        "value": "Day Trading",
+        "label": "Day Trading"
+      },
+      {
+        "value": "Options Trading",
+        "label": "Options Trading"
+      },
+      {
+        "value": "Animal Fighting",
+        "label": "Animal Fighting"
+      },
+      {
+        "value": "Lottery",
+        "label": "Lottery"
+      },
+      {
+        "value": "Bingo",
+        "label": "Bingo"
+      },
+      {
+        "value": "Card/Dice (Non-Casino)",
+        "label": "Card/Dice (Non-Casino)"
+      },
+      {
+        "value": "Prediction Marketing",
+        "label": "Prediction Marketing"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "typesOfGamblingOther",
+    "label": "Other Type of Gambling (specify)",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "gamblerHistory",
+    "label": "Gambler's History",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Alcoholism",
+        "label": "Alcoholism"
+      },
+      {
+        "value": "Drug Use",
+        "label": "Drug Use"
+      },
+      {
+        "value": "Depression",
+        "label": "Depression"
+      },
+      {
+        "value": "Smoking",
+        "label": "Smoking"
+      },
+      {
+        "value": "Overspending",
+        "label": "Overspending"
+      }
+    ]
+  },
+  {
+    "name": "familyHistory",
+    "label": "Family History",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Alcohol",
+        "label": "Alcohol"
+      },
+      {
+        "value": "Drugs",
+        "label": "Drugs"
+      },
+      {
+        "value": "Gambling",
+        "label": "Gambling"
+      },
+      {
+        "value": "Physical/Emotional Neglect/Abuse",
+        "label": "Physical/Emotional Neglect/Abuse"
+      }
+    ]
+  }
+]

@@ -1,0 +1,68 @@
+{
+  "Childline": {
+    "categories": {
+      "Purpose of Call": {
+        "color": "#085f63",
+        "subcategories": [
+          {
+            "label": "Help"
+          },
+          {
+            "label": "Information"
+          },
+          {
+            "label": "Horse Racing"
+          },
+          {
+            "label": "Lottery"
+          },
+          {
+            "label": "Online Casino"
+          },
+          {
+            "label": "Physical Casino"
+          },
+          {
+            "label": "Prediction Markets"
+          },
+          {
+            "label": "Other"
+          }
+        ]
+      }
+    }
+  },
+  "LifeLine": {
+    "categories": {
+      "Purpose of Call": {
+        "color": "#085f63",
+        "subcategories": [
+          {
+            "label": "Help"
+          },
+          {
+            "label": "Information"
+          },
+          {
+            "label": "Horse Racing"
+          },
+          {
+            "label": "Lottery"
+          },
+          {
+            "label": "Online Casino"
+          },
+          {
+            "label": "Physical Casino"
+          },
+          {
+            "label": "Prediction Markets"
+          },
+          {
+            "label": "Other"
+          }
+        ]
+      }
+    }
+  }
+}

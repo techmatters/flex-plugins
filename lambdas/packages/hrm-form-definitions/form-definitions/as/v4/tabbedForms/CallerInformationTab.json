@@ -1,0 +1,72 @@
+[
+  {
+    "name": "firstName",
+    "label": "Caller First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Caller Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToGambler",
+    "label": "Relationship to Gambler",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Significant Other",
+        "label": "Significant Other"
+      },
+      {
+        "value": "Child",
+        "label": "Child"
+      },
+      {
+        "value": "Parent",
+        "label": "Parent"
+      },
+      {
+        "value": "Sibling",
+        "label": "Sibling"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Employer",
+        "label": "Employer"
+      },
+      {
+        "value": "Professional",
+        "label": "Professional"
+      },
+      {
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "Other Family Member",
+        "label": "Other Family Member"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "phone1",
+    "label": "Caller's Phone Number",
+    "type": "input",
+    "isPII": true
+  }
+]

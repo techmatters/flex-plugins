@@ -1,0 +1,12 @@
+[
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_measure_6",
+    "questions": ["was_helpful"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_measure_7",
+    "questions": ["would_recommend"]
+  }
+]
