@@ -93,7 +93,7 @@ describe('task attributes of "Send to queue" widgets', () => {
     expect(queues.some((object) => object.taskAttributes?.source.kind === 'inline')).toBe(true);
   });
 
-  test('changed on the board, they are listed for their template; the widget keeps the reference', async () => {
+  test("changed on the board, they're the widget's own: written in it, and the template stays as it is", async () => {
     const { boards } = await importHelpline(helplinesDir, 'usch');
     const board = boards.find((candidate) =>
       candidate.content.objects.some(
@@ -110,11 +110,17 @@ describe('task attributes of "Send to queue" widgets', () => {
       content.frames.find((frame) => frame.id === queue.frameId),
     );
     const state = flow.flow.states.find((candidate) => candidate.name === queue.studio!.name)!;
-    expect(isChannelAttributesReference(state.properties.attributes)).toBe(true);
+    expect(isChannelAttributesReference(state.properties.attributes)).toBe(false);
+    expect(state.properties.attributes).toBe(queue.taskAttributes!.json);
     expect(flow.taskAttributes).toEqual([
-      expect.objectContaining({ widget: queue.studio!.name, change: 'changed', json: queue.taskAttributes!.json }),
+      expect.objectContaining({
+        widget: queue.studio!.name,
+        change: 'changed',
+        json: queue.taskAttributes!.json,
+        source: expect.objectContaining({ kind: 'inline' }),
+      }),
     ]);
-    expect(flow.todo.join(' ')).toMatch(/task attributes are changed/);
+    expect(flow.todo.join(' ')).toMatch(/has task attributes of its own, written in the widget; .* stays as it is/);
   });
 
   test('a new "Send to queue": the standard ones for its channel, checked like any other', () => {

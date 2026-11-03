@@ -229,7 +229,10 @@ export type TaskAttributes = {
   json: string;
   // Where twilio-iac keeps them: a channel-attributes template (under twilio-iac/helplines) that the
   // widget uses through ${channel_attributes.default}, for these channels; or the widget itself
-  source: { kind: 'channelAttributes'; template: string; channels: string[] } | { kind: 'inline' };
+  // (movedFrom: the template it was kept in, when it was moved to the widget on the board)
+  source:
+    | { kind: 'channelAttributes'; template: string; channels: string[] }
+    | { kind: 'inline'; movedFrom?: { template: string; channels: string[] } };
   // As imported, to tell whether they were changed on the board
   imported?: string;
   // Channels sharing the flow whose channel_attributes point at other templates: what the widget

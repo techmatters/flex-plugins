@@ -73,3 +73,40 @@ describe('task attributes JSON', () => {
     );
   });
 });
+
+describe("the channel's task attributes or the widget's own", () => {
+  const channelJson = '{"service": "{{flow.variables.service}}"}';
+  const Shared = () => {
+    const [attributes, setAttributes] = useState<TaskAttributes | undefined>({
+      json: channelJson,
+      imported: channelJson,
+      source: {
+        kind: 'channelAttributes',
+        template: 'channel-attributes/chat-conversations.tftpl',
+        channels: ['webchat'],
+      },
+    });
+    return <TaskAttributesSection attributes={attributes} readOnly={false} onChange={setAttributes} />;
+  };
+  const useChannel = () =>
+    screen.getByRole('checkbox', { name: "Use the channel's task attributes" }) as HTMLInputElement;
+
+  test('ticked, the channel’s are shown and not editable; unticked, the ones entered are the widget’s', () => {
+    render(<Shared />);
+    expect(useChannel().checked).toBe(true);
+    expect(box().disabled).toBe(true);
+    expect(screen.getByText(/the same for every Send to queue in the flow/)).toBeTruthy();
+
+    fireEvent.click(useChannel());
+    expect(useChannel().checked).toBe(false);
+    expect(box().disabled).toBe(false);
+    expect(screen.getByText(/its task gets exactly these/)).toBeTruthy();
+    fireEvent.change(box(), { target: { value: '{"service": "AdvocateLine"}' } });
+    expect(box().value).toBe('{"service": "AdvocateLine"}');
+
+    // Ticked again: the channel's, as they are
+    fireEvent.click(useChannel());
+    expect(useChannel().checked).toBe(true);
+    expect(box().value).toBe(channelJson);
+  });
+});

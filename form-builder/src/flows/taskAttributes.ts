@@ -121,6 +121,36 @@ export const standardTaskAttributes = (channel: Channel | undefined): TaskAttrib
   };
 };
 
+// The channel-attributes template the widget reads, or read before it got attributes of its own
+export const channelTemplateOf = (attributes: TaskAttributes) =>
+  attributes.source.kind === 'channelAttributes'
+    ? { template: attributes.source.template, channels: attributes.source.channels }
+    : attributes.source.movedFrom;
+
+// What that template holds: as imported, or the standard template for a new widget
+export const channelAttributesJson = (attributes: TaskAttributes): string | undefined => {
+  const channelTemplate = channelTemplateOf(attributes);
+  return channelTemplate && (attributes.imported ?? STANDARD_TASK_ATTRIBUTES[channelTemplate.template]);
+};
+
+/**
+ * Whether the widget uses the channel's task attributes as they are (${channel_attributes.default}).
+ * Otherwise they're its own, exactly as set on the board, and written in the widget: the template
+ * holds one set for every "Send to queue" in the flow, so editing them never changes it.
+ */
+export const usesChannelAttributes = (attributes: TaskAttributes): boolean => {
+  if (attributes.source.kind !== 'channelAttributes') return false;
+  const json = channelAttributesJson(attributes);
+  return json === undefined || attributes.json === json;
+};
+
+// Where the attributes end up: the channel's template, or the widget (with the template it used to read)
+export const taskAttributesSourceOf = (attributes: TaskAttributes): TaskAttributes['source'] => {
+  if (usesChannelAttributes(attributes)) return attributes.source;
+  const movedFrom = channelTemplateOf(attributes);
+  return movedFrom ? { kind: 'inline', movedFrom } : { kind: 'inline' };
+};
+
 /**
  * Whether the attributes are JSON once Studio has filled in {{…}} / {%…%} (Liquid) and Terraform
  * ${…}: undefined when they are, otherwise the problem.

@@ -21,7 +21,10 @@
 import type { Channel, TaskAttributes } from './model';
 import { JsonTextarea } from './JsonTextarea';
 import {
+  channelAttributesJson,
+  channelTemplateOf,
   standardTaskAttributes,
+  usesChannelAttributes,
   standardTemplateFor,
   taskAttributeNames,
   taskAttributesProblem,
@@ -57,8 +60,11 @@ export const TaskAttributesSection = ({
   }
   const problem = taskAttributesProblem(attributes.json);
   const names = taskAttributeNames(attributes.json);
-  const changed = attributes.imported !== undefined && attributes.json !== attributes.imported;
-  const { source } = attributes;
+  // The channel's template the widget can use (unknown for widgets imported with attributes of their own)
+  const channelTemplate = channelTemplateOf(attributes);
+  const usesChannel = usesChannelAttributes(attributes);
+  const changed = !channelTemplate && attributes.imported !== undefined && attributes.json !== attributes.imported;
+  const otherChannels = attributes.otherChannels?.flatMap((other) => other.channels) ?? [];
   return (
     <section className="flow-inspector-section" aria-label="Task attributes">
       <h3>Task attributes</h3>
@@ -66,17 +72,43 @@ export const TaskAttributesSection = ({
         What the task carries to routing and to Flex. <code>{'{{…}}'}</code> is filled in from the contact when it
         arrives; <code>{'${helpline}'}</code> and <code>{'${task_language}'}</code> are the helpline&apos;s settings.
       </p>
+      {channelTemplate && (
+        <label className="field-checkbox">
+          <input
+            type="checkbox"
+            checked={usesChannel}
+            disabled={readOnly}
+            onChange={(event) =>
+              onChange(
+                event.target.checked
+                  ? {
+                      ...attributes,
+                      json: channelAttributesJson(attributes) ?? attributes.json,
+                      source: { kind: 'channelAttributes', ...channelTemplate },
+                    }
+                  : { ...attributes, source: { kind: 'inline', movedFrom: channelTemplate } },
+              )
+            }
+          />
+          <span>Use the channel&apos;s task attributes</span>
+        </label>
+      )}
       <p className="field-hint">
-        {source.kind === 'channelAttributes' ? (
+        {usesChannel && channelTemplate ? (
           <>
-            Kept in <code>{source.template}</code>
-            {source.channels.length > 0 && <> for {source.channels.join(', ')}</>} (the widget says{' '}
-            <code>{'${channel_attributes.default}'}</code>).
-            {source.template.startsWith('templates/') &&
-              " Shared with other helplines: a change gets a template of this helpline's own."}
+            From <code>{channelTemplate.template}</code>
+            {channelTemplate.channels.length > 0 && <> for {channelTemplate.channels.join(', ')}</>} (the widget says{' '}
+            <code>{'${channel_attributes.default}'}</code>), the same for every Send to queue in the flow that uses
+            them. To give this one different attributes (another queue, language or service), untick it.
           </>
         ) : (
-          'Written in the widget itself.'
+          <>
+            This widget&apos;s own: its task gets exactly these, written in the widget.
+            {channelTemplate && <> The channel&apos;s template stays as it is.</>}
+            {otherChannels.length > 0 && (
+              <> The other channels sharing this flow ({otherChannels.join(', ')}) get them too.</>
+            )}
+          </>
         )}
       </p>
       <JsonTextarea
@@ -85,7 +117,7 @@ export const TaskAttributesSection = ({
         rows={Math.min(18, Math.max(6, attributes.json.split('\n').length + 1))}
         spellCheck={false}
         aria-label="Task attributes JSON"
-        disabled={readOnly}
+        disabled={readOnly || usesChannel}
         isValid={(json) => !taskAttributesProblem(json)}
         onValueChange={(json) => onChange({ ...attributes, json })}
       />

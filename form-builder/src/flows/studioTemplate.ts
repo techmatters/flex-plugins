@@ -25,8 +25,8 @@
  *   workflow) is marked TODO, for whoever builds the flow (a person, or Claude with the
  *   studio-flow-from-board skill);
  * - texts that live in flow_vars stay there: the changes are listed, for the helpline's .hcl files;
- * - "Send to queue" task attributes kept in a channel-attributes template stay there too
- *   (${channel_attributes.default}): new and changed ones are listed, for that template.
+ * - a "Send to queue" that uses the channel's task attributes says ${channel_attributes.default};
+ *   one with attributes of its own (set or changed on the board) gets them written in the widget.
  */
 import type { BoardContent, FlowObject, Frame, TaskAttributes } from './model';
 import {
@@ -45,7 +45,12 @@ import {
 } from './model';
 import { janitorValuesOf, withJanitorValues } from './janitor';
 import { isVoiceMessage, standardRecordingName } from './recordings';
-import { CHANNEL_ATTRIBUTES_REFERENCE } from './taskAttributes';
+import {
+  CHANNEL_ATTRIBUTES_REFERENCE,
+  isChannelAttributesReference,
+  taskAttributesSourceOf,
+  usesChannelAttributes,
+} from './taskAttributes';
 
 // Who a message is from: as chosen on the board, otherwise the helpline's name
 const fromOf = (object: FlowObject) => object.settings?.from?.trim() || MESSAGE_FROM_DEFAULT;
@@ -238,19 +243,23 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
   const taskAttributes: TaskAttributesChange[] = [];
   const label = (object: FlowObject) => `“${object.studioName ?? object.text}”`;
 
-  // Task attributes in a channel-attributes template: listed for it (the widget keeps the reference)
+  // Task attributes that are new or changed: the channel's template as it is (the widget says
+  // ${channel_attributes.default}), or the widget's own, written in it
   const listTaskAttributes = (object: FlowObject, name: string, change: TaskAttributesChange['change']) => {
     const attributes = object.taskAttributes!;
-    taskAttributes.push({ widget: name, change, json: attributes.json, source: attributes.source });
-    if (attributes.source.kind !== 'channelAttributes') return;
-    const { template, channels } = attributes.source;
-    const shared = template.startsWith('templates/');
+    const source = taskAttributesSourceOf(attributes);
+    taskAttributes.push({ widget: name, change, json: attributes.json, source });
+    if (source.kind === 'inline') {
+      if (source.movedFrom) {
+        todo.push(
+          `${label(object)} has task attributes of its own, written in the widget; ${source.movedFrom.template} stays as it is.`,
+        );
+      }
+      return;
+    }
+    const { template, channels } = source;
     todo.push(
-      `${label(object)}: its task attributes are ${change}; they're kept in ${template}${channels.length > 0 ? ` (channels ${channels.join(', ')})` : ''}. ${
-        shared
-          ? "That template is shared by other helplines: write a template of this helpline's own and point the channel's channel_attributes entry in common.hcl at it."
-          : 'Update it.'
-      }`,
+      `${label(object)} uses the channel's task attributes: check that the flow's channels${channels.length > 0 ? ` (${channels.join(', ')})` : ''} get ${template} (channel_attributes in common.hcl, or defaults.hcl).`,
     );
   };
 
@@ -356,8 +365,13 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         );
       }
       const attributes = object.taskAttributes;
-      if (attributes && attributes.imported !== undefined && attributes.json !== attributes.imported) {
-        if (attributes.source.kind === 'inline') properties.attributes = attributes.json;
+      // Attributes of its own (changed, or no longer the channel's): written in the widget
+      const own = attributes !== undefined && !usesChannelAttributes(attributes);
+      if (
+        attributes?.imported !== undefined &&
+        (attributes.json !== attributes.imported || (own && isChannelAttributesReference(properties.attributes)))
+      ) {
+        if (own) properties.attributes = attributes.json;
         listTaskAttributes(object, name, 'changed');
       }
       if ('say' in properties) setText(object, properties, 'say', name);
@@ -983,12 +997,11 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
               channel: taskChannel ? `\${task_channel_sids.${taskChannel}}` : TODO,
               ...waitSettingsOf(object, name),
               timeout: object.settings?.timeout || '3600',
-              attributes:
-                attributes?.source.kind === 'inline'
-                  ? attributes.json
-                  : attributes
-                    ? CHANNEL_ATTRIBUTES_REFERENCE
-                    : TODO,
+              attributes: !attributes
+                ? TODO
+                : usesChannelAttributes(attributes)
+                  ? CHANNEL_ATTRIBUTES_REFERENCE
+                  : attributes.json,
             },
           },
         ];

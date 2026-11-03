@@ -21,6 +21,7 @@ import { describe, expect, test } from 'vitest';
 import type { BoardContent, FlowObject } from '../src/flows/model';
 import { emptyBoard, fieldProblem, fixedExitsOf } from '../src/flows/model';
 import { toStudioFlow, toStudioFlows } from '../src/flows/studioTemplate';
+import { standardTaskAttributes } from '../src/flows/taskAttributes';
 import { importHelpline } from './flowImport';
 import { parseTemplate } from './hcl';
 
@@ -400,6 +401,62 @@ describe('Splits and the standard requests', () => {
       objects: [{ ...content.objects[0], settings: { workflow: 'master', taskChannel: 'voicemail' } }],
     };
     expect(channelIn(voicemail)).toBe('${task_channel_sids.voicemail}');
+  });
+
+  test("a Send to queue uses the channel's task attributes as they are, or exactly the ones set on the board", () => {
+    const template = 'templates/channel-attributes/chat-conversations.tftpl';
+    const channelJson = '{\n  "service": "{{flow.variables.service}}"\n}';
+    const channelSource = { kind: 'channelAttributes' as const, template, channels: ['webchat'] };
+    // Imported reading the channel's template, with the attributes as set on the board
+    const imported = (id: string, taskAttributes: NonNullable<FlowObject['taskAttributes']>) =>
+      object(id, 'sendToQueue', {
+        studioName: `send_to_queue_${id}`,
+        settings: { workflow: 'master', taskChannel: 'chat' },
+        studio: {
+          name: `send_to_queue_${id}`,
+          type: 'send-to-flex',
+          properties: { attributes: '${channel_attributes.default}' },
+          transitions: [],
+        },
+        taskAttributes: { imported: channelJson, ...taskAttributes },
+      });
+    const spanish = '{\n  "service": "ChildHelp",\n  "counselingLanguage": "Spanish"\n}';
+    const advocate = '{\n  "service": "AdvocateLine"\n}';
+    const board = smsBoard([
+      imported('english', { json: channelJson, source: channelSource }),
+      // Edited on the board (as boards were before the tick box): its own
+      imported('spanish', { json: spanish, source: channelSource }),
+      // Unticked
+      imported('advocate', { json: advocate, source: { kind: 'inline', movedFrom: channelSource } }),
+      // A new one with the standard attributes, and one with its own
+      object('new', 'sendToQueue', {
+        studioName: 'send_to_queue_new',
+        settings: { workflow: 'master' },
+        taskAttributes: standardTaskAttributes('webchat'),
+      }),
+      object('newOwn', 'sendToQueue', {
+        studioName: 'send_to_queue_new_own',
+        settings: { workflow: 'master' },
+        taskAttributes: { ...standardTaskAttributes('webchat'), json: advocate },
+      }),
+    ]);
+    const result = toStudioFlow(board, board.frames[0]);
+    const attributesOf = (name: string) =>
+      result.flow.states.find((state) => state.name === name)!.properties.attributes;
+    expect(attributesOf('send_to_queue_english')).toBe('${channel_attributes.default}');
+    expect(attributesOf('send_to_queue_spanish')).toBe(spanish);
+    expect(attributesOf('send_to_queue_advocate')).toBe(advocate);
+    expect(attributesOf('send_to_queue_new')).toBe('${channel_attributes.default}');
+    expect(attributesOf('send_to_queue_new_own')).toBe(advocate);
+    expect(result.taskAttributes.map(({ widget, source }) => `${widget}: ${source.kind}`)).toEqual([
+      'send_to_queue_spanish: inline',
+      'send_to_queue_advocate: inline',
+      'send_to_queue_new: channelAttributes',
+      'send_to_queue_new_own: inline',
+    ]);
+    expect(result.todo.join('\n')).toContain(
+      `“send_to_queue_spanish” has task attributes of its own, written in the widget; ${template} stays as it is.`,
+    );
   });
 
   test('the skilled worker checks split on what each route answers', () => {

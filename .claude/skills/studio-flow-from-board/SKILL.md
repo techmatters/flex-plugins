@@ -211,26 +211,28 @@ Where they're kept (`taskAttributes.source`):
   `/app/twilio-iac/helplines/<path>.tftpl`; `source.template` is `<path>`, and
   `source.channels` the channels it applies to.
 - **`inline`**: the JSON is written in the widget itself (some voice flows); `text` already has it.
+  With `source.movedFrom`, the widget used that channel-attributes template before and has
+  attributes of its own now (unticked "Use the channel's task attributes", or edited on the board).
+
+The board decides: a widget that uses the channel's task attributes says
+`${channel_attributes.default}` and gets the template unchanged; attributes set or edited on the
+board are the widget's own, and the export writes them **in the widget** (`text` already has them).
+So a board export never changes a channel-attributes template: **don't edit those templates** for
+it. Every Send to queue in the flow reads the template, and other flows and helplines may too.
 
 For each entry in a template's `taskAttributes` (`change`: `new` or `changed`):
 
-1. Compare `json` with the file the channel resolves to (work it out as above from common.hcl /
-   defaults.hcl; don't trust a guess). The same: nothing to do.
-2. Different, and the file is the helpline's own (`<code>/templates/channel-attributes/...`):
-   write `json` to it. It applies to every channel and flow that resolves to it: say which.
-3. Different, and the file is shared (`templates/channel-attributes/...`): **don't edit it** (every
-   helpline uses it). Write `json` to
-   `twilio-iac/helplines/<code>/templates/channel-attributes/<channel>-conversations.tftpl`
-   (`<channel>.tftpl` for non-Conversations channels), and add
-   `<key> = "/app/twilio-iac/helplines/<code>/templates/channel-attributes/<file>"` to
-   `channel_attributes` in common.hcl. If common.hcl has no `channel_attributes` yet, copy the
-   whole map from defaults.hcl first: adding one entry alone would drop the defaults.
-4. A new flow's widget: same as above for the channels the person said it's for.
+1. `source.kind` `inline`: nothing to do beyond `text`. Say which widgets now carry their own
+   attributes, and how they differ from the channel's (e.g. `service`, `counselingLanguage`).
+2. `source.kind` `channelAttributes` (a new widget using the channel's): check that the flow's
+   channels resolve to `source.template` (work it out as above from common.hcl / defaults.hcl;
+   don't trust a guess). If they resolve to another file, say so and ask; don't change the mapping
+   or the files on your own.
 
 Keep the JSON as written (Liquid, spacing, `"memory": {{… | to_json}}` unquoted): it isn't
 strict JSON until Studio fills it in. When `objects[].taskAttributes.otherChannels` is there, the
-flow's channels get different templates: say so, and change only the one the board shows unless the
-person says otherwise. Changing attributes the workflows' filters read changes routing: point out
+flow's channels get different templates: say so, and that a widget's own attributes go to all of
+those channels. Changing attributes the workflows' filters read changes routing: point out
 any attribute a filter reads (`twilio-iac/helplines/<code>/templates/workflows/*.tftpl`) that was
 renamed or removed.
 

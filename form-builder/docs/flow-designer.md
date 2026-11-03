@@ -490,9 +490,22 @@ defaults.hcl): `<channel>-conversations` for Conversations channels, otherwise `
 back to `default-conversations` / `default`. The board shows that template's JSON instead of the
 reference, and where it's kept (and for which channels; a flow shared by channels with different
 templates shows the others too). A new Send to queue starts from the standard template for its
-frame's channel. Changes stay in the template, never inline in the flow: the export lists new and
-changed attributes (`studioTemplates[].taskAttributes`) and the studio-flow-from-board skill writes
-them to the helpline's own template (a shared one gets a copy of the helpline's own).
+frame's channel.
+
+**Use the channel's task attributes** (ticked by default) decides what the widget sends:
+
+- **Ticked:** the widget says `${channel_attributes.default}` and gets the channel's template as it
+  is. The JSON is shown but can't be edited here: the template holds one set for every Send to
+  queue in the flow, and other flows and helplines may read it too.
+- **Unticked:** the section opens for the widget's own attributes, starting from the channel's. The
+  widget gets exactly what's entered, written in the widget itself (as some voice flows already do,
+  e.g. USCH's Spanish and English calls), and the template stays as it is. This is how one flow
+  sends a Spanish queue or an Advocate line different attributes from the English one. Ticking it
+  again goes back to the channel's.
+
+Attributes edited on boards from before the tick box count as the widget's own. Widgets imported
+with their attributes already written in them have no tick box. A flow shared by channels with
+other templates gives a widget's own attributes to all of them (the section says which).
 
 ### Import an existing helpline
 

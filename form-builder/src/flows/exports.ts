@@ -36,6 +36,7 @@ import { statusLabel } from '../designStatus';
 import { boardChecks, flowScopeOf, splitIgnored } from './checks';
 import type { FlowVarChange, TaskAttributesChange } from './studioTemplate';
 import { toStudioFlows } from './studioTemplate';
+import { taskAttributesSourceOf } from './taskAttributes';
 import type { MessageStatus, RecordingsList } from './recordings';
 import { messageStatus, recordingOf } from './recordings';
 
@@ -250,10 +251,11 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
         ? {
             taskAttributes: {
               json: object.taskAttributes.json,
-              source: object.taskAttributes.source,
+              source: taskAttributesSourceOf(object.taskAttributes),
               ...(object.taskAttributes.otherChannels ? { otherChannels: object.taskAttributes.otherChannels } : {}),
               ...(object.taskAttributes.imported === undefined ||
-              object.taskAttributes.imported !== object.taskAttributes.json
+              object.taskAttributes.imported !== object.taskAttributes.json ||
+              taskAttributesSourceOf(object.taskAttributes).kind !== object.taskAttributes.source.kind
                 ? { changed: true }
                 : {}),
             },
