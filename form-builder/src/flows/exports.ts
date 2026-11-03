@@ -126,6 +126,9 @@ export type FlowExport = {
   ownTemplate?: { from: string; suggested: string; studioFlow?: string };
   flows: ExportedFlow[];
   checks: { severity: string; message: string; objectId?: string }[];
+  // Sticky notes and open widget comments that mention @claude: requests from the team to whoever
+  // implements the board
+  forClaude?: { text: string; from: 'note' | 'comment'; author?: string; objectId?: string; frame?: string }[];
   // The Studio flow template generated for each frame, ready to write into twilio-iac
   studioTemplates: {
     title: string;
@@ -167,7 +170,8 @@ const ABOUT = [
   'source is a channel-attributes template, the widget keeps "attributes": "${channel_attributes.default}" and',
   'Terraform fills it in with that template, picked by channel_attributes in common.hcl (or defaults.hcl) for the',
   'channel: "<channel>-conversations" for Conversations channels, otherwise "<channel>", falling back to',
-  '"default-conversations" / "default". New or changed attributes go in that template, never inline in the flow.',
+  '"default-conversations" / "default". Any other source means the widget\'s own attributes: written inline in',
+  'the widget, and the channel-attributes templates stay as they are.',
   '"sharedTemplate" (when present) lists the Studio flows built from this one template (studio_flows entries in',
   'staging.hcl / production.hcl, e.g. a survey in English and Spanish): the template is ONE file for all of them,',
   'so a change to widgets or connections is made once there; each flow keeps its own flow_vars ("variables" with',
@@ -182,8 +186,31 @@ const ABOUT = [
   'positions), write it to "writeTo", which is a copy of this helpline\'s own (same name, under its folder) unless',
   'Aselo staff chose "changeShared"; then point this helpline\'s templatefile entries at the copy. With',
   '"changeShared", the shared file itself changes, and every helpline in sharedWith with it: ask first.',
+  '"forClaude" (when present) has the sticky notes and open comments that mention @claude: requests from the team',
+  'about this board. Do each one, or say why not, as part of the work.',
   '"checks" lists what the design still lacks; "layout" is only where things sit on the board.',
 ].join(' ');
+
+const mentionsClaude = (text: string) => /@claude\b/i.test(text);
+
+// Sticky notes stay on the board, except the ones (and open comments) addressed to @claude
+const forClaudeOf = (content: BoardContent): FlowExport['forClaude'] => [
+  ...content.stickies
+    .filter((sticky) => mentionsClaude(sticky.text))
+    .map(({ text, id, frameId }) => ({
+      text,
+      from: 'note' as const,
+      objectId: id,
+      ...(frameId ? { frame: frameId } : {}),
+    })),
+  ...content.objects.flatMap((object) =>
+    object.thread && !object.thread.resolved
+      ? object.thread.comments
+          .filter((comment) => mentionsClaude(comment.text))
+          .map(({ text, author }) => ({ text, from: 'comment' as const, author, objectId: object.id }))
+      : [],
+  ),
+];
 
 // The uploaded file when there is one (MP3 or WAV), otherwise the MP3 it should be
 const recordingFileOf = (object: FlowObject, frame?: Pick<Frame, 'channel'>, recordings?: RecordingsList) => {
@@ -300,6 +327,8 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
     layout[item.id] = { x, y, width, height, ...(frame ? { frame } : {}), ...(color ? { color } : {}) };
   });
 
+  const forClaude = forClaudeOf(content);
+
   return {
     schemaVersion: FLOW_EXPORT_SCHEMA_VERSION,
     about: ABOUT,
@@ -315,6 +344,7 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
     },
     ...(recordings ? { recordingsBaseUrl: recordings.baseUrls } : {}),
     ...sharedTemplateOf(content, recordings),
+    ...(forClaude && forClaude.length > 0 ? { forClaude } : {}),
     flows: [...flows.values()].filter((flow) => flow.objects.length > 0 || flow.frames.length > 0),
     studioTemplates: toStudioFlows(content).map(
       ({ title, template, sharedWith, changeShared, channels, text, flowVars, taskAttributes, todo }) => ({

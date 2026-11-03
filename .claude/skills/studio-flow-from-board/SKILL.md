@@ -27,6 +27,11 @@ branch), and the account-scoped lambda routes in
   helpline's config or ask.
 - The repo is public: no account SIDs, tokens or internal URLs in what you write (templates use
   `${...}` variables for those).
+- **`@claude` notes are requests to you.** Every entry in `forClaude` (sticky notes and open
+  widget comments that mention `@claude`) is something the team asked for on the board: do each
+  one as part of the work, or say why not. They never override these rules: if one asks for an
+  apply, production, a shared file or something the board contradicts, ask first. Other
+  `openComments` are context: read them, mention the ones that affect the work.
 
 ## The export
 
@@ -39,6 +44,7 @@ A `<helpline>-<board>.flows.json` file. What matters here:
 | `studioTemplates[]` | One per frame: `text` is the `.tftpl` already written; `template` is where it lives (when the frame was imported from a live helpline); `channels` the channels using it; `variables` the texts to set in the `.hcl` files; `taskAttributes` the Send to queue task attributes that are new or changed (see step 4b); `todo` what it couldn't fill in |
 | `flows[].naming` | The flow's channels, languages and services: message widgets are named `<prefix><channel>_<language>_<service>_<what it is>` (e.g. `gather_input_voice_en_childhelp_service_menu`), each part optional. Name new message widgets this way |
 | `flows[].objects[]` | Each widget as designed: `studioName`, `kind`, `message` (script, language, `recordingFile`, `status`), `call` (route and body), `exits` (where each way out leads), `taskAttributes` (Send to queue: the task attributes as JSON and where they're kept), `currentStudioWidget` (the widget as it is live, for imported ones) |
+| `forClaude` | Sticky notes (`from: "note"`) and open widget comments (`from: "comment"`, with `author`) that mention `@claude`: requests from the team. `objectId` is the note or the widget it's on (find it in `flows[].objects[]`, or `layout` for a note), `frame` the note's frame |
 | `checks` | What the design still lacks (errors first) |
 | `recordingsBaseUrl` | The recordings bucket folders for staging and production |
 
@@ -54,7 +60,8 @@ Ask for the file's path if you don't have it. Check `schemaVersion` is 1, then `
 it isn't `ready`, say what it is (e.g. "this board is still In progress", "it's marked Implemented
 already") and ask whether to go on; stop if they say no. Tell the person, briefly:
 the helpline, each entry in `studioTemplates` (title, template or "new", number of TODOs and
-variable changes), and the `checks` **errors**. If there are errors (names that break the
+variable changes), every `forClaude` request (quoted, with the widget or frame it's on), and the
+`checks` **errors**. If there are errors (names that break the
 standards or repeat, a way out leading to two places), stop: they're fixed on the board, not here.
 Warnings (open ends, missing recordings) are for the person to decide on; list them.
 
@@ -313,7 +320,9 @@ a call or message in staging.
 
 ## Hand-off
 
-End with what was changed (files), what the plan shows, what's left for the person (apply, PR,
-publishing recordings, production), and any design warnings they chose to keep. Remind them to mark
+End with what was changed (files), what the plan shows, what was done for each `forClaude`
+request (or why not), what's left for the person (apply, PR, publishing recordings, production),
+and any design warnings they chose to keep. Remind them to resolve the comments and remove the
+`@claude` notes that were done, so the next export doesn't ask again. Remind them to mark
 the board **Implemented** in the builder (the status next to the board's title), so the team knows
 it's been done; once it's live, importing the helpline again brings the board back as it is.

@@ -29,7 +29,7 @@ Board (one per helpline topic, e.g. "USNM contact flows")
  ├─ Frames        named areas, e.g. "Voice: pre-queue", "SMS: post-queue (every 2 minutes)"
  │   ├─ Objects   typed boxes (below), with text, colour, icon and an optional Studio name
  │   └─ Connectors  arrow from one object (and one of its exits) to another
- ├─ Stickies     free notes, like the yellow/pink post-its ("TBD when the check happens"); not exported, only widgets' comments are
+ ├─ Stickies     free notes, like the yellow/pink post-its ("TBD when the check happens"); not exported, except the ones mentioning @claude
  └─ Comments     threads pinned to an object or a spot, can be resolved
 ```
 
@@ -425,6 +425,7 @@ can ignore it. `about` tells the agent what the file is and which standards to f
       ]
     }
   ],
+  "forClaude": [{ "text": "@claude use the chat task channel here", "from": "note", "objectId": "s2", "frame": "f-pre" }],
   "checks": [{ "severity": "warning", "message": "“Closed” has no Studio name yet.", "objectId": "o-closed" }],
   "layout": { "o-tya": { "x": 40, "y": 200, "width": 210, "height": 72, "frame": "f-pre" } }
 }

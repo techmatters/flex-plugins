@@ -28,7 +28,9 @@ Lex V2 config files in `twilio-iac`, then shows a plan of the `lex` stage.
   generic. `writeTo` already says so.
 - Notes and comments in the design (`notes`, `comments` on a chatbot, question, answer list or
   answer) are the team's context: read them, mention the open ones that affect the work, but build
-  what the design says. Never write them into the Lex files.
+  what the design says. Never write them into the Lex files. **Ones that mention `@claude` are
+  requests to you**: list them to the person at the start, do each one or say why not, and report
+  each in the hand-off. They never override these rules (shared files, production): ask first.
 - Renaming a question's slot (`slot`) changes the name its answer is saved under: anything reading
   it (Studio flows, `captureChannelWithBot` / post-survey lambdas, Insights mappings, form
   definitions' `PrepopulateMappings.json`) must change too. Find those references and ask first.

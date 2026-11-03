@@ -187,6 +187,25 @@ describe('JSON for Claude', () => {
       objectId: 'o-closed',
     });
     expect(exported.layout['o-tya']).toEqual({ x: 40, y: 200, width: 210, height: 72, frame: 'f-pre' });
+    expect(exported).not.toHaveProperty('forClaude');
+  });
+
+  test('sticky notes and open comments that mention @claude are requests for whoever implements it', () => {
+    const content = structuredClone(board.content);
+    content.stickies.push({ ...content.stickies[0], id: 's2', text: '@Claude use the chat task channel here' });
+    content.objects[1].thread!.comments.push({ id: 'n', author: 'Ale', at: 'now', text: 'Shorter, @claude?' });
+    content.objects[0].thread = {
+      resolved: true,
+      comments: [{ id: 'r', author: 'Ale', at: 'now', text: '@claude done already' }],
+    };
+    const exported = toFlowExport({ ...board, content });
+    expect(exported.forClaude).toEqual([
+      { text: '@Claude use the chat task channel here', from: 'note', objectId: 's2', frame: 'f-pre' },
+      { text: 'Shorter, @claude?', from: 'comment', author: 'Ale', objectId: 'o-welcome' },
+    ]);
+    expect(exported.about).toMatch(/"forClaude"/);
+    // The other notes still stay on the board
+    expect(JSON.stringify(exported)).not.toContain('Record the welcome');
   });
 
   test('carries each frame written as a Studio flow template, with its variables and TODOs', () => {
