@@ -20,19 +20,24 @@ import { ITask } from '@twilio/flex-ui';
 
 import { RootState } from '../../states';
 import { selectQueueGreeting } from '../../states/configuration/selectDefinitions';
-import { GuidancePill } from './styles';
+import { GuidancePill, GuidancePillContainer } from './styles';
 
 const MAX_PILL_TEXT_LENGTH = 20;
 
 type Props = {
   task?: ITask;
+  selectedTaskSid?: string;
 };
 
-const QueueGreetingPill: React.FC<Props> = ({ task }) => {
+const QueueGreetingPill: React.FC<Props> = ({ task, selectedTaskSid }) => {
   const queueGreeting = useSelector((state: RootState) => selectQueueGreeting(state, task?.queueName));
   if (!queueGreeting) return null;
 
-  return <GuidancePill>{queueGreeting.pillText.slice(0, MAX_PILL_TEXT_LENGTH)}</GuidancePill>;
+  return (
+    <GuidancePillContainer isSelected={Boolean(task) && task.sid === selectedTaskSid}>
+      <GuidancePill>{queueGreeting.pillText.slice(0, MAX_PILL_TEXT_LENGTH)}</GuidancePill>
+    </GuidancePillContainer>
+  );
 };
 
 QueueGreetingPill.displayName = 'QueueGreetingPill';

@@ -19,8 +19,18 @@ import { styled } from '@twilio/flex-ui';
 const guidanceBackground = '#fffeef';
 const textColor = '#192b33';
 
+type GuidancePillContainerProps = {
+  isSelected: boolean;
+};
+
+export const GuidancePillContainer = styled('div')<GuidancePillContainerProps>`
+  width: 100%;
+  background-color: ${({ isSelected }) => (isSelected ? 'rgb(255, 255, 255)' : 'inherit')};
+`;
+GuidancePillContainer.displayName = 'GuidancePillContainer';
+
 export const GuidancePill = styled('span')`
-  align-self: flex-start;
+  display: inline-block;
   margin: 0 0 12px 16px;
   padding: 4px 8px;
   background-color: ${guidanceBackground};
