@@ -14,11 +14,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ITask, Template } from '@twilio/flex-ui';
 import Close from '@material-ui/icons/Close';
 import Popper from '@material-ui/core/Popper';
+import type PopperJs from 'popper.js';
 
 import { RootState } from '../../states';
 import { selectQueueGreeting } from '../../states/configuration/selectDefinitions';
@@ -46,12 +47,24 @@ type Props = {
 /**
  * Shows the greeting configured for the task's queue near the bottom of the task canvas.
  * The popover is rendered in a portal, positioned against an anchor placed at the bottom of the task canvas.
+ * Popper only repositions on window resize and scroll events, so it is also repositioned whenever the task canvas
+ * changes size (e.g. when Flex re-lays out its panels after a window resize, or the panel splitter is dragged).
  */
 const QueueGreetingPopover: React.FC<Props> = ({ task }) => {
   const dispatch = useDispatch();
   const [anchorElement, setAnchorElement] = useState<HTMLDivElement | null>(null);
+  const popperRef = useRef<PopperJs | null>(null);
   const queueGreeting = useSelector((state: RootState) => selectQueueGreeting(state, task?.queueName));
   const isOpen = useSelector((state: RootState) => Boolean(task) && selectIsQueueGreetingOpen(state, task));
+
+  useEffect(() => {
+    const taskCanvas = anchorElement?.parentElement;
+    if (!taskCanvas) return undefined;
+
+    const resizeObserver = new ResizeObserver(() => popperRef.current?.update());
+    resizeObserver.observe(taskCanvas);
+    return () => resizeObserver.disconnect();
+  }, [anchorElement]);
 
   if (!queueGreeting) return null;
 
@@ -63,6 +76,7 @@ const QueueGreetingPopover: React.FC<Props> = ({ task }) => {
       <Popper
         open={isOpen && Boolean(anchorElement)}
         anchorEl={anchorElement}
+        popperRef={popperRef}
         placement="top"
         modifiers={{ offset: { offset: `0, ${DISTANCE_FROM_CANVAS_BOTTOM}` } }}
         style={{ zIndex: 10 }}
