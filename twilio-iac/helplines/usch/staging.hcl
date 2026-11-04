@@ -129,6 +129,9 @@ locals {
 
     hrm_transcript_retention_days_override = 7
 
+    # TaskRouter events go to the account-scoped lambda (staging was already switched outside Terraform)
+    enable_lambda_event_callback_url = true
+
     # Staging only for now: the Spanish pre-survey isn't in production yet (common.hcl has en_USCH only)
     lex_v2_bot_languages = {
       en_USCH : ["pre_survey", "post_survey"]
