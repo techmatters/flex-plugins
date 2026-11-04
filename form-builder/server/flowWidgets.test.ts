@@ -233,8 +233,17 @@ describe('menus, repeats and chatbots', () => {
       { event: 'failedToEnqueue' },
       { event: 'callFailure' },
     ]);
-    // callFailure is left unconnected on purpose, as in nearly every live flow
-    expect(boardChecks(upgraded).map((issue) => issue.message)).not.toContainEqual(
+    // An unconnected callFailure is flagged, until it's marked as ending the flow
+    expect(boardChecks(upgraded)).toContainEqual(
+      expect.objectContaining({ severity: 'warning', openExit: 'callFailure' }),
+    );
+    const marked = {
+      ...upgraded,
+      objects: upgraded.objects.map((candidate, index) =>
+        index === 0 ? { ...candidate, endedExits: [...(candidate.endedExits ?? []), 'callFailure'] } : candidate,
+      ),
+    };
+    expect(boardChecks(marked).map((issue) => issue.message)).not.toContainEqual(
       expect.stringContaining('callFailure'),
     );
   });

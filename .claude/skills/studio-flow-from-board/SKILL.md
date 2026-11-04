@@ -124,9 +124,10 @@ should have flagged itself (like an open end it missed), say so too, so a check 
    say the same From unless the board says why not. A mix (live `Bot`, new `${helpline}`) shows the
    contact two senders.
 4. **Task attributes across Send to queue widgets.** In one flow, every Send to queue sends the same
-   keys (`channelType` and its fallback, `customChannelType`, `twilioNumber`, `helpline`,
-   `language`...) unless the board says why. A key missing from one queue's attributes changes what
-   the workflow's filters and Flex see for those contacts.
+   keys (`channelType` and its fallback, `customChannelType`, `helpline`, `language`...) unless the
+   board says why. A key missing from one queue's attributes changes what the workflow's filters and
+   Flex see for those contacts. `twilioNumber` only matters for SMS and voice: don't flag it missing
+   in webchat flows.
 5. **Open ends.** Every way out of every widget leads somewhere or is marked "ends here". Look
    hardest at the failure ones (`callFailure`, `failed`, `deliveryFailure`, `timeout`, a route's
    `failed`): a contact on an open end is dropped without a word.

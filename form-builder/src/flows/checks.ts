@@ -42,7 +42,7 @@ import { taskAttributesProblem } from './taskAttributes';
 
 const POSTQUEUE = 'postqueue_';
 
-const UNCONNECTED_ON_PURPOSE = new Set(['speech', 'callfailure']);
+const UNCONNECTED_ON_PURPOSE = new Set(['speech']);
 
 // HTTP requests that don't call a function are named http_get_ / http_post_ instead of f_
 const prefixesOf = (object: Pick<FlowObject, 'type'>): string[] => {
@@ -287,8 +287,8 @@ export const boardChecks = (
             `twice-${exit}`,
           );
         }
-        // Left unconnected on purpose: "speech" (answers are pressed, rarely said) and Send to
-        // Flex's "callFailure" (as in nearly every live flow)
+        // Left unconnected on purpose: "speech" (answers are pressed, rarely said). Send to Flex's
+        // "callFailure" is flagged too: mark it as ending the flow when that's what's meant
         if (leaving.length === 0 && !ended.has(exit) && !UNCONNECTED_ON_PURPOSE.has(exit.toLowerCase())) {
           add(
             { severity: 'warning', message: `${name}: “${exit}” isn't connected.`, objectId, openExit: exit },

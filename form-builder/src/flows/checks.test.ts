@@ -349,6 +349,7 @@ describe('the board check', () => {
           studioName: 'send_to_queue',
           settings: { workflow: 'master', taskChannel: 'voice' },
           taskAttributes: standardTaskAttributes('voice'),
+          endedExits: ['callFailure'],
         }),
         named('sorry', 'end', undefined, { text: 'End' }),
         named('wait', 'setVariable', undefined, {
