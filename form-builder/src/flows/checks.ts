@@ -22,13 +22,17 @@
 import type { BoardContent, FlowDetails, FlowObject, Frame, NamingChoices } from './model';
 import {
   defaultSplitInputOf,
+  exitConditionOf,
   exitsOf,
   fieldProblem,
   fieldShown,
   flowDetailsOf,
   hasFromField,
+  isProfileFlagsInput,
+  isSplitObject,
   namingChoicesOf,
   OBJECT_TYPES,
+  splitInputOf,
   standardStudioName,
   TASK_CHANNELS,
   taskChannelOf,
@@ -372,6 +376,23 @@ export const boardChecks = (
       !defaultSplitInputOf(content, object.id)
     ) {
       add({ severity: 'warning', message: `${name}: choose what it splits on.`, objectId }, 'noInput');
+    }
+    // A split on a client profile's flags (a list): "equal to" only matches contacts with that one flag
+    if (isSplitObject(object)) {
+      const input = splitInputOf(object) ?? defaultSplitInputOf(content, object.id);
+      const equalTo = isProfileFlagsInput(input)
+        ? exitsOf(object).filter((exit) => exitConditionOf(object, exit, input)?.type === 'equal_to')
+        : [];
+      if (equalTo.length > 0) {
+        add(
+          {
+            severity: 'warning',
+            message: `${name}: ${equalTo.map((exit) => `“${exit}”`).join(', ')} uses “equal to” on the profile's flags, a list: it misses contacts with more than one flag (e.g. blocked and abusive). Use “contains”.`,
+            objectId,
+          },
+          'flagsEqualTo',
+        );
+      }
     }
     (object.variables ?? []).forEach((variable, index) => {
       const problem = variable.key ? variableKeyProblem(variable.key) : 'It has no name (key) yet.';

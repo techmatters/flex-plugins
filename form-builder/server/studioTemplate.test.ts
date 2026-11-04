@@ -20,6 +20,7 @@ import { fileURLToPath } from 'url';
 import { describe, expect, test } from 'vitest';
 import type { BoardContent, FlowObject } from '../src/flows/model';
 import { emptyBoard, fieldProblem, fixedExitsOf } from '../src/flows/model';
+import { boardChecks } from '../src/flows/checks';
 import { toStudioFlow, toStudioFlows } from '../src/flows/studioTemplate';
 import { standardTaskAttributes } from '../src/flows/taskAttributes';
 import { importHelpline } from './flowImport';
@@ -34,22 +35,50 @@ const codes = readdirSync(helplinesDir).filter(
       existsSync(path.join(helplinesDir, code, 'production.hcl'))),
 );
 
+// A parsed template with its blocked checks on a client profile's flags using contains, not equal_to
+const withBlockedContains = (flow: unknown) => {
+  const copy = structuredClone(flow) as { states?: { transitions?: { conditions?: Record<string, unknown>[] }[] }[] };
+  copy.states?.forEach((state) =>
+    state.transitions?.forEach((transition) =>
+      transition.conditions?.forEach((condition) => {
+        const [argument] = (condition.arguments as string[] | undefined) ?? [];
+        if (condition.type === 'equal_to' && condition.value === 'blocked' && /\.parsed\.flags\}\}$/.test(argument)) {
+          condition.type = 'contains';
+          if (condition.friendly_name === 'If value equal_to blocked')
+            condition.friendly_name = 'If value contains blocked';
+        }
+      }),
+    ),
+  );
+  return copy;
+};
+
 describe('Studio templates from boards', () => {
   test("an imported board, unchanged, gives back the live flow, for every helpline's flows", async () => {
     let compared = 0;
+    const blockedFixed: string[] = [];
     for (const code of codes) {
       const { boards } = await importHelpline(helplinesDir, code);
       for (const { title, content } of boards) {
         const [generated] = toStudioFlows(content);
         expect(generated.template, title).toBeDefined();
         const original = parseTemplate(readFileSync(path.join(helplinesDir, generated.template!), 'utf8'));
-        expect(parseTemplate(generated.text), title).toEqual(original);
+        // Except a blocked check on the profile's flags written with equal_to: contains now
+        const expected = withBlockedContains(original);
+        expect(parseTemplate(generated.text), title).toEqual(expected);
+        if (JSON.stringify(expected) !== JSON.stringify(original)) {
+          blockedFixed.push(generated.template!);
+          expect(generated.todo, title).toContainEqual(expect.stringMatching(/blocked check now uses contains/));
+        }
         // Nothing changed on the board, so nothing to change in the .hcl files
         expect(generated.flowVars, title).toEqual([]);
         compared += 1;
       }
     }
     expect(compared).toBeGreaterThan(50);
+    // Only USCH's live flows still use equal_to
+    expect(blockedFixed.length).toBeGreaterThan(0);
+    blockedFixed.forEach((template) => expect(template).toMatch(/^usch\//));
   }, 120_000);
 
   test('changes on the board: new connections, texts in flow_vars or in the template, renamed widgets', async () => {
@@ -550,5 +579,94 @@ describe('Splits and the standard requests', () => {
       '{{widgets.f_isSkilledWorkerAvailable_spanish.parsed.totalAvailableWorkers}}',
       '{{widgets.f_isSkilledWorkerLoggedIn_chattext_spanish.parsed.totalLoggedInWorkers}}',
     ]);
+  });
+});
+
+describe("the blocked check on a client profile's flags (a list): contains, not equal to", () => {
+  const FLAGS = '{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}';
+  const voiceBoard = async () => {
+    const { boards } = await importHelpline(helplinesDir, 'usch');
+    return boards.find(({ content }) => content.flow?.studio?.template.endsWith('/voice-childhelp-sd.tftpl'))!.content;
+  };
+  const stateOf = (content: BoardContent, name: string) =>
+    toStudioFlow(content).flow.states.find((state) => state.name === name)!;
+
+  test("USCH's live equal_to is exported as contains, the rest of the split as live, and said in the TODOs", async () => {
+    const content = await voiceBoard();
+    const live = content.objects.find((object) => object.studioName === 'split_contact_routing')!.studio!;
+    const split = stateOf(content, 'split_contact_routing');
+    expect(split.transitions).toEqual([
+      live.transitions![0],
+      {
+        ...live.transitions![1],
+        conditions: [
+          { friendly_name: 'If value contains blocked', arguments: [FLAGS], type: 'contains', value: 'blocked' },
+        ],
+      },
+    ]);
+    expect(split.properties).toEqual({ ...live.properties, offset: live.offset });
+    expect(toStudioFlow(content).todo).toContain(
+      '“split_contact_routing”: blocked check now uses contains, was equal_to.',
+    );
+    // As exported it's the standard: nothing to warn about
+    expect(boardChecks(content).map((issue) => issue.message)).not.toContainEqual(
+      expect.stringContaining("profile's flags"),
+    );
+  });
+
+  test('equal_to chosen on the board stays, with a warning that it misses contacts with more than one flag', async () => {
+    const content = await voiceBoard();
+    const routing = content.objects.find((object) => object.studioName === 'split_contact_routing')!;
+    routing.exitOperators = { blocked: 'equal_to' };
+    const [, blocked] = stateOf(content, 'split_contact_routing').transitions;
+    expect(blocked.conditions).toEqual([expect.objectContaining({ type: 'equal_to', value: 'blocked' })]);
+    expect(toStudioFlow(content).todo).not.toContainEqual(expect.stringContaining('blocked check now uses contains'));
+    expect(boardChecks(content)).toContainEqual(
+      expect.objectContaining({
+        severity: 'warning',
+        objectId: routing.id,
+        message: expect.stringContaining('misses contacts with more than one flag'),
+      }),
+    );
+  });
+
+  test('a new Decision on the flags (chosen, or after an imported client profile check) defaults to contains blocked', async () => {
+    const content = await voiceBoard();
+    const check = content.objects.find((object) => object.studioName === 'f_getProfileFlagsForIdentifier')!;
+    const decision: FlowObject = {
+      id: 'new-split',
+      type: 'decision',
+      frameId: check.frameId,
+      text: 'Blocked?',
+      studioName: 'split_blocked',
+      exits: ['blocked', 'abusive', 'noMatch'],
+      x: 0,
+      y: 0,
+      width: 190,
+      height: 110,
+    };
+    const withDecision = (object: FlowObject): BoardContent => ({
+      ...content,
+      objects: [...content.objects, object],
+      connections: [...content.connections, { id: 'to-new', from: check.id, to: object.id, exit: 'success' }],
+    });
+    const [noMatch, blocked, abusive] = stateOf(withDecision(decision), 'split_blocked').transitions;
+    expect(noMatch.event).toBe('noMatch');
+    expect(blocked.conditions).toEqual([
+      { friendly_name: 'If value contains blocked', arguments: [FLAGS], type: 'contains', value: 'blocked' },
+    ]);
+    // Only "blocked": other ways out are as chosen (and an equal_to on the flags is warned about)
+    expect(abusive.conditions).toEqual([expect.objectContaining({ type: 'equal_to', value: 'abusive' })]);
+    expect(boardChecks(withDecision(decision)).map((issue) => issue.message)).toContainEqual(
+      expect.stringMatching(/^“Blocked\?”: “abusive” uses “equal to”/),
+    );
+    // Its input set on the board, not connected after the check
+    const chosen = { ...decision, settings: { input: FLAGS } };
+    const alone = { ...content, objects: [...content.objects, chosen] };
+    expect(stateOf(alone, 'split_blocked').transitions[1].conditions).toEqual([
+      expect.objectContaining({ type: 'contains', value: 'blocked' }),
+    ]);
+    // (new: nothing changed from live to say; the imported split's own TODO is still there)
+    expect(toStudioFlow(alone).todo).not.toContainEqual(expect.stringContaining('“split_blocked”: blocked check'));
   });
 });

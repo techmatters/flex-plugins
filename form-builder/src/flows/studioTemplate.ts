@@ -716,6 +716,7 @@ export const toStudioFlow = (
         const exit = studio.type === 'trigger' ? String(transition.event) : exits[index];
         // A split's way out renamed or given another operator on the board: its condition too
         const changed = exit === undefined ? undefined : exitConditionOf(object, exit);
+        if (changed?.blockedContains) todo.push(`${label(object)}: blocked check now uses contains, was equal_to.`);
         if (changed?.changed && Array.isArray(rest.conditions) && rest.conditions.length === 1) {
           const [live] = rest.conditions as Record<string, unknown>[];
           const liveName = typeof live.friendly_name === 'string' ? live.friendly_name : undefined;
@@ -1016,7 +1017,7 @@ export const toStudioFlow = (
                 .filter((exit) => exit !== 'noMatch')
                 .map((exit) => {
                   // Equal to it, or any of a list ("Si,si,ok"), or the operator chosen on the board
-                  const type = exitConditionOf(object, exit)?.type ?? 'equal_to';
+                  const type = exitConditionOf(object, exit, input)?.type ?? 'equal_to';
                   return withNext(
                     { event: 'match', conditions: [condition(input, type, exit, studioConditionName(type, exit))] },
                     next(exit),

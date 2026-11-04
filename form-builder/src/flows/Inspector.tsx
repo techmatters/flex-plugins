@@ -1417,7 +1417,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
           onChange={(exits, renamed) => props.onRenameExit(node.id, exits, renamed)}
           {...(isSplitObject(object)
             ? {
-                operatorOf: (exit: string) => exitConditionOf(object, exit)?.type,
+                operatorOf: (exit: string) => exitConditionOf(object, exit, defaultSplitInput)?.type,
                 onOperator: (exit: string, type: string) =>
                   update({ exitOperators: { ...object.exitOperators, [exit]: type } }),
               }

@@ -48,7 +48,7 @@ reads the same way as Studio.
 | System down | double-sided box (subflow) | server off | 1 | Run Subflow (`run_subflow_system_down`) |
 | Other subflow | double-sided box | layers | as defined | Run Subflow (`run_subflow_...`) |
 | Check operating hours | double-sided box (function) | clock | open / closed / holiday | `operatingHours` (`f_operatingHours`) + Split on `parsed.status`; its request body is the flow's channel, en-US and who it's from unless one is set |
-| Check client profile | double-sided box | user search | blocked / not blocked | `f_getProfileFlagsForIdentifier` + Split, written as the helplines' are: the trigger and channel type sent, blocked when `parsed.flags` contains `blocked` |
+| Check client profile | double-sided box | user search | blocked / not blocked | `f_getProfileFlagsForIdentifier` + Split, written as the helplines' are: the trigger and channel type sent, blocked when `parsed.flags` contains `blocked` (see below) |
 | Skilled worker available? | double-sided box | users | available / not available / failed | `worker/isSkilledWorkerAvailable` (`f_isSkilledWorkerAvailable_<skills>`) + Split; settings: skills (typed, or added from the helpline's routing design), channel (not chosen: `voice` in a voice flow, `chat` in any other) |
 | Skilled worker logged in? | double-sided box | user check | logged in / not logged in / failed | `worker/isSkilledWorkerLoggedIn` (`f_isSkilledWorkerLoggedIn_<skills>`) + Split; settings: skills, activities not counted |
 | Check country / phone code | diamond | globe | one per country, other | Split (`split_country...`) |
@@ -71,6 +71,16 @@ reads the same way as Studio.
 | Go to frame | off-page arrow | link | none | jumps to another frame ("continues in SMS post-queue") |
 | Notify the Aselo team | rounded box | bell | 1 | HTTP Request to `webhook_url_studio_errors` (`http_post_...`), where a flow posts to Slack; optional, since failures are followed in Datadog. Its alert is the helplines' ("Issue detected [its text] on <helpline> <environment>", with the flow and execution) unless one is set |
 | Text | no border | text | none | a label or title, no Studio meaning |
+
+**The blocked check.** A client profile's flags (`getProfileFlagsForIdentifier`'s
+`parsed.flags`) are a list, e.g. `["blocked", "abusive"]`, so a contact is blocked when the list
+*contains* `blocked`: `equal_to` misses anyone with more than one flag. Any Decision splitting on
+`{{widgets.<...getProfileFlagsForIdentifier...>.parsed.flags}}` therefore writes its `blocked` way
+out with `contains`: new ones (including a Decision placed after an imported client profile check,
+which now splits on its flags by default), and imported ones whose live split says `equal_to`
+(today only USCH's), listed in the template's TODOs as "blocked check now uses contains, was
+equal_to". Its other ways out keep their comparison. Choosing "Equal to" for it on the board keeps
+it, and Check warns about any way out on the flags compared with `equal_to`.
 
 Colours by family: green for start and end, yellow for decisions, blue for checks and functions,
 white for messages and questions, red for voicemail, pink for queues. Twilio's own Studio icons

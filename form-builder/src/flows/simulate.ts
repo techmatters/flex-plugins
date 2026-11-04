@@ -321,7 +321,7 @@ const splitMatchesOf = (object: FlowObject, input: string) => {
       });
       const exit = exits[index] ?? `match ${index + 1}`;
       // Renamed or given another operator on the board, as it will be exported
-      const changed = exitConditionOf(object, exit);
+      const changed = exitConditionOf(object, exit, input);
       if (changed?.changed && conditions.length === 1) {
         Object.assign(conditions[0], { type: changed.type, value: changed.value });
       }
@@ -332,7 +332,7 @@ const splitMatchesOf = (object: FlowObject, input: string) => {
     .filter((exit) => exit && exit !== 'noMatch')
     .map((exit) => ({
       exit,
-      conditions: [{ argument: input, type: exitConditionOf(object, exit)?.type ?? 'equal_to', value: exit }],
+      conditions: [{ argument: input, type: exitConditionOf(object, exit, input)?.type ?? 'equal_to', value: exit }],
     }));
 };
 

@@ -1709,6 +1709,8 @@ const answerOf = (object: FlowObject, exit?: string) => {
   if (object.type === 'menuVoice') {
     return exit === 'speech' ? `{{widgets.${name}.SpeechResult}}` : `{{widgets.${name}.Digits}}`;
   }
+  // An imported client profile check is the request only: the split after it reads its flags
+  if (object.type === 'checkClientProfile' && object.studio) return `{{widgets.${name}.parsed.flags}}`;
   return undefined;
 };
 
@@ -1787,9 +1789,11 @@ const liveConditionOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio'>, 
  * Undefined for noMatch and conditions that aren't a single comparison.
  */
 export const exitConditionOf = (
-  object: Pick<FlowObject, 'type' | 'exits' | 'studio' | 'exitOperators'>,
+  object: Pick<FlowObject, 'type' | 'exits' | 'studio' | 'exitOperators' | 'settings'>,
   exit: string,
-): { type: string; value: string; changed: boolean } | undefined => {
+  // What it splits on, when it isn't set on it (a new split's default, from the widget before it)
+  defaultInput?: string,
+): { type: string; value: string; changed: boolean; blockedContains?: boolean } | undefined => {
   if (!isSplitObject(object) || !exit || exit === 'noMatch') return undefined;
   const live = liveConditionOf(object, exit);
   const liveValue = live?.value === undefined ? undefined : String(live.value);
@@ -1807,9 +1811,31 @@ export const exitConditionOf = (
   // A way out renamed to a list of values matches any of them, though it was "equal to" live
   const listed = live?.type === 'equal_to' && automatic === 'matches_any_of' && value !== liveValue;
   const liveType = live?.type && !listed ? live.type : undefined;
-  const type = object.exitOperators?.[exit] ?? liveType ?? automatic;
-  return { type, value, changed: !live || type !== live.type || value !== liveValue };
+  // A client profile's flags are a list: "blocked" is one it contains (equal to misses contacts with
+  // other flags too). Unless chosen on the board, as the checks warn
+  const blockedContains =
+    value === 'blocked' &&
+    (liveType ?? automatic) === 'equal_to' &&
+    isProfileFlagsInput(splitInputOf(object) ?? defaultInput);
+  const type = object.exitOperators?.[exit] ?? (blockedContains ? 'contains' : (liveType ?? automatic));
+  return {
+    type,
+    value,
+    changed: !live || type !== live.type || value !== liveValue,
+    ...(blockedContains && live && type === 'contains' ? { blockedContains: true } : {}),
+  };
 };
+
+// What a split reads, as set on the board or (imported) as live
+export const splitInputOf = (object: Pick<FlowObject, 'settings' | 'studio'>) =>
+  object.settings?.input?.trim() ||
+  (typeof object.studio?.properties?.input === 'string' ? object.studio.properties.input : undefined);
+
+// A client profile's flags (getProfileFlagsForIdentifier's answer): a list, e.g. ["blocked", "abusive"]
+const PROFILE_FLAGS_INPUT =
+  /^\{\{\s*widgets\.[A-Za-z0-9_]*getProfileFlagsForIdentifier[A-Za-z0-9_]*\.parsed\.flags\s*\}\}$/;
+export const isProfileFlagsInput = (input: unknown) =>
+  typeof input === 'string' && PROFILE_FLAGS_INPUT.test(input.trim());
 
 // A Studio condition's name for it, as Studio writes them
 export const studioConditionName = (type: string, value: string) => `If value ${type} ${value}`;
