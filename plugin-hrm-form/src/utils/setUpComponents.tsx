@@ -123,11 +123,14 @@ export const setUpQueuesStatus = (setupObject: SetupObject) => {
 };
 
 /**
- * Adds the guidance pill to task list items and the greeting popover to the agent desktop, for queues with a greeting configured
+ * Adds the guidance pill to task list items and the greeting popover above the call actions, for queues with a greeting configured
  */
 export const setUpQueueGreetings = () => {
   Flex.TaskListItem.Content.add(<QueueGreetingPill key="queue-greeting-pill" />, { align: 'end' });
-  Flex.AgentDesktopView.Panel1.Content.add(<QueueGreetingPopover key="queue-greeting-popover" />);
+  Flex.CallCanvasActions.Content.add(<QueueGreetingPopover key="queue-greeting-popover" />, {
+    sortOrder: -1,
+    align: 'start',
+  });
 };
 
 const setUpManualPulling = () => {

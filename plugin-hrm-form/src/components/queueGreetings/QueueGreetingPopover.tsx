@@ -18,6 +18,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { ITask, Template } from '@twilio/flex-ui';
 import Close from '@material-ui/icons/Close';
+import Popper from '@material-ui/core/Popper';
 
 import { RootState } from '../../states';
 import { selectQueueGreeting } from '../../states/configuration/selectDefinitions';
@@ -32,39 +33,51 @@ import {
 
 const MAX_TITLE_LENGTH = 60;
 const MAX_CONTENT_LENGTH = 300;
+const GAP_ABOVE_CALL_ACTIONS = 8;
 
 type Props = {
-  tasks?: Map<string, ITask>;
-  selectedTaskSid?: string;
+  task?: ITask;
 };
 
 /**
- * Shows the greeting configured for the selected task's queue, until the counsellor dismisses it for that task
+ * Shows the greeting configured for the task's queue above the call actions, until the counsellor dismisses it for that task.
+ * The popover is rendered in a portal and positioned against an anchor placed at the start of the call actions.
  */
-const QueueGreetingPopover: React.FC<Props> = ({ tasks, selectedTaskSid }) => {
+const QueueGreetingPopover: React.FC<Props> = ({ task }) => {
   const [dismissedTaskSids, setDismissedTaskSids] = useState<string[]>([]);
-  const selectedTask = selectedTaskSid ? tasks?.get(selectedTaskSid) : undefined;
-  const queueGreeting = useSelector((state: RootState) => selectQueueGreeting(state, selectedTask?.queueName));
+  const [anchorElement, setAnchorElement] = useState<HTMLSpanElement | null>(null);
+  const queueGreeting = useSelector((state: RootState) => selectQueueGreeting(state, task?.queueName));
 
-  if (!queueGreeting || dismissedTaskSids.includes(selectedTaskSid)) return null;
+  if (!queueGreeting || dismissedTaskSids.includes(task.sid)) return null;
 
-  const dismiss = () => setDismissedTaskSids(sids => [...sids, selectedTaskSid]);
+  const dismiss = () => setDismissedTaskSids(sids => [...sids, task.sid]);
 
   return (
-    <GuidancePopoverContainer aria-labelledby="queue-greeting-title">
-      <GuidancePopoverHeader>
-        <GuidancePopoverTitle id="queue-greeting-title">
-          {queueGreeting.popoverTitle.slice(0, MAX_TITLE_LENGTH)}
-        </GuidancePopoverTitle>
-        <HeaderCloseButton onClick={dismiss} data-testid="QueueGreeting-CloseButton">
-          <HiddenText>
-            <Template code="CloseButton" />
-          </HiddenText>
-          <Close style={{ fontSize: 20, color: '#192b33' }} />
-        </HeaderCloseButton>
-      </GuidancePopoverHeader>
-      <GuidancePopoverContent>{queueGreeting.popoverContent.slice(0, MAX_CONTENT_LENGTH)}</GuidancePopoverContent>
-    </GuidancePopoverContainer>
+    <>
+      <span ref={setAnchorElement} />
+      <Popper
+        open={Boolean(anchorElement)}
+        anchorEl={anchorElement}
+        placement="top-start"
+        modifiers={{ offset: { offset: `0, ${GAP_ABOVE_CALL_ACTIONS}` } }}
+        style={{ zIndex: 10 }}
+      >
+        <GuidancePopoverContainer aria-labelledby="queue-greeting-title">
+          <GuidancePopoverHeader>
+            <GuidancePopoverTitle id="queue-greeting-title">
+              {queueGreeting.popoverTitle.slice(0, MAX_TITLE_LENGTH)}
+            </GuidancePopoverTitle>
+            <HeaderCloseButton onClick={dismiss} data-testid="QueueGreeting-CloseButton">
+              <HiddenText>
+                <Template code="CloseButton" />
+              </HiddenText>
+              <Close style={{ fontSize: 20, color: '#192b33' }} />
+            </HeaderCloseButton>
+          </GuidancePopoverHeader>
+          <GuidancePopoverContent>{queueGreeting.popoverContent.slice(0, MAX_CONTENT_LENGTH)}</GuidancePopoverContent>
+        </GuidancePopoverContainer>
+      </Popper>
+    </>
   );
 };
 
