@@ -36,6 +36,7 @@ import { iconOf, OBJECT_TYPES, objectColor, STICKY_COLORS } from './model';
 import type { ConnectionEdge, FrameNode, ObjectNode, StickyNode } from './canvasModel';
 import { labelOffsetOf, labelSlot } from './canvasModel';
 import { ObjectIcon, ShapeOutline } from './shapes';
+import { StepInfoButton } from './StepHelpCard';
 
 // A run of the simulator on the board, and the tested paths shown (Test mode)
 export type SimulationView = {
@@ -244,6 +245,7 @@ export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<
           <MessageSquareText size={12} aria-hidden /> {comments}
         </span>
       )}
+      {object.type !== 'text' && <StepInfoButton object={object} />}
       {object.type !== 'text' && <SideHandles />}
     </div>
   );

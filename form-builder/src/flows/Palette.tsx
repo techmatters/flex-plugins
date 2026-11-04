@@ -21,6 +21,8 @@
 import { Frame as FrameIcon, StickyNote } from 'lucide-react';
 import { FAMILY_COLORS, FlowObjectType, OBJECT_TYPES, ObjectTypeInfo } from './model';
 import { ObjectIcon, ShapeOutline } from './shapes';
+import { BOARD_HELP } from './stepHelp';
+import { useHoverHelp } from './StepHelpCard';
 
 export type PaletteItem = { kind: 'object'; type: FlowObjectType } | { kind: 'frame' } | { kind: 'sticky' };
 
@@ -43,12 +45,15 @@ const PaletteButton = ({
   item,
   label,
   title,
+  hoverProps,
   children,
   onAdd,
 }: {
   item: PaletteItem;
   label: string;
   title?: string;
+  // A step's: its help shown on hover
+  hoverProps?: Partial<React.ButtonHTMLAttributes<HTMLButtonElement>>;
   children: React.ReactNode;
   onAdd: (item: PaletteItem) => void;
 }) => (
@@ -56,8 +61,10 @@ const PaletteButton = ({
     type="button"
     className="flow-palette-item"
     draggable
-    title={title ?? label}
+    title={hoverProps ? undefined : (title ?? label)}
+    {...hoverProps}
     onDragStart={(e) => {
+      hoverProps?.onDragStart?.(e);
       e.dataTransfer.setData(PALETTE_MIME, JSON.stringify(item));
       e.dataTransfer.effectAllowed = 'copy';
     }}
@@ -68,17 +75,41 @@ const PaletteButton = ({
   </button>
 );
 
+// A step, with what it does when hovered
+const StepPaletteButton = ({
+  type,
+  info,
+  onAdd,
+}: {
+  type: FlowObjectType;
+  info: ObjectTypeInfo;
+  onAdd: (item: PaletteItem) => void;
+}) => {
+  const { triggerProps, card } = useHoverHelp(type);
+  return (
+    <>
+      <PaletteButton item={{ kind: 'object', type }} label={info.label} hoverProps={triggerProps} onAdd={onAdd}>
+        <span className="flow-palette-preview">
+          <ShapeOutline shape={info.shape} width={40} height={26} fill={FAMILY_COLORS[info.family]} stroke="#546e7a" />
+          <ObjectIcon name={info.icon} size={13} />
+        </span>
+      </PaletteButton>
+      {card}
+    </>
+  );
+};
+
 export const Palette = ({ onAdd }: Props) => (
   <aside className="flow-palette" aria-label="Objects">
-    <p className="field-hint">Drag onto the board, or click to add.</p>
+    <p className="field-hint">Drag onto the board, or click to add. Hover a step to see what it does.</p>
     <div className="flow-palette-group">
       <h3>Board</h3>
-      <PaletteButton item={{ kind: 'frame' }} label="Frame" title="An area holding one flow" onAdd={onAdd}>
+      <PaletteButton item={{ kind: 'frame' }} label="Frame" title={BOARD_HELP.frame} onAdd={onAdd}>
         <span className="flow-palette-preview">
           <FrameIcon size={18} strokeWidth={1.75} aria-hidden />
         </span>
       </PaletteButton>
-      <PaletteButton item={{ kind: 'sticky' }} label="Sticky note" onAdd={onAdd}>
+      <PaletteButton item={{ kind: 'sticky' }} label="Sticky note" title={BOARD_HELP.sticky} onAdd={onAdd}>
         <span className="flow-palette-preview">
           <StickyNote size={18} strokeWidth={1.75} aria-hidden />
         </span>
@@ -90,24 +121,7 @@ export const Palette = ({ onAdd }: Props) => (
         {(Object.entries(OBJECT_TYPES) as [FlowObjectType, ObjectTypeInfo][])
           .filter(([, info]) => info.group === group)
           .map(([type, info]) => (
-            <PaletteButton
-              key={type}
-              item={{ kind: 'object', type }}
-              label={info.label}
-              title={info.studioWidget ? `${info.label} (Studio: ${info.studioWidget})` : info.label}
-              onAdd={onAdd}
-            >
-              <span className="flow-palette-preview">
-                <ShapeOutline
-                  shape={info.shape}
-                  width={40}
-                  height={26}
-                  fill={FAMILY_COLORS[info.family]}
-                  stroke="#546e7a"
-                />
-                <ObjectIcon name={info.icon} size={13} />
-              </span>
-            </PaletteButton>
+            <StepPaletteButton key={type} type={type} info={info} onAdd={onAdd} />
           ))}
       </div>
     ))}

@@ -1964,3 +1964,304 @@ body.flow-resizing {
 .flow-language-mode label {
   font-size: 13px;
 }
+
+/* A step's help: a card beside a step in the left menu (hover), or under its (i) on the board */
+.step-help-card {
+  position: fixed;
+  z-index: 1000;
+  width: 300px;
+  max-width: calc(100vw - 24px);
+  padding: 12px 14px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow:
+    0 10px 30px rgba(25, 43, 51, 0.18),
+    0 2px 6px rgba(25, 43, 51, 0.08);
+  font-size: 13px;
+  line-height: 1.45;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.step-help-card.shown {
+  opacity: 1;
+  pointer-events: auto;
+  animation: step-help-in 160ms cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+.step-help-right {
+  transform-origin: left center;
+}
+
+.step-help-below {
+  transform-origin: top center;
+}
+
+.step-help-below.flipped {
+  transform-origin: bottom center;
+}
+
+@keyframes step-help-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(var(--step-help-shift, 0));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.step-help-below {
+  --step-help-shift: -4px;
+}
+
+.step-help-below.flipped {
+  --step-help-shift: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step-help-card.shown {
+    animation: none;
+  }
+}
+
+/* The arrow pointing at what it's about */
+.step-help-arrow {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  transform: rotate(45deg);
+}
+
+.step-help-right .step-help-arrow {
+  left: -7px;
+  margin-top: -6px;
+  border-top-color: transparent;
+  border-right-color: transparent;
+}
+
+.step-help-below .step-help-arrow {
+  top: -7px;
+  margin-left: -6px;
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+}
+
+.step-help-below.flipped .step-help-arrow {
+  top: auto;
+  bottom: -7px;
+  border: 1px solid var(--color-border);
+  border-top-color: transparent;
+  border-left-color: transparent;
+}
+
+.step-help-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.step-help-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  flex-shrink: 0;
+}
+
+.step-help-close {
+  margin-left: auto;
+  display: flex;
+  padding: 4px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.step-help-close:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.step-help-card p {
+  margin: 0 0 8px;
+}
+
+.step-help-card p:last-child {
+  margin-bottom: 0;
+}
+
+.step-help-heading {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+}
+
+.step-help-paths {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.step-help-paths li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px;
+  align-items: baseline;
+}
+
+.step-help-exit {
+  padding: 1px 7px;
+  border-radius: 10px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.step-help-tip {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--color-accent-soft);
+  font-size: 12px;
+}
+
+/* The (i) on a step: faint until the step is hovered or selected */
+.step-info-button {
+  position: absolute;
+  right: -8px;
+  bottom: -8px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface);
+  color: var(--color-accent);
+  cursor: pointer;
+  opacity: 0.55;
+  transition:
+    opacity 120ms,
+    transform 120ms,
+    box-shadow 120ms;
+}
+
+.react-flow__node:hover .step-info-button,
+.flow-object.selected .step-info-button,
+.step-info-button.open,
+.step-info-button:focus-visible {
+  opacity: 1;
+}
+
+.step-info-button:hover,
+.step-info-button.open {
+  transform: scale(1.12);
+  box-shadow: 0 2px 6px rgba(25, 43, 51, 0.2);
+}
+
+/* The card's content scrolls when it's taller than the window (the arrow stays outside it) */
+.step-help-scroll {
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+}
+
+/* Its "More info": a fuller explanation and an example */
+.step-help-more {
+  margin: 4px 0 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+  animation: step-help-more-in 180ms ease-out;
+}
+
+@keyframes step-help-more-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step-help-more {
+    animation: none;
+  }
+}
+
+.step-help-card .step-help-more p:last-child {
+  margin-bottom: 0;
+}
+
+.step-help-example {
+  padding: 8px 10px;
+  border-left: 3px solid #ffb300;
+  border-radius: 0 8px 8px 0;
+  background: #fff8e1;
+  font-size: 12px;
+}
+
+.step-help-example span {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #8a6100;
+}
+
+.step-help-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-accent);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.step-help-toggle:hover {
+  background: var(--color-accent-soft);
+}
+
+.step-help-toggle svg {
+  transition: transform 160ms;
+}
+
+.step-help-toggle.expanded svg {
+  transform: rotate(180deg);
+}
+
+.step-help-footnote {
+  font-size: 12px;
+  color: var(--color-muted);
+}
