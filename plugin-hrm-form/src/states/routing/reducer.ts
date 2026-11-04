@@ -54,8 +54,22 @@ export const initialState: RoutingState = {
       routeStack: [{ route: getPathFromUrl(window.location) as any, subroute: getPathFromUrl(window.location) as any }],
     },
   },
-  dismissedQueueGreetings: {},
 };
+
+/**
+ * Updates the routing state of a single task
+ */
+const updateTaskState = (
+  state: RoutingState,
+  taskId: string,
+  update: (taskState: TaskRoutingState | undefined) => TaskRoutingState,
+): RoutingState => ({
+  ...state,
+  tasks: {
+    ...state.tasks,
+    [taskId]: update(state.tasks[taskId]),
+  },
+});
 
 /**
  * Replaces the route stack of a task, keeping the rest of its routing state
@@ -64,16 +78,8 @@ const updateTaskRouteStack = (
   state: RoutingState,
   taskId: string,
   update: (routeStack: AppRoutes[] | undefined) => AppRoutes[],
-): RoutingState => {
-  const taskState: TaskRoutingState | undefined = state.tasks[taskId];
-  return {
-    ...state,
-    tasks: {
-      ...state.tasks,
-      [taskId]: { ...taskState, routeStack: update(taskState?.routeStack) },
-    },
-  };
-};
+): RoutingState =>
+  updateTaskState(state, taskId, taskState => ({ ...taskState, routeStack: update(taskState?.routeStack) }));
 
 const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
   const recreated =
@@ -237,7 +243,6 @@ export function reduce(
       return {
         ...state,
         tasks: omit(state.tasks, action.taskId),
-        dismissedQueueGreetings: omit(state.dismissedQueueGreetings, action.taskId),
       };
     case CHANGE_ROUTE: {
       const { routing, mode, taskId } = action;
@@ -257,13 +262,10 @@ export function reduce(
       return updateTaskRouteStack(state, action.taskId, routeStack => closeTopModal(routeStack, action.topRoute));
     }
     case SET_QUEUE_GREETING_DISMISSED: {
-      return {
-        ...state,
-        dismissedQueueGreetings: {
-          ...state.dismissedQueueGreetings,
-          [action.taskId]: action.dismissed,
-        },
-      };
+      return updateTaskState(state, action.taskId, taskState => ({
+        ...taskState,
+        isQueueGreetingDismissed: action.dismissed,
+      }));
     }
     default:
       return state;

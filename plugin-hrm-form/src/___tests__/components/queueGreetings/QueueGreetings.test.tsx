@@ -48,14 +48,16 @@ const queueGreetings = {
 };
 
 const mockStore = configureMockStore([]);
-const createStore = ({ dismissedQueueGreetings = {} } = {}) =>
+const createStore = ({ isQueueGreetingDismissed = false } = {}) =>
   mockStore({
     flex: { view: { selectedTaskSid: 'WR1' } },
     [namespace]: {
       configuration: { currentDefinitionVersion: { queueGreetings } },
       routing: {
-        tasks: { [standaloneTaskSid]: { routeStack: [{ route: 'agent-desktop' }] } },
-        dismissedQueueGreetings,
+        tasks: {
+          [standaloneTaskSid]: { routeStack: [{ route: 'agent-desktop' }] },
+          'task-WR1': { isQueueGreetingDismissed },
+        },
       },
     },
   });
@@ -118,7 +120,7 @@ describe('QueueGreetingPopover', () => {
   });
 
   test('renders nothing once the greeting was dismissed', () => {
-    const store = createStore({ dismissedQueueGreetings: { 'task-WR1': true } });
+    const store = createStore({ isQueueGreetingDismissed: true });
     renderWithStore(<QueueGreetingPopover task={taskFromQueue('WR1', 'greetedQueue')} />, store);
 
     expect(screen.queryByText('Greeted queue title')).not.toBeInTheDocument();

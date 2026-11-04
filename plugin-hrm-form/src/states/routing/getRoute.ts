@@ -61,6 +61,6 @@ export const selectIsQueueGreetingOpen = (state: RootState, task: Pick<ITask, 's
     (selectCurrentTopmostRouteForTask(state, standaloneTaskSid)?.route as string) === 'agent-desktop';
   // Flex identifies the selected task by its reservation SID
   const isTaskSelected = state.flex.view.selectedTaskSid === task.sid;
-  const isDismissed = Boolean(state[namespace].routing.dismissedQueueGreetings[task.taskSid]);
+  const isDismissed = Boolean(state[namespace].routing.tasks[task.taskSid]?.isQueueGreetingDismissed);
   return isOnAgentDesktop && isTaskSelected && !isDismissed;
 };
