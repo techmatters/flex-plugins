@@ -41,6 +41,11 @@ export const GuidancePillContainer = styled('div')<GuidancePillContainerProps>`
     border: ${selectedTaskListItemBorder};
     border-top: none;
   `}
+
+  &:hover {
+    background-color: rgb(225, 227, 234);
+    background-blend-mode: color;
+  }
 `;
 GuidancePillContainer.displayName = 'GuidancePillContainer';
 
