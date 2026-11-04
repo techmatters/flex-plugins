@@ -23,7 +23,9 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
 import { handleApiRequest } from '@tech-matters/form-builder-server/api';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import { Provider } from 'react-redux';
 import { clientFor } from '../drafts/draftClient';
+import { createAppStore } from './store';
 import { App } from './App';
 
 const staff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
@@ -58,7 +60,11 @@ afterEach(() => {
 
 describe('the app', () => {
   test('areas stay as they were left when another is opened; "All forms" goes back to the start page', async () => {
-    render(<App draftClient={clientFor(send)} />);
+    render(
+      <Provider store={createAppStore({ draftClient: clientFor(send) })}>
+        <App />
+      </Provider>,
+    );
     expect(await screen.findByRole('heading', { name: 'Forms' })).toBeTruthy();
 
     // Forms are opened from the list; Aselo staff add them with the importer (master here)

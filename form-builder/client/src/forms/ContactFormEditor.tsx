@@ -19,10 +19,10 @@
  * is shown in its two Aselo columns; fields can be dragged within and between columns, and
  * clicking one opens its settings.
  *
- * Every change is written straight back to the draft: the form's JSON file, plus
- * LayoutDefinitions.json when the column split moves.
+ * What's edited and how lives in formEditorSlice.ts: every change is written straight back to
+ * the draft (the form's JSON file, plus LayoutDefinitions.json when the column split moves).
  */
-import { useMemo, useRef, useState } from 'react';
+import { useEffect } from 'react';
 import {
   closestCorners,
   DndContext,
@@ -32,86 +32,58 @@ import {
   DragStartEvent,
   KeyboardSensor,
   PointerSensor,
-  UniqueIdentifier,
   useDroppable,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import {
-  arrayMove,
-  SortableContext,
-  sortableKeyboardCoordinates,
-  useSortable,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
-import type { DefinitionFileMap, FormTarget } from '../common/definitions';
-import {
-  describeDefinitionFile,
-  getForm,
-  getReferenceData,
-  LAYOUT_FILE,
-  REFERENCE_DATA_FILE,
-  getSplitFormAt,
-  splitIntoColumns,
-} from '../common/definitions';
-import {
-  applyColumnSplit,
-  createField,
-  blankOptionValueFor,
-  FieldType,
-} from './formEditing';
-import {
-  AnswerNode,
-  applyChainOptions,
-  chainToTree,
-  ChainTree,
-  createChainFields,
-  findReferenceKeyUsers,
-  makeKeyValuesUnique,
-  treeToChainOptions,
-} from '../linkedDropdowns/linkedDropdowns';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import type { FormTarget } from '../common/definitions';
+import { getReferenceData, isContactTab } from '../common/definitions';
 import { isSameJson } from '../drafts/changes';
-import type { ValidationIssue } from './validation';
+import { selectDraftFiles } from '../drafts/draftSlice';
+import { selectIssuesByTab, selectWorkspace } from '../workspace/workspaceSlice';
+import { useReviewContext } from '../workspace/useReviewContext';
+import {
+  addField,
+  addFieldMenuToggled,
+  chainEditorToggled,
+  COLUMN_KEYS,
+  ColumnKey,
+  createChain,
+  dragCancelled,
+  dragStarted,
+  Entry,
+  fieldDraggedOver,
+  fieldSelected,
+  finishDrag,
+  issuesKeyOf,
+  linkedWizardToggled,
+  openFormEditor,
+  saveChainAnswers,
+  selectFormEditor,
+  selectOriginalFieldsByName,
+} from './formEditorSlice';
 import { FieldPreview } from './FieldPreview';
 import { FieldSettings } from './FieldSettings';
-import { baseLanguageOf, setSubstitution } from '../cases/caseSections';
 import { AddFieldMenu } from './AddFieldMenu';
 import { LinkedAnswersEditor } from '../linkedDropdowns/LinkedAnswersEditor';
 import { LinkedDropdownsWizard } from '../linkedDropdowns/LinkedDropdownsWizard';
-import { ReviewContext, ReviewPanel } from '../reviews/ReviewPanel';
+import { ReviewPanel } from '../reviews/ReviewPanel';
 import { ApprovalIcon, FlagIcon } from '../reviews/ReviewIcons';
-import { approvalState, fieldFingerprint, fieldTargetOf, flagKinds, SIDES, threadsOn } from '../reviews/formReviews';
-
-type ColumnKey = 'left' | 'right';
-const COLUMN_KEYS: ColumnKey[] = ['left', 'right'];
-
-// Editor-only wrapper: a stable id for drag and drop and selection (field names can change)
-type Entry = { id: string; item: FormItemJsonDefinition };
-type Columns = Record<ColumnKey, Entry[]>;
-
-type Props = {
-  tab: FormTarget;
-  draftFiles: DefinitionFileMap;
-  originalFiles: DefinitionFileMap;
-  staffMode: boolean;
-  // e.g. 'en-US': texts that are translation keys are shown and edited in this language
-  helplineLanguage?: string;
-  issues: ValidationIssue[];
-  onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
-  // Reviewing the form (formReviews.ts): approvals and flags on its fields
-  review?: ReviewContext & { formTarget: string };
-};
+import {
+  approvalState,
+  fieldFingerprint,
+  fieldTargetOf,
+  flagKinds,
+  formTargetOf,
+  SIDES,
+  threadsOn,
+} from '../reviews/formReviews';
 
 // What a field card shows of its review: each side's approval, and its open flags
 type CardReview = { approvals: Partial<Record<'helpline' | 'aselo', 'approved' | 'changed'>>; flags: ReturnType<typeof flagKinds> };
-
-let nextEntryId = 0;
-const toEntry = (item: FormItemJsonDefinition): Entry => {
-  nextEntryId += 1;
-  return { id: `field-${nextEntryId}`, item };
-};
 
 const noop = () => {};
 
@@ -192,63 +164,56 @@ const Column = ({ id, children }: { id: ColumnKey; children: React.ReactNode }) 
   );
 };
 
-export const ContactFormEditor = ({
-  tab,
-  draftFiles,
-  originalFiles,
-  staffMode,
-  helplineLanguage,
-  issues,
-  onChangeFiles,
-  review,
-}: Props) => {
-  const originalForm = useMemo(
-    () => getForm(originalFiles, tab.filePath) ?? [],
-    [originalFiles, tab.filePath],
-  );
-  const originalByName = useMemo(
-    () => new Map(originalForm.map((item) => [item.name, item])),
-    [originalForm],
-  );
-  const hadExplicitSplit = getSplitFormAt(originalFiles, tab) !== undefined;
+export const ContactFormEditor = ({ tab }: { tab: FormTarget }) => {
+  const dispatch = useAppDispatch();
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const { editorRevision } = useAppSelector(selectWorkspace);
+  const issues = useAppSelector(selectIssuesByTab)[issuesKeyOf(tab)] ?? [];
+  const originalByName = useAppSelector(selectOriginalFieldsByName);
+  const { target, revision, columns, selectedId, drag, addingTo, linkedWizardColumn, editingChain } =
+    useAppSelector(selectFormEditor);
   const referenceData = getReferenceData(draftFiles);
+  // Reviewing the form (formReviews.ts): approvals and flags on its fields
+  const reviewContext = useReviewContext();
+  const review = reviewContext && {
+    ...reviewContext,
+    formTarget: formTargetOf(
+      isContactTab(tab) ? { kind: 'contactTab', tabKey: tab.key } : { kind: 'caseSection', sectionKey: tab.key },
+    ),
+  };
 
-  // The editor owns the column layout while it's open; it's built once from the draft
-  const [columns, setColumns] = useState<Columns>(() => {
-    const form = getForm(draftFiles, tab.filePath) ?? [];
-    const [left, right] = splitIntoColumns(form, getSplitFormAt(draftFiles, tab));
-    return { left: left.map(toEntry), right: right.map(toEntry) };
-  });
-  const [selectedId, setSelectedId] = useState<string>();
-  const [activeId, setActiveId] = useState<UniqueIdentifier>();
-  const [addingTo, setAddingTo] = useState<ColumnKey>();
-  // Column where the "Add linked dropdowns" wizard will put the new fields
-  const [linkedWizardColumn, setLinkedWizardColumn] = useState<ColumnKey>();
-  // Linked dropdowns whose answers are being edited
-  const [editingChain, setEditingChain] = useState<{
-    names: string[];
-    fields: FormItemJsonDefinition[];
-    tree: ChainTree;
-    notes: string[];
-  }>();
-  const columnsBeforeDrag = useRef<Columns>();
+  // Starts from the draft when it opens, and when the draft's files are replaced (discarded,
+  // reloaded). Keyed on the form's file rather than the target object, which is rebuilt on edits.
+  useEffect(() => {
+    dispatch(openFormEditor(tab, editorRevision));
+  }, [dispatch, tab.filePath, editorRevision]);
+
+  const sensors = useSensors(
+    // A small movement threshold so a plain click still selects the field
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  // Until it's open, the editor still holds the previous form
+  if (target?.filePath !== tab.filePath || revision !== editorRevision) return null;
 
   const allEntries = [...columns.left, ...columns.right];
   const selectedEntry = allEntries.find((entry) => entry.id === selectedId);
-  const activeEntry = allEntries.find((entry) => entry.id === activeId);
+  const activeEntry = allEntries.find((entry) => entry.id === drag?.activeId);
   const fieldsWithErrors = new Set(
     issues.filter((issue) => issue.severity === 'error').map((issue) => issue.fieldName),
   );
+  const formItems = allEntries.map((entry) => entry.item);
 
   const reviewOfCard = (entry: Entry): CardReview | undefined => {
     if (!review) return undefined;
-    const target = fieldTargetOf(review.formTarget, entry.item.name);
+    const fieldTarget = fieldTargetOf(review.formTarget, entry.item.name);
     const fingerprint = fieldFingerprint(entry.item);
     return {
       approvals: Object.fromEntries(
-        SIDES.map((side) => [side, approvalState(review.approvals, side, target, fingerprint)]),
+        SIDES.map((side) => [side, approvalState(review.approvals, side, fieldTarget, fingerprint)]),
       ),
-      flags: flagKinds(threadsOn(review.threads, target)),
+      flags: flagKinds(threadsOn(review.threads, fieldTarget)),
     };
   };
 
@@ -258,218 +223,14 @@ export const ContactFormEditor = ({
     return isSameJson(original, entry.item) ? undefined : 'edited';
   };
 
-  // Writes the columns back to the draft files, plus any other files that changed with them
-  const commit = (next: Columns, otherFiles: DefinitionFileMap = {}) => {
-    setColumns(next);
-    const items = [...next.left, ...next.right].map((entry) => entry.item);
-    onChangeFiles((current) => {
-      const files = { ...current, ...otherFiles };
-      const currentLayout = (files[LAYOUT_FILE] ?? {}) as Record<string, unknown>;
-      const layout = applyColumnSplit(
-        currentLayout,
-        tab.layoutPath,
-        next.left.length,
-        items.length,
-        hadExplicitSplit,
-      );
-      const layoutChanged = !isSameJson(layout, currentLayout);
-      return {
-        ...files,
-        [tab.filePath]: items,
-        ...(layoutChanged ? { [LAYOUT_FILE]: layout } : {}),
-      };
-    });
-  };
+  const handleDragStart = ({ active }: DragStartEvent) => dispatch(dragStarted(String(active.id)));
 
-  const findColumn = (id: UniqueIdentifier): ColumnKey | undefined => {
-    if (id === 'left' || id === 'right') return id;
-    return COLUMN_KEYS.find((key) => columns[key].some((entry) => entry.id === id));
-  };
-
-  const sensors = useSensors(
-    // A small movement threshold so a plain click still selects the field
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
-  );
-
-  const handleDragStart = ({ active }: DragStartEvent) => {
-    columnsBeforeDrag.current = columns;
-    setActiveId(active.id);
-  };
-
-  // Moving into the other column happens while dragging, so the preview updates live
   const handleDragOver = ({ active, over }: DragOverEvent) => {
-    if (!over) return;
-    const from = findColumn(active.id);
-    const to = findColumn(over.id);
-    if (!from || !to || from === to) return;
-    setColumns((current) => {
-      const moving = current[from].find((entry) => entry.id === active.id);
-      if (!moving) return current;
-      const overIndex = current[to].findIndex((entry) => entry.id === over.id);
-      const insertAt = overIndex >= 0 ? overIndex : current[to].length;
-      return {
-        ...current,
-        [from]: current[from].filter((entry) => entry.id !== active.id),
-        [to]: [...current[to].slice(0, insertAt), moving, ...current[to].slice(insertAt)],
-      };
-    });
+    if (over) dispatch(fieldDraggedOver({ activeId: String(active.id), overId: String(over.id) }));
   };
 
-  const handleDragEnd = ({ active, over }: DragEndEvent) => {
-    setActiveId(undefined);
-    const column = findColumn(active.id);
-    let next = columns;
-    if (over && column && findColumn(over.id) === column) {
-      const oldIndex = columns[column].findIndex((entry) => entry.id === active.id);
-      const overIndex = columns[column].findIndex((entry) => entry.id === over.id);
-      const newIndex = overIndex >= 0 ? overIndex : columns[column].length - 1;
-      if (oldIndex !== newIndex) {
-        next = { ...columns, [column]: arrayMove(columns[column], oldIndex, newIndex) };
-      }
-    }
-    commit(next);
-  };
-
-  const handleDragCancel = () => {
-    setActiveId(undefined);
-    if (columnsBeforeDrag.current) setColumns(columnsBeforeDrag.current);
-  };
-
-  const mapEntry = (id: string, update: (entry: Entry) => Entry | undefined): Columns => ({
-    left: columns.left.flatMap((entry) => (entry.id === id ? (update(entry) ?? []) : [entry])),
-    right: columns.right.flatMap((entry) => (entry.id === id ? (update(entry) ?? []) : [entry])),
-  });
-
-  const addField = (column: ColumnKey, type: FieldType) => {
-    const entry = toEntry(
-      createField(
-        type,
-        allEntries.map((existing) => existing.item.name),
-      ),
-    );
-    commit({ ...columns, [column]: [...columns[column], entry] });
-    setAddingTo(undefined);
-    setSelectedId(entry.id);
-  };
-
-  /**
-   * Linked dropdowns
-   */
-
-  const formItems = allEntries.map((entry) => entry.item);
-
-  // Turns edited answers into the chain's field options (and ReferenceData.json if needed)
-  const buildChain = (
-    fields: FormItemJsonDefinition[],
-    roots: AnswerNode[],
-    tree: Pick<ChainTree, 'rootBlankOption' | 'unusedLists'>,
-    replacedByImport: boolean,
-  ) => {
-    const unique = makeKeyValuesUnique(roots, fields.length, { fixExisting: replacedByImport });
-    const options = treeToChainOptions(
-      unique.roots,
-      fields.length,
-      tree.rootBlankOption,
-      // An import replaces everything, including lists that could never show
-      replacedByImport ? [] : tree.unusedLists,
-    );
-    const result = applyChainOptions(fields, options, draftFiles);
-    return {
-      fields: result.fields,
-      otherFiles: result.referenceData ? { [REFERENCE_DATA_FILE]: result.referenceData } : {},
-    };
-  };
-
-  const openChainEditor = (names: string[]) => {
-    const fields = names.map((name) => formItems.find((item) => item.name === name)!);
-    const tree = chainToTree(fields, referenceData);
-    const notes: string[] = [];
-    fields.forEach((field) => {
-      const key = (field as { optionsReferenceKey?: string }).optionsReferenceKey;
-      if (!key) return;
-      const others = findReferenceKeyUsers(draftFiles, key, (filePath) =>
-        describeDefinitionFile(draftFiles, filePath),
-      ).filter((user) => !(user.filePath === tab.filePath && user.fieldName === field.name));
-      if (others.length > 0) {
-        notes.push(
-          `The “${field.label}” answers are shared with ${others
-            .map((other) => other.description)
-            .join(', ')}. Changes here change them there too.`,
-        );
-      }
-    });
-    if (tree.sharedValues.length > 0) {
-      notes.push(
-        `${tree.sharedValues.length} answer(s) share a name with another answer at the same level (e.g. “${tree.sharedValues[0]}”), so they show the same answers below them. To give each its own list, download as Excel and import it again.`,
-      );
-    }
-    if (tree.unusedLists.length > 0) {
-      notes.push(
-        `${tree.unusedLists.length} list(s) of answers are filed under an answer that doesn't exist (e.g. “${tree.unusedLists[0].key}”), so counselors never see them. They're kept as they are unless you import from a spreadsheet.`,
-      );
-    }
-    setEditingChain({ names, fields, tree, notes });
-  };
-
-  const saveChainAnswers = (roots: AnswerNode[], replacedByImport: boolean) => {
-    if (!editingChain) return;
-    const { fields, otherFiles } = buildChain(
-      editingChain.fields,
-      roots,
-      editingChain.tree,
-      replacedByImport,
-    );
-    const byName = new Map(fields.map((field) => [field.name, field]));
-    const updateEntries = (entries: Entry[]) =>
-      entries.map((entry) => {
-        const updated = byName.get(entry.item.name);
-        return updated ? { ...entry, item: updated } : entry;
-      });
-    commit({ left: updateEntries(columns.left), right: updateEntries(columns.right) }, otherFiles);
-    setEditingChain(undefined);
-  };
-
-  const createChain = (
-    column: ColumnKey,
-    levelLabels: string[],
-    roots: AnswerNode[],
-    existingTop?: FormItemJsonDefinition,
-  ) => {
-    const newFields = createChainFields(
-      levelLabels,
-      formItems.map((item) => item.name),
-      existingTop,
-    );
-    const rootBlankOption = existingTop
-      ? chainToTree([existingTop], referenceData).rootBlankOption
-      : { value: blankOptionValueFor(false), label: '' };
-    const { fields, otherFiles } = buildChain(
-      newFields,
-      roots,
-      { rootBlankOption, unusedLists: [] },
-      false,
-    );
-    const [top, ...dependents] = fields.map(toEntry);
-
-    let next: Columns;
-    if (existingTop) {
-      // Follow-up dropdowns go straight under the question they depend on
-      const topColumn = COLUMN_KEYS.find((key) =>
-        columns[key].some((entry) => entry.item.name === existingTop.name),
-      )!;
-      const index = columns[topColumn].findIndex((entry) => entry.item.name === existingTop.name);
-      const updated = [...columns[topColumn]];
-      updated.splice(index, 1, { ...updated[index], item: top.item }, ...dependents);
-      next = { ...columns, [topColumn]: updated };
-      setSelectedId(dependents[0]?.id);
-    } else {
-      next = { ...columns, [column]: [...columns[column], top, ...dependents] };
-      setSelectedId(top.id);
-    }
-    commit(next, otherFiles);
-    setLinkedWizardColumn(undefined);
-  };
+  const handleDragEnd = ({ active, over }: DragEndEvent) =>
+    dispatch(finishDrag(String(active.id), over ? String(over.id) : undefined));
 
   const formIsEmpty = allEntries.length === 0;
 
@@ -495,7 +256,7 @@ export const ContactFormEditor = ({
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
-          onDragCancel={handleDragCancel}
+          onDragCancel={() => dispatch(dragCancelled())}
         >
           <div className="two-columns">
             {COLUMN_KEYS.map((columnKey) => (
@@ -511,7 +272,7 @@ export const ContactFormEditor = ({
                       key={entry.id}
                       entry={entry}
                       selected={entry.id === selectedId}
-                      onSelect={() => setSelectedId(entry.id)}
+                      onSelect={() => dispatch(fieldSelected(entry.id))}
                       referenceData={referenceData}
                       status={statusOf(entry)}
                       hasError={fieldsWithErrors.has(entry.item.name)}
@@ -520,18 +281,15 @@ export const ContactFormEditor = ({
                   ))}
                   {addingTo === columnKey ? (
                     <AddFieldMenu
-                      onAdd={(type) => addField(columnKey, type)}
-                      onAddLinked={() => {
-                        setAddingTo(undefined);
-                        setLinkedWizardColumn(columnKey);
-                      }}
-                      onCancel={() => setAddingTo(undefined)}
+                      onAdd={(type) => dispatch(addField(columnKey, type))}
+                      onAddLinked={() => dispatch(linkedWizardToggled(columnKey))}
+                      onCancel={() => dispatch(addFieldMenuToggled(undefined))}
                     />
                   ) : (
                     <button
                       type="button"
                       className="add-field-button"
-                      onClick={() => setAddingTo(columnKey)}
+                      onClick={() => dispatch(addFieldMenuToggled(columnKey))}
                     >
                       + Add a field
                     </button>
@@ -570,27 +328,6 @@ export const ContactFormEditor = ({
           <FieldSettings
             // Remount per field (and type) so local state like option ids starts fresh
             key={`${selectedEntry.id}-${selectedEntry.item.type}`}
-            tab={tab}
-            helplineLanguage={helplineLanguage}
-            onChangeTranslation={(key, text) =>
-              onChangeFiles((files) => setSubstitution(files, baseLanguageOf(helplineLanguage), key, text))
-            }
-            item={selectedEntry.item}
-            originalItem={originalByName.get(selectedEntry.item.name)}
-            otherNames={allEntries
-              .filter((entry) => entry.id !== selectedEntry.id)
-              .map((entry) => entry.item.name)}
-            draftFiles={draftFiles}
-            formItems={formItems}
-            staffMode={staffMode}
-            issues={issues.filter((issue) => issue.fieldName === selectedEntry.item.name)}
-            onChange={(item) => commit(mapEntry(selectedEntry.id, (entry) => ({ ...entry, item })))}
-            onEditLinked={openChainEditor}
-            onRemove={() => {
-              commit(mapEntry(selectedEntry.id, () => undefined));
-              setSelectedId(undefined);
-            }}
-            onClose={() => setSelectedId(undefined)}
           />
         ) : (
           <div className="settings-empty">
@@ -609,10 +346,8 @@ export const ContactFormEditor = ({
         <LinkedDropdownsWizard
           formItems={formItems}
           referenceData={referenceData}
-          onCreate={(levelLabels, roots, existingTop) =>
-            createChain(linkedWizardColumn, levelLabels, roots, existingTop)
-          }
-          onCancel={() => setLinkedWizardColumn(undefined)}
+          onCreate={(levelLabels, roots, existingTop) => dispatch(createChain(levelLabels, roots, existingTop))}
+          onCancel={() => dispatch(linkedWizardToggled(undefined))}
         />
       )}
 
@@ -624,8 +359,8 @@ export const ContactFormEditor = ({
           notes={editingChain.notes}
           saveLabel="Save answers"
           downloadName={`${tab.key}-${editingChain.names.join('-')}.xlsx`}
-          onSave={(roots, { replacedByImport }) => saveChainAnswers(roots, replacedByImport)}
-          onCancel={() => setEditingChain(undefined)}
+          onSave={(roots, { replacedByImport }) => dispatch(saveChainAnswers(roots, replacedByImport))}
+          onCancel={() => dispatch(chainEditorToggled(undefined))}
         />
       )}
     </div>

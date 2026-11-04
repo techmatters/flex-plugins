@@ -19,13 +19,12 @@
  * follows aselo-webchat-react-app: PreEngagementFormPhase.tsx, Header.tsx and
  * components/forms/formInputs (Input, Select, DependentSelect, Checkbox, validation.ts).
  */
-import { useState } from 'react';
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
+import { useAppDispatch, useAppSelector } from '../app/store';
 import { localizeText, PreEngagementForm, Strings, WebchatField } from './webchat';
+import { answerPreview, previewStartedSet, PreviewValue as Value, selectWebchat } from './webchatSlice';
 import { sanitizeLabelHtml } from './sanitizeLabelHtml';
 import './webchat.css';
-
-type Value = string | boolean;
 
 const EMAIL_PATTERN = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 
@@ -55,34 +54,20 @@ type Props = {
 
 export const WebchatPreview = ({ form, strings }: Props) => {
   const fields = form.fields ?? [];
-  const [values, setValues] = useState<Record<string, Value>>({});
-  const [touched, setTouched] = useState<Set<string>>(new Set());
-  const [started, setStarted] = useState(false);
+  const dispatch = useAppDispatch();
+  // What's filled in lives in the store (webchatSlice.ts)
+  const { values, touched, started } = useAppSelector(selectWebchat).preview;
   const t = (key: unknown) => localizeText(strings, key);
 
   const valueOf = (field: WebchatField) => values[field.name] ?? initialValue(field);
   const errorOf = (field: WebchatField) => validate(field, valueOf(field));
   const valid = fields.every((field) => !errorOf(field));
 
-  const setValue = (name: string, value: Value) => {
-    setTouched((current) => new Set(current).add(name));
-    setValues((current) => {
-      const next = { ...current, [name]: value };
-      // Like DependentSelect: when the answer above changes, the one below resets to its
-      // first answer
-      fields
-        .filter((field) => field.type === 'dependent-select' && field.dependsOn === name)
-        .forEach((field) => {
-          const list = (field.options as Record<string, SelectOption[]> | undefined)?.[String(value)];
-          next[field.name] = list?.[0] ? String(list[0].value) : '';
-        });
-      return next;
-    });
-  };
+  const setValue = (name: string, value: Value) => dispatch(answerPreview(fields, name, value));
 
   const renderError = (field: WebchatField) => {
     const error = errorOf(field);
-    return error && touched.has(field.name) ? (
+    return error && touched.includes(field.name) ? (
       <span className="webchat-error">{t(error)}</span>
     ) : null;
   };
@@ -94,7 +79,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
   );
 
   const renderField = (field: WebchatField) => {
-    const error = Boolean(errorOf(field) && touched.has(field.name));
+    const error = Boolean(errorOf(field) && touched.includes(field.name));
     const id = `webchat-preview-${field.name}`;
     switch (field.type) {
       case 'input':
@@ -195,7 +180,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
               </li>
             ))}
           </ul>
-          <button type="button" className="webchat-button" onClick={() => setStarted(false)}>
+          <button type="button" className="webchat-button" onClick={() => dispatch(previewStartedSet(false))}>
             Back to the form
           </button>
         </div>
@@ -204,7 +189,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
           className="webchat-form"
           onSubmit={(e) => {
             e.preventDefault();
-            setStarted(true);
+            dispatch(previewStartedSet(true));
           }}
         >
           {title && <h3 className="webchat-title">{title}</h3>}

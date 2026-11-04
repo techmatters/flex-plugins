@@ -23,6 +23,8 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
+import { Provider } from 'react-redux';
+import { createAppStore } from '../app/store';
 import {
   createHarness,
   formDefinitionsDir,
@@ -115,16 +117,18 @@ describe('webchat form editor', () => {
   });
 
   test("a dropdown's starting answer isn't used, as in the webchat, and can be removed", async () => {
-    const fields = as.files[PRE_ENGAGEMENT_FILE] as { fields: { name: string; defaultValue?: string }[] };
+    // A copy: definitions opened before are frozen in the store
+    const withStart = structuredClone(as);
+    const fields = withStart.files[PRE_ENGAGEMENT_FILE] as { fields: { name: string; defaultValue?: string }[] };
     fields.fields.find((field) => field.name === 'gender')!.defaultValue = 'Girl';
-    await openWebchat(as);
+    await openWebchat(withStart);
     expect((within(preview()).getByLabelText(/^Gender/) as HTMLSelectElement).value).toBe('');
 
     fireEvent.click(screen.getByRole('button', { name: /^Gender/ }));
     expect(screen.getByText(/set to start on “Girl”, but the webchat doesn't use that/)).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Remove the starting answer' }));
 
-    const saved = await savedDraft(as, PRE_ENGAGEMENT_FILE);
+    const saved = await savedDraft(withStart, PRE_ENGAGEMENT_FILE);
     expect(saved.fields.find((field: { name: string }) => field.name === 'gender')).toMatchObject({
       defaultValue: '',
     });
@@ -153,20 +157,23 @@ describe('filling in the contact form', () => {
 
 describe('webchat preview', () => {
   test('starts the chat only once required questions are answered, like the webchat', () => {
+    // What's filled in lives in the store
     render(
-      <WebchatPreview
-        strings={baseWebchatStrings('en-US')}
-        form={{
-          fields: [
-            {
-              type: 'checkbox',
-              name: 'terms',
-              label: 'I accept the <a href="https://example.org">terms</a>',
-              required: { value: true, message: 'You need to accept the terms.' },
-            },
-          ],
-        }}
-      />,
+      <Provider store={createAppStore()}>
+        <WebchatPreview
+          strings={baseWebchatStrings('en-US')}
+          form={{
+            fields: [
+              {
+                type: 'checkbox',
+                name: 'terms',
+                label: 'I accept the <a href="https://example.org">terms</a>',
+                required: { value: true, message: 'You need to accept the terms.' },
+              },
+            ],
+          }}
+        />
+      </Provider>,
     );
     const start = screen.getByRole('button', { name: 'Start chat' }) as HTMLButtonElement;
     expect(start.disabled).toBe(true);

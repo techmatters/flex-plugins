@@ -17,15 +17,18 @@
 /**
  * The forms to work on, on the start page: the versions Aselo staff imported (from master or a
  * branch) and the drafts in progress. Aselo staff see every helpline's, with those submitted for
- * review first; helpline staff see their own helplines'.
+ * review first; helpline staff see their own helplines'. Its state lives in draftsListSlice.ts.
  */
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import type { DraftSummary } from '@tech-matters/form-builder-shared';
 import type { FlagKind } from '@tech-matters/form-builder-shared';
-import type { DraftClient } from './draftClient';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectIsAseloStaff } from '../app/sessionSlice';
+import { openHelpline } from '../workspace/workspaceSlice';
 import { Loading } from '../common/Loading';
 import { HelplineFilter } from '../common/HelplineFilter';
 import { BranchLink } from '../common/BranchPicker';
+import { helplineFilterChanged, loadDrafts, removeDraft, selectDrafts, selectHelplineFilter } from './draftsListSlice';
 import '../common/designStatus.css';
 
 // e.g. ["2 open questions", "1 change needed"]: the flags still open on its forms (formReviews.ts)
@@ -40,35 +43,20 @@ const changesNeededOf = (draft: DraftSummary) => {
   return parts.filter(([n]) => n > 0).map(([n, one, many]) => `${n} ${n === 1 ? one : many}`);
 };
 
-type Props = {
-  draftClient: DraftClient;
-  isAseloStaff: boolean;
-  // branch: the flex-plugins branch the draft was started from ('' for the default)
-  onOpen: (code: string, version: string, branch: string) => void;
-};
-
 const keyOf = (draft: Pick<DraftSummary, 'code' | 'version'>) => `${draft.code}/${draft.version}`;
 
-export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
-  const [drafts, setDrafts] = useState<DraftSummary[]>();
-  const [helpline, setHelpline] = useState('');
+export const DraftsList = () => {
+  const dispatch = useAppDispatch();
+  const drafts = useAppSelector(selectDrafts);
+  const helpline = useAppSelector(selectHelplineFilter);
+  const isAseloStaff = useAppSelector(selectIsAseloStaff);
 
   useEffect(() => {
-    draftClient
-      .list()
-      .then((list) =>
-        setDrafts(
-          [...list].sort((a, b) =>
-            a.meta.status === b.meta.status
-              ? b.meta.updatedAt.localeCompare(a.meta.updatedAt)
-              : a.meta.status === 'submitted'
-                ? -1
-                : 1,
-          ),
-        ),
-      )
-      .catch(() => setDrafts([]));
-  }, [draftClient]);
+    dispatch(loadDrafts());
+  }, [dispatch]);
+
+  // branch: the flex-plugins branch the draft was started from ('' for the default)
+  const onOpen = (code: string, version: string, branch: string) => dispatch(openHelpline(code, version, branch));
 
   // Aselo staff: off the list (with its changes, if any)
   const remove = async (draft: DraftSummary) => {
@@ -76,8 +64,7 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
     const changes = draft.changedFiles.length;
     if (changes > 0 && !window.confirm(`Remove ${name} from the list? Its changes (${changes} files) are lost.`))
       return;
-    await draftClient.remove(draft.code, draft.version);
-    setDrafts((current) => current?.filter((candidate) => keyOf(candidate) !== keyOf(draft)));
+    await dispatch(removeDraft(draft));
   };
 
   if (!drafts) return <Loading text="Loading forms…" />;
@@ -95,7 +82,11 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
     <section className="drafts-list">
       <h3>{isAseloStaff ? 'Forms' : 'Your forms'}</h3>
       <div className="area-home-filters">
-        <HelplineFilter codes={drafts.map((draft) => draft.code)} value={helpline} onChange={setHelpline} />
+        <HelplineFilter
+          codes={drafts.map((draft) => draft.code)}
+          value={helpline}
+          onChange={(code) => dispatch(helplineFilterChanged(code))}
+        />
       </div>
       <table className="area-home-table">
         <thead>

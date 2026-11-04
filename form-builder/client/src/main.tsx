@@ -16,7 +16,9 @@
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { Provider } from 'react-redux';
 import { App } from './app/App';
+import { createAppStore } from './app/store';
 import { initAuth } from './app/auth';
 import './app/styles.css';
 
@@ -28,7 +30,9 @@ initAuth().then(
     if (ready) {
       root.render(
         <StrictMode>
-          <App />
+          <Provider store={createAppStore()}>
+            <App />
+          </Provider>
         </StrictMode>,
       );
     }

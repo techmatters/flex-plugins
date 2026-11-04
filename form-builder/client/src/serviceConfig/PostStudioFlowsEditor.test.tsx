@@ -16,12 +16,14 @@
  */
 
 
-import { useState } from 'react';
 import { afterEach, beforeAll, describe, expect, test } from '@jest/globals';
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { loadPostFlowChoices } from '@tech-matters/form-builder-server/postStudioFlowChoices';
-import type { DefinitionFileMap } from '../common/definitions';
+import { AppStore, createAppStore } from '../app/store';
+import type { DraftClient } from '../drafts/draftClient';
+import { openHelpline } from '../workspace/workspaceSlice';
 import { formDefinitionsDir, helplinesConfigDir } from '../testing/workspaceHarness';
 import { ServiceConfigEditor } from './ServiceConfigEditor';
 
@@ -40,29 +42,35 @@ const loadChoices = async (code: string) => {
   };
 };
 
-let files: DefinitionFileMap;
-const Editor = () => {
-  const [current, setCurrent] = useState<DefinitionFileMap>(usnm.files);
-  files = current;
-  return (
-    <ServiceConfigEditor
-      code="usnm"
-      draftFiles={current}
-      originalFiles={usnm.files}
-      defaults={usnm.serviceConfigDefaults}
-      onChangeFiles={(updater) => setCurrent(updater)}
-      loadPostFlowChoices={loadChoices}
-    />
-  );
+// USNM open with no saved draft (saves are accepted and forgotten)
+let store: AppStore;
+const renderEditor = async () => {
+  store = createAppStore({
+    draftClient: {
+      load: async () => undefined,
+      save: async () => ({ ok: true, meta: { revision: 1 } }),
+    } as unknown as DraftClient,
+    fetchHelplines: async () => [],
+    fetchDefinitionFiles: async () => usnm,
+    fetchPostFlowChoices: loadChoices,
+  });
+  await store.dispatch(openHelpline('usnm', 'v1'));
+  await act(async () => {
+    render(
+      <Provider store={store}>
+        <ServiceConfigEditor />
+      </Provider>,
+    );
+  });
 };
 
 const postStudioFlows = (file: string) =>
-  (files[`service-configuration/${file}.json`] as { attributes?: { postStudioFlows?: object } } | undefined)?.attributes
+  (store.getState().draft.files[`service-configuration/${file}.json`] as { attributes?: { postStudioFlows?: object } } | undefined)?.attributes
     ?.postStudioFlows;
 
 describe('post-call surveys (postStudioFlows)', () => {
   test("USNM's are listed; one is added for staging, changed and removed", async () => {
-    render(<Editor />);
+    await renderEditor();
     const section = within(screen.getByRole('region', { name: 'Post-call surveys' }));
     // Its 10 queues, in common.json (both environments)
     expect(section.getAllByRole('button', { name: /^Remove .* in common\.json$/ })).toHaveLength(10);

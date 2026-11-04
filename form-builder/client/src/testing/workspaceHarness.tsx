@@ -28,8 +28,12 @@ import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import type { Draft } from '@tech-matters/form-builder-shared';
 import { repoPathOf } from '@tech-matters/form-builder-shared';
 import { inProcessDraftClient } from './draftClient.inProcess';
+import { Provider } from 'react-redux';
 import { HelplineWorkspace } from '../workspace/HelplineWorkspace';
 import type { Person } from '@tech-matters/form-builder-shared/flows/model';
+import { openHelpline, selectDefinitions } from '../workspace/workspaceSlice';
+import { createAppStore, useAppSelector } from '../app/store';
+import { sessionLoaded } from '../app/sessionSlice';
 
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 export const formDefinitionsDir = path.join(
@@ -41,6 +45,9 @@ export const webchatConfigDir = path.join(repoRoot, 'aselo-webchat-react-app/con
 
 export const helplineStaff: ApiUser = { name: 'Helpline person', role: 'helpline-staff', helplines: 'all' };
 export const aseloStaff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
+
+// The workspace, once its helpline's files have loaded (as App shows it)
+const WhenLoaded = () => (useAppSelector(selectDefinitions) ? <HelplineWorkspace /> : null);
 
 export const createHarness = () => {
   const store = new MemoryDraftStore();
@@ -69,22 +76,33 @@ export const createHarness = () => {
       user?: ApiUser;
       onReload?: () => void;
       applyInBuilder?: boolean;
+      // A people list (a helpline's, or the Aselo team's), to say who a comment is for
       loadPeople?: (code: string) => Promise<Person[]>;
     } = {},
-  ) =>
-    render(
-      <HelplineWorkspace
-        definitions={definitions}
-        staffMode={user.role === 'aselo-staff'}
-        canApply={user.role === 'aselo-staff'}
-        applyInBuilder={applyInBuilder}
-        draftClient={inProcessDraftClient(context, user)}
-        onReload={onReload}
-        userName={user.name}
-        loadPeople={loadPeople}
-        saveDelayMs={0}
-      />,
+  ) => {
+    // The first load opens the helpline; any later one is a reload
+    let loads = 0;
+    const appStore = createAppStore({
+      draftClient: inProcessDraftClient(context, user),
+      fetchHelplines: async () => [],
+      fetchDefinitionFiles: async () => {
+        loads += 1;
+        if (loads > 1) onReload();
+        return definitions;
+      },
+      // No people to choose from unless the test gives them
+      loadPeople,
+      saveDelayMs: 0,
+    });
+    appStore.dispatch(sessionLoaded({ user: { ...user, applyInBuilder }, helplines: [] }));
+    appStore.dispatch(openHelpline(definitions.code, definitions.version));
+    const result = render(
+      <Provider store={appStore}>
+        <WhenLoaded />
+      </Provider>,
     );
+    return { ...result, appStore };
+  };
 
   // A file as saved in the draft (undefined until the draft has been saved)
   const savedFile = async (definitions: DefinitionFiles, filePath: string) =>

@@ -17,20 +17,26 @@
 /**
  * Edits the messages Aselo sends automatically in chats: customStrings/Messages.json (sent by
  * the plugin and lambdas/account-scoped) and customStrings/postSurveyMessages.json (the
- * post-chat survey). Both are grouped by language; the post-survey file can also be flat
- * (one set for every language), and keeps whichever shape the helpline already uses.
+ * post-chat survey). How they're written lives in messagesSlice.ts.
  */
-import { useState } from 'react';
-import type { DefinitionFileMap } from '../common/definitions';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { getHelplineName } from '../common/definitions';
+import { selectDraftFiles } from '../drafts/draftSlice';
+import { selectWorkspace } from '../workspace/workspaceSlice';
+import { CHAT_MESSAGES, getMessages, LocalizedMessages, POST_SURVEY_MESSAGES } from './sections';
 import {
-  CHAT_MESSAGES,
-  getMessages,
-  isFlatMessages,
-  LocalizedMessages,
-  MESSAGES_FILE,
-  POST_SURVEY_MESSAGES,
-  POST_SURVEY_MESSAGES_FILE,
-} from './sections';
+  addLanguage,
+  ALL_LANGUAGES,
+  getMessageLanguages,
+  getSurveyMessages,
+  languageSelected,
+  newLanguageChanged,
+  openMessages,
+  selectMessages,
+  setChatMessage,
+  setSurveyMessage,
+} from './messagesSlice';
 import '../aseloPreview/flexDesktop.css';
 
 // Built-in fallbacks: lambdas/account-scoped/src/operatingHours.ts and translations/en.json
@@ -41,63 +47,21 @@ const DEFAULT_MESSAGES: Record<string, string> = {
     'Before you leave, would you be willing to answer a few questions about the service you received today? Please answer Yes or No.',
 };
 
-const ALL_LANGUAGES = '(all languages)';
-
-type Props = {
-  draftFiles: DefinitionFileMap;
-  helplineName: string;
-  onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
-};
-
-// Sets or removes (when empty) one message, keeping the file's shape
-const withMessage = (
-  file: unknown,
-  language: string,
-  key: string,
-  text: string,
-): Record<string, unknown> => {
-  if (language === ALL_LANGUAGES) {
-    const flat = { ...((file ?? {}) as Record<string, string>) };
-    if (text) flat[key] = text;
-    else delete flat[key];
-    return flat;
-  }
-  const localized = { ...((file ?? {}) as LocalizedMessages) };
-  const messages = { ...(localized[language] ?? {}) };
-  if (text) messages[key] = text;
-  else delete messages[key];
-  localized[language] = messages;
-  return localized;
-};
-
-export const MessagesEditor = ({ draftFiles, helplineName, onChangeFiles }: Props) => {
+export const MessagesEditor = () => {
+  const dispatch = useAppDispatch();
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const { code, editorRevision } = useAppSelector(selectWorkspace);
+  const { language, newLanguage } = useAppSelector(selectMessages);
+  const helplineName = getHelplineName(draftFiles, code);
   const chatMessages = getMessages(draftFiles);
-  const surveyFile = draftFiles[POST_SURVEY_MESSAGES_FILE];
-  const surveyIsFlat = isFlatMessages(surveyFile);
-  const surveyMessages: LocalizedMessages = surveyIsFlat
-    ? { [ALL_LANGUAGES]: surveyFile as Record<string, string> }
-    : ((surveyFile ?? {}) as LocalizedMessages);
-
-  const languages = [
-    ...new Set([...Object.keys(chatMessages), ...Object.keys(surveyMessages)].filter(
-      (language) => language !== ALL_LANGUAGES,
-    )),
-  ];
-  const [language, setLanguage] = useState(languages[0] ?? 'en');
-  const [newLanguage, setNewLanguage] = useState('');
-
-  const setChatMessage = (key: string, text: string) =>
-    onChangeFiles((files) => ({
-      ...files,
-      [MESSAGES_FILE]: withMessage(files[MESSAGES_FILE], language, key, text),
-    }));
-
+  const { surveyIsFlat, surveyMessages } = getSurveyMessages(draftFiles);
+  const languages = getMessageLanguages(draftFiles);
   const surveyLanguage = surveyIsFlat ? ALL_LANGUAGES : language;
-  const setSurveyMessage = (key: string, text: string) =>
-    onChangeFiles((files) => ({
-      ...files,
-      [POST_SURVEY_MESSAGES_FILE]: withMessage(files[POST_SURVEY_MESSAGES_FILE], surveyLanguage, key, text),
-    }));
+
+  // Starts from the draft when it opens, and when the draft's files are replaced (discarded, reloaded)
+  useEffect(() => {
+    dispatch(openMessages());
+  }, [dispatch, editorRevision]);
 
   const otherChatKeys = Object.keys(chatMessages[language] ?? {}).filter(
     (key) => !CHAT_MESSAGES.some((info) => info.key === key),
@@ -149,27 +113,23 @@ export const MessagesEditor = ({ draftFiles, helplineName, onChangeFiles }: Prop
           <p className="muted">Messages Aselo sends to the contact by itself, in each language.</p>
 
           <div className="language-tabs" role="tablist" aria-label="Language">
-            {languages.map((code) => (
+            {languages.map((languageCode) => (
               <button
-                key={code}
+                key={languageCode}
                 type="button"
                 role="tab"
-                aria-selected={code === language}
-                className={code === language ? 'active' : ''}
-                onClick={() => setLanguage(code)}
+                aria-selected={languageCode === language}
+                className={languageCode === language ? 'active' : ''}
+                onClick={() => dispatch(languageSelected(languageCode))}
               >
-                {code}
+                {languageCode}
               </button>
             ))}
             <form
               className="language-add"
               onSubmit={(e) => {
                 e.preventDefault();
-                const code = newLanguage.trim();
-                if (code) {
-                  setLanguage(code);
-                  setNewLanguage('');
-                }
+                dispatch(addLanguage());
               }}
             >
               <input
@@ -177,7 +137,7 @@ export const MessagesEditor = ({ draftFiles, helplineName, onChangeFiles }: Prop
                 value={newLanguage}
                 placeholder="Add a language (e.g. es)"
                 aria-label="Language code to add"
-                onChange={(e) => setNewLanguage(e.target.value)}
+                onChange={(e) => dispatch(newLanguageChanged(e.target.value))}
               />
             </form>
           </div>
@@ -185,12 +145,12 @@ export const MessagesEditor = ({ draftFiles, helplineName, onChangeFiles }: Prop
           <h3 className="section-heading">During the chat</h3>
           {CHAT_MESSAGES.map((info) =>
             messageCard(info.key, info.title, info.when, chatMessages[language]?.[info.key] ?? '', (text) =>
-              setChatMessage(info.key, text),
+              dispatch(setChatMessage(info.key, text)),
             ),
           )}
           {otherChatKeys.map((key) =>
             messageCard(key, key, 'A message specific to this helpline.', chatMessages[language]?.[key] ?? '', (text) =>
-              setChatMessage(key, text),
+              dispatch(setChatMessage(key, text)),
             ),
           )}
 
@@ -206,7 +166,7 @@ export const MessagesEditor = ({ draftFiles, helplineName, onChangeFiles }: Prop
               info.title,
               info.when,
               surveyMessages[surveyLanguage]?.[info.key] ?? '',
-              (text) => setSurveyMessage(info.key, text),
+              (text) => dispatch(setSurveyMessage(info.key, text)),
             ),
           )}
           {otherSurveyKeys.map((key) =>
@@ -217,7 +177,7 @@ export const MessagesEditor = ({ draftFiles, helplineName, onChangeFiles }: Prop
                 ? 'This looks like a misspelling of postSurveyCompleteMessage, so it may never be used.'
                 : 'A survey message specific to this helpline.',
               surveyMessages[surveyLanguage]?.[key] ?? '',
-              (text) => setSurveyMessage(key, text),
+              (text) => dispatch(setSurveyMessage(key, text)),
             ),
           )}
         </section>

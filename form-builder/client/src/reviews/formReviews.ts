@@ -25,7 +25,7 @@
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
 import type { Approval, FlagKind, ReviewSide, ReviewThread } from '@tech-matters/form-builder-shared';
 import { approvalKey } from '@tech-matters/form-builder-shared';
-import { hashJson } from '../drafts/useDraft';
+import { hashJson } from '../drafts/draftSlice';
 
 // The builder's screens that are forms
 export type FormView =

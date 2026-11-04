@@ -18,66 +18,59 @@
  * Settings for the selected field. Helpline staff see plain-language options; the field's
  * saved name, and changes that affect data already collected, need Aselo staff mode.
  */
-import type { FormItemJsonDefinition, SelectOption } from '@hrm-form-definitions/formDefinition/types';
-import type { DefinitionFileMap, FormTarget } from '../common/definitions';
+import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import { selectDraftFiles } from '../drafts/draftSlice';
+import { selectDefinitions, selectIssuesByTab } from '../workspace/workspaceSlice';
 import { findFieldReferences } from './fieldReferences';
 import { findChainsThroughField } from '../linkedDropdowns/linkedDropdowns';
+import { FIELD_TYPE_INFO, FieldType, getAllowedTypeSwitches, isChoiceType, isFieldRequired } from './formEditing';
 import {
-  changeFieldType,
-  FIELD_TYPE_INFO,
-  FieldType,
-  getAllowedTypeSwitches,
-  isChoiceType,
-  isFieldRequired,
-  setFieldRequired,
-  toFieldName,
-  uniqueFieldName,
-  updateField,
-} from './formEditing';
+  changeFieldDescription,
+  changeFieldLabel,
+  changeFieldName,
+  changeSelectedFieldType,
+  fieldSelected,
+  issuesKeyOf,
+  openChainEditor,
+  removeSelectedField,
+  selectFormEditor,
+  selectFormItems,
+  selectOriginalFieldsByName,
+  selectSelectedEntry,
+  setSelectedFieldOptions,
+  setSelectedFieldPII,
+  setSelectedFieldRequired,
+} from './formEditorSlice';
 import { isProtectedField } from './specification';
-import type { ValidationIssue } from './validation';
 import { OptionsEditor } from './OptionsEditor';
 import { translate, useStrings } from '../aseloPreview/translations';
-
-type Props = {
-  tab: FormTarget;
-  helplineLanguage?: string;
-  // Sets the helpline's own wording for a translation key (customStrings/Substitutions.json)
-  onChangeTranslation: (key: string, text: string) => void;
-  item: FormItemJsonDefinition;
-  // The field as it was loaded; undefined for a field added in this draft
-  originalItem?: FormItemJsonDefinition;
-  otherNames: string[];
-  draftFiles: DefinitionFileMap;
-  // Every field in this form, to find the linked dropdowns this field belongs to
-  formItems: FormItemJsonDefinition[];
-  staffMode: boolean;
-  issues: ValidationIssue[];
-  onChange: (item: FormItemJsonDefinition) => void;
-  onEditLinked: (chain: string[]) => void;
-  onRemove: () => void;
-  onClose: () => void;
-};
 
 // Field types that are part of Aselo itself; only their label can be edited here
 const SPECIAL_TYPES = ['file-upload', 'button', 'copy-to', 'custom-contact-component', 'search-input', 'radio-input'];
 
-export const FieldSettings = ({
-  tab,
-  helplineLanguage,
-  onChangeTranslation,
-  item,
-  originalItem,
-  otherNames,
-  draftFiles,
-  formItems,
-  staffMode,
-  issues,
-  onChange,
-  onEditLinked,
-  onRemove,
-  onClose,
-}: Props) => {
+export const FieldSettings = () => {
+  const dispatch = useAppDispatch();
+  const { target } = useAppSelector(selectFormEditor);
+  const tab = target!;
+  const selectedEntry = useAppSelector(selectSelectedEntry)!;
+  const item = selectedEntry.item;
+  // The field as it was loaded; undefined for a field added in this draft
+  const originalItem = useAppSelector(selectOriginalFieldsByName).get(item.name);
+  // Every field in this form, to find the linked dropdowns this field belongs to
+  const formItems = useAppSelector(selectFormItems);
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const staffMode = useAppSelector(selectActingAsStaff);
+  // e.g. 'en-US': texts that are translation keys are shown and edited in this language
+  const helplineLanguage = useAppSelector(selectDefinitions)?.helplineLanguage;
+  const issues = (useAppSelector(selectIssuesByTab)[issuesKeyOf(tab)] ?? []).filter(
+    (issue) => issue.fieldName === item.name,
+  );
+  const onRemove = () => dispatch(removeSelectedField());
+  const onClose = () => dispatch(fieldSelected(undefined));
+  const onEditLinked = (chain: string[]) => dispatch(openChainEditor(chain));
+
   const isNew = !originalItem;
   const type = item.type as FieldType;
   const isProtected = isProtectedField(tab, item.name);
@@ -95,14 +88,8 @@ export const FieldSettings = ({
   const allowedTypes = isLinked ? [type] : getAllowedTypeSwitches(item, { isNew, staffMode });
   const references = isNew ? [] : findFieldReferences(draftFiles, tab, item.name);
 
-  // A new field's saved name follows its label, until someone sets the name by hand
-  const autoName = (label: string) => uniqueFieldName(toFieldName(label), otherNames);
-  const nameFollowsLabel = isNew && item.name === autoName(item.label);
-
-  const changeLabel = (label: string) =>
-    onChange(updateField(item, nameFollowsLabel ? { label, name: autoName(label) } : { label }));
-
-  const changeName = (name: string) => onChange(updateField(item, { name: name.trim() }));
+  const changeLabel = (label: string) => dispatch(changeFieldLabel(label));
+  const changeName = (name: string) => dispatch(changeFieldName(name));
 
   /**
    * The help box (description) shows under the field. Its parts can be translation keys (as in
@@ -118,17 +105,8 @@ export const FieldSettings = ({
     title: translate(strings, description?.title ?? ''),
     content: translate(strings, description?.content ?? ''),
   };
-  const changeDescription = (part: 'title' | 'content', text: string) => {
-    const stored = description?.[part];
-    if (isKey(stored)) {
-      onChangeTranslation(stored!, text);
-      return;
-    }
-    const next = { title: description?.title ?? '', content: description?.content ?? '', [part]: text };
-    onChange(
-      updateField(item, { description: next.title.trim() || next.content.trim() ? next : undefined }),
-    );
-  };
+  const changeDescription = (part: 'title' | 'content', text: string) =>
+    dispatch(changeFieldDescription(part, text, isKey(description?.[part])));
 
   const confirmRemove = () => {
     if (isNew) {
@@ -205,7 +183,7 @@ export const FieldSettings = ({
           <select
             value={type}
             onChange={(e) =>
-              onChange(changeFieldType(item, e.target.value as FieldType))
+              dispatch(changeSelectedFieldType(e.target.value as FieldType))
             }
           >
             {allowedTypes.map((allowedType) => (
@@ -252,7 +230,7 @@ export const FieldSettings = ({
             <input
               type="checkbox"
               checked={isFieldRequired(item)}
-              onChange={(e) => onChange(setFieldRequired(item, e.target.checked))}
+              onChange={(e) => dispatch(setSelectedFieldRequired(e.target.checked))}
             />
             <span>Counselors must answer this</span>
           </label>
@@ -271,7 +249,7 @@ export const FieldSettings = ({
                   )
                 }
                 staffMode={staffMode}
-                onChange={(options) => onChange(updateField(item, { options }))}
+                onChange={(options) => dispatch(setSelectedFieldOptions(options))}
               />
             </div>
           )}
@@ -290,7 +268,7 @@ export const FieldSettings = ({
           type="checkbox"
           checked={Boolean(item.isPII)}
           disabled={!isNew && !staffMode}
-          onChange={(e) => onChange(updateField(item, { isPII: e.target.checked }))}
+          onChange={(e) => dispatch(setSelectedFieldPII(e.target.checked))}
         />
         <span>
           Could the answer identify someone? (for example a name, phone number or address)

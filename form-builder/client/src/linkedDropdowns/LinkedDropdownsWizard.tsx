@@ -17,10 +17,13 @@
 /**
  * Adds a set of linked dropdowns in two steps: name the levels, then fill in the answers.
  * The first level can be a new question or one already on the form (follow-up questions).
+ * Where the wizard is up to lives in linkedDropdownsSlice.ts while it's open.
  */
-import { useState } from 'react';
+import { useEffect } from 'react';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
-import { AnswerNode, chainToTree } from './linkedDropdowns';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { AnswerNode } from './linkedDropdowns';
+import { selectWizard, wizardChanged, wizardClosed, wizardOpened, wizardToAnswers } from './linkedDropdownsSlice';
 import { LinkedAnswersEditor } from './LinkedAnswersEditor';
 
 const MIN_LEVELS = 2;
@@ -38,11 +41,20 @@ const ordinal = (index: number) => ['First', 'Second', 'Third', 'Fourth', 'Fifth
 export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCancel }: Props) => {
   // Dropdowns already on the form that can start a chain (their answers are edited here too)
   const startCandidates = formItems.filter((item) => item.type === 'select');
-  const [startFrom, setStartFrom] = useState<'new' | 'existing'>('new');
-  const [rootName, setRootName] = useState(startCandidates[0]?.name ?? '');
-  const [labels, setLabels] = useState(['', '']);
-  const [step, setStep] = useState<'levels' | 'answers'>('levels');
-  const [roots, setRoots] = useState<AnswerNode[]>([]);
+  const dispatch = useAppDispatch();
+  const wizard = useAppSelector(selectWizard);
+
+  // Starts afresh, and is forgotten when it goes away
+  useEffect(() => {
+    dispatch(wizardOpened({ rootName: startCandidates[0]?.name ?? '' }));
+    return () => {
+      dispatch(wizardClosed());
+    };
+  }, [dispatch]);
+
+  if (!wizard) return null;
+  const { startFrom, rootName, labels, step, roots } = wizard;
+  const setLabels = (next: string[]) => dispatch(wizardChanged({ labels: next }));
 
   const existingRoot =
     startFrom === 'existing' ? startCandidates.find((item) => item.name === rootName) : undefined;
@@ -51,14 +63,6 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
 
   const setLabel = (index: number, value: string) =>
     setLabels(labels.map((label, i) => (i === index ? value : label)));
-
-  const goToAnswers = () => {
-    // Starting from an existing dropdown: its answers become the first column
-    if (existingRoot && roots.length === 0) {
-      setRoots(chainToTree([existingRoot], referenceData).roots);
-    }
-    setStep('answers');
-  };
 
   if (step === 'answers') {
     return (
@@ -69,10 +73,7 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
         saveLabel="Add these dropdowns"
         downloadName="linked-dropdowns.xlsx"
         onSave={(savedRoots) => onCreate(levelLabels, savedRoots, existingRoot)}
-        onBack={(enteredRoots) => {
-          setRoots(enteredRoots);
-          setStep('levels');
-        }}
+        onBack={(enteredRoots: AnswerNode[]) => dispatch(wizardChanged({ roots: enteredRoots, step: 'levels' }))}
         onCancel={onCancel}
       />
     );
@@ -100,10 +101,7 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
               type="radio"
               name="startFrom"
               checked={startFrom === 'new'}
-              onChange={() => {
-                setStartFrom('new');
-                setRoots([]);
-              }}
+              onChange={() => dispatch(wizardChanged({ startFrom: 'new', roots: [] }))}
             />
             <span>A new question</span>
           </label>
@@ -113,10 +111,7 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
               name="startFrom"
               checked={startFrom === 'existing'}
               disabled={startCandidates.length === 0}
-              onChange={() => {
-                setStartFrom('existing');
-                setRoots([]);
-              }}
+              onChange={() => dispatch(wizardChanged({ startFrom: 'existing', roots: [] }))}
             />
             <span>A dropdown that's already on this form</span>
           </label>
@@ -130,10 +125,7 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
                 {index === 0 && startFrom === 'existing' ? (
                   <select
                     value={rootName}
-                    onChange={(e) => {
-                      setRootName(e.target.value);
-                      setRoots([]);
-                    }}
+                    onChange={(e) => dispatch(wizardChanged({ rootName: e.target.value, roots: [] }))}
                   >
                     {startCandidates.map((item) => (
                       <option key={item.name} value={item.name}>
@@ -178,7 +170,7 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
             type="button"
             className="primary-button"
             disabled={!canContinue}
-            onClick={goToAnswers}
+            onClick={() => dispatch(wizardToAnswers(existingRoot, referenceData))}
           >
             Next: answers
           </button>

@@ -14,75 +14,41 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { useState } from 'react';
-import type { DefinitionFileMap } from '../common/definitions';
-import { summarizeContactFormChanges } from './changes';
-import { summarizeSectionChanges } from '../chatsAndCalls/sections';
-import { buildChangeLog, downloadExportZip } from './exportZip';
+/**
+ * The "Review & submit" / "Review & apply" dialog: what the draft changes, what needs fixing
+ * first, and submitting or applying it. Its state and logic live in reviewSlice.ts.
+ */
 import { repoPathOf } from '@tech-matters/form-builder-shared';
-import type { ValidationIssue } from '../forms/validation';
-import type { ApplyResult } from '@tech-matters/form-builder-shared';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff, selectUser } from '../app/sessionSlice';
+import { reviewClosed, selectReviewIssues } from '../workspace/workspaceSlice';
+import { selectChangedPaths, selectDraft } from './draftSlice';
+import {
+  applyReview,
+  exportReview,
+  selectContactFormSummaries,
+  selectReview,
+  selectSectionSummaries,
+  submitReview,
+} from './reviewSlice';
 
-type Props = {
-  code: string;
-  version: string;
-  originalFiles: DefinitionFileMap;
-  draftFiles: DefinitionFileMap;
-  changedPaths: string[];
-  issues: ValidationIssue[];
-  webchatDefaultLocale?: string;
+export const ReviewChanges = () => {
+  const dispatch = useAppDispatch();
+  const { code, version, meta, source } = useAppSelector(selectDraft);
+  const changedPaths = useAppSelector(selectChangedPaths);
+  const issues = useAppSelector(selectReviewIssues);
+  const summaries = useAppSelector(selectContactFormSummaries);
+  const sectionSummaries = useAppSelector(selectSectionSummaries);
   // Aselo staff apply the changes; helpline staff submit them for review
-  mode: 'apply' | 'submit';
-  // False when deployed without the GitHub App: Aselo staff download the changes and open the PR
-  applyInBuilder?: boolean;
-  alreadySubmitted: boolean;
-  onSubmit: () => Promise<void>;
-  // Gets the change log, which becomes the PR description when deployed
-  onApply: (description: string) => Promise<ApplyResult>;
-  onClose: () => void;
-};
-
-export const ReviewChanges = ({
-  code,
-  version,
-  originalFiles,
-  draftFiles,
-  changedPaths,
-  issues,
-  webchatDefaultLocale,
-  mode,
-  applyInBuilder = true,
-  alreadySubmitted,
-  onSubmit,
-  onApply,
-  onClose,
-}: Props) => {
-  const [exported, setExported] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [applied, setApplied] = useState<ApplyResult>();
-  const [failure, setFailure] = useState<string>();
+  const mode = useAppSelector(selectActingAsStaff) ? 'apply' : 'submit';
+  // False when deployed without the GitHub App, or for forms read from another flex-plugins branch:
+  // Aselo staff download the changes and open the PR
+  const applyInBuilder = useAppSelector(selectUser)?.applyInBuilder !== false && !source;
+  const { exported, busy, submitted, applied, failure } = useAppSelector(selectReview);
+  const alreadySubmitted = meta?.status === 'submitted';
   const errors = issues.filter((issue) => issue.severity === 'error');
   const warnings = issues.filter((issue) => issue.severity === 'warning');
-  const summaries = summarizeContactFormChanges(originalFiles, draftFiles);
-  const sectionSummaries = summarizeSectionChanges(originalFiles, draftFiles, webchatDefaultLocale);
-
-  const exportChanges = async () => {
-    await downloadExportZip({ code, version, originalFiles, draftFiles, warnings, webchatDefaultLocale });
-    setExported(true);
-  };
-
-  const run = async (action: () => Promise<void>) => {
-    setBusy(true);
-    setFailure(undefined);
-    try {
-      await action();
-    } catch (err) {
-      setFailure((err as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  };
+  const onClose = () => dispatch(reviewClosed());
 
   if (applied) {
     return (
@@ -232,12 +198,7 @@ export const ReviewChanges = ({
                   type="button"
                   className="primary-button"
                   disabled={errors.length > 0 || busy || submitted || alreadySubmitted}
-                  onClick={() =>
-                    run(async () => {
-                      await onSubmit();
-                      setSubmitted(true);
-                    })
-                  }
+                  onClick={() => dispatch(submitReview())}
                 >
                   Submit for review
                 </button>
@@ -261,7 +222,7 @@ export const ReviewChanges = ({
                   type="button"
                   className={applyInBuilder ? 'secondary-button' : 'primary-button'}
                   disabled={errors.length > 0 || busy}
-                  onClick={exportChanges}
+                  onClick={() => dispatch(exportReview())}
                 >
                   Download as zip
                 </button>
@@ -270,15 +231,7 @@ export const ReviewChanges = ({
                     type="button"
                     className="primary-button"
                     disabled={errors.length > 0 || busy}
-                    onClick={() =>
-                      run(async () => {
-                        setApplied(
-                          await onApply(
-                            buildChangeLog({ code, version, originalFiles, draftFiles, warnings, webchatDefaultLocale, target: 'pr' }),
-                          ),
-                        );
-                      })
-                    }
+                    onClick={() => dispatch(applyReview())}
                   >
                     Apply
                   </button>

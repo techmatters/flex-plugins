@@ -18,9 +18,12 @@
  * The helpline's service configuration, for Aselo staff: every setting with what staging and
  * production get and which file that comes from, editable per file, or each file as JSON.
  * Changes go into the draft like any other; applying to Twilio stays make service-config-apply.
+ * What's edited and how lives in serviceConfigSlice.ts.
  */
-import { Fragment, useMemo, useState } from 'react';
-import type { DefinitionFileMap } from '../common/definitions';
+import { Fragment, useCallback, useEffect, useMemo } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectDraftFiles } from '../drafts/draftSlice';
+import { selectDefinitions, selectWorkspace } from '../workspace/workspaceSlice';
 import {
   applyNoteFor,
   ConfigLayer,
@@ -29,36 +32,40 @@ import {
   describeValue,
   differsBetweenEnvironments,
   getServiceConfigFile,
-  getSettingRows,
   hasPlaceholder,
   isConfigObject,
-  isSetByHelpline,
   knownSettingPaths,
-  parseSettingPath,
   serviceConfigEnvironments,
-  setServiceConfigFile,
-  setServiceConfigValue,
   SETTING_GROUPS,
   SettingRow,
 } from './serviceConfig';
-import { isServiceConfigPath, repoServiceConfigDir, ServiceConfigFileName } from '@tech-matters/form-builder-shared';
-import type { PostFlowChoices } from '@tech-matters/form-builder-shared';
-import { fetchPostFlowChoices } from '../app/api';
+import {
+  addChanged,
+  addSetting,
+  editServiceConfig,
+  fileTabChanged,
+  filterChanged,
+  JsonText,
+  loadPostFlowChoices,
+  modeChanged,
+  openServiceConfig,
+  searchChanged,
+  selectChangedSettingPaths,
+  selectServiceConfig,
+  selectSettingRows,
+  selectVisibleSettingRows,
+  setSettingValue,
+  settingJsonKey,
+  SettingsFilter,
+  settingToggled,
+  typeFileJson,
+  typeSettingJson,
+} from './serviceConfigSlice';
+import { repoServiceConfigDir, ServiceConfigFileName } from '@tech-matters/form-builder-shared';
+import type { DefinitionFileMap } from '../common/definitions';
 import { PostStudioFlowsEditor } from './PostStudioFlowsEditor';
 
-type Props = {
-  code: string;
-  draftFiles: DefinitionFileMap;
-  originalFiles: DefinitionFileMap;
-  defaults?: ConfigObject;
-  onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
-  // The queues and post-call survey flows postStudioFlows can point at (replaced in tests)
-  loadPostFlowChoices?: (code: string) => Promise<PostFlowChoices>;
-};
-
-type Filter = 'helpline' | 'all' | 'differs' | 'changed';
-
-const FILTERS: { key: Filter; label: string }[] = [
+const FILTERS: { key: SettingsFilter; label: string }[] = [
   { key: 'helpline', label: 'Set by this helpline' },
   { key: 'all', label: 'All, including Aselo defaults' },
   { key: 'differs', label: 'Different between environments' },
@@ -78,14 +85,6 @@ const FILE_DESCRIPTIONS: Record<ServiceConfigFileName, string> = {
   staging: 'Staging only',
   production: 'Production only',
   development: 'Development only',
-};
-
-const parseLoose = (text: string): unknown => {
-  try {
-    return JSON.parse(text);
-  } catch {
-    return text;
-  }
 };
 
 const ValueText = ({ value }: { value: unknown }) => {
@@ -120,17 +119,20 @@ const FileValueInput = ({
   label,
   value,
   hint,
+  json,
   onChange,
+  onJsonChange,
 }: {
   label: string;
   value: unknown;
   // A value of the right type, from the other files, for when this file doesn't set it
   hint: unknown;
+  // JSON being typed for it, when it's edited as JSON
+  json?: JsonText;
   onChange: (value: unknown) => void;
+  onJsonChange: (text: string) => void;
 }) => {
   const kind = kindOf(value === undefined ? hint : value);
-  const [jsonText, setJsonText] = useState(() => JSON.stringify(value, null, 2) ?? '');
-  const [jsonError, setJsonError] = useState<string>();
 
   if (kind === 'boolean' && (value === undefined || typeof value === 'boolean')) {
     return (
@@ -153,11 +155,7 @@ const FileValueInput = ({
           type="button"
           className="link-button"
           aria-label={`Set ${label}`}
-          onClick={() => {
-            const initial = hint === undefined || hint === null ? emptyValueOf(kind) : hint;
-            setJsonText(JSON.stringify(initial, null, 2));
-            onChange(initial);
-          }}
+          onClick={() => onChange(hint === undefined || hint === null ? emptyValueOf(kind) : hint)}
         >
           Set here
         </button>
@@ -191,6 +189,7 @@ const FileValueInput = ({
       </span>
     );
   }
+  const jsonText = json?.text ?? JSON.stringify(value, null, 2) ?? '';
   return (
     <span className="config-json">
       <textarea
@@ -198,33 +197,20 @@ const FileValueInput = ({
         rows={Math.min(12, Math.max(2, jsonText.split('\n').length))}
         value={jsonText}
         spellCheck={false}
-        onChange={(e) => {
-          setJsonText(e.target.value);
-          try {
-            onChange(JSON.parse(e.target.value));
-            setJsonError(undefined);
-          } catch (err) {
-            setJsonError((err as Error).message);
-          }
-        }}
+        onChange={(e) => onJsonChange(e.target.value)}
       />
-      {jsonError && <span className="issue-error-text">Not valid JSON, not saved: {jsonError}</span>}
+      {json?.error && <span className="issue-error-text">Not valid JSON, not saved: {json.error}</span>}
       {remove}
     </span>
   );
 };
 
-const SettingEditor = ({
-  row,
-  fileNames,
-  onSet,
-}: {
-  row: SettingRow;
-  fileNames: ServiceConfigFileName[];
-  onSet: (name: ServiceConfigFileName, value: unknown) => void;
-}) => {
+const SettingEditor = ({ row, fileNames }: { row: SettingRow; fileNames: ServiceConfigFileName[] }) => {
+  const dispatch = useAppDispatch();
+  const { settingJson } = useAppSelector(selectServiceConfig);
   const hint = [...fileNames].reverse().map((name) => row.byLayer[name]).find((value) => value !== undefined) ?? row.byLayer.defaults;
   const note = applyNoteFor(row.keys);
+  const set = (name: ServiceConfigFileName, value: unknown) => dispatch(setSettingValue(row.path, row.keys, name, value));
   return (
     <div className="config-setting-editor">
       {note && <p className="issue issue-warning">{note}</p>}
@@ -255,17 +241,18 @@ const SettingEditor = ({
                 {row.byLayer[name] === null ? (
                   <span className="config-not-set">
                     <span className="muted">Removed here (null)</span>
-                    <button type="button" className="link-button" onClick={() => onSet(name, undefined)}>
+                    <button type="button" className="link-button" onClick={() => set(name, undefined)}>
                       Undo
                     </button>
                   </span>
                 ) : (
                   <FileValueInput
-                    key={`${row.path}:${name}:${row.byLayer[name] === undefined}`}
                     label={`${row.path} in ${name}.json`}
                     value={row.byLayer[name]}
                     hint={hint}
-                    onChange={(value) => onSet(name, value)}
+                    json={settingJson[settingJsonKey(row.path, name)]}
+                    onChange={(value) => set(name, value)}
+                    onJsonChange={(text) => dispatch(typeSettingJson(row.path, row.keys, name, text))}
                   />
                 )}
               </td>
@@ -277,44 +264,13 @@ const SettingEditor = ({
   );
 };
 
-const AddSetting = ({
-  rows,
-  fileNames,
-  onAdd,
-}: {
-  rows: SettingRow[];
-  fileNames: ServiceConfigFileName[];
-  onAdd: (keys: string[], name: ServiceConfigFileName, value: unknown) => void;
-}) => {
-  const [pathText, setPathText] = useState('');
-  const [fileName, setFileName] = useState<ServiceConfigFileName>('common');
-  const [valueText, setValueText] = useState('');
-  const [error, setError] = useState<string>();
+const AddSetting = ({ rows, fileNames }: { rows: SettingRow[]; fileNames: ServiceConfigFileName[] }) => {
+  const dispatch = useAppDispatch();
+  const { pathText, fileName, valueText, error } = useAppSelector(selectServiceConfig).add;
   const suggestions = useMemo(() => {
     const present = new Set(rows.map((row) => row.path));
     return knownSettingPaths().filter((path) => !present.has(path));
   }, [rows]);
-
-  const add = () => {
-    const keys = parseSettingPath(pathText);
-    if (!keys) {
-      setError('Write the setting as a dotted path, e.g. attributes.feature_flags.enable_lex');
-      return;
-    }
-    const existing = rows.find((row) => row.path === keys.join('.'));
-    if (existing && existing.byLayer[fileName] !== undefined) {
-      setError(`${fileName}.json already sets ${keys.join('.')}: change it in the list above.`);
-      return;
-    }
-    if (valueText.trim() === '') {
-      setError('Give it a value.');
-      return;
-    }
-    onAdd(keys, fileName, parseLoose(valueText.trim()));
-    setPathText('');
-    setValueText('');
-    setError(undefined);
-  };
 
   return (
     <div className="config-add">
@@ -327,7 +283,7 @@ const AddSetting = ({
             list="service-config-suggestions"
             placeholder="attributes.feature_flags.enable_lex"
             value={pathText}
-            onChange={(e) => setPathText(e.target.value)}
+            onChange={(e) => dispatch(addChanged({ pathText: e.target.value }))}
           />
           <datalist id="service-config-suggestions">
             {suggestions.map((path) => (
@@ -337,7 +293,10 @@ const AddSetting = ({
         </label>
         <label className="field">
           <span className="field-label">File</span>
-          <select value={fileName} onChange={(e) => setFileName(e.target.value as ServiceConfigFileName)}>
+          <select
+            value={fileName}
+            onChange={(e) => dispatch(addChanged({ fileName: e.target.value as ServiceConfigFileName }))}
+          >
             {fileNames.map((name) => (
               <option key={name} value={name}>
                 {name}.json ({FILE_DESCRIPTIONS[name].toLowerCase()})
@@ -347,9 +306,14 @@ const AddSetting = ({
         </label>
         <label className="field">
           <span className="field-label">Value</span>
-          <input type="text" placeholder="true" value={valueText} onChange={(e) => setValueText(e.target.value)} />
+          <input
+            type="text"
+            placeholder="true"
+            value={valueText}
+            onChange={(e) => dispatch(addChanged({ valueText: e.target.value }))}
+          />
         </label>
-        <button type="button" className="secondary-button" onClick={add}>
+        <button type="button" className="secondary-button" onClick={() => dispatch(addSetting())}>
           Add
         </button>
       </div>
@@ -365,83 +329,60 @@ const AddSetting = ({
 const FileJsonEditor = ({
   name,
   config,
+  json,
   readOnly,
   onChange,
 }: {
   name: string;
   config: ConfigObject | undefined;
+  // What's typed, when anything is (until then, the file as it is)
+  json?: JsonText;
   readOnly?: boolean;
-  onChange?: (config: ConfigObject) => void;
+  onChange?: (text: string) => void;
 }) => {
-  const [text, setText] = useState(() => (config ? JSON.stringify(config, null, 2) : '{}'));
-  const [error, setError] = useState<string>();
+  const text = json?.text ?? (config ? JSON.stringify(config, null, 2) : '{}');
   return (
     <div className="config-file-json">
-      {!config && !readOnly && (
-        <p className="muted">There’s no {name} yet. Anything written here creates it.</p>
-      )}
+      {!config && !readOnly && <p className="muted">There’s no {name} yet. Anything written here creates it.</p>}
       <textarea
         aria-label={name}
         value={text}
         readOnly={readOnly}
         spellCheck={false}
         rows={Math.min(40, Math.max(8, text.split('\n').length + 1))}
-        onChange={(e) => {
-          setText(e.target.value);
-          try {
-            const parsed = JSON.parse(e.target.value);
-            if (!isConfigObject(parsed)) throw new Error('The file must be a JSON object ({ … }).');
-            onChange?.(parsed);
-            setError(undefined);
-          } catch (err) {
-            setError((err as Error).message);
-          }
-        }}
+        onChange={(e) => onChange?.(e.target.value)}
       />
-      {error && <p className="issue-error-text">Not valid, not saved: {error}</p>}
+      {json?.error && <p className="issue-error-text">Not valid, not saved: {json.error}</p>}
     </div>
   );
 };
 
-export const ServiceConfigEditor = ({
-  code,
-  draftFiles,
-  originalFiles,
-  defaults,
-  onChangeFiles,
-  loadPostFlowChoices = fetchPostFlowChoices,
-}: Props) => {
-  const [mode, setMode] = useState<'settings' | 'files'>('settings');
-  const [filter, setFilter] = useState<Filter>('helpline');
-  const [search, setSearch] = useState('');
-  const [open, setOpen] = useState<string>();
-  const [fileTab, setFileTab] = useState<ServiceConfigFileName | 'defaults'>('common');
+export const ServiceConfigEditor = () => {
+  const dispatch = useAppDispatch();
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const definitions = useAppSelector(selectDefinitions);
+  const { editorRevision } = useAppSelector(selectWorkspace);
+  const { mode, filter, search, openPath, fileTab, fileJson } = useAppSelector(selectServiceConfig);
+  const rows = useAppSelector(selectSettingRows);
+  const changedPaths = useAppSelector(selectChangedSettingPaths);
+  const visible = useAppSelector(selectVisibleSettingRows);
+  const code = definitions?.code ?? '';
+  const defaults = definitions?.serviceConfigDefaults;
+
+  // Starts again when it opens, and when the draft's files are replaced (discarded, reloaded)
+  useEffect(() => {
+    dispatch(openServiceConfig());
+  }, [dispatch, editorRevision]);
+
+  // Post-call surveys (postStudioFlows): their choices load once per helpline, so the loader stays the same
+  const loadChoices = useCallback((helplineCode: string) => dispatch(loadPostFlowChoices(helplineCode)), [dispatch]);
+  const changeFiles = useCallback(
+    (updater: (files: DefinitionFileMap) => DefinitionFileMap) => dispatch(editServiceConfig(updater)),
+    [dispatch],
+  );
 
   const environments = serviceConfigEnvironments(draftFiles);
   const fileNames: ServiceConfigFileName[] = ['common', ...environments];
-  const rows = useMemo(() => getSettingRows(draftFiles, defaults), [draftFiles, defaults]);
-  const originalRows = useMemo(
-    () => new Map(getSettingRows(originalFiles, defaults).map((row) => [row.path, JSON.stringify(row.byLayer)])),
-    [originalFiles, defaults],
-  );
-  const isChanged = (row: SettingRow) => originalRows.get(row.path) !== JSON.stringify(row.byLayer);
-
-  // A file the helpline didn't have, emptied again, isn't created
-  const isNewEmptyFile = (filePath: string, value: unknown) =>
-    isServiceConfigPath(filePath) && !(filePath in originalFiles) && isConfigObject(value) && Object.keys(value).length === 0;
-  const change = (updater: (files: DefinitionFileMap) => DefinitionFileMap) =>
-    onChangeFiles((files) =>
-      Object.fromEntries(Object.entries(updater(files)).filter(([filePath, value]) => !isNewEmptyFile(filePath, value))),
-    );
-
-  const query = search.trim().toLowerCase();
-  const visible = rows.filter((row) => {
-    if (filter === 'helpline' && !isSetByHelpline(row)) return false;
-    if (filter === 'differs' && !differsBetweenEnvironments(row)) return false;
-    if (filter === 'changed' && !isChanged(row)) return false;
-    if (!query) return true;
-    return `${row.path} ${describeSetting(row) ?? ''}`.toLowerCase().includes(query);
-  });
 
   return (
     <section className="panel service-config-panel">
@@ -453,10 +394,10 @@ export const ServiceConfigEditor = ({
       </p>
 
       <div className="mode-switch" role="group" aria-label="Show">
-        <button type="button" className={mode === 'settings' ? 'active' : ''} onClick={() => setMode('settings')}>
+        <button type="button" className={mode === 'settings' ? 'active' : ''} onClick={() => dispatch(modeChanged('settings'))}>
           Settings
         </button>
-        <button type="button" className={mode === 'files' ? 'active' : ''} onClick={() => setMode('files')}>
+        <button type="button" className={mode === 'files' ? 'active' : ''} onClick={() => dispatch(modeChanged('files'))}>
           Files (JSON)
         </button>
       </div>
@@ -469,9 +410,13 @@ export const ServiceConfigEditor = ({
               aria-label="Search settings"
               placeholder="Search settings"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => dispatch(searchChanged(e.target.value))}
             />
-            <select aria-label="Which settings" value={filter} onChange={(e) => setFilter(e.target.value as Filter)}>
+            <select
+              aria-label="Which settings"
+              value={filter}
+              onChange={(e) => dispatch(filterChanged(e.target.value as SettingsFilter))}
+            >
               {FILTERS.map((item) => (
                 <option key={item.key} value={item.key}>
                   {item.label}
@@ -504,7 +449,7 @@ export const ServiceConfigEditor = ({
                   <tbody>
                     {groupRows.map((row) => {
                       const description = describeSetting(row);
-                      const isOpen = open === row.path;
+                      const isOpen = openPath === row.path;
                       return (
                         <Fragment key={row.path}>
                           <tr className={isOpen ? 'config-row-open' : undefined}>
@@ -513,11 +458,11 @@ export const ServiceConfigEditor = ({
                                 type="button"
                                 className="config-setting-name"
                                 aria-expanded={isOpen}
-                                onClick={() => setOpen(isOpen ? undefined : row.path)}
+                                onClick={() => dispatch(settingToggled(row.path))}
                               >
                                 <code>{row.keys[row.keys.length - 1]}</code>
                               </button>
-                              {isChanged(row) && <span className="badge badge-edited">Changed</span>}
+                              {changedPaths.has(row.path) && <span className="badge badge-edited">Changed</span>}
                               {differsBetweenEnvironments(row) && <span className="badge badge-env">Differs</span>}
                               {row.group === 'other' && row.keys.length > 1 && (
                                 <span className="field-hint">{row.path}</span>
@@ -541,13 +486,7 @@ export const ServiceConfigEditor = ({
                           {isOpen && (
                             <tr className="config-row-editor">
                               <td colSpan={environments.length + 1}>
-                                <SettingEditor
-                                  row={row}
-                                  fileNames={fileNames}
-                                  onSet={(name, value) =>
-                                    change((files) => setServiceConfigValue(files, name, row.keys, value))
-                                  }
-                                />
+                                <SettingEditor row={row} fileNames={fileNames} />
                               </td>
                             </tr>
                           )}
@@ -561,18 +500,14 @@ export const ServiceConfigEditor = ({
           })}
           {visible.length === 0 && <p className="muted">No settings match.</p>}
 
-          <PostStudioFlowsEditor code={code} draftFiles={draftFiles} change={change} loadChoices={loadPostFlowChoices} />
-
-          <AddSetting
-            rows={rows}
-            fileNames={fileNames}
-            onAdd={(keys, name, value) => {
-              change((files) => setServiceConfigValue(files, name, keys, value));
-              setFilter('helpline');
-              setSearch('');
-              setOpen(keys.join('.'));
-            }}
+          <PostStudioFlowsEditor
+            code={code}
+            draftFiles={draftFiles}
+            change={changeFiles}
+            loadChoices={loadChoices}
           />
+
+          <AddSetting rows={rows} fileNames={fileNames} />
         </>
       ) : (
         <>
@@ -586,7 +521,7 @@ export const ServiceConfigEditor = ({
                   role="tab"
                   aria-selected={fileTab === name}
                   className={fileTab === name ? 'active' : ''}
-                  onClick={() => setFileTab(name)}
+                  onClick={() => dispatch(fileTabChanged(name))}
                 >
                   {name === 'defaults' ? 'Aselo defaults' : `${name}.json`}
                 </button>
@@ -598,14 +533,14 @@ export const ServiceConfigEditor = ({
                 Shared by every helpline (twilio-iac/helplines/configs/service-configuration/defaults.json). Read-only
                 here: change it in the repo.
               </p>
-              <FileJsonEditor key="defaults" name="defaults.json" config={defaults} readOnly />
+              <FileJsonEditor name="defaults.json" config={defaults} readOnly />
             </>
           ) : (
             <FileJsonEditor
-              key={fileTab}
               name={`${fileTab}.json`}
               config={getServiceConfigFile(draftFiles, fileTab)}
-              onChange={(config) => change((files) => setServiceConfigFile(files, fileTab, config))}
+              json={fileJson}
+              onChange={(text) => dispatch(typeFileJson(text))}
             />
           )}
         </>

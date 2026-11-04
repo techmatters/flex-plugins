@@ -23,10 +23,9 @@
  * - Answers that already existed keep their saved value when relabelled, so past contacts and
  *   reports stay consistent. Only Aselo staff can change it.
  */
-import { useState } from 'react';
+import { useEffect, useId } from 'react';
 import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import {
-  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
@@ -34,23 +33,23 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
-import { isBlankOption } from './formEditing';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import {
+  addOptions,
+  addPastedOptions,
+  bulkTextChanged,
+  changeOptionLabel,
+  changeOptionValue,
+  moveOption,
+  openOptionsEditor,
+  optionsEditorClosed,
+  removeOption,
+  selectOptionsEditor,
+  showValuesToggled,
+  splitBlankOption,
+} from './optionsEditorSlice';
 
-/**
- * Answers pasted in one go, one per line. A line can be "saved value;text" when the two differ
- * ("00;0"), or two spreadsheet columns in the same order; otherwise the text is also the value.
- */
-export const parsePastedAnswers = (text: string): SelectOption[] =>
-  text
-    .split(/\r?\n/)
-    .filter((line) => line.trim())
-    .map((line) => {
-      const separator = line.includes('\t') ? '\t' : ';';
-      const [first, ...rest] = line.split(separator);
-      const label = rest.join(separator).trim();
-      return label ? { value: first.trim(), label } : { value: first.trim(), label: first.trim() };
-    })
-    .filter((option) => option.label);
+export { parsePastedAnswers } from './optionsEditorSlice';
 
 type Props = {
   options: SelectOption[];
@@ -58,12 +57,6 @@ type Props = {
   originalValues: Set<string>;
   staffMode: boolean;
   onChange: (options: SelectOption[]) => void;
-};
-
-let nextOptionId = 0;
-const newOptionId = () => {
-  nextOptionId += 1;
-  return `option-${nextOptionId}`;
 };
 
 const OptionRow = ({
@@ -135,79 +128,35 @@ const OptionRow = ({
 };
 
 export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: Props) => {
-  const hasBlankFirst = options.length > 0 && isBlankOption(options[0], 0);
-  const blankOption = hasBlankFirst ? options[0] : undefined;
-  const editableOptions = hasBlankFirst ? options.slice(1) : options;
+  const dispatch = useAppDispatch();
+  // Each answers editor on screen has its own state in the store (see optionsEditorSlice.ts)
+  const editorId = useId();
+  const editor = useAppSelector((state) => selectOptionsEditor(state, editorId));
+  const { blankOption, editableOptions } = splitBlankOption(options);
 
-  // Stable ids for drag and drop, kept in step with editableOptions
-  const [ids, setIds] = useState(() => editableOptions.map(newOptionId));
-  // Rows that were already saved answers when the editor opened (decided once per row)
-  const [existingIds] = useState(
-    () =>
-      new Set(
-        ids.filter((_, index) => originalValues.has(String(editableOptions[index].value))),
-      ),
-  );
-  // New answers whose saved value was set on purpose, so it no longer follows their text
-  const [customValueIds, setCustomValueIds] = useState<Set<string>>(() => new Set());
-  // Shown from the start when any answer is saved under something other than its text
-  const [showValues, setShowValues] = useState(() =>
-    editableOptions.some((option) => String(option.value) !== String(option.label).trim()),
-  );
-  const [bulkText, setBulkText] = useState<string>();
+  // Starts from the answers it opens with, and is forgotten when it goes away
+  useEffect(() => {
+    dispatch(openOptionsEditor(editorId, options, originalValues));
+    return () => {
+      dispatch(optionsEditorClosed(editorId));
+    };
+  }, [dispatch, editorId]);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
 
-  const emit = (nextEditable: SelectOption[]) =>
-    onChange(blankOption ? [blankOption, ...nextEditable] : nextEditable);
+  if (!editor) return null;
+  const { ids, existingIds, showValues, bulkText } = editor;
 
-  const updateLabel = (index: number, label: string) =>
-    emit(
-      editableOptions.map((option, i) => {
-        if (i !== index) return option;
-        // New answers are saved as their text (unless given their own value); existing ones keep theirs
-        const keepsValue = existingIds.has(ids[index]) || customValueIds.has(ids[index]);
-        return keepsValue ? { ...option, label } : { value: label.trim(), label };
-      }),
-    );
-
-  const updateValue = (index: number, value: string) => {
-    setCustomValueIds(new Set(customValueIds).add(ids[index]));
-    emit(editableOptions.map((option, i) => (i === index ? { ...option, value } : option)));
-  };
-
-  const remove = (index: number) => {
-    setIds(ids.filter((_, i) => i !== index));
-    emit(editableOptions.filter((_, i) => i !== index));
-  };
-
-  const addOptions = (added: SelectOption[]) => {
-    const addedIds = added.map(newOptionId);
-    setIds([...ids, ...addedIds]);
-    // Answers pasted with their own saved value keep it when their text is edited
-    const custom = addedIds.filter((_, i) => String(added[i].value) !== String(added[i].label).trim());
-    if (custom.length > 0) {
-      setCustomValueIds(new Set([...customValueIds, ...custom]));
-      setShowValues(true);
-    }
-    emit([...editableOptions, ...added]);
+  const emit = (next: SelectOption[] | undefined) => {
+    if (next) onChange(next);
   };
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
-    const oldIndex = ids.indexOf(String(active.id));
-    const newIndex = ids.indexOf(String(over.id));
-    setIds(arrayMove(ids, oldIndex, newIndex));
-    emit(arrayMove(editableOptions, oldIndex, newIndex));
-  };
-
-  const addBulk = () => {
-    const added = parsePastedAnswers(bulkText ?? '');
-    if (added.length) addOptions(added);
-    setBulkText(undefined);
+    emit(dispatch(moveOption(editorId, options, String(active.id), String(over.id))));
   };
 
   return (
@@ -221,7 +170,7 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
         </p>
       )}
       <div className="option-actions">
-        <button type="button" className="link-button" onClick={() => setShowValues(!showValues)}>
+        <button type="button" className="link-button" onClick={() => dispatch(showValuesToggled(editorId))}>
           {showValues ? 'Hide saved values' : 'Show saved values'}
         </button>
         {showValues && (
@@ -241,12 +190,12 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
                 key={ids[index]}
                 id={ids[index]}
                 option={option}
-                isExisting={existingIds.has(ids[index])}
+                isExisting={existingIds.includes(ids[index])}
                 staffMode={staffMode}
                 showValues={showValues}
-                onLabelChange={(label) => updateLabel(index, label)}
-                onValueChange={(value) => updateValue(index, value)}
-                onRemove={() => remove(index)}
+                onLabelChange={(label) => emit(dispatch(changeOptionLabel(editorId, options, index, label)))}
+                onValueChange={(value) => emit(dispatch(changeOptionValue(editorId, options, index, value)))}
+                onRemove={() => emit(dispatch(removeOption(editorId, options, index)))}
               />
             ))}
           </ul>
@@ -255,10 +204,10 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
 
       {bulkText === undefined ? (
         <div className="option-actions">
-          <button type="button" className="secondary-button" onClick={() => addOptions([{ value: '', label: '' }])}>
+          <button type="button" className="secondary-button" onClick={() => emit(dispatch(addOptions(editorId, options, [{ value: '', label: '' }])))}>
             + Add an answer
           </button>
-          <button type="button" className="link-button" onClick={() => setBulkText('')}>
+          <button type="button" className="link-button" onClick={() => dispatch(bulkTextChanged(editorId, ''))}>
             Paste several at once
           </button>
         </div>
@@ -275,15 +224,15 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
               rows={6}
               value={bulkText}
               autoFocus
-              onChange={(e) => setBulkText(e.target.value)}
+              onChange={(e) => dispatch(bulkTextChanged(editorId, e.target.value))}
               placeholder={'Spanish\nFrench\n00;0'}
             />
           </label>
           <div className="option-actions">
-            <button type="button" className="secondary-button" onClick={addBulk}>
+            <button type="button" className="secondary-button" onClick={() => emit(dispatch(addPastedOptions(editorId, options)))}>
               Add these answers
             </button>
-            <button type="button" className="link-button" onClick={() => setBulkText(undefined)}>
+            <button type="button" className="link-button" onClick={() => dispatch(bulkTextChanged(editorId, undefined))}>
               Cancel
             </button>
           </div>

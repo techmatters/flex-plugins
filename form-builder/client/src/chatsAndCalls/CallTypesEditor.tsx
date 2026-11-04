@@ -15,7 +15,8 @@
  */
 
 /**
- * Edits CallTypeButtons.json: the buttons on the "categorize this contact" screen.
+ * Edits CallTypeButtons.json: the buttons on the "categorize this contact" screen. What's edited
+ * and how lives in callTypesSlice.ts.
  *
  * - Buttons that open the form ("data") must be named child or caller; the plugin saves its
  *   own fixed call type for them, so their label can change freely. Having a "caller" button
@@ -23,35 +24,37 @@
  * - Buttons that close the contact without a form ("non-data") save their label as the
  *   contact's call type, so renaming an existing one splits reporting. That needs staff mode.
  */
-import { useMemo, useState } from 'react';
-import type { CallTypeButtonsEntry } from '@hrm-form-definitions/formDefinition/types';
-import type { DefinitionFileMap } from '../common/definitions';
-import { toFieldName, uniqueFieldName } from '../forms/formEditing';
-import { CALL_TYPE_BUTTONS_FILE, getCallTypeButtons } from './sections';
+import { useEffect, useMemo } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import { selectDraftFiles, selectOriginalFiles } from '../drafts/draftSlice';
+import { selectDefinitions, selectWorkspace, tryItOutOpened } from '../workspace/workspaceSlice';
+import { getCallTypeButtons } from './sections';
+import {
+  addNonDataButtons,
+  addPastedButtons,
+  bulkTextChanged,
+  openCallTypes,
+  removeNonData,
+  renameNonData,
+  reorderNonData,
+  selectCallTypes,
+  setDataLabel,
+  toggleCaller,
+} from './callTypesSlice';
 import { AseloCallTypeScreen } from '../aseloPreview/AseloCallTypeScreen';
 import { useStrings } from '../aseloPreview/translations';
-import { SortableRows, toRows, useRows } from '../common/SortableRows';
+import { SortableRows } from '../common/SortableRows';
 import '../aseloPreview/aselo.css';
 
-type Props = {
-  draftFiles: DefinitionFileMap;
-  originalFiles: DefinitionFileMap;
-  staffMode: boolean;
-  helplineLanguage?: string;
-  onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
-  onTryItOut: () => void;
-};
-
-const NEW_CALLER_LABEL = 'Someone calling about another person';
-
-export const CallTypesEditor = ({
-  draftFiles,
-  originalFiles,
-  staffMode,
-  helplineLanguage,
-  onChangeFiles,
-  onTryItOut,
-}: Props) => {
+export const CallTypesEditor = () => {
+  const dispatch = useAppDispatch();
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const originalFiles = useAppSelector(selectOriginalFiles);
+  const staffMode = useAppSelector(selectActingAsStaff);
+  const helplineLanguage = useAppSelector(selectDefinitions)?.helplineLanguage;
+  const { editorRevision } = useAppSelector(selectWorkspace);
+  const { nonDataRows, bulkText } = useAppSelector(selectCallTypes);
   const strings = useStrings(helplineLanguage ?? 'en-US', draftFiles);
   const buttons = getCallTypeButtons(draftFiles);
   const originalNames = useMemo(
@@ -59,30 +62,14 @@ export const CallTypesEditor = ({
     [originalFiles],
   );
   const dataButtons = buttons.filter((button) => button.category === 'data');
-  const [bulkText, setBulkText] = useState<string>();
-
-  const write = (data: CallTypeButtonsEntry[], nonData: CallTypeButtonsEntry[]) =>
-    onChangeFiles((files) => ({ ...files, [CALL_TYPE_BUTTONS_FILE]: [...data, ...nonData] }));
-
-  const nonData = useRows(
-    buttons.filter((button) => button.category === 'non-data'),
-    (values) => write(dataButtons, values),
-  );
-
-  const setDataLabel = (name: string, label: string) =>
-    write(
-      dataButtons.map((button) => (button.name === name ? { ...button, label } : button)),
-      nonData.rows.map((row) => row.value),
-    );
-
   const hasCaller = dataButtons.some((button) => button.name === 'caller');
-  const toggleCaller = () => {
-    const next = hasCaller
-      ? dataButtons.filter((button) => button.name !== 'caller')
-      : [
-          ...dataButtons,
-          { type: 'button' as const, name: 'caller', label: NEW_CALLER_LABEL, category: 'data' as const },
-        ];
+
+  // Starts from the draft when it opens, and when the draft's files are replaced (discarded, reloaded)
+  useEffect(() => {
+    dispatch(openCallTypes());
+  }, [dispatch, editorRevision]);
+
+  const onToggleCaller = () => {
     if (
       hasCaller &&
       originalNames.has('caller') &&
@@ -92,41 +79,11 @@ export const CallTypesEditor = ({
     ) {
       return;
     }
-    write(next, nonData.rows.map((row) => row.value));
+    dispatch(toggleCaller());
   };
 
-  const takenNames = () => [
-    ...dataButtons.map((button) => button.name),
-    ...nonData.rows.map((row) => row.value.name),
-  ];
-
-  const addNonData = (labels: string[]) => {
-    const names = takenNames();
-    const added = labels
-      .map((label) => label.trim())
-      .filter(Boolean)
-      .map((label): CallTypeButtonsEntry => {
-        const name = uniqueFieldName(toFieldName(label), names);
-        names.push(name);
-        return { type: 'button', name, label, category: 'non-data' };
-      });
-    nonData.commit([...nonData.rows, ...toRows(added)]);
-  };
-
-  const renameNonData = (id: string, label: string) =>
-    nonData.commit(
-      nonData.rows.map((row) => {
-        if (row.id !== id) return row;
-        const isNew = !originalNames.has(row.value.name);
-        // A new button's name follows its label; an existing one keeps its name
-        const others = takenNames().filter((name) => name !== row.value.name);
-        const name = isNew ? uniqueFieldName(toFieldName(label), others) : row.value.name;
-        return { ...row, value: { ...row.value, label, name } };
-      }),
-    );
-
-  const removeNonData = (id: string) => {
-    const row = nonData.rows.find((candidate) => candidate.id === id)!;
+  const onRemoveNonData = (id: string) => {
+    const row = nonDataRows.find((candidate) => candidate.id === id)!;
     if (
       originalNames.has(row.value.name) &&
       !window.confirm(
@@ -135,7 +92,7 @@ export const CallTypesEditor = ({
     ) {
       return;
     }
-    nonData.commit(nonData.rows.filter((candidate) => candidate.id !== id));
+    dispatch(removeNonData(id));
   };
 
   return (
@@ -157,12 +114,12 @@ export const CallTypesEditor = ({
               <input
                 type="text"
                 value={button.label}
-                onChange={(e) => setDataLabel(button.name, e.target.value)}
+                onChange={(e) => dispatch(setDataLabel(button.name, e.target.value))}
               />
             </label>
           ))}
           <label className="field field-checkbox">
-            <input type="checkbox" checked={hasCaller} onChange={toggleCaller} />
+            <input type="checkbox" checked={hasCaller} onChange={onToggleCaller} />
             <span>
               Also offer “someone calling about another person”. This adds the Caller tab to the
               contact form.
@@ -175,9 +132,9 @@ export const CallTypesEditor = ({
             button's text, so existing buttons can only be renamed by Aselo staff.
           </p>
           <SortableRows
-            rows={nonData.rows}
+            rows={nonDataRows}
             labelOf={(button) => button.label}
-            onReorder={nonData.commit}
+            onReorder={(rows) => dispatch(reorderNonData(rows))}
             renderRow={(row) => {
               const locked = originalNames.has(row.value.name) && !staffMode;
               return (
@@ -188,13 +145,13 @@ export const CallTypesEditor = ({
                     disabled={locked}
                     aria-label="Button text"
                     title={locked ? 'Contacts are saved with this text, so only Aselo staff can rename it.' : undefined}
-                    onChange={(e) => renameNonData(row.id, e.target.value)}
+                    onChange={(e) => dispatch(renameNonData(row.id, e.target.value))}
                   />
                   <button
                     type="button"
                     className="icon-button"
                     aria-label={`Remove ${row.value.label}`}
-                    onClick={() => removeNonData(row.id)}
+                    onClick={() => onRemoveNonData(row.id)}
                   >
                     ×
                   </button>
@@ -204,10 +161,14 @@ export const CallTypesEditor = ({
           />
           {bulkText === undefined ? (
             <div className="option-actions">
-              <button type="button" className="secondary-button" onClick={() => addNonData(['New button'])}>
+              <button
+                type="button"
+                className="secondary-button"
+                onClick={() => dispatch(addNonDataButtons(['New button']))}
+              >
                 + Add a button
               </button>
-              <button type="button" className="link-button" onClick={() => setBulkText('')}>
+              <button type="button" className="link-button" onClick={() => dispatch(bulkTextChanged(''))}>
                 Paste several at once
               </button>
             </div>
@@ -219,20 +180,13 @@ export const CallTypesEditor = ({
                 autoFocus
                 aria-label="Button texts, one per line"
                 placeholder="One button per line"
-                onChange={(e) => setBulkText(e.target.value)}
+                onChange={(e) => dispatch(bulkTextChanged(e.target.value))}
               />
               <div className="option-actions">
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => {
-                    addNonData(bulkText.split('\n'));
-                    setBulkText(undefined);
-                  }}
-                >
+                <button type="button" className="secondary-button" onClick={() => dispatch(addPastedButtons())}>
                   Add these
                 </button>
-                <button type="button" className="link-button" onClick={() => setBulkText(undefined)}>
+                <button type="button" className="link-button" onClick={() => dispatch(bulkTextChanged(undefined))}>
                   Cancel
                 </button>
               </div>
@@ -244,7 +198,11 @@ export const CallTypesEditor = ({
       <aside className="section-preview">
         <div className="section-preview-header">
           <span className="field-label">How it looks in Aselo</span>
-          <button type="button" className="secondary-button" onClick={onTryItOut}>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => dispatch(tryItOutOpened({ focus: 'callTypes' }))}
+          >
             Try it out in Aselo
           </button>
         </div>

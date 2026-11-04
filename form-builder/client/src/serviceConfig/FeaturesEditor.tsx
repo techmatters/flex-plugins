@@ -17,21 +17,21 @@
 /**
  * Helpline features: switched on or off by Aselo staff; helpline staff see what's on.
  */
-import type { DefinitionFileMap } from '../common/definitions';
-import { FEATURE_INFO, getFeatures, getPermissionConfig, setFeature } from './helplineFeatures';
-import type { ConfigObject } from './serviceConfig';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import { selectDraftFiles, selectOriginalFiles } from '../drafts/draftSlice';
+import { selectDefinitions } from '../workspace/workspaceSlice';
+import { FEATURE_INFO, getFeatures, getPermissionConfig } from './helplineFeatures';
+import { switchFeature } from './serviceConfigSlice';
 
-type Props = {
-  draftFiles: DefinitionFileMap;
-  originalFiles: DefinitionFileMap;
+export const FeaturesEditor = () => {
+  const dispatch = useAppDispatch();
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const originalFiles = useAppSelector(selectOriginalFiles);
   // Aselo staff (not just viewing as helpline staff)
-  canChange: boolean;
+  const canChange = useAppSelector(selectActingAsStaff);
   // Aselo’s shared service configuration defaults
-  defaults?: ConfigObject;
-  onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
-};
-
-export const FeaturesEditor = ({ draftFiles, originalFiles, canChange, defaults, onChangeFiles }: Props) => {
+  const defaults = useAppSelector(selectDefinitions)?.serviceConfigDefaults;
   const features = getFeatures(draftFiles, defaults);
   const original = getFeatures(originalFiles, defaults);
   const permissionConfig = getPermissionConfig(draftFiles, defaults);
@@ -56,9 +56,7 @@ export const FeaturesEditor = ({ draftFiles, originalFiles, canChange, defaults,
                   role="switch"
                   checked={features[info.key]}
                   disabled={!canChange}
-                  onChange={(e) =>
-                    onChangeFiles((files) => setFeature(files, info.key, e.target.checked))
-                  }
+                  onChange={(e) => dispatch(switchFeature(info.key, e.target.checked))}
                 />
                 <span>
                   <strong>{info.title}</strong>

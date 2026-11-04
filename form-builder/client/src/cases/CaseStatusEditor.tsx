@@ -16,93 +16,49 @@
 
 /**
  * Edits the case statuses (CaseStatus.json): their names, colours, order and which status a
- * case can move to from each one, next to the status dropdown counselors get on a case.
+ * case can move to from each one, next to the status dropdown counselors get on a case. What's
+ * edited and how lives in caseStatusSlice.ts.
  */
-import { useMemo, useState } from 'react';
-import type { StatusInfo } from '@hrm-form-definitions/formDefinition/types';
-import type { DefinitionFileMap } from '../common/definitions';
+import { useEffect, useMemo } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import { selectOriginalFiles } from '../drafts/draftSlice';
+import { selectSectionIssues, selectWorkspace } from '../workspace/workspaceSlice';
+import { availableTransitions, getCaseStatusMap, REQUIRED_STATUSES, STATUS_COLORS } from './caseStatuses';
 import {
-  availableTransitions,
-  CASE_STATUS_FILE,
-  getCaseStatusMap,
-  newStatusValue,
-  REQUIRED_STATUSES,
-  STATUS_COLORS,
-} from './caseStatuses';
-import type { ValidationIssue } from '../forms/validation';
-import { Row, SortableRows, toRows } from '../common/SortableRows';
+  addStatus,
+  currentChanged,
+  openCaseStatus,
+  removeStatus,
+  renameStatus,
+  reorderStatuses,
+  selectCaseStatus,
+  setStatusColor,
+  setTransition,
+} from './caseStatusSlice';
+import { SortableRows } from '../common/SortableRows';
 
-type Props = {
-  draftFiles: DefinitionFileMap;
-  originalFiles: DefinitionFileMap;
-  staffMode: boolean;
-  issues: ValidationIssue[];
-  onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
-};
-
-// Rows keep the status's key in the file (usually the same as its value)
-type StatusRow = { key: string; status: StatusInfo };
-
-export const CaseStatusEditor = ({ draftFiles, originalFiles, staffMode, issues, onChangeFiles }: Props) => {
+export const CaseStatusEditor = () => {
+  const dispatch = useAppDispatch();
+  const originalFiles = useAppSelector(selectOriginalFiles);
+  const staffMode = useAppSelector(selectActingAsStaff);
+  const { editorRevision } = useAppSelector(selectWorkspace);
+  const sectionIssues = useAppSelector(selectSectionIssues);
+  const { rows, current } = useAppSelector(selectCaseStatus);
+  const issues = sectionIssues.filter((issue) => issue.message.startsWith('Case statuses'));
   const originalValues = useMemo(
     () => new Set(Object.values(getCaseStatusMap(originalFiles)).map((status) => status.value)),
     [originalFiles],
   );
-  const [rows, setRows] = useState<Row<StatusRow>[]>(() =>
-    toRows(Object.entries(getCaseStatusMap(draftFiles)).map(([key, status]) => ({ key, status }))),
-  );
   const statuses = rows.map((row) => row.value.status);
-  const [current, setCurrent] = useState(statuses[0]?.value ?? 'open');
 
-  const write = (next: Row<StatusRow>[]) => {
-    setRows(next);
-    onChangeFiles((files) => ({
-      ...files,
-      [CASE_STATUS_FILE]: Object.fromEntries(next.map(({ value }) => [value.key, value.status])),
-    }));
-  };
+  // Starts from the draft when it opens, and when the draft's files are replaced (discarded, reloaded)
+  useEffect(() => {
+    dispatch(openCaseStatus());
+  }, [dispatch, editorRevision]);
 
-  const update = (id: string, change: (status: StatusInfo) => StatusInfo) =>
-    write(rows.map((row) => (row.id === id ? { ...row, value: { ...row.value, status: change(row.value.status) } } : row)));
-
-  // A new status is saved under a value made from its name; existing ones keep theirs
-  const rename = (row: Row<StatusRow>, label: string) => {
-    const { status } = row.value;
-    if (originalValues.has(status.value)) {
-      update(row.id, (old) => ({ ...old, label }));
-      return;
-    }
-    const value = newStatusValue(
-      label,
-      statuses.filter((other) => other !== status).map((other) => other.value),
-    );
-    const renamed = (target: string) => (target === status.value ? value : target);
-    write(
-      rows.map((candidate) =>
-        candidate.id === row.id
-          ? { ...candidate, value: { key: value, status: { ...status, label, value, transitions: status.transitions } } }
-          : {
-              ...candidate,
-              value: {
-                ...candidate.value,
-                status: { ...candidate.value.status, transitions: candidate.value.status.transitions.map(renamed) },
-              },
-            },
-      ),
-    );
-    if (current === status.value) setCurrent(value);
-  };
-
-  const addStatus = () => {
-    const value = newStatusValue('New status', statuses.map((status) => status.value));
-    const [row] = toRows([
-      { key: value, status: { value, label: 'New status', color: 'blue', transitions: ['closed'] } },
-    ]);
-    write([...rows, row]);
-  };
-
-  const remove = (row: Row<StatusRow>) => {
-    const { status } = row.value;
+  const remove = (id: string) => {
+    const { status } = rows.find((row) => row.id === id)!.value;
     if (
       originalValues.has(status.value) &&
       !window.confirm(
@@ -111,21 +67,7 @@ export const CaseStatusEditor = ({ draftFiles, originalFiles, staffMode, issues,
     ) {
       return;
     }
-    write(
-      rows
-        .filter((candidate) => candidate.id !== row.id)
-        // Nothing can move to a status that's gone
-        .map((candidate) => ({
-          ...candidate,
-          value: {
-            ...candidate.value,
-            status: {
-              ...candidate.value.status,
-              transitions: candidate.value.status.transitions.filter((target) => target !== status.value),
-            },
-          },
-        })),
-    );
+    dispatch(removeStatus(id));
   };
 
   const offered = availableTransitions(statuses, current);
@@ -156,7 +98,7 @@ export const CaseStatusEditor = ({ draftFiles, originalFiles, staffMode, issues,
           <SortableRows
             rows={rows}
             labelOf={(value) => value.status.label}
-            onReorder={write}
+            onReorder={(next) => dispatch(reorderStatuses(next))}
             renderRow={(row) => {
               const { status } = row.value;
               const isNew = !originalValues.has(status.value);
@@ -166,7 +108,7 @@ export const CaseStatusEditor = ({ draftFiles, originalFiles, staffMode, issues,
                     <select
                       aria-label={`Colour of ${status.label}`}
                       value={status.color}
-                      onChange={(e) => update(row.id, (old) => ({ ...old, color: e.target.value }))}
+                      onChange={(e) => dispatch(setStatusColor(row.id, e.target.value))}
                     >
                       {[...new Set([...STATUS_COLORS, status.color])].map((color) => (
                         <option key={color} value={color}>
@@ -179,14 +121,14 @@ export const CaseStatusEditor = ({ draftFiles, originalFiles, staffMode, issues,
                       type="text"
                       aria-label="Status name"
                       value={status.label}
-                      onChange={(e) => rename(row, e.target.value)}
+                      onChange={(e) => dispatch(renameStatus(row.id, e.target.value))}
                     />
                     {!REQUIRED_STATUSES.includes(status.value) && (
                       <button
                         type="button"
                         className="icon-button"
                         aria-label={`Remove ${status.label}`}
-                        onClick={() => remove(row)}
+                        onClick={() => remove(row.id)}
                       >
                         ×
                       </button>
@@ -201,14 +143,7 @@ export const CaseStatusEditor = ({ draftFiles, originalFiles, staffMode, issues,
                           <input
                             type="checkbox"
                             checked={status.transitions.includes(other.value)}
-                            onChange={(e) =>
-                              update(row.id, (old) => ({
-                                ...old,
-                                transitions: e.target.checked
-                                  ? [...old.transitions, other.value]
-                                  : old.transitions.filter((target) => target !== other.value),
-                              }))
-                            }
+                            onChange={(e) => dispatch(setTransition(row.id, other.value, e.target.checked))}
                           />
                           <span>{other.label}</span>
                         </label>
@@ -220,12 +155,7 @@ export const CaseStatusEditor = ({ draftFiles, originalFiles, staffMode, issues,
                           <input
                             type="checkbox"
                             checked
-                            onChange={() =>
-                              update(row.id, (old) => ({
-                                ...old,
-                                transitions: old.transitions.filter((other) => other !== target),
-                              }))
-                            }
+                            onChange={() => dispatch(setTransition(row.id, target, false))}
                           />
                           <span>“{target}” (not a status: untick to tidy up)</span>
                         </label>
@@ -242,7 +172,7 @@ export const CaseStatusEditor = ({ draftFiles, originalFiles, staffMode, issues,
             }}
           />
           <div className="option-actions">
-            <button type="button" className="secondary-button" onClick={addStatus}>
+            <button type="button" className="secondary-button" onClick={() => dispatch(addStatus())}>
               + Add a status
             </button>
           </div>
@@ -256,7 +186,7 @@ export const CaseStatusEditor = ({ draftFiles, originalFiles, staffMode, issues,
         <div className="aselo section-preview-frame case-status-preview">
           <label className="field">
             <span className="field-label">If the case is now</span>
-            <select value={current} onChange={(e) => setCurrent(e.target.value)}>
+            <select value={current} onChange={(e) => dispatch(currentChanged(e.target.value))}>
               {statuses.map((status) => (
                 <option key={status.value} value={status.value}>
                   {status.label}

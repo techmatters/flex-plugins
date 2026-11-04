@@ -21,11 +21,15 @@
  */
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { afterEach, beforeAll, describe, expect, test, jest } from '@jest/globals';
-import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { afterEach, beforeAll, describe, expect, test } from '@jest/globals';
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import type { ContactTab } from '../common/definitions';
+import { createAppStore } from '../app/store';
+import type { DraftClient } from '../drafts/draftClient';
+import { openHelpline, selectWorkspace, tryItOutOpened } from '../workspace/workspaceSlice';
 import { FlexDesktopPreview, PreviewFocus } from './FlexDesktopPreview';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
@@ -45,28 +49,35 @@ afterEach(cleanup);
 const formOf = (definitions: DefinitionFiles, tab: string) =>
   definitions.files[`tabbedForms/${tab}.json`] as FormItemJsonDefinition[];
 
-const renderDesktop = (
+// The helpline open with no saved draft, and the preview opened on a tab or what's being edited
+const renderDesktop = async (
   definitions: DefinitionFiles,
   initialTab?: ContactTab['key'],
-  onClose = () => {},
-  focus?: PreviewFocus,
-) =>
-  render(
-    <FlexDesktopPreview
-      definitions={definitions}
-      files={definitions.files}
-      initialTab={initialTab}
-      focus={focus}
-      onClose={onClose}
-    />,
-  );
+  focus: PreviewFocus = 'form',
+) => {
+  const store = createAppStore({
+    draftClient: { load: async () => undefined } as unknown as DraftClient,
+    fetchHelplines: async () => [],
+    fetchDefinitionFiles: async () => definitions,
+  });
+  await store.dispatch(openHelpline(definitions.code, definitions.version));
+  store.dispatch(tryItOutOpened({ focus, tab: initialTab }));
+  await act(async () => {
+    render(
+      <Provider store={store}>
+        <FlexDesktopPreview />
+      </Provider>,
+    );
+  });
+  return store;
+};
 
 // Labels of required fields end with the red asterisk, so match the start
 const labelled = (label: string) => new RegExp(`^${label}`);
 
 describe('FlexDesktopPreview', () => {
   test('shows the form inside a mock of the agent desktop', async () => {
-    renderDesktop(usnm);
+    await renderDesktop(usnm);
     await screen.findByRole('tab', { name: 'Demographics' });
     expect(screen.getByRole('complementary', { name: 'Contacts waiting (sample)' })).toBeTruthy();
     expect(screen.getByRole('navigation', { name: 'Side bar (sample)' })).toBeTruthy();
@@ -80,7 +91,7 @@ describe('FlexDesktopPreview', () => {
   });
 
   test('the sample chat opens with the helpline’s own welcome message', async () => {
-    renderDesktop(usnm);
+    await renderDesktop(usnm);
     const messages = usnm.files['customStrings/Messages.json'] as Record<string, Record<string, string>>;
     expect(await screen.findByText(messages.en.WelcomeMsg)).toBeTruthy();
 
@@ -89,7 +100,7 @@ describe('FlexDesktopPreview', () => {
   });
 
   test('uses the helpline’s own tab names and wording', async () => {
-    renderDesktop(usnm, 'CallerInformationTab');
+    await renderDesktop(usnm, 'CallerInformationTab');
     // USNM renames the tabs in its customStrings/Substitutions.json
     expect(await screen.findByRole('tab', { name: 'Help Seeker' })).toBeTruthy();
     expect(screen.getByRole('tab', { name: 'Demographics' })).toBeTruthy();
@@ -99,7 +110,7 @@ describe('FlexDesktopPreview', () => {
   });
 
   test('starts on the call type screen; its buttons decide whether there is a Caller tab', async () => {
-    renderDesktop(demo, undefined, () => {}, 'callTypes');
+    await renderDesktop(demo, undefined, 'callTypes');
     const buttons = demo.files['CallTypeButtons.json'] as { name: string; label: string; category: string }[];
     const caller = buttons.find((button) => button.name === 'caller')!;
     const child = buttons.find((button) => button.name === 'child')!;
@@ -116,7 +127,7 @@ describe('FlexDesktopPreview', () => {
   });
 
   test('a button that closes the contact asks for confirmation first', async () => {
-    renderDesktop(demo, undefined, () => {}, 'callTypes');
+    await renderDesktop(demo, undefined, 'callTypes');
     const buttons = demo.files['CallTypeButtons.json'] as { name: string; label: string; category: string }[];
     const nonData = buttons.find((button) => button.category === 'non-data')!;
     // Wait for the translations, which the dialog's wording comes from
@@ -128,7 +139,7 @@ describe('FlexDesktopPreview', () => {
   });
 
   test('canned responses fill the message box, and show while editing them even if switched off', async () => {
-    renderDesktop(usnm, undefined, () => {}, 'cannedResponses');
+    await renderDesktop(usnm, undefined, 'cannedResponses');
     expect(await screen.findByText(/Canned responses are switched off for this helpline/)).toBeTruthy();
     const responses = usnm.files['CannedResponses.json'] as { label: string; text: string }[];
     // Its name is translated, once the plugin's text has loaded
@@ -139,7 +150,7 @@ describe('FlexDesktopPreview', () => {
   });
 
   test('Save and End checks required answers and marks the tabs that need attention', async () => {
-    renderDesktop(usnm);
+    await renderDesktop(usnm);
     fireEvent.click(await screen.findByRole('tab', { name: 'Resources Shared' }));
     fireEvent.click(screen.getByRole('button', { name: 'Save and End' }));
 
@@ -158,7 +169,7 @@ describe('FlexDesktopPreview', () => {
   });
 
   test('a linked dropdown stays faded until the one above is answered', async () => {
-    renderDesktop(demo, 'ChildInformationTab');
+    await renderDesktop(demo, 'ChildInformationTab');
     const child = formOf(demo, 'ChildInformationTab');
     const province = child.find((item) => item.name === 'province')!;
     const district = child.find((item) => item.name === 'district')!;
@@ -176,7 +187,7 @@ describe('FlexDesktopPreview', () => {
   });
 
   test('“Yes / No / Unknown” checkboxes cycle through their three answers', async () => {
-    renderDesktop(demo, 'CaseInformationTab');
+    await renderDesktop(demo, 'CaseInformationTab');
     // One without initialChecked, so it starts unanswered
     const mixed = formOf(demo, 'CaseInformationTab').find(
       (item) => item.type === 'mixed-checkbox' && item.initialChecked === undefined,
@@ -192,7 +203,7 @@ describe('FlexDesktopPreview', () => {
   });
 
   test('a checkbox set to start ticked starts ticked, as in Aselo', async () => {
-    renderDesktop(demo, 'CaseInformationTab');
+    await renderDesktop(demo, 'CaseInformationTab');
     const preTicked = formOf(demo, 'CaseInformationTab').find(
       (item) => item.type === 'mixed-checkbox' && item.initialChecked === true,
     )!;
@@ -201,9 +212,8 @@ describe('FlexDesktopPreview', () => {
   });
 
   test('“Back to editing” closes the preview', async () => {
-    const onClose = jest.fn();
-    renderDesktop(usnm, undefined, onClose);
+    const store = await renderDesktop(usnm);
     fireEvent.click(await screen.findByRole('button', { name: 'Back to editing' }));
-    expect(onClose).toHaveBeenCalled();
+    expect(selectWorkspace(store.getState()).tryItOut).toBeUndefined();
   });
 });

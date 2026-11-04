@@ -20,226 +20,85 @@
  *
  * Questions are edited with their texts in the chosen language; when saved, each text goes
  * back where it lives (see updateText in webchat.ts): the helpline's webchat translations
- * for translated texts, or the form itself.
+ * for translated texts, or the form itself. What's edited and how lives in webchatSlice.ts.
  */
-import { useMemo, useState } from 'react';
-import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
-import type { WebchatSettings } from '@tech-matters/form-builder-shared';
-import type { DefinitionFileMap } from '../common/definitions';
+import { useEffect, useMemo } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import { selectDraftFiles, selectOriginalFiles } from '../drafts/draftSlice';
+import { selectDefinitions, selectSectionIssues, selectWorkspace } from '../workspace/workspaceSlice';
 import { isSameJson } from '../drafts/changes';
-import {
-  AnswerNode,
-  applyChainOptions,
-  chainToTree,
-  ChainTree,
-  createChainFields,
-  findChainsThroughField,
-  makeKeyValuesUnique,
-  treeToChainOptions,
-} from '../linkedDropdowns/linkedDropdowns';
-import type { ValidationIssue } from '../forms/validation';
+import { findChainsThroughField } from '../linkedDropdowns/linkedDropdowns';
 import {
   ADDABLE_WEBCHAT_FIELD_TYPES,
-  buildTextContext,
-  createWebchatField,
   findUnmatchedAnswers,
   findWebchatFieldReferences,
   getPrepopulateCandidates,
   getPrepopulateTargets,
   getPreEngagementForm,
-  getWebchatLocales,
   isRequired,
   localizeField,
   plainText,
-  PRE_ENGAGEMENT_FILE,
-  renamePrepopulateTargets,
-  setPrepopulateTargets,
-  setWebchatText,
-  unlocalizeField,
   WEBCHAT_FIELD_TYPE_INFO,
   WEBCHAT_TEXTS,
-  WebchatField,
-  WebchatFieldType,
-  withTranslations,
 } from './webchat';
+import {
+  addingSet,
+  addQuestion,
+  asFormItems,
+  chainClosed,
+  createChain,
+  localeSelected,
+  openChainEditor,
+  openWebchatForm,
+  questionSelected,
+  removeQuestion,
+  reorderQuestions,
+  saveChainAnswers,
+  selectUsesPrepopulateMappings,
+  selectWebchat,
+  selectWebchatLocales,
+  selectWebchatTextContext,
+  setQuestionTargets,
+  setText,
+  updateQuestion,
+  changeQuestionType,
+  wizardClosed,
+  wizardOpened,
+} from './webchatSlice';
 import { LinkedAnswersEditor } from '../linkedDropdowns/LinkedAnswersEditor';
 import { LinkedDropdownsWizard } from '../linkedDropdowns/LinkedDropdownsWizard';
-import { Row, SortableRows, toRows } from '../common/SortableRows';
+import { SortableRows } from '../common/SortableRows';
 import { WebchatFieldSettings } from './WebchatFieldSettings';
 import { WebchatPreview } from './WebchatPreview';
 
-type Props = {
-  draftFiles: DefinitionFileMap;
-  originalFiles: DefinitionFileMap;
-  staffMode: boolean;
-  settings?: WebchatSettings;
-  featureFlags?: Record<string, boolean>;
-  issues: ValidationIssue[];
-  onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
-};
+export const WebchatFormEditor = () => {
+  const dispatch = useAppDispatch();
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const originalFiles = useAppSelector(selectOriginalFiles);
+  const staffMode = useAppSelector(selectActingAsStaff);
+  const settings = useAppSelector(selectDefinitions)?.webchat;
+  const usesPrepopulateMappings = useAppSelector(selectUsesPrepopulateMappings);
+  const { editorRevision } = useAppSelector(selectWorkspace);
+  const issues = useAppSelector(selectSectionIssues).filter((issue) => issue.message.startsWith('Webchat form'));
+  const locales = useAppSelector(selectWebchatLocales);
+  const context = useAppSelector(selectWebchatTextContext);
+  const { locale } = context;
+  const { rows, selectedId, adding, wizardOpen, editingChain } = useAppSelector(selectWebchat);
 
-// Chain fields as the shared linked dropdown code expects them
-const asFormItems = (fields: WebchatField[]) => fields as unknown as FormItemJsonDefinition[];
-const asWebchatFields = (items: FormItemJsonDefinition[]) => items as unknown as WebchatField[];
-
-// New chain fields come in the contact form's shape; the webchat's are simpler
-const toWebchatChainField = (item: FormItemJsonDefinition, isNewTop: boolean): WebchatField => {
-  const { isPII, defaultOption, ...rest } = item as unknown as WebchatField & {
-    isPII?: boolean;
-    defaultOption?: unknown;
-  };
-  return { ...rest, required: false, ...(isNewTop ? { defaultValue: '' } : {}) } as WebchatField;
-};
-
-export const WebchatFormEditor = ({
-  draftFiles,
-  originalFiles,
-  staffMode,
-  settings,
-  featureFlags,
-  issues,
-  onChangeFiles,
-}: Props) => {
-  const defaultLocale = settings?.defaultLocale ?? 'en-US';
-  const locales = useMemo(() => {
-    const found = getWebchatLocales(originalFiles, defaultLocale);
-    return found.length > 0 ? found : [defaultLocale];
-  }, [originalFiles, defaultLocale]);
-  const [locale, setLocale] = useState(locales[0]);
-  const context = buildTextContext(draftFiles, locale, locales);
+  // Starts from the draft when it opens, and when the draft's files are replaced (discarded, reloaded)
+  useEffect(() => {
+    dispatch(openWebchatForm());
+  }, [dispatch, editorRevision]);
 
   const originalByName = useMemo(
     () => new Map((getPreEngagementForm(originalFiles)?.fields ?? []).map((field) => [field.name, field])),
     [originalFiles],
   );
-  // The editor owns the questions' order while it's open; built once from the draft
-  const [rows, setRows] = useState<Row<WebchatField>[]>(() =>
-    toRows(getPreEngagementForm(draftFiles)?.fields ?? []),
-  );
-  const [selectedId, setSelectedId] = useState<string>();
-  const [adding, setAdding] = useState(false);
-  const [wizardOpen, setWizardOpen] = useState(false);
-  const [editingChain, setEditingChain] = useState<{ fields: WebchatField[]; tree: ChainTree; notes: string[] }>();
 
   const fields = rows.map((row) => row.value);
   const localized = fields.map((field) => localizeField(field, context.strings));
   const localizedByName = new Map(localized.map((field) => [field.name, field]));
-
-  // Writes the questions back to the draft, plus any texts for this language's translations
-  const write = (
-    next: Row<WebchatField>[],
-    translations: [string, string][] = [],
-    alsoChange: (files: DefinitionFileMap) => DefinitionFileMap = (files) => files,
-  ) => {
-    setRows(next);
-    onChangeFiles((files) =>
-      alsoChange(
-        withTranslations(
-          {
-            ...files,
-            [PRE_ENGAGEMENT_FILE]: { ...getPreEngagementForm(files), fields: next.map((row) => row.value) },
-          },
-          locale,
-          translations,
-        ),
-      ),
-    );
-  };
-
-  // Saves edited (localized) questions, matched to the stored ones by name
-  const saveLocalized = (edited: WebchatField[], insertAfter?: string) => {
-    const translations: [string, string][] = [];
-    const storedByName = new Map(fields.map((field) => [field.name, field]));
-    const unlocalize = (field: WebchatField, stored = storedByName.get(field.name)) => {
-      const result = unlocalizeField(field, stored, context);
-      translations.push(...result.translations);
-      return result.field;
-    };
-    const editedByName = new Map(edited.map((field) => [field.name, field]));
-    let next = rows.map((row) => {
-      const field = editedByName.get(row.value.name);
-      return field ? { ...row, value: unlocalize(field) } : row;
-    });
-    const added = edited.filter((field) => !storedByName.has(field.name));
-    if (added.length > 0) {
-      const newRows = toRows(added.map((field) => unlocalize(field, undefined)));
-      const index = insertAfter ? next.findIndex((row) => row.value.name === insertAfter) : -1;
-      next = index >= 0 ? [...next.slice(0, index + 1), ...newRows, ...next.slice(index + 1)] : [...next, ...newRows];
-      setSelectedId(newRows[0].id);
-    }
-    write(next, translations);
-  };
-
-  const updateRow = (id: string, edited: WebchatField) => {
-    const row = rows.find((candidate) => candidate.id === id)!;
-    const { field, translations } = unlocalizeField(edited, row.value, context);
-    write(
-      rows.map((candidate) => (candidate.id === id ? { ...candidate, value: field } : candidate)),
-      translations,
-      // A new question's name follows its text; what it fills in follows the name
-      (files) => renamePrepopulateTargets(files, row.value.name, field.name),
-    );
-  };
-
-  const addField = (type: WebchatFieldType) => {
-    const [row] = toRows([createWebchatField(type, fields.map((field) => field.name))]);
-    write([...rows, row]);
-    setSelectedId(row.id);
-    setAdding(false);
-  };
-
-  /**
-   * Linked dropdowns: the same answer tree as the contact forms, but the webchat has no
-   * ReferenceData.json, so every list stays in the form.
-   */
-  const buildChain = (
-    chainFields: WebchatField[],
-    roots: AnswerNode[],
-    tree: Pick<ChainTree, 'rootBlankOption' | 'unusedLists'>,
-    replacedByImport: boolean,
-  ) => {
-    const unique = makeKeyValuesUnique(roots, chainFields.length, { fixExisting: replacedByImport });
-    const options = treeToChainOptions(
-      unique.roots,
-      chainFields.length,
-      tree.rootBlankOption,
-      replacedByImport ? [] : tree.unusedLists,
-    );
-    return asWebchatFields(applyChainOptions(asFormItems(chainFields), options, {}, Infinity).fields);
-  };
-
-  const openChainEditor = (names: string[]) => {
-    const chainFields = names.map((name) => localizedByName.get(name)!);
-    const tree = chainToTree(asFormItems(chainFields), {});
-    const notes: string[] = [];
-    if (tree.sharedValues.length > 0) {
-      notes.push(
-        `${tree.sharedValues.length} answer(s) share a name with another answer at the same level (e.g. “${tree.sharedValues[0]}”), so they show the same answers below them. To give each its own list, download as Excel and import it again.`,
-      );
-    }
-    if (tree.unusedLists.length > 0) {
-      notes.push(
-        `${tree.unusedLists.length} list(s) of answers are filed under an answer that doesn't exist (e.g. “${tree.unusedLists[0].key}”), so visitors never see them. They're kept unless you import from a spreadsheet.`,
-      );
-    }
-    setEditingChain({ fields: chainFields, tree, notes });
-  };
-
-  const createChain = (levelLabels: string[], roots: AnswerNode[], existingTop?: FormItemJsonDefinition) => {
-    const created = createChainFields(
-      levelLabels,
-      fields.map((field) => field.name),
-      existingTop,
-      '',
-    ).map((item, level) =>
-      level === 0 && existingTop ? (item as unknown as WebchatField) : toWebchatChainField(item, level === 0),
-    );
-    const rootBlankOption = existingTop
-      ? chainToTree([existingTop], {}).rootBlankOption
-      : { value: '', label: '' };
-    saveLocalized(buildChain(created, roots, { rootBlankOption, unusedLists: [] }, false), existingTop?.name);
-    setWizardOpen(false);
-  };
 
   const prepopulateCandidates = useMemo(() => getPrepopulateCandidates(draftFiles), [draftFiles]);
   const fieldIssues = (name: string) => issues.filter((issue) => issue.fieldName === name);
@@ -267,7 +126,7 @@ export const WebchatFormEditor = ({
                   role="tab"
                   aria-selected={code === locale}
                   className={code === locale ? 'active' : ''}
-                  onClick={() => setLocale(code)}
+                  onClick={() => dispatch(localeSelected(code))}
                 >
                   {code}
                 </button>
@@ -284,8 +143,7 @@ export const WebchatFormEditor = ({
           )}
           {WEBCHAT_TEXTS.map((info) => {
             const value = context.strings[info.key] ?? '';
-            const onChange = (text: string) =>
-              onChangeFiles((files) => setWebchatText(files, originalFiles, locale, info.key, text));
+            const onChange = (text: string) => dispatch(setText(info.key, text));
             return (
               <label key={info.key} className="field">
                 <span className="field-label">{info.title}</span>
@@ -316,7 +174,7 @@ export const WebchatFormEditor = ({
           <SortableRows
             rows={rows}
             labelOf={(field) => plainText(localizeField(field, context.strings).label) || field.name}
-            onReorder={(next) => write(next)}
+            onReorder={(next) => dispatch(reorderQuestions(next))}
             renderRow={(row) => {
               const field = localizeField(row.value, context.strings);
               const original = originalByName.get(row.value.name);
@@ -329,7 +187,7 @@ export const WebchatFormEditor = ({
                     type="button"
                     className="webchat-question-summary"
                     aria-expanded={selected}
-                    onClick={() => setSelectedId(selected ? undefined : row.id)}
+                    onClick={() => dispatch(questionSelected(selected ? undefined : row.id))}
                   >
                     <span className="webchat-question-label">{plainText(field.label) || 'No question yet'}</span>
                     <span className="muted">
@@ -362,20 +220,14 @@ export const WebchatFormEditor = ({
                       prepopulate={{
                         ...getPrepopulateTargets(draftFiles, row.value.name),
                         candidates: prepopulateCandidates,
-                        inUse: featureFlags?.use_prepopulate_mappings === true,
+                        inUse: usesPrepopulateMappings,
                         unmatchedAnswers: (target) => findUnmatchedAnswers(draftFiles, row.value, target),
                       }}
-                      onChangeTargets={(targets) =>
-                        onChangeFiles((files) => setPrepopulateTargets(files, row.value.name, targets))
-                      }
-                      onChange={(edited) => updateRow(row.id, edited)}
-                      onEditLinked={openChainEditor}
-                      onRemove={() => {
-                        write(rows.filter((candidate) => candidate.id !== row.id), [], (files) =>
-                          setPrepopulateTargets(files, row.value.name, []),
-                        );
-                        setSelectedId(undefined);
-                      }}
+                      onChangeTargets={(targets) => dispatch(setQuestionTargets(row.value.name, targets))}
+                      onChange={(edited) => dispatch(updateQuestion(row.id, edited))}
+                      onChangeType={(type) => dispatch(changeQuestionType(row.id, field, type))}
+                      onEditLinked={(names) => dispatch(openChainEditor(names))}
+                      onRemove={() => dispatch(removeQuestion(row.id))}
                     />
                   )}
                 </div>
@@ -387,14 +239,14 @@ export const WebchatFormEditor = ({
             <div className="add-field-menu" role="dialog" aria-label="Choose the kind of question to add">
               <div className="add-field-menu-header">
                 <strong>What kind of answer?</strong>
-                <button type="button" className="link-button" onClick={() => setAdding(false)}>
+                <button type="button" className="link-button" onClick={() => dispatch(addingSet(false))}>
                   Cancel
                 </button>
               </div>
               <ul>
                 {ADDABLE_WEBCHAT_FIELD_TYPES.map((type) => (
                   <li key={type}>
-                    <button type="button" className="field-type-option" onClick={() => addField(type)}>
+                    <button type="button" className="field-type-option" onClick={() => dispatch(addQuestion(type))}>
                       <span className="field-type-name">{WEBCHAT_FIELD_TYPE_INFO[type].label}</span>
                       <span className="muted">{WEBCHAT_FIELD_TYPE_INFO[type].description}</span>
                     </button>
@@ -404,10 +256,7 @@ export const WebchatFormEditor = ({
                   <button
                     type="button"
                     className="field-type-option"
-                    onClick={() => {
-                      setAdding(false);
-                      setWizardOpen(true);
-                    }}
+                    onClick={() => dispatch(wizardOpened())}
                   >
                     <span className="field-type-name">Linked dropdowns</span>
                     <span className="muted">
@@ -419,7 +268,7 @@ export const WebchatFormEditor = ({
               </ul>
             </div>
           ) : (
-            <button type="button" className="add-field-button" onClick={() => setAdding(true)}>
+            <button type="button" className="add-field-button" onClick={() => dispatch(addingSet(true))}>
               + Add a question
             </button>
           )}
@@ -431,7 +280,7 @@ export const WebchatFormEditor = ({
           <span className="field-label">How it looks in the webchat ({locale})</span>
         </div>
         <div className="section-preview-frame webchat-preview-frame">
-          <WebchatPreview key={locale} form={preview} strings={context.strings} />
+          <WebchatPreview form={preview} strings={context.strings} />
         </div>
         <p className="field-hint">Fill it in to try it: required questions and answers work as they will for visitors.</p>
       </aside>
@@ -440,8 +289,8 @@ export const WebchatFormEditor = ({
         <LinkedDropdownsWizard
           formItems={asFormItems(localized)}
           referenceData={{}}
-          onCreate={createChain}
-          onCancel={() => setWizardOpen(false)}
+          onCreate={(levelLabels, roots, existingTop) => dispatch(createChain(levelLabels, roots, existingTop))}
+          onCancel={() => dispatch(wizardClosed())}
         />
       )}
 
@@ -453,11 +302,8 @@ export const WebchatFormEditor = ({
           notes={editingChain.notes}
           saveLabel="Save answers"
           downloadName={`webchat-${editingChain.fields.map((field) => field.name).join('-')}.xlsx`}
-          onSave={(roots, { replacedByImport }) => {
-            saveLocalized(buildChain(editingChain.fields, roots, editingChain.tree, replacedByImport));
-            setEditingChain(undefined);
-          }}
-          onCancel={() => setEditingChain(undefined)}
+          onSave={(roots, options) => dispatch(saveChainAnswers(roots, options))}
+          onCancel={() => dispatch(chainClosed())}
         />
       )}
     </div>

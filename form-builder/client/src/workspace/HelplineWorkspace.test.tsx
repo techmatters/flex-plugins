@@ -182,6 +182,8 @@ describe('HelplineWorkspace', () => {
 
     // Aselo answers it and resolves it in one go: the icon goes
     renderWorkspace(usnm, { user: aseloStaff, loadPeople });
+    // The workspace shows once the helpline's files have loaded
+    await screen.findByRole('navigation');
     expect(await within(callerItem()).findByRole('img', { name: 'Question' })).toBeTruthy();
     fireEvent.click(await findFieldCard('Relationship to Help Seeker'));
     const aseloReview = screen.getByRole('region', { name: 'Review: Relationship to Help Seeker' });

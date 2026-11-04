@@ -22,11 +22,20 @@
  * Only the form on the right is real (built from the draft definitions). The queues, the
  * task and the conversation are sample content.
  */
-import { useRef, useState } from 'react';
-import type { DefinitionFiles } from '@tech-matters/form-builder-shared';
-import type { ContactTab } from '../common/definitions';
-import { CONTACT_TABS, DefinitionFileMap, getForm, getHelplineName } from '../common/definitions';
-import { AseloContactPanel, CallType, SaveResult } from './AseloContactPanel';
+import { useEffect, useRef, useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { DefinitionFileMap, getHelplineName } from '../common/definitions';
+import { selectDraftFiles } from '../drafts/draftSlice';
+import { selectDefinitions, selectWorkspace, tryItOutClosed } from '../workspace/workspaceSlice';
+import { AseloContactPanel } from './AseloContactPanel';
+import {
+  cannedResponseChosen,
+  Channel,
+  channelChanged,
+  languageChanged,
+  openPreview,
+  selectPreview,
+} from './previewSlice';
 import {
   AddIcon,
   AdminIcon,
@@ -53,19 +62,7 @@ import { getCannedResponses } from '../chatsAndCalls/sections';
 import './aselo.css';
 import './flexDesktop.css';
 
-type Channel = 'chat' | 'call';
-
-// What the preview opens on, depending on what's being edited
-export type PreviewFocus = 'form' | 'callTypes' | 'cannedResponses' | 'messages';
-
-type Props = {
-  definitions: DefinitionFiles;
-  // The draft files (what's being edited), rather than the files as loaded
-  files: DefinitionFileMap;
-  initialTab?: ContactTab['key'] | 'categories';
-  focus?: PreviewFocus;
-  onClose: () => void;
-};
+export type { PreviewFocus } from './previewSlice';
 
 const SIDE_NAV = [
   { label: 'Admin', Icon: AdminIcon },
@@ -104,9 +101,10 @@ const ChatCanvas = ({
   strings: Strings;
   showCannedResponses: boolean;
 }) => {
+  const dispatch = useAppDispatch();
   const welcome = welcomeMessage(files, language);
   const cannedResponses = getCannedResponses(files);
-  const [draftMessage, setDraftMessage] = useState('');
+  const draftMessage = useAppSelector(selectPreview).message;
   const messages: { from: 'contact' | 'counselor'; author: string; text: string; time: string }[] = [
     { from: 'contact', author: 'Anonymous', text: 'Hi, I would like to talk to someone.', time: '10:02 AM' },
     ...(welcome
@@ -151,7 +149,7 @@ const ChatCanvas = ({
               className="aselo-select aselo-select-full"
               aria-label={translate(strings, 'CannedResponses')}
               value=""
-              onChange={(e) => setDraftMessage(e.target.value)}
+              onChange={(e) => dispatch(cannedResponseChosen(e.target.value))}
             >
               <option value="" disabled>
                 {translate(strings, 'CannedResponses')}
@@ -243,25 +241,27 @@ const ContactsWaiting = ({ channel, queueName }: { channel: Channel; queueName: 
   </aside>
 );
 
-export const FlexDesktopPreview = ({
-  definitions,
-  files,
-  initialTab,
-  focus = 'form',
-  onClose,
-}: Props) => {
-  const hasCallerForm = (getForm(files, CONTACT_TABS[0].filePath) ?? []).length > 0;
-  const initialCallType: CallType =
-    initialTab === 'CallerInformationTab' && hasCallerForm ? 'caller' : 'child';
-  const [channel, setChannel] = useState<Channel>('chat');
+// Opens on what workspace tryItOut says; the preview's state and logic live in previewSlice.ts
+export const FlexDesktopPreview = () => {
+  const dispatch = useAppDispatch();
+  const definitions = useAppSelector(selectDefinitions);
+  // The draft files (what's being edited), rather than the files as loaded
+  const files = useAppSelector(selectDraftFiles);
+  const { tryItOut } = useAppSelector(selectWorkspace);
+  const { opened, channel, language, saveResult } = useAppSelector(selectPreview);
+  const focus = tryItOut?.focus ?? 'form';
   // Shown when the helpline's enable_canned_responses flag is on, or while editing them
-  const cannedResponsesEnabled = definitions.featureFlags?.enable_canned_responses !== false;
+  const cannedResponsesEnabled = definitions?.featureFlags?.enable_canned_responses !== false;
   const showCannedResponses = cannedResponsesEnabled || focus === 'cannedResponses';
-  const [language, setLanguage] = useState(definitions.helplineLanguage ?? 'en-US');
-  const [saveResult, setSaveResult] = useState<SaveResult>();
   const strings: Strings = useStrings(language, files);
 
-  // Share of the space taken by the conversation; the form gets the rest (Flex's splitter)
+  // Starts afresh each time it's opened
+  useEffect(() => {
+    if (tryItOut) dispatch(openPreview());
+  }, [dispatch, tryItOut]);
+
+  // Share of the space taken by the conversation; the form gets the rest (Flex's splitter).
+  // Only how the screen is laid out, so it stays here
   const [taskShare, setTaskShare] = useState(0.5);
   const splitterArea = useRef<HTMLDivElement>(null);
   const startDrag = (event: React.PointerEvent) => {
@@ -284,6 +284,9 @@ export const FlexDesktopPreview = ({
     window.addEventListener('pointerup', stop);
   };
 
+  if (!tryItOut || !opened || !definitions) return null;
+  const onClose = () => dispatch(tryItOutClosed());
+
   return (
     <div className="flex-preview-overlay" role="dialog" aria-modal="true" aria-label="Try it out in Aselo">
       <div className="flex-preview-bar">
@@ -293,14 +296,14 @@ export const FlexDesktopPreview = ({
         </span>
         <label>
           Task
-          <select value={channel} onChange={(e) => setChannel(e.target.value as Channel)}>
+          <select value={channel} onChange={(e) => dispatch(channelChanged(e.target.value as Channel))}>
             <option value="chat">Chat</option>
             <option value="call">Call</option>
           </select>
         </label>
         <label>
           Language
-          <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+          <select value={language} onChange={(e) => dispatch(languageChanged(e.target.value))}>
             {[...new Set([language, ...AVAILABLE_LANGUAGES])].map((code) => (
               <option key={code} value={code}>
                 {code}
@@ -403,15 +406,7 @@ export const FlexDesktopPreview = ({
             />
 
             <section className="flex-panel flex-crm" aria-label="Contact form">
-              <AseloContactPanel
-                files={files}
-                strings={strings}
-                taskType={channel}
-                startOnCallTypes={focus !== 'form'}
-                initialCallType={initialCallType}
-                initialTab={initialTab}
-                onSaveResult={setSaveResult}
-              />
+              <AseloContactPanel strings={strings} />
             </section>
           </div>
         </div>

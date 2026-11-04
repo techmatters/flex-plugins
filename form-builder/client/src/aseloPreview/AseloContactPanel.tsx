@@ -21,36 +21,29 @@
  * between tabs and "Save and End" on the last one. Saving checks the fields the way Aselo
  * does and marks tabs that need attention.
  */
-import { useMemo, useState } from 'react';
-import type {
-  CategoriesDefinition,
-  FormItemJsonDefinition,
-} from '@hrm-form-definitions/formDefinition/types';
-import type { ContactTab, DefinitionFileMap } from '../common/definitions';
-import {
-  CONTACT_TABS,
-  getCategoriesByHelpline,
-  getContactSplitFormAt,
-  getForm,
-  getReferenceData,
-} from '../common/definitions';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { CONTACT_TABS, getContactSplitFormAt } from '../common/definitions';
+import { selectDraftFiles } from '../drafts/draftSlice';
 import { AseloFormBody } from './AseloFormBody';
-import {
-  AseloCategories,
-  countSelected,
-  DEFAULT_MAXIMUM_SELECTIONS,
-  SelectedCategories,
-} from './AseloCategories';
-import { FieldValue, FormValues, initialValueFor, validateField } from './aseloFields';
+import { AseloCategories } from './AseloCategories';
 import { BackIcon, ErrorIcon, SearchIcon } from './flexIcons';
 import { AseloCallTypeScreen } from './AseloCallTypeScreen';
 import { getCallTypeButtons } from '../chatsAndCalls/sections';
 import { Strings, translate } from './translations';
+import {
+  backToCallTypes,
+  categoriesChanged,
+  chooseDataCallType,
+  nextPreviewTab,
+  nonDataCallTypeChosen,
+  saveAndEnd,
+  selectContactPanel,
+  selectPreview,
+  setPreviewAnswer,
+  TabId,
+  tabSelected,
+} from './previewSlice';
 import './aselo.css';
-
-type TabId = 'search' | ContactTab['key'] | 'categories';
-export type CallType = 'child' | 'caller';
-export type SaveResult = 'saved' | 'invalid';
 
 const TAB_LABELS: Record<Exclude<TabId, 'search'>, string> = {
   CallerInformationTab: 'TabbedForms-AddCallerInfoTab',
@@ -59,138 +52,17 @@ const TAB_LABELS: Record<Exclude<TabId, 'search'>, string> = {
   CaseInformationTab: 'TabbedForms-AddCaseInfoTab',
 };
 
-type Props = {
-  files: DefinitionFileMap;
-  strings: Strings;
-  taskType: 'chat' | 'call';
-  // Start on the "categorize this contact" screen instead of the form
-  startOnCallTypes?: boolean;
-  initialCallType?: CallType;
-  // The tab to open first (the one being edited)
-  initialTab?: ContactTab['key'] | 'categories';
-  onSaveResult?: (result: SaveResult | undefined) => void;
-};
-
-// IssueCategorizationTab is keyed by helpline name; contacts use the default helpline
-const categoriesForDefaultHelpline = (files: DefinitionFileMap): CategoriesDefinition | undefined => {
-  const byHelpline = getCategoriesByHelpline(files);
-  const info = files['HelplineInformation.json'] as
-    | { helplines?: { value: string; default?: boolean }[] }
-    | undefined;
-  const helplines = info?.helplines ?? [];
-  const defaultHelpline = (helplines.find((h) => h.default) ?? helplines[0])?.value;
-  return (defaultHelpline && byHelpline[defaultHelpline]) || Object.values(byHelpline)[0];
-};
-
-export const AseloContactPanel = ({
-  files,
-  strings,
-  taskType,
-  startOnCallTypes = false,
-  initialCallType = 'child',
-  initialTab,
-  onSaveResult,
-}: Props) => {
-  const [screen, setScreen] = useState<'callTypes' | 'form'>(startOnCallTypes ? 'callTypes' : 'form');
-  const [callType, setCallType] = useState<CallType>(initialCallType);
-  const referenceData = getReferenceData(files);
-  const forms = useMemo(
-    () =>
-      Object.fromEntries(
-        CONTACT_TABS.map((tab) => [tab.key, getForm(files, tab.filePath) ?? []]),
-      ) as Record<ContactTab['key'], FormItemJsonDefinition[]>,
-    [files],
-  );
-  const categories = categoriesForDefaultHelpline(files);
-  const maxSelections = categories?.maxSelections ?? DEFAULT_MAXIMUM_SELECTIONS;
-
-  const tabs: TabId[] = [
-    'search',
-    ...(callType === 'caller' ? (['CallerInformationTab'] as const) : []),
-    'ChildInformationTab',
-    'categories',
-    'CaseInformationTab',
-  ];
-  const [tabIndex, setTabIndex] = useState(() =>
-    Math.max(1, tabs.indexOf(initialTab ?? 'ChildInformationTab')),
-  );
-  const currentTab = tabs[Math.min(tabIndex, tabs.length - 1)];
-
-  const [values, setValues] = useState<Record<ContactTab['key'], FormValues>>(
-    () =>
-      Object.fromEntries(
-        CONTACT_TABS.map((tab) => [
-          tab.key,
-          Object.fromEntries(
-            (getForm(files, tab.filePath) ?? []).map((item) => [
-              item.name,
-              initialValueFor(item, referenceData),
-            ]),
-          ),
-        ]),
-      ) as Record<ContactTab['key'], FormValues>,
-  );
-  const [selectedCategories, setSelectedCategories] = useState<SelectedCategories>({});
-  // Like the plugin's form library: errors show after the first save attempt, then update live
-  const [submitted, setSubmitted] = useState(false);
-
-  const contactTabsShown = tabs.filter(
-    (tab): tab is ContactTab['key'] => tab !== 'search' && tab !== 'categories',
-  );
-  const errorsByTab = Object.fromEntries(
-    contactTabsShown.map((tabKey) => [
-      tabKey,
-      submitted
-        ? Object.fromEntries(
-            forms[tabKey].map((item) => [
-              item.name,
-              validateField(item, values[tabKey], referenceData),
-            ]),
-          )
-        : {},
-    ]),
-  ) as Record<ContactTab['key'], Record<string, string | undefined>>;
-  const selectedCount = countSelected(selectedCategories);
-  const categoriesInvalid = submitted && (selectedCount < 1 || selectedCount > maxSelections);
+// The preview's state and logic live in previewSlice.ts; strings are the language it shows
+export const AseloContactPanel = ({ strings }: { strings: Strings }) => {
+  const dispatch = useAppDispatch();
+  const files = useAppSelector(selectDraftFiles);
+  const { channel: taskType, screen, tabIndex, values, selectedCategories } = useAppSelector(selectPreview);
+  const { referenceData, forms, categories, tabs, currentTab, isLastTab, errorsByTab, categoriesInvalid } =
+    useAppSelector(selectContactPanel);
   const tabHasError = (tab: TabId) =>
     tab === 'categories'
       ? categoriesInvalid
       : tab !== 'search' && Object.values(errorsByTab[tab] ?? {}).some(Boolean);
-
-  const setValue = (tabKey: ContactTab['key'], name: string, value: FieldValue) => {
-    onSaveResult?.(undefined);
-    setValues((current) => {
-      const tabValues = { ...current[tabKey], [name]: value };
-      // A linked dropdown goes back to its blank answer when the one above changes
-      forms[tabKey]
-        .filter((item) => item.type === 'dependent-select' && item.dependsOn === name)
-        .forEach((item) => {
-          tabValues[item.name] = initialValueFor(item, referenceData);
-        });
-      return { ...current, [tabKey]: tabValues };
-    });
-  };
-
-  const saveAndEnd = () => {
-    setSubmitted(true);
-    const invalid =
-      contactTabsShown.some((tabKey) =>
-        forms[tabKey].some((item) => validateField(item, values[tabKey], referenceData)),
-      ) ||
-      selectedCount < 1 ||
-      selectedCount > maxSelections;
-    onSaveResult?.(invalid ? 'invalid' : 'saved');
-  };
-
-  const isLastTab = tabIndex === tabs.length - 1;
-
-  const chooseDataCallType = (name: string) => {
-    const chosen: CallType = name === 'caller' ? 'caller' : 'child';
-    setCallType(chosen);
-    setTabIndex(1);
-    setScreen('form');
-    onSaveResult?.(undefined);
-  };
 
   if (screen === 'callTypes') {
     return (
@@ -203,8 +75,8 @@ export const AseloContactPanel = ({
             buttons={getCallTypeButtons(files)}
             strings={strings}
             taskType={taskType}
-            onDataCallType={chooseDataCallType}
-            onNonDataCallType={() => onSaveResult?.('saved')}
+            onDataCallType={(name) => dispatch(chooseDataCallType(name))}
+            onNonDataCallType={() => dispatch(nonDataCallTypeChosen())}
           />
         </div>
       </div>
@@ -226,10 +98,7 @@ export const AseloContactPanel = ({
           selected={selectedCategories}
           hasError={categoriesInvalid}
           strings={strings}
-          onChange={(selected) => {
-            onSaveResult?.(undefined);
-            setSelectedCategories(selected);
-          }}
+          onChange={(selected) => dispatch(categoriesChanged(selected))}
         />
       );
     }
@@ -243,7 +112,7 @@ export const AseloContactPanel = ({
         referenceData={referenceData}
         strings={strings}
         splitFormAt={getContactSplitFormAt(files, tab)}
-        onChange={(name, value) => setValue(currentTab, name, value)}
+        onChange={(name, value) => dispatch(setPreviewAnswer(currentTab, name, value))}
       />
     );
   };
@@ -251,7 +120,7 @@ export const AseloContactPanel = ({
   return (
     <div className="aselo" role="form">
       <div className="aselo-contact-header">
-        <button type="button" className="aselo-back-button" onClick={() => setScreen('callTypes')}>
+        <button type="button" className="aselo-back-button" onClick={() => dispatch(backToCallTypes())}>
           <BackIcon size={20} />
           <span>{translate(strings, 'TabbedForms-BackButton')}</span>
         </button>
@@ -267,7 +136,7 @@ export const AseloContactPanel = ({
               aria-label="Search"
               aria-selected={index === tabIndex}
               className={`aselo-tab aselo-search-tab ${index === tabIndex ? 'selected' : ''}`}
-              onClick={() => setTabIndex(index)}
+              onClick={() => dispatch(tabSelected(index))}
             >
               <SearchIcon size={20} />
             </button>
@@ -278,7 +147,7 @@ export const AseloContactPanel = ({
               role="tab"
               aria-selected={index === tabIndex}
               className={`aselo-tab ${index === tabIndex ? 'selected' : ''}`}
-              onClick={() => setTabIndex(index)}
+              onClick={() => dispatch(tabSelected(index))}
             >
               {tabHasError(tab) && (
                 <span className="aselo-tab-error">
@@ -299,7 +168,7 @@ export const AseloContactPanel = ({
             <button
               type="button"
               className="aselo-button aselo-button-destructive"
-              onClick={saveAndEnd}
+              onClick={() => dispatch(saveAndEnd())}
             >
               {translate(strings, 'BottomBar-SaveAndEnd')}
             </button>
@@ -307,7 +176,7 @@ export const AseloContactPanel = ({
             <button
               type="button"
               className="aselo-button aselo-button-primary"
-              onClick={() => setTabIndex(tabIndex + 1)}
+              onClick={() => dispatch(nextPreviewTab())}
             >
               {translate(strings, 'BottomBar-Next')}
             </button>
