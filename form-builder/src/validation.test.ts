@@ -75,7 +75,7 @@ describe('validateContactTab', () => {
       ),
     );
     expect(errorsOf(validateContactTab(draft, demo, callerTab))).toContain(
-      '“Age” (Caller information) has the same answer more than once: 01.',
+      '“Age” (Help seeker information) has the same answer more than once: 01.',
     );
   });
 

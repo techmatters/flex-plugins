@@ -154,7 +154,7 @@ describe('questions', () => {
   test('says what a question fills in and what depends on it', () => {
     const references = findWebchatFieldReferences(as.files, 'province');
     expect(references).toContain('The “District” dropdown depends on it');
-    expect(references.some((reference) => reference.startsWith('Fills in the contact form (Caller information'))).toBe(true);
+    expect(references.some((reference) => reference.startsWith('Fills in the contact form (Help seeker information'))).toBe(true);
     expect(findWebchatFieldReferences(as.files, 'friendlyName')[0]).toMatch(/name counselors see/);
   });
 

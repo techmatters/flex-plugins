@@ -61,8 +61,8 @@ const contactTab = (key: ContactTab['key'], title: string, layoutKey: string): C
 });
 
 export const CONTACT_TABS: ContactTab[] = [
-  contactTab('CallerInformationTab', 'Caller information', 'callerInformation'),
-  contactTab('ChildInformationTab', 'Child information', 'childInformation'),
+  contactTab('CallerInformationTab', 'Help seeker information', 'callerInformation'),
+  contactTab('ChildInformationTab', 'Service user information', 'childInformation'),
   contactTab('CaseInformationTab', 'Case information', 'caseInformation'),
 ];
 
@@ -132,7 +132,7 @@ export const caseSectionTarget = (section: CaseSection): FormTarget => ({
   insights: { group: 'caseForm', key: section.key },
 });
 
-// A readable name for a form file, e.g. "Child information" or "Household Member (case)"
+// A readable name for a form file, e.g. "Service user information" or "Household Member (case)"
 export const describeDefinitionFile = (files: DefinitionFileMap, filePath: string): string => {
   const tab = CONTACT_TABS.find((contactTab) => contactTab.filePath === filePath);
   if (tab) return tab.title;

@@ -63,6 +63,7 @@ export default defineConfig({
       recordingsDir: process.env.FORM_BUILDER_RECORDINGS_DIR ?? path.resolve(appDir, 'recordings'),
       routingDir: process.env.FORM_BUILDER_ROUTING_DIR ?? path.resolve(appDir, 'routing'),
       chatbotsDir: process.env.FORM_BUILDER_CHATBOTS_DIR ?? path.resolve(appDir, 'chatbots-designs'),
+      helpQuestionsDir: process.env.FORM_BUILDER_HELP_QUESTIONS_DIR ?? path.resolve(appDir, 'help-questions'),
       // Other branches' files, downloaded when an import reads one
       branchesDir: path.resolve(appDir, 'branch-snapshots'),
       repoRoot: path.resolve(appDir, '..'),

@@ -42,7 +42,7 @@ export type ValidationIssue = {
 const FIELD_NAME_PATTERN = /^[a-zA-Z][a-zA-Z0-9_]*$/;
 const ONE_TO_ONE_FILE = 'insights/oneToOneConfigSpec.json';
 
-// e.g. “Age” (Caller information): several forms of a helpline can have a field with the same label
+// e.g. “Age” (Help seeker information): several forms of a helpline can have a field with the same label
 const describeField = (item: FormItemJsonDefinition, tab?: FormTarget) =>
   tab ? `“${item.label || item.name}” (${tab.title})` : `“${item.label || item.name}”`;
 

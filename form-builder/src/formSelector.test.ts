@@ -54,7 +54,7 @@ describe('reading', () => {
       implicit: false,
     });
     expect(summarizeFormSelector(readFormSelector(usnm.files))).toBe(
-      'Every contact fills in Child information; call type: Child calling about self',
+      'Every contact fills in Service user information; call type: Child calling about self',
     );
   });
 
@@ -68,7 +68,7 @@ describe('reading', () => {
       ],
     });
     expect(summarizeFormSelector(readFormSelector(usch.files))).toMatch(
-      /^The first answered of “aboutSelf” in the webchat form \(about themselves when “Yes”\), then “aboutSelf” in the chatbot \(about themselves when “Yes”\) decides: about themselves → Case information, Child information \(Child calling about self\); any other answer → Case information, Caller information \(Someone calling about a child\)/,
+      /^The first answered of “aboutSelf” in the webchat form \(about themselves when “Yes”\), then “aboutSelf” in the chatbot \(about themselves when “Yes”\) decides: about themselves → Case information, Service user information \(Child calling about self\); any other answer → Case information, Help seeker information \(Someone calling about a child\)/,
     );
   });
 
@@ -157,7 +157,7 @@ describe('checks', () => {
 
   test('answers mapped onto tabs that are never filled in (usnm’s webchat answers for the Caller tab)', () => {
     expect(messages(usnm.files, usnm.files)).toContain(
-      'warning: Filling in the contact: “province” from the webchat form fills in Caller information, which is never filled in.',
+      'warning: Filling in the contact: “province” from the webchat form fills in Help seeker information, which is never filled in.',
     );
     expect(validateSections(usnm.files, usnm.files).every((found) => found.severity === 'warning')).toBe(true);
   });
@@ -199,8 +199,8 @@ describe('review', () => {
     const expected = {
       title: 'Filling in the contact',
       lines: [
-        'Now: Every contact fills in Child information, Case information; call type: none (the counselor picks)',
-        'Before: Every contact fills in Child information; call type: Child calling about self',
+        'Now: Every contact fills in Service user information, Case information; call type: none (the counselor picks)',
+        'Before: Every contact fills in Service user information; call type: Child calling about self',
       ],
     };
     expect(summarizeFormSelectorChanges(usnm.files, changed)).toEqual([expected]);

@@ -147,7 +147,7 @@ describe('filling in the contact form', () => {
     expect((await savedDraft(as, 'PrepopulateMappings.json')).preEngagement.friendlyName).toBe(
       'ChildInformationTab.firstName',
     );
-    expect(screen.getByText(`Child information: ${firstName.label}`)).toBeTruthy();
+    expect(screen.getByText(`Service user information: ${firstName.label}`)).toBeTruthy();
   });
 });
 

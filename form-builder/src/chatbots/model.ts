@@ -295,8 +295,8 @@ export const PATTERN_PRESETS: { label: string; pattern: string }[] = [
 
 // The contact form tabs a chatbot's answers can fill in, as in PrepopulateMappings.json
 export const FORM_TABS: { key: string; label: string }[] = [
-  { key: 'ChildInformationTab', label: 'Child information' },
-  { key: 'CallerInformationTab', label: 'Caller information' },
+  { key: 'ChildInformationTab', label: 'Service user information' },
+  { key: 'CallerInformationTab', label: 'Help seeker information' },
   { key: 'CaseInformationTab', label: 'Case information' },
 ];
 

@@ -38,6 +38,7 @@
  *   POST   /api/flows/import/:code                  Aselo staff: a board from a live helpline (flowImport.ts)
  *   ...    /api/routing/...                         the routing designer (routingApi.ts)
  *   ...    /api/chatbots/...                        the chatbot designer (chatbotApi.ts)
+ *   ...    /api/help/questions                      questions the help panel couldn't answer (helpQuestions.ts)
  *
  * Roles: Aselo staff can do everything for every helpline. Helpline staff only see their own
  * helplines, can't apply, and never see or change the service configuration
@@ -65,6 +66,7 @@ import { isValidBranch } from './branches';
 import type { RoutingStore } from './routingStore';
 import { isServiceConfigPath } from './filePaths';
 import { loadPostFlowChoices } from './postStudioFlowChoices';
+import { handleHelpRequest, HelpQuestionStore } from './helpQuestions';
 
 export type ApiUser = {
   name: string;
@@ -127,6 +129,8 @@ export type ApiContext = {
   routing?: RoutingStore;
   // Chatbot designs (Lex), one per helpline; without them, 501
   chatbots?: ChatbotStore;
+  // Questions sent from the help panel; without them, 501
+  helpQuestions?: HelpQuestionStore;
   // Other flex-plugins branches imports can read ({ branch } in an import's body); without it, only the default
   branches?: BranchSource;
   now?: () => Date;
@@ -298,6 +302,16 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
         request.body,
         user,
         now,
+      );
+    }
+
+    if (boardsPath === '/api/help/questions') {
+      return await handleHelpRequest(
+        context.helpQuestions,
+        request.method.toUpperCase(),
+        request.body,
+        user,
+        () => (context.now ?? (() => new Date()))(),
       );
     }
 

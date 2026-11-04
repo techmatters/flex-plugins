@@ -204,7 +204,7 @@ export const formSelectorOutcomes = (selector: FormSelector): FormSelectorOutcom
     when: selector.choices.length > 0 ? 'Not answered' : 'Every contact (no answers are listed to check)',
     tabs: ['CaseInformationTab', 'ChildInformationTab'],
     callType: CALL_TYPE_CHILD,
-    note: 'Chatbot answers fill in Case information only; webchat form answers fill in Case information and Child information.',
+    note: 'Chatbot answers fill in Case information only; webchat form answers fill in Case information and Service user information.',
   });
   return outcomes;
 };
@@ -217,7 +217,7 @@ export const summarizeFormSelector = (info: FormSelectorInfo | FormSelector): st
   }
   const by = implicit ? ' (Aselo’s default, nothing is set)' : '';
   if (selector.choices.length === 0) {
-    return `No answers are checked${by}: chatbot answers fill in Case information, webchat answers Case information and Child information; call type: ${CALL_TYPE_CHILD}`;
+    return `No answers are checked${by}: chatbot answers fill in Case information, webchat answers Case information and Service user information; call type: ${CALL_TYPE_CHILD}`;
   }
   const decider =
     selector.choices.length === 1
@@ -226,7 +226,7 @@ export const summarizeFormSelector = (info: FormSelectorInfo | FormSelector): st
   return (
     `${decider}${by}: about themselves → ${listTabs(ABOUT_SELF_TABS)} (${CALL_TYPE_CHILD}); ` +
     `any other answer → ${listTabs(ABOUT_OTHER_TABS)} (${CALL_TYPE_CALLER}); ` +
-    `no answer → chatbot answers fill in Case information only, webchat answers Case information and Child information (${CALL_TYPE_CHILD})`
+    `no answer → chatbot answers fill in Case information only, webchat answers Case information and Service user information (${CALL_TYPE_CHILD})`
   );
 };
 

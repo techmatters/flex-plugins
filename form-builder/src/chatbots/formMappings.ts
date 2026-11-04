@@ -89,8 +89,8 @@ export type ContactForms = {
 };
 
 const TAB_FILES: { key: string; label: string; file: string }[] = [
-  { key: 'ChildInformationTab', label: 'Child information', file: 'tabbedForms/ChildInformationTab.json' },
-  { key: 'CallerInformationTab', label: 'Caller information', file: 'tabbedForms/CallerInformationTab.json' },
+  { key: 'ChildInformationTab', label: 'Service user information', file: 'tabbedForms/ChildInformationTab.json' },
+  { key: 'CallerInformationTab', label: 'Help seeker information', file: 'tabbedForms/CallerInformationTab.json' },
   { key: 'CaseInformationTab', label: 'Case information', file: 'tabbedForms/CaseInformationTab.json' },
 ];
 

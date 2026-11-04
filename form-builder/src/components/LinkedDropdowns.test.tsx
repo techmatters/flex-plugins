@@ -179,7 +179,7 @@ describe('linked dropdowns', () => {
   test('editing the answers of existing linked dropdowns', async () => {
     const childTab = 'tabbedForms/ChildInformationTab.json';
     await renderLoaded(demo);
-    fireEvent.click(screen.getByRole('button', { name: 'Child information' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Service user information' }));
     fireEvent.click(fieldCard(labelOf(demo, childTab, 'district')));
     fireEvent.click(screen.getByRole('button', { name: 'Edit answers' }));
 
@@ -204,7 +204,7 @@ describe('linked dropdowns', () => {
   test('PH’s tens of thousands of barangays open, with a note about names shared between provinces', async () => {
     const childTab = 'tabbedForms/ChildInformationTab.json';
     await renderLoaded(ph);
-    fireEvent.click(screen.getByRole('button', { name: 'Child information' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Service user information' }));
     fireEvent.click(fieldCard(labelOf(ph, childTab, 'district')));
     fireEvent.click(screen.getByRole('button', { name: 'Edit answers' }));
 

@@ -47,6 +47,22 @@ Aselo team sets:
 If the builder says *"You are not in a form builder group"*, ask the Aselo team
 (support@aselo.org) to add you.
 
+## Help inside the builder
+
+**Help** (top bar) opens a panel beside whatever you're working on, so you can follow its steps
+while you work:
+
+- **Guides, step by step** and **Common questions** for the area you're in (Forms first; the other
+  areas follow), plus getting access and contacting the Aselo team.
+- **Ask a question** in your own words ("how do I send my changes?"): it shows the best answer, and
+  related ones. It runs in your browser, with no AI and no cost.
+- When it can't answer, or an answer didn't help, you can **send the question to the Aselo team**
+  (only the question and your name). They write answers for the questions that come up; Aselo
+  staff see them under **Questions sent to the Aselo team**.
+
+The articles are Markdown files in `src/help/content/` (how to write them:
+[its README](../src/help/content/README.md)).
+
 ## For helpline staff
 
 ### 1. Sign in and open your helpline's forms
@@ -63,7 +79,7 @@ browser tab.
 
 The left menu has everything you can change:
 
-- **Contact forms**: the contact form tabs (e.g. caller and child information), **Issue
+- **Contact forms**: the contact form tabs (e.g. help seeker and service user information), **Issue
   categories**, and **Filling in the contact**: which parts of the contact form Aselo fills in
   from the chatbot and webchat form answers, and which call type it picks (for example "the
   answer to *aboutSelf* decides: *Yes* means the person is writing about themselves"). Only the
@@ -85,8 +101,8 @@ Things to know:
   see *Last change by ...* on it. If someone else saves while you're editing, the builder stops
   and asks you to **Reload**, so nobody's work is overwritten silently.
 - **Some things are locked**, because contacts and reports already use them: the saved name of an
-  existing field, existing call types, existing category names, existing case sections and
-  statuses. The Aselo team can change those if needed.
+  existing field, existing category names, the existing call type buttons that close a contact
+  without a form, and removing existing case sections. The Aselo team can change those if needed.
 - **Answers have a text and a saved value**: what counselors see, and what's saved and reported.
   They're usually the same, but can differ (for example "0" saved as "00"). **Show saved values**
   shows them. You can set a different saved value for new answers; existing ones keep theirs.

@@ -175,7 +175,7 @@ describe('HelplineWorkspace', () => {
     expect(await within(fieldReview).findByText('Should “Other” be an option?')).toBeTruthy();
     expect(within(fieldReview).getByText('For Aselo person')).toBeTruthy();
     expect(within(fieldCard('Relationship to Help Seeker')).getByRole('img', { name: 'Question' })).toBeTruthy();
-    const callerItem = () => within(screen.getByRole('navigation')).getByRole('button', { name: /Caller information/i });
+    const callerItem = () => within(screen.getByRole('navigation')).getByRole('button', { name: /Help seeker information/i });
     expect(within(callerItem()).getByRole('img', { name: 'Question' })).toBeTruthy();
     expect(screen.getByText(/1 open flag$/)).toBeTruthy();
     unmount();
@@ -195,17 +195,17 @@ describe('HelplineWorkspace', () => {
   test('the helpline and Aselo approve a form each, and a later change shows', async () => {
     const { renderWorkspace } = createHarness();
     const { unmount } = renderWorkspace(usnm);
-    const formReview = await screen.findByRole('region', { name: 'Review: Caller information' });
+    const formReview = await screen.findByRole('region', { name: 'Review: Help seeker information' });
     // Each person approves for their own side only
     expect(within(formReview).getAllByRole('button', { name: 'Approve form' })).toHaveLength(1);
     fireEvent.click(within(formReview).getByRole('button', { name: 'Approve form' }));
     expect(await within(formReview).findByText(/^Helpline: approved by Helpline person/)).toBeTruthy();
-    const callerItem = () => within(screen.getByRole('navigation')).getByRole('button', { name: /Caller information/i });
+    const callerItem = () => within(screen.getByRole('navigation')).getByRole('button', { name: /Help seeker information/i });
     expect(within(callerItem()).getByRole('img', { name: 'Approved by Helpline' })).toBeTruthy();
     unmount();
 
     renderWorkspace(usnm, { user: aseloStaff });
-    const aseloFormReview = await screen.findByRole('region', { name: 'Review: Caller information' });
+    const aseloFormReview = await screen.findByRole('region', { name: 'Review: Help seeker information' });
     fireEvent.click(within(aseloFormReview).getByRole('button', { name: 'Approve form' }));
     expect(await within(callerItem()).findByRole('img', { name: 'Approved by Aselo' })).toBeTruthy();
     expect(screen.getByText(/^Forms approved: Helpline 1\/\d+ · Aselo 1\/\d+$/)).toBeTruthy();
@@ -301,7 +301,7 @@ describe('help boxes (field descriptions)', () => {
   const openChildField = async (label: string) => {
     const harness = createHarness();
     harness.renderWorkspace(demo);
-    fireEvent.click(await screen.findByRole('button', { name: 'Child information' }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Service user information' }));
     fireEvent.click(await findFieldCard(label));
     return harness;
   };

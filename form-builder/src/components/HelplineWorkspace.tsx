@@ -18,6 +18,7 @@
  * Everything for one loaded helpline: navigation, the draft, editing, previews and export.
  * Rendered with a code/version key so switching helpline starts fresh.
  */
+import { NeedHelp } from '../help/HelpContext';
 import { ImportedFrom } from './BranchPicker';
 import { useEffect, useMemo, useState } from 'react';
 import type { FlagKind, ReviewSide } from '../../server/reviews';
@@ -94,6 +95,27 @@ type View =
 type NavReview = { approvals: Partial<Record<ReviewSide, ApprovalState>>; flags: FlagKind[] };
 
 const sameView = (a: View, b: View) => JSON.stringify(a) === JSON.stringify(b);
+
+// The help article about each section, and what it's called there ("Need help?"); none for the
+// Aselo-only settings
+const SECTION_HELP: Partial<Record<View['kind'], { slug: string; what: string }>> = {
+  categories: { slug: 'issue-categories', what: 'issue categories' },
+  callTypes: { slug: 'section-call-types', what: 'call types' },
+  cannedResponses: { slug: 'section-canned-responses', what: 'canned responses' },
+  messages: { slug: 'section-automatic-messages', what: 'automatic messages' },
+  webchat: { slug: 'section-webchat-form', what: 'the webchat form' },
+  formSelector: { slug: 'section-filling-in-the-contact', what: 'filling in the contact' },
+  caseStatus: { slug: 'section-case-statuses', what: 'case statuses' },
+  caseSections: { slug: 'section-case-sections', what: 'case sections' },
+  caseSection: { slug: 'section-case-section-forms', what: 'this case section’s form' },
+  profiles: { slug: 'section-client-profiles', what: 'client profiles' },
+};
+const CONTACT_TAB_HELP: Record<string, { slug: string; what: string }> = {
+  CallerInformationTab: { slug: 'section-help-seeker-information', what: 'help seeker information' },
+  ChildInformationTab: { slug: 'section-service-user-information', what: 'service user information' },
+  CaseInformationTab: { slug: 'section-case-information', what: 'case information' },
+};
+const sectionHelpOf = (view: View) => (view.kind === 'contactTab' ? CONTACT_TAB_HELP[view.tabKey] : SECTION_HELP[view.kind]);
 
 // Defined outside the workspace so its buttons survive re-renders (e.g. when the draft loads)
 const NavItem = ({
@@ -737,6 +759,7 @@ export const HelplineWorkspace = ({
               </ul>
             </div>
           )}
+          {sectionHelpOf(view) && <NeedHelp {...sectionHelpOf(view)!} />}
           {renderMain()}
         </main>
       </div>

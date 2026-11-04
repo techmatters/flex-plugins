@@ -1,0 +1,108 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+/**
+ * The help panel's articles: one Markdown file each in content/<area>/, with a short header
+ * (between --- lines) saying what it's about. How to write them: content/README.md.
+ */
+
+export type HelpArea = 'forms' | 'flows' | 'routing' | 'chatbots' | 'general';
+// Who it's written for: helpline staff, Aselo staff, or both
+export type HelpAudience = 'helpline' | 'aselo' | 'everyone';
+// A guide walks through a process step by step; an answer answers one question; a section
+// explains one part of the builder (what it's for), and is what its "Need help?" opens
+export type HelpKind = 'guide' | 'answer' | 'section';
+
+export type HelpArticle = {
+  slug: string;
+  title: string;
+  area: HelpArea;
+  audience: HelpAudience;
+  kind: HelpKind;
+  // The ways people ask for it: what makes questions find it
+  questions: string[];
+  keywords: string[];
+  // Shown first in its area's list (lower first)
+  order: number;
+  body: string;
+  // Its first paragraph, shown as the answer in search results
+  summary: string;
+};
+
+const AREAS: HelpArea[] = ['forms', 'flows', 'routing', 'chatbots', 'general'];
+
+// "key: value" lines, and lists as "key:" followed by "  - item" lines
+const parseHeader = (header: string) => {
+  const values: Record<string, string | string[]> = {};
+  let listKey: string | undefined;
+  header.split(/\r?\n/).forEach((line) => {
+    const item = line.match(/^\s+-\s+(.*)$/);
+    if (item && listKey) {
+      (values[listKey] as string[]).push(item[1].trim());
+      return;
+    }
+    const pair = line.match(/^([a-zA-Z]+):\s*(.*)$/);
+    if (!pair) return;
+    listKey = pair[2] ? undefined : pair[1];
+    values[pair[1]] = pair[2] ? pair[2].trim() : [];
+  });
+  return values;
+};
+
+const listOf = (value: string | string[] | undefined) =>
+  Array.isArray(value)
+    ? value
+    : (value ?? '')
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+export const parseArticle = (path: string, source: string): HelpArticle => {
+  const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+  if (!match) throw new Error(`${path}: the article needs a header between --- lines.`);
+  const header = parseHeader(match[1]);
+  const body = match[2].trim();
+  const slug = path.replace(/^.*\//, '').replace(/\.md$/, '');
+  const area = path.match(/content\/([a-z]+)\//)?.[1] as HelpArea;
+  if (!AREAS.includes(area)) throw new Error(`${path}: articles live in content/<area>/.`);
+  const audience = (header.audience as HelpAudience) ?? 'everyone';
+  const kind = (header.kind as HelpKind) ?? 'answer';
+  const title = typeof header.title === 'string' ? header.title : '';
+  if (!title) throw new Error(`${path}: the article has no title.`);
+  return {
+    slug,
+    title,
+    area,
+    audience,
+    kind,
+    questions: listOf(header.questions),
+    keywords: listOf(header.keywords),
+    order: Number(header.order ?? 100),
+    body,
+    summary: body.split(/\r?\n\s*\r?\n/).find((paragraph) => !paragraph.startsWith('#')) ?? '',
+  };
+};
+
+const files = import.meta.glob<string>('./content/*/*.md', { query: '?raw', import: 'default', eager: true });
+
+export const HELP_ARTICLES: HelpArticle[] = Object.entries(files)
+  .map(([path, source]) => parseArticle(path, source))
+  .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+
+export const articleBySlug = (slug: string) => HELP_ARTICLES.find((article) => article.slug === slug);
+
+// What someone sees: helpline staff, what's written for them; Aselo staff, everything
+export const visibleTo = (article: HelpArticle, isAseloStaff: boolean) => isAseloStaff || article.audience !== 'aselo';

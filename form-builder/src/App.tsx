@@ -15,7 +15,7 @@
  */
 
 import { useCallback, useEffect, useState } from 'react';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, CircleHelp } from 'lucide-react';
 import type { DefinitionFiles, HelplineSummary } from '../server/definitionsApi';
 import type { Me } from '../server/api';
 import { fetchBranches, fetchDefinitionFiles, fetchHelplines } from './api';
@@ -32,6 +32,9 @@ import type { RoutingClient } from './routing/routingClient';
 import { ChatbotsArea } from './chatbots/ChatbotsArea';
 import type { ChatbotClient } from './chatbots/chatbotClient';
 import { BoardClient, httpBoardClient } from './flows/boardClient';
+import { HelpPanel } from './help/HelpPanel';
+import { HelpContext } from './help/HelpContext';
+import type { HelpClient } from './help/helpClient';
 
 type Area = 'forms' | 'flows' | 'routing' | 'chatbots';
 
@@ -52,9 +55,16 @@ type Props = {
   boardClient?: BoardClient;
   routingClient?: RoutingClient;
   chatbotClient?: ChatbotClient;
+  helpClient?: HelpClient;
 };
 
-export const App = ({ draftClient = httpDraftClient, boardClient, routingClient, chatbotClient }: Props) => {
+export const App = ({
+  draftClient = httpDraftClient,
+  boardClient,
+  routingClient,
+  chatbotClient,
+  helpClient,
+}: Props) => {
   // Forms, or the flow designer (Contact flows)
   const [area, setArea] = useState<Area>(areaFromUrl);
   const [user, setUser] = useState<Me>();
@@ -78,6 +88,15 @@ export const App = ({ draftClient = httpDraftClient, boardClient, routingClient,
 
   const isAseloStaff = user?.role === 'aselo-staff';
   const actingAsStaff = isAseloStaff && !viewAsHelplineStaff;
+  // The help panel, beside whatever area is open
+  const [helpOpen, setHelpOpen] = useState(false);
+  const closeHelp = useCallback(() => setHelpOpen(false), []);
+  // An article asked for from the page (a section's "Need help?")
+  const [helpRequest, setHelpRequest] = useState<{ slug: string; at: number }>();
+  const openHelp = useCallback((slug?: string) => {
+    setHelpRequest(slug ? { slug, at: Date.now() } : undefined);
+    setHelpOpen(true);
+  }, []);
 
   useEffect(() => {
     Promise.all([draftClient.me(), fetchHelplines()])
@@ -120,148 +139,172 @@ export const App = ({ draftClient = httpDraftClient, boardClient, routingClient,
   };
 
   return (
-    <div className={area === 'forms' ? 'app' : `app app-${area}`}>
-      <header className="top-bar">
-        <h1>
-          <AseloBuilderLogo />
-        </h1>
-        <nav className="area-switch" aria-label="Area">
-          {(['forms', 'flows', 'routing', 'chatbots'] as Area[]).map((candidate) => (
-            <button
-              key={candidate}
-              type="button"
-              className={area === candidate ? 'active' : ''}
-              aria-current={area === candidate ? 'page' : undefined}
-              onClick={() => switchArea(candidate)}
-            >
-              {AREA_LABELS[candidate]}
-            </button>
-          ))}
-        </nav>
-        <span className="top-bar-user">
-          {user && (
-            <>
-              {user.name} · {isAseloStaff ? 'Aselo staff' : 'Helpline staff'}
-              {isSignInEnabled() && (
-                <>
-                  {' · '}
-                  <button type="button" className="link-button" onClick={signOut}>
-                    Sign out
-                  </button>
-                </>
-              )}
-            </>
+    <HelpContext.Provider value={openHelp}>
+      <div className={`${area === 'forms' ? 'app' : `app app-${area}`}${helpOpen ? ' help-open' : ''}`}>
+        <header className="top-bar">
+          <h1>
+            <AseloBuilderLogo />
+          </h1>
+          <nav className="area-switch" aria-label="Area">
+            {(['forms', 'flows', 'routing', 'chatbots'] as Area[]).map((candidate) => (
+              <button
+                key={candidate}
+                type="button"
+                className={area === candidate ? 'active' : ''}
+                aria-current={area === candidate ? 'page' : undefined}
+                onClick={() => switchArea(candidate)}
+              >
+                {AREA_LABELS[candidate]}
+              </button>
+            ))}
+          </nav>
+          <button
+            type="button"
+            className="top-bar-help"
+            aria-expanded={helpOpen}
+            title="Guides, and answers to your questions"
+            onClick={() => {
+              setHelpRequest(undefined);
+              setHelpOpen((current) => !current);
+            }}
+          >
+            <CircleHelp size={15} aria-hidden /> Help
+          </button>
+          <span className="top-bar-user">
+            {user && (
+              <>
+                {user.name} · {isAseloStaff ? 'Aselo staff' : 'Helpline staff'}
+                {isSignInEnabled() && (
+                  <>
+                    {' · '}
+                    <button type="button" className="link-button" onClick={signOut}>
+                      Sign out
+                    </button>
+                  </>
+                )}
+              </>
+            )}
+          </span>
+          {isAseloStaff && (
+            <label className="staff-toggle" title="See and use the app as helpline staff do">
+              <input
+                type="checkbox"
+                checked={viewAsHelplineStaff}
+                onChange={(e) => setViewAsHelplineStaff(e.target.checked)}
+              />
+              View as helpline staff
+            </label>
           )}
-        </span>
-        {isAseloStaff && (
-          <label className="staff-toggle" title="See and use the app as helpline staff do">
-            <input
-              type="checkbox"
-              checked={viewAsHelplineStaff}
-              onChange={(e) => setViewAsHelplineStaff(e.target.checked)}
-            />
-            View as helpline staff
-          </label>
+        </header>
+
+        {error && <div className="alert alert-error">{error}</div>}
+
+        {helpOpen && (
+          <HelpPanel
+            area={area}
+            isAseloStaff={actingAsStaff}
+            onClose={closeHelp}
+            client={helpClient}
+            request={helpRequest}
+          />
         )}
-      </header>
 
-      {error && <div className="alert alert-error">{error}</div>}
-
-      {opened.has('chatbots') && user && (
-        <div className="area-pane" hidden={area !== 'chatbots'}>
-          <ChatbotsArea
-            client={chatbotClient}
-            helplineCodes={helplines.map((helpline) => helpline.code)}
-            staffMode={actingAsStaff}
-            userName={user.name}
-          />
-        </div>
-      )}
-
-      {opened.has('routing') && user && (
-        <div className="area-pane" hidden={area !== 'routing'}>
-          <RoutingArea
-            client={routingClient}
-            helplineCodes={helplines.map((helpline) => helpline.code)}
-            staffMode={actingAsStaff}
-          />
-        </div>
-      )}
-
-      {opened.has('flows') && user && (
-        <div className="area-pane" hidden={area !== 'flows'}>
-          <FlowsArea
-            client={boardClient}
-            helplineCodes={helplines.map((helpline) => helpline.code)}
-            staffMode={actingAsStaff}
-            userName={user.name}
-            userEmail={user.email}
-            active={area === 'flows'}
-          />
-        </div>
-      )}
-
-      <div className="area-pane" hidden={area !== 'forms'}>
-        {code && (
-          <div className="area-back-bar">
-            <button type="button" className="link-button area-back" onClick={closeHelpline}>
-              <ArrowLeft size={14} aria-hidden /> All forms
-            </button>
+        {opened.has('chatbots') && user && (
+          <div className="area-pane" hidden={area !== 'chatbots'}>
+            <ChatbotsArea
+              client={chatbotClient}
+              helplineCodes={helplines.map((helpline) => helpline.code)}
+              staffMode={actingAsStaff}
+              userName={user.name}
+            />
           </div>
         )}
 
-        {!code && !error && (
-          <main className="area-home forms-home">
-            <h2>Forms</h2>
-            <p className="field-hint area-home-intro">
-              The forms counselors fill in for each contact and case, the webchat form, and how contacts are filled in
-              from the chatbot. Open one from the list to see and edit it.
-            </p>
-            {!user && <Loading text="Loading helplines…" />}
-            {user && actingAsStaff && (
-              <ImportForms
-                draftClient={draftClient}
-                helplineCodes={helplines.map((helpline) => helpline.code)}
-                loadBranches={fetchBranches}
-                loadHelplines={fetchHelplines}
-                onImported={() => setDraftsCount((count) => count + 1)}
-              />
-            )}
-            {user && (
-              <DraftsList
-                key={draftsCount}
-                draftClient={draftClient}
-                isAseloStaff={isAseloStaff}
-                onOpen={(draftCode, draftVersion, draftBranch) => {
-                  setBranch(draftBranch);
-                  setCode(draftCode);
-                  setVersion(draftVersion);
-                }}
-              />
-            )}
-          </main>
+        {opened.has('routing') && user && (
+          <div className="area-pane" hidden={area !== 'routing'}>
+            <RoutingArea
+              client={routingClient}
+              helplineCodes={helplines.map((helpline) => helpline.code)}
+              staffMode={actingAsStaff}
+            />
+          </div>
         )}
 
-        {loading && (
-          <main className="empty-state">
-            <Loading text="Loading forms…" />
-          </main>
+        {opened.has('flows') && user && (
+          <div className="area-pane" hidden={area !== 'flows'}>
+            <FlowsArea
+              client={boardClient}
+              helplineCodes={helplines.map((helpline) => helpline.code)}
+              staffMode={actingAsStaff}
+              userName={user.name}
+              userEmail={user.email}
+              active={area === 'flows'}
+            />
+          </div>
         )}
 
-        {definitions && user && (
-          <HelplineWorkspace
-            key={`${definitions.source?.branch ?? ''}/${definitions.code}/${definitions.version}/${reloadCount}`}
-            definitions={definitions}
-            staffMode={actingAsStaff}
-            canApply={actingAsStaff}
-            applyInBuilder={user?.applyInBuilder !== false && !definitions.source}
-            draftClient={draftClient}
-            onReload={() => setReloadCount((count) => count + 1)}
-            userName={user.name}
-            loadPeople={loadPeople}
-          />
-        )}
+        <div className="area-pane" hidden={area !== 'forms'}>
+          {code && (
+            <div className="area-back-bar">
+              <button type="button" className="link-button area-back" onClick={closeHelpline}>
+                <ArrowLeft size={14} aria-hidden /> All forms
+              </button>
+            </div>
+          )}
+
+          {!code && !error && (
+            <main className="area-home forms-home">
+              <h2>Forms</h2>
+              <p className="field-hint area-home-intro">
+                The forms counselors fill in for each contact and case, the webchat form, and how contacts are filled in
+                from the chatbot. Open one from the list to see and edit it.
+              </p>
+              {!user && <Loading text="Loading helplines…" />}
+              {user && actingAsStaff && (
+                <ImportForms
+                  draftClient={draftClient}
+                  helplineCodes={helplines.map((helpline) => helpline.code)}
+                  loadBranches={fetchBranches}
+                  loadHelplines={fetchHelplines}
+                  onImported={() => setDraftsCount((count) => count + 1)}
+                />
+              )}
+              {user && (
+                <DraftsList
+                  key={draftsCount}
+                  draftClient={draftClient}
+                  isAseloStaff={isAseloStaff}
+                  onOpen={(draftCode, draftVersion, draftBranch) => {
+                    setBranch(draftBranch);
+                    setCode(draftCode);
+                    setVersion(draftVersion);
+                  }}
+                />
+              )}
+            </main>
+          )}
+
+          {loading && (
+            <main className="empty-state">
+              <Loading text="Loading forms…" />
+            </main>
+          )}
+
+          {definitions && user && (
+            <HelplineWorkspace
+              key={`${definitions.source?.branch ?? ''}/${definitions.code}/${definitions.version}/${reloadCount}`}
+              definitions={definitions}
+              staffMode={actingAsStaff}
+              canApply={actingAsStaff}
+              applyInBuilder={user?.applyInBuilder !== false && !definitions.source}
+              draftClient={draftClient}
+              onReload={() => setReloadCount((count) => count + 1)}
+              userName={user.name}
+              loadPeople={loadPeople}
+            />
+          )}
+        </div>
       </div>
-    </div>
+    </HelpContext.Provider>
   );
 };

@@ -30,6 +30,7 @@ import { LocalApplier, localNotifier, localUser } from './localServices';
 import { LocalRecordingFiles, LocalRecordingLogStore } from './recordingStores';
 import { LocalRoutingStore } from './routingStore';
 import { LocalChatbotStore } from './chatbotApi';
+import { LocalHelpQuestionStore } from './helpQuestions';
 import { GitHubBranches } from './branches';
 import type { RecordingEnvironment } from '../src/flows/recordings';
 import { RECORDING_CONTENT_TYPES } from '../src/flows/recordings';
@@ -44,6 +45,7 @@ type Options = {
   recordingsDir: string;
   routingDir: string;
   chatbotsDir: string;
+  helpQuestionsDir: string;
   branchesDir: string;
   repoRoot: string;
 };
@@ -146,6 +148,7 @@ export const definitionsDevApi = ({
   recordingsDir,
   routingDir,
   chatbotsDir,
+  helpQuestionsDir,
   branchesDir,
   repoRoot,
 }: Options): Plugin => {
@@ -160,6 +163,7 @@ export const definitionsDevApi = ({
     recordings: { files: recordingFiles, log: new LocalRecordingLogStore(recordingsDir) },
     routing: new LocalRoutingStore(routingDir),
     chatbots: new LocalChatbotStore(chatbotsDir),
+    helpQuestions: new LocalHelpQuestionStore(helpQuestionsDir),
     // Imports read this checkout, or a branch from GitHub
     branches: new GitHubBranches(branchesDir, 'This checkout (local files)'),
     applier: new LocalApplier(formDefinitionsDir, repoRoot, webchatConfigDir, helplinesConfigDir),

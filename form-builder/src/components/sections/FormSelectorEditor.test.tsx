@@ -86,7 +86,7 @@ describe('Filling in the contact', () => {
     const dialog = screen.getByRole('dialog', { name: 'Review your changes' });
     expect(
       within(dialog).getByText(
-        'Now: Every contact fills in Child information, Case information; call type: none (the counselor picks)',
+        'Now: Every contact fills in Service user information, Case information; call type: none (the counselor picks)',
       ),
     ).toBeTruthy();
   });

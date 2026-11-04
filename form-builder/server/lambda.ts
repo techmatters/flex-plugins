@@ -40,6 +40,7 @@ import { S3DraftStore } from './s3DraftStore';
 import { S3PeopleStore } from './people';
 import { S3RoutingStore } from './routingStore';
 import { S3ChatbotStore } from './chatbotApi';
+import { S3HelpQuestionStore } from './helpQuestions';
 import { S3RecordingFiles, S3RecordingLogStore } from './recordingStores';
 import { SlackNotifier } from './slackNotifier';
 
@@ -85,6 +86,7 @@ const loadServices = async (): Promise<Services> => {
     people: new S3PeopleStore(process.env.DRAFTS_BUCKET!),
     routing: new S3RoutingStore(process.env.DRAFTS_BUCKET!),
     chatbots: new S3ChatbotStore(process.env.DRAFTS_BUCKET!),
+    helpQuestions: new S3HelpQuestionStore(process.env.DRAFTS_BUCKET!),
     // Until the recordings bucket is set up (RECORDINGS_BUCKET), recordings answer 501
     recordings: process.env.RECORDINGS_BUCKET
       ? {
