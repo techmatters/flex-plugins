@@ -184,6 +184,45 @@ describe('canvas model', () => {
     expect(frameCopy.type).toBe('frame');
     expect(withFrame.nodes.filter((node) => node.parentId === frameCopy.id)).toHaveLength(3);
   });
+
+  test("a copy of an imported widget is a new widget: it isn't the live one", () => {
+    const [original] = toNodes({
+      ...board,
+      frames: [
+        {
+          ...board.frames[0],
+          studio: { template: 'usch/templates/studio-flows/sms.tftpl', channels: ['sms'], settings: {} },
+        },
+      ],
+      objects: [
+        {
+          ...board.objects[0],
+          studio: { name: 'send_to_queue_childhelp', type: 'send-to-flex' },
+          taskAttributes: {
+            json: '{"service":"ChildHelp"}',
+            imported: '{"service":"ChildHelp"}',
+            source: { kind: 'inline' },
+          },
+        },
+      ],
+    }).filter((node) => node.type === 'object');
+    const [copy] = duplicate([original], [], new Set([original.id])).nodes;
+    if (copy.type !== 'object' || original.type !== 'object') throw new Error('not an object');
+    expect(original.data.object.studio).toBeDefined();
+    expect(copy.data.object.studio).toBeUndefined();
+    // Its attributes are its own, as they were on the original
+    expect(copy.data.object.taskAttributes).toEqual({ json: '{"service":"ChildHelp"}', source: { kind: 'inline' } });
+
+    const frames = duplicate(
+      toNodes({
+        ...board,
+        frames: [{ ...board.frames[0], studio: { template: 'x.tftpl', channels: [], settings: {} } }],
+      }),
+      [],
+      new Set(),
+    ).nodes.filter((node) => node.type === 'frame');
+    expect(frames.every((node) => node.type === 'frame' && !node.data.frame.studio)).toBe(true);
+  });
 });
 
 describe('objects', () => {
@@ -263,7 +302,13 @@ describe('connection labels', () => {
       { id: 'noMatch', source: 'menu', target: 'next', data: { exit: 'No match' } },
       { id: 'unlabelled', source: 'menu', target: 'next', data: {} },
     ];
-    const offset = (id: string) => labelOffsetOf(labelSlot(edges, edges.find((edge) => edge.id === id)!));
+    const offset = (id: string) =>
+      labelOffsetOf(
+        labelSlot(
+          edges,
+          edges.find((edge) => edge.id === id)!,
+        ),
+      );
     expect(offset('english')).toBe(-11);
     expect(offset('noMatch')).toBe(11);
     // Alone on its path: where it always was

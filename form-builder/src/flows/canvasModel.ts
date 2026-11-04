@@ -321,6 +321,24 @@ export const facingSide = (
 };
 
 /**
+ * A copy isn't the live widget (or Studio flow) its original was imported from: it's built as a
+ * new one, so it doesn't take over the live one's name, position or task attributes.
+ */
+const withoutLiveLink = (node: CanvasNode): CanvasNode => {
+  if (node.type === 'frame') {
+    const { studio: _studio, ...frame } = node.data.frame;
+    return { ...node, data: { ...node.data, frame } } as CanvasNode;
+  }
+  if (node.type !== 'object') return node;
+  const { studio: _studio, ...object } = node.data.object;
+  const { imported: _imported, ...taskAttributes } = object.taskAttributes ?? {};
+  return {
+    ...node,
+    data: { ...node.data, object: { ...object, ...(object.taskAttributes ? { taskAttributes } : {}) } },
+  } as CanvasNode;
+};
+
+/**
  * Copies of the given nodes (and the connections between them), with new ids, moved by offset.
  * Copies keep their frame when it still exists, unless the frame is copied too.
  */
@@ -336,7 +354,7 @@ export const duplicate = (
     const keptParent = node.parentId && existingIds.has(node.parentId) ? node.parentId : undefined;
     const parentId = copiedParent ?? keptParent;
     return {
-      ...structuredClone(node),
+      ...withoutLiveLink(structuredClone(node)),
       id: idMap.get(node.id)!,
       parentId,
       selected: true,
