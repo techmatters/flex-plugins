@@ -21,6 +21,7 @@ export const CHANGE_ROUTE = 'routing/change-route';
 export const OPEN_MODAL = 'routing/open-modal';
 export const CLOSE_MODAL = 'routing/close-modal';
 export const GO_BACK = 'routing/go-back';
+export const SET_QUEUE_GREETING_DISMISSED = 'routing/set-queue-greeting-dismissed';
 
 export type TabbedFormSubroutes =
   | 'contactlessTask'
@@ -298,9 +299,24 @@ type CloseModalAction = {
   topRoute?: AppRoutes['route'];
 };
 
-export type RoutingActionType = ChangeRouteAction | GoBackAction | OpenModalAction | CloseModalAction;
+type SetQueueGreetingDismissedAction = {
+  type: typeof SET_QUEUE_GREETING_DISMISSED;
+  taskId: string;
+  dismissed: boolean;
+};
+
+export type RoutingActionType =
+  | ChangeRouteAction
+  | GoBackAction
+  | OpenModalAction
+  | CloseModalAction
+  | SetQueueGreetingDismissedAction;
 export type RoutingState = {
   tasks: {
     [taskId in TaskSID]?: AppRoutes[];
+  };
+  // Tasks whose queue greeting popover the counsellor has dismissed
+  dismissedQueueGreetings: {
+    [taskId in TaskSID]?: boolean;
   };
 };
