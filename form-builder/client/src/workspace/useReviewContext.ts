@@ -20,14 +20,13 @@
  * Undefined until the saved draft has loaded.
  */
 import type { ReviewSide } from '@tech-matters/form-builder-shared';
-import { useAppDispatch, useAppSelector } from '../app/store';
+import { useAppSelector } from '../app/store';
 import { selectActingAsStaff, selectUser } from '../app/sessionSlice';
-import { approveReview, changeReviewThread, selectDraft } from '../drafts/draftSlice';
+import { selectDraft } from '../drafts/draftSlice';
 import type { ReviewContext } from '../reviews/ReviewPanel';
 import { selectPeople } from './workspaceSlice';
 
 export const useReviewContext = (): ReviewContext | undefined => {
-  const dispatch = useAppDispatch();
   const { saveState, meta } = useAppSelector(selectDraft);
   const userName = useAppSelector(selectUser)?.name ?? '';
   // Aselo staff (unless viewing as helpline staff) approve for Aselo
@@ -42,7 +41,5 @@ export const useReviewContext = (): ReviewContext | undefined => {
     side,
     isAseloStaff: canApply,
     people,
-    onApprove: (target, fingerprint) => dispatch(approveReview(target, fingerprint)),
-    onThread: (change) => dispatch(changeReviewThread(change)),
   };
 };

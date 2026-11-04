@@ -21,9 +21,23 @@
  *
  * Anyone who can edit the board uploads (to staging); Aselo staff approve and publish.
  */
-import { useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import type { FlowObject, Frame } from '@tech-matters/form-builder-shared/flows/model';
 import type { MessageStatus, Recording, RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
+import { flowDetailsOf, messageFor } from '@tech-matters/form-builder-shared/flows/model';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import { selectContent, selectMainVariant, selectReadOnly, selectVariant } from './boardSlice';
+import {
+  approveRecording,
+  loadRecordings,
+  publishRecording,
+  removeRecording,
+  renameRecordings,
+  selectBoardRecordings,
+  uploadRecording,
+} from './recordingsSlice';
+import { useCanvasView } from './canvasView';
 import {
   hasNonStandardRecording,
   isApproved,
@@ -53,6 +67,27 @@ export type RecordingActions = {
   // Aselo staff: give these objects' recordings their standard names (the widget's), copying the files
   // (objects: as just changed, when the board doesn't have them yet)
   rename?: (objectIds: string[], objects?: Pick<FlowObject, 'id' | 'studioName' | 'message'>[]) => Promise<void>;
+};
+
+// The open board's recordings (recordingsSlice.ts), and what this person can do with them
+export const useRecordingActions = (): RecordingActions => {
+  const dispatch = useAppDispatch();
+  const { list, unavailable, busy } = useAppSelector(selectBoardRecordings);
+  const staff = useAppSelector(selectActingAsStaff);
+  const readOnly = useAppSelector(selectReadOnly);
+  const busyFiles = useMemo(() => new Set(busy), [busy]);
+  return {
+    list,
+    unavailable,
+    busy: busyFiles,
+    staff,
+    readOnly,
+    upload: (fileName, file) => dispatch(uploadRecording(fileName, file)),
+    approve: (fileName, approved) => dispatch(approveRecording(fileName, approved)),
+    publish: (fileName) => dispatch(publishRecording(fileName)),
+    remove: (fileName) => dispatch(removeRecording(fileName)),
+    rename: (objectIds, objects) => dispatch(renameRecordings(objectIds, objects)),
+  };
 };
 
 const ACCEPT = '.mp3,.wav,audio/mpeg,audio/wav';
@@ -328,17 +363,19 @@ type BoardMessage = { object: FlowObject; frame?: Pick<Frame, 'channel'> };
  * The Recordings tab: every voice message on the board with its recording, many files uploaded
  * at once (matched to widgets by file name), and the helpline's files no widget here uses.
  */
-export const RecordingsPanel = ({
-  messages,
-  actions,
-  onShow,
-  onRefresh,
-}: {
-  messages: BoardMessage[];
-  actions: RecordingActions;
-  onShow: (objectId: string) => void;
-  onRefresh: () => void;
-}) => {
+export const RecordingsPanel = () => {
+  const dispatch = useAppDispatch();
+  const actions = useRecordingActions();
+  const { showNode: onShow } = useCanvasView();
+  const onRefresh = () => dispatch(loadRecordings());
+  const content = useAppSelector(selectContent);
+  const variant = useAppSelector(selectVariant)?.key;
+  const mainVariant = useAppSelector(selectMainVariant);
+  // Every message on the board, in the flow shown
+  const messages: BoardMessage[] = content.objects.map((object) => ({
+    object: { ...object, message: messageFor(object, variant, mainVariant) },
+    frame: flowDetailsOf(content, object.frameId),
+  }));
   const [report, setReport] = useState<string[]>([]);
   const [unmatched, setUnmatched] = useState<File[]>([]);
   const input = useRef<HTMLInputElement>(null);

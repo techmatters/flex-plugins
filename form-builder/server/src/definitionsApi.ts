@@ -24,10 +24,9 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
-import type { ImportSource } from './branches';
 import { SERVICE_CONFIG_FILE_NAMES, serviceConfigPath, WEBCHAT_TRANSLATIONS_PREFIX } from '@tech-matters/form-builder-shared';
 import type { HelplineSummary, DefinitionFileError, DefinitionFiles, WebchatSettings } from '@tech-matters/form-builder-shared';
-export type { HelplineSummary, DefinitionFileError, DefinitionFiles, WebchatSettings };
+export type { HelplineSummary, DefinitionFileError, DefinitionFiles, WebchatSettings } from '@tech-matters/form-builder-shared';
 
 export class DefinitionsApiError extends Error {
   constructor(

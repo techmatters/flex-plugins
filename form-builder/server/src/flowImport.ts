@@ -33,7 +33,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import type {
-  BoardContent,
   Channel,
   Connection,
   FlowObject,
@@ -53,8 +52,8 @@ import {
   isChannelAttributesReference,
 } from '@tech-matters/form-builder-shared/flows/taskAttributes';
 import { HclObject, HclValue, isObject, localsOf, parseHcl, parseTemplate } from './hcl';
-import type { ImportedRecording, ImportedFlow, ImportReport, ImportedBoard, HelplineImport, Environment } from '@tech-matters/form-builder-shared';
-export type { ImportedRecording, ImportedFlow, ImportReport, ImportedBoard, HelplineImport, Environment };
+import type { ImportedRecording, ImportReport, ImportedBoard, HelplineImport, Environment } from '@tech-matters/form-builder-shared';
+export type { ImportedRecording, ImportedFlow, ImportReport, ImportedBoard, HelplineImport, Environment } from '@tech-matters/form-builder-shared';
 
 const ENVIRONMENTS = ['production', 'staging'] as const;
 

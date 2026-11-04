@@ -24,6 +24,9 @@ import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api'
 import { handleApiRequest } from '@tech-matters/form-builder-server/api';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { MemoryChatbotStore } from '@tech-matters/form-builder-server/chatbotApi';
+import { Provider } from 'react-redux';
+import { createAppStore } from '../app/store';
+import { sessionLoaded } from '../app/sessionSlice';
 import { chatbotClientFor } from './chatbotClient';
 import { ChatbotsArea } from './ChatbotsArea';
 
@@ -57,9 +60,25 @@ beforeEach(() => {
 
 afterEach(cleanup);
 
+// The area as the app shows it: signed in (as the user writing comments) with these helplines
+const renderArea = (user: ApiUser, helplineCodes: string[], userName = user.name) => {
+  const appStore = createAppStore({ chatbotClient: clientAs(user) });
+  appStore.dispatch(
+    sessionLoaded({
+      user: { ...user, name: userName, applyInBuilder: false },
+      helplines: helplineCodes.map((code) => ({ code, versions: [] })),
+    }),
+  );
+  render(
+    <Provider store={appStore}>
+      <ChatbotsArea />
+    </Provider>,
+  );
+};
+
 describe('chatbot designer', () => {
   test('Aselo staff import the chatbots, change a question, and play the conversation', async () => {
-    render(<ChatbotsArea client={clientAs(staff)} helplineCodes={['usch', 'usnm']} staffMode userName="Alex" />);
+    renderArea(staff, ['usch', 'usnm'], 'Alex');
     expect(await screen.findByText('No chatbot designs yet.')).toBeTruthy();
     fireEvent.change(screen.getByRole('combobox', { name: 'Helpline' }), { target: { value: 'usch' } });
     fireEvent.click(screen.getByRole('button', { name: 'Start' }));
@@ -123,7 +142,7 @@ describe('chatbot designer', () => {
   });
 
   test('Aselo staff start from scratch: a new chatbot, a pattern question, a comment, ready for Claude', async () => {
-    render(<ChatbotsArea client={clientAs(staff)} helplineCodes={['usch', 'usnm']} staffMode userName="Alex" />);
+    renderArea(staff, ['usch', 'usnm'], 'Alex');
     fireEvent.change(await screen.findByRole('combobox', { name: 'Helpline' }), { target: { value: 'usnm' } });
     fireEvent.click(screen.getByRole('button', { name: 'Start' }));
     fireEvent.click(await screen.findByRole('button', { name: 'Start from scratch' }));
@@ -172,7 +191,7 @@ describe('chatbot designer', () => {
   test('helpline staff see the chatbots without changing them', async () => {
     const imported = await clientAs(staff).previewImport('usch');
     await clientAs(staff).save('usch', 0, imported.design);
-    render(<ChatbotsArea client={clientAs(uschStaff)} helplineCodes={['usch']} staffMode={false} />);
+    renderArea(uschStaff, ['usch']);
     const question = (await screen.findByRole('textbox', { name: 'Question 1' })) as HTMLTextAreaElement;
     expect(question.disabled).toBe(true);
     expect(screen.getByText('View only')).toBeTruthy();

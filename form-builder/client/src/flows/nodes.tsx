@@ -17,7 +17,7 @@
 /**
  * How frames, objects, stickies and connections look on the canvas.
  */
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   BaseEdge,
   EdgeLabelRenderer,
@@ -27,16 +27,16 @@ import {
   NodeProps,
   NodeResizer,
   Position,
-  useReactFlow,
   useStore,
 } from '@xyflow/react';
 import { Check, MessageSquareText, Square, SquareCheck, TriangleAlert } from 'lucide-react';
-import type { Issue } from '@tech-matters/form-builder-shared/flows/checks';
 import { iconOf, OBJECT_TYPES, objectColor, STICKY_COLORS } from '@tech-matters/form-builder-shared/flows/model';
 import type { ConnectionEdge, FrameNode, ObjectNode, StickyNode } from './canvasModel';
 import { labelOffsetOf, labelSlot } from './canvasModel';
 import { ObjectIcon, ShapeOutline } from './shapes';
 import { StepInfoButton } from './StepHelpCard';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { nodeDataChanged, selectEditingView } from './boardSlice';
 
 // A run of the simulator on the board, and the tested paths shown (Test mode)
 export type SimulationView = {
@@ -50,17 +50,12 @@ export type SimulationView = {
   tested?: { objects: Set<string>; connections: Set<string> };
 };
 
-export const BoardEditingContext = createContext<{
-  readOnly: boolean;
-  problems?: Map<string, Issue[]>;
-  simulation?: SimulationView;
-  // Sketch mode: lighter colours and dashed outlines
-  sketch?: boolean;
-  // Objects whose script or recording is approved (or published), in the flow shown
-  approvals?: Map<string, 'Approved' | 'Published'>;
-}>({
-  readOnly: false,
-});
+/**
+ * What nodes show besides their own data (boardSlice's selectEditingView): whether the board can be
+ * changed, the problems found, Test mode's run, Sketch mode (lighter colours and dashed outlines),
+ * and the objects whose script or recording is approved (or published), in the flow shown.
+ */
+const useEditingView = () => useAppSelector(selectEditingView);
 
 // How an object or connection shows in Test mode: the run's way, tested ones, the rest faded
 const simulationClass = (simulation: SimulationView | undefined, visited: boolean, tested: boolean) => {
@@ -101,7 +96,7 @@ const InlineText = ({
   className?: string;
   onChange: (value: string) => void;
 }) => {
-  const { readOnly } = useContext(BoardEditingContext);
+  const { readOnly } = useEditingView();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(value);
   const input = useRef<HTMLTextAreaElement>(null);
@@ -166,8 +161,8 @@ const lighter = (color: string) => {
 };
 
 export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<ObjectNode>) => {
-  const { updateNodeData } = useReactFlow();
-  const { readOnly, problems, simulation, sketch, approvals } = useContext(BoardEditingContext);
+  const dispatch = useAppDispatch();
+  const { readOnly, problems, simulation, sketch, approvals } = useEditingView();
   const { object } = data;
   const approval = approvals?.get(id);
   const info = OBJECT_TYPES[object.type];
@@ -221,7 +216,7 @@ export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<
           className="flow-object-text"
           value={object.text}
           placeholder={info.label}
-          onChange={(text) => updateNodeData(id, { object: { ...object, text } })}
+          onChange={(text) => dispatch(nodeDataChanged({ id, data: { object: { ...object, text } } }))}
         />
         {object.studioName ? (
           <span className="flow-object-caption" title={info.studioWidget}>
@@ -252,8 +247,8 @@ export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<
 };
 
 export const FrameNodeView = ({ id, data, selected }: NodeProps<FrameNode>) => {
-  const { updateNodeData } = useReactFlow();
-  const { readOnly } = useContext(BoardEditingContext);
+  const dispatch = useAppDispatch();
+  const { readOnly } = useEditingView();
   const { frame } = data;
   return (
     <div className={`flow-frame ${selected ? 'selected' : ''}`}>
@@ -262,7 +257,7 @@ export const FrameNodeView = ({ id, data, selected }: NodeProps<FrameNode>) => {
         <InlineText
           value={frame.title}
           placeholder="Frame"
-          onChange={(title) => updateNodeData(id, { frame: { ...frame, title } })}
+          onChange={(title) => dispatch(nodeDataChanged({ id, data: { frame: { ...frame, title } } }))}
         />
         {(frame.channel || frame.stage) && (
           <span className="flow-frame-tags">
@@ -275,8 +270,8 @@ export const FrameNodeView = ({ id, data, selected }: NodeProps<FrameNode>) => {
 };
 
 export const StickyNodeView = ({ id, data, selected }: NodeProps<StickyNode>) => {
-  const { updateNodeData } = useReactFlow();
-  const { readOnly } = useContext(BoardEditingContext);
+  const dispatch = useAppDispatch();
+  const { readOnly } = useEditingView();
   const { sticky } = data;
   const { task } = sticky;
   const done = task?.status === 'done';
@@ -294,7 +289,12 @@ export const StickyNodeView = ({ id, data, selected }: NodeProps<StickyNode>) =>
             aria-label={done ? 'Mark as not done' : 'Mark as done'}
             disabled={readOnly}
             onClick={() =>
-              updateNodeData(id, { sticky: { ...sticky, task: { ...task, status: done ? 'todo' : 'done' } } })
+              dispatch(
+                nodeDataChanged({
+                  id,
+                  data: { sticky: { ...sticky, task: { ...task, status: done ? 'todo' : 'done' } } },
+                }),
+              )
             }
           >
             {done ? <SquareCheck size={16} /> : <Square size={16} />}
@@ -309,7 +309,7 @@ export const StickyNodeView = ({ id, data, selected }: NodeProps<StickyNode>) =>
         className="flow-sticky-text"
         value={sticky.text}
         placeholder="Double-click to write"
-        onChange={(text) => updateNodeData(id, { sticky: { ...sticky, text } })}
+        onChange={(text) => dispatch(nodeDataChanged({ id, data: { sticky: { ...sticky, text } } }))}
       />
     </div>
   );
@@ -335,7 +335,7 @@ export const ConnectionEdgeView = ({
   selected,
   data,
 }: EdgeProps<ConnectionEdge>) => {
-  const { simulation } = useContext(BoardEditingContext);
+  const { simulation } = useEditingView();
   const labelOffset = labelOffsetOf(useLabelSlot(id, source, target));
   const simulated = [
     simulationClass(

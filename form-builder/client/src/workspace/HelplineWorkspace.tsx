@@ -25,7 +25,7 @@ import { Loading } from '../common/Loading';
 import { CATEGORIES_FILE, CONTACT_TABS, getCaseSections, getCaseSectionSplitFormAt, getForm } from '../common/definitions';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
-import { editDraftFiles, noticeDismissed, SaveState, selectChangedPaths, selectDraft } from '../drafts/draftSlice';
+import { noticeDismissed, SaveState, selectChangedPaths, selectDraft } from '../drafts/draftSlice';
 import {
   discardWorkspaceDraft,
   reloadHelpline,
@@ -37,7 +37,6 @@ import {
   selectDefinitions,
   selectIssuesByTab,
   selectSectionIssues,
-  selectUsePrepopulateMappings,
   selectWorkspace,
   tryItOutOpened,
   View,
@@ -162,7 +161,6 @@ export const HelplineWorkspace = () => {
   const issuesByTab = useAppSelector(selectIssuesByTab);
   const sectionIssues = useAppSelector(selectSectionIssues);
   const caseTargets = useAppSelector(selectCaseTargets);
-  const usePrepopulateMappings = useAppSelector(selectUsePrepopulateMappings);
   // Show the settings only Aselo staff may change; Aselo staff apply, helpline staff submit
   const staffMode = useAppSelector(selectActingAsStaff);
   const canApply = staffMode;
@@ -279,16 +277,8 @@ export const HelplineWorkspace = () => {
       );
     }
     if (view.kind === 'formSelector') {
-      // Not on the store yet: it's given the draft's files and changes them through it
       return (
-        <FormSelectorEditor
-          key={editorKey}
-          draftFiles={files}
-          staffMode={staffMode}
-          usePrepopulateMappings={usePrepopulateMappings}
-          issues={sectionIssues.filter((issue) => issue.message.startsWith(FORM_SELECTOR_PREFIX))}
-          onChangeFiles={(updater) => dispatch(editDraftFiles(updater))}
-        />
+        <FormSelectorEditor key={editorKey} />
       );
     }
     if (view.kind === 'categories') {

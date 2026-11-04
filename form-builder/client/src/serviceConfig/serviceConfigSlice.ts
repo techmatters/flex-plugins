@@ -23,7 +23,6 @@
  */
 import { createSelector, createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import { isServiceConfigPath, ServiceConfigFileName } from '@tech-matters/form-builder-shared';
-import type { PostFlowChoices } from '@tech-matters/form-builder-shared';
 import type { DefinitionFileMap } from '../common/definitions';
 import { AppThunk, rootReducer, RootState } from '../app/store';
 import { editDraftFiles, selectDraftFiles, selectOriginalFiles } from '../drafts/draftSlice';
@@ -176,13 +175,6 @@ const parseLoose = (text: string): unknown => {
 export const openServiceConfig = (): AppThunk => (dispatch) => {
   dispatch(serviceConfigOpened());
 };
-
-// The queues and post-call survey flows the helpline's postStudioFlows can point at
-// (PostStudioFlowsEditor)
-export const loadPostFlowChoices =
-  (code: string): AppThunk<Promise<PostFlowChoices>> =>
-  (_dispatch, _getState, { fetchPostFlowChoices }) =>
-    fetchPostFlowChoices(code);
 
 // Writes the service-configuration files; a file the helpline didn't have, emptied again, isn't created
 export const editServiceConfig =

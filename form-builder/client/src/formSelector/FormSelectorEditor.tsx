@@ -20,46 +20,35 @@
  * { form, input, aboutSelfValue }). Info icons explain each; the result table and the JSON show
  * what it does. Everyone sees it; Aselo staff change it.
  */
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { ArrowDown, ArrowUp, Info, Plus, Trash2 } from 'lucide-react';
-import type { DefinitionFileMap } from '../common/definitions';
 import {
-  CALL_TYPE_CHILD,
   ChoiceSource,
   DEFAULT_ABOUT_SELF_VALUE,
   DEFAULT_CHOICES,
-  FormSelector,
   formSelectorJson,
   formSelectorOutcomes,
   getSurveyAnswerNames,
   getWebchatQuestions,
   PRESELECTABLE_CALL_TYPES,
   readFormSelector,
-  removeFormSelector,
   SELECTABLE_TABS,
   ServiceUserChoice,
-  setFormSelector,
 } from './formSelector';
-import type { ValidationIssue } from '../forms/validation';
-
-type Props = {
-  draftFiles: DefinitionFileMap;
-  staffMode: boolean;
-  // The helpline's use_prepopulate_mappings flag (otherwise PrepopulateKeys.json is used)
-  usePrepopulateMappings: boolean;
-  issues: ValidationIssue[];
-  onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
-};
-
-type StaticSelector = Extract<FormSelector, { kind: 'static' }>;
-type ChoiceSelector = Extract<FormSelector, { kind: 'choice' }>;
-type SelectorType = '' | 'staticSelector' | 'serviceUserChoiceSelector';
-
-const NEW_STATIC: StaticSelector = {
-  kind: 'static',
-  tabs: ['ChildInformationTab', 'CaseInformationTab'],
-  callType: CALL_TYPE_CHILD,
-};
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import { selectDraftFiles } from '../drafts/draftSlice';
+import { selectUsePrepopulateMappings, selectWorkspace } from '../workspace/workspaceSlice';
+import {
+  ChoiceSelector,
+  formSelectorOpened,
+  selectFormSelectorIssues,
+  SelectorType,
+  selectorTypeOf,
+  StaticSelector,
+  switchSelectorType,
+  writeFormSelector,
+} from './formSelectorSlice';
 
 // What each part means (lambdas/packages/hrm-form-definitions/src/formDefinition/formSelector)
 const HELP = {
@@ -86,28 +75,28 @@ const InfoTip = ({ text }: { text: string }) => (
   </span>
 );
 
-const typeOf = (implicit: boolean, selector: FormSelector): SelectorType =>
-  implicit ? '' : selector.kind === 'static' ? 'staticSelector' : 'serviceUserChoiceSelector';
-
-export const FormSelectorEditor = ({ draftFiles, staffMode, usePrepopulateMappings, issues, onChangeFiles }: Props) => {
+export const FormSelectorEditor = () => {
+  const dispatch = useAppDispatch();
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const staffMode = useAppSelector(selectActingAsStaff);
+  // The helpline's use_prepopulate_mappings flag (otherwise PrepopulateKeys.json is used)
+  const usePrepopulateMappings = useAppSelector(selectUsePrepopulateMappings);
+  const issues = useAppSelector(selectFormSelectorIssues);
+  const { editorRevision } = useAppSelector(selectWorkspace);
   const info = readFormSelector(draftFiles);
   const { selector } = info;
-  const selectorType = typeOf(info.implicit, selector);
+  const selectorType = selectorTypeOf(info.implicit, selector);
   const readOnly = !staffMode;
-  // What the other type held, so switching back and forth doesn't lose it
-  const [remembered, setRemembered] = useState<{ static?: StaticSelector; choice?: ChoiceSelector }>({});
   const webchatQuestions = getWebchatQuestions(draftFiles);
   const surveyNames = getSurveyAnswerNames(draftFiles);
 
-  const write = (next: FormSelector) => onChangeFiles((files) => setFormSelector(files, next));
+  // Starts again when it opens, and when the draft's files are replaced (discarded, reloaded)
+  useEffect(() => {
+    dispatch(formSelectorOpened());
+  }, [dispatch, editorRevision]);
 
-  const switchType = (type: SelectorType) => {
-    if (type === selectorType) return;
-    if (!info.implicit) setRemembered((current) => ({ ...current, [selector.kind]: selector }));
-    if (type === '') onChangeFiles(removeFormSelector);
-    else if (type === 'staticSelector') write(remembered.static ?? NEW_STATIC);
-    else write(remembered.choice ?? { kind: 'choice', choices: DEFAULT_CHOICES });
-  };
+  const write = (next: Parameters<typeof writeFormSelector>[0]) => dispatch(writeFormSelector(next));
+  const switchType = (type: SelectorType) => dispatch(switchSelectorType(type));
 
   const renderStatic = (current: StaticSelector) => (
     <>

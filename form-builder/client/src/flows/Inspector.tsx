@@ -18,6 +18,8 @@
  * The side panel: settings of what's selected (or of the board, when nothing is).
  */
 import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectUser } from '../app/sessionSlice';
 import {
   Channel,
   CommentThread,
@@ -80,7 +82,32 @@ import { CanvasNode, ConnectionEdge, FrameNode, newId, ObjectNode, StickyNode } 
 import type { HelplineChoices } from './boardClient';
 import type { Issue } from '@tech-matters/form-builder-shared/flows/checks';
 import { uniqueName } from '@tech-matters/form-builder-shared/flows/checks';
-import { RecordingActions, RecordingSection, ScriptApproval } from './RecordingControls';
+import { RecordingActions, RecordingSection, ScriptApproval, useRecordingActions } from './RecordingControls';
+import {
+  duplicateSelection,
+  edgeExitChanged,
+  exitEnded,
+  exitsRenamed,
+  flowChanged,
+  hasOtherLanguageTexts,
+  languageAdded,
+  languageRemoved,
+  languagesShared,
+  languagesUnshared,
+  loadHelplineChoices,
+  nodeDataChanged,
+  objectTypeChanged,
+  selectBoard,
+  selectContent,
+  selectLocked,
+  selectProblems,
+  selectVariant,
+  selectVariants,
+  titleChanged,
+  variantRenamed,
+} from './boardSlice';
+import { useCanvasView } from './canvasView';
+import { TEMPLATES_CODE } from '@tech-matters/form-builder-shared/flows/model';
 import { TaskAttributesSection } from './TaskAttributesSection';
 
 const CHANNELS: { value: Channel; label: string }[] = [
@@ -1713,7 +1740,71 @@ const BoardSettings = ({ props }: { props: InspectorProps }) => {
   );
 };
 
-export const Inspector = (props: InspectorProps) => {
+// The settings' data and actions, from the open board in the store
+const useInspectorProps = (): InspectorProps => {
+  const dispatch = useAppDispatch();
+  const { board, title, nodes, edges, people, helplineChoices, flow, mode } = useAppSelector(selectBoard);
+  const content = useAppSelector(selectContent);
+  const problems = useAppSelector(selectProblems);
+  const readOnly = useAppSelector(selectLocked);
+  const userName = useAppSelector(selectUser)?.name ?? '';
+  const variants = useAppSelector(selectVariants);
+  const variant = useAppSelector(selectVariant)?.key;
+  const recordings = useRecordingActions();
+  const { deleteSelected, focusFrame } = useCanvasView();
+  const code = board?.code ?? '';
+  return {
+    title,
+    content,
+    problems,
+    people,
+    peopleList: code === TEMPLATES_CODE ? 'the Aselo team' : code.toUpperCase(),
+    nodes,
+    edges,
+    readOnly,
+    userName,
+    onTitleChange: (next) => dispatch(titleChanged(next)),
+    onNodeData: (id, data) => dispatch(nodeDataChanged({ id, data })),
+    onChangeType: (id, type) => dispatch(objectTypeChanged({ id, type })),
+    onRenameExit: (id, exits, renamed) => dispatch(exitsRenamed({ id, exits, renamed })),
+    onEdgeExit: (id, exit) => dispatch(edgeExitChanged({ id, exit })),
+    onDelete: deleteSelected,
+    onDuplicate: () => dispatch(duplicateSelection()),
+    onFocusFrame: focusFrame,
+    onEndHere: (objectId, exit, ends) => dispatch(exitEnded({ objectId, exit, ends })),
+    recordings,
+    variant,
+    helplineChoices,
+    onRefreshChoices: () => void dispatch(loadHelplineChoices()),
+    onBoardFlow: (next) => dispatch(flowChanged(next)),
+    languages: {
+      onShare: (languages) => dispatch(languagesShared(languages)),
+      onUnshare: () => {
+        if (!flow || variants.some((candidate) => !candidate.added)) return;
+        // eslint-disable-next-line no-alert
+        if (
+          hasOtherLanguageTexts(nodes) &&
+          !window.confirm('The texts written in the other languages will be removed. Go on?')
+        )
+          return;
+        dispatch(languagesUnshared());
+      },
+      onAdd: (locale, label) => dispatch(languageAdded({ locale, label })),
+      onRemove: (key) => {
+        const leaving = variants.find((candidate) => candidate.key === key);
+        if (!flow || !leaving?.added || key === variants[0]?.key) return;
+        // eslint-disable-next-line no-alert
+        if (!window.confirm(`Remove ${leaving.label} (${key}) and its texts?`)) return;
+        dispatch(languageRemoved(key));
+      },
+      onRename: (key, renamed) => dispatch(variantRenamed({ key, renamed })),
+    },
+    sketch: mode === 'sketch',
+  };
+};
+
+export const Inspector = () => {
+  const props = useInspectorProps();
   const selectedNodes = props.nodes.filter((node) => node.selected);
   const selectedEdges = props.edges.filter((edge) => edge.selected);
   const count = selectedNodes.length + selectedEdges.length;

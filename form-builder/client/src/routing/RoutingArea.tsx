@@ -17,9 +17,10 @@
 /**
  * The Routing area (docs/routing-designer.md): a helpline's TaskRouter design. Pick the helpline;
  * if it has no design yet, Aselo staff import it from the live config (or anyone starts empty).
- * Saved automatically, with the same "someone else changed it" check as boards.
+ * Saved automatically, with the same "someone else changed it" check as boards. Its state and
+ * logic are in routingSlice.ts.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import {
   closestCenter,
   DndContext,
@@ -30,7 +31,6 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import {
-  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
@@ -41,81 +41,81 @@ import type { FromBranch } from '@tech-matters/form-builder-shared';
 import { BranchPicker, ImportedFrom } from '../common/BranchPicker';
 import { Loading } from '../common/Loading';
 import type { DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
-import { DESIGN_STATUSES, STATUS_AFTER_CHANGE } from '@tech-matters/form-builder-shared/designStatus';
+import { DESIGN_STATUSES } from '@tech-matters/form-builder-shared/designStatus';
 import { DesignStatusBadge, DesignStatusPicker } from '../common/DesignStatusPicker';
 import { HelplineFilter } from '../common/HelplineFilter';
-import type { RoutingDesign, RoutingSummary, Rule, StoredRouting, Workflow } from '@tech-matters/form-builder-shared/routing/model';
-import { emptyRouting, routingStatusOf } from '@tech-matters/form-builder-shared/routing/model';
-import { httpRoutingClient, RoutingClient } from './routingClient';
-import { newRule, updateRule, updateWorkflow } from './edit';
+import type { Rule } from '@tech-matters/form-builder-shared/routing/model';
+import { routingStatusOf } from '@tech-matters/form-builder-shared/routing/model';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
 import { RuleCard } from './RuleCard';
 import { RoutingDiagram } from './RoutingDiagram';
 import { CheckList, QueuesPanel, SkillsPanel, TestTaskPanel, workflowLabel } from './RoutingPanels';
-import { addCommonRule, COMMON_RULES, hasCommonRule } from './commonRules';
-import { routingChecks, RoutingIssue } from './routingChecks';
-import { generateRouting } from './generate';
+import { COMMON_RULES, hasCommonRule } from './commonRules';
+import {
+  addRoutingCommonRule,
+  addRoutingRule,
+  adoptRoutingImport,
+  branchChosen,
+  cardsExpanded,
+  cardToggled,
+  enterRouting,
+  filterChosen,
+  helplineChosen,
+  helplineFilterChosen,
+  loadRouting,
+  loadRoutingBranches,
+  loadRoutingList,
+  openRouting,
+  previewRoutingImport,
+  routingExport,
+  RoutingFilter,
+  RoutingTab,
+  ruleChanged,
+  ruleMoved,
+  ruleRemoved,
+  ruleSelected,
+  ruleShown,
+  selectRouting,
+  selectRoutingEditor,
+  selectRoutingHelplineCodes,
+  selectRoutingIssues,
+  startEmptyRouting,
+  statusChanged,
+  tabChosen,
+  workflowChanged,
+} from './routingSlice';
 import './routing.css';
 
-type Props = {
-  client?: RoutingClient;
-  helplineCodes: string[];
-  staffMode: boolean;
-};
-
-type Tab =
-  { kind: 'workflow'; key: string } | { kind: 'queues' } | { kind: 'skills' } | { kind: 'test' } | { kind: 'check' };
-
-const AUTOSAVE_DELAY_MS = 1200;
-
-const WorkflowPage = ({
-  design,
-  workflow,
-  readOnly,
-  selectedRuleId,
-  onSelectRule,
-  onChange,
-}: {
-  design: RoutingDesign;
-  workflow: Workflow;
-  readOnly: boolean;
-  selectedRuleId?: string;
-  onSelectRule: (ruleId: string) => void;
-  onChange: (workflow: Workflow) => void;
-}) => {
+// The workflow open in the editor
+const WorkflowPage = () => {
+  const dispatch = useAppDispatch();
+  const { design, tab, selectedRuleId, expanded } = useAppSelector(selectRoutingEditor)!;
+  // For now helpline staff see their routing design without changing it
+  const readOnly = !useAppSelector(selectActingAsStaff);
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
-  // Cards start collapsed; opened ones are remembered while the page is open
-  const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const expand = (ruleId: string, open = true) =>
-    setExpanded((current) => {
-      const next = new Set(current);
-      if (open) next.add(ruleId);
-      else next.delete(ruleId);
-      return next;
-    });
-  // A rule just added opens, to be filled in
-  const addRule = (rule: Rule, rules: Rule[]) => {
-    onChange({ ...workflow, rules });
-    expand(rule.id);
-    onSelectRule(rule.id);
-  };
+  const workflow =
+    tab.kind === 'workflow'
+      ? design.workflows.find((candidate) => candidate.key === tab.key)
+      : undefined;
+  if (!workflow) return null;
   if (workflow.templateText) {
     return (
       <div className="routing-panel">
         <p className="alert alert-info">
-          “{workflowLabel(workflow)}” is built by template code from the helpline&apos;s queues ({workflow.template}),
-          so it isn&apos;t a list of rules to edit here. It stays as it is.
+          “{workflowLabel(workflow)}” is built by template code from the helpline&apos;s queues (
+          {workflow.template}), so it isn&apos;t a list of rules to edit here. It stays as it is.
         </p>
       </div>
     );
   }
+  const workflowKey = workflow.key;
   const onDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
-    const from = workflow.rules.findIndex((rule) => rule.id === active.id);
-    const to = workflow.rules.findIndex((rule) => rule.id === over.id);
-    onChange({ ...workflow, rules: arrayMove(workflow.rules, from, to) });
+    dispatch(ruleMoved({ workflowKey, ruleId: String(active.id), overId: String(over.id) }));
   };
   return (
     <div className="routing-workflow">
@@ -132,11 +132,7 @@ const WorkflowPage = ({
                   className="routing-chip common-rule"
                   title={added ? `${common.name} is already in this workflow` : common.description}
                   disabled={added}
-                  onClick={() => {
-                    const changed = addCommonRule(workflow, design, common);
-                    const rule = changed.rules.find((candidate) => !workflow.rules.includes(candidate))!;
-                    addRule(rule, changed.rules);
-                  }}
+                  onClick={() => dispatch(addRoutingCommonRule(workflowKey, common))}
                 >
                   {added ? '✓' : '+'} {common.name}
                 </button>
@@ -146,8 +142,8 @@ const WorkflowPage = ({
         )}
         {workflow.shared && (
           <p className="alert alert-info">
-            Other helplines use this workflow&apos;s template ({workflow.template}): changes here are written to a
-            template of this helpline&apos;s own.
+            Other helplines use this workflow&apos;s template ({workflow.template}): changes here
+            are written to a template of this helpline&apos;s own.
           </p>
         )}
         <label className="field routing-workflow-settings">
@@ -156,7 +152,7 @@ const WorkflowPage = ({
             type="text"
             value={workflow.name}
             disabled={readOnly}
-            onChange={(e) => onChange({ ...workflow, name: e.target.value })}
+            onChange={(e) => dispatch(workflowChanged({ ...workflow, name: e.target.value }))}
           />
         </label>
         <label className="field routing-workflow-settings">
@@ -168,31 +164,36 @@ const WorkflowPage = ({
             placeholder="Twilio's default (120)"
             disabled={readOnly}
             onChange={(e) =>
-              onChange({
-                ...workflow,
-                reservationTimeout: e.target.value ? Number(e.target.value) : undefined,
-              })
+              dispatch(
+                workflowChanged({
+                  ...workflow,
+                  reservationTimeout: e.target.value ? Number(e.target.value) : undefined,
+                }),
+              )
             }
           />
         </label>
         <div className="routing-rules-head">
           <p className="field-hint">
-            A new task goes through these rules in order; the first one it matches decides where it goes. Drag the cards
-            to change the order.
+            A new task goes through these rules in order; the first one it matches decides where it
+            goes. Drag the cards to change the order.
           </p>
           <button
             type="button"
             className="link-button"
-            onClick={() => setExpanded(new Set(workflow.rules.map((rule) => rule.id)))}
+            onClick={() => dispatch(cardsExpanded(workflow.rules.map((rule) => rule.id)))}
           >
             <ChevronsUpDown size={14} /> Expand all
           </button>
-          <button type="button" className="link-button" onClick={() => setExpanded(new Set())}>
+          <button type="button" className="link-button" onClick={() => dispatch(cardsExpanded([]))}>
             <ChevronsDownUp size={14} /> Collapse all
           </button>
         </div>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-          <SortableContext items={workflow.rules.map((rule) => rule.id)} strategy={verticalListSortingStrategy}>
+          <SortableContext
+            items={workflow.rules.map((rule) => rule.id)}
+            strategy={verticalListSortingStrategy}
+          >
             <ol className="routing-rule-list">
               {workflow.rules.map((rule, index) => (
                 <RuleCard
@@ -202,16 +203,13 @@ const WorkflowPage = ({
                   design={design}
                   readOnly={readOnly}
                   selected={rule.id === selectedRuleId}
-                  expanded={expanded.has(rule.id)}
-                  onToggle={() => expand(rule.id, !expanded.has(rule.id))}
-                  onSelect={() => onSelectRule(rule.id)}
-                  onChange={(changed: Rule) => onChange(updateRule(workflow, rule.id, () => changed))}
-                  onRemove={() =>
-                    onChange({
-                      ...workflow,
-                      rules: workflow.rules.filter((candidate) => candidate.id !== rule.id),
-                    })
+                  expanded={expanded.includes(rule.id)}
+                  onToggle={() => dispatch(cardToggled(rule.id))}
+                  onSelect={() => dispatch(ruleSelected(rule.id))}
+                  onChange={(changed: Rule) =>
+                    dispatch(ruleChanged({ workflowKey, rule: changed }))
                   }
+                  onRemove={() => dispatch(ruleRemoved({ workflowKey, ruleId: rule.id }))}
                 />
               ))}
             </ol>
@@ -221,10 +219,7 @@ const WorkflowPage = ({
           <button
             type="button"
             className="secondary-button"
-            onClick={() => {
-              const rule = newRule(`Rule ${workflow.rules.length + 1}`);
-              addRule(rule, [...workflow.rules, rule]);
-            }}
+            onClick={() => dispatch(addRoutingRule(workflowKey))}
           >
             + Add a rule
           </button>
@@ -236,9 +231,10 @@ const WorkflowPage = ({
           workflow={workflow}
           selectedRuleId={selectedRuleId}
           onSelectRule={(ruleId) => {
-            onSelectRule(ruleId);
-            expand(ruleId);
-            document.getElementById(`rule-${ruleId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            dispatch(ruleShown(ruleId));
+            document
+              .getElementById(`rule-${ruleId}`)
+              ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }}
         />
       </div>
@@ -255,113 +251,32 @@ const download = (fileName: string, text: string) => {
   URL.revokeObjectURL(url);
 };
 
-const Editor = ({
-  stored,
-  client,
-  staffMode,
-  onReload,
-  onBack,
-}: {
-  stored: StoredRouting;
-  client: RoutingClient;
-  staffMode: boolean;
-  onReload: () => void;
-  onBack: () => void;
-}) => {
-  const [design, setDesignState] = useState(stored.design);
-  // Every change to the design makes it In progress again (the status is set apart)
-  const setDesign = (next: RoutingDesign) => setDesignState({ ...next, status: STATUS_AFTER_CHANGE });
-  const firstWorkflow = design.workflows.find((workflow) => !workflow.templateText) ?? design.workflows[0];
-  const [tab, setTab] = useState<Tab>(
-    firstWorkflow ? { kind: 'workflow', key: firstWorkflow.key } : { kind: 'queues' },
-  );
-  const [selectedRuleId, setSelectedRuleId] = useState<string>();
-  const issues = useMemo(() => routingChecks(design), [design]);
-  // For now helpline staff see their routing design without changing it
-  const readOnly = !staffMode;
+const SAVE_STATE_TEXT = {
+  saved: 'All changes saved',
+  unsaved: 'Unsaved changes…',
+  saving: 'Saving…',
+  conflict: 'Not saved',
+  error: 'Could not save',
+};
 
-  // ----- Saving
-  const json = useMemo(() => JSON.stringify(design), [design]);
-  const revision = useRef(stored.meta.revision);
-  const savedJson = useRef(JSON.stringify(stored.design));
-  const latest = useRef(json);
-  latest.current = json;
-  const [status, setStatus] = useState<'saved' | 'unsaved' | 'saving' | 'conflict' | 'error'>('saved');
-  const [conflict, setConflict] = useState<{ updatedBy?: string; updatedAt?: string }>();
-  const stopped = useRef(false);
+const sameTab = (a: RoutingTab, b: RoutingTab) =>
+  a.kind === b.kind && (a.kind !== 'workflow' || (b.kind === 'workflow' && a.key === b.key));
 
-  const save = useCallback(async () => {
-    if (stopped.current || latest.current === savedJson.current) return;
-    const toSave = latest.current;
-    setStatus('saving');
-    try {
-      const outcome = await client.save(stored.code, revision.current, JSON.parse(toSave));
-      if (outcome.ok) {
-        revision.current = outcome.meta.revision;
-        savedJson.current = toSave;
-        setStatus(latest.current === toSave ? 'saved' : 'unsaved');
-      } else {
-        stopped.current = true;
-        setConflict(outcome.conflict);
-        setStatus('conflict');
-      }
-    } catch {
-      setStatus('error');
-    }
-  }, [client, stored.code]);
-
-  useEffect(() => {
-    if (stopped.current || json === savedJson.current) return undefined;
-    setStatus('unsaved');
-    const timer = setTimeout(save, AUTOSAVE_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [json, save]);
-
-  const showRule = (workflow: string, ruleId: string) =>
-    showIssue({ key: ruleId, severity: 'warning', message: '', workflow, ruleId });
-
-  const showIssue = (issue: RoutingIssue) => {
-    if (issue.workflow) {
-      setTab({ kind: 'workflow', key: issue.workflow });
-      if (issue.ruleId) {
-        setSelectedRuleId(issue.ruleId);
-        setTimeout(
-          () =>
-            document.getElementById(`rule-${issue.ruleId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
-          50,
-        );
-      }
-    } else if (issue.queue) setTab({ kind: 'queues' });
-    else setTab({ kind: 'skills' });
-  };
+const Editor = () => {
+  const dispatch = useAppDispatch();
+  const { code } = useAppSelector(selectRouting);
+  const { design, tab, saveState, conflict } = useAppSelector(selectRoutingEditor)!;
+  const staffMode = useAppSelector(selectActingAsStaff);
+  const issues = useAppSelector(selectRoutingIssues);
 
   const exportForClaude = () => {
-    const generated = generateRouting(design);
-    download(
-      `${stored.code}-routing.json`,
-      `${JSON.stringify(
-        {
-          schemaVersion: 1,
-          about:
-            "A helpline's TaskRouter routing, designed in the Aselo Builder (docs/routing-designer.md). generated.workflows are the workflow templates (.tftpl) to write under twilio-iac/helplines (a shared template's changes go to a template of this helpline's own), generated.workflowsBlock and generated.queuesBlock replace the workflows and task_queues in the helpline's common.hcl, and skills/capacity are what Flex needs (each account's skills, the counselors' maxMessageCapacity). Anything not changed in the designer is exactly as it is live.",
-          helpline: stored.code,
-          updatedAt: stored.meta.updatedAt,
-          // Implement it only when it's 'ready' (Ready for Claude)
-          status: routingStatusOf(design),
-          isNew: !design.imported,
-          design,
-          generated,
-          checks: issues.map(({ severity, message }) => ({ severity, message })),
-        },
-        null,
-        2,
-      )}\n`,
-    );
+    const file = dispatch(routingExport());
+    if (file) download(file.fileName, file.text);
   };
 
-  const tabs: { tab: Tab; label: string }[] = [
+  const tabs: { tab: RoutingTab; label: string }[] = [
     ...design.workflows.map((workflow) => ({
-      tab: { kind: 'workflow', key: workflow.key } as Tab,
+      tab: { kind: 'workflow', key: workflow.key } as RoutingTab,
       label: workflowLabel(workflow),
     })),
     { tab: { kind: 'queues' }, label: `Queues (${design.queues.length})` },
@@ -369,35 +284,27 @@ const Editor = ({
     { tab: { kind: 'test' }, label: 'Test a task' },
     { tab: { kind: 'check' }, label: `Check${issues.length ? ` (${issues.length})` : ''}` },
   ];
-  const same = (a: Tab, b: Tab) =>
-    a.kind === b.kind && (a.kind !== 'workflow' || (b.kind === 'workflow' && a.key === b.key));
-  const workflow =
-    tab.kind === 'workflow' ? design.workflows.find((candidate) => candidate.key === tab.key) : undefined;
 
   return (
     <div className="routing-editor">
       <div className="flow-toolbar">
-        <button type="button" className="link-button area-back" onClick={onBack}>
+        <button
+          type="button"
+          className="link-button area-back"
+          onClick={() => dispatch(openRouting(''))}
+        >
           <ArrowLeft size={14} aria-hidden /> All routing
         </button>
-        <h2>Routing · {stored.code.toUpperCase()}</h2>
+        <h2>Routing · {code.toUpperCase()}</h2>
         <DesignStatusPicker
           status={routingStatusOf(design)}
           isNew={!design.imported}
           editable={staffMode}
           label="Status of the routing design"
-          onChange={(next: DesignStatus) => setDesignState({ ...design, status: next })}
+          onChange={(next: DesignStatus) => dispatch(statusChanged(next))}
         />
-        <span className={`flow-save-state ${status}`} role="status">
-          {
-            {
-              saved: 'All changes saved',
-              unsaved: 'Unsaved changes…',
-              saving: 'Saving…',
-              conflict: 'Not saved',
-              error: 'Could not save',
-            }[status]
-          }
+        <span className={`flow-save-state ${saveState}`} role="status">
+          {SAVE_STATE_TEXT[saveState]}
         </span>
         {staffMode && (
           <button type="button" className="secondary-button flow-refresh" onClick={exportForClaude}>
@@ -407,8 +314,13 @@ const Editor = ({
       </div>
       {conflict && (
         <div className="alert alert-error">
-          {conflict.updatedBy ?? 'Someone else'} changed this design, so your latest changes weren&apos;t saved.{' '}
-          <button type="button" className="secondary-button" onClick={onReload}>
+          {conflict.updatedBy ?? 'Someone else'} changed this design, so your latest changes
+          weren&apos;t saved.{' '}
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => dispatch(loadRouting())}
+          >
             Reload
           </button>
         </div>
@@ -419,35 +331,34 @@ const Editor = ({
             key={label}
             type="button"
             role="tab"
-            aria-selected={same(candidate, tab)}
+            aria-selected={sameTab(candidate, tab)}
             className={
-              candidate.kind === 'check' && issues.some((issue) => issue.severity === 'error') ? 'has-errors' : ''
+              candidate.kind === 'check' && issues.some((issue) => issue.severity === 'error')
+                ? 'has-errors'
+                : ''
             }
-            onClick={() => setTab(candidate)}
+            onClick={() => dispatch(tabChosen(candidate))}
           >
             {label}
           </button>
         ))}
       </div>
-      {workflow && (
-        <WorkflowPage
-          design={design}
-          workflow={workflow}
-          readOnly={readOnly}
-          selectedRuleId={selectedRuleId}
-          onSelectRule={setSelectedRuleId}
-          onChange={(changed) => setDesign(updateWorkflow(design, changed.key, () => changed))}
-        />
-      )}
-      {tab.kind === 'queues' && <QueuesPanel design={design} readOnly={readOnly} onChange={setDesign} />}
-      {tab.kind === 'skills' && <SkillsPanel design={design} readOnly={readOnly} onChange={setDesign} />}
-      {tab.kind === 'test' && <TestTaskPanel design={design} onShowRule={showRule} />}
-      {tab.kind === 'check' && <CheckList issues={issues} onShow={showIssue} />}
+      {tab.kind === 'workflow' && <WorkflowPage />}
+      {tab.kind === 'queues' && <QueuesPanel />}
+      {tab.kind === 'skills' && <SkillsPanel />}
+      {tab.kind === 'test' && <TestTaskPanel />}
+      {tab.kind === 'check' && <CheckList />}
     </div>
   );
 };
 
-const ImportPreview = ({ preview, onUse }: { preview: RoutingImport & FromBranch; onUse: () => void }) => (
+const ImportPreview = ({
+  preview,
+  onUse,
+}: {
+  preview: RoutingImport & FromBranch;
+  onUse: () => void;
+}) => (
   <div className="flows-import-preview" role="region" aria-label="Routing import preview">
     <h4>Found in {preview.report.readFrom}</h4>
     <ImportedFrom source={preview.source} />
@@ -455,7 +366,8 @@ const ImportPreview = ({ preview, onUse }: { preview: RoutingImport & FromBranch
       {preview.report.workflows.map((workflow) => (
         <li key={workflow.key}>
           <strong>{workflow.name}</strong>: {workflow.rules} rules
-          {workflow.shared ? ' (shared template)' : ''} <span className="field-hint">({workflow.template})</span>
+          {workflow.shared ? ' (shared template)' : ''}{' '}
+          <span className="field-hint">({workflow.template})</span>
         </li>
       ))}
     </ul>
@@ -475,34 +387,19 @@ const ImportPreview = ({ preview, onUse }: { preview: RoutingImport & FromBranch
   </div>
 );
 
-type Filter = 'all' | DesignStatus;
-
 /**
  * The start page: every helpline's routing design this person can see, with its status
  */
-const RoutingHome = ({
-  client,
-  helplineCodes,
-  staffMode,
-  onOpen,
-}: {
-  client: RoutingClient;
-  helplineCodes: string[];
-  staffMode: boolean;
-  onOpen: (code: string) => void;
-}) => {
-  const [summaries, setSummaries] = useState<RoutingSummary[]>();
-  const [error, setError] = useState<string>();
-  const [filter, setFilter] = useState<Filter>('all');
-  const [helpline, setHelpline] = useState('');
-  const [code, setCode] = useState('');
+const RoutingHome = () => {
+  const dispatch = useAppDispatch();
+  const { summaries, error, filter, helpline, choice: code } = useAppSelector(selectRouting).home;
+  const helplineCodes = useAppSelector(selectRoutingHelplineCodes);
+  const staffMode = useAppSelector(selectActingAsStaff);
 
+  // Read again each time the start page shows
   useEffect(() => {
-    client
-      .list()
-      .then(setSummaries)
-      .catch((err: Error) => setError(err.message));
-  }, [client]);
+    dispatch(loadRoutingList());
+  }, [dispatch]);
 
   const allRows = summaries ?? [];
   const rows = allRows.filter((row) => !helpline || row.code === helpline);
@@ -513,13 +410,18 @@ const RoutingHome = ({
     <main className="area-home routing-home">
       <h2>Routing</h2>
       <p className="field-hint area-home-intro">
-        How each helpline&apos;s contacts reach counselors: the TaskRouter workflows, queues, skills and capacity.
+        How each helpline&apos;s contacts reach counselors: the TaskRouter workflows, queues, skills
+        and capacity.
       </p>
       {error && <div className="alert alert-error">{error}</div>}
       <div className="area-home-actions">
         <label className="field">
           <span className="field-label">Open a helpline&apos;s routing</span>
-          <select value={code} aria-label="Helpline" onChange={(e) => setCode(e.target.value)}>
+          <select
+            value={code}
+            aria-label="Helpline"
+            onChange={(e) => dispatch(helplineChosen(e.target.value))}
+          >
             <option value="">Choose…</option>
             {helplineCodes.map((candidate) => (
               <option key={candidate} value={candidate}>
@@ -529,7 +431,12 @@ const RoutingHome = ({
             ))}
           </select>
         </label>
-        <button type="button" className="primary-button" disabled={!code} onClick={() => onOpen(code)}>
+        <button
+          type="button"
+          className="primary-button"
+          disabled={!code}
+          onClick={() => dispatch(openRouting(code))}
+        >
           {code && !withDesign.has(code) && staffMode ? 'Start' : 'Open'}
         </button>
       </div>
@@ -538,20 +445,32 @@ const RoutingHome = ({
       {allRows.length > 0 && (
         <>
           <div className="area-home-filters">
-            <HelplineFilter codes={allRows.map((row) => row.code)} value={helpline} onChange={setHelpline} />
+            <HelplineFilter
+              codes={allRows.map((row) => row.code)}
+              value={helpline}
+              onChange={(value: string) => dispatch(helplineFilterChosen(value))}
+            />
             <div className="area-home-filter" role="group" aria-label="Show">
-              {(['all', ...DESIGN_STATUSES.map((status) => status.value)] as Filter[]).map((candidate) => (
-                <button
-                  key={candidate}
-                  type="button"
-                  className={filter === candidate ? 'active' : ''}
-                  aria-pressed={filter === candidate}
-                  onClick={() => setFilter(candidate)}
-                >
-                  {candidate === 'all' ? 'All' : DESIGN_STATUSES.find((status) => status.value === candidate)?.label} (
-                  {candidate === 'all' ? rows.length : rows.filter((row) => row.status === candidate).length})
-                </button>
-              ))}
+              {(['all', ...DESIGN_STATUSES.map((status) => status.value)] as RoutingFilter[]).map(
+                (candidate) => (
+                  <button
+                    key={candidate}
+                    type="button"
+                    className={filter === candidate ? 'active' : ''}
+                    aria-pressed={filter === candidate}
+                    onClick={() => dispatch(filterChosen(candidate))}
+                  >
+                    {candidate === 'all'
+                      ? 'All'
+                      : DESIGN_STATUSES.find((status) => status.value === candidate)?.label}{' '}
+                    (
+                    {candidate === 'all'
+                      ? rows.length
+                      : rows.filter((row) => row.status === candidate).length}
+                    )
+                  </button>
+                ),
+              )}
             </div>
           </div>
           <table className="area-home-table">
@@ -582,7 +501,7 @@ const RoutingHome = ({
                       type="button"
                       className="secondary-button"
                       aria-label={`Open ${row.code.toUpperCase()} routing`}
-                      onClick={() => onOpen(row.code)}
+                      onClick={() => dispatch(openRouting(row.code))}
                     >
                       Open
                     </button>
@@ -597,70 +516,44 @@ const RoutingHome = ({
   );
 };
 
-export const RoutingArea = ({ client = httpRoutingClient, helplineCodes, staffMode }: Props) => {
-  const [code, setCode] = useState(helplineCodes.length === 1 ? helplineCodes[0] : '');
-  const [stored, setStored] = useState<StoredRouting | null>();
-  const [error, setError] = useState<string>();
-  const [preview, setPreview] = useState<RoutingImport & FromBranch>();
-  const [branch, setBranch] = useState('');
-  // Reading the live config takes a while: said while it does
-  const [importing, setImporting] = useState(false);
-  const previewImport = async () => {
-    setError(undefined);
-    setImporting(true);
-    try {
-      setPreview(await client.previewImport(code, branch));
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setImporting(false);
-    }
-  };
-  const [loadCount, setLoadCount] = useState(0);
-  const [working, setWorking] = useState(false);
+export const RoutingArea = () => {
+  const dispatch = useAppDispatch();
+  const { code, stored, error, preview, branch, importing, working, editor } =
+    useAppSelector(selectRouting);
+  const staffMode = useAppSelector(selectActingAsStaff);
+  // Stable: the branch picker loads the branches again when it changes
+  const loadBranches = useCallback(() => dispatch(loadRoutingBranches()), [dispatch]);
+  const chooseBranch = (value: string) => dispatch(branchChosen(value));
+  const previewImport = () => dispatch(previewRoutingImport());
 
+  // Someone with a single helpline gets its routing straight away
   useEffect(() => {
-    setStored(undefined);
-    setPreview(undefined);
-    setError(undefined);
-    if (!code) return;
-    client
-      .load(code)
-      .then((found) => setStored(found ?? null))
-      .catch((err: Error) => setError(err.message));
-  }, [client, code, loadCount]);
+    dispatch(enterRouting());
+  }, [dispatch]);
 
-  // Saves a new design (empty, or imported), over the one there is now, if any
-  const create = async (design: RoutingDesign) => {
-    setWorking(true);
-    try {
-      const current = await client.load(code);
-      const outcome = await client.save(code, current?.meta.revision ?? 0, design);
-      if (!outcome.ok)
-        throw new Error(`${outcome.conflict.updatedBy ?? 'Someone else'} just saved a design for ${code}: reload.`);
-      setLoadCount((count) => count + 1);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setWorking(false);
-    }
-  };
-
-  if (!code)
-    return <RoutingHome client={client} helplineCodes={helplineCodes} staffMode={staffMode} onOpen={setCode} />;
+  if (!code) return <RoutingHome />;
 
   return (
     <main className="routing-area">
       <div className="routing-pick">
         {(stored === null || preview) && (
-          <button type="button" className="link-button area-back" onClick={() => setCode('')}>
+          <button
+            type="button"
+            className="link-button area-back"
+            onClick={() => dispatch(openRouting(''))}
+          >
             <ArrowLeft size={14} aria-hidden /> All routing
           </button>
         )}
         {staffMode && code && stored && !preview && (
           <>
-            <BranchPicker load={client.branches} value={branch} onChange={setBranch} />
-            <button type="button" className="link-button" disabled={importing} onClick={previewImport}>
+            <BranchPicker load={loadBranches} value={branch} onChange={chooseBranch} />
+            <button
+              type="button"
+              className="link-button"
+              disabled={importing}
+              onClick={previewImport}
+            >
               Import again from the live config
             </button>
           </>
@@ -668,11 +561,13 @@ export const RoutingArea = ({ client = httpRoutingClient, helplineCodes, staffMo
       </div>
       {error && <div className="alert alert-error">{error}</div>}
       {importing && <Loading text="Reading the live config…" />}
-      {stored === undefined && !error && <Loading text={`Loading ${code.toUpperCase()}'s routing…`} />}
+      {stored === undefined && !error && (
+        <Loading text={`Loading ${code.toUpperCase()}'s routing…`} />
+      )}
       {code && stored === null && !preview && (
         <div className="routing-empty">
           <p>{code.toUpperCase()} has no routing design yet.</p>
-          {staffMode && <BranchPicker load={client.branches} value={branch} onChange={setBranch} />}
+          {staffMode && <BranchPicker load={loadBranches} value={branch} onChange={chooseBranch} />}
           {staffMode && (
             <button
               type="button"
@@ -688,7 +583,7 @@ export const RoutingArea = ({ client = httpRoutingClient, helplineCodes, staffMo
               type="button"
               className="secondary-button"
               disabled={working}
-              onClick={() => create(emptyRouting(code))}
+              onClick={() => dispatch(startEmptyRouting())}
             >
               Start an empty design
             </button>
@@ -702,24 +597,16 @@ export const RoutingArea = ({ client = httpRoutingClient, helplineCodes, staffMo
             // eslint-disable-next-line no-alert
             if (
               stored &&
-              !window.confirm(`Replace ${code.toUpperCase()}'s routing design with the one read from the live config?`)
+              !window.confirm(
+                `Replace ${code.toUpperCase()}'s routing design with the one read from the live config?`,
+              )
             )
               return;
-            setPreview(undefined);
-            create(preview.source ? { ...preview.design, importedFrom: preview.source } : preview.design);
+            dispatch(adoptRoutingImport());
           }}
         />
       )}
-      {code && stored && !preview && (
-        <Editor
-          key={`${code}-${stored.meta.revision}-${loadCount}`}
-          stored={stored}
-          client={client}
-          staffMode={staffMode}
-          onReload={() => setLoadCount((count) => count + 1)}
-          onBack={() => setCode('')}
-        />
-      )}
+      {code && stored && !preview && editor && <Editor />}
     </main>
   );
 };

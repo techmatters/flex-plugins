@@ -19,7 +19,8 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, jest } from '@jest/globals';
-import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
 import { handleApiRequest } from '@tech-matters/form-builder-server/api';
 import { MemoryBoardStore } from '@tech-matters/form-builder-server/boards';
@@ -33,6 +34,9 @@ import { FlowsArea } from './FlowsArea';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
 import type { FlowObject } from '@tech-matters/form-builder-shared/flows/model';
 import { emptyBoard } from '@tech-matters/form-builder-shared/flows/model';
+import { createAppStore } from '../app/store';
+import { sessionLoaded } from '../app/sessionSlice';
+import { switchArea } from '../app/appSlice';
 
 // What React Flow needs from a browser that jsdom doesn't have (see reactflow.dev/learn/advanced-use/testing)
 beforeAll(() => {
@@ -125,10 +129,27 @@ beforeEach(() => {
 
 afterEach(cleanup);
 
+// The area as the app shows it: in a store with the user signed in (Aselo staff, or a helpline's) and
+// the board client talking to the API in process
+const renderArea = (user: ApiUser, client = clientAs(user)) => {
+  const store = createAppStore({ boardClient: client });
+  store.dispatch(
+    sessionLoaded({ user: { ...user, applyInBuilder: false }, helplines: [{ code: 'usnm', versions: [] }] }),
+  );
+  return {
+    store,
+    ...render(
+      <Provider store={store}>
+        <FlowsArea />
+      </Provider>,
+    ),
+  };
+};
+
 // Autosave waits a second after the last change, so these take a few seconds each
 describe('flow designer', () => {
   test('a new board opens, objects are added from the palette, and it saves by itself', async () => {
-    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    renderArea(staff);
 
     fireEvent.change(await screen.findByPlaceholderText(/USNM contact flows/), { target: { value: 'NAMI flows' } });
     fireEvent.change(screen.getByRole('combobox', { name: 'For' }), { target: { value: 'usnm' } });
@@ -179,9 +200,7 @@ describe('flow designer', () => {
 
   test('helpline staff see the templates without being able to change them', async () => {
     const template = await clientAs(staff).create('_templates', 'Standard pre-queue flow');
-    render(
-      <FlowsArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} userName="NAMI person" />,
-    );
+    renderArea(usnmStaff);
 
     fireEvent.click(await screen.findByRole('button', { name: 'Standard pre-queue flow' }));
     await screen.findByRole('heading', { name: 'Standard pre-queue flow' });
@@ -192,9 +211,7 @@ describe('flow designer', () => {
 
   test("helpline staff see their helpline's boards, but don't add or change them", async () => {
     const board = await clientAs(staff).create('usnm', 'NAMI flows');
-    render(
-      <FlowsArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} userName="NAMI person" />,
-    );
+    renderArea(usnmStaff);
 
     // The list, without the form to add a board
     const open = await screen.findByRole('button', { name: 'NAMI flows' });
@@ -215,7 +232,7 @@ describe('flow designer', () => {
   test('saving stops and asks to reload when someone else saved the board', async () => {
     const board = await clientAs(staff).create('usnm', 'Shared board');
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
-    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    renderArea(staff);
     await screen.findByRole('heading', { name: 'Shared board' });
 
     // Someone else saves first
@@ -236,14 +253,7 @@ describe('flow designer', () => {
   const openNewBoard = async (title: string, user = staff, mode: 'Sketch' | 'Build' = 'Build') => {
     const board = await clientAs(staff).create('usnm', title);
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
-    render(
-      <FlowsArea
-        client={clientAs(user)}
-        helplineCodes={['usnm']}
-        staffMode={user.role === 'aselo-staff'}
-        userName={user.name}
-      />,
-    );
+    renderArea(user);
     await screen.findByRole('heading', { name: title });
     fireEvent.click(within(screen.getByRole('tablist', { name: 'Mode' })).getByRole('tab', { name: new RegExp(mode) }));
     return board;
@@ -323,10 +333,7 @@ describe('flow designer', () => {
     const board = await clientAs(staff).create('usnm', 'Choices');
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
     const client = clientAs(staff);
-    const area = (active: boolean) => (
-      <FlowsArea client={client} helplineCodes={['usnm']} staffMode userName={staff.name} active={active} />
-    );
-    const { rerender, container } = render(area(true));
+    const { store, container } = renderArea(staff, client);
     await screen.findByRole('heading', { name: 'Choices' });
     fireEvent.click(within(screen.getByRole('tablist', { name: 'Mode' })).getByRole('tab', { name: /Build/ }));
 
@@ -345,8 +352,12 @@ describe('flow designer', () => {
 
     // A skill added in Routing meanwhile: offered once the board is shown again
     expect((await saveRouting(1, ['Spanish', 'TYA', 'French'])).status).toBeLessThan(300);
-    rerender(area(false));
-    rerender(area(true));
+    act(() => {
+      store.dispatch(switchArea('forms'));
+    });
+    act(() => {
+      store.dispatch(switchArea('flows'));
+    });
     fireEvent.click(palette().getByRole('button', { name: /^Skilled worker logged in/ }));
     expect(await settings().findByRole('button', { name: '+ French' })).toBeTruthy();
   });
@@ -362,7 +373,7 @@ describe('flow designer', () => {
 
     // Opened again, nothing selected: the board's names (channels and two languages chosen from a list,
     // one typed, a service)
-    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName={staff.name} />);
+    renderArea(staff);
     await screen.findByRole('heading', { name: 'Parts' });
     fireEvent.change(settings().getByRole('combobox', { name: 'Add channels' }), { target: { value: 'voice' } });
     const addLanguage = () => settings().getByRole('combobox', { name: 'Add languages' });
@@ -447,7 +458,7 @@ describe('flow designer', () => {
     expect(screen.queryByRole('menuitem', { name: 'Flows for Claude (JSON)' })).toBeNull();
     cleanup();
 
-    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    renderArea(staff);
     await screen.findByRole('heading', { name: 'Exports' });
     fireEvent.click(screen.getByRole('button', { name: 'Export' }));
     expect(screen.getByRole('menuitem', { name: 'Flows for Claude (JSON)' })).toBeTruthy();
@@ -460,7 +471,7 @@ describe('flow designer', () => {
     );
     const board = await clientAs(staff).create('usnm', 'Survey', undefined, imported[0].content);
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
-    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    renderArea(staff);
     await screen.findByRole('heading', { name: 'Survey' });
     expect(screen.getByRole('tab', { name: 'English' }).getAttribute('aria-selected')).toBe('true');
 
@@ -549,7 +560,7 @@ describe('flow designer', () => {
     const systemDown = imported.find((candidate) => candidate.title.endsWith('System down'))!;
     const board = await clientAs(staff).create('usnm', 'System down', undefined, systemDown.content);
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
-    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    renderArea(staff);
     await screen.findByRole('heading', { name: 'System down' });
     expect(screen.getByText(/Shared template, also used by/)).toBeTruthy();
     expect(screen.getByText(/give USNM a copy of its own/)).toBeTruthy();
@@ -562,9 +573,7 @@ describe('flow designer', () => {
 
     // Helpline staff see where changes go, without the choice
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
-    render(
-      <FlowsArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} userName="NAMI person" />,
-    );
+    renderArea(usnmStaff);
     await screen.findByRole('heading', { name: 'System down' });
     expect(screen.getByText(/every one of these helplines changes too/)).toBeTruthy();
     expect(screen.queryByRole('checkbox', { name: 'Change the shared template for every helpline' })).toBeNull();
@@ -583,7 +592,7 @@ describe('flow designer', () => {
     recordingFiles.put('usnm', old, 'welcome audio');
     const board = await clientAs(staff).create('usnm', 'Voice', undefined, content);
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
-    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    renderArea(staff);
     await screen.findByRole('heading', { name: 'Voice' });
     fireEvent.click(screen.getByRole('tab', { name: 'Recordings' }));
     const panel = within(screen.getByRole('region', { name: 'Recordings' }));
@@ -623,7 +632,7 @@ describe('flow designer', () => {
     // Then approve and publish it
     jest.spyOn(window, 'confirm').mockReturnValue(true);
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
-    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    renderArea(staff);
     await screen.findByRole('heading', { name: 'Recordings' });
     fireEvent.click(screen.getByRole('tab', { name: 'Recordings' }));
     const panel = within(screen.getByRole('region', { name: 'Recordings' }));
@@ -639,7 +648,7 @@ describe('flow designer', () => {
   });
 
   test('Aselo staff import the flows they choose from a live helpline, a board each, with their recordings', async () => {
-    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    renderArea(staff);
     fireEvent.change(await screen.findByRole('combobox', { name: 'Helpline to import' }), {
       target: { value: 'usnm' },
     });
@@ -697,9 +706,7 @@ describe('flow designer', () => {
       status: 'imported',
     });
     await aselo.create('_templates', 'Standard pre-queue flow');
-    render(
-      <FlowsArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} userName="NAMI person" />,
-    );
+    renderArea(usnmStaff);
 
     const table = within(await screen.findByRole('region', { name: 'Boards' }));
     const rowOf = (title: string) => within(table.getByRole('button', { name: title }).closest('tr')!);
@@ -757,9 +764,7 @@ describe('flow designer', () => {
     const board = await aselo.create('usnm', 'Agreed');
     await aselo.save('usnm', board.id, 1, { ...board.content, status: 'ready' });
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
-    render(
-      <FlowsArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} userName="NAMI person" />,
-    );
+    renderArea(usnmStaff);
     await screen.findByRole('heading', { name: 'Agreed' });
     expect(screen.getByText('Ready for Claude')).toBeTruthy();
     expect(screen.queryByRole('combobox', { name: 'Board status' })).toBeNull();
@@ -810,7 +815,7 @@ describe('people lists', () => {
       { name: 'Aselo lead', email: 'aselo@example.org' },
       { name: 'Other staff', email: 'other@example.org' },
     ]);
-    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    renderArea(staff);
     fireEvent.change(await screen.findByRole('combobox', { name: 'List' }), { target: { value: 'usnm' } });
     const addFromTeam = await screen.findByRole('combobox', { name: 'Add from the Aselo team' });
     fireEvent.change(addFromTeam, { target: { value: 'aselo@example.org' } });
@@ -857,7 +862,7 @@ describe('testing a flow (Test mode)', () => {
       ],
     });
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
-    render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
+    renderArea(staff);
     await screen.findByRole('heading', { name: 'Language menu' });
 
     // Test mode: the board can't be changed, the Test panel is open

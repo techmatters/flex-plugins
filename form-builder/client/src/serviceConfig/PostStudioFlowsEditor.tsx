@@ -16,155 +16,49 @@
 
 /**
  * The post-call surveys (attributes.postStudioFlows): which Studio flow runs for each queue, and
- * how it's started, picked from the helpline's queues and its post_call_survey_* flows. Written as
- * USNM does it: ${task_queues.<key>} → { flowTrigger, studioFlowSid: ${studio_flow_sids.<key>} },
- * in common.json (both environments) or one environment's file.
+ * how it's started, picked from the helpline's queues and its post_call_survey_* flows
+ * (postStudioFlows.ts; its state and changes: postStudioFlowsSlice.ts).
  */
-import { useEffect, useState } from 'react';
-import type { DefinitionFileMap } from '../common/definitions';
-import type { PostFlowChoices } from '@tech-matters/form-builder-shared';
-import { getServiceConfigFile, isConfigObject, setServiceConfigValue } from './serviceConfig';
-import type { ServiceConfigFileName } from '@tech-matters/form-builder-shared';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectDraftFiles } from '../drafts/draftSlice';
+import { selectDefinitions } from '../workspace/workspaceSlice';
+import {
+  CHANNEL_KEYS,
+  entryWarnings,
+  FILE_OF,
+  FLOW_TRIGGERS,
+  flowOptionLabel,
+  flowRef,
+  keyOf,
+  postStudioFlowEntries,
+  queueLabel,
+  queueRef,
+  Where,
+  WHERE_LABELS,
+} from './postStudioFlows';
+import {
+  addPostStudioFlow,
+  newSurveyChanged,
+  openPostStudioFlows,
+  selectPostStudioFlows,
+  setPostStudioFlow,
+} from './postStudioFlowsSlice';
 
-export const POST_STUDIO_FLOWS_KEYS = ['attributes', 'postStudioFlows'];
+export const PostStudioFlowsEditor = () => {
+  const dispatch = useAppDispatch();
+  const code = useAppSelector(selectDefinitions)?.code ?? '';
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const { choices, loadError, queue, flowTrigger, flow, where, error } = useAppSelector(selectPostStudioFlows);
 
-// What the Aselo lambdas (postStudioFlowTaskRouterListener) and the Flex plugin do with each
-export const FLOW_TRIGGERS = [
-  {
-    value: 'inProgressCall',
-    label: 'During the call (inProgressCall)',
-    hint: 'Voice only. When the counselor leaves, the caller stays on the line and is sent into the survey.',
-  },
-  {
-    value: 'rest',
-    label: 'After the contact (rest)',
-    hint: 'When the task ends, the flow is started through its REST API trigger, to the contact’s number (calls and messaging).',
-  },
-] as const;
-
-// Besides queues: the lambdas fall back to the task channel (e.g. every voice task)
-const CHANNEL_KEYS = [
-  { key: 'voice', label: 'Any other voice task (voice channel)' },
-  { key: 'chat', label: 'Any other chat task (chat channel)' },
-];
-
-type Where = 'both' | 'staging' | 'production';
-const FILE_OF: Record<Where, ServiceConfigFileName> = { both: 'common', staging: 'staging', production: 'production' };
-const WHERE_LABELS: Record<Where, string> = {
-  both: 'Staging and production (common.json)',
-  staging: 'Staging only (staging.json)',
-  production: 'Production only (production.json)',
-};
-const FILES: ServiceConfigFileName[] = ['common', 'staging', 'production'];
-
-const queueRef = (key: string) => `\${task_queues.${key}}`;
-const flowRef = (key: string) => `\${studio_flow_sids.${key}}`;
-const keyOf = (ref: string, kind: 'task_queues' | 'studio_flow_sids') =>
-  ref.match(new RegExp(`^\\$\\{${kind}\\.([A-Za-z0-9_]+)\\}$`))?.[1];
-
-type Entry = { file: ServiceConfigFileName; queue: string; flowTrigger: string; studioFlowSid: string };
-
-export const postStudioFlowEntries = (files: DefinitionFileMap): Entry[] =>
-  FILES.flatMap((file) => {
-    const flows = getServiceConfigFile(files, file)?.attributes;
-    const configured = isConfigObject(flows) ? flows.postStudioFlows : undefined;
-    if (!isConfigObject(configured)) return [];
-    return Object.entries(configured)
-      .filter(([, value]) => isConfigObject(value))
-      .map(([queue, value]) => {
-        const settings = value as Record<string, unknown>;
-        return {
-          file,
-          queue,
-          flowTrigger: String(settings.flowTrigger ?? ''),
-          studioFlowSid: String(settings.studioFlowSid ?? ''),
-        };
-      });
-  });
-
-// The environments a file reaches
-const environmentsOf = (file: ServiceConfigFileName) =>
-  file === 'common' ? (['staging', 'production'] as const) : file === 'development' ? [] : ([file] as const);
-
-/**
- * Why an entry may not work where it's written: a queue or flow placeholder the environment's config
- * doesn't have (Terraform can't turn it into a SID there).
- */
-export const entryWarnings = (entry: Pick<Entry, 'file' | 'queue' | 'studioFlowSid'>, choices?: PostFlowChoices) => {
-  if (!choices) return [];
-  const warnings: string[] = [];
-  const queueKey = keyOf(entry.queue, 'task_queues');
-  const flowKey = keyOf(entry.studioFlowSid, 'studio_flow_sids');
-  environmentsOf(entry.file).forEach((environment) => {
-    const queue = choices.queues.find((candidate) => candidate.key === queueKey);
-    if (queueKey && !queue?.environments.includes(environment)) {
-      warnings.push(`${environment}.hcl has no queue ${queueKey} yet.`);
-    }
-    const flow = choices.flows.find((candidate) => candidate.key === flowKey);
-    if (flowKey && !flow?.environments.includes(environment)) {
-      warnings.push(`${environment}.hcl has no ${flowKey} studio flow yet.`);
-    }
-  });
-  return warnings;
-};
-
-const queueLabel = (ref: string, choices?: PostFlowChoices) => {
-  const key = keyOf(ref, 'task_queues');
-  if (!key) return CHANNEL_KEYS.find((channel) => channel.key === ref)?.label ?? ref;
-  const name = choices?.queues.find((queue) => queue.key === key)?.name;
-  return name && name !== key ? `${name} (${key})` : key;
-};
-
-const flowOptionLabel = (flow: PostFlowChoices['flows'][number]) => {
-  if (flow.environments.length === 2) return flow.key;
-  if (flow.environments.length === 1) return `${flow.key} (${flow.environments[0]} only)`;
-  return `${flow.key} (on a board, not in the config yet)`;
-};
-
-type Props = {
-  code: string;
-  draftFiles: DefinitionFileMap;
-  change: (updater: (files: DefinitionFileMap) => DefinitionFileMap) => void;
-  loadChoices: (code: string) => Promise<PostFlowChoices>;
-};
-
-export const PostStudioFlowsEditor = ({ code, draftFiles, change, loadChoices }: Props) => {
-  const [choices, setChoices] = useState<PostFlowChoices>();
-  const [loadError, setLoadError] = useState<string>();
-  const [queue, setQueue] = useState('');
-  const [flowTrigger, setFlowTrigger] = useState<string>('rest');
-  const [flow, setFlow] = useState('');
-  const [where, setWhere] = useState<Where>('both');
-  const [error, setError] = useState<string>();
-
+  // The helpline's queues and flows, loaded when it shows
   useEffect(() => {
-    let current = true;
-    loadChoices(code)
-      .then((found) => current && setChoices(found))
-      .catch((err: Error) => current && setLoadError(err.message));
-    return () => {
-      current = false;
-    };
-  }, [code, loadChoices]);
+    dispatch(openPostStudioFlows());
+  }, [code, dispatch]);
 
   const entries = postStudioFlowEntries(draftFiles);
-  const write = (file: ServiceConfigFileName, queueKey: string, value: unknown) =>
-    change((files) => setServiceConfigValue(files, file, [...POST_STUDIO_FLOWS_KEYS, queueKey], value));
-
-  const add = () => {
-    if (!queue || !flow) {
-      setError('Choose a queue and a survey flow.');
-      return;
-    }
-    const file = FILE_OF[where];
-    if (entries.some((entry) => entry.file === file && entry.queue === queue)) {
-      setError(`${file}.json already has a survey for ${queueLabel(queue, choices)}: change it in the list.`);
-      return;
-    }
-    write(file, queue, { flowTrigger, studioFlowSid: flowRef(flow) });
-    setQueue('');
-    setError(undefined);
-  };
+  const write = (file: Parameters<typeof setPostStudioFlow>[0], queueKey: string, value: unknown) =>
+    dispatch(setPostStudioFlow(file, queueKey, value));
 
   const triggerHint = FLOW_TRIGGERS.find((trigger) => trigger.value === flowTrigger)?.hint;
   const flowChoices = choices?.flows ?? [];
@@ -273,7 +167,11 @@ export const PostStudioFlowsEditor = ({ code, draftFiles, change, loadChoices }:
       <div className="config-add-fields">
         <label className="field">
           <span className="field-label">Queue</span>
-          <select aria-label="Survey queue" value={queue} onChange={(e) => setQueue(e.target.value)}>
+          <select
+            aria-label="Survey queue"
+            value={queue}
+            onChange={(e) => dispatch(newSurveyChanged({ queue: e.target.value }))}
+          >
             <option value="">Choose…</option>
             {(choices?.queues ?? []).map((candidate) => (
               <option key={candidate.key} value={queueRef(candidate.key)}>
@@ -292,7 +190,11 @@ export const PostStudioFlowsEditor = ({ code, draftFiles, change, loadChoices }:
         </label>
         <label className="field">
           <span className="field-label">When</span>
-          <select aria-label="Survey trigger" value={flowTrigger} onChange={(e) => setFlowTrigger(e.target.value)}>
+          <select
+            aria-label="Survey trigger"
+            value={flowTrigger}
+            onChange={(e) => dispatch(newSurveyChanged({ flowTrigger: e.target.value }))}
+          >
             {FLOW_TRIGGERS.map((trigger) => (
               <option key={trigger.value} value={trigger.value}>
                 {trigger.label}
@@ -302,7 +204,11 @@ export const PostStudioFlowsEditor = ({ code, draftFiles, change, loadChoices }:
         </label>
         <label className="field">
           <span className="field-label">Survey flow</span>
-          <select aria-label="Survey flow" value={flow} onChange={(e) => setFlow(e.target.value)}>
+          <select
+            aria-label="Survey flow"
+            value={flow}
+            onChange={(e) => dispatch(newSurveyChanged({ flow: e.target.value }))}
+          >
             <option value="">{flowChoices.length > 0 ? 'Choose…' : 'No post_call_survey_* flows'}</option>
             {flowChoices.map((candidate) => (
               <option key={candidate.key} value={candidate.key}>
@@ -313,7 +219,11 @@ export const PostStudioFlowsEditor = ({ code, draftFiles, change, loadChoices }:
         </label>
         <label className="field">
           <span className="field-label">Where</span>
-          <select aria-label="Survey environments" value={where} onChange={(e) => setWhere(e.target.value as Where)}>
+          <select
+            aria-label="Survey environments"
+            value={where}
+            onChange={(e) => dispatch(newSurveyChanged({ where: e.target.value as Where }))}
+          >
             {(Object.keys(WHERE_LABELS) as Where[]).map((key) => (
               <option key={key} value={key}>
                 {WHERE_LABELS[key]}
@@ -321,7 +231,7 @@ export const PostStudioFlowsEditor = ({ code, draftFiles, change, loadChoices }:
             ))}
           </select>
         </label>
-        <button type="button" className="secondary-button" onClick={add}>
+        <button type="button" className="secondary-button" onClick={() => dispatch(addPostStudioFlow())}>
           Add survey
         </button>
       </div>

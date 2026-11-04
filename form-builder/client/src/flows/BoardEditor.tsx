@@ -16,10 +16,11 @@
 
 /**
  * One board: the palette on the left, the canvas, and the settings of what's selected on the
- * right. Every change is saved automatically; if someone else saved the board in between, saving
- * stops and asks to reload, so nobody's work is overwritten silently.
+ * right. Its state is the store's (boardSlice.ts: React Flow shows the nodes and edges kept there,
+ * and changes them through actions); every change is saved automatically, and if someone else saved
+ * the board in between, saving stops and asks to reload, so nobody's work is overwritten silently.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Background,
   BackgroundVariant,
@@ -31,10 +32,6 @@ import {
   MiniMap,
   ReactFlow,
   ReactFlowProvider,
-  reconnectEdge,
-  useEdgesState,
-  useNodesState,
-  useReactFlow,
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import {
@@ -50,273 +47,151 @@ import {
   Undo2,
   Users,
 } from 'lucide-react';
-import { boardChecks, issuesByObject, sketchIssues, splitIgnored } from '@tech-matters/form-builder-shared/flows/checks';
 import { downloadFlowExport, downloadScripts } from './exports';
 import { CheckPanel } from './CheckPanel';
-import type { RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
-import { approvalOf, standardRecordingName } from '@tech-matters/form-builder-shared/flows/recordings';
-import { RecordingActions, RecordingsPanel } from './RecordingControls';
-import type { BoardClient, HelplineChoices } from './boardClient';
-import { NO_HELPLINE_CHOICES } from './boardClient';
-import type { Board, BoardContent, FlowObject, FlowObjectType, Person, TestedPath } from '@tech-matters/form-builder-shared/flows/model';
+import { RecordingsPanel } from './RecordingControls';
 import {
-  ASELO_PEOPLE_CODE,
-  designOf,
-  flowDetailsOf,
-  messageFor,
   isImportedBoard,
   objectColor,
-  OBJECT_TYPES,
-  statusOf,
   STICKY_COLORS,
-  sharedLanguageVariants,
   TEMPLATES_CODE,
-  toSnake,
   VARIANT_LANGUAGES,
   variantInLanguage,
-  variesByVariant,
 } from '@tech-matters/form-builder-shared/flows/model';
-import type { DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
-import { STATUS_AFTER_CHANGE } from '@tech-matters/form-builder-shared/designStatus';
 import { DesignStatusPicker } from '../common/DesignStatusPicker';
-import {
-  ARROW,
-  CanvasNode,
-  ConnectionEdge,
-  createFrameNode,
-  createObjectNode,
-  createStickyNode,
-  duplicate,
-  facingSide,
-  frameAt,
-  newId,
-  nextExit,
-  ObjectNode,
-  reparent,
-  toContent,
-  toEdges,
-  toNodes,
-  withIds,
-} from './canvasModel';
-import { BoardEditingContext, EDGE_TYPES, NODE_TYPES } from './nodes';
+import { ARROW, CanvasNode, ConnectionEdge, facingSide } from './canvasModel';
+import { EDGE_TYPES, NODE_TYPES } from './nodes';
 import { Palette, PALETTE_MIME, PaletteItem } from './Palette';
 import { Inspector } from './Inspector';
 import { SidebarResizer, useSidebarWidth } from './SidebarResizer';
 import { openTaskCount, TasksPanel } from './TasksPanel';
 import { SimulatorPanel } from './SimulatorPanel';
-import type { SimRun } from './simulate';
-import { coverageOf, testedPathOf, validTestedPaths, visitedBy } from './simulate';
-
-type Props = {
-  board: Board;
-  client: BoardClient;
-  readOnly: boolean;
-  userName: string;
-  userEmail?: string;
-  // Acting as Aselo staff: exports the JSON for Claude, approves and publishes recordings
-  staffMode: boolean;
-  onClose: () => void;
-  onReload: () => void;
-  // Shown (its area is the one open); false while another area is
-  active?: boolean;
-};
-
-type BoardMode = 'sketch' | 'design' | 'test';
-
-type SaveState = 'saved' | 'unsaved' | 'saving' | 'conflict' | 'error';
-
-const AUTOSAVE_DELAY_MS = 1200;
-const HISTORY_DELAY_MS = 300;
-const HISTORY_LIMIT = 100;
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import {
+  addItem,
+  BoardSaveState,
+  checkIgnored,
+  connectObjects,
+  copySelection,
+  duplicateSelection,
+  edgesChanged,
+  exitEnded,
+  flowChanged,
+  isValidConnection,
+  languageAdded,
+  nodesChanged,
+  nodesReparented,
+  noticeDismissed,
+  pasteClipboard,
+  reconnectConnection,
+  redo,
+  saveBoard,
+  selectBoard,
+  selectCanRedo,
+  selectCanUndo,
+  selectContent,
+  selectHasSelection,
+  selectHasUnsavedChanges,
+  selectIssues,
+  selectLocked,
+  selectMainVariant,
+  selectReadOnly,
+  selectVariant,
+  selectVariants,
+  sideTabShown,
+  splitVariant,
+  statusChanged,
+  switchMode,
+  undo,
+  variantShown,
+} from './boardSlice';
+import { loadRecordings, selectBoardRecordings } from './recordingsSlice';
+import { selectSimulator } from './simulatorSlice';
+import { closeBoard, loadOpenBoard } from './flowsSlice';
+import { useCanvasView } from './canvasView';
 
 const isTyping = (target: EventTarget | null) =>
   target instanceof HTMLElement &&
   (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName));
 
-// Selected nodes, plus everything inside selected frames
-const withContents = (nodes: CanvasNode[], selected: CanvasNode[]) => {
-  const ids = new Set(selected.map((node) => node.id));
-  return nodes.filter((node) => ids.has(node.id) || (node.parentId && ids.has(node.parentId)));
-};
+const NOTICE_MS = 5000;
 
-const Editor = ({
-  board,
-  client,
-  readOnly,
-  userName,
-  userEmail,
-  staffMode,
-  onClose,
-  onReload,
-  active = true,
-}: Props) => {
-  const flow = useReactFlow<CanvasNode, ConnectionEdge>();
-  // Sketch: the flow's shape only (kinds, names, ways out); Build (design): every detail; Test: flows
-  // are run (simulate.ts) and the board can't be changed. Remembered per board in this browser; a new
-  // board starts as a sketch
-  const modeKey = `flow-mode:${board.code}/${board.id}`;
-  const [mode, setMode] = useState<BoardMode>(() => {
-    try {
-      const kept = window.localStorage.getItem(modeKey);
-      // Test isn't kept: the board opens to be worked on
-      if (kept === 'sketch' || kept === 'design') return kept;
-    } catch {
-      // No storage (private window): the default
-    }
-    return board.content.objects.length === 0 ? 'sketch' : 'design';
-  });
-  const locked = readOnly || mode === 'test';
+const Editor = () => {
+  const dispatch = useAppDispatch();
+  const { flow, rectOf, showNode, deleteSelected } = useCanvasView();
+  const {
+    board: loaded,
+    nodes,
+    edges,
+    title,
+    status,
+    mode,
+    sideTab,
+    notice,
+    saveState,
+    saveError,
+    conflict,
+    flow: boardFlow,
+  } = useAppSelector(selectBoard);
+  // Shown only once a board is loaded (FlowsArea)
+  const board = loaded!;
+  const readOnly = useAppSelector(selectReadOnly);
+  // Acting as Aselo staff: exports the JSON for Claude, approves and publishes recordings
+  const staffMode = useAppSelector(selectActingAsStaff);
+  const locked = useAppSelector(selectLocked);
+  const content = useAppSelector(selectContent);
+  const variants = useAppSelector(selectVariants);
+  const mainVariant = useAppSelector(selectMainVariant);
+  const variant = useAppSelector(selectVariant);
+  const { list: recordingList, refreshing } = useAppSelector(selectBoardRecordings);
+  const { active: issues, ignored: ignoredIssues } = useAppSelector(selectIssues);
+  const canUndo = useAppSelector(selectCanUndo);
+  const canRedo = useAppSelector(selectCanRedo);
+  const hasSelection = useAppSelector(selectHasSelection);
+  const hasUnsaved = useAppSelector(selectHasUnsavedChanges);
+  const { run } = useAppSelector(selectSimulator);
+
   // The side panel's width: dragged wider for long JSON and scripts
   const sidebar = useSidebarWidth();
-  const [nodes, setNodes, onNodesChange] = useNodesState<CanvasNode>(toNodes(board.content));
-  const [edges, setEdges, onEdgesChange] = useEdgesState<ConnectionEdge>(toEdges(board.content));
-  const [title, setTitle] = useState(board.content.title);
   const wrapper = useRef<HTMLDivElement>(null);
   // Show the whole board when opening it; an empty board keeps the view still as things are added
   const [fitOnOpen] = useState(() => nodes.length > 0);
+  // A connection being dragged; the export menu open
+  const [connecting, setConnecting] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
-  const [status, setStatus] = useState<DesignStatus>(() => statusOf(board.content));
-  // Warnings marked as not needed here; like the status, not part of the canvas (nor of undo)
-  const [ignoredChecks, setIgnoredChecks] = useState<string[]>(() => board.content.ignoredChecks ?? []);
-  // Runs marked as tested; like the status, not part of the canvas (nor of undo)
-  const [testedPaths, setTestedPaths] = useState<TestedPath[]>(() => board.content.testedPaths ?? []);
-  // What's on the canvas; the status isn't part of it (nor of undo)
-  const canvasContent = useMemo(() => toContent(title, nodes, edges), [title, nodes, edges]);
-  const canvasJson = useMemo(() => JSON.stringify(canvasContent), [canvasContent]);
-  // What the board's objects outside frames are (an imported board's Studio flow); not on the canvas either
-  const [boardFlow, setBoardFlow] = useState(board.content.flow);
-  // Studio flows sharing this template (FlowDetails.variants): which one is shown (texts, recordings)
-  const variants = boardFlow?.variants ?? [];
-  const mainVariant = variants[0]?.key;
-  const [variantKey, setVariantKey] = useState<string | undefined>(mainVariant);
-  const variant = variants.find((candidate) => candidate.key === variantKey) ?? variants[0];
-  const content = useMemo(
-    () => ({
-      ...canvasContent,
-      status,
-      ...(boardFlow ? { flow: boardFlow } : {}),
-      ...(ignoredChecks.length > 0 ? { ignoredChecks } : {}),
-      ...(testedPaths.length > 0 ? { testedPaths } : {}),
-    }),
-    [canvasContent, status, boardFlow, ignoredChecks, testedPaths],
-  );
-  const json = useMemo(() => JSON.stringify(content), [content]);
-  const dragging = nodes.some((node) => node.dragging);
-
-  // ----- Status: every change goes through the canvas, so a change to the design (not to comments
-  // or stickies) is seen here, and means the board is being worked on again
-  const design = useMemo(() => designOf(canvasContent), [canvasContent]);
-  const lastDesign = useRef(design);
-  useEffect(() => {
-    if (design === lastDesign.current) return;
-    lastDesign.current = design;
-    if (!readOnly) setStatus(STATUS_AFTER_CHANGE);
-  }, [design, readOnly]);
-
-  // ----- Undo and redo: snapshots of the board, taken when it stops changing
-  const history = useRef({ stack: [canvasJson], index: 0 });
-  const [, setHistoryVersion] = useState(0);
-
-  useEffect(() => {
-    if (dragging) return undefined;
-    const timer = setTimeout(() => {
-      const { current } = history;
-      if (current.stack[current.index] === canvasJson) return;
-      current.stack = [...current.stack.slice(0, current.index + 1), canvasJson].slice(-HISTORY_LIMIT);
-      current.index = current.stack.length - 1;
-      setHistoryVersion((version) => version + 1);
-    }, HISTORY_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [canvasJson, dragging]);
-
-  const restore = (snapshot: string) => {
-    const restored = JSON.parse(snapshot) as BoardContent;
-    setNodes(toNodes(restored));
-    setEdges(toEdges(restored));
-    setTitle(restored.title);
-  };
-  const canUndo = history.current.index > 0;
-  const canRedo = history.current.index < history.current.stack.length - 1;
-  const undo = () => {
-    if (!canUndo || locked) return;
-    history.current.index -= 1;
-    restore(history.current.stack[history.current.index]);
-    setHistoryVersion((version) => version + 1);
-  };
-  const redo = () => {
-    if (!canRedo || locked) return;
-    history.current.index += 1;
-    restore(history.current.stack[history.current.index]);
-    setHistoryVersion((version) => version + 1);
-  };
-
-  // ----- Saving
-  const revision = useRef(board.meta.revision);
-  const savedJson = useRef(JSON.stringify(board.content));
-  const latestJson = useRef(json);
-  latestJson.current = json;
-  const inFlight = useRef<Promise<void> | null>(null);
-  const stopped = useRef(false);
-  const [saveState, setSaveState] = useState<SaveState>('saved');
-  const [saveError, setSaveError] = useState<string>();
-  const [conflict, setConflict] = useState<{ updatedBy?: string; updatedAt?: string }>();
-
-  const saveNow = useCallback(async (): Promise<void> => {
-    if (readOnly || stopped.current) return;
-    while (inFlight.current) await inFlight.current;
-    const toSave = latestJson.current;
-    if (toSave === savedJson.current) {
-      setSaveState('saved');
-      return;
-    }
-    setSaveState('saving');
-    const run = (async () => {
-      try {
-        const outcome = await client.save(board.code, board.id, revision.current, JSON.parse(toSave));
-        if (outcome.ok) {
-          revision.current = outcome.meta.revision;
-          savedJson.current = toSave;
-          setSaveError(undefined);
-          setSaveState(latestJson.current === toSave ? 'saved' : 'unsaved');
-        } else {
-          stopped.current = true;
-          setConflict(outcome.conflict);
-          setSaveState('conflict');
-        }
-      } catch (err) {
-        setSaveError((err as Error).message);
-        setSaveState('error');
-      }
-    })();
-    inFlight.current = run;
-    await run;
-    inFlight.current = null;
-    // Changes made while saving
-    if (!stopped.current && latestJson.current !== savedJson.current) setTimeout(() => saveNow(), AUTOSAVE_DELAY_MS);
-  }, [board.code, board.id, client, readOnly]);
-
-  useEffect(() => {
-    if (readOnly || stopped.current || json === savedJson.current) return undefined;
-    setSaveState((state) => (state === 'saving' ? state : 'unsaved'));
-    if (dragging) return undefined;
-    const timer = setTimeout(() => saveNow(), AUTOSAVE_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [json, dragging, readOnly, saveNow]);
-
+  // Leaving the page with changes not saved yet asks first
+  const unsaved = useRef(hasUnsaved);
+  unsaved.current = hasUnsaved;
   useEffect(() => {
     const warn = (event: BeforeUnloadEvent) => {
-      if (latestJson.current !== savedJson.current && !readOnly) event.preventDefault();
+      if (unsaved.current) event.preventDefault();
     };
     window.addEventListener('beforeunload', warn);
     return () => window.removeEventListener('beforeunload', warn);
-  }, [readOnly]);
+  }, []);
 
-  const close = async () => {
-    await saveNow();
-    onClose();
-  };
+  // A notice shows for a few seconds
+  useEffect(() => {
+    if (!notice) return undefined;
+    const timer = setTimeout(() => dispatch(noticeDismissed()), NOTICE_MS);
+    return () => clearTimeout(timer);
+  }, [notice, dispatch]);
 
-  // ----- Adding
+  // The run's current widget kept in view
+  const follow = run?.current;
+  useEffect(() => {
+    if (!follow) return;
+    const rect = rectOf(follow);
+    if (rect)
+      flow.setCenter(rect.x + rect.width / 2, rect.y + rect.height / 2, { zoom: flow.getZoom(), duration: 300 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [follow]);
+
+  const close = () => dispatch(closeBoard());
+
+  // ----- Adding: in the middle of the view, or where it's dropped
   const viewCentre = () => {
     const rect = wrapper.current?.getBoundingClientRect();
     return flow.screenToFlowPosition({
@@ -325,24 +200,7 @@ const Editor = ({
     });
   };
 
-  const add = (item: PaletteItem, at = viewCentre()) => {
-    if (locked) return;
-    let node: CanvasNode;
-    if (item.kind === 'frame') {
-      node = createFrameNode({ x: at.x - 450, y: at.y - 300 });
-    } else {
-      const size = item.kind === 'object' ? OBJECT_TYPES[item.type].defaultSize : { width: 160, height: 120 };
-      const frame = frameAt(at, nodes);
-      const topLeft = { x: at.x - size.width / 2, y: at.y - size.height / 2 };
-      const position = frame ? { x: topLeft.x - frame.position.x, y: topLeft.y - frame.position.y } : topLeft;
-      node =
-        item.kind === 'object'
-          ? createObjectNode(item.type, position, frame?.id)
-          : createStickyNode(position, frame?.id);
-    }
-    setNodes((current) => [...current.map((n) => ({ ...n, selected: false })), ...withIds([node])]);
-    setEdges((current) => current.map((edge) => ({ ...edge, selected: false })));
-  };
+  const add = (item: PaletteItem, at = viewCentre()) => dispatch(addItem(item, at));
 
   const onDrop = (event: React.DragEvent) => {
     const raw = event.dataTransfer.getData(PALETTE_MIME);
@@ -352,243 +210,7 @@ const Editor = ({
   };
 
   // ----- Connecting
-  // Why a connection wasn't made, shown for a few seconds
-  const [notice, setNotice] = useState<string>();
-
-  // Another language for the flows sharing this template: a new studio_flows entry (the export asks
-  // for it), with its own scripts and recordings folder, empty until written and recorded
-  const addLanguage = (locale: string, label?: string) => {
-    const language =
-      VARIANT_LANGUAGES.find((candidate) => candidate.locale === locale) ?? (label ? { locale, label } : undefined);
-    if (!language || !boardFlow || variants.length === 0) return;
-    const added = variantInLanguage(variants[0], language.locale, language.label);
-    if (variants.some((candidate) => candidate.key === added.key)) {
-      setNotice(`There is already a flow called ${added.key}.`);
-      return;
-    }
-    const code = language.locale.split('-')[0];
-    setBoardFlow({ ...boardFlow, variants: [...variants, added] });
-    setNodes((current) =>
-      current.map((node) => {
-        if (node.type !== 'object' || !variesByVariant(node.data.object)) return node;
-        const { object } = node.data;
-        return {
-          ...node,
-          data: {
-            object: { ...object, variantMessages: { ...object.variantMessages, [added.key]: { language: code } } },
-          },
-        };
-      }),
-    );
-    setVariantKey(added.key);
-  };
-
-  // Each object's other languages' messages (variantMessages), changed for every object that has them
-  const updateVariantMessages = (
-    change: (messages: NonNullable<FlowObject['variantMessages']>) => FlowObject['variantMessages'],
-  ) =>
-    setNodes((current) =>
-      current.map((node) => {
-        if (node.type !== 'object' || !variesByVariant(node.data.object)) return node;
-        const variantMessages = change(node.data.object.variantMessages ?? {});
-        const { variantMessages: _old, ...object } = node.data.object;
-        return {
-          ...node,
-          data: {
-            object:
-              variantMessages && Object.keys(variantMessages).length > 0 ? { ...object, variantMessages } : object,
-          },
-        };
-      }),
-    );
-
-  // One flow per language sharing this board's template (a new board's, from its languages): each a
-  // studio_flows entry to add, named after the board's title; the first language is the board's own
-  const shareLanguages = (languages: string[]) => {
-    if (languages.length === 0) return;
-    const shared = sharedLanguageVariants(title, languages);
-    setBoardFlow({ ...boardFlow, variants: shared });
-    setNodes((current) =>
-      current.map((node) => {
-        if (node.type !== 'object' || node.parentId || !variesByVariant(node.data.object)) return node;
-        const { object } = node.data;
-        return {
-          ...node,
-          data: {
-            object: {
-              ...object,
-              ...(object.message ? { message: { ...object.message, language: languages[0] } } : {}),
-              variantMessages: Object.fromEntries(
-                shared
-                  .slice(1)
-                  .map((variant, index) => [
-                    variant.key,
-                    { ...object.variantMessages?.[variant.key], language: languages[index + 1] },
-                  ]),
-              ),
-            },
-          },
-        };
-      }),
-    );
-    setVariantKey(shared[0].key);
-  };
-
-  // Back to one flow, its messages named per language: only for flows added on the board (imported
-  // ones are studio_flows entries in the helpline's config); the other languages' texts go
-  const unshareLanguages = () => {
-    if (!boardFlow || variants.some((candidate) => !candidate.added)) return;
-    const written = nodes.some(
-      (node) =>
-        node.type === 'object' &&
-        Object.values(node.data.object.variantMessages ?? {}).some((message) => message.script),
-    );
-    // eslint-disable-next-line no-alert
-    if (written && !window.confirm('The texts written in the other languages will be removed. Go on?')) return;
-    const languages = variants.map((candidate) => candidate.key.split('_').pop() ?? candidate.key);
-    const { variants: _removed, ...rest } = boardFlow;
-    setBoardFlow({ ...rest, naming: { ...rest.naming, languages } });
-    updateVariantMessages(() => undefined);
-    setVariantKey(undefined);
-  };
-
-  // A language added on the board taken out again (its texts with it)
-  const removeLanguage = (key: string) => {
-    const leaving = variants.find((candidate) => candidate.key === key);
-    if (!boardFlow || !leaving?.added || key === mainVariant) return;
-    // eslint-disable-next-line no-alert
-    if (!window.confirm(`Remove ${leaving.label} (${key}) and its texts?`)) return;
-    setBoardFlow({ ...boardFlow, variants: variants.filter((candidate) => candidate.key !== key) });
-    updateVariantMessages(({ [key]: _removed, ...others }) => others);
-    if (variantKey === key) setVariantKey(mainVariant);
-  };
-
-  // A flow added on the board given another studio_flows key (its recordings folder follows when it
-  // was the same)
-  const renameVariant = (key: string, renamed: string) => {
-    const next = toSnake(renamed);
-    const variant = variants.find((candidate) => candidate.key === key);
-    if (!boardFlow || !variant?.added || !next || next === key) return;
-    if (variants.some((candidate) => candidate.key === next)) {
-      setNotice(`There is already a flow called ${next}.`);
-      return;
-    }
-    setBoardFlow({
-      ...boardFlow,
-      variants: variants.map((candidate) =>
-        candidate.key === key
-          ? {
-              ...candidate,
-              key: next,
-              recordingsFolder: candidate.recordingsFolder === key ? next : candidate.recordingsFolder,
-            }
-          : candidate,
-      ),
-    });
-    updateVariantMessages(({ [key]: moved, ...others }) => (moved ? { ...others, [next]: moved } : others));
-    if (variantKey === key) setVariantKey(next);
-  };
-
-  // A variant made its own Studio flow: a new board where its texts are the board's own (its recordings
-  // stay in its folder), flagged so the export asks for a template of its own; it leaves this board
-  const splitVariant = async (key: string) => {
-    const leaving = variants.find((candidate) => candidate.key === key);
-    if (!leaving || !boardFlow?.studio) return;
-    // eslint-disable-next-line no-alert
-    if (
-      !window.confirm(
-        `Make ${leaving.label} (${key}) its own Studio flow? It becomes a new board, with a template of its own, and leaves this one.`,
-      )
-    )
-      return;
-    const template = boardFlow.studio.template;
-    const objects = content.objects.map(({ variantMessages, ...object }) => {
-      const own = variantMessages?.[key];
-      return {
-        ...object,
-        message: messageFor({ ...object, variantMessages }, key, mainVariant),
-        ...(object.studio && own ? { studio: { ...object.studio, importedScript: own.importedScript } } : {}),
-      };
-    });
-    try {
-      const created = await client.create(board.code, `${title} (${leaving.label})`, undefined, {
-        ...content,
-        title: `${title} (${leaving.label})`,
-        objects,
-        flow: {
-          ...boardFlow,
-          variants: [leaving],
-          ownTemplate: { suggested: template.replace(/\.tftpl$/, `-${key.split('_').pop()}.tftpl`) },
-        },
-        status: STATUS_AFTER_CHANGE,
-      });
-      setBoardFlow({ ...boardFlow, variants: variants.filter((candidate) => candidate.key !== key) });
-      setVariantKey(mainVariant);
-      setNodes((current) =>
-        current.map((node) => {
-          if (node.type !== 'object' || !node.data.object.variantMessages?.[key]) return node;
-          const { [key]: removed, ...others } = node.data.object.variantMessages;
-          return {
-            ...node,
-            data: {
-              object: { ...node.data.object, variantMessages: Object.keys(others).length > 0 ? others : undefined },
-            },
-          };
-        }),
-      );
-      setNotice(`${leaving.label} is now its own board: “${created.content.title}”.`);
-    } catch (err) {
-      setNotice((err as Error).message);
-    }
-  };
-  const [connecting, setConnecting] = useState(false);
-
-  useEffect(() => {
-    if (!notice) return undefined;
-    const timer = setTimeout(() => setNotice(undefined), 5000);
-    return () => clearTimeout(timer);
-  }, [notice]);
-
-  const objectNode = (id: string) => nodes.find((node): node is ObjectNode => node.id === id && node.type === 'object');
-
-  const connect = (params: FlowConnection) => {
-    if (locked || params.source === params.target) return;
-    const source = objectNode(params.source);
-    if (!source || !objectNode(params.target)) return;
-    const next = nextExit(source, edges);
-    if (!next.ok) {
-      setNotice(next.reason);
-      return;
-    }
-    setNotice(undefined);
-    setEdges((current) => [
-      ...current,
-      {
-        id: newId('c'),
-        type: 'connection',
-        source: params.source,
-        target: params.target,
-        sourceHandle: params.sourceHandle,
-        targetHandle: params.targetHandle,
-        markerEnd: ARROW,
-        data: { exit: next.exit },
-      },
-    ]);
-  };
-
-  const isValidConnection = (params: FlowConnection | ConnectionEdge) =>
-    params.source !== params.target && Boolean(objectNode(params.source)) && Boolean(objectNode(params.target));
-
-  // Where an object is on the canvas, from React Flow's own measurements
-  const rectOf = (id: string) => {
-    const internal = flow.getInternalNode(id);
-    if (!internal) return undefined;
-    return {
-      ...internal.internals.positionAbsolute,
-      width: internal.measured.width ?? internal.width ?? 0,
-      height: internal.measured.height ?? internal.height ?? 0,
-    };
-  };
+  const connect = (params: FlowConnection) => dispatch(connectObjects(params));
 
   /**
    * A connection let go anywhere over an object (not only on one of its connection points)
@@ -616,112 +238,19 @@ const Editor = ({
     });
   };
 
-  const onReconnect = (oldEdge: ConnectionEdge, connection: FlowConnection) => {
-    if (locked || !isValidConnection(connection)) return;
-    let exit = oldEdge.data?.exit;
-    if (connection.source !== oldEdge.source) {
-      const next = nextExit(objectNode(connection.source), edges, oldEdge.id);
-      if (!next.ok) {
-        setNotice(next.reason);
-        return;
-      }
-      exit = next.exit;
-    }
-    setEdges((current) =>
-      reconnectEdge(oldEdge, connection, current, { shouldReplaceId: false }).map((edge) =>
-        edge.id === oldEdge.id ? { ...edge, data: { exit } } : edge,
-      ),
-    );
-  };
-
-  // ----- Changing
-  const onNodeData = (id: string, data: CanvasNode['data']) =>
-    setNodes((current) => current.map((node) => (node.id === id ? ({ ...node, data } as CanvasNode) : node)));
-
-  const onChangeType = (id: string, type: FlowObjectType) =>
-    setNodes((current) =>
-      current.map((node) => {
-        if (node.id !== id || node.type !== 'object') return node;
-        const info = OBJECT_TYPES[type];
-        // (A profile check starts with its own: its flags, not blocked and failed)
-        const exits = info.editableExits
-          ? type === 'checkClientProfile'
-            ? info.exits
-            : (node.data.object.exits ?? info.exits)
-          : undefined;
-        return { ...node, data: { object: { ...node.data.object, type, exits: exits ? [...exits] : undefined } } };
-      }),
-    );
-
-  const onRenameExit = (id: string, exits: string[], renamed?: { from: string; to: string }) => {
-    setNodes((current) =>
-      current.map((node) => {
-        if (node.id !== id || node.type !== 'object') return node;
-        // A split's operators follow their way out (and go with it)
-        const operators = Object.entries(node.data.object.exitOperators ?? {})
-          .map(([exit, type]) => [exit === renamed?.from ? renamed.to : exit, type])
-          .filter(([exit]) => exits.includes(exit));
-        const exitOperators = operators.length > 0 ? Object.fromEntries(operators) : undefined;
-        return { ...node, data: { object: { ...node.data.object, exits, exitOperators } } };
-      }),
-    );
-    if (renamed) {
-      setEdges((current) =>
-        current.map((edge) =>
-          edge.source === id && edge.data?.exit === renamed.from ? { ...edge, data: { exit: renamed.to } } : edge,
-        ),
-      );
-    }
-  };
-
-  const onEdgeExit = (id: string, exit: string | undefined) =>
-    setEdges((current) => current.map((edge) => (edge.id === id ? { ...edge, data: { exit } } : edge)));
-
-  const deleteSelected = () => {
-    if (locked) return;
-    flow.deleteElements({
-      nodes: nodes.filter((node) => node.selected),
-      edges: edges.filter((edge) => edge.selected),
-    });
-  };
-
-  // ----- Copying
-  const clipboard = useRef<{ nodes: CanvasNode[]; edges: ConnectionEdge[]; pastes: number }>();
-
-  const copy = () => {
-    const selected = withContents(
-      nodes,
-      nodes.filter((node) => node.selected),
-    );
-    if (selected.length === 0) return;
-    clipboard.current = { nodes: structuredClone(selected), edges: structuredClone(edges), pastes: 0 };
-  };
-
-  const paste = (source = clipboard.current) => {
-    if (!source || locked) return;
-    source.pastes += 1;
-    const step = 40 * source.pastes;
-    const copies = duplicate(source.nodes, source.edges, new Set(nodes.map((node) => node.id)), { x: step, y: step });
-    setNodes((current) => [...current.map((node) => ({ ...node, selected: false })), ...copies.nodes]);
-    setEdges((current) => [...current.map((edge) => ({ ...edge, selected: false })), ...copies.edges]);
-  };
-
-  const duplicateSelected = () => {
-    const selected = withContents(
-      nodes,
-      nodes.filter((node) => node.selected),
-    );
-    if (selected.length === 0) return;
-    paste({ nodes: selected, edges, pastes: 0 });
-  };
-
-  const focusFrame = (id: string) => {
-    const frame = nodes.find((node) => node.id === id);
-    if (!frame) return;
-    flow.fitBounds(
-      { ...frame.position, width: frame.width ?? 900, height: frame.height ?? 600 },
-      { padding: 0.08, duration: 400 },
-    );
+  // ----- Variants
+  // A variant made its own Studio flow: a new board, and it leaves this one
+  const split = (key: string) => {
+    const leaving = variants.find((candidate) => candidate.key === key);
+    if (!leaving || !boardFlow?.studio) return;
+    // eslint-disable-next-line no-alert
+    if (
+      !window.confirm(
+        `Make ${leaving.label} (${key}) its own Studio flow? It becomes a new board, with a template of its own, and leaves this one.`,
+      )
+    )
+      return;
+    void dispatch(splitVariant(key));
   };
 
   const onKeyDown = (event: React.KeyboardEvent) => {
@@ -729,272 +258,23 @@ const Editor = ({
     const mod = event.ctrlKey || event.metaKey;
     if (!mod) return;
     const key = event.key.toLowerCase();
-    if (key === 'z' && !event.shiftKey) undo();
-    else if (key === 'y' || (key === 'z' && event.shiftKey)) redo();
-    else if (key === 'c') copy();
-    else if (key === 'v') paste();
-    else if (key === 'd') duplicateSelected();
+    if (key === 'z' && !event.shiftKey) dispatch(undo());
+    else if (key === 'y' || (key === 'z' && event.shiftKey)) dispatch(redo());
+    else if (key === 'c') dispatch(copySelection());
+    else if (key === 'v') dispatch(pasteClipboard());
+    else if (key === 'd') dispatch(duplicateSelection());
     else return;
     event.preventDefault();
   };
 
-  // ----- Side panel, problems and tasks
-  const [sideTab, setSideTab] = useState<'test' | 'settings' | 'tasks' | 'check' | 'recordings'>('settings');
-
-  // ----- Recordings: loaded when the board opens, after every change, and with Refresh
-  const [recordingList, setRecordingList] = useState<RecordingsList>();
-  // The helpline's chatbots, queues, workflows and skills, offered in objects' settings (none for
-  // templates or without designs). Read again whenever the board is shown again (e.g. after adding a
-  // skill in Routing) and when one of those settings is picked
-  const [helplineChoices, setHelplineChoices] = useState<HelplineChoices>(NO_HELPLINE_CHOICES);
-  const [choicesCount, setChoicesCount] = useState(0);
-  const refreshChoices = useCallback(() => setChoicesCount((count) => count + 1), []);
-  useEffect(() => {
-    if (board.code === TEMPLATES_CODE || !active) return;
-    let current = true;
-    client
-      .helplineChoices(board.code)
-      .then((found) => current && setHelplineChoices(found))
-      .catch(() => {});
-    return () => {
-      current = false;
-    };
-  }, [client, board.code, active, choicesCount]);
-  const [recordingsUnavailable, setRecordingsUnavailable] = useState<string>();
-  const [busyFiles, setBusyFiles] = useState<Set<string>>(() => new Set());
-  const [refreshing, setRefreshing] = useState(false);
-
-  // The helpline's recordings, or the shown variant's own folder (flows sharing a template)
-  const recordingsLibrary = variant ? `${board.code}/f/${variant.recordingsFolder}` : board.code;
-  const loadRecordings = useCallback(async () => {
-    if (board.code === TEMPLATES_CODE) {
-      setRecordingsUnavailable('Templates have no recordings: each helpline records its own.');
-      return;
-    }
-    setRefreshing(true);
-    try {
-      setRecordingList(await client.recordings(recordingsLibrary));
-      setRecordingsUnavailable(undefined);
-    } catch (err) {
-      setRecordingsUnavailable((err as Error).message);
-    } finally {
-      setRefreshing(false);
-    }
-  }, [client, board.code, recordingsLibrary]);
-
-  useEffect(() => {
-    loadRecordings();
-  }, [loadRecordings]);
-
-  /**
-   * Recordings given their standard names (the widget's): each file is copied under the new name, in
-   * every folder the board's flows play from (each variant's), and the widgets stop pointing at the
-   * old name. A file not uploaded yet just takes the new name.
-   */
-  const renameRecordings = async (
-    objectIds: string[],
-    given: Pick<FlowObject, 'id' | 'studioName' | 'message'>[] = [],
-  ) => {
-    const libraries =
-      variants.length > 0 ? variants.map((candidate) => `${board.code}/f/${candidate.recordingsFolder}`) : [board.code];
-    const renamed = new Set<string>();
-    for (const id of objectIds) {
-      // As just changed (renamed in the settings), or as on the board
-      const object =
-        given.find((candidate) => candidate.id === id) ?? content.objects.find((candidate) => candidate.id === id);
-      const from = object?.message?.recordingFile;
-      if (!object?.studioName || !from) continue;
-      const to = standardRecordingName(object.studioName, from);
-      try {
-        for (const library of libraries) {
-          await client.copyRecording(library, from, to).catch((err: Error) => {
-            // Not uploaded in that folder: nothing to copy
-            if (!/no .* to copy/i.test(err.message)) throw err;
-          });
-        }
-        renamed.add(id);
-      } catch (err) {
-        setNotice(`${from}: ${(err as Error).message}`);
-      }
-    }
-    setNodes((current) =>
-      current.map((node) => {
-        if (node.type !== 'object' || !renamed.has(node.id)) return node;
-        const { recordingFile, ...message } = node.data.object.message ?? {};
-        return { ...node, data: { object: { ...node.data.object, message } } };
-      }),
-    );
-    await loadRecordings();
-    if (renamed.size > 0) {
-      setNotice(
-        `${renamed.size} recording${renamed.size === 1 ? '' : 's'} renamed to the standard (copied; the old files are kept).`,
-      );
-    }
-  };
-
-  const changeRecording = async (fileName: string, change: () => Promise<RecordingsList>) => {
-    setBusyFiles((current) => new Set(current).add(fileName));
-    try {
-      setRecordingList(await change());
-    } catch (err) {
-      setNotice((err as Error).message);
-    } finally {
-      setBusyFiles((current) => {
-        const next = new Set(current);
-        next.delete(fileName);
-        return next;
-      });
-    }
-  };
-
-  const recordingActions: RecordingActions = {
-    list: recordingList,
-    unavailable: recordingsUnavailable,
-    busy: busyFiles,
-    staff: staffMode,
-    readOnly,
-    upload: (fileName, file) =>
-      changeRecording(fileName, () => client.uploadRecording(recordingsLibrary, fileName, file)),
-    approve: (fileName, approved) =>
-      changeRecording(fileName, () => client.approveRecording(recordingsLibrary, fileName, approved)),
-    publish: (fileName) => changeRecording(fileName, () => client.publishRecording(recordingsLibrary, fileName)),
-    remove: (fileName) => changeRecording(fileName, () => client.removeRecording(recordingsLibrary, fileName)),
-    rename: (objectIds, objects) => renameRecordings(objectIds, objects),
-  };
-  // Who tasks can be assigned to: only the board's helpline's people (Aselo staff included, once
-  // added to it). Templates belong to no helpline, so theirs are the Aselo team's.
-  const [people, setPeople] = useState<Person[]>([]);
-
-  useEffect(() => {
-    const code = board.code === TEMPLATES_CODE ? ASELO_PEOPLE_CODE : board.code;
-    client
-      .people(code)
-      .catch((): Person[] => [])
-      .then(setPeople);
-  }, [client, board.code]);
-  const allIssues = useMemo(() => boardChecks(content, recordingList?.recordings), [content, recordingList]);
-  // In a sketch, only what's about the flow's shape (no scripts, recordings, settings...)
-  const { active: issues, ignored: ignoredIssues } = useMemo(() => {
-    const split = splitIgnored(allIssues, ignoredChecks);
-    return mode === 'sketch' ? { active: sketchIssues(split.active), ignored: sketchIssues(split.ignored) } : split;
-  }, [allIssues, ignoredChecks, mode]);
-  const ignoreCheck = (key: string, ignore: boolean) =>
-    setIgnoredChecks((current) =>
-      ignore ? [...new Set([...current, key])] : current.filter((other) => other !== key),
-    );
-  const problems = useMemo(() => issuesByObject(issues), [issues]);
-  // ----- Test mode: a run of the flow, and the tested paths (those nothing on has changed since)
-  const [run, setRun] = useState<SimRun>();
-  // The run as it was before each answer, for Back
-  const [runHistory, setRunHistory] = useState<SimRun[]>([]);
-  const changeRun = (next?: SimRun, how?: 'fresh' | 'replace') => {
-    if (how === 'fresh' || !next) setRunHistory([]);
-    else if (how !== 'replace' && run) setRunHistory((history) => [...history, run]);
-    setRun(next);
-  };
-  const backRun = () => {
-    const previous = runHistory[runHistory.length - 1];
-    if (!previous) return;
-    setRunHistory(runHistory.slice(0, -1));
-    setRun(previous);
-  };
-  const [showTested, setShowTested] = useState(true);
-  const validPaths = useMemo(() => validTestedPaths(canvasContent, testedPaths), [canvasContent, testedPaths]);
-  // A change on a tested path means it has to be tested again
-  useEffect(() => {
-    if (!readOnly && validPaths.length !== testedPaths.length) setTestedPaths(validPaths);
-  }, [validPaths, testedPaths, readOnly]);
-  const simulation = useMemo(() => {
-    if (mode !== 'test') return undefined;
-    const visited = run ? visitedBy(run) : undefined;
-    const coverage = showTested ? coverageOf(content, validPaths) : undefined;
-    return {
-      visited: visited?.objects ?? new Map<string, number[]>(),
-      connections: visited?.connections ?? new Set<string>(),
-      current: run?.current,
-      activeConnection: visited?.activeConnection,
-      deadEnd: run?.ended?.kind === 'deadEnd' ? run.ended.objectId : undefined,
-      tested: coverage && { objects: coverage.objects, connections: coverage.connections },
-    };
-  }, [mode, run, showTested, content, validPaths]);
-  const switchMode = (next: BoardMode) => {
-    setMode(next);
-    try {
-      window.localStorage.setItem(modeKey, next);
-    } catch {
-      // Not kept: fine
-    }
-    setRun(undefined);
-    setRunHistory([]);
-    setSideTab(
-      next === 'test'
-        ? 'test'
-        : (current) => (current === 'test' || (next === 'sketch' && current === 'recordings') ? 'settings' : current),
-    );
-    setNodes((current) => current.map((node) => (node.selected ? { ...node, selected: false } : node)));
-  };
-  const markTested = () => {
-    if (!run) return;
-    setTestedPaths((current) => [...current, testedPathOf(canvasContent, run, userName, newId('t'))]);
-    setNotice('Path marked as tested: it shows green while nothing on it changes.');
-  };
-  // The run's current widget kept in view
-  const follow = run?.current;
-  useEffect(() => {
-    if (!follow) return;
-    const rect = rectOf(follow);
-    if (rect)
-      flow.setCenter(rect.x + rect.width / 2, rect.y + rect.height / 2, { zoom: flow.getZoom(), duration: 300 });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [follow]);
-
-  // Approved scripts and recordings, in the flow shown: a check on the object
-  const approvals = useMemo(() => {
-    const found = new Map<string, 'Approved' | 'Published'>();
-    content.objects.forEach((object) => {
-      const approval = approvalOf(
-        { ...object, message: messageFor(object, variant?.key, mainVariant) },
-        flowDetailsOf(content, object.frameId),
-        recordingList?.recordings,
-      );
-      if (approval) found.set(object.id, approval);
-    });
-    return found;
-  }, [content, variant?.key, mainVariant, recordingList]);
-  const editingContext = useMemo(
-    () => ({ readOnly: locked, problems, simulation, sketch: mode === 'sketch', approvals }),
-    [locked, problems, simulation, mode, approvals],
-  );
   const errorCount = issues.filter((issue) => issue.severity === 'error').length;
-
-  // A way out left unconnected on purpose: the flow ends there
-  const endHere = (objectId: string, exit: string, ends = true) =>
-    setNodes((current) =>
-      current.map((node) => {
-        if (node.id !== objectId || node.type !== 'object') return node;
-        const others = (node.data.object.endedExits ?? []).filter((candidate) => candidate !== exit);
-        const endedExits = ends ? [...others, exit] : others;
-        return {
-          ...node,
-          data: { object: { ...node.data.object, endedExits: endedExits.length > 0 ? endedExits : undefined } },
-        };
-      }),
-    );
+  const endHere = (objectId: string, exit: string, ends?: boolean) => dispatch(exitEnded({ objectId, exit, ends }));
 
   // The board as it is now, for the exports
   const currentBoard = () => ({ ...board, content });
-  const [exporting, setExporting] = useState(false);
   const openTasks = openTaskCount(nodes);
 
-  // Selects a node and brings it into view
-  const showNode = (id: string) => {
-    const rect = rectOf(id);
-    setNodes((current) => current.map((node) => ({ ...node, selected: node.id === id })));
-    setEdges((current) => current.map((edge) => ({ ...edge, selected: false })));
-    if (rect) flow.setCenter(rect.x + rect.width / 2, rect.y + rect.height / 2, { zoom: 1, duration: 400 });
-  };
-
-  const statusText: Record<SaveState, string> = {
+  const statusText: Record<BoardSaveState, string> = {
     saved: 'All changes saved',
     unsaved: 'Unsaved changes…',
     saving: 'Saving…',
@@ -1003,494 +283,406 @@ const Editor = ({
   };
 
   return (
-    <BoardEditingContext.Provider value={editingContext}>
-      <div className={`flow-editor ${mode}`} onKeyDown={onKeyDown}>
-        <div className="flow-toolbar">
-          <button type="button" className="link-button" onClick={close}>
-            ← Boards
+    <div className={`flow-editor ${mode}`} onKeyDown={onKeyDown}>
+      <div className="flow-toolbar">
+        <button type="button" className="link-button" onClick={close}>
+          ← Boards
+        </button>
+        <h2>{title || 'Untitled board'}</h2>
+        <span className="flow-board-code">
+          {board.code === '_templates' ? 'Aselo template' : board.code.toUpperCase()}
+        </span>
+        {board.code !== TEMPLATES_CODE && (
+          <DesignStatusPicker
+            status={status}
+            isNew={!isImportedBoard(content)}
+            editable={!readOnly}
+            onChange={(next) => dispatch(statusChanged(next))}
+            label="Board status"
+          />
+        )}
+        <span className="flow-variants flow-mode" role="tablist" aria-label="Mode">
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === 'sketch'}
+            title="The flow's shape: kinds, names and ways out (no scripts, recordings or settings)"
+            onClick={() => dispatch(switchMode('sketch'))}
+          >
+            <PenLine size={14} aria-hidden /> Sketch
           </button>
-          <h2>{title || 'Untitled board'}</h2>
-          <span className="flow-board-code">
-            {board.code === '_templates' ? 'Aselo template' : board.code.toUpperCase()}
+          <button
+            type="button"
+            role="tab"
+            aria-selected={mode === 'design'}
+            title="Every detail: scripts, recordings, settings, task attributes"
+            onClick={() => dispatch(switchMode('design'))}
+          >
+            <PencilRuler size={14} aria-hidden /> Build
+          </button>
+          <button type="button" role="tab" aria-selected={mode === 'test'} onClick={() => dispatch(switchMode('test'))}>
+            <FlaskConical size={14} aria-hidden /> Test
+          </button>
+        </span>
+        {/* The Studio flow the board is (an imported board's), as its frame used to say */}
+        {boardFlow?.studio && (
+          <span
+            className="flow-board-source"
+            title={`Studio flow template${boardFlow.studio.channels.length > 0 ? `, used by ${boardFlow.studio.channels.join(', ')}` : ''}`}
+          >
+            {boardFlow.channel && <span className="flow-board-channel">{boardFlow.channel}</span>}
+            <code>{boardFlow.studio.template}</code>
           </span>
-          {board.code !== TEMPLATES_CODE && (
-            <DesignStatusPicker
-              status={status}
-              isNew={!isImportedBoard(content)}
-              editable={!readOnly}
-              onChange={setStatus}
-              label="Board status"
-            />
-          )}
-          <span className="flow-variants flow-mode" role="tablist" aria-label="Mode">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'sketch'}
-              title="The flow's shape: kinds, names and ways out (no scripts, recordings or settings)"
-              onClick={() => switchMode('sketch')}
-            >
-              <PenLine size={14} aria-hidden /> Sketch
-            </button>
-            <button
-              type="button"
-              role="tab"
-              aria-selected={mode === 'design'}
-              title="Every detail: scripts, recordings, settings, task attributes"
-              onClick={() => switchMode('design')}
-            >
-              <PencilRuler size={14} aria-hidden /> Build
-            </button>
-            <button type="button" role="tab" aria-selected={mode === 'test'} onClick={() => switchMode('test')}>
-              <FlaskConical size={14} aria-hidden /> Test
-            </button>
+        )}
+        {readOnly ? (
+          <span className="flow-save-state">View only</span>
+        ) : (
+          <span className={`flow-save-state ${saveState}`} role="status">
+            {statusText[saveState]}
+            {saveState === 'error' && (
+              <>
+                {' '}
+                <button type="button" className="link-button" onClick={() => dispatch(saveBoard())}>
+                  Try again
+                </button>
+              </>
+            )}
           </span>
-          {/* The Studio flow the board is (an imported board's), as its frame used to say */}
-          {boardFlow?.studio && (
-            <span
-              className="flow-board-source"
-              title={`Studio flow template${boardFlow.studio.channels.length > 0 ? `, used by ${boardFlow.studio.channels.join(', ')}` : ''}`}
-            >
-              {boardFlow.channel && <span className="flow-board-channel">{boardFlow.channel}</span>}
-              <code>{boardFlow.studio.template}</code>
-            </span>
-          )}
-          {readOnly ? (
-            <span className="flow-save-state">View only</span>
-          ) : (
-            <span className={`flow-save-state ${saveState}`} role="status">
-              {statusText[saveState]}
-              {saveState === 'error' && (
-                <>
-                  {' '}
-                  <button type="button" className="link-button" onClick={() => saveNow()}>
-                    Try again
-                  </button>
-                </>
-              )}
-            </span>
-          )}
-          {mode !== 'sketch' && (
-            <button
-              type="button"
-              className="secondary-button flow-refresh"
-              title="Check for recordings uploaded or published since the board opened"
-              disabled={refreshing || board.code === TEMPLATES_CODE}
-              onClick={loadRecordings}
-            >
-              <RefreshCw size={15} aria-hidden /> {refreshing ? 'Refreshing…' : 'Recordings'}
-            </button>
-          )}
-          <span className="flow-export">
-            <button
-              type="button"
-              className="secondary-button"
-              aria-expanded={exporting}
-              onClick={() => setExporting(!exporting)}
-            >
-              <Download size={15} aria-hidden /> Export
-            </button>
-            {exporting && (
-              <span className="flow-export-menu" role="menu">
+        )}
+        {mode !== 'sketch' && (
+          <button
+            type="button"
+            className="secondary-button flow-refresh"
+            title="Check for recordings uploaded or published since the board opened"
+            disabled={refreshing || board.code === TEMPLATES_CODE}
+            onClick={() => dispatch(loadRecordings())}
+          >
+            <RefreshCw size={15} aria-hidden /> {refreshing ? 'Refreshing…' : 'Recordings'}
+          </button>
+        )}
+        <span className="flow-export">
+          <button
+            type="button"
+            className="secondary-button"
+            aria-expanded={exporting}
+            onClick={() => setExporting(!exporting)}
+          >
+            <Download size={15} aria-hidden /> Export
+          </button>
+          {exporting && (
+            <span className="flow-export-menu" role="menu">
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setExporting(false);
+                  downloadScripts(currentBoard(), recordingList);
+                }}
+              >
+                Recordings and scripts (spreadsheet)
+              </button>
+              {staffMode && (
                 <button
                   type="button"
                   role="menuitem"
                   onClick={() => {
                     setExporting(false);
-                    downloadScripts(currentBoard(), recordingList);
+                    downloadFlowExport(currentBoard(), recordingList);
                   }}
                 >
-                  Recordings and scripts (spreadsheet)
+                  Flows for Claude (JSON)
                 </button>
-                {staffMode && (
-                  <button
-                    type="button"
-                    role="menuitem"
-                    onClick={() => {
-                      setExporting(false);
-                      downloadFlowExport(currentBoard(), recordingList);
-                    }}
-                  >
-                    Flows for Claude (JSON)
-                  </button>
-                )}
-              </span>
-            )}
-          </span>
-          {!locked && (
-            <span className="flow-toolbar-buttons">
-              <button
-                type="button"
-                className="icon-button"
-                aria-label="Undo"
-                title="Undo (Ctrl+Z)"
-                disabled={!canUndo}
-                onClick={undo}
-              >
-                <Undo2 size={16} />
-              </button>
-              <button
-                type="button"
-                className="icon-button"
-                aria-label="Redo"
-                title="Redo (Ctrl+Y)"
-                disabled={!canRedo}
-                onClick={redo}
-              >
-                <Redo2 size={16} />
-              </button>
-              <button
-                type="button"
-                className="icon-button"
-                aria-label="Duplicate"
-                title="Duplicate (Ctrl+D)"
-                disabled={!nodes.some((node) => node.selected)}
-                onClick={duplicateSelected}
-              >
-                <Copy size={16} />
-              </button>
-              <button
-                type="button"
-                className="icon-button"
-                aria-label="Delete"
-                title="Delete (Delete)"
-                disabled={!nodes.some((node) => node.selected) && !edges.some((edge) => edge.selected)}
-                onClick={deleteSelected}
-              >
-                <Trash2 size={16} />
-              </button>
+              )}
             </span>
           )}
-        </div>
-
-        {/* A template other helplines use too: where a change to its widgets goes */}
-        {(boardFlow?.studio?.sharedWith?.length ?? 0) > 0 && boardFlow?.studio && (
-          <div className={`flow-shared-bar ${boardFlow.studio.changeShared ? 'everyone' : ''}`}>
-            <span
-              className="flow-shared-label"
-              title={boardFlow.studio.sharedWith!.map((code) => code.toUpperCase()).join(', ')}
+        </span>
+        {!locked && (
+          <span className="flow-toolbar-buttons">
+            <button
+              type="button"
+              className="icon-button"
+              aria-label="Undo"
+              title="Undo (Ctrl+Z)"
+              disabled={!canUndo}
+              onClick={() => dispatch(undo())}
             >
-              <Users size={15} aria-hidden /> Shared template, also used by{' '}
-              {boardFlow.studio.sharedWith!.length <= 5
-                ? boardFlow.studio.sharedWith!.map((code) => code.toUpperCase()).join(', ')
-                : `${boardFlow.studio
-                    .sharedWith!.slice(0, 4)
-                    .map((code) => code.toUpperCase())
-                    .join(', ')} and ${boardFlow.studio.sharedWith!.length - 4} more`}
-            </span>
-            <span className="field-hint">
-              {boardFlow.studio.changeShared
-                ? 'Changes to widgets and connections go to the shared template: every one of these helplines changes too.'
-                : `Changes to widgets and connections give ${board.code.toUpperCase()} a copy of its own; texts are always its own.`}
-            </span>
-            {staffMode && !readOnly && (
-              <label className="field-checkbox flow-shared-switch">
-                <input
-                  type="checkbox"
-                  checked={Boolean(boardFlow.studio.changeShared)}
-                  onChange={(e) =>
-                    setBoardFlow({
+              <Undo2 size={16} />
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              aria-label="Redo"
+              title="Redo (Ctrl+Y)"
+              disabled={!canRedo}
+              onClick={() => dispatch(redo())}
+            >
+              <Redo2 size={16} />
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              aria-label="Duplicate"
+              title="Duplicate (Ctrl+D)"
+              disabled={!hasSelection}
+              onClick={() => dispatch(duplicateSelection())}
+            >
+              <Copy size={16} />
+            </button>
+            <button
+              type="button"
+              className="icon-button"
+              aria-label="Delete"
+              title="Delete (Delete)"
+              disabled={!hasSelection && !edges.some((edge) => edge.selected)}
+              onClick={deleteSelected}
+            >
+              <Trash2 size={16} />
+            </button>
+          </span>
+        )}
+      </div>
+
+      {/* A template other helplines use too: where a change to its widgets goes */}
+      {(boardFlow?.studio?.sharedWith?.length ?? 0) > 0 && boardFlow?.studio && (
+        <div className={`flow-shared-bar ${boardFlow.studio.changeShared ? 'everyone' : ''}`}>
+          <span
+            className="flow-shared-label"
+            title={boardFlow.studio.sharedWith!.map((code) => code.toUpperCase()).join(', ')}
+          >
+            <Users size={15} aria-hidden /> Shared template, also used by{' '}
+            {boardFlow.studio.sharedWith!.length <= 5
+              ? boardFlow.studio.sharedWith!.map((code) => code.toUpperCase()).join(', ')
+              : `${boardFlow.studio
+                  .sharedWith!.slice(0, 4)
+                  .map((code) => code.toUpperCase())
+                  .join(', ')} and ${boardFlow.studio.sharedWith!.length - 4} more`}
+          </span>
+          <span className="field-hint">
+            {boardFlow.studio.changeShared
+              ? 'Changes to widgets and connections go to the shared template: every one of these helplines changes too.'
+              : `Changes to widgets and connections give ${board.code.toUpperCase()} a copy of its own; texts are always its own.`}
+          </span>
+          {staffMode && !readOnly && (
+            <label className="field-checkbox flow-shared-switch">
+              <input
+                type="checkbox"
+                checked={Boolean(boardFlow.studio.changeShared)}
+                onChange={(e) =>
+                  dispatch(
+                    flowChanged({
                       ...boardFlow,
                       studio: { ...boardFlow.studio!, changeShared: e.target.checked || undefined },
-                    })
-                  }
-                />
-                <span>Change the shared template for every helpline</span>
-              </label>
-            )}
-          </div>
-        )}
-
-        {/* Studio flows sharing this template: whose texts and recordings are shown */}
-        {(variants.length > 1 || (variants.length === 1 && !readOnly)) && (
-          <div className="flow-variant-bar">
-            <span className="flow-variant-bar-label">
-              <Languages size={15} aria-hidden /> Flows sharing this template
-            </span>
-            <span className="flow-variants" role="tablist" aria-label="Flows sharing this template">
-              {variants.map((candidate) => (
-                <button
-                  key={candidate.key}
-                  type="button"
-                  role="tab"
-                  aria-selected={candidate.key === variant?.key}
-                  title={`${candidate.key}: its texts and recordings (folder ${candidate.recordingsFolder})`}
-                  onClick={() => setVariantKey(candidate.key)}
-                >
-                  {candidate.label}
-                </button>
-              ))}
-            </span>
-            {!readOnly && (
-              <select
-                className="flow-variant-add"
-                aria-label="Add a language"
-                value=""
-                onChange={(e) => addLanguage(e.target.value)}
-              >
-                <option value="">+ Add a language</option>
-                {VARIANT_LANGUAGES.filter(
-                  ({ locale }) =>
-                    !variants.some((candidate) => candidate.key === variantInLanguage(variants[0], locale, '').key),
-                ).map(({ locale, label }) => (
-                  <option key={locale} value={locale}>
-                    {label} ({locale})
-                  </option>
-                ))}
-              </select>
-            )}
-            {variant && (
-              <span className="field-hint flow-variant-bar-hint">
-                Scripts and recordings shown: <code>{variant.key}</code>. Widgets and connections are the same for all.
-              </span>
-            )}
-            {!readOnly && variant && variant.key !== mainVariant && (
-              <button
-                type="button"
-                className="link-button flow-variant-split"
-                onClick={() => splitVariant(variant.key)}
-              >
-                Make {variant.label} its own flow
-              </button>
-            )}
-          </div>
-        )}
-
-        {conflict && (
-          <div className="alert alert-error">
-            {conflict.updatedBy ?? 'Someone else'} changed this board
-            {conflict.updatedAt ? ` at ${new Date(conflict.updatedAt).toLocaleString()}` : ''}, so your latest changes
-            weren&apos;t saved. Reload to see theirs (your unsaved changes here will be lost).{' '}
-            <button type="button" className="secondary-button" onClick={onReload}>
-              Reload
-            </button>
-          </div>
-        )}
-        {saveState === 'error' && saveError && <div className="alert alert-error">{saveError}</div>}
-
-        <div className="flow-workspace">
-          {!locked && <Palette onAdd={(item) => add(item)} />}
-          <div
-            className={connecting ? 'flow-canvas connecting' : 'flow-canvas'}
-            ref={wrapper}
-            onDragOver={(event) => {
-              if (event.dataTransfer.types.includes(PALETTE_MIME)) {
-                event.preventDefault();
-                event.dataTransfer.dropEffect = 'copy';
-              }
-            }}
-            onDrop={onDrop}
-          >
-            <ReactFlow<CanvasNode, ConnectionEdge>
-              nodes={nodes}
-              edges={edges}
-              nodeTypes={NODE_TYPES}
-              edgeTypes={EDGE_TYPES}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={connect}
-              onConnectStart={() => setConnecting(true)}
-              onConnectEnd={onConnectEnd}
-              connectionRadius={36}
-              isValidConnection={isValidConnection}
-              onNodeClick={() => mode === 'design' && setSideTab('settings')}
-              onEdgeClick={() => mode === 'design' && setSideTab('settings')}
-              onNodeDragStop={(_, __, dragged) => {
-                if (locked) return;
-                setNodes((current) =>
-                  dragged.reduce(
-                    (result, node) => (node.type === 'frame' ? result : reparent(result, node.id)),
-                    current,
-                  ),
-                );
-              }}
-              connectionMode={ConnectionMode.Loose}
-              connectionLineType={ConnectionLineType.SmoothStep}
-              defaultEdgeOptions={{ type: 'connection', markerEnd: ARROW }}
-              nodesDraggable={!locked}
-              nodesConnectable={!locked}
-              edgesReconnectable={!locked}
-              onReconnect={onReconnect}
-              deleteKeyCode={locked ? null : ['Backspace', 'Delete']}
-              selectionKeyCode="Shift"
-              multiSelectionKeyCode={['Meta', 'Control']}
-              snapToGrid
-              snapGrid={[10, 10]}
-              minZoom={0.1}
-              maxZoom={2.5}
-              fitView={fitOnOpen}
-              fitViewOptions={{ padding: 0.15, maxZoom: 1 }}
-            >
-              <Background variant={BackgroundVariant.Dots} gap={20} size={1.2} />
-              <Controls showInteractive={false} />
-              <MiniMap
-                pannable
-                zoomable
-                nodeColor={(node) => {
-                  const canvasNode = node as CanvasNode;
-                  if (canvasNode.type === 'object') return objectColor(canvasNode.data.object);
-                  if (canvasNode.type === 'sticky') return STICKY_COLORS[canvasNode.data.sticky.color];
-                  return 'rgba(96, 125, 139, 0.15)';
-                }}
-              />
-            </ReactFlow>
-            {notice && (
-              <div className="flow-notice" role="alert">
-                {notice}
-              </div>
-            )}
-          </div>
-          <aside className="flow-sidebar" aria-label="Side panel" style={{ width: sidebar.width }}>
-            <SidebarResizer width={sidebar.width} onResize={sidebar.setWidth} onDone={sidebar.keep} />
-            <div className="flow-sidebar-tabs" role="tablist">
-              {mode === 'test' && (
-                <button type="button" role="tab" aria-selected={sideTab === 'test'} onClick={() => setSideTab('test')}>
-                  Test
-                </button>
-              )}
-              <button
-                type="button"
-                role="tab"
-                aria-selected={sideTab === 'settings'}
-                onClick={() => setSideTab('settings')}
-              >
-                Settings
-              </button>
-              <button type="button" role="tab" aria-selected={sideTab === 'tasks'} onClick={() => setSideTab('tasks')}>
-                Tasks{openTasks > 0 ? ` (${openTasks})` : ''}
-              </button>
-              <button
-                type="button"
-                role="tab"
-                aria-selected={sideTab === 'check'}
-                className={errorCount > 0 ? 'has-errors' : ''}
-                onClick={() => setSideTab('check')}
-              >
-                Check{issues.length > 0 ? ` (${issues.length})` : ''}
-              </button>
-              {mode !== 'sketch' && (
-                <button
-                  type="button"
-                  role="tab"
-                  aria-selected={sideTab === 'recordings'}
-                  onClick={() => setSideTab('recordings')}
-                >
-                  Recordings
-                </button>
-              )}
-            </div>
-            {sideTab === 'test' && mode === 'test' && (
-              <SimulatorPanel
-                content={content}
-                run={run}
-                onRun={changeRun}
-                onBack={runHistory.length > 0 ? backRun : undefined}
-                variant={variant?.key}
-                mainVariant={mainVariant}
-                recordings={recordingList?.recordings}
-                testedPaths={validPaths}
-                showTested={showTested}
-                onShowTested={setShowTested}
-                onMarkTested={readOnly ? undefined : markTested}
-                onForget={
-                  readOnly
-                    ? undefined
-                    : (pathId) =>
-                        setTestedPaths((current) => (pathId ? current.filter((path) => path.id !== pathId) : []))
+                    }),
+                  )
                 }
-                onEndHere={
-                  readOnly
-                    ? undefined
-                    : (objectId, exit) => {
-                        // A way out left unconnected on purpose (a design change): the run ended as it should
-                        endHere(objectId, exit);
-                        setRun(
-                          (current) =>
-                            current && {
-                              ...current,
-                              ended: { kind: 'end', message: 'Ends here on purpose.', objectId, exit },
-                            },
-                        );
-                      }
-                }
-                onShow={showNode}
               />
-            )}
-            {sideTab === 'recordings' && (
-              <RecordingsPanel
-                messages={content.objects.map((object) => ({
-                  object: { ...object, message: messageFor(object, variant?.key, mainVariant) },
-                  frame: flowDetailsOf(content, object.frameId),
-                }))}
-                actions={recordingActions}
-                onShow={showNode}
-                onRefresh={loadRecordings}
-              />
-            )}
-            {sideTab === 'check' && (
-              <CheckPanel
-                issues={issues}
-                ignored={ignoredIssues}
-                readOnly={locked}
-                onShow={showNode}
-                onEndHere={endHere}
-                onIgnore={ignoreCheck}
-              />
-            )}
-            {sideTab === 'settings' && (
-              <Inspector
-                title={title}
-                content={content}
-                problems={problems}
-                people={people}
-                peopleList={board.code === TEMPLATES_CODE ? 'the Aselo team' : board.code.toUpperCase()}
-                nodes={nodes}
-                edges={edges}
-                readOnly={locked}
-                userName={userName}
-                onTitleChange={setTitle}
-                onNodeData={onNodeData}
-                onChangeType={onChangeType}
-                onRenameExit={onRenameExit}
-                onEdgeExit={onEdgeExit}
-                onDelete={deleteSelected}
-                onDuplicate={duplicateSelected}
-                onFocusFrame={focusFrame}
-                onEndHere={endHere}
-                recordings={recordingActions}
-                variant={variant?.key}
-                helplineChoices={helplineChoices}
-                onRefreshChoices={refreshChoices}
-                onBoardFlow={setBoardFlow}
-                languages={{
-                  onShare: shareLanguages,
-                  onUnshare: unshareLanguages,
-                  onAdd: addLanguage,
-                  onRemove: removeLanguage,
-                  onRename: renameVariant,
-                }}
-                sketch={mode === 'sketch'}
-              />
-            )}
-            {sideTab === 'tasks' && (
-              <TasksPanel
-                nodes={nodes}
-                readOnly={readOnly}
-                userName={userName}
-                userEmail={userEmail}
-                onNodeData={onNodeData}
-                onShow={showNode}
-              />
-            )}
-          </aside>
+              <span>Change the shared template for every helpline</span>
+            </label>
+          )}
         </div>
+      )}
+
+      {/* Studio flows sharing this template: whose texts and recordings are shown */}
+      {(variants.length > 1 || (variants.length === 1 && !readOnly)) && (
+        <div className="flow-variant-bar">
+          <span className="flow-variant-bar-label">
+            <Languages size={15} aria-hidden /> Flows sharing this template
+          </span>
+          <span className="flow-variants" role="tablist" aria-label="Flows sharing this template">
+            {variants.map((candidate) => (
+              <button
+                key={candidate.key}
+                type="button"
+                role="tab"
+                aria-selected={candidate.key === variant?.key}
+                title={`${candidate.key}: its texts and recordings (folder ${candidate.recordingsFolder})`}
+                onClick={() => dispatch(variantShown(candidate.key))}
+              >
+                {candidate.label}
+              </button>
+            ))}
+          </span>
+          {!readOnly && (
+            <select
+              className="flow-variant-add"
+              aria-label="Add a language"
+              value=""
+              onChange={(e) => dispatch(languageAdded({ locale: e.target.value }))}
+            >
+              <option value="">+ Add a language</option>
+              {VARIANT_LANGUAGES.filter(
+                ({ locale }) =>
+                  !variants.some((candidate) => candidate.key === variantInLanguage(variants[0], locale, '').key),
+              ).map(({ locale, label }) => (
+                <option key={locale} value={locale}>
+                  {label} ({locale})
+                </option>
+              ))}
+            </select>
+          )}
+          {variant && (
+            <span className="field-hint flow-variant-bar-hint">
+              Scripts and recordings shown: <code>{variant.key}</code>. Widgets and connections are the same for all.
+            </span>
+          )}
+          {!readOnly && variant && variant.key !== mainVariant && (
+            <button type="button" className="link-button flow-variant-split" onClick={() => split(variant.key)}>
+              Make {variant.label} its own flow
+            </button>
+          )}
+        </div>
+      )}
+
+      {conflict && (
+        <div className="alert alert-error">
+          {conflict.updatedBy ?? 'Someone else'} changed this board
+          {conflict.updatedAt ? ` at ${new Date(conflict.updatedAt).toLocaleString()}` : ''}, so your latest changes
+          weren&apos;t saved. Reload to see theirs (your unsaved changes here will be lost).{' '}
+          <button type="button" className="secondary-button" onClick={() => dispatch(loadOpenBoard())}>
+            Reload
+          </button>
+        </div>
+      )}
+      {saveState === 'error' && saveError && <div className="alert alert-error">{saveError}</div>}
+
+      <div className="flow-workspace">
+        {!locked && <Palette onAdd={(item) => add(item)} />}
+        <div
+          className={connecting ? 'flow-canvas connecting' : 'flow-canvas'}
+          ref={wrapper}
+          onDragOver={(event) => {
+            if (event.dataTransfer.types.includes(PALETTE_MIME)) {
+              event.preventDefault();
+              event.dataTransfer.dropEffect = 'copy';
+            }
+          }}
+          onDrop={onDrop}
+        >
+          <ReactFlow<CanvasNode, ConnectionEdge>
+            nodes={nodes}
+            edges={edges}
+            nodeTypes={NODE_TYPES}
+            edgeTypes={EDGE_TYPES}
+            onNodesChange={(changes) => dispatch(nodesChanged(changes))}
+            onEdgesChange={(changes) => dispatch(edgesChanged(changes))}
+            onConnect={connect}
+            onConnectStart={() => setConnecting(true)}
+            onConnectEnd={onConnectEnd}
+            connectionRadius={36}
+            isValidConnection={(params) => isValidConnection(nodes, params)}
+            onNodeClick={() => mode === 'design' && dispatch(sideTabShown('settings'))}
+            onEdgeClick={() => mode === 'design' && dispatch(sideTabShown('settings'))}
+            onNodeDragStop={(_, __, dragged) => {
+              if (locked) return;
+              dispatch(nodesReparented(dragged.filter((node) => node.type !== 'frame').map((node) => node.id)));
+            }}
+            connectionMode={ConnectionMode.Loose}
+            connectionLineType={ConnectionLineType.SmoothStep}
+            defaultEdgeOptions={{ type: 'connection', markerEnd: ARROW }}
+            nodesDraggable={!locked}
+            nodesConnectable={!locked}
+            edgesReconnectable={!locked}
+            onReconnect={(oldEdge, connection) => dispatch(reconnectConnection(oldEdge, connection))}
+            deleteKeyCode={locked ? null : ['Backspace', 'Delete']}
+            selectionKeyCode="Shift"
+            multiSelectionKeyCode={['Meta', 'Control']}
+            snapToGrid
+            snapGrid={[10, 10]}
+            minZoom={0.1}
+            maxZoom={2.5}
+            fitView={fitOnOpen}
+            fitViewOptions={{ padding: 0.15, maxZoom: 1 }}
+          >
+            <Background variant={BackgroundVariant.Dots} gap={20} size={1.2} />
+            <Controls showInteractive={false} />
+            <MiniMap
+              pannable
+              zoomable
+              nodeColor={(node) => {
+                const canvasNode = node as CanvasNode;
+                if (canvasNode.type === 'object') return objectColor(canvasNode.data.object);
+                if (canvasNode.type === 'sticky') return STICKY_COLORS[canvasNode.data.sticky.color];
+                return 'rgba(96, 125, 139, 0.15)';
+              }}
+            />
+          </ReactFlow>
+          {notice && (
+            <div className="flow-notice" role="alert">
+              {notice}
+            </div>
+          )}
+        </div>
+        <aside className="flow-sidebar" aria-label="Side panel" style={{ width: sidebar.width }}>
+          <SidebarResizer width={sidebar.width} onResize={sidebar.setWidth} onDone={sidebar.keep} />
+          <div className="flow-sidebar-tabs" role="tablist">
+            {mode === 'test' && (
+              <button
+                type="button"
+                role="tab"
+                aria-selected={sideTab === 'test'}
+                onClick={() => dispatch(sideTabShown('test'))}
+              >
+                Test
+              </button>
+            )}
+            <button
+              type="button"
+              role="tab"
+              aria-selected={sideTab === 'settings'}
+              onClick={() => dispatch(sideTabShown('settings'))}
+            >
+              Settings
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={sideTab === 'tasks'}
+              onClick={() => dispatch(sideTabShown('tasks'))}
+            >
+              Tasks{openTasks > 0 ? ` (${openTasks})` : ''}
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={sideTab === 'check'}
+              className={errorCount > 0 ? 'has-errors' : ''}
+              onClick={() => dispatch(sideTabShown('check'))}
+            >
+              Check{issues.length > 0 ? ` (${issues.length})` : ''}
+            </button>
+            {mode !== 'sketch' && (
+              <button
+                type="button"
+                role="tab"
+                aria-selected={sideTab === 'recordings'}
+                onClick={() => dispatch(sideTabShown('recordings'))}
+              >
+                Recordings
+              </button>
+            )}
+          </div>
+          {sideTab === 'test' && mode === 'test' && <SimulatorPanel />}
+          {sideTab === 'recordings' && <RecordingsPanel />}
+          {sideTab === 'check' && (
+            <CheckPanel
+              issues={issues}
+              ignored={ignoredIssues}
+              readOnly={locked}
+              onShow={showNode}
+              onEndHere={endHere}
+              onIgnore={(key, ignore) => dispatch(checkIgnored({ key, ignore }))}
+            />
+          )}
+          {sideTab === 'settings' && <Inspector />}
+          {sideTab === 'tasks' && <TasksPanel />}
+        </aside>
       </div>
-    </BoardEditingContext.Provider>
+    </div>
   );
 };
 
-export const BoardEditor = (props: Props) => (
+export const BoardEditor = () => (
   <ReactFlowProvider>
-    <Editor {...props} />
+    <Editor />
   </ReactFlowProvider>
 );

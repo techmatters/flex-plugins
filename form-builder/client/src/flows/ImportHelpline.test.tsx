@@ -27,6 +27,9 @@ import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { MemoryBoardStore } from '@tech-matters/form-builder-server/boards';
 import { boardClientFor } from './boardClient';
 import { ImportHelpline } from './ImportHelpline';
+import { Provider } from 'react-redux';
+import { createAppStore } from '../app/store';
+import { sessionLoaded } from '../app/sessionSlice';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 const staff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
@@ -64,7 +67,15 @@ describe('importing a helpline from a branch', () => {
     const client = boardClientFor((method, apiPath, body) =>
       handleApiRequest(context, { method, path: apiPath, body: structuredClone(body), user: staff }),
     );
-    render(<ImportHelpline client={client} helplineCodes={['usvc']} onOpen={() => {}} />);
+    const store = createAppStore({ boardClient: client });
+    store.dispatch(
+      sessionLoaded({ user: { ...staff, applyInBuilder: false }, helplines: [{ code: 'usvc', versions: [] }] }),
+    );
+    render(
+      <Provider store={store}>
+        <ImportHelpline />
+      </Provider>,
+    );
     fireEvent.change(screen.getByRole('combobox', { name: 'Helpline to import' }), { target: { value: 'usvc' } });
     // A first preview, of master
     fireEvent.click(screen.getByRole('button', { name: 'Preview' }));

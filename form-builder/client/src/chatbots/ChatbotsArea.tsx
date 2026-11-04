@@ -19,9 +19,10 @@
  * see, with its status; opening one shows the helpline's chatbots, each as a conversation to read
  * and change, with a phone preview that plays it. Aselo staff import them from the live config or
  * start from scratch, change them, comment and set each one's status; helpline staff see them.
- * Saved automatically, with the same "someone else changed it" check as boards.
+ * Saved automatically, with the same "someone else changed it" check as boards. What's open, edited
+ * and saved, and how, lives in chatbotsSlice.ts.
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ArrowLeft, Bot, CircleAlert, Download, Plus, TriangleAlert } from 'lucide-react';
 import type { ChatbotImport } from '@tech-matters/form-builder-shared';
 import type { FromBranch } from '@tech-matters/form-builder-shared';
@@ -32,58 +33,58 @@ import { DESIGN_STATUSES } from '@tech-matters/form-builder-shared/designStatus'
 import { DesignStatusBadge, DesignStatusPicker } from '../common/DesignStatusPicker';
 import { AutoTextarea } from '../common/AutoTextarea';
 import { HelplineFilter } from '../common/HelplineFilter';
-import type { Chatbot, ChatbotDesign, ChatbotsSummary, StoredChatbots } from '@tech-matters/form-builder-shared/chatbots/model';
-import { botLabel, emptyChatbots, languageLabel } from '@tech-matters/form-builder-shared/chatbots/model';
-import { ChatbotClient, httpChatbotClient } from './chatbotClient';
-import { chatbotChecks, ChatbotIssue } from './chatbotChecks';
-import { chatbotChanges } from './changes';
-import { addChatbot, openComments, updateBot } from './edit';
-import type { ContactForms } from '@tech-matters/form-builder-shared/chatbots/formMappings';
-import { botStatusOf, isNewBot, setBotStatus, withStatusUpdates } from '@tech-matters/form-builder-shared/chatbots/status';
+import type { Chatbot } from '@tech-matters/form-builder-shared/chatbots/model';
+import { botLabel, languageLabel } from '@tech-matters/form-builder-shared/chatbots/model';
+import type { ChatbotIssue } from './chatbotChecks';
+import { openComments } from './edit';
+import { botStatusOf, isNewBot } from '@tech-matters/form-builder-shared/chatbots/status';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import {
+  applyImport,
+  botSelected,
+  branchChanged,
+  changeBot,
+  closeChatbots,
+  createChatbot,
+  ChatbotsFilter,
+  exportForClaude,
+  homeCodeChanged,
+  homeFilterChanged,
+  homeHelplineChanged,
+  intentSelected,
+  isNewChatbotTaken,
+  loadChatbotsList,
+  loadImportBranches,
+  LOCALES,
+  newChatbotClosed,
+  newChatbotCopyFromChanged,
+  newChatbotLanguageChanged,
+  newChatbotLocaleChanged,
+  newChatbotNameChanged,
+  openChatbots,
+  openNewChatbot,
+  previewImport,
+  reloadChatbots,
+  selectChatbotChanges,
+  selectChatbotIssues,
+  selectChatbots,
+  selectChatbotsReadOnly,
+  selectCommentAuthor,
+  selectHelplineCodes,
+  selectSelectedBot,
+  selectSelectedIntent,
+  setChatbotStatus,
+  showIssue,
+  startChatbots,
+  startFromScratch,
+  tabChanged,
+} from './chatbotsSlice';
+import { selectActingAsStaff } from '../app/sessionSlice';
 import { Conversation } from './Conversation';
 import { ChatPreview } from './ChatPreview';
 import { AnswersPanel } from './AnswersPanel';
 import { CommentsToggle, CommentThread } from './Comments';
 import './chatbots.css';
-
-type Props = {
-  client?: ChatbotClient;
-  helplineCodes: string[];
-  staffMode: boolean;
-  // Who's writing comments
-  userName?: string;
-};
-
-type Tab = 'conversation' | 'answers' | 'check';
-
-const AUTOSAVE_DELAY_MS = 1200;
-
-// Lex V2 locales a chatbot can be in (the ones Aselo's languages need)
-const LOCALES = [
-  'en_US',
-  'en_GB',
-  'en_AU',
-  'en_IN',
-  'en_ZA',
-  'es_US',
-  'es_ES',
-  'es_419',
-  'pt_BR',
-  'pt_PT',
-  'fr_FR',
-  'fr_CA',
-];
-const localeFor = (language: string) =>
-  ({ en: 'en_US', es: 'es_US', pt: 'pt_BR', fr: 'fr_FR' })[language.slice(0, 2).toLowerCase()] ?? 'en_US';
-
-const download = (fileName: string, text: string) => {
-  const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = fileName;
-  link.click();
-  URL.revokeObjectURL(url);
-};
 
 // "When they answer Yes" for intents started by a reply; the bot's own name otherwise
 const intentLabel = (name: string, utterances: string[], botName: string) => {
@@ -92,38 +93,29 @@ const intentLabel = (name: string, utterances: string[], botName: string) => {
   return reply ? `When they answer “${reply}”` : botLabel(name);
 };
 
+// The flex-plugins branches an import can read
+const useLoadBranches = () => {
+  const dispatch = useAppDispatch();
+  return useCallback(() => dispatch(loadImportBranches()), [dispatch]);
+};
+
 /**
  * A new chatbot: its name, language and Lex locale, empty or as a copy of one of the helpline's
  */
-const NewChatbotForm = ({
-  design,
-  onCreate,
-  onCancel,
-}: {
-  design: ChatbotDesign;
-  onCreate: (design: ChatbotDesign, bot: Chatbot) => void;
-  onCancel: () => void;
-}) => {
+const NewChatbotForm = () => {
+  const dispatch = useAppDispatch();
+  const { design, newChatbot } = useAppSelector(selectChatbots);
+  if (!design || !newChatbot) return null;
+  const { name, language, locale, copyFrom } = newChatbot;
   const languages = [...new Set(design.bots.map((bot) => bot.language))];
-  const [name, setName] = useState('pre_survey');
-  const [language, setLanguage] = useState(languages[0] ?? `en_${design.helpline.toUpperCase()}`);
-  const [locale, setLocale] = useState(localeFor(language));
-  const [copyFrom, setCopyFrom] = useState('');
-  const taken = design.bots.some((bot) => bot.language === language && bot.name === name);
+  const taken = isNewChatbotTaken(design, newChatbot);
   return (
     <form
       className="chatbot-new"
       aria-label="New chatbot"
       onSubmit={(e) => {
         e.preventDefault();
-        if (!name || taken) return;
-        const added = addChatbot(design, {
-          name,
-          language,
-          locale,
-          copyFrom: design.bots.find((bot) => bot.id === copyFrom),
-        });
-        onCreate(added.design, added.bot);
+        dispatch(createChatbot());
       }}
     >
       <h3>New chatbot</h3>
@@ -133,7 +125,7 @@ const NewChatbotForm = ({
           type="text"
           value={name}
           aria-label="Chatbot name"
-          onChange={(e) => setName(e.target.value.replace(/[^0-9A-Za-z_-]/g, '_'))}
+          onChange={(e) => dispatch(newChatbotNameChanged(e.target.value))}
         />
         <span className="field-hint">As Lex calls it, e.g. pre_survey, post_survey, language_selector</span>
       </label>
@@ -144,10 +136,7 @@ const NewChatbotForm = ({
           value={language}
           list="chatbot-languages"
           aria-label="Chatbot language"
-          onChange={(e) => {
-            setLanguage(e.target.value.replace(/\s/g, ''));
-            setLocale(localeFor(e.target.value));
-          }}
+          onChange={(e) => dispatch(newChatbotLanguageChanged(e.target.value))}
         />
         <datalist id="chatbot-languages">
           {languages.map((candidate) => (
@@ -158,7 +147,11 @@ const NewChatbotForm = ({
       </label>
       <label className="field">
         <span className="field-label">Lex locale</span>
-        <select value={locale} aria-label="Lex locale" onChange={(e) => setLocale(e.target.value)}>
+        <select
+          value={locale}
+          aria-label="Lex locale"
+          onChange={(e) => dispatch(newChatbotLocaleChanged(e.target.value))}
+        >
           {[...new Set([locale, ...LOCALES])].map((candidate) => (
             <option key={candidate} value={candidate}>
               {candidate}
@@ -168,7 +161,11 @@ const NewChatbotForm = ({
       </label>
       <label className="field">
         <span className="field-label">Start from</span>
-        <select value={copyFrom} aria-label="Start from" onChange={(e) => setCopyFrom(e.target.value)}>
+        <select
+          value={copyFrom}
+          aria-label="Start from"
+          onChange={(e) => dispatch(newChatbotCopyFromChanged(e.target.value))}
+        >
           <option value="">An empty chatbot</option>
           {design.bots.map((bot) => (
             <option key={bot.id} value={bot.id}>
@@ -186,7 +183,7 @@ const NewChatbotForm = ({
         <button type="submit" className="primary-button" disabled={!name || !language || taken}>
           Create
         </button>
-        <button type="button" className="link-button" onClick={onCancel}>
+        <button type="button" className="link-button" onClick={() => dispatch(newChatbotClosed())}>
           Cancel
         </button>
       </div>
@@ -195,17 +192,11 @@ const NewChatbotForm = ({
 };
 
 // What the chatbot is for, and the conversation about it
-const BotNotes = ({
-  bot,
-  author,
-  readOnly,
-  onChange,
-}: {
-  bot: Chatbot;
-  author: string;
-  readOnly: boolean;
-  onChange: (bot: Chatbot) => void;
-}) => {
+const BotNotes = ({ bot }: { bot: Chatbot }) => {
+  const dispatch = useAppDispatch();
+  const author = useAppSelector(selectCommentAuthor);
+  const readOnly = useAppSelector(selectChatbotsReadOnly);
+  // Layout only: whether the comments are unfolded
   const [showComments, setShowComments] = useState(openComments(bot.comments).length > 0);
   return (
     <section className="chatbot-notes" aria-label="About this chatbot">
@@ -225,7 +216,7 @@ const BotNotes = ({
           value={bot.notes ?? ''}
           aria-label="Notes about this chatbot"
           placeholder="What it's for, who it talks to, where it starts (which flow and channel), anything Claude should know…"
-          onChange={(e) => onChange({ ...bot, notes: e.target.value || undefined })}
+          onChange={(e) => dispatch(changeBot(bot.id, { notes: e.target.value || undefined }))}
         />
       )}
       {showComments && (
@@ -233,161 +224,35 @@ const BotNotes = ({
           comments={bot.comments}
           author={author}
           canEdit={!readOnly}
-          onChange={(comments) => onChange({ ...bot, comments })}
+          onChange={(comments) => dispatch(changeBot(bot.id, { comments }))}
         />
       )}
     </section>
   );
 };
 
-const Editor = ({
-  stored,
-  client,
-  staffMode,
-  author,
-  initialBotId,
-  onReload,
-  onBack,
-}: {
-  stored: StoredChatbots;
-  client: ChatbotClient;
-  staffMode: boolean;
-  author: string;
-  initialBotId?: string;
-  onReload: () => void;
-  onBack: () => void;
-}) => {
-  const [design, setDesign] = useState(stored.design);
-  const [botId, setBotId] = useState(initialBotId ?? design.bots[0]?.id);
-  const [intentId, setIntentId] = useState<string>();
-  const [tab, setTab] = useState<Tab>('conversation');
-  const [creating, setCreating] = useState(false);
-  const [forms, setForms] = useState<ContactForms>();
-  const issues = useMemo(() => chatbotChecks(design, forms), [design, forms]);
-  // For now helpline staff see the chatbots without changing them
-  const readOnly = !staffMode;
+const Editor = () => {
+  const dispatch = useAppDispatch();
+  const { stored, design, saveStatus: status, conflict, tab, newChatbot } = useAppSelector(selectChatbots);
+  const staffMode = useAppSelector(selectActingAsStaff);
+  const readOnly = useAppSelector(selectChatbotsReadOnly);
+  const issues = useAppSelector(selectChatbotIssues);
+  const changes = useAppSelector(selectChatbotChanges);
+  const bot = useAppSelector(selectSelectedBot);
+  const intent = useAppSelector(selectSelectedIntent);
+  if (!stored || !design) return null;
 
-  // Every change goes through here: the chatbots it changed are In progress again
-  const change = useCallback((next: ChatbotDesign) => setDesign((previous) => withStatusUpdates(previous, next)), []);
-
-  // The contact form, for the fields answers fill in; designs saved before those were kept take them from it
-  useEffect(() => {
-    let cancelled = false;
-    client
-      .contactForms(stored.code, stored.design.formsVersion)
-      .then((found) => {
-        if (cancelled || !found) return;
-        setForms(found);
-        setDesign((current) =>
-          current.formMappings !== undefined || readOnly
-            ? current
-            : {
-                ...current,
-                formMappings: found.survey,
-                formsVersion: found.version,
-                imported: {
-                  ...(current.imported ?? { bots: [], answerTypes: {} }),
-                  formMappings: found.survey,
-                },
-              },
-        );
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, [client, stored.code, stored.design.formsVersion, readOnly]);
-
-  // ----- Saving
-  const json = useMemo(() => JSON.stringify(design), [design]);
-  const revision = useRef(stored.meta.revision);
-  const savedJson = useRef(JSON.stringify(stored.design));
-  const latest = useRef(json);
-  latest.current = json;
-  const [status, setStatus] = useState<'saved' | 'unsaved' | 'saving' | 'conflict' | 'error'>('saved');
-  const [conflict, setConflict] = useState<{ updatedBy?: string; updatedAt?: string }>();
-  const stopped = useRef(false);
-
-  const save = useCallback(async () => {
-    if (stopped.current || latest.current === savedJson.current) return;
-    const toSave = latest.current;
-    setStatus('saving');
-    try {
-      const outcome = await client.save(stored.code, revision.current, JSON.parse(toSave));
-      if (outcome.ok) {
-        revision.current = outcome.meta.revision;
-        savedJson.current = toSave;
-        setStatus(latest.current === toSave ? 'saved' : 'unsaved');
-      } else {
-        stopped.current = true;
-        setConflict(outcome.conflict);
-        setStatus('conflict');
-      }
-    } catch {
-      setStatus('error');
-    }
-  }, [client, stored.code]);
-
-  useEffect(() => {
-    if (readOnly || stopped.current || json === savedJson.current) return undefined;
-    setStatus('unsaved');
-    const timer = setTimeout(save, AUTOSAVE_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [json, save, readOnly]);
-
-  const bot = design.bots.find((candidate) => candidate.id === botId) ?? design.bots[0];
-  const intent = bot?.intents.find((candidate) => candidate.id === intentId) ?? bot?.intents[0];
-  const changes = useMemo(() => chatbotChanges(design), [design]);
-
+  // Shown where it is, then scrolled to once it's there
   const show = (issue: ChatbotIssue) => {
+    dispatch(showIssue(issue));
     if (issue.answerType) {
-      setTab('answers');
       setTimeout(() => document.getElementById(`answers-${issue.answerType!.name}`)?.scrollIntoView(), 50);
-      return;
-    }
-    if (issue.botId) {
-      setBotId(issue.botId);
-      const target = design.bots.find((candidate) => candidate.id === issue.botId);
-      const owner = target?.intents.find((candidate) =>
-        candidate.questions.some((question) => question.id === issue.questionId),
+    } else if (issue.botId && issue.questionId) {
+      setTimeout(
+        () => document.getElementById(`question-${issue.questionId}`)?.scrollIntoView({ block: 'center' }),
+        50,
       );
-      if (owner) setIntentId(owner.id);
-      setTab('conversation');
-      if (issue.questionId) {
-        setTimeout(
-          () => document.getElementById(`question-${issue.questionId}`)?.scrollIntoView({ block: 'center' }),
-          50,
-        );
-      }
     }
-  };
-
-  const exportForClaude = () => {
-    const { imported, ...current } = design;
-    const bots = design.bots.map((candidate) => ({
-      bot: `${candidate.language}/${candidate.name}`,
-      status: botStatusOf(design, candidate),
-      isNew: isNewBot(design, candidate),
-    }));
-    download(
-      `${stored.code}-chatbots.json`,
-      `${JSON.stringify(
-        {
-          schemaVersion: 1,
-          about:
-            "A helpline's chatbots (Amazon Lex V2), designed in the Aselo Builder (docs/chatbot-designer.md). Implement only the chatbots whose status is 'ready' (Ready for Claude), with the chatbot-from-design skill. 'changes' lists what changed since they were imported from twilio-iac, file by file (writeTo is where to write it: a shared configs/lex_v2 file's change, and every new answer list or pattern, go to the helpline's own folder); 'design' is every chatbot as it should be, with the team's notes and comments (context for the work: the design itself is what to build).",
-          helpline: stored.code,
-          updatedAt: stored.meta.updatedAt,
-          bots,
-          changes,
-          checks: issues.map(({ severity, message }) => ({ severity, message })),
-          design: current,
-          hasImport: Boolean(imported),
-        },
-        null,
-        2,
-      )}\n`,
-    );
   };
 
   const errors = issues.filter((issue) => issue.severity === 'error').length;
@@ -395,7 +260,7 @@ const Editor = ({
   return (
     <div className="chatbot-editor">
       <div className="flow-toolbar">
-        <button type="button" className="link-button area-back" onClick={onBack}>
+        <button type="button" className="link-button area-back" onClick={() => dispatch(closeChatbots())}>
           <ArrowLeft size={14} aria-hidden /> All chatbots
         </button>
         <h2>Chatbots · {stored.code.toUpperCase()}</h2>
@@ -416,7 +281,11 @@ const Editor = ({
           </span>
         )}
         {staffMode && (
-          <button type="button" className="secondary-button flow-refresh" onClick={exportForClaude}>
+          <button
+            type="button"
+            className="secondary-button flow-refresh"
+            onClick={() => dispatch(exportForClaude())}
+          >
             <Download size={15} aria-hidden /> Export for Claude
           </button>
         )}
@@ -426,7 +295,7 @@ const Editor = ({
           {conflict?.updatedBy ?? 'Someone else'} changed these chatbots
           {conflict?.updatedAt ? ` at ${new Date(conflict.updatedAt).toLocaleTimeString()}` : ''}. Your latest changes
           weren&apos;t saved.{' '}
-          <button type="button" className="secondary-button" onClick={onReload}>
+          <button type="button" className="secondary-button" onClick={() => dispatch(reloadChatbots())}>
             Reload
           </button>
         </div>
@@ -443,12 +312,7 @@ const Editor = ({
                 type="button"
                 className={`chatbot-list-item ${candidate.id === bot?.id ? 'active' : ''}`}
                 aria-pressed={candidate.id === bot?.id}
-                onClick={() => {
-                  setBotId(candidate.id);
-                  setIntentId(undefined);
-                  setTab('conversation');
-                  setCreating(false);
-                }}
+                onClick={() => dispatch(botSelected(candidate.id))}
               >
                 <span className="chatbot-list-icon" aria-hidden>
                   <Bot size={16} />
@@ -474,25 +338,19 @@ const Editor = ({
           })}
           {design.bots.length === 0 && <p className="field-hint">No chatbots yet.</p>}
           {!readOnly && (
-            <button type="button" className="secondary-button chatbot-list-add" onClick={() => setCreating(true)}>
+            <button
+              type="button"
+              className="secondary-button chatbot-list-add"
+              onClick={() => dispatch(openNewChatbot())}
+            >
               <Plus size={14} aria-hidden /> New chatbot
             </button>
           )}
         </nav>
 
         <div className="chatbot-main">
-          {creating ? (
-            <NewChatbotForm
-              design={design}
-              onCancel={() => setCreating(false)}
-              onCreate={(next, created) => {
-                setDesign(next);
-                setBotId(created.id);
-                setIntentId(undefined);
-                setTab('conversation');
-                setCreating(false);
-              }}
-            />
+          {newChatbot ? (
+            <NewChatbotForm />
           ) : (
             <>
               <div className="routing-tabs" role="tablist">
@@ -509,7 +367,7 @@ const Editor = ({
                     role="tab"
                     aria-selected={tab === value}
                     className={value === 'check' && errors > 0 ? 'has-errors' : ''}
-                    onClick={() => setTab(value)}
+                    onClick={() => dispatch(tabChanged(value))}
                   >
                     {label}
                   </button>
@@ -528,15 +386,10 @@ const Editor = ({
                         isNew={isNewBot(design, bot)}
                         editable={!readOnly}
                         label={`Status of ${botLabel(bot.name)}`}
-                        onChange={(next: DesignStatus) => setDesign(setBotStatus(design, bot.id, next))}
+                        onChange={(next: DesignStatus) => dispatch(setChatbotStatus(bot.id, next))}
                       />
                     </div>
-                    <BotNotes
-                      bot={bot}
-                      author={author}
-                      readOnly={readOnly}
-                      onChange={(changed) => change(updateBot(design, bot.id, () => changed))}
-                    />
+                    <BotNotes bot={bot} />
                     {bot.intents.length > 1 && (
                       <div className="chatbot-intents" role="tablist" aria-label="Paths">
                         {bot.intents.map((candidate) => (
@@ -545,7 +398,7 @@ const Editor = ({
                             type="button"
                             role="tab"
                             aria-selected={candidate.id === intent.id}
-                            onClick={() => setIntentId(candidate.id)}
+                            onClick={() => dispatch(intentSelected(candidate.id))}
                           >
                             {intentLabel(candidate.name, candidate.utterances, bot.name)}
                             <span className="chatbot-chip-count">{candidate.questions.length}</span>
@@ -559,19 +412,10 @@ const Editor = ({
                         of this helpline&apos;s own.
                       </p>
                     )}
-                    <Conversation
-                      design={design}
-                      bot={bot}
-                      intent={intent}
-                      issues={issues}
-                      forms={forms}
-                      author={author}
-                      readOnly={readOnly}
-                      onChange={change}
-                    />
+                    <Conversation />
                   </div>
                   <aside className="chatbot-preview">
-                    <ChatPreview design={design} bot={bot} intent={intent} />
+                    <ChatPreview />
                   </aside>
                 </div>
               )}
@@ -580,9 +424,7 @@ const Editor = ({
                   {readOnly ? 'No chatbots yet.' : 'No chatbots yet: start one with “New chatbot”.'}
                 </p>
               )}
-              {tab === 'answers' && (
-                <AnswersPanel design={design} issues={issues} author={author} readOnly={readOnly} onChange={change} />
-              )}
+              {tab === 'answers' && <AnswersPanel />}
               {tab === 'check' && (
                 <div className="chatbot-panel" role="region" aria-label="Check">
                   <p className="flow-check-summary">
@@ -635,35 +477,20 @@ const ImportPreview = ({ preview, onUse }: { preview: ChatbotImport & FromBranch
   </div>
 );
 
-type Filter = 'all' | DesignStatus;
-
 /**
  * The start page: every chatbot this person can see, with its status, and (Aselo staff) adding a
  * helpline's chatbots
  */
-const ChatbotsHome = ({
-  client,
-  helplineCodes,
-  staffMode,
-  onOpen,
-}: {
-  client: ChatbotClient;
-  helplineCodes: string[];
-  staffMode: boolean;
-  onOpen: (code: string, botId?: string) => void;
-}) => {
-  const [summaries, setSummaries] = useState<ChatbotsSummary[]>();
-  const [error, setError] = useState<string>();
-  const [filter, setFilter] = useState<Filter>('all');
-  const [helpline, setHelpline] = useState('');
-  const [code, setCode] = useState('');
+const ChatbotsHome = () => {
+  const dispatch = useAppDispatch();
+  const helplineCodes = useAppSelector(selectHelplineCodes);
+  const staffMode = useAppSelector(selectActingAsStaff);
+  const { summaries, error, filter, helpline, code } = useAppSelector(selectChatbots).home;
 
+  // Listed again each time the start page shows
   useEffect(() => {
-    client
-      .list()
-      .then(setSummaries)
-      .catch((err: Error) => setError(err.message));
-  }, [client]);
+    dispatch(loadChatbotsList());
+  }, [dispatch]);
 
   const allRows = (summaries ?? []).flatMap((summary) => summary.bots.map((bot) => ({ summary, bot })));
   const rows = allRows.filter((row) => !helpline || row.summary.code === helpline);
@@ -682,7 +509,7 @@ const ChatbotsHome = ({
       <div className="area-home-actions">
         <label className="field">
           <span className="field-label">Open a helpline&apos;s chatbots</span>
-          <select value={code} aria-label="Helpline" onChange={(e) => setCode(e.target.value)}>
+          <select value={code} aria-label="Helpline" onChange={(e) => dispatch(homeCodeChanged(e.target.value))}>
             <option value="">Choose…</option>
             {helplineCodes.map((candidate) => (
               <option key={candidate} value={candidate}>
@@ -692,7 +519,12 @@ const ChatbotsHome = ({
             ))}
           </select>
         </label>
-        <button type="button" className="primary-button" disabled={!code} onClick={() => onOpen(code)}>
+        <button
+          type="button"
+          className="primary-button"
+          disabled={!code}
+          onClick={() => dispatch(openChatbots(code))}
+        >
           {code && !withDesign.has(code) && staffMode ? 'Start' : 'Open'}
         </button>
       </div>
@@ -702,9 +534,13 @@ const ChatbotsHome = ({
       {allRows.length > 0 && (
         <>
           <div className="area-home-filters">
-            <HelplineFilter codes={allRows.map((row) => row.summary.code)} value={helpline} onChange={setHelpline} />
+            <HelplineFilter
+              codes={allRows.map((row) => row.summary.code)}
+              value={helpline}
+              onChange={(value) => dispatch(homeHelplineChanged(value))}
+            />
             <div className="area-home-filter" role="group" aria-label="Show">
-              {(['all', ...DESIGN_STATUSES.map((status) => status.value)] as Filter[]).map((candidate) => {
+              {(['all', ...DESIGN_STATUSES.map((status) => status.value)] as ChatbotsFilter[]).map((candidate) => {
                 const count =
                   candidate === 'all' ? rows.length : rows.filter((row) => row.bot.status === candidate).length;
                 return (
@@ -713,7 +549,7 @@ const ChatbotsHome = ({
                     type="button"
                     className={filter === candidate ? 'active' : ''}
                     aria-pressed={filter === candidate}
-                    onClick={() => setFilter(candidate)}
+                    onClick={() => dispatch(homeFilterChanged(candidate))}
                   >
                     {candidate === 'all' ? 'All' : DESIGN_STATUSES.find((status) => status.value === candidate)?.label}{' '}
                     ({count})
@@ -762,7 +598,7 @@ const ChatbotsHome = ({
                       type="button"
                       className="secondary-button"
                       aria-label={`Open ${summary.code.toUpperCase()} ${botLabel(bot.name)} (${bot.language})`}
-                      onClick={() => onOpen(summary.code, bot.id)}
+                      onClick={() => dispatch(openChatbots(summary.code, bot.id))}
                     >
                       Open
                     </button>
@@ -777,75 +613,21 @@ const ChatbotsHome = ({
   );
 };
 
-export const ChatbotsArea = ({ client = httpChatbotClient, helplineCodes, staffMode, userName = 'Someone' }: Props) => {
-  const [code, setCode] = useState(helplineCodes.length === 1 ? helplineCodes[0] : '');
-  const [botId, setBotId] = useState<string>();
-  const [stored, setStored] = useState<StoredChatbots | null>();
-  const [error, setError] = useState<string>();
-  const [preview, setPreview] = useState<ChatbotImport & FromBranch>();
-  const [branch, setBranch] = useState('');
-  const [loadCount, setLoadCount] = useState(0);
-  const [working, setWorking] = useState(false);
+export const ChatbotsArea = () => {
+  const dispatch = useAppDispatch();
+  const staffMode = useAppSelector(selectActingAsStaff);
+  const { started, code, stored, error, preview, branch, importing, working } = useAppSelector(selectChatbots);
+  const loadBranches = useLoadBranches();
 
+  // The first time it shows (a person with one helpline goes straight to its chatbots)
   useEffect(() => {
-    setStored(undefined);
-    setPreview(undefined);
-    setError(undefined);
-    if (!code) return;
-    client
-      .load(code)
-      .then((found) => setStored(found ?? null))
-      .catch((err: Error) => setError(err.message));
-  }, [client, code, loadCount]);
+    dispatch(startChatbots());
+  }, [dispatch]);
 
-  // Reading the live config takes a while: said while it does
-  const [importing, setImporting] = useState(false);
-  const previewImport = async () => {
-    setError(undefined);
-    setImporting(true);
-    try {
-      setPreview(await client.previewImport(code, branch));
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setImporting(false);
-    }
-  };
+  if (!started) return null;
+  if (!code) return <ChatbotsHome />;
 
-  // Saves a design (imported, or empty to start from scratch) over the one there is now, if any
-  const create = async (design: ChatbotDesign) => {
-    setWorking(true);
-    try {
-      const current = await client.load(code);
-      const outcome = await client.save(code, current?.meta.revision ?? 0, design);
-      if (!outcome.ok)
-        throw new Error(`${outcome.conflict.updatedBy ?? 'Someone else'} just saved chatbots for ${code}: reload.`);
-      setLoadCount((count) => count + 1);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setWorking(false);
-    }
-  };
-
-  const back = () => {
-    setCode('');
-    setBotId(undefined);
-  };
-
-  if (!code) {
-    return (
-      <ChatbotsHome
-        client={client}
-        helplineCodes={helplineCodes}
-        staffMode={staffMode}
-        onOpen={(openCode, openBotId) => {
-          setBotId(openBotId);
-          setCode(openCode);
-        }}
-      />
-    );
-  }
+  const back = () => dispatch(closeChatbots());
 
   return (
     <main className="routing-area chatbots-area">
@@ -858,8 +640,13 @@ export const ChatbotsArea = ({ client = httpChatbotClient, helplineCodes, staffM
           )}
           {staffMode && stored && !preview && (
             <>
-              <BranchPicker load={client.branches} value={branch} onChange={setBranch} />
-              <button type="button" className="link-button" disabled={importing} onClick={previewImport}>
+              <BranchPicker load={loadBranches} value={branch} onChange={(value) => dispatch(branchChanged(value))} />
+              <button
+                type="button"
+                className="link-button"
+                disabled={importing}
+                onClick={() => dispatch(previewImport())}
+              >
                 Import again from the live config
               </button>
             </>
@@ -874,12 +661,12 @@ export const ChatbotsArea = ({ client = httpChatbotClient, helplineCodes, staffM
           <p>{code.toUpperCase()} has no chatbots design yet.</p>
           {staffMode ? (
             <div className="chatbot-start-options">
-              <BranchPicker load={client.branches} value={branch} onChange={setBranch} />
+              <BranchPicker load={loadBranches} value={branch} onChange={(value) => dispatch(branchChanged(value))} />
               <button
                 type="button"
                 className="primary-button"
                 disabled={working || importing}
-                onClick={previewImport}
+                onClick={() => dispatch(previewImport())}
               >
                 Import them from the live config
               </button>
@@ -887,7 +674,7 @@ export const ChatbotsArea = ({ client = httpChatbotClient, helplineCodes, staffM
                 type="button"
                 className="secondary-button"
                 disabled={working}
-                onClick={() => create(emptyChatbots(code))}
+                onClick={() => dispatch(startFromScratch())}
               >
                 Start from scratch
               </button>
@@ -904,23 +691,11 @@ export const ChatbotsArea = ({ client = httpChatbotClient, helplineCodes, staffM
             // eslint-disable-next-line no-alert
             if (stored && !window.confirm(`Replace ${code.toUpperCase()}'s chatbots with the ones in the live config?`))
               return;
-            setPreview(undefined);
-            create(preview.source ? { ...preview.design, importedFrom: preview.source } : preview.design);
+            dispatch(applyImport());
           }}
         />
       )}
-      {stored && !preview && (
-        <Editor
-          key={`${code}-${stored.meta.revision}-${loadCount}`}
-          stored={stored}
-          client={client}
-          staffMode={staffMode}
-          author={userName}
-          initialBotId={botId}
-          onReload={() => setLoadCount((count) => count + 1)}
-          onBack={back}
-        />
-      )}
+      {stored && !preview && <Editor />}
     </main>
   );
 };

@@ -19,36 +19,39 @@
  * presses and what a lambda answers, and lists each step. A finished run can be marked as tested;
  * tested paths show green on the board while nothing on them changes, with what's left to test.
  */
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { ArrowRight, CheckCheck, CircleAlert, Play, RotateCcw, Square, Trash2, Undo2, X } from 'lucide-react';
-import type { BoardContent, FlowObject, TestedPath } from '@tech-matters/form-builder-shared/flows/model';
+import type { FlowObject } from '@tech-matters/form-builder-shared/flows/model';
 import { messageFor, OBJECT_TYPES } from '@tech-matters/form-builder-shared/flows/model';
-import type { Recording } from '@tech-matters/form-builder-shared/flows/recordings';
 import { playUrl, recordingOf } from '@tech-matters/form-builder-shared/flows/recordings';
-import { answer, coverageOf, SimAnswer, SimRun, startRun, widgetNameOf } from './simulate';
-
-type Props = {
-  content: BoardContent;
-  run?: SimRun;
-  // The next state of the run (Back returns to this one), a new run (fresh: nothing to go back to), or
-  // the same one changed (replace: e.g. pausing turned off)
-  onRun: (run?: SimRun, how?: 'fresh' | 'replace') => void;
-  // Back to the run before the last answer (e.g. to take another way at a split)
-  onBack?: () => void;
-  // The texts and recordings shown (flows sharing a template: the variant shown on the board)
-  variant?: string;
-  mainVariant?: string;
-  recordings?: Recording[];
-  // Still valid tested paths (nothing on them changed)
-  testedPaths: TestedPath[];
-  showTested: boolean;
-  onShowTested: (show: boolean) => void;
-  // Not given when the board can't be changed (view only)
-  onMarkTested?: () => void;
-  onForget?: (pathId?: string) => void;
-  onEndHere?: (objectId: string, exit: string) => void;
-  onShow: (objectId: string) => void;
-};
+import { coverageOf, SimAnswer, widgetNameOf } from './simulate';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import {
+  markTested,
+  selectContent,
+  selectMainVariant,
+  selectReadOnly,
+  selectValidPaths,
+  selectVariant,
+  testedPathForgotten,
+} from './boardSlice';
+import { selectBoardRecordings } from './recordingsSlice';
+import {
+  answerRun,
+  clearRun,
+  digitsPressed,
+  endRunHere,
+  memoryChanged,
+  pauseEachChanged,
+  playRun,
+  runBack,
+  selectSimulator,
+  showTestedChanged,
+  startChosen,
+  startsOf,
+  textTyped,
+} from './simulatorSlice';
+import { useCanvasView } from './canvasView';
 
 const DIALPAD = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '*', '0', '#'];
 // A question's or menu's ways out that are what was sent or pressed (the others are buttons)
@@ -56,61 +59,37 @@ const ANSWERED = new Set(['reply', 'incomingMessage', 'keypress', 'speech']);
 
 const labelOf = (object?: FlowObject) => (object ? object.text.trim() || OBJECT_TYPES[object.type].label : 'Gone');
 
-export const SimulatorPanel = ({
-  content,
-  run,
-  onRun,
-  onBack,
-  variant,
-  mainVariant,
-  recordings,
-  testedPaths,
-  showTested,
-  onShowTested,
-  onMarkTested,
-  onForget,
-  onEndHere,
-  onShow,
-}: Props) => {
+export const SimulatorPanel = () => {
+  const dispatch = useAppDispatch();
+  const content = useAppSelector(selectContent);
+  const { run, history, showTested, startId, text, digits, memory, pauseEach } = useAppSelector(selectSimulator);
+  // The texts and recordings shown (flows sharing a template: the variant shown on the board)
+  const variant = useAppSelector(selectVariant)?.key;
+  const mainVariant = useAppSelector(selectMainVariant);
+  const recordings = useAppSelector(selectBoardRecordings).list?.recordings;
+  // Still valid tested paths (nothing on them changed)
+  const testedPaths = useAppSelector(selectValidPaths);
+  // View only: nothing marked, forgotten or ended on purpose
+  const readOnly = useAppSelector(selectReadOnly);
+  const { showNode: onShow } = useCanvasView();
+  const onBack = history.length > 0 ? () => dispatch(runBack()) : undefined;
+  const onMarkTested = readOnly ? undefined : () => dispatch(markTested());
+  const onForget = readOnly ? undefined : (pathId?: string) => dispatch(testedPathForgotten(pathId));
+  const onEndHere = readOnly ? undefined : (objectId: string, exit: string) => dispatch(endRunHere(objectId, exit));
+
   const byId = new Map(content.objects.map((object) => [object.id, object]));
   // Where a run can start: each trigger, named after its frame
-  const starts = content.objects
-    .filter((object) => object.type === 'incoming')
-    .map((object) => {
-      const frame = content.frames.find((candidate) => candidate.id === object.frameId);
-      return {
-        id: object.id,
-        label: frame ? `${frame.title}${frame.channel ? ` (${frame.channel})` : ''}` : labelOf(object),
-      };
-    });
-  const [startId, setStartId] = useState(starts[0]?.id);
+  const starts = startsOf(content);
   const start = starts.find((candidate) => candidate.id === startId)?.id ?? starts[0]?.id;
 
-  const [text, setText] = useState('');
-  const [digits, setDigits] = useState('');
-  const [memory, setMemory] = useState<{ key: string; value: string }[]>([{ key: '', value: '' }]);
-  // Stopping at every widget, to check its script or recording before going on
-  const [pauseEach, setPauseEach] = useState(true);
   const transcript = useRef<HTMLOListElement>(null);
   useEffect(() => {
     transcript.current?.lastElementChild?.scrollIntoView?.({ block: 'nearest' });
   }, [run?.steps.length]);
 
-  const reply = (given: SimAnswer) => {
-    if (!run) return;
-    setText('');
-    setDigits('');
-    onRun(answer(content, run, given));
-  };
-  const play = () => {
-    if (!start) return;
-    setMemory([{ key: '', value: '' }]);
-    onRun(startRun(content, start, pauseEach), 'fresh');
-  };
-  const changePause = (pause: boolean) => {
-    setPauseEach(pause);
-    if (run) onRun({ ...run, pauseEach: pause || undefined }, 'replace');
-  };
+  const reply = (given: SimAnswer) => dispatch(answerRun(given));
+  const play = () => dispatch(playRun());
+  const setText = (value: string) => dispatch(textTyped(value));
 
   const { prompt, ended } = run ?? {};
   const asked = prompt && byId.get(prompt.objectId);
@@ -132,7 +111,7 @@ export const SimulatorPanel = ({
             {starts.length > 1 && (
               <label className="field">
                 <span className="field-label">Start from</span>
-                <select value={start} onChange={(e) => setStartId(e.target.value)}>
+                <select value={start} onChange={(e) => dispatch(startChosen(e.target.value))}>
                   {starts.map((candidate) => (
                     <option key={candidate.id} value={candidate.id}>
                       {candidate.label}
@@ -162,13 +141,17 @@ export const SimulatorPanel = ({
                 </button>
               )}
               {run && (
-                <button type="button" className="link-button" onClick={() => onRun(undefined, 'fresh')}>
+                <button type="button" className="link-button" onClick={() => dispatch(clearRun())}>
                   Clear
                 </button>
               )}
             </span>
             <label className="field-checkbox">
-              <input type="checkbox" checked={pauseEach} onChange={(e) => changePause(e.target.checked)} />
+              <input
+                type="checkbox"
+                checked={pauseEach}
+                onChange={(e) => dispatch(pauseEachChanged(e.target.checked))}
+              />
               <span>Pause at every widget (to check its script or recording)</span>
             </label>
           </>
@@ -261,7 +244,7 @@ export const SimulatorPanel = ({
                       if (prompt.digits <= 1 && key !== '#') reply({ kind: 'digits', digits: key });
                       else if (key === '#' || digits.length + 1 >= prompt.digits) {
                         reply({ kind: 'digits', digits: key === '#' ? digits : digits + key });
-                      } else setDigits(digits + key);
+                      } else dispatch(digitsPressed(digits + key));
                     }}
                   >
                     {key}
@@ -302,7 +285,11 @@ export const SimulatorPanel = ({
                     placeholder="age"
                     aria-label="Memory key"
                     onChange={(e) =>
-                      setMemory(memory.map((other, i) => (i === index ? { ...other, key: e.target.value } : other)))
+                      dispatch(
+                        memoryChanged(
+                          memory.map((other, i) => (i === index ? { ...other, key: e.target.value } : other)),
+                        ),
+                      )
                     }
                   />
                   <input
@@ -310,7 +297,11 @@ export const SimulatorPanel = ({
                     placeholder="15"
                     aria-label="Memory value"
                     onChange={(e) =>
-                      setMemory(memory.map((other, i) => (i === index ? { ...other, value: e.target.value } : other)))
+                      dispatch(
+                        memoryChanged(
+                          memory.map((other, i) => (i === index ? { ...other, value: e.target.value } : other)),
+                        ),
+                      )
                     }
                   />
                 </span>
@@ -318,7 +309,7 @@ export const SimulatorPanel = ({
               <button
                 type="button"
                 className="link-button"
-                onClick={() => setMemory([...memory, { key: '', value: '' }])}
+                onClick={() => dispatch(memoryChanged([...memory, { key: '', value: '' }]))}
               >
                 + Another
               </button>
@@ -408,7 +399,7 @@ export const SimulatorPanel = ({
       <section className="flow-sim-coverage">
         <h3>Tested</h3>
         <label className="field-checkbox">
-          <input type="checkbox" checked={showTested} onChange={(e) => onShowTested(e.target.checked)} />
+          <input type="checkbox" checked={showTested} onChange={(e) => dispatch(showTestedChanged(e.target.checked))} />
           <span>Show tested paths (green)</span>
         </label>
         <p className="field-hint">

@@ -22,7 +22,6 @@
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
 import {
   isRequired,
-  plainText,
   WEBCHAT_FIELD_TYPE_INFO,
   WebchatField,
   WebchatFieldType,

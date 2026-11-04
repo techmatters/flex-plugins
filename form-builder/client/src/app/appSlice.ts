@@ -47,8 +47,9 @@ export type AppState = {
   helpOpen: boolean;
   // An article asked for from the page (a section's "Need help?"), a new one each time
   helpRequest?: { slug: string; at: number };
-  // A guide's "Show me" tour, while it runs
+  // A guide's "Show me" tour, while it runs, and the step it's on
   tour?: HelpArticle;
+  tourStep: number;
 };
 
 const appSlice = createSlice({
@@ -56,7 +57,7 @@ const appSlice = createSlice({
   // Read when the store is made: the area in the link
   initialState: (): AppState => {
     const area = areaFromUrl();
-    return { area, opened: [area], helpOpen: false };
+    return { area, opened: [area], helpOpen: false, tourStep: 0 };
   },
   reducers: {
     areaShown: (state, action: PayloadAction<Area>) => {
@@ -79,6 +80,15 @@ const appSlice = createSlice({
     },
     tourStarted: (state, action: PayloadAction<HelpArticle>) => {
       state.tour = action.payload;
+      state.tourStep = 0;
+    },
+    // Next (or what's highlighted was clicked): past the last step, the tour ends
+    tourStepAdvanced: (state) => {
+      state.tourStep += 1;
+      if (state.tourStep >= (state.tour?.tour?.length ?? 0)) state.tour = undefined;
+    },
+    tourStepBack: (state) => {
+      state.tourStep = Math.max(0, state.tourStep - 1);
     },
     tourEnded: (state) => {
       state.tour = undefined;
@@ -86,8 +96,10 @@ const appSlice = createSlice({
   },
 });
 
-const { areaShown, helpOpened } = appSlice.actions;
-export const { helpToggled, helpClosed, tourStarted, tourEnded } = appSlice.actions;
+const { areaShown } = appSlice.actions;
+// helpOpened, helpToggled and helpClosed also start the help panel's own state (help/helpSlice.ts)
+export const { helpToggled, helpOpened, helpClosed, tourStarted, tourStepAdvanced, tourStepBack, tourEnded } =
+  appSlice.actions;
 export const appReducer = appSlice.reducer;
 
 export const selectApp = (state: RootState) => state.app;

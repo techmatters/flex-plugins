@@ -20,11 +20,9 @@
  * a change needed, or a note, for someone, with replies. A flag's icon shows until its thread is
  * resolved; "Reply and resolve" answers and closes it in one go.
  */
-import { useState } from 'react';
 import { Check, Trash2, Undo2 } from 'lucide-react';
 import type { Approval, FlagKind, ReviewSide, ReviewThread } from '@tech-matters/form-builder-shared';
 import { FLAG_KINDS } from '@tech-matters/form-builder-shared';
-import type { ThreadChange } from '../drafts/draftClient';
 import type { Person } from '@tech-matters/form-builder-shared/flows/model';
 import {
   approvalOf,
@@ -38,10 +36,22 @@ import {
 } from './formReviews';
 import { AutoTextarea } from '../common/AutoTextarea';
 import { ApprovalIcon, FlagIcon } from './ReviewIcons';
-
-const personKey = (person: Person) => person.email ?? person.name;
-const personLabel = (person: Person) =>
-  person.email ? `${person.name} (${person.email})` : person.name;
+import { useAppDispatch, useAppSelector } from '../app/store';
+import {
+  addFlag,
+  approveTarget,
+  changeThread,
+  newFlagCancelled,
+  newFlagChanged,
+  newFlagStarted,
+  personKey,
+  replyChanged,
+  resolvedToggled,
+  savingKey,
+  selectReviewPanel,
+  sendReply,
+} from './reviewPanelSlice';
+const personLabel = (person: Person) => (person.email ? `${person.name} (${person.email})` : person.name);
 
 const when = (at: string) =>
   new Date(at).toLocaleString(undefined, {
@@ -59,28 +69,13 @@ export type ReviewContext = {
   side: ReviewSide;
   isAseloStaff: boolean;
   people: Person[];
-  onApprove: (target: string, fingerprint: string | null) => Promise<void>;
-  onThread: (change: ThreadChange) => Promise<void>;
+  // (The panel saves through the draft itself: reviewPanelSlice.ts)
 };
 
-// Runs a review change, keeping track of it being saved and of errors
-const useSaving = () => {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string>();
-  const run = async (save: () => Promise<void>) => {
-    setBusy(true);
-    setError(undefined);
-    try {
-      await save();
-      return true;
-    } catch (err) {
-      setError(`Couldn't save: ${(err as Error).message}`);
-      return false;
-    } finally {
-      setBusy(false);
-    }
-  };
-  return { busy, error, run };
+// A change being saved (savingKey), and why the last one failed
+const useSaving = (key: string) => {
+  const saving = useAppSelector((state) => selectReviewPanel(state).saving[key]);
+  return { busy: saving?.busy ?? false, error: saving?.error };
 };
 
 const Approvals = ({
@@ -95,7 +90,8 @@ const Approvals = ({
   // "form" or "field", for the buttons
   what: string;
 }) => {
-  const { busy, error, run } = useSaving();
+  const dispatch = useAppDispatch();
+  const { busy, error } = useSaving(savingKey.approvals(target));
   return (
     <div className="review-approvals">
       {SIDES.map((side) => {
@@ -116,7 +112,7 @@ const Approvals = ({
                 type="button"
                 className="secondary-button"
                 disabled={busy}
-                onClick={() => run(() => review.onApprove(target, fingerprint))}
+                onClick={() => dispatch(approveTarget(target, fingerprint))}
               >
                 {state === 'changed' ? `Approve ${what} again` : `Approve ${what}`}
               </button>
@@ -126,7 +122,7 @@ const Approvals = ({
                 type="button"
                 className="link-button"
                 disabled={busy}
-                onClick={() => run(() => review.onApprove(target, null))}
+                onClick={() => dispatch(approveTarget(target, null))}
               >
                 Undo
               </button>
@@ -140,17 +136,10 @@ const Approvals = ({
 };
 
 const Thread = ({ review, thread }: { review: ReviewContext; thread: ReviewThread }) => {
-  const [reply, setReply] = useState('');
-  const { busy, error, run } = useSaving();
+  const dispatch = useAppDispatch();
+  const reply = useAppSelector((state) => selectReviewPanel(state).replies[thread.id] ?? '');
+  const { busy, error } = useSaving(savingKey.thread(thread.id));
   const open = isOpen(thread);
-  const sendReply = async (resolve: boolean) => {
-    if (
-      await run(() =>
-        review.onThread({ action: 'reply', id: thread.id, text: reply.trim(), resolve }),
-      )
-    )
-      setReply('');
-  };
   return (
     <li className={open ? 'review-thread' : 'review-thread resolved'}>
       <div className="review-thread-head">
@@ -173,9 +162,7 @@ const Thread = ({ review, thread }: { review: ReviewContext; thread: ReviewThrea
             aria-label={open ? 'Resolve' : 'Reopen'}
             title={open ? 'Resolve' : 'Reopen'}
             disabled={busy}
-            onClick={() =>
-              run(() => review.onThread({ action: 'resolve', id: thread.id, resolved: open }))
-            }
+            onClick={() => dispatch(changeThread({ action: 'resolve', id: thread.id, resolved: open }))}
           >
             {open ? <Check size={13} /> : <Undo2 size={13} />}
           </button>
@@ -186,7 +173,7 @@ const Thread = ({ review, thread }: { review: ReviewContext; thread: ReviewThrea
               aria-label="Delete comment"
               title="Delete"
               disabled={busy}
-              onClick={() => run(() => review.onThread({ action: 'delete', id: thread.id }))}
+              onClick={() => dispatch(changeThread({ action: 'delete', id: thread.id }))}
             >
               <Trash2 size={13} />
             </button>
@@ -211,13 +198,13 @@ const Thread = ({ review, thread }: { review: ReviewContext; thread: ReviewThrea
             value={reply}
             placeholder={thread.kind === 'question' ? 'Answer…' : 'Reply…'}
             aria-label="Reply"
-            onChange={(e) => setReply(e.target.value)}
+            onChange={(e) => dispatch(replyChanged({ id: thread.id, text: e.target.value }))}
           />
           <button
             type="button"
             className="secondary-button"
             disabled={busy || !reply.trim()}
-            onClick={() => sendReply(false)}
+            onClick={() => dispatch(sendReply(thread.id, false))}
           >
             Reply
           </button>
@@ -225,7 +212,7 @@ const Thread = ({ review, thread }: { review: ReviewContext; thread: ReviewThrea
             type="button"
             className="link-button"
             disabled={busy || !reply.trim()}
-            onClick={() => sendReply(true)}
+            onClick={() => dispatch(sendReply(thread.id, true))}
           >
             Reply and resolve
           </button>
@@ -237,52 +224,32 @@ const Thread = ({ review, thread }: { review: ReviewContext; thread: ReviewThrea
 };
 
 const NewFlag = ({ review, target }: { review: ReviewContext; target: string }) => {
-  const [adding, setAdding] = useState(false);
-  const [kind, setKind] = useState<FlagKind>(review.side === 'helpline' ? 'question' : 'changes');
-  const [text, setText] = useState('');
-  const [assigneeKey, setAssigneeKey] = useState('');
-  const { busy, error, run } = useSaving();
+  const dispatch = useAppDispatch();
+  const flag = useAppSelector((state) => selectReviewPanel(state).newFlags[target]);
+  const { busy, error } = useSaving(savingKey.newFlag(target));
+  const defaultKind: FlagKind = review.side === 'helpline' ? 'question' : 'changes';
 
-  if (!adding) {
+  if (!flag?.adding) {
     return (
-      <button type="button" className="link-button" onClick={() => setAdding(true)}>
+      <button type="button" className="link-button" onClick={() => dispatch(newFlagStarted(target))}>
         + Flag or comment
       </button>
     );
   }
-  const add = async () => {
-    const assignee = review.people.find((person) => personKey(person) === assigneeKey);
-    const added = await run(() =>
-      review.onThread({
-        action: 'add',
-        target,
-        kind,
-        text: text.trim(),
-        ...(assignee
-          ? {
-              assignee: assignee.name,
-              ...(assignee.email ? { assigneeEmail: assignee.email } : {}),
-            }
-          : {}),
-      }),
-    );
-    if (added) {
-      setText('');
-      setAssigneeKey('');
-      setAdding(false);
-    }
-  };
+  const { kind = defaultKind, text, assigneeKey } = flag;
+  const change = (update: Parameters<typeof newFlagChanged>[0]['change']) =>
+    dispatch(newFlagChanged({ target, change: update }));
   return (
     <form
       className="review-flag-add"
       onSubmit={(e) => {
         e.preventDefault();
-        if (text.trim()) add();
+        if (text.trim()) dispatch(addFlag(target, defaultKind));
       }}
     >
       <label className="review-flag-field">
         <span>Kind</span>
-        <select value={kind} onChange={(e) => setKind(e.target.value as FlagKind)}>
+        <select value={kind} onChange={(e) => change({ kind: e.target.value as FlagKind })}>
           {FLAG_KINDS.map((option) => (
             <option key={option} value={option}>
               {FLAG_LABELS[option]}
@@ -292,7 +259,7 @@ const NewFlag = ({ review, target }: { review: ReviewContext; target: string }) 
       </label>
       <label className="review-flag-field">
         <span>For</span>
-        <select value={assigneeKey} onChange={(e) => setAssigneeKey(e.target.value)}>
+        <select value={assigneeKey} onChange={(e) => change({ assigneeKey: e.target.value })}>
           <option value="">No one in particular</option>
           {review.people.map((person) => (
             <option key={personKey(person)} value={personKey(person)}>
@@ -305,7 +272,7 @@ const NewFlag = ({ review, target }: { review: ReviewContext; target: string }) 
         value={text}
         placeholder={kind === 'question' ? 'Your question…' : 'What should change, or why…'}
         aria-label="New comment"
-        onChange={(e) => setText(e.target.value)}
+        onChange={(e) => change({ text: e.target.value })}
         onKeyDown={(e) => {
           if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) e.currentTarget.form?.requestSubmit();
         }}
@@ -314,7 +281,7 @@ const NewFlag = ({ review, target }: { review: ReviewContext; target: string }) 
         <button type="submit" className="secondary-button" disabled={busy || !text.trim()}>
           Add
         </button>
-        <button type="button" className="link-button" onClick={() => setAdding(false)}>
+        <button type="button" className="link-button" onClick={() => dispatch(newFlagCancelled(target))}>
           Cancel
         </button>
       </div>
@@ -336,7 +303,8 @@ export const ReviewPanel = ({
   what: 'form' | 'field';
   title: string;
 }) => {
-  const [showResolved, setShowResolved] = useState(false);
+  const dispatch = useAppDispatch();
+  const showResolved = useAppSelector((state) => selectReviewPanel(state).showResolved[target] ?? false);
   const threads = threadsOn(review.threads, target);
   const resolved = threads.filter((thread) => !isOpen(thread));
   const shown = threads.filter((thread) => isOpen(thread) || showResolved);
@@ -352,11 +320,7 @@ export const ReviewPanel = ({
         </ul>
       )}
       {resolved.length > 0 && (
-        <button
-          type="button"
-          className="link-button"
-          onClick={() => setShowResolved(!showResolved)}
-        >
+        <button type="button" className="link-button" onClick={() => dispatch(resolvedToggled(target))}>
           {showResolved ? 'Hide resolved' : `Show ${resolved.length} resolved`}
         </button>
       )}

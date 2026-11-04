@@ -20,66 +20,24 @@
  * staff are picked from to join the helplines they work on. Helpline staff manage their own
  * helpline's list; the Aselo team's is Aselo staff's.
  */
-import { useEffect, useState } from 'react';
-import type { BoardClient } from './boardClient';
 import { Loading } from '../common/Loading';
 import { ASELO_PEOPLE_CODE, Person } from '@tech-matters/form-builder-shared/flows/model';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import { addPerson, choosePeopleList, personTyped, savePeople, selectFlows, selectPeopleCodes } from './flowsSlice';
 
-type Props = {
-  client: BoardClient;
-  helplineCodes: string[];
-  isAseloStaff: boolean;
-};
-
-export const PeopleManager = ({ client, helplineCodes, isAseloStaff }: Props) => {
+export const PeopleManager = () => {
+  const dispatch = useAppDispatch();
+  const isAseloStaff = useAppSelector(selectActingAsStaff);
   // Helplines first: their lists are the ones boards offer
-  const codes = isAseloStaff ? [...helplineCodes, ASELO_PEOPLE_CODE] : helplineCodes;
-  const [code, setCode] = useState(codes[0] ?? '');
-  const [people, setPeople] = useState<Person[]>();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [error, setError] = useState<string>();
-  // The Aselo team, to add to a helpline's list
-  const [team, setTeam] = useState<Person[]>([]);
+  const codes = useAppSelector(selectPeopleCodes);
+  const { code, people, name, email, error, team } = useAppSelector(selectFlows).people;
   const canEdit = code !== ASELO_PEOPLE_CODE || isAseloStaff;
+  const save = (updated: Person[]) => dispatch(savePeople(updated));
 
-  useEffect(() => {
-    if (!isAseloStaff) return;
-    client
-      .people(ASELO_PEOPLE_CODE)
-      .catch((): Person[] => [])
-      .then(setTeam);
-  }, [client, isAseloStaff]);
-
-  useEffect(() => {
-    if (!code) return;
-    setPeople(undefined);
-    setError(undefined);
-    client
-      .people(code)
-      .then(setPeople)
-      .catch((err: Error) => setError(err.message));
-  }, [client, code]);
-
-  const save = async (updated: Person[]) => {
-    setError(undefined);
-    try {
-      setPeople(await client.savePeople(code, updated));
-      return true;
-    } catch (err) {
-      setError((err as Error).message);
-      return false;
-    }
-  };
-
-  const add = async (event: React.FormEvent) => {
+  const add = (event: React.FormEvent) => {
     event.preventDefault();
-    if (!name.trim() || !people) return;
-    const person = { name: name.trim(), ...(email.trim() ? { email: email.trim() } : {}) };
-    if (await save([...people, person])) {
-      setName('');
-      setEmail('');
-    }
+    void dispatch(addPerson());
   };
 
   const onList = (person: Person) =>
@@ -101,7 +59,7 @@ export const PeopleManager = ({ client, helplineCodes, isAseloStaff }: Props) =>
       </p>
       <label className="field">
         <span className="field-label">List</span>
-        <select value={code} onChange={(e) => setCode(e.target.value)}>
+        <select value={code} onChange={(e) => dispatch(choosePeopleList(e.target.value))}>
           {codes.map((candidate) => (
             <option key={candidate} value={candidate}>
               {candidate === ASELO_PEOPLE_CODE
@@ -141,14 +99,14 @@ export const PeopleManager = ({ client, helplineCodes, isAseloStaff }: Props) =>
             aria-label="Name"
             placeholder="Name"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => dispatch(personTyped({ name: e.target.value }))}
           />
           <input
             type="email"
             aria-label="Email"
             placeholder="Email (optional)"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => dispatch(personTyped({ email: e.target.value }))}
           />
           <button type="submit" className="secondary-button" disabled={!name.trim()}>
             Add

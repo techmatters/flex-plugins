@@ -18,21 +18,15 @@
  * The board's tasks: sticky notes made into tasks, with who they're for and how far along they
  * are. Done tasks stay, greyed out, so the board keeps a record of what was decided.
  */
-import { useState } from 'react';
 import { Square, SquareCheck } from 'lucide-react';
 import type { CanvasNode, StickyNode } from './canvasModel';
 import { TASK_STATUSES, TaskStatus } from '@tech-matters/form-builder-shared/flows/model';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectUser } from '../app/sessionSlice';
+import { nodeDataChanged, selectBoard, selectReadOnly, TaskFilter, tasksFilterChanged } from './boardSlice';
+import { useCanvasView } from './canvasView';
 
-type Filter = 'open' | 'mine' | 'all';
-
-type Props = {
-  nodes: CanvasNode[];
-  readOnly: boolean;
-  userName: string;
-  userEmail?: string;
-  onNodeData: (id: string, data: CanvasNode['data']) => void;
-  onShow: (id: string) => void;
-};
+type Filter = TaskFilter;
 
 export const taskNodes = (nodes: CanvasNode[]) =>
   nodes.filter((node): node is StickyNode => node.type === 'sticky' && Boolean(node.data.sticky.task));
@@ -44,8 +38,14 @@ const firstLine = (text: string) => text.split('\n').find((line) => line.trim())
 
 const ORDER: Record<TaskStatus, number> = { doing: 0, todo: 1, done: 2 };
 
-export const TasksPanel = ({ nodes, readOnly, userName, userEmail, onNodeData, onShow }: Props) => {
-  const [filter, setFilter] = useState<Filter>('open');
+export const TasksPanel = () => {
+  const dispatch = useAppDispatch();
+  const { nodes, tasksFilter: filter } = useAppSelector(selectBoard);
+  const readOnly = useAppSelector(selectReadOnly);
+  const user = useAppSelector(selectUser);
+  const userName = user?.name ?? '';
+  const userEmail = user?.email;
+  const { showNode: onShow } = useCanvasView();
   const tasks = taskNodes(nodes)
     .filter(({ data: { sticky } }) => {
       if (filter === 'open') return sticky.task?.status !== 'done';
@@ -60,7 +60,12 @@ export const TasksPanel = ({ nodes, readOnly, userName, userEmail, onNodeData, o
     .sort((a, b) => ORDER[a.data.sticky.task!.status] - ORDER[b.data.sticky.task!.status]);
 
   const setStatus = (node: StickyNode, status: TaskStatus) =>
-    onNodeData(node.id, { sticky: { ...node.data.sticky, task: { ...node.data.sticky.task!, status } } });
+    dispatch(
+      nodeDataChanged({
+        id: node.id,
+        data: { sticky: { ...node.data.sticky, task: { ...node.data.sticky.task!, status } } },
+      }),
+    );
 
   return (
     <div className="flow-tasks" role="region" aria-label="Tasks">
@@ -77,7 +82,7 @@ export const TasksPanel = ({ nodes, readOnly, userName, userEmail, onNodeData, o
             type="button"
             className={filter === value ? 'active' : ''}
             aria-pressed={filter === value}
-            onClick={() => setFilter(value)}
+            onClick={() => dispatch(tasksFilterChanged(value))}
           >
             {label}
           </button>

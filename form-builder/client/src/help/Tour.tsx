@@ -25,6 +25,8 @@ import { createPortal } from 'react-dom';
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
 import type { TourStep } from './articles';
 import { HelpMarkdown } from './HelpMarkdown';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectApp, tourEnded, tourStepAdvanced, tourStepBack } from '../app/appSlice';
 
 const PADDING = 6;
 const GAP = 12;
@@ -76,26 +78,28 @@ export const findTarget = (target: string, root: ParentNode = document): HTMLEle
   return undefined;
 };
 
-type Props = {
-  title: string;
-  steps: TourStep[];
-  onEnd: () => void;
-};
+const NO_STEPS: TourStep[] = [];
 
-export const Tour = ({ title, steps, onEnd }: Props) => {
-  const [index, setIndex] = useState(0);
+// The tour started (app/appSlice.ts), on its step
+export const Tour = () => {
+  const dispatch = useAppDispatch();
+  const { tour, tourStep: index } = useAppSelector(selectApp);
+  const title = tour?.title ?? '';
+  const steps = tour?.tour ?? NO_STEPS;
+  // Where what's highlighted is, and where the bubble goes: measured on the page
   const [rect, setRect] = useState<DOMRect>();
   const target = useRef<HTMLElement>();
   const card = useRef<HTMLDivElement>(null);
   const [cardPlace, setCardPlace] = useState<{ left: number; top: number }>();
   const step = steps[index];
   const last = index === steps.length - 1;
-  const next = () => (last ? onEnd() : setIndex(index + 1));
+  const next = () => dispatch(last ? tourEnded() : tourStepAdvanced());
 
   // Finds what the step points at, and follows it as the page moves (it may appear later)
   useEffect(() => {
     target.current = undefined;
     setRect(undefined);
+    if (!step) return undefined;
     let scrolled = false;
     const find = () => {
       const element = findTarget(step.target);
@@ -124,25 +128,24 @@ export const Tour = ({ title, steps, onEnd }: Props) => {
   // Clicking what's highlighted moves on, after the click has done its work
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      if (target.current?.contains(e.target as Node)) window.setTimeout(() => setIndex((at) => at + 1), 300);
+      if (target.current?.contains(e.target as Node)) window.setTimeout(() => dispatch(tourStepAdvanced()), 300);
     };
     document.addEventListener('click', onClick, true);
     return () => document.removeEventListener('click', onClick, true);
-  }, []);
-  useEffect(() => {
-    if (index >= steps.length) onEnd();
-  }, [index, steps.length, onEnd]);
+  }, [dispatch]);
 
   // Escape leaves the tour (and only the tour)
+  const running = Boolean(step);
   useEffect(() => {
+    if (!running) return undefined;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return;
       e.stopImmediatePropagation();
-      onEnd();
+      dispatch(tourEnded());
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [onEnd]);
+  }, [running, dispatch]);
 
   // The bubble: under what's highlighted, or above it when there's no room; centred when it's not on screen
   useLayoutEffect(() => {
@@ -188,7 +191,7 @@ export const Tour = ({ title, steps, onEnd }: Props) => {
           <span className="tour-progress">
             Step {index + 1} of {steps.length}
           </span>
-          <button type="button" className="tour-close" aria-label="End the tour" onClick={onEnd}>
+          <button type="button" className="tour-close" aria-label="End the tour" onClick={() => dispatch(tourEnded())}>
             <X size={14} aria-hidden />
           </button>
         </div>
@@ -198,7 +201,7 @@ export const Tour = ({ title, steps, onEnd }: Props) => {
         )}
         <div className="tour-actions">
           {index > 0 && (
-            <button type="button" className="link-button" onClick={() => setIndex(index - 1)}>
+            <button type="button" className="link-button" onClick={() => dispatch(tourStepBack())}>
               <ArrowLeft size={14} aria-hidden /> Back
             </button>
           )}

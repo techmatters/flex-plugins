@@ -19,12 +19,13 @@
  * asked most first, each with the closest article: add the question to it as another way of asking
  * (its header's `questions:`), or write a new one when nothing is close.
  */
-import { useState } from 'react';
 import { Copy } from 'lucide-react';
 import type { HelpArea } from './articles';
 import { articleBySlug } from './articles';
 import type { HelpQuestion } from './helpClient';
 import { searchHelp } from './search';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { articleOpened, copyPhrasing, selectHelp } from './helpSlice';
 
 export type QuestionGroup = {
   question: string;
@@ -73,24 +74,12 @@ export const groupQuestions = (questions: HelpQuestion[]): QuestionGroup[] => {
     .sort((a, b) => b.count - a.count || b.latest.localeCompare(a.latest));
 };
 
-export const SentQuestions = ({
-  questions,
-  areaLabels,
-  onOpenArticle,
-}: {
-  questions: HelpQuestion[];
-  areaLabels: Record<string, string>;
-  onOpenArticle: (slug: string) => void;
-}) => {
-  const [copied, setCopied] = useState<string>();
-  const copy = async (group: QuestionGroup, slug: string) => {
-    try {
-      await navigator.clipboard.writeText(`  - ${group.question}`);
-      setCopied(`${group.question}→${slug}`);
-    } catch {
-      setCopied(undefined);
-    }
-  };
+// The questions sent, once loaded (helpSlice.ts)
+export const SentQuestions = ({ areaLabels }: { areaLabels: Record<string, string> }) => {
+  const dispatch = useAppDispatch();
+  const { questions = [], copied } = useAppSelector(selectHelp);
+  const onOpenArticle = (slug: string) => dispatch(articleOpened(slug));
+  const copy = (group: QuestionGroup, slug: string) => dispatch(copyPhrasing(group.question, slug));
   if (questions.length === 0) return <p>None yet.</p>;
   return (
     <ul className="help-sent-questions">

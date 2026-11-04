@@ -20,7 +20,7 @@
  * Changes go into the draft like any other; applying to Twilio stays make service-config-apply.
  * What's edited and how lives in serviceConfigSlice.ts.
  */
-import { Fragment, useCallback, useEffect, useMemo } from 'react';
+import { Fragment, useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectDraftFiles } from '../drafts/draftSlice';
 import { selectDefinitions, selectWorkspace } from '../workspace/workspaceSlice';
@@ -42,11 +42,9 @@ import {
 import {
   addChanged,
   addSetting,
-  editServiceConfig,
   fileTabChanged,
   filterChanged,
   JsonText,
-  loadPostFlowChoices,
   modeChanged,
   openServiceConfig,
   searchChanged,
@@ -62,7 +60,6 @@ import {
   typeSettingJson,
 } from './serviceConfigSlice';
 import { repoServiceConfigDir, ServiceConfigFileName } from '@tech-matters/form-builder-shared';
-import type { DefinitionFileMap } from '../common/definitions';
 import { PostStudioFlowsEditor } from './PostStudioFlowsEditor';
 
 const FILTERS: { key: SettingsFilter; label: string }[] = [
@@ -374,13 +371,6 @@ export const ServiceConfigEditor = () => {
     dispatch(openServiceConfig());
   }, [dispatch, editorRevision]);
 
-  // Post-call surveys (postStudioFlows): their choices load once per helpline, so the loader stays the same
-  const loadChoices = useCallback((helplineCode: string) => dispatch(loadPostFlowChoices(helplineCode)), [dispatch]);
-  const changeFiles = useCallback(
-    (updater: (files: DefinitionFileMap) => DefinitionFileMap) => dispatch(editServiceConfig(updater)),
-    [dispatch],
-  );
-
   const environments = serviceConfigEnvironments(draftFiles);
   const fileNames: ServiceConfigFileName[] = ['common', ...environments];
 
@@ -500,12 +490,7 @@ export const ServiceConfigEditor = () => {
           })}
           {visible.length === 0 && <p className="muted">No settings match.</p>}
 
-          <PostStudioFlowsEditor
-            code={code}
-            draftFiles={draftFiles}
-            change={changeFiles}
-            loadChoices={loadChoices}
-          />
+          <PostStudioFlowsEditor />
 
           <AddSetting rows={rows} fileNames={fileNames} />
         </>

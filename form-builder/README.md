@@ -256,8 +256,15 @@ panel and tours), `session` (who's signed in),
 `workspace` (the open helpline, its screen and its validation), `draft` (the draft of its files:
 loading, saving a moment after each edit, conflicts, submit and apply) and `draftsList`; each
 editor adds its own (e.g. `categories/categoriesSlice.ts`) with `rootReducer.inject`, and
-changes the files through the draft's `editDraftFiles`. The pure rules they use (e.g.
-`forms/formEditing.ts`) don't depend on React or Redux.
+changes the files through the draft's `editDraftFiles`. The other areas work the same way, each
+loading and saving its own design (a moment after each change, one save at a time, stopping on a
+conflict): Contact flows (`flows/flowsSlice.ts` for the boards list, people and imports;
+`flows/boardSlice.ts` for the open board, with React Flow controlled from it; `recordingsSlice.ts`,
+`simulatorSlice.ts`; listeners in `flows/flowsListeners.ts`), Routing (`routing/routingSlice.ts`),
+Chatbots (`chatbots/chatbotsSlice.ts`, `chatPreviewSlice.ts`) and the help panel
+(`help/helpSlice.ts`). Slices whose listeners the store registers (flows, chatbots) are added when
+the store is made, since the store imports them. The pure rules they use (e.g.
+`forms/formEditing.ts`, `shared/src/flows/model.ts`) don't depend on React or Redux.
 
 - `server/src/definitionsApi.ts` reads raw definition files for a helpline, and `server/src/api.ts`
   holds the routes. In development they're served by a small local server

@@ -19,65 +19,32 @@
  * version that only exists there: each version imported is listed for its helpline ("AS v4", or
  * "AS v4 (branch)" read from that branch) for Aselo and the helpline's staff, until it's removed.
  */
-import { useState } from 'react';
-import type { BranchChoice } from '@tech-matters/form-builder-shared';
-import type { HelplineSummary } from '@tech-matters/form-builder-shared';
-import type { DraftClient } from './draftClient';
+import { useCallback, useEffect } from 'react';
 import { BranchPicker } from '../common/BranchPicker';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import {
+  importChosen,
+  importFormsClosed,
+  importVersion,
+  loadImportBranches,
+  previewImport,
+  selectImportForms,
+} from './importFormsSlice';
 
-type Props = {
-  draftClient: DraftClient;
-  helplineCodes: string[];
-  loadBranches: () => Promise<BranchChoice[]>;
-  loadHelplines: (branch: string) => Promise<HelplineSummary[]>;
-  // A version was imported: show it in the list
-  onImported: () => void;
-};
+export const ImportForms = () => {
+  const dispatch = useAppDispatch();
+  const helplineCodes = useAppSelector((state) => state.session.helplines).map((helpline) => helpline.code);
+  const { code, branch, versions, imported, error, working } = useAppSelector(selectImportForms);
+  // Stable, as BranchPicker loads the branches when it changes
+  const loadBranches = useCallback(() => dispatch(loadImportBranches()), [dispatch]);
 
-export const ImportForms = ({ draftClient, helplineCodes, loadBranches, loadHelplines, onImported }: Props) => {
-  const [code, setCode] = useState('');
-  const [branch, setBranch] = useState('');
-  // The helpline's versions in the branch, once read
-  const [versions, setVersions] = useState<string[]>();
-  const [imported, setImported] = useState<string[]>([]);
-  const [error, setError] = useState<string>();
-  const [working, setWorking] = useState(false);
-
-  // A preview is of one helpline and branch: choosing another one clears it
-  const choose = (change: () => void) => {
-    change();
-    setVersions(undefined);
-    setImported([]);
-    setError(undefined);
-  };
-
-  const preview = async () => {
-    setWorking(true);
-    setError(undefined);
-    try {
-      const helpline = (await loadHelplines(branch)).find((candidate) => candidate.code === code);
-      if (!helpline) throw new Error(`${branch || 'master'} has no forms for ${code.toUpperCase()}.`);
-      setVersions(helpline.versions);
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setWorking(false);
-    }
-  };
-
-  const importVersion = async (version: string) => {
-    setWorking(true);
-    setError(undefined);
-    try {
-      await draftClient.importFromBranch(code, version, branch);
-      setImported((current) => [...current, version]);
-      onImported();
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setWorking(false);
-    }
-  };
+  // Left (e.g. a helpline opened): it starts again next time
+  useEffect(
+    () => () => {
+      dispatch(importFormsClosed());
+    },
+    [dispatch],
+  );
 
   return (
     <section className="flows-import" aria-label="Import forms">
@@ -88,7 +55,11 @@ export const ImportForms = ({ draftClient, helplineCodes, loadBranches, loadHelp
         and committed to that branch). Nothing in the repo changes.
       </p>
       <div className="flows-import-pick">
-        <select value={code} aria-label="Helpline to import" onChange={(e) => choose(() => setCode(e.target.value))}>
+        <select
+          value={code}
+          aria-label="Helpline to import"
+          onChange={(e) => dispatch(importChosen({ code: e.target.value }))}
+        >
           <option value="">Choose a helpline…</option>
           {helplineCodes.map((candidate) => (
             <option key={candidate} value={candidate}>
@@ -96,8 +67,17 @@ export const ImportForms = ({ draftClient, helplineCodes, loadBranches, loadHelp
             </option>
           ))}
         </select>
-        <BranchPicker load={loadBranches} value={branch} onChange={(next) => choose(() => setBranch(next))} />
-        <button type="button" className="secondary-button" disabled={!code || working} onClick={preview}>
+        <BranchPicker
+          load={loadBranches}
+          value={branch}
+          onChange={(next) => dispatch(importChosen({ branch: next }))}
+        />
+        <button
+          type="button"
+          className="secondary-button"
+          disabled={!code || working}
+          onClick={() => dispatch(previewImport())}
+        >
           {working && !versions ? 'Reading…' : 'Preview'}
         </button>
       </div>
@@ -119,7 +99,7 @@ export const ImportForms = ({ draftClient, helplineCodes, loadBranches, loadHelp
                     type="button"
                     className="secondary-button"
                     disabled={working}
-                    onClick={() => importVersion(version)}
+                    onClick={() => dispatch(importVersion(version))}
                   >
                     Import
                   </button>

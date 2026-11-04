@@ -24,7 +24,7 @@
  */
 import { useState } from 'react';
 import { CircleAlert, CircleCheck, ListChecks, Plus, Regex, Sparkles, Trash2 } from 'lucide-react';
-import type { AnswerOption, AnswerType, ChatbotDesign } from '@tech-matters/form-builder-shared/chatbots/model';
+import type { AnswerOption, AnswerType } from '@tech-matters/form-builder-shared/chatbots/model';
 import {
   answerKindOf,
   builtinInfo,
@@ -34,8 +34,19 @@ import {
   PATTERN_PRESETS,
   patternProblem,
 } from '@tech-matters/form-builder-shared/chatbots/model';
-import { addAnswerType, removeAnswerType, updateAnswerType } from './edit';
 import type { ChatbotIssue } from './chatbotChecks';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import {
+  addAnswerTypeFromForm,
+  changeAnswerType,
+  newAnswerTypeChanged,
+  removeAnswerTypeNamed,
+  selectChatbotDesign,
+  selectChatbotIssues,
+  selectChatbots,
+  selectChatbotsReadOnly,
+  selectCommentAuthor,
+} from './chatbotsSlice';
 import { CommentsToggle, CommentThread } from './Comments';
 
 // Typed freely, comma-separated; the list is updated when the box is left
@@ -342,21 +353,14 @@ const AnswerTypeCard = ({
   );
 };
 
-export const AnswersPanel = ({
-  design,
-  issues,
-  author,
-  readOnly,
-  onChange,
-}: {
-  design: ChatbotDesign;
-  issues: ChatbotIssue[];
-  author: string;
-  readOnly: boolean;
-  onChange: (design: ChatbotDesign) => void;
-}) => {
-  const [newType, setNewType] = useState<Record<string, string>>({});
-  const [newKind, setNewKind] = useState<Record<string, 'list' | 'pattern'>>({});
+export const AnswersPanel = () => {
+  const dispatch = useAppDispatch();
+  const design = useAppSelector(selectChatbotDesign)!;
+  const issues = useAppSelector(selectChatbotIssues);
+  const author = useAppSelector(selectCommentAuthor);
+  const readOnly = useAppSelector(selectChatbotsReadOnly);
+  // The new list or pattern being named, by language
+  const { newAnswerTypes } = useAppSelector(selectChatbots);
   const usedBy = (language: string, name: string) =>
     design.bots
       .filter((bot) => bot.language === language)
@@ -380,7 +384,8 @@ export const AnswersPanel = ({
           .filter((type) => !type.builtin)
           .sort((a, b) => a.name.localeCompare(b.name));
         const builtins = Object.values(types).filter((type) => type.builtin);
-        const name = newType[language] ?? '';
+        const form = newAnswerTypes[language] ?? { kind: 'list', name: '' };
+        const { name } = form;
         return (
           <section key={language}>
             <h3>{languageLabel(language)}</h3>
@@ -420,17 +425,21 @@ export const AnswersPanel = ({
                   )}
                   author={author}
                   readOnly={readOnly}
-                  onChange={(changed) => onChange(updateAnswerType(design, language, type.name, () => changed))}
-                  onRemove={() => onChange(removeAnswerType(design, language, type.name))}
+                  onChange={(changed) => dispatch(changeAnswerType(language, type.name, changed))}
+                  onRemove={() => dispatch(removeAnswerTypeNamed(language, type.name))}
                 />
               ))}
             </ul>
             {!readOnly && (
               <div className="routing-add">
                 <select
-                  value={newKind[language] ?? 'list'}
+                  value={form.kind}
                   aria-label={`Kind of answers (${language})`}
-                  onChange={(e) => setNewKind({ ...newKind, [language]: e.target.value as 'list' | 'pattern' })}
+                  onChange={(e) =>
+                    dispatch(
+                      newAnswerTypeChanged({ language, form: { ...form, kind: e.target.value as 'list' | 'pattern' } }),
+                    )
+                  }
                 >
                   <option value="list">New list of answers</option>
                   <option value="pattern">New pattern</option>
@@ -440,16 +449,13 @@ export const AnswersPanel = ({
                   value={name}
                   placeholder="Its name, e.g. contactReason"
                   aria-label={`New list of answers (${language})`}
-                  onChange={(e) => setNewType({ ...newType, [language]: e.target.value.replace(/\s/g, '') })}
+                  onChange={(e) => dispatch(newAnswerTypeChanged({ language, form: { ...form, name: e.target.value } }))}
                 />
                 <button
                   type="button"
                   className="secondary-button"
                   disabled={!name || Boolean(types[name]) || name.startsWith('AMAZON.')}
-                  onClick={() => {
-                    onChange(addAnswerType(design, language, name, newKind[language] ?? 'list'));
-                    setNewType({ ...newType, [language]: '' });
-                  }}
+                  onClick={() => dispatch(addAnswerTypeFromForm(language))}
                 >
                   Add
                 </button>

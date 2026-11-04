@@ -21,98 +21,49 @@
  * the pattern isn't understood); "something it doesn't understand" shows the retry and what happens
  * after. At the end the answers it saved are listed: what the task and the counselor get.
  */
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { RotateCcw } from 'lucide-react';
-import type { Chatbot, ChatbotDesign, ChatbotIntent } from '@tech-matters/form-builder-shared/chatbots/model';
-import { answerKindOf, answerTypeOf, botLabel, builtinLabel, matchesPattern } from '@tech-matters/form-builder-shared/chatbots/model';
+import { answerKindOf, botLabel, builtinLabel } from '@tech-matters/form-builder-shared/chatbots/model';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectSelectedBot, selectSelectedIntent } from './chatbotsSlice';
+import {
+  answerPreview,
+  restartPreview,
+  selectChatPreview,
+  selectPreviewAnswerType,
+  submitTypedAnswer,
+  typedChanged,
+} from './chatPreviewSlice';
 
-type Message = { from: 'bot' | 'contact' | 'system'; text: string; tone?: 'retry' | 'end' };
-
-type State = { question: number; retries: number; answers: Record<string, string>; ended?: 'done' | 'failed' };
-
-const START: State = { question: 0, retries: 0, answers: {} };
-
-export const ChatPreview = ({
-  design,
-  bot,
-  intent,
-}: {
-  design: ChatbotDesign;
-  bot: Chatbot;
-  intent: ChatbotIntent;
-}) => {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [state, setState] = useState<State>(START);
-  const [typed, setTyped] = useState('');
+// The chatbot and path showing (ChatbotsArea only shows the preview when there are both)
+export const ChatPreview = () => {
+  const dispatch = useAppDispatch();
+  const bot = useAppSelector(selectSelectedBot)!;
+  const intent = useAppSelector(selectSelectedIntent)!;
+  const { messages, progress: state, typed } = useAppSelector(selectChatPreview);
+  const type = useAppSelector(selectPreviewAnswerType);
   const end = useRef<HTMLDivElement>(null);
   const questionKey = useMemo(() => JSON.stringify(intent), [intent]);
 
-  const restart = () => {
-    const first = intent.questions[0];
-    setMessages([
-      { from: 'system', text: `Conversation starts (“${intent.utterances[0] ?? 'start'}”)` },
-      ...(intent.opening ? [{ from: 'bot' as const, text: intent.opening }] : []),
-      ...(first ? [{ from: 'bot' as const, text: first.question || '(no text yet)' }] : []),
-      ...(!first && intent.closing ? [{ from: 'bot' as const, text: intent.closing, tone: 'end' as const }] : []),
-    ]);
-    setState(first ? START : { ...START, ended: 'done' });
-    setTyped('');
-  };
-
   // Start again whenever the conversation is changed
-  useEffect(restart, [questionKey]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    dispatch(restartPreview());
+  }, [dispatch, questionKey]);
 
+  // Layout only: the newest message in view
   useEffect(() => {
     end.current?.scrollIntoView?.({ block: 'end' });
   }, [messages]);
 
   const question = intent.questions[state.question];
-  const type = question ? answerTypeOf(design, bot, question.answerType) : undefined;
   const kind = type && answerKindOf(type);
-  // A typed answer: a list's answer or one of its other ways of saying it, a pattern's match, or anything for Lex's own
-  const understand = (said: string): string | undefined => {
-    if (!type) return undefined;
-    if (kind === 'builtin') return said;
-    if (kind === 'pattern') return matchesPattern(type.pattern ?? '', said) ? said : undefined;
-    const lower = said.toLowerCase();
-    const found = type.values.find((option) =>
-      [option.value, ...option.synonyms].some((candidate) => candidate.toLowerCase() === lower),
-    );
-    return found?.value;
-  };
-
-  const answer = (said: string, understood?: string) => {
-    if (!question) return;
-    const next: Message[] = [{ from: 'contact', text: said }];
-    if (understood === undefined) {
-      if (state.retries < question.retries) {
-        next.push({ from: 'bot', text: question.question || '(no text yet)', tone: 'retry' });
-        setState({ ...state, retries: state.retries + 1 });
-      } else {
-        if (question.failureMessage) next.push({ from: 'bot', text: question.failureMessage, tone: 'retry' });
-        next.push({ from: 'system', text: 'The chatbot stops here; the contact goes on to the queue' });
-        setState({ ...state, ended: 'failed' });
-      }
-    } else {
-      const answers = { ...state.answers, [question.slot]: understood };
-      const following = intent.questions[state.question + 1];
-      if (following) {
-        next.push({ from: 'bot', text: following.question || '(no text yet)' });
-        setState({ question: state.question + 1, retries: 0, answers });
-      } else {
-        if (intent.closing) next.push({ from: 'bot', text: intent.closing, tone: 'end' });
-        setState({ ...state, answers, ended: 'done' });
-      }
-    }
-    setMessages((current) => [...current, ...next]);
-    setTyped('');
-  };
+  const answer = (said: string, understood?: string) => dispatch(answerPreview(said, understood));
 
   return (
     <div className="chatbot-phone" aria-label="Preview">
       <div className="chatbot-phone-head">
         <span>{botLabel(bot.name)}</span>
-        <button type="button" className="icon-button" aria-label="Start again" onClick={restart}>
+        <button type="button" className="icon-button" aria-label="Start again" onClick={() => dispatch(restartPreview())}>
           <RotateCcw size={14} />
         </button>
       </div>
@@ -152,7 +103,7 @@ export const ChatPreview = ({
             className="chatbot-type"
             onSubmit={(e) => {
               e.preventDefault();
-              if (typed.trim()) answer(typed.trim(), understand(typed.trim()));
+              dispatch(submitTypedAnswer());
             }}
           >
             <input
@@ -166,7 +117,7 @@ export const ChatPreview = ({
                     : 'Or type what they’d write…'
               }
               aria-label="Type an answer"
-              onChange={(e) => setTyped(e.target.value)}
+              onChange={(e) => dispatch(typedChanged(e.target.value))}
             />
           </form>
           <button type="button" className="chatbot-quick not-understood" onClick={() => answer('🤔 …')}>

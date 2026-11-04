@@ -24,8 +24,11 @@ import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api'
 import { handleApiRequest } from '@tech-matters/form-builder-server/api';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { MemoryRoutingStore } from '@tech-matters/form-builder-server/routingStore';
+import { Provider } from 'react-redux';
 import { routingClientFor } from './routingClient';
 import { RoutingArea } from './RoutingArea';
+import { createAppStore } from '../app/store';
+import { sessionLoaded } from '../app/sessionSlice';
 import { readWho } from '@tech-matters/form-builder-shared/routing/expressions';
 
 // What React Flow needs from a browser that jsdom doesn't have (see reactflow.dev/learn/advanced-use/testing)
@@ -73,13 +76,29 @@ beforeEach(() => {
 
 afterEach(cleanup);
 
+// The designer as this person sees it, with these helplines to open
+const renderAs = (user: ApiUser, helplineCodes: string[]) => {
+  const appStore = createAppStore({ routingClient: clientAs(user) });
+  appStore.dispatch(
+    sessionLoaded({
+      user: { ...user, applyInBuilder: false },
+      helplines: helplineCodes.map((code) => ({ code, versions: ['v1'] })),
+    }),
+  );
+  return render(
+    <Provider store={appStore}>
+      <RoutingArea />
+    </Provider>,
+  );
+};
+
 // Imports read the repo's helplines, which takes a while when every test file runs at once
 // Each test renders the whole designer: more time than the usual 20 seconds
 jest.setTimeout(30_000);
 
 describe('routing designer', () => {
   test('Aselo staff import a live helpline, change a step, and it saves by itself', async () => {
-    render(<RoutingArea client={clientAs(staff)} helplineCodes={['usnm', 'usch']} staffMode />);
+    renderAs(staff, ['usnm', 'usch']);
     expect(await screen.findByText('No routing designs yet.')).toBeTruthy();
     fireEvent.change(screen.getByRole('combobox', { name: 'Helpline' }), {
       target: { value: 'usnm' },
@@ -167,7 +186,7 @@ describe('routing designer', () => {
   test('helpline staff start from what Aselo staff imported, and neither import nor export', async () => {
     const imported = await clientAs(staff).previewImport('usnm');
     await clientAs(staff).save('usnm', 0, imported.design);
-    render(<RoutingArea client={clientAs(usnmStaff)} helplineCodes={['usnm']} staffMode={false} />);
+    renderAs(usnmStaff, ['usnm']);
     await screen.findByRole('tab', { name: 'Calls Voicemail Workflow' });
     expect(screen.queryByRole('button', { name: /Import/ })).toBeNull();
     expect(screen.queryByRole('button', { name: /Export for Claude/ })).toBeNull();

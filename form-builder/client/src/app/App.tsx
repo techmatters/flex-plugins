@@ -19,62 +19,40 @@ import { ArrowLeft, CircleHelp } from 'lucide-react';
 import { ImportForms } from '../drafts/ImportForms';
 import { Loading } from '../common/Loading';
 import { isSignInEnabled, signOut } from './auth';
-import { useAppDispatch, useAppSelector, useServices } from './store';
+import { useAppDispatch, useAppSelector } from './store';
 import { loadSession, selectIsAseloStaff, selectActingAsStaff, selectUser, viewAsHelplineStaffSet } from './sessionSlice';
 import {
   AREA_LABELS,
   AREAS,
-  helpClosed,
   helpToggled,
   openHelp,
   selectApp,
   switchArea,
-  tourEnded,
-  tourStarted,
 } from './appSlice';
 import { HelplineWorkspace } from '../workspace/HelplineWorkspace';
 import { closeHelpline, selectWorkspace } from '../workspace/workspaceSlice';
-import { loadDrafts } from '../drafts/draftsListSlice';
 import { AseloBuilderLogo } from './AseloBuilderLogo';
 import { DraftsList } from '../drafts/DraftsList';
 import { FlowsArea } from '../flows/FlowsArea';
 import { RoutingArea } from '../routing/RoutingArea';
-import type { RoutingClient } from '../routing/routingClient';
 import { ChatbotsArea } from '../chatbots/ChatbotsArea';
-import type { ChatbotClient } from '../chatbots/chatbotClient';
-import type { BoardClient } from '../flows/boardClient';
 import { HelpPanel } from '../help/HelpPanel';
 import { HelpContext } from '../help/HelpContext';
 import { Tour } from '../help/Tour';
-import type { HelpArticle } from '../help/articles';
-import type { HelpClient } from '../help/helpClient';
 
-// The areas not on the store yet take what talks to the server as props (replaced in tests)
-type Props = {
-  boardClient?: BoardClient;
-  routingClient?: RoutingClient;
-  chatbotClient?: ChatbotClient;
-  helpClient?: HelpClient;
-};
-
-export const App = ({ boardClient, routingClient, chatbotClient, helpClient }: Props) => {
+export const App = () => {
   const dispatch = useAppDispatch();
-  const services = useServices();
   const user = useAppSelector(selectUser);
   const isAseloStaff = useAppSelector(selectIsAseloStaff);
   // Aselo staff can see the app as helpline staff do
   const actingAsStaff = useAppSelector(selectActingAsStaff);
-  const { helplines, viewAsHelplineStaff, error: sessionError } = useAppSelector((state) => state.session);
+  const { viewAsHelplineStaff, error: sessionError } = useAppSelector((state) => state.session);
   // The forms open (chosen in the list): their helpline, and its files once loaded
   const { code, definitions, loading, error: helplineError } = useAppSelector(selectWorkspace);
-  const { area, opened, helpOpen, helpRequest, tour } = useAppSelector(selectApp);
+  const { area, opened, helpOpen, tour } = useAppSelector(selectApp);
   const error = sessionError ?? helplineError;
-  const helplineCodes = helplines.map((helpline) => helpline.code);
 
-  // Stable, as the help panel, the tour and "Need help?" keep them
-  const closeHelp = useCallback(() => dispatch(helpClosed()), [dispatch]);
-  const endTour = useCallback(() => dispatch(tourEnded()), [dispatch]);
-  const startTour = useCallback((article: HelpArticle) => dispatch(tourStarted(article)), [dispatch]);
+  // Stable, as "Need help?" keeps it
   const requestHelp = useCallback((slug?: string) => dispatch(openHelp(slug)), [dispatch]);
 
   useEffect(() => {
@@ -140,44 +118,25 @@ export const App = ({ boardClient, routingClient, chatbotClient, helpClient }: P
         {error && <div className="alert alert-error">{error}</div>}
 
         {helpOpen && (
-          <HelpPanel
-            area={area}
-            isAseloStaff={actingAsStaff}
-            onClose={closeHelp}
-            client={helpClient}
-            request={helpRequest}
-            onStartTour={startTour}
-          />
+          <HelpPanel />
         )}
-        {tour?.tour && <Tour key={tour.slug} title={tour.title} steps={tour.tour} onEnd={endTour} />}
+        {tour?.tour && <Tour key={tour.slug} />}
 
         {opened.includes('chatbots') && user && (
           <div className="area-pane" hidden={area !== 'chatbots'}>
-            <ChatbotsArea
-              client={chatbotClient}
-              helplineCodes={helplineCodes}
-              staffMode={actingAsStaff}
-              userName={user.name}
-            />
+            <ChatbotsArea />
           </div>
         )}
 
         {opened.includes('routing') && user && (
           <div className="area-pane" hidden={area !== 'routing'}>
-            <RoutingArea client={routingClient} helplineCodes={helplineCodes} staffMode={actingAsStaff} />
+            <RoutingArea />
           </div>
         )}
 
         {opened.includes('flows') && user && (
           <div className="area-pane" hidden={area !== 'flows'}>
-            <FlowsArea
-              client={boardClient}
-              helplineCodes={helplineCodes}
-              staffMode={actingAsStaff}
-              userName={user.name}
-              userEmail={user.email}
-              active={area === 'flows'}
-            />
+            <FlowsArea />
           </div>
         )}
 
@@ -199,13 +158,7 @@ export const App = ({ boardClient, routingClient, chatbotClient, helpClient }: P
               </p>
               {!user && <Loading text="Loading helplines…" />}
               {user && actingAsStaff && (
-                <ImportForms
-                  draftClient={services.draftClient}
-                  helplineCodes={helplineCodes}
-                  loadBranches={services.fetchBranches}
-                  loadHelplines={services.fetchHelplines}
-                  onImported={() => dispatch(loadDrafts())}
-                />
+                <ImportForms />
               )}
               {user && <DraftsList />}
             </main>

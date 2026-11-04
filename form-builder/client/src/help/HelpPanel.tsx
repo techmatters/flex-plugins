@@ -20,7 +20,7 @@
  * It stays open beside the builder, so a guide's steps can be followed while working. Questions
  * it can't answer can be sent to the Aselo team, who write the answers.
  */
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import {
   ArrowLeft,
   BookOpen,
@@ -35,12 +35,25 @@ import {
   X,
 } from 'lucide-react';
 import type { HelpArea, HelpArticle } from './articles';
-import { articleBySlug, HELP_ARTICLES, visibleTo } from './articles';
+import { HELP_ARTICLES, visibleTo } from './articles';
 import { searchHelp } from './search';
 import { HelpMarkdown } from './HelpMarkdown';
 import { SentQuestions } from './SentQuestions';
-import type { HelpClient, HelpQuestion } from './helpClient';
-import { httpHelpClient } from './helpClient';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import { helpClosed, selectApp, tourStarted } from '../app/appSlice';
+import {
+  articleOpened,
+  feedbackGiven,
+  homeShown,
+  loadSentQuestions,
+  querySettled,
+  querySubmitted,
+  queryTyped,
+  selectHelp,
+  sendHelpQuestion,
+  showSentQuestions,
+} from './helpSlice';
 import './help.css';
 
 export const HELP_AREA_LABELS: Record<HelpArea, string> = {
@@ -52,15 +65,8 @@ export const HELP_AREA_LABELS: Record<HelpArea, string> = {
 };
 
 type Props = {
-  area: HelpArea;
-  isAseloStaff: boolean;
-  onClose: () => void;
-  client?: HelpClient;
+  // The articles to offer (tests give their own)
   articles?: HelpArticle[];
-  // An article to show, e.g. from a section's "Need help?" (a new one each time it's asked for)
-  request?: { slug: string; at: number };
-  // Starts a guide's "Show me" tour (optional: without it, tours aren't offered)
-  onStartTour?: (article: HelpArticle) => void;
 };
 
 const KIND_TITLES = {
@@ -68,8 +74,6 @@ const KIND_TITLES = {
   section: 'About each section',
   answer: 'Common questions',
 };
-
-type View = { kind: 'home' } | { kind: 'article'; slug: string } | { kind: 'sent' } | { kind: 'questions' };
 
 const ArticleLink = ({ article, onOpen }: { article: HelpArticle; onOpen: (slug: string) => void }) => (
   <li>
@@ -81,46 +85,32 @@ const ArticleLink = ({ article, onOpen }: { article: HelpArticle; onOpen: (slug:
   </li>
 );
 
-export const HelpPanel = ({
-  area,
-  isAseloStaff,
-  onClose,
-  client = httpHelpClient,
-  articles = HELP_ARTICLES,
-  request,
-  onStartTour,
-}: Props) => {
-  const [query, setQuery] = useState('');
-  // What's searched: the query once typing pauses
-  const [searched, setSearched] = useState('');
-  const [view, setView] = useState<View>(request ? { kind: 'article', slug: request.slug } : { kind: 'home' });
-  const [feedback, setFeedback] = useState<'yes' | 'no'>();
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState<string>();
-  const [questions, setQuestions] = useState<HelpQuestion[]>();
+export const HelpPanel = ({ articles = HELP_ARTICLES }: Props) => {
+  const dispatch = useAppDispatch();
+  const { area: shown, helpRequest: request } = useAppSelector(selectApp);
+  // Its help is the area's
+  const area = shown as HelpArea;
+  const isAseloStaff = useAppSelector(selectActingAsStaff);
+  const { query, searched, view, feedback, sending, error, questions } = useAppSelector(selectHelp);
   const searchRef = useRef<HTMLInputElement>(null);
+  const onClose = () => dispatch(helpClosed());
+  const onStartTour = (article: HelpArticle) => dispatch(tourStarted(article));
 
   useEffect(() => {
     if (!request) searchRef.current?.focus();
     // (Only when it opens)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  // What's searched: the query once typing pauses
   useEffect(() => {
-    if (!request) return;
-    setQuery('');
-    setSearched('');
-    setFeedback(undefined);
-    setView({ kind: 'article', slug: request.slug });
-  }, [request]);
-  useEffect(() => {
-    const timer = window.setTimeout(() => setSearched(query.trim()), 250);
+    const timer = window.setTimeout(() => dispatch(querySettled()), 250);
     return () => window.clearTimeout(timer);
-  }, [query]);
+  }, [query, dispatch]);
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && dispatch(helpClosed());
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
+  }, [dispatch]);
 
   const visible = articles.filter((article) => visibleTo(article, isAseloStaff));
   const ofArea = visible.filter((article) => article.area === area);
@@ -134,39 +124,16 @@ export const HelpPanel = ({
   );
   const answered = confident && results.length > 0;
 
-  const open = (slug: string) => {
-    setFeedback(undefined);
-    setView({ kind: 'article', slug });
-  };
-  const send = async (reason: 'unanswered' | 'notHelpful', article?: string) => {
-    setSending(true);
-    setError(undefined);
-    try {
-      await client.send({ question: query.trim() || articleBySlug(article ?? '')?.title || '', area, reason, article });
-      setView({ kind: 'sent' });
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setSending(false);
-    }
-  };
-  const loadQuestions = () =>
-    client
-      .list()
-      .then(setQuestions)
-      .catch((err: Error) => setError(err.message));
-  const showQuestions = () => {
-    setView({ kind: 'questions' });
-    loadQuestions();
-  };
+  const open = (slug: string) => dispatch(articleOpened(slug));
+  const send = (reason: 'unanswered' | 'notHelpful', article?: string) => dispatch(sendHelpQuestion(reason, article));
   // Aselo staff: how many were sent, next to the link
   useEffect(() => {
-    if (isAseloStaff) client.list().then(setQuestions, () => undefined);
-  }, [isAseloStaff, client]);
+    if (isAseloStaff) dispatch(loadSentQuestions(true));
+  }, [isAseloStaff, dispatch]);
 
   const article = view.kind === 'article' ? articles.find((candidate) => candidate.slug === view.slug) : undefined;
   const back = (
-    <button type="button" className="link-button help-back" onClick={() => setView({ kind: 'home' })}>
+    <button type="button" className="link-button help-back" onClick={() => dispatch(homeShown())}>
       <ArrowLeft size={14} aria-hidden /> {searched ? 'Back to the answers' : 'All help'}
     </button>
   );
@@ -187,8 +154,7 @@ export const HelpPanel = ({
         role="search"
         onSubmit={(e) => {
           e.preventDefault();
-          setSearched(query.trim());
-          setView({ kind: 'home' });
+          dispatch(querySubmitted());
         }}
       >
         <Search size={15} aria-hidden />
@@ -198,10 +164,7 @@ export const HelpPanel = ({
           value={query}
           aria-label="Ask a question"
           placeholder="Ask a question, e.g. how do I send my changes?"
-          onChange={(e) => {
-            setQuery(e.target.value);
-            if (view.kind !== 'questions') setView({ kind: 'home' });
-          }}
+          onChange={(e) => dispatch(queryTyped(e.target.value))}
         />
       </form>
 
@@ -213,7 +176,7 @@ export const HelpPanel = ({
             {back}
             <h3>{article.title}</h3>
             {article.audience === 'aselo' && <span className="help-badge">For Aselo staff</span>}
-            {article.tour && onStartTour && <ShowMe article={article} onStartTour={onStartTour} />}
+            {article.tour && <ShowMe article={article} onStartTour={onStartTour} />}
             <HelpMarkdown source={article.body} onOpenArticle={open} steps={article.kind === 'guide'} />
             <div className="help-feedback">
               {feedback === 'yes' && <p>Glad it helped.</p>}
@@ -234,10 +197,10 @@ export const HelpPanel = ({
               {!feedback && (
                 <>
                   <span>Did this help?</span>
-                  <button type="button" className="help-feedback-button" onClick={() => setFeedback('yes')}>
+                  <button type="button" className="help-feedback-button" onClick={() => dispatch(feedbackGiven('yes'))}>
                     <ThumbsUp size={14} aria-hidden /> Yes
                   </button>
-                  <button type="button" className="help-feedback-button" onClick={() => setFeedback('no')}>
+                  <button type="button" className="help-feedback-button" onClick={() => dispatch(feedbackGiven('no'))}>
                     <ThumbsDown size={14} aria-hidden /> No
                   </button>
                 </>
@@ -268,7 +231,7 @@ export const HelpPanel = ({
               or write a new article when nothing is close.
             </p>
             {!questions && !error && <p className="field-hint">Loading…</p>}
-            {questions && <SentQuestions questions={questions} areaLabels={HELP_AREA_LABELS} onOpenArticle={open} />}
+            {questions && <SentQuestions areaLabels={HELP_AREA_LABELS} />}
           </div>
         )}
 
@@ -284,9 +247,7 @@ export const HelpPanel = ({
                     <button type="button" className="secondary-button" onClick={() => open(results[0].article.slug)}>
                       {results[0].article.kind === 'guide' ? 'Open the guide' : 'Read all of it'}
                     </button>
-                    {results[0].article.tour && onStartTour && (
-                      <ShowMe article={results[0].article} onStartTour={onStartTour} />
-                    )}
+                    {results[0].article.tour && <ShowMe article={results[0].article} onStartTour={onStartTour} />}
                   </div>
                 </div>
                 {results.length > 1 && (
@@ -362,7 +323,11 @@ export const HelpPanel = ({
               </section>
             )}
             {isAseloStaff && (
-              <button type="button" className="link-button help-staff-link" onClick={showQuestions}>
+              <button
+                type="button"
+                className="link-button help-staff-link"
+                onClick={() => dispatch(showSentQuestions())}
+              >
                 <Inbox size={14} aria-hidden /> Questions sent to the Aselo team
                 {questions && questions.length > 0 && <span className="help-count">{questions.length}</span>}
               </button>

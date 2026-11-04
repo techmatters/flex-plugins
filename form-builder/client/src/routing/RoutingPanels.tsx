@@ -15,11 +15,16 @@
  */
 
 /**
- * The routing designer's other pages: queues, skills and capacity, test a task, and check.
+ * The routing designer's other pages: queues, skills and capacity, test a task, and check. They
+ * read the open design from the store (routingSlice.ts) and change it with its actions.
  */
-import { useState } from 'react';
 import { CircleAlert, Trash2, TriangleAlert, X } from 'lucide-react';
-import type { Condition, Queue, QueueWorkers, RoutingDesign, Workflow } from '@tech-matters/form-builder-shared/routing/model';
+import type {
+  Condition,
+  QueueWorkers,
+  RoutingDesign,
+  Workflow,
+} from '@tech-matters/form-builder-shared/routing/model';
 import { attributeLabel, valueLabel } from '@tech-matters/form-builder-shared/routing/model';
 import {
   attributesOf,
@@ -30,17 +35,53 @@ import {
   describeQueueWorkers,
   describeWho,
   queueName,
-  TaskAttributes,
   testTask,
 } from '@tech-matters/form-builder-shared/routing/describe';
-import { renameSkill, setCapacity } from './edit';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
 import type { RoutingIssue } from './routingChecks';
 import { SKILL_MIME } from './RuleCard';
+import {
+  capacityChanged,
+  issueShown,
+  newQueueNameChanged,
+  newSkillNameChanged,
+  queueAdded,
+  queueChanged,
+  queueRemoved,
+  selectRoutingEditor,
+  selectRoutingIssues,
+  skillAdded,
+  skillChanged,
+  skillRemoved,
+  skillRenamed,
+  testAttributeSet,
+  testReset,
+  testWorkflowChosen,
+} from './routingSlice';
 
-type PanelProps = {
-  design: RoutingDesign;
-  readOnly: boolean;
-  onChange: (design: RoutingDesign) => void;
+// The open design, and whether it can be changed (for now helpline staff see it without changing it)
+const useOpenDesign = () => {
+  const editor = useAppSelector(selectRoutingEditor)!;
+  const readOnly = !useAppSelector(selectActingAsStaff);
+  return { editor, design: editor.design, readOnly };
+};
+
+// Shows where an issue (or a rule) is, and brings the rule's card into view once its tab is open
+const useShowIssue = () => {
+  const dispatch = useAppDispatch();
+  return (issue: RoutingIssue) => {
+    dispatch(issueShown(issue));
+    if (issue.workflow && issue.ruleId) {
+      setTimeout(
+        () =>
+          document
+            .getElementById(`rule-${issue.ruleId}`)
+            ?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+        50,
+      );
+    }
+  };
 };
 
 // The skills, as chips that can be dragged onto a step or a queue
@@ -60,7 +101,9 @@ export const SkillsBar = ({ design }: { design: RoutingDesign }) => (
         {skill.name}
       </span>
     ))}
-    {design.skills.length === 0 && <span className="field-hint">none yet (add them under Skills &amp; capacity)</span>}
+    {design.skills.length === 0 && (
+      <span className="field-hint">none yet (add them under Skills &amp; capacity)</span>
+    )}
   </div>
 );
 
@@ -85,7 +128,11 @@ const WorkersEditor = ({
           value={workers.kind}
           disabled={readOnly}
           aria-label="Who can work in it"
-          onChange={(e) => onChange(e.target.value === 'skills' ? { kind: 'skills', allOf: [] } : { kind: 'nobody' })}
+          onChange={(e) =>
+            onChange(
+              e.target.value === 'skills' ? { kind: 'skills', allOf: [] } : { kind: 'nobody' },
+            )
+          }
         >
           <option value="skills">Counselors with skills</option>
           <option value="nobody">Nobody (a holding queue)</option>
@@ -177,7 +224,10 @@ const WorkersEditor = ({
         <select
           value=""
           aria-label="Add a skill they also need"
-          onChange={(e) => e.target.value && onChange({ kind: 'skills', allOf: [...workers.allOf, [e.target.value]] })}
+          onChange={(e) =>
+            e.target.value &&
+            onChange({ kind: 'skills', allOf: [...workers.allOf, [e.target.value]] })
+          }
         >
           <option value="">{workers.allOf.length === 0 ? '+ skill' : '+ and…'}</option>
           {design.skills.map((skill) => (
@@ -191,32 +241,14 @@ const WorkersEditor = ({
   );
 };
 
-export const QueuesPanel = ({ design, readOnly, onChange }: PanelProps) => {
-  const [newName, setNewName] = useState('');
-  const setQueue = (key: string, queue: Queue) =>
-    onChange({
-      ...design,
-      queues: design.queues.map((candidate) => (candidate.key === key ? queue : candidate)),
-    });
+export const QueuesPanel = () => {
+  const dispatch = useAppDispatch();
+  const { editor, design, readOnly } = useOpenDesign();
+  const newName = editor.newQueueName;
   const used = (key: string) =>
     design.workflows.some((workflow) =>
       workflow.rules.some((rule) => rule.targets.some((target) => target.queue === key)),
     );
-  const add = () => {
-    const name = newName.trim();
-    if (!name) return;
-    let key =
-      name
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '_')
-        .replace(/^_|_$/g, '') || 'queue';
-    while (design.queues.some((queue) => queue.key === key)) key = `${key}_2`;
-    onChange({
-      ...design,
-      queues: [...design.queues, { key, name, workers: { kind: 'skills', allOf: [] } }],
-    });
-    setNewName('');
-  };
   return (
     <div className="routing-panel" role="region" aria-label="Queues">
       <SkillsBar design={design} />
@@ -230,7 +262,7 @@ export const QueuesPanel = ({ design, readOnly, onChange }: PanelProps) => {
                 value={queue.name}
                 aria-label="Queue name"
                 disabled={readOnly}
-                onChange={(e) => setQueue(queue.key, { ...queue, name: e.target.value })}
+                onChange={(e) => dispatch(queueChanged({ ...queue, name: e.target.value }))}
               />
               <code className="field-hint">{queue.key}</code>
               {!readOnly && !used(queue.key) && (
@@ -238,12 +270,7 @@ export const QueuesPanel = ({ design, readOnly, onChange }: PanelProps) => {
                   type="button"
                   className="icon-button"
                   aria-label={`Remove ${queue.name}`}
-                  onClick={() =>
-                    onChange({
-                      ...design,
-                      queues: design.queues.filter((candidate) => candidate.key !== queue.key),
-                    })
-                  }
+                  onClick={() => dispatch(queueRemoved(queue.key))}
                 >
                   <Trash2 size={14} />
                 </button>
@@ -253,7 +280,7 @@ export const QueuesPanel = ({ design, readOnly, onChange }: PanelProps) => {
               workers={queue.workers}
               design={design}
               readOnly={readOnly}
-              onChange={(workers) => setQueue(queue.key, { ...queue, workers })}
+              onChange={(workers) => dispatch(queueChanged({ ...queue, workers }))}
             />
             <span className="field-hint">{describeQueueWorkers(queue.workers)}</span>
           </li>
@@ -266,9 +293,14 @@ export const QueuesPanel = ({ design, readOnly, onChange }: PanelProps) => {
             value={newName}
             placeholder="New queue's name"
             aria-label="New queue's name"
-            onChange={(e) => setNewName(e.target.value)}
+            onChange={(e) => dispatch(newQueueNameChanged(e.target.value))}
           />
-          <button type="button" className="secondary-button" disabled={!newName.trim()} onClick={add}>
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={!newName.trim()}
+            onClick={() => dispatch(queueAdded())}
+          >
             Add a queue
           </button>
         </div>
@@ -280,24 +312,21 @@ export const QueuesPanel = ({ design, readOnly, onChange }: PanelProps) => {
 // ---------------------------------------------------------------------------------------------
 // Skills and capacity
 
-export const SkillsPanel = ({ design, readOnly, onChange }: PanelProps) => {
-  const [newSkill, setNewSkill] = useState('');
-  const add = () => {
-    const name = newSkill.trim();
-    if (!name || design.skills.some((skill) => skill.name === name)) return;
-    onChange({ ...design, skills: [...design.skills, { name }] });
-    setNewSkill('');
-  };
+export const SkillsPanel = () => {
+  const dispatch = useAppDispatch();
+  const { editor, design, readOnly } = useOpenDesign();
+  const newSkill = editor.newSkillName;
   return (
     <div className="routing-panel" role="region" aria-label="Skills and capacity">
       <h3>Skills</h3>
       <p className="field-hint">
-        What counselors can be given in Flex (Teams view). The same skills have to exist in each Flex account; the
-        export lists them.
+        What counselors can be given in Flex (Teams view). The same skills have to exist in each
+        Flex account; the export lists them.
       </p>
       <p className="field-hint">
-        <strong>Levels</strong>: counselors also get a level of the skill (a number, set in Flex). A step can then
-        prefer counselors by level (&quot;Prefer&quot; on the step), e.g. the most experienced first.
+        <strong>Levels</strong>: counselors also get a level of the skill (a number, set in Flex). A
+        step can then prefer counselors by level (&quot;Prefer&quot; on the step), e.g. the most
+        experienced first.
       </p>
       <ul className="routing-skill-list">
         {design.skills.map((skill) => (
@@ -309,7 +338,8 @@ export const SkillsPanel = ({ design, readOnly, onChange }: PanelProps) => {
               disabled={readOnly}
               onBlur={(e) => {
                 const name = e.target.value.trim();
-                if (name && name !== skill.name) onChange(renameSkill(design, skill.name, name));
+                if (name && name !== skill.name)
+                  dispatch(skillRenamed({ from: skill.name, to: name }));
               }}
             />
             <input
@@ -319,14 +349,12 @@ export const SkillsPanel = ({ design, readOnly, onChange }: PanelProps) => {
               aria-label="What it means"
               disabled={readOnly}
               onChange={(e) =>
-                onChange({
-                  ...design,
-                  skills: design.skills.map((candidate) =>
-                    candidate.name === skill.name
-                      ? { ...candidate, description: e.target.value || undefined }
-                      : candidate,
-                  ),
-                })
+                dispatch(
+                  skillChanged({
+                    name: skill.name,
+                    changes: { description: e.target.value || undefined },
+                  }),
+                )
               }
             />
             <label
@@ -338,14 +366,12 @@ export const SkillsPanel = ({ design, readOnly, onChange }: PanelProps) => {
                 checked={Boolean(skill.levels)}
                 disabled={readOnly}
                 onChange={(e) =>
-                  onChange({
-                    ...design,
-                    skills: design.skills.map((candidate) =>
-                      candidate.name === skill.name
-                        ? { ...candidate, levels: e.target.checked || undefined }
-                        : candidate,
-                    ),
-                  })
+                  dispatch(
+                    skillChanged({
+                      name: skill.name,
+                      changes: { levels: e.target.checked || undefined },
+                    }),
+                  )
                 }
               />
               <span>Levels</span>
@@ -355,12 +381,7 @@ export const SkillsPanel = ({ design, readOnly, onChange }: PanelProps) => {
                 type="button"
                 className="icon-button"
                 aria-label={`Remove ${skill.name}`}
-                onClick={() =>
-                  onChange({
-                    ...design,
-                    skills: design.skills.filter((candidate) => candidate.name !== skill.name),
-                  })
-                }
+                onClick={() => dispatch(skillRemoved(skill.name))}
               >
                 <X size={14} />
               </button>
@@ -375,22 +396,29 @@ export const SkillsPanel = ({ design, readOnly, onChange }: PanelProps) => {
             value={newSkill}
             placeholder="New skill"
             aria-label="New skill"
-            onChange={(e) => setNewSkill(e.target.value)}
+            onChange={(e) => dispatch(newSkillNameChanged(e.target.value))}
           />
-          <button type="button" className="secondary-button" disabled={!newSkill.trim()} onClick={add}>
+          <button
+            type="button"
+            className="secondary-button"
+            disabled={!newSkill.trim()}
+            onClick={() => dispatch(skillAdded())}
+          >
             Add a skill
           </button>
         </div>
       )}
 
       <h3>Capacity</h3>
-      <p className="field-hint">How much a counselor handles at once. These apply to every step they concern.</p>
+      <p className="field-hint">
+        How much a counselor handles at once. These apply to every step they concern.
+      </p>
       <label className="field-checkbox">
         <input
           type="checkbox"
           checked={design.capacity.voiceAndChatExclusive}
           disabled={readOnly}
-          onChange={(e) => onChange(setCapacity(design, { voiceAndChatExclusive: e.target.checked }))}
+          onChange={(e) => dispatch(capacityChanged({ voiceAndChatExclusive: e.target.checked }))}
         />
         <span>Never a call and a chat at the same time</span>
       </label>
@@ -399,7 +427,7 @@ export const SkillsPanel = ({ design, readOnly, onChange }: PanelProps) => {
           type="checkbox"
           checked={design.capacity.voicemailOneAtATime}
           disabled={readOnly}
-          onChange={(e) => onChange(setCapacity(design, { voicemailOneAtATime: e.target.checked }))}
+          onChange={(e) => dispatch(capacityChanged({ voicemailOneAtATime: e.target.checked }))}
         />
         <span>One voicemail at a time (taken whatever else they're handling)</span>
       </label>
@@ -412,16 +440,14 @@ export const SkillsPanel = ({ design, readOnly, onChange }: PanelProps) => {
           placeholder="Not set here"
           disabled={readOnly}
           onChange={(e) =>
-            onChange({
-              ...design,
-              capacity: {
-                ...design.capacity,
-                maxChats: e.target.value ? Number(e.target.value) : undefined,
-              },
-            })
+            dispatch(
+              capacityChanged({ maxChats: e.target.value ? Number(e.target.value) : undefined }),
+            )
           }
         />
-        <span className="field-hint">The counselors&apos; maxMessageCapacity in Flex; listed in the export.</span>
+        <span className="field-hint">
+          The counselors&apos; maxMessageCapacity in Flex; listed in the export.
+        </span>
       </label>
     </div>
   );
@@ -456,36 +482,33 @@ const whyNot = (design: RoutingDesign, groups: GroupResult[]) =>
     .map((condition) => `needs ${describeCondition(condition)}`)
     .join('; or ');
 
-export const TestTaskPanel = ({
-  design,
-  onShowRule,
-}: {
-  design: RoutingDesign;
-  onShowRule?: (workflow: string, ruleId: string) => void;
-}) => {
-  const workflows = design.workflows.filter((workflow) => !workflow.templateText);
-  const [workflowKey, setWorkflowKey] = useState(workflows[0]?.key ?? '');
-  const [task, setTask] = useState<TaskAttributes>({});
+export const TestTaskPanel = () => {
+  const dispatch = useAppDispatch();
+  const { editor, design } = useOpenDesign();
+  const showIssue = useShowIssue();
+  const onShowRule = (workflowKey: string, ruleId: string) =>
+    showIssue({ key: ruleId, severity: 'warning', message: '', workflow: workflowKey, ruleId });
+  const { workflowKey, task } = editor.test;
+  const workflows = design.workflows.filter((candidate) => !candidate.templateText);
   const workflow = workflows.find((candidate) => candidate.key === workflowKey);
   if (!workflow) return <p className="field-hint">No workflows to test.</p>;
   const attributes = attributesOf(workflow);
   const order = (attribute: string) =>
-    MAIN_ATTRIBUTES.includes(attribute) ? MAIN_ATTRIBUTES.indexOf(attribute) : MAIN_ATTRIBUTES.length;
+    MAIN_ATTRIBUTES.includes(attribute)
+      ? MAIN_ATTRIBUTES.indexOf(attribute)
+      : MAIN_ATTRIBUTES.length;
   const main = Object.entries(attributes)
     .filter(([attribute]) => !DETAIL_ATTRIBUTES.includes(attribute))
     .sort(([a], [b]) => order(a) - order(b));
-  const details = Object.entries(attributes).filter(([attribute]) => DETAIL_ATTRIBUTES.includes(attribute));
+  const details = Object.entries(attributes).filter(([attribute]) =>
+    DETAIL_ATTRIBUTES.includes(attribute),
+  );
   const result = testTask(workflow, task);
   const matchedIndex = result.matched ? workflow.rules.indexOf(result.matched) : -1;
   const skipped = result.checked.filter((check) => check.rule !== result.matched);
 
   const set = (attribute: string, value?: string | number | boolean) =>
-    setTask((current) => {
-      const next = { ...current };
-      if (value === undefined) delete next[attribute];
-      else next[attribute] = value;
-      return next;
-    });
+    dispatch(testAttributeSet({ attribute, value }));
   const row = ([attribute, values]: [string, (string | number | boolean)[]]) => (
     <div key={attribute} className="routing-test-row">
       <span className="routing-test-label">{attributeLabel(attribute)}</span>
@@ -515,7 +538,11 @@ export const TestTaskPanel = ({
           className="routing-test-other"
           aria-label={`Another ${attributeLabel(attribute)}`}
           placeholder="Other…"
-          value={task[attribute] !== undefined && !values.includes(task[attribute]) ? String(task[attribute]) : ''}
+          value={
+            task[attribute] !== undefined && !values.includes(task[attribute])
+              ? String(task[attribute])
+              : ''
+          }
           onChange={(e) => set(attribute, e.target.value || undefined)}
         />
       </span>
@@ -528,7 +555,8 @@ export const TestTaskPanel = ({
   return (
     <div className="routing-panel routing-test" role="region" aria-label="Test a task">
       <p className="field-hint">
-        Pretend a contact arrives: pick what it looks like, and see which rule takes it and who is offered it.
+        Pretend a contact arrives: pick what it looks like, and see which rule takes it and who is
+        offered it.
       </p>
       {workflows.length > 1 && (
         <>
@@ -540,7 +568,7 @@ export const TestTaskPanel = ({
                 type="button"
                 className={`routing-test-choice ${candidate.key === workflowKey ? 'active' : ''}`}
                 aria-pressed={candidate.key === workflowKey}
-                onClick={() => setWorkflowKey(candidate.key)}
+                onClick={() => dispatch(testWorkflowChosen(candidate.key))}
               >
                 {workflowLabel(candidate)}
               </button>
@@ -549,7 +577,9 @@ export const TestTaskPanel = ({
         </>
       )}
       <h3>{workflows.length > 1 ? '2. ' : ''}The contact</h3>
-      {main.length === 0 && <p className="field-hint">This workflow&apos;s rules don&apos;t look at the contact.</p>}
+      {main.length === 0 && (
+        <p className="field-hint">This workflow&apos;s rules don&apos;t look at the contact.</p>
+      )}
       {main.map(row)}
       {details.length > 0 && (
         <details className="routing-test-more">
@@ -558,30 +588,28 @@ export const TestTaskPanel = ({
         </details>
       )}
       {Object.keys(task).length > 0 && (
-        <button type="button" className="link-button" onClick={() => setTask({})}>
+        <button type="button" className="link-button" onClick={() => dispatch(testReset())}>
           Start over
         </button>
       )}
 
       <h3>{workflows.length > 1 ? '3. ' : ''}What happens</h3>
       <div className="routing-test-result" role="status">
-        <p className="routing-test-contact">{described ? `A contact with ${described}` : 'Any contact'}</p>
+        <p className="routing-test-contact">
+          {described ? `A contact with ${described}` : 'Any contact'}
+        </p>
         {result.matched ? (
           <>
             <p>
-              is taken by rule {matchedIndex + 1}, <strong>{result.matched.name || 'unnamed'}</strong>
-              {onShowRule && (
-                <>
-                  {' '}
-                  <button
-                    type="button"
-                    className="link-button"
-                    onClick={() => onShowRule(workflow.key, result.matched!.id)}
-                  >
-                    (show it)
-                  </button>
-                </>
-              )}
+              is taken by rule {matchedIndex + 1},{' '}
+              <strong>{result.matched.name || 'unnamed'}</strong>{' '}
+              <button
+                type="button"
+                className="link-button"
+                onClick={() => onShowRule(workflow.key, result.matched!.id)}
+              >
+                (show it)
+              </button>
               , and offered:
             </p>
             <ol className="routing-test-timeline">
@@ -589,7 +617,9 @@ export const TestTaskPanel = ({
                 <li key={target.id}>
                   <span>
                     in <strong>{queueName(design, target.queue)}</strong> to{' '}
-                    {target.knownWorker ? 'the counselor it was transferred to' : describeWho(target.who).toLowerCase()}
+                    {target.knownWorker
+                      ? 'the counselor it was transferred to'
+                      : describeWho(target.who).toLowerCase()}
                     {target.priority !== undefined ? ` (priority ${target.priority})` : ''}.
                   </span>
                   <span className="field-hint">
@@ -603,14 +633,16 @@ export const TestTaskPanel = ({
           </>
         ) : (
           <p>
-            isn&apos;t taken by any rule: TaskRouter would send it to the workflow&apos;s default queue (if there is
-            one).
+            isn&apos;t taken by any rule: TaskRouter would send it to the workflow&apos;s default
+            queue (if there is one).
           </p>
         )}
         {skipped.length > 0 && (
           <details>
             <summary>
-              {result.matched ? `Rules before it (${skipped.length})` : `Rules tried (${skipped.length})`}
+              {result.matched
+                ? `Rules before it (${skipped.length})`
+                : `Rules tried (${skipped.length})`}
             </summary>
             <ul className="routing-test-steps">
               {skipped.map(({ rule, groups, matched }) => (
@@ -632,26 +664,34 @@ export const TestTaskPanel = ({
 // ---------------------------------------------------------------------------------------------
 // Check
 
-export const CheckList = ({ issues, onShow }: { issues: RoutingIssue[]; onShow: (issue: RoutingIssue) => void }) => (
-  <div className="routing-panel" role="region" aria-label="Check">
-    <p className="flow-check-summary">
-      {issues.length === 0
-        ? 'Nothing to fix.'
-        : `${issues.filter((issue) => issue.severity === 'error').length} errors, ${issues.filter((issue) => issue.severity === 'warning').length} warnings`}
-    </p>
-    <ul className="flow-issue-list">
-      {issues.map((issue) => (
-        <li key={issue.key} className={`flow-issue ${issue.severity}`}>
-          <span className="flow-issue-icon">
-            {issue.severity === 'error' ? <CircleAlert size={15} /> : <TriangleAlert size={15} />}
-          </span>
-          <button type="button" className="link-button flow-issue-message" onClick={() => onShow(issue)}>
-            {issue.message}
-          </button>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
+export const CheckList = () => {
+  const issues = useAppSelector(selectRoutingIssues);
+  const onShow = useShowIssue();
+  return (
+    <div className="routing-panel" role="region" aria-label="Check">
+      <p className="flow-check-summary">
+        {issues.length === 0
+          ? 'Nothing to fix.'
+          : `${issues.filter((issue) => issue.severity === 'error').length} errors, ${issues.filter((issue) => issue.severity === 'warning').length} warnings`}
+      </p>
+      <ul className="flow-issue-list">
+        {issues.map((issue) => (
+          <li key={issue.key} className={`flow-issue ${issue.severity}`}>
+            <span className="flow-issue-icon">
+              {issue.severity === 'error' ? <CircleAlert size={15} /> : <TriangleAlert size={15} />}
+            </span>
+            <button
+              type="button"
+              className="link-button flow-issue-message"
+              onClick={() => onShow(issue)}
+            >
+              {issue.message}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 export const workflowLabel = (workflow: Workflow) => workflow.name || workflow.key;

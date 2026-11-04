@@ -16,15 +16,61 @@
  */
 import { afterEach, describe, expect, test, jest } from '@jest/globals';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import type { ReactNode } from 'react';
+import { Provider } from 'react-redux';
 import { HELP_ARTICLES, parseArticle } from './articles';
-import type { HelpArea } from './articles';
+import type { HelpArea, HelpArticle } from './articles';
 import { blocksOf } from './HelpMarkdown';
 import { HelpPanel } from './HelpPanel';
 import type { HelpClient } from './helpClient';
 import { searchHelp } from './search';
 import { expectAt } from '../testing/expectAt';
+import { AppStore, createAppStore } from '../app/store';
+import { sessionLoaded } from '../app/sessionSlice';
+import { openHelp, switchArea, tourStarted } from '../app/appSlice';
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  window.history.replaceState(null, '', '/');
+});
+
+// The help panel, in an area, for helpline or Aselo staff, and (optionally) open at an article
+const renderPanel = ({
+  area = 'forms',
+  isAseloStaff = false,
+  helpClient,
+  articles,
+  request,
+}: {
+  area?: HelpArea;
+  isAseloStaff?: boolean;
+  helpClient?: HelpClient;
+  articles?: HelpArticle[];
+  request?: string;
+}) => {
+  const store = createAppStore(helpClient ? { helpClient } : {});
+  if (area !== 'general') store.dispatch(switchArea(area));
+  store.dispatch(
+    sessionLoaded({
+      user: {
+        name: 'Ana',
+        role: isAseloStaff ? 'aselo-staff' : 'helpline-staff',
+        helplines: 'all',
+        applyInBuilder: false,
+      },
+      helplines: [],
+    }),
+  );
+  if (request) store.dispatch(openHelp(request));
+  render(
+    <Provider store={store}>
+      <HelpPanel articles={articles} />
+    </Provider>,
+  );
+  return store;
+};
+
+const inStore = (store: AppStore, children: ReactNode) => render(<Provider store={store}>{children}</Provider>);
 
 describe('the help articles', () => {
   test('each has a title, the ways people ask for it, a short answer, and links that lead somewhere', () => {
@@ -149,7 +195,7 @@ describe('the help panel', () => {
   test("opens on the area's guides, then answers a question and opens the guide", () => {
     jest.useFakeTimers();
     try {
-      render(<HelpPanel area="forms" isAseloStaff={false} onClose={() => undefined} client={client()} />);
+      renderPanel({ helpClient: client() });
       expect(screen.getByText('Guides, step by step')).toBeTruthy();
       expect(screen.getByRole('button', { name: /Send your changes for review/ })).toBeTruthy();
       expect(screen.queryByText('Publish a draft')).toBeNull();
@@ -168,7 +214,7 @@ describe('the help panel', () => {
     jest.useFakeTimers();
     const helpClient = client();
     try {
-      render(<HelpPanel area="forms" isAseloStaff={false} onClose={() => undefined} client={helpClient} />);
+      renderPanel({ helpClient });
       ask('banana smoothie recipe');
       expect(screen.getByText(/couldn’t find an answer/)).toBeTruthy();
       await act(async () => {
@@ -182,7 +228,7 @@ describe('the help panel', () => {
   });
 
   test('Aselo staff see the questions sent', async () => {
-    render(<HelpPanel area="forms" isAseloStaff onClose={() => undefined} client={client()} />);
+    renderPanel({ isAseloStaff: true, helpClient: client() });
     fireEvent.click(screen.getByRole('button', { name: /Questions sent to the Aselo team/ }));
     expect(await screen.findByText('how do I add a logo')).toBeTruthy();
   });
@@ -192,7 +238,7 @@ describe('the help panel', () => {
     ['chatbots', /Change what a chatbot says and asks/],
     ['routing', /Check where a contact would go/],
   ] as [HelpArea, RegExp][])('%s opens on its own help, with the general articles', (area, guide) => {
-    render(<HelpPanel area={area} isAseloStaff={false} onClose={() => undefined} client={client()} />);
+    renderPanel({ area, helpClient: client() });
     expect(screen.getByRole('button', { name: guide })).toBeTruthy();
     expect(screen.getByRole('button', { name: /What do Imported, In progress/ })).toBeTruthy();
     expect(screen.queryByRole('button', { name: /Send your changes for review/ })).toBeNull();
@@ -200,9 +246,7 @@ describe('the help panel', () => {
 
   test('an area without help yet says so, and still offers the general articles', () => {
     const general = HELP_ARTICLES.filter((article) => article.area === 'general');
-    render(
-      <HelpPanel area="routing" isAseloStaff={false} onClose={() => undefined} client={client()} articles={general} />,
-    );
+    renderPanel({ area: 'routing', helpClient: client(), articles: general });
     expect(screen.getByText(/Help for Routing is on its way/)).toBeTruthy();
     expect(screen.getByRole('button', { name: /Signing in and getting access/ })).toBeTruthy();
   });
@@ -225,14 +269,7 @@ describe('“Need help?” on a section', () => {
   });
 
   test('the panel opens on the article asked for, with a way back to the rest', () => {
-    render(
-      <HelpPanel
-        area="forms"
-        isAseloStaff={false}
-        onClose={() => undefined}
-        request={{ slug: 'section-help-seeker-information', at: 1 }}
-      />,
-    );
+    renderPanel({ request: 'section-help-seeker-information' });
     expect(screen.getByRole('heading', { name: 'Help seeker information' })).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: /All help/ }));
     expect(screen.getByText('About each section')).toBeTruthy();
@@ -295,22 +332,24 @@ describe('“Show me” tours', () => {
     const rects = jest
       .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
       .mockReturnValue({ width: 10, height: 10, top: 0, left: 0, bottom: 10, right: 10, x: 0, y: 0 } as DOMRect);
-    let ended = false;
+    const store = createAppStore();
+    store.dispatch(
+      tourStarted({
+        slug: 'submit-for-review',
+        title: 'Send your changes',
+        tour: [
+          { target: 'button:Review & submit', text: 'Click **Review & submit**.' },
+          { target: 'text:Fix these first', text: 'Fix these.', missing: 'Nothing needs fixing.' },
+          { target: 'button:Submit for review', text: 'Then submit.' },
+        ],
+      } as HelpArticle),
+    );
     try {
-      render(
+      inStore(
+        store,
         <>
           <button type="button">Review &amp; submit</button>
-          <Tour
-            title="Send your changes"
-            steps={[
-              { target: 'button:Review & submit', text: 'Click **Review & submit**.' },
-              { target: 'text:Fix these first', text: 'Fix these.', missing: 'Nothing needs fixing.' },
-              { target: 'button:Submit for review', text: 'Then submit.' },
-            ]}
-            onEnd={() => {
-              ended = true;
-            }}
-          />
+          <Tour />
         </>,
       );
       const card = () => screen.getByRole('dialog', { name: 'Show me: Send your changes' });
@@ -322,7 +361,7 @@ describe('“Show me” tours', () => {
       fireEvent.click(screen.getByRole('button', { name: /Back/ }));
       expect(card().textContent).toContain('Step 1 of 3');
       fireEvent.keyDown(window, { key: 'Escape' });
-      expect(ended).toBe(true);
+      expect(store.getState().app.tour).toBeUndefined();
     } finally {
       rects.mockRestore();
       jest.useRealTimers();
@@ -330,19 +369,10 @@ describe('“Show me” tours', () => {
   });
 
   test('a guide with a tour offers “Show me”; it never starts by itself', () => {
-    const started: string[] = [];
-    render(
-      <HelpPanel
-        area="forms"
-        isAseloStaff={false}
-        onClose={() => undefined}
-        request={{ slug: 'submit-for-review', at: 1 }}
-        onStartTour={(article) => started.push(article.slug)}
-      />,
-    );
-    expect(started).toEqual([]);
+    const store = renderPanel({ request: 'submit-for-review' });
+    expect(store.getState().app.tour).toBeUndefined();
     fireEvent.click(screen.getByRole('button', { name: /Show me on the page/ }));
-    expect(started).toEqual(['submit-for-review']);
+    expect(store.getState().app.tour?.slug).toBe('submit-for-review');
   });
 });
 

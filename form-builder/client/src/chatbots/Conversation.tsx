@@ -34,23 +34,34 @@ import {
   Play,
   Trash2,
 } from 'lucide-react';
-import type { AnswerType, Chatbot, ChatbotDesign, ChatbotIntent, ChatbotQuestion } from '@tech-matters/form-builder-shared/chatbots/model';
+import type { AnswerType, Chatbot, ChatbotIntent, ChatbotQuestion } from '@tech-matters/form-builder-shared/chatbots/model';
 import { answerKindOf, answerTypeOf, BUILTIN_TYPES, builtinInfo, builtinLabel, fillsInContact } from '@tech-matters/form-builder-shared/chatbots/model';
-import {
-  addAnswerType,
-  moveQuestion,
-  newQuestion,
-  openComments,
-  updateBot,
-  updateIntent,
-  updateQuestion,
-  withBuiltinType,
-} from './edit';
-import type { ChatbotIssue } from './chatbotChecks';
+import { openComments } from './edit';
 import { Loading } from '../common/Loading';
 import type { ContactForms } from '@tech-matters/form-builder-shared/chatbots/formMappings';
-import { renameFormTargets, setFormTargets, targetLabel, unmatchedAnswers } from '@tech-matters/form-builder-shared/chatbots/formMappings';
+import { targetLabel, unmatchedAnswers } from '@tech-matters/form-builder-shared/chatbots/formMappings';
 import { AutoTextarea } from '../common/AutoTextarea';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import {
+  addQuestion,
+  answerPickerChanged,
+  changeIntent,
+  changeQuestion,
+  createAnswerTypeForQuestion,
+  moveQuestionTo,
+  pickAnswerType,
+  removeQuestion,
+  renameQuestionSlot,
+  selectChatbotDesign,
+  selectChatbotIssues,
+  selectChatbots,
+  selectChatbotsReadOnly,
+  selectCommentAuthor,
+  selectContactForms,
+  selectSelectedBot,
+  selectSelectedIntent,
+  setQuestionFormTargets,
+} from './chatbotsSlice';
 import { CommentsToggle, CommentThread } from './Comments';
 
 const Bubble = ({
@@ -149,21 +160,14 @@ const NEW_PATTERN = '__new-pattern';
  * Which answers a question takes: one of the language's lists or patterns, one of Lex's own types,
  * or a new list or pattern (named after the question by default)
  */
-const AnswerPicker = ({
-  design,
-  bot,
-  question,
-  readOnly,
-  onPick,
-}: {
-  design: ChatbotDesign;
-  bot: Chatbot;
-  question: ChatbotQuestion;
-  readOnly: boolean;
-  onPick: (design: ChatbotDesign, answerType: string) => void;
-}) => {
-  const [creating, setCreating] = useState<'list' | 'pattern'>();
-  const [name, setName] = useState('');
+const AnswerPicker = ({ bot, intent, question }: { bot: Chatbot; intent: ChatbotIntent; question: ChatbotQuestion }) => {
+  const dispatch = useAppDispatch();
+  const design = useAppSelector(selectChatbotDesign)!;
+  const readOnly = useAppSelector(selectChatbotsReadOnly);
+  // A new list or pattern being named
+  const picker = useAppSelector(selectChatbots).answerPickers[question.id];
+  const creating = picker?.kind;
+  const name = picker?.name ?? '';
   const types = Object.values(design.answerTypes[bot.language] ?? {}).filter((type) => !type.builtin);
   const lists = types.filter((type) => answerKindOf(type) === 'list').sort((a, b) => a.name.localeCompare(b.name));
   const patterns = types
@@ -180,11 +184,18 @@ const AnswerPicker = ({
         onChange={(e) => {
           const value = e.target.value;
           if (value === NEW_LIST || value === NEW_PATTERN) {
-            setCreating(value === NEW_LIST ? 'list' : 'pattern');
-            setName(taken(question.slot) ? `${question.slot}Answers` : question.slot);
+            dispatch(
+              answerPickerChanged({
+                questionId: question.id,
+                form: {
+                  kind: value === NEW_LIST ? 'list' : 'pattern',
+                  name: taken(question.slot) ? `${question.slot}Answers` : question.slot,
+                },
+              }),
+            );
             return;
           }
-          onPick(value.startsWith('AMAZON.') ? withBuiltinType(design, bot.language, value) : design, value);
+          dispatch(pickAnswerType(bot.id, intent.id, question.id, value));
         }}
       >
         {!known.has(question.answerType) && <option value={question.answerType}>{question.answerType}</option>}
@@ -218,20 +229,23 @@ const AnswerPicker = ({
             type="text"
             value={name}
             aria-label={creating === 'list' ? 'Name of the new list' : 'Name of the new pattern'}
-            onChange={(e) => setName(e.target.value.replace(/\s/g, ''))}
+            onChange={(e) =>
+              dispatch(answerPickerChanged({ questionId: question.id, form: { kind: creating, name: e.target.value } }))
+            }
           />
           <button
             type="button"
             className="secondary-button"
             disabled={!name || taken(name) || name.startsWith('AMAZON.')}
-            onClick={() => {
-              onPick(addAnswerType(design, bot.language, name, creating), name);
-              setCreating(undefined);
-            }}
+            onClick={() => dispatch(createAnswerTypeForQuestion(bot.id, intent.id, question.id))}
           >
             Create
           </button>
-          <button type="button" className="link-button" onClick={() => setCreating(undefined)}>
+          <button
+            type="button"
+            className="link-button"
+            onClick={() => dispatch(answerPickerChanged({ questionId: question.id }))}
+          >
             Cancel
           </button>
           {taken(name) && <span className="field-hint">There&apos;s already one called {name}.</span>}
@@ -315,31 +329,14 @@ const MAPPING_HELP =
  * (PrepopulateMappings.json, survey: [["A", "B"], ["C"]] fills in the first of A and B there is,
  * and C), with what would be lost on the way
  */
-const FormFieldsRow = ({
-  design,
-  question,
-  type,
-  forms,
-  readOnly,
-  onChange,
-}: {
-  design: ChatbotDesign;
-  question: ChatbotQuestion;
-  type?: AnswerType;
-  forms?: ContactForms;
-  readOnly: boolean;
-  onChange: (design: ChatbotDesign) => void;
-}) => {
+const FormFieldsRow = ({ question, type }: { question: ChatbotQuestion; type?: AnswerType }) => {
+  const dispatch = useAppDispatch();
+  const design = useAppSelector(selectChatbotDesign)!;
+  const forms = useAppSelector(selectContactForms);
+  const readOnly = useAppSelector(selectChatbotsReadOnly);
   const groups = design.formMappings?.[question.slot] ?? [];
   const targets = groups.flat();
-  const set = (next: string[][]) =>
-    onChange(
-      setFormTargets(
-        design,
-        question.slot,
-        next.filter((group) => group.length > 0),
-      ),
-    );
+  const set = (next: string[][]) => dispatch(setQuestionFormTargets(question.slot, next));
   return (
     <div className="chatbot-form-fields">
       <span className="chatbot-answers-label">
@@ -430,35 +427,27 @@ const FormFieldsRow = ({
 };
 
 const QuestionCard = ({
-  design,
   bot,
   intent,
   question,
   index,
-  issues,
-  forms,
-  author,
-  readOnly,
-  onChange,
 }: {
-  design: ChatbotDesign;
   bot: Chatbot;
   intent: ChatbotIntent;
   question: ChatbotQuestion;
   index: number;
-  issues: ChatbotIssue[];
-  forms?: ContactForms;
-  author: string;
-  readOnly: boolean;
-  onChange: (design: ChatbotDesign) => void;
 }) => {
+  const dispatch = useAppDispatch();
+  const design = useAppSelector(selectChatbotDesign)!;
+  const allIssues = useAppSelector(selectChatbotIssues);
+  const author = useAppSelector(selectCommentAuthor);
+  const readOnly = useAppSelector(selectChatbotsReadOnly);
+  const issues = allIssues.filter((issue) => issue.questionId === question.id);
+  // Layout only: whether its comments are unfolded
   const [showComments, setShowComments] = useState(openComments(question.comments).length > 0);
   const type = answerTypeOf(design, bot, question.answerType);
   const count = intent.questions.length;
-  const changeIntent = (base: ChatbotDesign, change: (intent: ChatbotIntent) => ChatbotIntent) =>
-    updateBot(base, bot.id, (current) => updateIntent(current, intent.id, change));
-  const set = (change: Partial<ChatbotQuestion>, base = design) =>
-    onChange(changeIntent(base, (old) => updateQuestion(old, question.id, (current) => ({ ...current, ...change }))));
+  const set = (change: Partial<ChatbotQuestion>) => dispatch(changeQuestion(bot.id, intent.id, question.id, change));
 
   return (
     <li className="chatbot-question" id={`question-${question.id}`}>
@@ -474,13 +463,9 @@ const QuestionCard = ({
               value={question.slot}
               aria-label="Saved as"
               disabled={readOnly}
-              onChange={(e) => {
-                const slot = e.target.value.replace(/\s/g, '');
-                const renamed = changeIntent(design, (old) =>
-                  updateQuestion(old, question.id, (current) => ({ ...current, slot })),
-                );
-                onChange(renameFormTargets(renamed, question.slot, slot));
-              }}
+              onChange={(e) =>
+                dispatch(renameQuestionSlot(bot.id, intent.id, question.id, e.target.value.replace(/\s/g, '')))
+              }
             />
           </label>
           <label className="field-checkbox">
@@ -506,7 +491,7 @@ const QuestionCard = ({
                   className="icon-button"
                   aria-label="Move up"
                   disabled={index === 0}
-                  onClick={() => onChange(changeIntent(design, (old) => moveQuestion(old, index, index - 1)))}
+                  onClick={() => dispatch(moveQuestionTo(bot.id, intent.id, index, index - 1))}
                 >
                   <ArrowUp size={14} />
                 </button>
@@ -515,7 +500,7 @@ const QuestionCard = ({
                   className="icon-button"
                   aria-label="Move down"
                   disabled={index === count - 1}
-                  onClick={() => onChange(changeIntent(design, (old) => moveQuestion(old, index, index + 1)))}
+                  onClick={() => dispatch(moveQuestionTo(bot.id, intent.id, index, index + 1))}
                 >
                   <ArrowDown size={14} />
                 </button>
@@ -523,14 +508,7 @@ const QuestionCard = ({
                   type="button"
                   className="icon-button"
                   aria-label="Remove question"
-                  onClick={() =>
-                    onChange(
-                      changeIntent(design, (old) => ({
-                        ...old,
-                        questions: old.questions.filter((candidate) => candidate.id !== question.id),
-                      })),
-                    )
-                  }
+                  onClick={() => dispatch(removeQuestion(bot.id, intent.id, question.id))}
                 >
                   <Trash2 size={14} />
                 </button>
@@ -559,27 +537,12 @@ const QuestionCard = ({
         <div className="chatbot-answers">
           <span className="chatbot-answers-label">
             <MessageSquareText size={13} aria-hidden /> Answers
-            <AnswerPicker
-              design={design}
-              bot={bot}
-              question={question}
-              readOnly={readOnly}
-              onPick={(base, answerType) => set({ answerType }, base)}
-            />
+            <AnswerPicker bot={bot} intent={intent} question={question} />
           </span>
           <AnswerChips type={type} />
         </div>
 
-        {fillsInContact(bot) && (
-          <FormFieldsRow
-            design={design}
-            question={question}
-            type={type}
-            forms={forms}
-            readOnly={readOnly}
-            onChange={onChange}
-          />
-        )}
+        {fillsInContact(bot) && <FormFieldsRow question={question} type={type} />}
 
         <div className="chatbot-retry">
           <span className="chatbot-answers-label">
@@ -619,38 +582,16 @@ const QuestionCard = ({
   );
 };
 
-export const Conversation = ({
-  design,
-  bot,
-  intent,
-  issues,
-  forms,
-  author,
-  readOnly,
-  onChange,
-}: {
-  design: ChatbotDesign;
-  bot: Chatbot;
-  intent: ChatbotIntent;
-  issues: ChatbotIssue[];
-  forms?: ContactForms;
-  author: string;
-  readOnly: boolean;
-  onChange: (design: ChatbotDesign) => void;
-}) => {
-  const changeIntent = (change: (intent: ChatbotIntent) => ChatbotIntent) =>
-    onChange(updateBot(design, bot.id, (current) => updateIntent(current, intent.id, change)));
-  const defaultType =
-    intent.questions[intent.questions.length - 1]?.answerType ??
-    Object.keys(design.answerTypes[bot.language] ?? {})[0] ??
-    'AMAZON.FreeFormInput';
+// The chatbot and path showing (ChatbotsArea only shows it when there are both)
+export const Conversation = () => {
+  const dispatch = useAppDispatch();
+  const bot = useAppSelector(selectSelectedBot)!;
+  const intent = useAppSelector(selectSelectedIntent)!;
+  const readOnly = useAppSelector(selectChatbotsReadOnly);
+  const change = (changes: Partial<ChatbotIntent>) => dispatch(changeIntent(bot.id, intent.id, changes));
   return (
     <div className="chatbot-conversation" aria-label="Conversation">
-      <Utterances
-        intent={intent}
-        readOnly={readOnly}
-        onChange={(utterances) => changeIntent((old) => ({ ...old, utterances }))}
-      />
+      <Utterances intent={intent} readOnly={readOnly} onChange={(utterances) => change({ utterances })} />
 
       <div className="chatbot-step">
         <span className="chatbot-step-icon greet" aria-hidden>
@@ -663,45 +604,21 @@ export const Conversation = ({
             label="Greeting"
             placeholder="Optional: what the chatbot says first"
             readOnly={readOnly}
-            onChange={(text) => changeIntent((old) => ({ ...old, opening: text || undefined }))}
+            onChange={(text) => change({ opening: text || undefined })}
           />
         </div>
       </div>
 
       <ol className="chatbot-questions">
         {intent.questions.map((question, index) => (
-          <QuestionCard
-            key={question.id}
-            design={design}
-            bot={bot}
-            intent={intent}
-            question={question}
-            index={index}
-            issues={issues.filter((issue) => issue.questionId === question.id)}
-            forms={forms}
-            author={author}
-            readOnly={readOnly}
-            onChange={onChange}
-          />
+          <QuestionCard key={question.id} bot={bot} intent={intent} question={question} index={index} />
         ))}
       </ol>
       {!readOnly && (
         <button
           type="button"
           className="secondary-button chatbot-add"
-          onClick={() => {
-            const base = defaultType.startsWith('AMAZON.')
-              ? withBuiltinType(design, bot.language, defaultType)
-              : design;
-            onChange(
-              updateBot(base, bot.id, (current) =>
-                updateIntent(current, intent.id, (old) => ({
-                  ...old,
-                  questions: [...old.questions, newQuestion(old, defaultType)],
-                })),
-              ),
-            );
-          }}
+          onClick={() => dispatch(addQuestion(bot.id, intent.id))}
         >
           + Add a question
         </button>
@@ -719,7 +636,7 @@ export const Conversation = ({
             label="Goodbye"
             placeholder="What the chatbot says at the end"
             readOnly={readOnly}
-            onChange={(text) => changeIntent((old) => ({ ...old, closing: text || undefined }))}
+            onChange={(text) => change({ closing: text || undefined })}
           />
         </div>
       </div>

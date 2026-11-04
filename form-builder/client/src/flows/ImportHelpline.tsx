@@ -20,20 +20,23 @@
  * was found and what needs a person, then create a board per Studio flow (as in Studio) and copy
  * its recordings into the recordings bucket (staging's into staging, production's into production).
  */
-import { useState } from 'react';
-import type { HelplineImport, ImportedFlow } from '@tech-matters/form-builder-shared';
-import { hasNonStandardRecording, importedRecordingKey, standardRecordingName } from '@tech-matters/form-builder-shared/flows/recordings';
-import type { FromBranch } from '@tech-matters/form-builder-shared';
+import { useCallback } from 'react';
+import type { ImportedFlow } from '@tech-matters/form-builder-shared';
 import { BranchPicker, ImportedFrom } from '../common/BranchPicker';
-import type { BoardClient } from './boardClient';
-
-type Props = {
-  client: BoardClient;
-  helplineCodes: string[];
-  onOpen: (code: string, id: string) => void;
-};
-
-type Copying = { done: number; total: number; failed: string[] };
+import { useAppDispatch, useAppSelector } from '../app/store';
+import {
+  createImportedBoards,
+  fetchImportBranches,
+  importFlowsSelected,
+  importFlowToggled,
+  importOptionsChanged,
+  importSourceChosen,
+  openBoard,
+  previewImport,
+  selectFlows,
+  selectHelplineCodes,
+  selectImportChoice,
+} from './flowsSlice';
 
 // The flow's channels that aren't in all of its environments, e.g. "chat: staging only"
 const onlyIn = (flow: ImportedFlow) =>
@@ -41,109 +44,15 @@ const onlyIn = (flow: ImportedFlow) =>
     .filter(([, environments]) => environments.length < flow.environments.length)
     .map(([channel, [environment]]) => `${channel}: ${environment} only`);
 
-export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
-  const [code, setCode] = useState('');
-  const [branch, setBranch] = useState('');
-  const [preview, setPreview] = useState<HelplineImport & FromBranch>();
-  const [error, setError] = useState<string>();
-  const [working, setWorking] = useState(false);
-  const [copyRecordings, setCopyRecordings] = useState(true);
-  // Give recordings with older names their standard ones (the widget's) as they're copied
-  const [standardNames, setStandardNames] = useState(false);
-  const [copying, setCopying] = useState<Copying>();
-  // The boards made, one per Studio flow
-  // The flows to import, by their place in the preview (all of them to start with)
-  const [selected, setSelected] = useState<Set<number>>(() => new Set());
-  const [created, setCreated] = useState<{ code: string; id: string; title: string }[]>();
-
-  const load = async () => {
-    setWorking(true);
-    setError(undefined);
-    setPreview(undefined);
-    setCopying(undefined);
-    setCreated(undefined);
-    try {
-      const found = await client.previewImport(code, branch);
-      setPreview(found);
-      setSelected(new Set(found.boards.map((_, index) => index)));
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setWorking(false);
-    }
-  };
-
-  // A preview is of one helpline and branch: choosing another one clears it (unless boards were made from it)
-  const choose = (change: () => void) => {
-    change();
-    if (!created) {
-      setPreview(undefined);
-      setError(undefined);
-    }
-  };
-
-  const chosenBoards = preview?.boards.filter((_, index) => selected.has(index)) ?? [];
-  // Only the recordings the chosen flows play
-  const chosenFiles = new Set(chosenBoards.flatMap((board) => board.recordingFiles));
-  const chosenRecordings =
-    preview?.recordings.filter((recording) => chosenFiles.has(importedRecordingKey(recording))) ?? [];
-
-  const toggle = (index: number) => {
-    const next = new Set(selected);
-    if (next.has(index)) next.delete(index);
-    else next.add(index);
-    setSelected(next);
-  };
-
-  const create = async () => {
-    if (!preview || chosenBoards.length === 0) return;
-    setWorking(true);
-    setError(undefined);
-    try {
-      const boards = [];
-      for (const { title, content } of chosenBoards) {
-        // With standard names, the widgets play files named after them (copied so below)
-        const objects =
-          standardNames && copyRecordings
-            ? content.objects.map((object) => {
-                if (!hasNonStandardRecording(object)) return object;
-                const { recordingFile, ...message } = object.message ?? {};
-                return { ...object, message };
-              })
-            : content.objects;
-        const board = await client.create(code, title, undefined, { ...content, objects });
-        boards.push({ code: board.code, id: board.id, title });
-      }
-      setCreated(boards);
-      if (copyRecordings && chosenRecordings.length > 0) {
-        // A file several widgets play becomes a copy for each, named after it (the standard)
-        const copies = chosenRecordings.flatMap((recording) =>
-          standardNames && recording.widgets?.length
-            ? recording.widgets.map((widget) => ({
-                ...recording,
-                fileName: standardRecordingName(widget, recording.fileName),
-              }))
-            : [recording],
-        );
-        const progress: Copying = { done: 0, total: copies.length, failed: [] };
-        setCopying({ ...progress });
-        for (const recording of copies) {
-          try {
-            // A flow sharing its template keeps its recordings in its own folder
-            await client.importRecording(recording.folder ? `${code}/f/${recording.folder}` : code, recording);
-          } catch (err) {
-            progress.failed.push(`${recording.environment}/${recording.fileName}: ${(err as Error).message}`);
-          }
-          progress.done += 1;
-          setCopying({ ...progress, failed: [...progress.failed] });
-        }
-      }
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setWorking(false);
-    }
-  };
+export const ImportHelpline = () => {
+  const dispatch = useAppDispatch();
+  const helplineCodes = useAppSelector(selectHelplineCodes);
+  const { code, branch, preview, error, working, copyRecordings, standardNames, copying, selected, created } =
+    useAppSelector(selectFlows).importer;
+  const { chosenBoards, chosenRecordings } = useAppSelector(selectImportChoice);
+  // The branches to import from (for the picker, which reads them itself)
+  const loadBranches = useCallback(() => dispatch(fetchImportBranches()), [dispatch]);
+  const onOpen = (boardCode: string, id: string) => dispatch(openBoard({ code: boardCode, id }));
 
   const environmentsOf = (environment: string) =>
     chosenRecordings.filter((recording) => recording.environment === environment).length;
@@ -157,7 +66,11 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
         Twilio or the repo changes.
       </p>
       <div className="flows-import-pick">
-        <select value={code} aria-label="Helpline to import" onChange={(e) => choose(() => setCode(e.target.value))}>
+        <select
+          value={code}
+          aria-label="Helpline to import"
+          onChange={(e) => dispatch(importSourceChosen({ code: e.target.value }))}
+        >
           <option value="">Choose a helpline…</option>
           {helplineCodes.map((candidate) => (
             <option key={candidate} value={candidate}>
@@ -165,8 +78,17 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
             </option>
           ))}
         </select>
-        <BranchPicker load={client.branches} value={branch} onChange={(next) => choose(() => setBranch(next))} />
-        <button type="button" className="secondary-button" disabled={!code || working} onClick={load}>
+        <BranchPicker
+          load={loadBranches}
+          value={branch}
+          onChange={(next) => dispatch(importSourceChosen({ branch: next }))}
+        />
+        <button
+          type="button"
+          className="secondary-button"
+          disabled={!code || working}
+          onClick={() => dispatch(previewImport())}
+        >
           {working && !preview ? 'Reading…' : 'Preview'}
         </button>
       </div>
@@ -183,9 +105,9 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
                 <label className="field-checkbox">
                   <input
                     type="checkbox"
-                    checked={selected.has(index)}
+                    checked={selected.includes(index)}
                     disabled={Boolean(created)}
-                    onChange={() => toggle(index)}
+                    onChange={() => dispatch(importFlowToggled(index))}
                   />
                   <span>
                     {flow.channels.length > 0 ? (
@@ -217,11 +139,11 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
               <button
                 type="button"
                 className="link-button"
-                onClick={() => setSelected(new Set(preview.boards.map((_, index) => index)))}
+                onClick={() => dispatch(importFlowsSelected(preview.boards.map((_, index) => index)))}
               >
                 All
               </button>
-              <button type="button" className="link-button" onClick={() => setSelected(new Set())}>
+              <button type="button" className="link-button" onClick={() => dispatch(importFlowsSelected([]))}>
                 None
               </button>
             </div>
@@ -249,7 +171,7 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
                   <input
                     type="checkbox"
                     checked={copyRecordings}
-                    onChange={(e) => setCopyRecordings(e.target.checked)}
+                    onChange={(e) => dispatch(importOptionsChanged({ copyRecordings: e.target.checked }))}
                   />
                   <span>Copy the recordings</span>
                 </label>
@@ -259,7 +181,11 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
                   className="field-checkbox"
                   title="Each copy is named after the widget that plays it, and the widgets play those. The Studio flows then need the Aselo recordings bucket as their recordings folder."
                 >
-                  <input type="checkbox" checked={standardNames} onChange={(e) => setStandardNames(e.target.checked)} />
+                  <input
+                    type="checkbox"
+                    checked={standardNames}
+                    onChange={(e) => dispatch(importOptionsChanged({ standardNames: e.target.checked }))}
+                  />
                   <span>
                     Give recordings with older names the standard one (
                     {chosenRecordings.filter((recording) => recording.widgets?.length).length} files)
@@ -270,7 +196,7 @@ export const ImportHelpline = ({ client, helplineCodes, onOpen }: Props) => {
                 type="button"
                 className="primary-button"
                 disabled={working || chosenBoards.length === 0}
-                onClick={create}
+                onClick={() => dispatch(createImportedBoards())}
               >
                 {chosenBoards.length === 1 ? 'Create the board' : `Create the ${chosenBoards.length} boards`}
               </button>
