@@ -28,6 +28,7 @@ import {
   OPEN_MODAL,
   RoutingActionType,
   RoutingState,
+  SET_QUEUE_GREETING_DISMISSED,
 } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { standaloneTaskSid } from '../../types/types';
@@ -52,6 +53,7 @@ export const initialState: RoutingState = {
       { route: getPathFromUrl(window.location) as any, subroute: getPathFromUrl(window.location) as any },
     ],
   },
+  dismissedQueueGreetings: {},
 };
 
 const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
@@ -223,6 +225,7 @@ export function reduce(
       return {
         ...state,
         tasks: omit(state.tasks, action.taskId),
+        dismissedQueueGreetings: omit(state.dismissedQueueGreetings, action.taskId),
       };
     case CHANGE_ROUTE: {
       const { routing, mode, taskId } = action;
@@ -260,6 +263,15 @@ export function reduce(
         tasks: {
           ...state.tasks,
           [action.taskId]: closeTopModal(state.tasks[action.taskId], action.topRoute),
+        },
+      };
+    }
+    case SET_QUEUE_GREETING_DISMISSED: {
+      return {
+        ...state,
+        dismissedQueueGreetings: {
+          ...state.dismissedQueueGreetings,
+          [action.taskId]: action.dismissed,
         },
       };
     }
