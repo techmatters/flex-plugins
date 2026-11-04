@@ -64,7 +64,6 @@ describe('test reducer (specific actions)', () => {
       'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
       [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
     },
-    dismissedQueueGreetings: {},
   };
 
   test('should return initial state', async () => {
@@ -80,7 +79,6 @@ describe('test reducer (specific actions)', () => {
         'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
-      dismissedQueueGreetings: {},
     };
 
     const result = reduce(initialState, {
@@ -586,7 +584,6 @@ describe('test reducer (specific actions)', () => {
         'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
-      dismissedQueueGreetings: {},
     };
 
     const result = reduce(initialState, {
@@ -605,7 +602,6 @@ describe('test reducer (specific actions)', () => {
         'WT-task1': { routeStack: [{ route: 'case', subroute: 'home', caseId: '' }] },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
-      dismissedQueueGreetings: {},
     };
 
     const result1 = reduce(
@@ -632,7 +628,6 @@ describe('test reducer (specific actions)', () => {
           routeStack: [{ ...newTaskEntry, route: 'tabbed-forms', subroute: 'childInformation' }],
         },
       },
-      dismissedQueueGreetings: {},
     };
 
     const result = reduce(stateWithTask, {
@@ -661,7 +656,6 @@ describe('test reducer (specific actions)', () => {
         'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
-      dismissedQueueGreetings: {},
     };
 
     const result = reduce(
@@ -670,7 +664,6 @@ describe('test reducer (specific actions)', () => {
           ...stateWithTask.tasks,
           [offlineContactTaskSid]: { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
         },
-        dismissedQueueGreetings: {},
       },
       GeneralActions.removeContactState(offlineContactTaskSid, ''),
     );
@@ -679,19 +672,40 @@ describe('test reducer (specific actions)', () => {
 });
 
 describe('SET_QUEUE_GREETING_DISMISSED action', () => {
-  test('dismisses and reopens the queue greeting of a task', () => {
-    const dismissed = reduce(initialState, actions.newSetQueueGreetingDismissedAction('WT1', true));
-    expect(dismissed.dismissedQueueGreetings).toStrictEqual({ WT1: true });
+  const taskId = 'WT1';
 
-    const reopened = reduce(dismissed, actions.newSetQueueGreetingDismissedAction('WT1', false));
-    expect(reopened.dismissedQueueGreetings).toStrictEqual({ WT1: false });
+  test('dismisses and reopens the queue greeting of a task, keeping its route stack', () => {
+    const stateWithTask = reduce(initialState, actions.changeRoute({ route: 'select-call-type' }, taskId));
+
+    const dismissed = reduce(stateWithTask, actions.newSetQueueGreetingDismissedAction(taskId, true));
+    expect(dismissed.tasks[taskId]).toStrictEqual({
+      routeStack: [{ route: 'select-call-type' }],
+      isQueueGreetingDismissed: true,
+    });
+
+    const reopened = reduce(dismissed, actions.newSetQueueGreetingDismissedAction(taskId, false));
+    expect(reopened.tasks[taskId].isQueueGreetingDismissed).toBe(false);
+  });
+
+  test('a greeting dismissed before the contact is created stays dismissed once it is created', () => {
+    const dismissed = reduce(initialState, actions.newSetQueueGreetingDismissedAction(taskId, true));
+
+    const result = reduce(dismissed, {
+      type: CREATE_CONTACT_ACTION_FULFILLED,
+      payload: { contact: { ...VALID_EMPTY_CONTACT, taskId }, metadata: VALID_EMPTY_METADATA },
+    } as any);
+
+    expect(result.tasks[taskId]).toStrictEqual({
+      routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+      isQueueGreetingDismissed: true,
+    });
   });
 
   test('REMOVE_CONTACT_STATE forgets the queue greeting state of the task', () => {
-    const dismissed = reduce(initialState, actions.newSetQueueGreetingDismissedAction('WT1', true));
+    const dismissed = reduce(initialState, actions.newSetQueueGreetingDismissedAction(taskId, true));
 
-    const result = reduce(dismissed, GeneralActions.removeContactState('WT1', ''));
+    const result = reduce(dismissed, GeneralActions.removeContactState(taskId, ''));
 
-    expect(result.dismissedQueueGreetings).toStrictEqual({});
+    expect(result.tasks[taskId]).toBeUndefined();
   });
 });
