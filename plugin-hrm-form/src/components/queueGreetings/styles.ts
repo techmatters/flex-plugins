@@ -16,6 +16,8 @@
 
 import { styled } from '@twilio/flex-ui';
 
+import { selectedTaskListItemBorder, selectedTaskListItemBorderWidth } from '../../styles/HrmTheme';
+
 const guidanceBackground = '#fffeef';
 const textColor = '#192b33';
 
@@ -23,9 +25,22 @@ type GuidancePillContainerProps = {
   isSelected: boolean;
 };
 
+/**
+ * When the task is selected, this container continues the task list item's outline around the pill:
+ * it draws the side and bottom borders, and overlaps the item's bottom border to hide it.
+ */
 export const GuidancePillContainer = styled('div')<GuidancePillContainerProps>`
+  box-sizing: border-box;
   width: 100%;
   background-color: ${({ isSelected }) => (isSelected ? 'rgb(255, 255, 255)' : 'inherit')};
+  ${({ isSelected }) =>
+    isSelected &&
+    `
+    position: relative;
+    margin-top: -${selectedTaskListItemBorderWidth};
+    border: ${selectedTaskListItemBorder};
+    border-top: none;
+  `}
 `;
 GuidancePillContainer.displayName = 'GuidancePillContainer';
 
