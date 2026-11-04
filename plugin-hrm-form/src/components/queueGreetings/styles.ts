@@ -21,6 +21,11 @@ import { selectedTaskListItemBorder, selectedTaskListItemBorderWidth } from '../
 const guidanceBackground = '#fffeef';
 const textColor = '#192b33';
 
+const taskListItemHoverStyle = `
+  background-color: rgb(225, 227, 234);
+  background-blend-mode: color;
+`;
+
 type GuidancePillContainerProps = {
   isSelected: boolean;
 };
@@ -42,9 +47,17 @@ export const GuidancePillContainer = styled('div')<GuidancePillContainerProps>`
     border-top: none;
   `}
 
-  &:hover {
-    background-color: rgb(225, 227, 234);
-    background-blend-mode: color;
+  /*
+   * The pill row and its task list item (the previous sibling, rendered by Flex) share the hover state:
+   * hovering either of them highlights both.
+   */
+  &:hover,
+  .Twilio-TaskListBaseItem:hover + & {
+    ${taskListItemHoverStyle}
+  }
+
+  .Twilio-TaskListBaseItem:has(+ &:hover) {
+    ${taskListItemHoverStyle}
   }
 `;
 GuidancePillContainer.displayName = 'GuidancePillContainer';
