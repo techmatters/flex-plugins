@@ -312,10 +312,30 @@ The two folders matter because Studio plays the file at call time: replacing a f
 callers hear immediately. Uploads therefore reach staging first, and production only when Aselo
 staff publish them.
 
-In Studio, the flow variable that holds the recordings URL (today `flow_vars.usnm_recordings_url`,
-pointing at Twilio Serverless) becomes the CloudFront folder for that environment, set in
-`staging.hcl` / `production.hcl`. The import (below) copies an existing helpline's recordings, so
-moving it is: import, check in staging, publish, then change that one variable per environment.
+In Studio, recordings play from the CloudFront folder for that environment, through a flow
+variable set in `staging.hcl` / `production.hcl`. Twilio Serverless is being retired, so the
+generated template plays every recording it writes or changes from the bucket:
+
+- **Which widgets:** new voice messages, and imported ones that were renamed or whose recording was
+  given its standard name. Imported widgets nobody changed keep playing what they play live (often
+  a Serverless address, e.g. USCH's `flow_vars.serverless_usch_functions_url`), so the diff stays
+  small.
+- **The variable:** `${flow_vars.recordings_url}/<file>`, unless the flow already has a variable
+  pointing at the bucket (its `flow_vars`, as a shared template's flows keep them), which is reused.
+  The export lists it in the template's `variables` with both values (`values`: staging and
+  production, from `recordingsBaseUrl`; one per flow, with its own folder, for flows sharing a
+  template). Send to queue's wait music, when it's the helpline's recording, plays from it too.
+- **What isn't touched:** Send to queue `waitUrl` addresses (e.g. `.../holdMusicAndMessageSpanish`)
+  are Twilio Functions, not files.
+- **No recording yet:** a voice message (Play message, Menu) with a script but no recording uploaded
+  **says its script** instead: `say: ${flow_vars.<widget>}`, the script in `variables`, and a
+  `language` from the message's (`en` → `en-US`, `es` → `es-MX`, or what the flow's other say widgets
+  in that language use, with their `voice`). A TODO says so. Once the recording is uploaded, export
+  again and it plays the recording. With neither a recording nor a script, it plays the file it
+  should have, and the Check panel flags it.
+
+The import (below) copies an existing helpline's recordings into the bucket, so moving a helpline
+is: import, check in staging, publish, then change the boards so their widgets play from the bucket.
 
 These are prompts recorded for the helpline, and are public like a website's audio. Callers'
 voicemails are never stored here.
@@ -326,8 +346,8 @@ the name they play, and the Check panel flags it. Aselo staff can give them the 
 import ("Give recordings with older names the standard one"), on a widget's Recording section
 ("Use the standard name"), or for the whole board in the Recordings tab ("Use the standard
 names"). It copies each file under the new name (in each flow's folder), keeps the old one (live
-flows still play it), and the generated template then plays the new name, with a TODO: the flow's
-recordings URL has to be the Aselo bucket, where the new name exists.
+flows still play it), and the generated template then plays the new name from the Aselo bucket
+(`${flow_vars.recordings_url}`), where the new name exists.
 
 ### Flows sharing a template
 

@@ -75,6 +75,36 @@ export type RecordingsList = {
   recordings: Recording[];
 };
 
+// Where Studio plays a helpline's recordings from: the Aselo recordings bucket (Twilio Serverless is
+// being retired), read from this flow_vars variable unless the flow already has one pointing there
+export const RECORDINGS_URL_VARIABLE = 'recordings_url';
+
+export const isRecordingsBucketUrl = (value: unknown, baseUrls?: RecordingsList['baseUrls']) =>
+  typeof value === 'string' &&
+  Boolean(baseUrls) &&
+  Object.values(baseUrls!).some((url) => value.startsWith(new URL(url).origin));
+
+// Each flow's recordings folder, for flows sharing a template: the recordings loaded are one
+// variant's folder, and the helpline's folder is above it
+export const variantRecordingsUrls = (
+  baseUrls: RecordingsList['baseUrls'],
+  variants: { recordingsFolder: string }[],
+  folder: string,
+): RecordingsList['baseUrls'] => {
+  const helplineBase = (url: string) =>
+    variants.reduce(
+      (current, variant) =>
+        current.endsWith(`/${variant.recordingsFolder}`)
+          ? current.slice(0, -(variant.recordingsFolder.length + 1))
+          : current,
+      url,
+    );
+  return {
+    staging: `${helplineBase(baseUrls.staging)}/${folder}`,
+    production: `${helplineBase(baseUrls.production)}/${folder}`,
+  };
+};
+
 // Where the page plays it from: a replaced file keeps its address, so the version makes the browser
 // fetch the new one instead of playing the old one it kept
 export const playUrl = (stored: StoredRecording) => `${stored.url}?v=${stored.etag}`;

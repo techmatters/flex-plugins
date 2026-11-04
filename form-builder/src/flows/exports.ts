@@ -39,7 +39,7 @@ import type { FlowVarChange, TaskAttributesChange } from './studioTemplate';
 import { toStudioFlows } from './studioTemplate';
 import { taskAttributesSourceOf } from './taskAttributes';
 import type { MessageStatus, RecordingsList } from './recordings';
-import { messageStatus, recordingOf } from './recordings';
+import { messageStatus, recordingOf, variantRecordingsUrls } from './recordings';
 
 export const FLOW_EXPORT_SCHEMA_VERSION = 1;
 
@@ -166,7 +166,11 @@ const ABOUT = [
   'its widgets, with the Studio names to use,',
   'and exits say where each way out leads. Build or update the helpline twilio-iac Studio flow templates (.tftpl)',
   'following twilio-iac/AGENTS.md ("Studio flow standards"); calls to account-scoped lambda routes are described in',
-  'lambdas/account-scoped/STUDIO_ROUTES.md. Voice recordings are named after their widget (recordingFile).',
+  'lambdas/account-scoped/STUDIO_ROUTES.md. Voice recordings are named after their widget (recordingFile) and play',
+  'from the Aselo recordings bucket (recordingsBaseUrl), through a flow_vars variable listed in "variables"',
+  '(recordings_url, unless the flow already has one pointing there), never from Twilio Serverless. A voice message',
+  'with a script but no recording uploaded yet (no recordingUrls) says its script (in "variables") until it is',
+  'uploaded; export the board again then, and it plays the recording.',
   'Messages (Send message, Question, Send message and close) say who they are from in message.from: ${helpline},',
   'Bot or the text chosen, exactly as the template writes it.',
   'Objects imported from a live helpline carry currentStudioWidget: the widget as it is in the template today.',
@@ -176,7 +180,7 @@ const ABOUT = [
   '"addTo": the file and block to set it in (flow_vars, the flow_vars of a studio_flows entry, or the',
   'channel_flow_vars of each channel; a few helplines keep these in common.hcl instead). "environmentSpecific" ones',
   'were typed into a widget (a SID, a staging or Twilio Functions address): value is for staging, ask for the',
-  'production one.',
+  'production one, unless they come with "values" for each environment (the recordings folder): use those.',
   '"Send to queue" objects carry taskAttributes: the task attributes as JSON (as Studio sends them: {{…}} is',
   'Liquid filled in from the contact, ${helpline} and ${task_language} come from the helpline config). When their',
   'source is a channel-attributes template, the widget keeps "attributes": "${channel_attributes.default}" and',
@@ -377,7 +381,7 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
     ...sharedTemplateOf(content, recordings),
     ...(forClaude && forClaude.length > 0 ? { forClaude } : {}),
     flows: [...flows.values()].filter((flow) => flow.objects.length > 0 || flow.frames.length > 0),
-    studioTemplates: toStudioFlows(content).map(
+    studioTemplates: toStudioFlows(content, recordings).map(
       ({ title, template, sharedWith, changeShared, channels, text, flowVars, taskAttributes, todo }) => ({
         title,
         ...(template
@@ -420,15 +424,6 @@ const sharedTemplateOf = (content: BoardContent, recordings?: RecordingsList): P
     };
   }
   if (variants.length === 0) return parts;
-  // The recordings loaded are one variant's folder: the helpline's folder is above it
-  const helplineBase = (url: string) =>
-    variants.reduce(
-      (current, variant) =>
-        current.endsWith(`/${variant.recordingsFolder}`)
-          ? current.slice(0, -(variant.recordingsFolder.length + 1))
-          : current,
-      url,
-    );
   const recordingsUrlVariable = content.objects
     .map(
       (object) => String(object.studio?.properties?.play ?? '').match(/^\$\{\s*flow_vars\.([A-Za-z0-9_]+)\s*\}\//)?.[1],
@@ -443,12 +438,7 @@ const sharedTemplateOf = (content: BoardContent, recordings?: RecordingsList): P
       ...(variant.flowVars ? { flowVars: variant.flowVars } : {}),
       ...(variant.added ? { added: true } : {}),
       ...(recordings
-        ? {
-            recordingsUrls: {
-              staging: `${helplineBase(recordings.baseUrls.staging)}/${variant.recordingsFolder}`,
-              production: `${helplineBase(recordings.baseUrls.production)}/${variant.recordingsFolder}`,
-            },
-          }
+        ? { recordingsUrls: variantRecordingsUrls(recordings.baseUrls, variants, variant.recordingsFolder) }
         : {}),
     })),
   };

@@ -130,12 +130,15 @@ describe('Studio templates from boards', () => {
     expect(state('Trigger').transitions.find((transition) => transition.event === 'incomingCall')?.next).toBe(
       'gather_input_voice_en_service',
     );
-    // A voice menu is a Gather and a Split on its digits
+    // A voice menu is a Gather and a Split on its digits; with no recording yet, it says its script
     expect(state('gather_input_voice_en_service')).toMatchObject({
       type: 'gather-input-on-call',
       transitions: [{ event: 'keypress', next: 'split_voice_en_service' }, { event: 'speech' }, { event: 'timeout' }],
-      properties: { say: 'Press 1 or 2' },
+      properties: { say: '${flow_vars.gather_input_voice_en_service}', language: 'en-US' },
     });
+    expect(generated.flowVars).toContainEqual(
+      expect.objectContaining({ name: 'gather_input_voice_en_service', value: 'Press 1 or 2' }),
+    );
     expect(state('split_voice_en_service').transitions).toEqual([
       { event: 'noMatch' },
       expect.objectContaining({ event: 'match', next: 'f_isSkilledWorkerAvailable_tya_calls' }),

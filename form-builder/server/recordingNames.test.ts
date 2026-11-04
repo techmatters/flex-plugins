@@ -24,6 +24,7 @@ import { fileURLToPath } from 'url';
 import { beforeAll, describe, expect, test } from 'vitest';
 import type { BoardContent } from '../src/flows/model';
 import { boardChecks } from '../src/flows/checks';
+import type { RecordingsList } from '../src/flows/recordings';
 import { hasNonStandardRecording, standardRecordingName } from '../src/flows/recordings';
 import { toStudioFlows } from '../src/flows/studioTemplate';
 import type { HelplineImport } from './flowImport';
@@ -71,8 +72,116 @@ describe('recordings with older names', () => {
       }),
     };
     const [generated] = toStudioFlows(renamed);
-    expect(playOf(generated)).toBe(playOf(unchanged).replace(OLD, `${WIDGET}.mp3`));
-    expect(generated.todo.some((item) => item.includes(`plays ${WIDGET}.mp3 now (was ${OLD})`))).toBe(true);
+    // From the recordings bucket, not Twilio Serverless
+    expect(playOf(generated)).toBe(`\${flow_vars.recordings_url}/${WIDGET}.mp3`);
+    expect(generated.todo.join('\n')).not.toMatch(/Serverless/);
+  });
+
+  describe("USCH's voice board, as designed: recordings from the bucket, a new menu said until recorded", () => {
+    const BUCKET = {
+      staging: 'https://recordings.tl.techmatters.org/usch/staging',
+      production: 'https://recordings.tl.techmatters.org/usch/production',
+    };
+    const RENAMED: Record<string, string> = {
+      [WIDGET]: 'play_message_voice_en_childhelp_voice_welcome',
+      play_message_childhelp_voice_no_spanish_counselor_prequeue:
+        'play_message_voice_es_childhelp_no_spanish_counselor_prequeue',
+      play_message_voice_blocked: 'play_message_voice_blocked',
+    };
+    const MENU = 'gather_input_voice_en_childhelp_service_menu';
+    const SCRIPT = 'If this is a life-threatening emergency, hang up and call 911. For Spanish, press 1.';
+    const recordingsOf = (files: string[]): RecordingsList => ({
+      baseUrls: BUCKET,
+      recordings: files.map((fileName) => ({
+        fileName,
+        staging: { etag: 'e', size: 1, lastModified: 'now', url: `${BUCKET.staging}/${fileName}` },
+      })),
+    });
+    const RECORDED = Object.values(RENAMED).map((name) => `${name}.mp3`);
+    // The widgets renamed (their recordings given the new names, as the builder copies them), and a
+    // new menu with a script and no recording
+    const designed = (): BoardContent => {
+      const frameId = welcome.objects.find((object) => object.studioName === WIDGET)!.frameId;
+      return {
+        ...welcome,
+        objects: [
+          ...welcome.objects.map((object) => {
+            const name = object.studioName && RENAMED[object.studioName];
+            if (!name) return object;
+            const { recordingFile: _old, ...message } = object.message!;
+            return { ...object, studioName: name, message };
+          }),
+          {
+            id: 'menu',
+            type: 'menuVoice',
+            frameId,
+            text: 'Childhelp service menu',
+            studioName: MENU,
+            message: { channel: 'voice', language: 'en', script: SCRIPT },
+            x: 900,
+            y: 650,
+            width: 220,
+            height: 80,
+          },
+        ],
+      };
+    };
+    const stateOf = (generated: ReturnType<typeof toStudioFlows>[number], name: string) =>
+      generated.flow.states.find((state) => state.name === name)!;
+
+    test('the renamed ones play from ${flow_vars.recordings_url}, set for both environments', () => {
+      const [generated] = toStudioFlows(designed(), recordingsOf(RECORDED));
+      Object.values(RENAMED).forEach((name) =>
+        expect(stateOf(generated, name).properties.play).toBe(`\${flow_vars.recordings_url}/${name}.mp3`),
+      );
+      expect(generated.flowVars.filter((variable) => variable.name === 'recordings_url')).toEqual([
+        expect.objectContaining({ value: BUCKET.staging, values: BUCKET, environmentSpecific: true }),
+      ]);
+      expect(generated.todo.join('\n')).not.toMatch(/Serverless|recordings_url/);
+      // Hold music is a Twilio Function: as live
+      const [live] = toStudioFlows(welcome);
+      generated.flow.states
+        .filter((state) => state.type === 'send-to-flex')
+        .forEach((state) => expect(state.properties.waitUrl).toBe(stateOf(live, state.name).properties.waitUrl));
+      // Recordings nobody changed still play from where they do live
+      expect(String(stateOf(generated, 'gather_input_childhelp_voice_spanish_option').properties.play)).toMatch(
+        /^\$\{flow_vars\.serverless_usch_functions_url\}\//,
+      );
+    });
+
+    test('a voice message with a script and no recording says it (from flow_vars) until it is uploaded', () => {
+      const [generated] = toStudioFlows(designed(), recordingsOf(RECORDED));
+      expect(stateOf(generated, MENU).properties).toMatchObject({
+        say: `\${flow_vars.${MENU}}`,
+        language: 'en-US',
+        gather_language: 'en',
+      });
+      expect(stateOf(generated, MENU).properties).not.toHaveProperty('play');
+      expect(generated.flowVars).toContainEqual(expect.objectContaining({ name: MENU, value: SCRIPT }));
+      expect(generated.todo).toContainEqual(expect.stringContaining(`“${MENU}” says its script`));
+
+      // Recorded: it plays the recording
+      const [recorded] = toStudioFlows(designed(), recordingsOf([...RECORDED, `${MENU}.mp3`]));
+      expect(stateOf(recorded, MENU).properties).toMatchObject({ play: `\${flow_vars.recordings_url}/${MENU}.mp3` });
+      expect(stateOf(recorded, MENU).properties).not.toHaveProperty('say');
+      expect(recorded.flowVars.map((variable) => variable.name)).not.toContain(MENU);
+
+      // A renamed live one whose recording isn't uploaded yet, with a script: said too (in Spanish)
+      const spanish = 'play_message_voice_es_childhelp_no_spanish_counselor_prequeue';
+      const scripted = designed();
+      scripted.objects = scripted.objects.map((object) =>
+        object.studioName === spanish
+          ? { ...object, message: { ...object.message, script: 'No hay consejero.' } }
+          : object,
+      );
+      const [said] = toStudioFlows(scripted, recordingsOf(RECORDED.filter((file) => !file.startsWith(spanish))));
+      expect(stateOf(said, spanish).properties).toMatchObject({
+        say: `\${flow_vars.${spanish}}`,
+        language: 'es-MX',
+        loop: 1,
+      });
+      expect(stateOf(said, spanish).properties).not.toHaveProperty('play');
+    });
   });
 
   test('renaming in the library is a copy, in each environment the file is in, keeping who did what', async () => {

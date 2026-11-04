@@ -269,10 +269,13 @@ describe('menus, repeats and chatbots', () => {
       waitUrlMethod: 'POST',
       timeout: '180',
     });
-    // A recording, named after the widget: from the flow's recordings folder (none here, so marked)
+    // A recording, named after the widget: from the recordings bucket (its folder to set, unknown here)
     const recorded = queue({ waitMusic: 'recording' });
-    expect(recorded.flow.states[0].properties).toMatchObject({ waitUrl: 'TODO', waitUrlMethod: 'GET' });
-    expect(recorded.todo).toContainEqual(expect.stringContaining('send_to_queue_en_std.mp3'));
+    expect(recorded.flow.states[0].properties).toMatchObject({
+      waitUrl: '${flow_vars.recordings_url}/send_to_queue_en_std.mp3',
+      waitUrlMethod: 'GET',
+    });
+    expect(recorded.todo).toContainEqual(expect.stringContaining('Set flow_vars.recordings_url'));
 
     // usnm's: its address (postQueueMonitor) and timeout, as settings
     const { boards } = await importHelpline(helplinesDir, 'usnm');

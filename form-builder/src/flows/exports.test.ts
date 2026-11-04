@@ -317,6 +317,22 @@ describe('with the helpline recordings', () => {
     });
   });
 
+  test('recordings play from the recordings bucket, its folder a variable known for both environments', () => {
+    const exported = toFlowExport(board, recordings);
+    const [preQueue] = exported.studioTemplates;
+    expect(preQueue.text).toContain('"play": "${flow_vars.recordings_url}/play_message_voice_en_welcome.wav"');
+    expect(preQueue.variables).toContainEqual({
+      scope: 'flow_vars',
+      name: 'recordings_url',
+      value: 'https://recordings.test/usnm/staging',
+      widget: 'play_message_voice_en_welcome',
+      environmentSpecific: true,
+      values: recordings.baseUrls,
+      addTo: ['usnm/staging.hcl: flow_vars.recordings_url', 'usnm/production.hcl: flow_vars.recordings_url'],
+    });
+    expect(exported.about).toMatch(/Aselo recordings bucket/);
+  });
+
   test('the spreadsheet says how far along each one is', () => {
     const [welcome] = scriptRows(board.content, recordings);
     expect(welcome).toMatchObject({ 'Recording file': 'play_message_voice_en_welcome.wav', Status: 'Approved' });

@@ -29,7 +29,10 @@
  *   one with attributes of its own (set or changed on the board) gets them written in the widget;
  * - messages (send-message, send-and-wait-for-reply) read their service and channel from
  *   trigger.conversation: new ones, and imported ones changed on the board (their legacy
- *   trigger.message is replaced). Imported ones nobody changed stay exactly as they are live.
+ *   trigger.message is replaced). Imported ones nobody changed stay exactly as they are live;
+ * - voice recordings play from the Aselo recordings bucket (${flow_vars.recordings_url}): new widgets,
+ *   and imported ones renamed or playing a renamed recording. One with a script but no recording yet
+ *   says its script (from flow_vars) until the recording is uploaded.
  */
 import type { BoardContent, FlowObject, Frame, TaskAttributes } from './model';
 import {
@@ -48,7 +51,15 @@ import {
   widgetNamesOf,
 } from './model';
 import { janitorValuesOf, withJanitorValues } from './janitor';
-import { isVoiceMessage, standardRecordingName } from './recordings';
+import type { RecordingsList } from './recordings';
+import {
+  isRecordingsBucketUrl,
+  isVoiceMessage,
+  RECORDINGS_URL_VARIABLE,
+  recordingOf,
+  standardRecordingName,
+  variantRecordingsUrls,
+} from './recordings';
 import {
   CHANNEL_ATTRIBUTES_REFERENCE,
   isChannelAttributesReference,
@@ -77,8 +88,9 @@ export type FlowVarChange = {
   // For flows sharing a template (variants): the studio_flows entry whose flow_vars it goes in
   flow?: string;
   // Typed into a widget and different in each environment (a SID, a service's address): value is
-  // staging's; production's has to be asked for
+  // staging's; production's has to be asked for, unless both are known (values)
   environmentSpecific?: boolean;
+  values?: RecordingsList['baseUrls'];
 };
 
 // A "Send to queue" widget's task attributes that are new or changed on the board, and where they're
@@ -116,6 +128,8 @@ const TODO = 'TODO';
 const ENVIRONMENT_SID = /\b[A-Z]{2}[0-9a-f]{32}\b/g;
 const ENVIRONMENT_URL = /https?:\/\/[A-Za-z0-9.-]*(?:staging|production|twil\.io)[A-Za-z0-9.-]*/g;
 const ACCOUNT_SCOPED = '${lambda_twilio_account_scoped_url}';
+// The language a say widget speaks a message's language in, when the flow has none of its own
+const SAY_LANGUAGES: Record<string, string> = { en: 'en-US', es: 'es-MX', fr: 'fr-CA', pt: 'pt-BR', vi: 'vi-VN' };
 
 // A Repeat's name, or one for it while it has none
 const repeatNameOf = (object: FlowObject) => object.studioName ?? `repeat_todo_${toSnake(object.text) || object.id}`;
@@ -302,7 +316,11 @@ export const toTemplateText = (flow: StudioFlow) => `\${\n  jsonencode(${toHcl(f
 /**
  * The Studio flow for one frame of a board (or for the objects outside frames, without frameId).
  */
-export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStudioFlow => {
+export const toStudioFlow = (
+  content: BoardContent,
+  frame?: Frame,
+  recordings?: RecordingsList,
+): GeneratedStudioFlow => {
   const objects = content.objects.filter((object) => object.frameId === frame?.id);
   // What the flow is: the frame's, or the board's own (an imported board's Studio flow)
   const details = frame ?? content.flow;
@@ -347,22 +365,105 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
     )
     .find(Boolean);
 
+  // Where recordings play from: the recordings bucket, through the flow's own variable when it
+  // already points there (as a flow's flow_vars say), otherwise recordings_url, listed for the .hcl
+  // files the first time a widget uses it
+  const bucketUrls = recordings?.baseUrls;
+  const bucketVariable =
+    recordingsVariable &&
+    variants.some((variant) =>
+      Object.values(variant.flowVars ?? {}).some((vars) =>
+        isRecordingsBucketUrl(vars?.[recordingsVariable], bucketUrls),
+      ),
+    )
+      ? recordingsVariable
+      : RECORDINGS_URL_VARIABLE;
+  let bucketListed = bucketVariable !== RECORDINGS_URL_VARIABLE;
+  const fromBucket = (widget: string, file: string) => {
+    if (!bucketListed) {
+      bucketListed = true;
+      if (!bucketUrls) {
+        todo.push(
+          `Set flow_vars.${bucketVariable} to the helpline's folder in the Aselo recordings bucket (https://recordings.tl.techmatters.org/<helpline>/<environment>).`,
+        );
+      } else {
+        const folders = variants.length > 0 ? variants : [undefined];
+        folders.forEach((variant) => {
+          const values = variant ? variantRecordingsUrls(bucketUrls, variants, variant.recordingsFolder) : bucketUrls;
+          flowVars.push({
+            scope: 'flow_vars',
+            name: bucketVariable,
+            value: values.staging,
+            widget,
+            ...(variant && mainVariant ? { flow: variant.key } : {}),
+            environmentSpecific: true,
+            values,
+          });
+        });
+      }
+    }
+    return `\${flow_vars.${bucketVariable}}/${file}`;
+  };
+
+  // Whether a voice message's recording has been uploaded. Without the helpline's recordings to
+  // look in: imported ones play theirs, new ones have one when the flow plays recordings
+  const hasRecording = (object: FlowObject) => {
+    if (!recordings) return Boolean(object.studio || recordingsVariable);
+    const recording = recordingOf(object, recordings.recordings);
+    return Boolean(recording?.staging || recording?.production);
+  };
+  // The language (and voice) a say widget speaks in: those of the flow's say widgets in that
+  // language, otherwise the usual one for it
+  const sayVoiceOf = (language?: string) => {
+    const code = (language ?? 'en').split(/[-_]/)[0].toLowerCase();
+    const like = objects
+      .map((object) => object.studio?.properties)
+      .find(
+        (properties) =>
+          typeof properties?.say === 'string' &&
+          typeof properties.language === 'string' &&
+          !properties.language.includes('${') &&
+          properties.language.toLowerCase().startsWith(code),
+      );
+    return {
+      language: String(like?.language ?? SAY_LANGUAGES[code] ?? language ?? 'en-US'),
+      ...(typeof like?.voice === 'string' ? { voice: like.voice } : {}),
+    };
+  };
+  // Its text in flow_vars: for flows sharing the template, each flow's own (its studio_flows entry's)
+  const pushText = (object: FlowObject, widget: string, variable: string) => {
+    const message = object.message?.script ?? '';
+    flowVars.push({
+      scope: 'flow_vars',
+      name: variable,
+      value: message,
+      widget,
+      ...(mainVariant ? { flow: mainVariant } : {}),
+    });
+    if (!mainVariant) return;
+    variants.slice(1).forEach(({ key, label: language }) => {
+      const own = object.variantMessages?.[key]?.script;
+      if (!own) todo.push(`${label(object)} has no ${language} text yet: ${key} gets the ${variants[0].label} one.`);
+      flowVars.push({ scope: 'flow_vars', name: variable, value: own || message, widget, flow: key });
+    });
+  };
+  // A voice message with a script and no recording yet: it says the script until it's uploaded
+  const saysScript = (object: FlowObject, widget: string) => {
+    pushText(object, widget, widget);
+    todo.push(
+      `${label(object)} says its script (\${flow_vars.${widget}}) until its recording is uploaded: export the board again then, and it plays the recording.`,
+    );
+    // Its language: the message's, otherwise the one in its name (play_message_voice_es_...)
+    const named = widget.match(/(?:^|_)(en|es|fr|pt|vi)_/)?.[1];
+    return { say: `\${flow_vars.${widget}}`, ...sayVoiceOf(object.message?.language ?? named) };
+  };
+
   // What callers hear while waiting in the queue (Send to queue's waitUrl): Twilio's music (nothing
   // set), the helpline's recording (named after the widget, played from the recordings folder) or an
   // address. Imported widgets with an address have it as their setting, so nothing set leaves theirs
   const waitSettingsOf = (object: FlowObject, name: string): Record<string, string> => {
     const { waitMusic, waitUrl, waitUrlMethod } = object.settings ?? {};
-    if (waitMusic === 'recording') {
-      if (!recordingsVariable) {
-        todo.push(
-          `${label(object)}: no recordings folder variable found in this flow; point its waitUrl at its recording (${name}.mp3).`,
-        );
-      }
-      return {
-        waitUrl: recordingsVariable ? `\${flow_vars.${recordingsVariable}}/${name}.mp3` : TODO,
-        waitUrlMethod: 'GET',
-      };
-    }
+    if (waitMusic === 'recording') return { waitUrl: fromBucket(name, `${name}.mp3`), waitUrlMethod: 'GET' };
     if (waitMusic === 'address') return { waitUrl: waitUrl || TODO, ...(waitUrlMethod ? { waitUrlMethod } : {}) };
     return {};
   };
@@ -465,17 +566,18 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       // (Send message and close keeps its message among its request's values: below)
       else if ('body' in properties && OBJECT_TYPES[object.type].hasMessage && object.type !== 'sendMessageAndClose')
         setText(object, properties, 'body', name);
-      // A recording given its standard name (the widget's) on the board: the widget plays that file now
+      // Renamed, or its recording given its standard name (the widget's) on the board: it plays that
+      // file from the recordings bucket now, or says its script while there's no recording yet
       if (typeof properties.play === 'string') {
         const played = properties.play.split('/').pop() ?? '';
         const kept = object.message?.recordingFile;
         const wanted =
           kept ?? (played.replace(/\.(mp3|wav)$/, '') === name ? played : standardRecordingName(name, played));
-        if (played && /\.(mp3|wav)$/.test(played) && wanted !== played) {
-          properties.play = `${properties.play.slice(0, -played.length)}${wanted}`;
-          todo.push(
-            `${label(object)} plays ${wanted} now (was ${played}): the folder it plays from has to have it, i.e. the Aselo recordings bucket (where the builder copied it), not Twilio Serverless.`,
-          );
+        if (/\.(mp3|wav)$/.test(played) && (wanted !== played || name !== studio.name)) {
+          if (!hasRecording(object) && object.message?.script) {
+            delete properties.play;
+            Object.assign(properties, saysScript(object, name));
+          } else properties.play = fromBucket(name, wanted);
         }
       }
       // The other variants' texts go in their own flow_vars (the template keeps the variable)
@@ -669,29 +771,21 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
     const next = (exit = '') => nextOf(object, exit);
     const message = object.message?.script ?? '';
     const voice = isVoiceMessage(object, details);
-    const voiceRecording = voice && (object.message?.recordingFile ?? `${object.studioName}.mp3`);
-    const spoken = () =>
-      recordingsVariable && object.studioName
-        ? { play: `\${flow_vars.${recordingsVariable}}/${voiceRecording}` }
-        : { say: message || TODO };
-    // Its text in flow_vars: for flows sharing the template, each flow's own (its studio_flows entry's)
-    const pushText = (variable: string) => {
-      flowVars.push({
-        scope: 'flow_vars',
-        name: variable,
-        value: message,
-        widget: name,
-        ...(mainVariant ? { flow: mainVariant } : {}),
-      });
-      if (!mainVariant) return;
-      variants.slice(1).forEach(({ key, label: language }) => {
-        const own = object.variantMessages?.[key]?.script;
-        if (!own) todo.push(`${label(object)} has no ${language} text yet: ${key} gets the ${variants[0].label} one.`);
-        flowVars.push({ scope: 'flow_vars', name: variable, value: own || message, widget: name, flow: key });
-      });
+    // The file uploaded (MP3 or WAV) when there is one, otherwise the MP3 it should be
+    const voiceRecording =
+      voice &&
+      (recordingOf(object, recordings?.recordings)?.fileName ??
+        object.message?.recordingFile ??
+        `${object.studioName}.mp3`);
+    // A voice message plays its recording from the recordings bucket, or says its script while it
+    // has no recording (with neither, it plays the file it should have: the checks flag it)
+    const spoken = (): Record<string, unknown> => {
+      if (!voiceRecording || !object.studioName) return { say: message || TODO };
+      if (!hasRecording(object) && message) return saysScript(object, name);
+      return { play: fromBucket(name, voiceRecording) };
     };
     const fromFlowVars = () => {
-      pushText(name);
+      pushText(object, name, name);
       return `\${flow_vars.${name}}`;
     };
     // A split on a value, one match per way out (and "no match")
@@ -729,11 +823,6 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
         ];
       }
       case 'playMessage':
-        if (!recordingsVariable && voice) {
-          todo.push(
-            `${label(object)}: no recordings folder variable found in this flow; it says its script instead of playing a recording.`,
-          );
-        }
         return [
           {
             name,
@@ -1040,7 +1129,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       case 'sendMessageAndClose': {
         // Its message from flow_vars, named as the helplines' are (send_message_<what>)
         const variable = `send_message_${name.replace(/^(postqueue_)?f_sendMessageAndRunJanitor_?/, '') || 'janitor'}`;
-        pushText(variable);
+        pushText(object, name, variable);
         return [
           {
             name,
@@ -1269,11 +1358,11 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
 };
 
 // One flow per frame (and one for objects outside frames, if any)
-export const toStudioFlows = (content: BoardContent): GeneratedStudioFlow[] => [
+export const toStudioFlows = (content: BoardContent, recordings?: RecordingsList): GeneratedStudioFlow[] => [
   ...content.frames
     .filter((frame) => content.objects.some((object) => object.frameId === frame.id))
-    .map((frame) => toStudioFlow(content, frame)),
+    .map((frame) => toStudioFlow(content, frame, recordings)),
   ...(content.objects.some((object) => !object.frameId || !content.frames.some((frame) => frame.id === object.frameId))
-    ? [toStudioFlow(content)]
+    ? [toStudioFlow(content, undefined, recordings)]
     : []),
 ];

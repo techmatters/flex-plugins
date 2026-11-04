@@ -130,7 +130,8 @@ should have flagged itself (like an open end it missed), say so too, so a check 
    in webchat flows.
 5. **Open ends.** Every way out of every widget leads somewhere or is marked "ends here". Look
    hardest at the failure ones (`callFailure`, `failed`, `deliveryFailure`, `timeout`, a route's
-   `failed`): a contact on an open end is dropped without a word.
+   `failed`): a contact on an open end is dropped without a word. Exception: a voice Menu's
+   `speech` is left unconnected on purpose (callers aren't cut off by speaking): don't flag it.
 6. **Renamed live widgets.** Each renamed one (old → new name) can break Datadog monitors,
    dashboards and saved queries that use the old name: list them for the person to check.
 7. **Decisions.** Each condition compares with what the widget before it really gives (an option's
@@ -188,9 +189,10 @@ are none.
 
 Kinds that become more than one widget, as the board writes them:
 
-- **Menu (voice)**: a `gather-input-on-call` whose `keypress`, `speech` and `timeout` go where the
+- **Menu (voice)**: a `gather-input-on-call` whose `keypress` and `timeout` go where the
   board's ways out go. The options pressed are told apart by the Decision (Split on
-  `{{widgets.<gather>.Digits}}`) after `keypress`.
+  `{{widgets.<gather>.Digits}}`) after `keypress`. `speech` stays **unconnected** (no `next`), even
+  if the board connects it: Aselo menus are keypress only, and speaking doesn't cut the caller off.
 - **Repeat (counter)**, named `repeat_<name>` on the board: a `set-variables`
   (`set_var_<name>_counter`) whose value is
   `{% if flow.variables.<name>_counter %}{{flow.variables.<name>_counter | plus: 1}}{% else %}1{% endif %}`,
@@ -364,15 +366,24 @@ post-call survey in English and Spanish). The board shows them as one, with a ta
 
 ### 5. Recordings
 
-Voice widgets play `${flow_vars.<something>_recordings_url}/<file>`. **All recordings come from the
-Aselo recordings bucket**; Twilio Serverless is being retired. For each voice flow, set its
-recordings URL variable to `recordingsBaseUrl.staging` / `.production` (the environment being
-done) in that environment's file, replacing any Serverless address; no need to ask.
+**All recordings come from the Aselo recordings bucket**; Twilio Serverless is being retired. The
+template already plays every recording it writes or changes (new widgets, renamed ones, recordings
+given their standard name) from `${flow_vars.recordings_url}/<file>` (or the flow's own variable
+when it already points at the bucket). `recordings_url` is in `variables` with `values` for staging
+and production: set it in each environment's `flow_vars` from those; no need to ask. Don't touch
+the Serverless variable: widgets nobody changed still play from it, and Send to queue `waitUrl`s
+(hold music) are Twilio Functions, not files.
 
-Renamed recordings (a TODO "plays <widget>.mp3 now (was <old>.mp3)") were copied under the
-widget's name in the bucket only, so the bucket is the only place they exist. If the export shows
-recordings that aren't `Published` yet (`message.status`), say which: callers would hear nothing
-for them until they're published in the bucket (for production, before it's applied).
+Renamed recordings were copied under the widget's name in the bucket only, so the bucket is the only
+place they exist. If the export shows recordings that aren't `Published` yet (`message.status`),
+say which: callers would hear nothing for them until they're published in the bucket (for
+production, before it's applied).
+
+A voice message with a script but **no recording uploaded** (no `recordingUrls`) is written with
+`say: ${flow_vars.<widget>}` (its script in `variables`) and a `language` (TODO: "says its script
+until its recording is uploaded"). That's on purpose: list them in the hand-off. When the recording
+is uploaded, the board is exported again and it plays the recording; then remove the script
+variable from the `.hcl` files.
 
 ### 6. Check
 
