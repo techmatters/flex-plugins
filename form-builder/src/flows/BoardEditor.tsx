@@ -643,7 +643,12 @@ const Editor = ({
       current.map((node) => {
         if (node.id !== id || node.type !== 'object') return node;
         const info = OBJECT_TYPES[type];
-        const exits = info.editableExits ? (node.data.object.exits ?? info.exits) : undefined;
+        // (A profile check starts with its own: its flags, not blocked and failed)
+        const exits = info.editableExits
+          ? type === 'checkClientProfile'
+            ? info.exits
+            : (node.data.object.exits ?? info.exits)
+          : undefined;
         return { ...node, data: { object: { ...node.data.object, type, exits: exits ? [...exits] : undefined } } };
       }),
     );

@@ -874,6 +874,7 @@ const Comments = ({
 };
 
 const ExitsEditor = ({
+  hint,
   exits,
   fixed,
   readOnly,
@@ -881,6 +882,8 @@ const ExitsEditor = ({
   operatorOf,
   onOperator,
 }: {
+  // What its ways out mean, for kinds with their own
+  hint?: string;
   exits: string[];
   // Those Studio always has: neither renamed nor removed
   fixed: string[];
@@ -896,6 +899,7 @@ const ExitsEditor = ({
       The answers or results this can lead to. Each connection from it is one of these. Those Studio always has (no
       match, timeout, failed...) can't be removed.
     </p>
+    {hint && <p className="field-hint">{hint}</p>}
     {operatorOf && (
       <p className="field-hint">
         Several values separated by commas (Si,si,ok) match any of them. Pick another comparison where needed.
@@ -1409,8 +1413,13 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
         </section>
       )}
 
-      {info.editableExits && (
+      {info.editableExits && !(object.type === 'checkClientProfile' && object.studio) && (
         <ExitsEditor
+          hint={
+            object.type === 'checkClientProfile'
+              ? 'Each way out but “not blocked” and “failed” is a flag on the profile (e.g. “case management”), checked in this order: the first one the profile has is where the contact goes.'
+              : undefined
+          }
           exits={exitsOf(object)}
           fixed={fixedExitsOf(object)}
           readOnly={readOnly}

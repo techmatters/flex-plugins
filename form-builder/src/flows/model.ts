@@ -738,6 +738,8 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
     studioWidget: 'Function + Split',
     studioPrefix: 'f_',
     studioRoute: 'getProfileFlagsForIdentifier',
+    // Each way out but "not blocked" and "failed" is a flag the profile has (as NZ's "case management")
+    editableExits: true,
     exits: ['blocked', 'not blocked', 'failed'],
     defaultSize: { width: 190, height: 72 },
   },
@@ -1738,6 +1740,9 @@ const STUDIO_CONDITION_NAME = /^If value \S+ (.+)$/i;
 export const conditionExitName = (friendlyName: string | undefined, value: string | undefined) =>
   friendlyName && !(value && STUDIO_CONDITION_NAME.test(friendlyName)) ? friendlyName : value;
 
+// A client profile check's ways out that aren't flags: none of them matched, and the request failing
+export const PROFILE_FIXED_EXITS = ['not blocked', 'failed'];
+
 // Ways out Studio always has (a split's noMatch, a Gather's timeout, a request's failed...): they're
 // kept, as named. Imported widgets: those that aren't a split's conditions
 export const fixedExitsOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio'>): string[] => {
@@ -1745,6 +1750,7 @@ export const fixedExitsOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio
   const transitions = object.studio?.transitions;
   if (transitions) return exits.filter((_, index) => transitions[index] && transitions[index].event !== 'match');
   if (object.type === 'other') return [];
+  if (object.type === 'checkClientProfile') return exits.filter((exit) => PROFILE_FIXED_EXITS.includes(exit));
   const own = isSplitObject(object) ? [] : (OBJECT_TYPES[object.type].exits ?? []);
   return exits.filter((exit) => exit === 'noMatch' || own.includes(exit));
 };
@@ -1811,13 +1817,13 @@ export const exitConditionOf = (
   // A way out renamed to a list of values matches any of them, though it was "equal to" live
   const listed = live?.type === 'equal_to' && automatic === 'matches_any_of' && value !== liveValue;
   const liveType = live?.type && !listed ? live.type : undefined;
-  // A client profile's flags are a list: "blocked" is one it contains (equal to misses contacts with
-  // other flags too). Unless chosen on the board, as the checks warn
-  const blockedContains =
-    value === 'blocked' &&
-    (liveType ?? automatic) === 'equal_to' &&
-    isProfileFlagsInput(splitInputOf(object) ?? defaultInput);
-  const type = object.exitOperators?.[exit] ?? (blockedContains ? 'contains' : (liveType ?? automatic));
+  // A client profile's flags are a list: "blocked" (live or new) and any new flag (e.g. "case
+  // management") are ones it contains (equal to misses contacts with other flags too). Unless chosen
+  // on the board, as the checks warn
+  const onFlags = (liveType ?? automatic) === 'equal_to' && isProfileFlagsInput(splitInputOf(object) ?? defaultInput);
+  const blockedContains = onFlags && value === 'blocked';
+  const flagContains = onFlags && (blockedContains || !live);
+  const type = object.exitOperators?.[exit] ?? (flagContains ? 'contains' : (liveType ?? automatic));
   return {
     type,
     value,

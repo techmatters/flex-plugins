@@ -40,6 +40,7 @@ import {
   defaultSplitInputOf,
   exitConditionOf,
   exitsOf,
+  PROFILE_FIXED_EXITS,
   followingSplitName,
   OBJECT_TYPES,
   repeatWidgetNames,
@@ -1107,11 +1108,14 @@ export const toStudioFlow = (
             ? profileFlagsBody(channel)
             : operatingHoursBody(channel, todo, label(object)));
         const results = exits.filter((exit) => exit !== 'failed');
-        // As the helplines' are: blocked when the profile's flags include "blocked"; open, closed or holiday
-        const matches =
-          object.type === 'checkClientProfile'
-            ? [{ exit: results[0], type: 'contains', value: 'blocked' }]
-            : results.slice(0, -1).map((exit) => ({ exit, type: 'equal_to', value: exit }));
+        // As the helplines' are: each flag the profile's flags include, in order (blocked, then e.g.
+        // NZ's "case management"), otherwise not blocked; open, closed or holiday
+        const profile = object.type === 'checkClientProfile';
+        const matches = profile
+          ? results
+              .filter((exit) => exit && !PROFILE_FIXED_EXITS.includes(exit))
+              .map((exit) => ({ exit, type: 'contains', value: exit }))
+          : results.slice(0, -1).map((exit) => ({ exit, type: 'equal_to', value: exit }));
         return [
           {
             name,
@@ -1123,7 +1127,7 @@ export const toStudioFlow = (
             splitName,
             `{{widgets.${name}.parsed.${object.type === 'checkClientProfile' ? 'flags' : 'status'}}}`,
             matches,
-            results[results.length - 1],
+            profile ? 'not blocked' : results[results.length - 1],
           ),
         ];
       }

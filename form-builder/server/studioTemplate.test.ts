@@ -493,6 +493,49 @@ describe('Splits and the standard requests', () => {
     expect(generated.text).not.toMatch(/"TODO"|parsed\.TODO/);
   });
 
+  test("a profile check's other ways out are flags it contains, in order, as NZ's case management", () => {
+    const content = smsBoard([
+      object('check', 'checkClientProfile', {
+        studioName: 'f_getProfileFlagsForIdentifier',
+        exits: ['blocked', 'not blocked', 'failed', 'case management'],
+      }),
+      object('blockedMessage', 'sendMessage', { studioName: 'send_message_blocked' }),
+      object('clinical', 'setVariable', { studioName: 'set_var_clinical' }),
+      object('queue', 'sendToQueue', { studioName: 'send_to_queue', settings: { workflow: 'master' } }),
+    ]);
+    content.connections.push(
+      { id: 'c1', from: 'check', to: 'blockedMessage', exit: 'blocked' },
+      { id: 'c2', from: 'check', to: 'clinical', exit: 'case management' },
+      { id: 'c3', from: 'check', to: 'queue', exit: 'not blocked' },
+      { id: 'c4', from: 'check', to: 'queue', exit: 'failed' },
+    );
+    const { flow } = toStudioFlow(content, content.frames[0]);
+    const state = (name: string) => flow.states.find((candidate) => candidate.name === name)!;
+    expect(state('f_getProfileFlagsForIdentifier').transitions).toEqual([
+      { event: 'success', next: 'split_get_profile_flags_for_identifier' },
+      { event: 'failed', next: 'send_to_queue' },
+    ]);
+    const FLAGS = '{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}';
+    expect(state('split_get_profile_flags_for_identifier').transitions).toEqual([
+      { event: 'noMatch', next: 'send_to_queue' },
+      {
+        event: 'match',
+        next: 'send_message_blocked',
+        conditions: [{ friendly_name: 'blocked', arguments: [FLAGS], type: 'contains', value: 'blocked' }],
+      },
+      {
+        event: 'match',
+        next: 'set_var_clinical',
+        conditions: [
+          { friendly_name: 'case management', arguments: [FLAGS], type: 'contains', value: 'case management' },
+        ],
+      },
+    ]);
+    // Its flags can be added, renamed and removed; not blocked and failed are always there
+    expect(fixedExitsOf(content.objects[0])).toEqual(['not blocked', 'failed']);
+    expect(fixedExitsOf(object('old', 'checkClientProfile'))).toEqual(['not blocked', 'failed']);
+  });
+
   test("a Send to queue's task channel is the flow's when not chosen: chat for messaging, voice for calls", () => {
     const content = smsBoard([
       object('q', 'sendToQueue', { studioName: 'send_to_queue', settings: { workflow: 'master' } }),
@@ -630,7 +673,7 @@ describe("the blocked check on a client profile's flags (a list): contains, not 
     );
   });
 
-  test('a new Decision on the flags (chosen, or after an imported client profile check) defaults to contains blocked', async () => {
+  test('a new Decision on the flags (chosen, or after an imported client profile check) defaults to contains', async () => {
     const content = await voiceBoard();
     const check = content.objects.find((object) => object.studioName === 'f_getProfileFlagsForIdentifier')!;
     const decision: FlowObject = {
@@ -655,9 +698,16 @@ describe("the blocked check on a client profile's flags (a list): contains, not 
     expect(blocked.conditions).toEqual([
       { friendly_name: 'If value contains blocked', arguments: [FLAGS], type: 'contains', value: 'blocked' },
     ]);
-    // Only "blocked": other ways out are as chosen (and an equal_to on the flags is warned about)
-    expect(abusive.conditions).toEqual([expect.objectContaining({ type: 'equal_to', value: 'abusive' })]);
-    expect(boardChecks(withDecision(decision)).map((issue) => issue.message)).toContainEqual(
+    // Any other flag too (as NZ's "case management"), so nothing to warn about
+    expect(abusive.conditions).toEqual([
+      { friendly_name: 'If value contains abusive', arguments: [FLAGS], type: 'contains', value: 'abusive' },
+    ]);
+    expect(boardChecks(withDecision(decision)).map((issue) => issue.message)).not.toContainEqual(
+      expect.stringContaining("profile's flags"),
+    );
+    // Unless equal to is chosen for it, which is warned about
+    const equalTo = { ...decision, exitOperators: { abusive: 'equal_to' } };
+    expect(boardChecks(withDecision(equalTo)).map((issue) => issue.message)).toContainEqual(
       expect.stringMatching(/^“Blocked\?”: “abusive” uses “equal to”/),
     );
     // Its input set on the board, not connected after the check

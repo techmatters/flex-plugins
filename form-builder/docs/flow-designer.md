@@ -48,7 +48,7 @@ reads the same way as Studio.
 | System down | double-sided box (subflow) | server off | 1 | Run Subflow (`run_subflow_system_down`) |
 | Other subflow | double-sided box | layers | as defined | Run Subflow (`run_subflow_...`) |
 | Check operating hours | double-sided box (function) | clock | open / closed / holiday | `operatingHours` (`f_operatingHours`) + Split on `parsed.status`; its request body is the flow's channel, en-US and who it's from unless one is set |
-| Check client profile | double-sided box | user search | blocked / not blocked | `f_getProfileFlagsForIdentifier` + Split, written as the helplines' are: the trigger and channel type sent, blocked when `parsed.flags` contains `blocked` (see below) |
+| Check client profile | double-sided box | user search | blocked / not blocked / failed, plus any flag added | `f_getProfileFlagsForIdentifier` + Split, written as the helplines' are: the trigger and channel type sent, then one way out per flag `parsed.flags` contains, in order (`blocked`, then e.g. NZ's `case management`), and `not blocked` when it has none of them (see below) |
 | Skilled worker available? | double-sided box | users | available / not available / failed | `worker/isSkilledWorkerAvailable` (`f_isSkilledWorkerAvailable_<skills>`) + Split; settings: skills (typed, or added from the helpline's routing design), channel (not chosen: `voice` in a voice flow, `chat` in any other) |
 | Skilled worker logged in? | double-sided box | user check | logged in / not logged in / failed | `worker/isSkilledWorkerLoggedIn` (`f_isSkilledWorkerLoggedIn_<skills>`) + Split; settings: skills, activities not counted |
 | Check country / phone code | diamond | globe | one per country, other | Split (`split_country...`) |
@@ -79,8 +79,19 @@ reads the same way as Studio.
 out with `contains`: new ones (including a Decision placed after an imported client profile check,
 which now splits on its flags by default), and imported ones whose live split says `equal_to`
 (today only USCH's), listed in the template's TODOs as "blocked check now uses contains, was
-equal_to". Its other ways out keep their comparison. Choosing "Equal to" for it on the board keeps
-it, and Check warns about any way out on the flags compared with `equal_to`.
+equal_to". New ways out on the flags (any flag, e.g. `abusive`) are `contains` too; imported ones
+other than `blocked` keep their live comparison. Choosing "Equal to" on the board keeps it, and
+Check warns about any way out on the flags compared with `equal_to`.
+
+**Other flags.** A profile's flags can carry more than blocked: NZ routes contacts flagged
+`case management` to its clinical queue. A Check client profile takes a way out per flag ("+ Add a
+way out", named exactly as the flag): each becomes a `contains` condition in the split, checked in
+the order listed (the first one the profile has wins, so keep `blocked` first), and `not blocked`
+is where contacts with none of them go. `not blocked` and `failed` can't be removed. NZ's pattern
+after the flag: a Set variables (`set_var_clinical`, `clinical` = `true`) and the queue, with the
+channel's task attributes carrying `"clinical": "{{flow.variables.clinical}}"` and a workflow
+rule on `clinical == 'true'`. An imported check is the request alone: its flags are the ways out
+of the Decision after it, which defaults to `contains` too.
 
 Colours by family: green for start and end, yellow for decisions, blue for checks and functions,
 white for messages and questions, red for voicemail, pink for queues. Twilio's own Studio icons
