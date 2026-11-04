@@ -18,8 +18,6 @@
  * Everything for one loaded helpline: navigation, the draft, editing, previews and export.
  * Rendered with a code/version key so switching helpline starts fresh.
  */
-import { useMemo, useState } from 'react';
-import type { DefinitionFiles } from '@tech-matters/form-builder-shared';
 import {
   CATEGORIES_FILE,
   caseSectionTarget,
@@ -33,8 +31,37 @@ import {
   getReferenceData,
 } from '../common/definitions';
 import { validateSections } from '../chatsAndCalls/sections';
-import { SaveState, useDraft } from '../drafts/useDraft';
-import type { DraftClient } from '../drafts/draftClient';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff, selectUser } from '../app/sessionSlice';
+import type { DefinitionFileMap } from '../common/definitions';
+import {
+  applyDraft,
+  editDraftFiles,
+  noticeDismissed,
+  SaveState,
+  selectChangedPaths,
+  selectDraft,
+  submitDraft,
+} from '../drafts/draftSlice';
+import {
+  discardWorkspaceDraft,
+  reloadHelpline,
+  reviewClosed,
+  reviewOpened,
+  sameView,
+  sectionPreviewClosed,
+  sectionPreviewOpened,
+  selectCaseTargets,
+  selectDefinitions,
+  selectIssuesByTab,
+  selectReviewIssues,
+  selectSectionIssues,
+  selectWorkspace,
+  tryItOutClosed,
+  tryItOutOpened,
+  View,
+  viewSelected,
+} from './workspaceSlice';
 import { validateContactTab, ValidationIssue } from '../forms/validation';
 import { FlexDesktopPreview, PreviewFocus } from '../aseloPreview/FlexDesktopPreview';
 import { AseloSectionPreview } from '../aseloPreview/AseloSectionPreview';
@@ -54,22 +81,6 @@ import { MessagesEditor } from '../chatsAndCalls/MessagesEditor';
 import { WebchatFormEditor } from '../webchat/WebchatFormEditor';
 import { PRE_ENGAGEMENT_FILE } from '../webchat/webchat';
 
-// Which screen is showing in the main area
-type View =
-  | { kind: 'contactTab'; tabKey: string }
-  | { kind: 'categories' }
-  | { kind: 'callTypes' }
-  | { kind: 'cannedResponses' }
-  | { kind: 'messages' }
-  | { kind: 'webchat' }
-  | { kind: 'caseStatus' }
-  | { kind: 'caseSections' }
-  | { kind: 'features' }
-  | { kind: 'serviceConfig' }
-  | { kind: 'profiles' }
-  | { kind: 'caseSection'; sectionKey: string };
-
-const sameView = (a: View, b: View) => JSON.stringify(a) === JSON.stringify(b);
 
 // Defined outside the workspace so its buttons survive re-renders (e.g. when the draft loads)
 const NavItem = ({
@@ -97,20 +108,6 @@ const NavItem = ({
   </li>
 );
 
-type Props = {
-  definitions: DefinitionFiles;
-  // Show the settings only Aselo staff may change
-  staffMode: boolean;
-  // Aselo staff apply changes; helpline staff submit them for review
-  canApply: boolean;
-  // False when deployed without the GitHub App: Aselo staff download the changes and open the PR
-  applyInBuilder?: boolean;
-  draftClient: DraftClient;
-  // Reload the helpline from the server (after applying, or when someone else changed the draft)
-  onReload: () => void;
-  saveDelayMs?: number;
-};
-
 const SAVE_STATE_TEXT: Record<SaveState, string> = {
   loading: 'Loading the draft…',
   saved: 'All changes saved',
@@ -120,49 +117,30 @@ const SAVE_STATE_TEXT: Record<SaveState, string> = {
   error: "Couldn't save",
 };
 
-export const HelplineWorkspace = ({
-  definitions,
-  staffMode,
-  canApply,
-  applyInBuilder = true,
-  draftClient,
-  onReload,
-  saveDelayMs,
-}: Props) => {
-  const { code, version, files: originalFiles } = definitions;
-  const draft = useDraft(code, version, originalFiles, draftClient, { saveDelayMs });
-  const files = draft.files;
+export const HelplineWorkspace = () => {
+  const dispatch = useAppDispatch();
+  const definitions = useAppSelector(selectDefinitions)!;
+  const draft = useAppSelector(selectDraft);
+  const changedPaths = useAppSelector(selectChangedPaths);
+  const { view, tryItOut, reviewing, previewingSection, editorRevision } = useAppSelector(selectWorkspace);
+  const issuesByTab = useAppSelector(selectIssuesByTab);
+  const sectionIssues = useAppSelector(selectSectionIssues);
+  const reviewIssues = useAppSelector(selectReviewIssues);
+  const caseTargets = useAppSelector(selectCaseTargets);
+  // Show the settings only Aselo staff may change; Aselo staff apply, helpline staff submit
+  const staffMode = useAppSelector(selectActingAsStaff);
+  const canApply = staffMode;
+  // False when deployed without the GitHub App: Aselo staff download the changes and open the PR
+  const applyInBuilder = useAppSelector(selectUser)?.applyInBuilder !== false;
 
-  const [view, setView] = useState<View>({ kind: 'contactTab', tabKey: CONTACT_TABS[0].key });
-  // What the full-screen "Try it out" preview opens on, when it's open
-  const [tryItOut, setTryItOut] = useState<{ focus: PreviewFocus; tab?: string }>();
-  const [reviewing, setReviewing] = useState(false);
-  // The case section whose Aselo preview is open
-  const [previewingSection, setPreviewingSection] = useState<string>();
-  // Bumped on discard so the editor rebuilds from the restored files
-  const [editorRevision, setEditorRevision] = useState(0);
+  const { code, version } = definitions;
+  const { files, original: originalFiles } = draft;
+  const setView = (target: View) => dispatch(viewSelected(target));
+  const setTryItOut = (preview: { focus: PreviewFocus; tab?: string }) => dispatch(tryItOutOpened(preview));
+  // Until each editor dispatches its own actions, its changes go through the draft
+  const onChangeFiles = (updater: (current: DefinitionFileMap) => DefinitionFileMap) =>
+    dispatch(editDraftFiles(updater));
 
-  const caseTargets = useMemo(() => getCaseSections(files).map(caseSectionTarget), [files]);
-  // Contact tabs by tab key, case section forms by `case:<section key>`
-  const issuesByTab = useMemo(
-    () =>
-      Object.fromEntries([
-        ...CONTACT_TABS.map((tab) => [tab.key, validateContactTab(files, originalFiles, tab)]),
-        ...caseTargets.map((target) => [`case:${target.key}`, validateContactTab(files, originalFiles, target)]),
-      ]) as Record<string, ValidationIssue[]>,
-    [files, originalFiles, caseTargets],
-  );
-  const sectionIssues = useMemo(() => validateSections(files, originalFiles, definitions.code), [files, originalFiles, definitions.code]);
-  // For the review: problems in forms the draft changes (anything blocking always counts), so
-  // reviewers aren't shown old notes about forms nobody touched
-  const changedFilePaths = new Set(draft.changedPaths);
-  const reviewIssues = [
-    ...[...CONTACT_TABS, ...caseTargets].flatMap((target) => {
-      const issues = issuesByTab[isContactTab(target) ? target.key : `case:${target.key}`] ?? [];
-      return changedFilePaths.has(target.filePath) ? issues : issues.filter((issue) => issue.severity === 'error');
-    }),
-    ...sectionIssues,
-  ];
   const sectionErrorCount = (prefix: string) =>
     sectionIssues.filter((issue) => issue.severity === 'error' && issue.message.startsWith(prefix))
       .length;
@@ -171,15 +149,13 @@ export const HelplineWorkspace = ({
 
   const referenceData = getReferenceData(files);
   const caseSections = getCaseSections(files);
-  const changeCount = draft.changedPaths.length;
+  const changeCount = changedPaths.length;
 
   const discard = async () => {
     if (window.confirm('Discard all the draft changes for this helpline? This can’t be undone.')) {
-      await draft.discardChanges();
-      setEditorRevision((revision) => revision + 1);
+      await dispatch(discardWorkspaceDraft());
     }
   };
-
 
   const renderContactTab = (tabKey: string) => {
     const tab = CONTACT_TABS.find((contactTab) => contactTab.key === tabKey)!;
@@ -205,7 +181,7 @@ export const HelplineWorkspace = ({
           staffMode={staffMode}
           helplineLanguage={definitions.helplineLanguage}
           issues={issuesByTab[tab.key] ?? []}
-          onChangeFiles={draft.updateFiles}
+          onChangeFiles={onChangeFiles}
         />
       </>
     );
@@ -224,7 +200,7 @@ export const HelplineWorkspace = ({
           originalFiles={originalFiles}
           staffMode={staffMode}
           helplineLanguage={definitions.helplineLanguage}
-          onChangeFiles={draft.updateFiles}
+          onChangeFiles={onChangeFiles}
           onTryItOut={() => setTryItOut({ focus: 'callTypes' })}
         />
       );
@@ -236,7 +212,7 @@ export const HelplineWorkspace = ({
           draftFiles={files}
           helplineLanguage={definitions.helplineLanguage}
           enabled={getFeatures(files, definitions.serviceConfigDefaults)?.enableCannedResponses ?? definitions.featureFlags?.enable_canned_responses !== false}
-          onChangeFiles={draft.updateFiles}
+          onChangeFiles={onChangeFiles}
           onTryItOut={() => setTryItOut({ focus: 'cannedResponses' })}
         />
       );
@@ -247,7 +223,7 @@ export const HelplineWorkspace = ({
           key={editorKey}
           draftFiles={files}
           helplineName={getHelplineName(files, code)}
-          onChangeFiles={draft.updateFiles}
+          onChangeFiles={onChangeFiles}
         />
       );
     }
@@ -264,22 +240,13 @@ export const HelplineWorkspace = ({
             ...(getFeatures(files, definitions.serviceConfigDefaults) ? { use_prepopulate_mappings: getFeatures(files, definitions.serviceConfigDefaults)!.usePrepopulateMappings } : {}),
           }}
           issues={sectionIssues.filter((issue) => issue.message.startsWith('Webchat form'))}
-          onChangeFiles={draft.updateFiles}
+          onChangeFiles={onChangeFiles}
         />
       );
     }
     if (view.kind === 'categories') {
       return (
-        <CategoriesEditor
-          key={editorKey}
-          draftFiles={files}
-          originalFiles={originalFiles}
-          staffMode={staffMode}
-          helplineLanguage={definitions.helplineLanguage}
-          issues={sectionIssues.filter((issue) => issue.message.startsWith('Issue categories'))}
-          onChangeFiles={draft.updateFiles}
-          onTryItOut={() => setTryItOut({ focus: 'form', tab: 'categories' })}
-        />
+        <CategoriesEditor key={editorKey} />
       );
     }
     if (view.kind === 'profiles') {
@@ -291,7 +258,7 @@ export const HelplineWorkspace = ({
           staffMode={staffMode}
           profilesEnabled={getFeatures(files, definitions.serviceConfigDefaults)?.enableClientProfiles !== false}
           issues={sectionIssues.filter((issue) => issue.message.startsWith('Client profiles'))}
-          onChangeFiles={draft.updateFiles}
+          onChangeFiles={onChangeFiles}
         />
       );
     }
@@ -303,7 +270,7 @@ export const HelplineWorkspace = ({
           originalFiles={originalFiles}
           canChange={canApply}
           defaults={definitions.serviceConfigDefaults}
-          onChangeFiles={draft.updateFiles}
+          onChangeFiles={onChangeFiles}
         />
       );
     }
@@ -315,7 +282,7 @@ export const HelplineWorkspace = ({
           draftFiles={files}
           originalFiles={originalFiles}
           defaults={definitions.serviceConfigDefaults}
-          onChangeFiles={draft.updateFiles}
+          onChangeFiles={onChangeFiles}
         />
       );
     }
@@ -328,7 +295,7 @@ export const HelplineWorkspace = ({
           staffMode={staffMode}
           helplineLanguage={definitions.helplineLanguage}
           issues={sectionIssues.filter((issue) => issue.message.startsWith('Case sections'))}
-          onChangeFiles={draft.updateFiles}
+          onChangeFiles={onChangeFiles}
           onOpenForm={(sectionKey) => setView({ kind: 'caseSection', sectionKey })}
         />
       );
@@ -341,7 +308,7 @@ export const HelplineWorkspace = ({
           originalFiles={originalFiles}
           staffMode={staffMode}
           issues={sectionIssues.filter((issue) => issue.message.startsWith('Case statuses'))}
-          onChangeFiles={draft.updateFiles}
+          onChangeFiles={onChangeFiles}
         />
       );
     }
@@ -353,7 +320,7 @@ export const HelplineWorkspace = ({
     return (
       <>
         <div className="try-it-out-row">
-          <button type="button" className="secondary-button" onClick={() => setPreviewingSection(target.key)}>
+          <button type="button" className="secondary-button" onClick={() => dispatch(sectionPreviewOpened(target.key))}>
             Preview in Aselo
           </button>
           <span className="muted">See the draft form as counselors see it when they add a {target.title} to a case.</span>
@@ -366,10 +333,10 @@ export const HelplineWorkspace = ({
           staffMode={staffMode}
           helplineLanguage={definitions.helplineLanguage}
           issues={issuesByTab[`case:${target.key}`] ?? []}
-          onChangeFiles={draft.updateFiles}
+          onChangeFiles={onChangeFiles}
         />
         {previewingSection === target.key && (
-          <div className="modal-backdrop" role="presentation" onClick={() => setPreviewingSection(undefined)}>
+          <div className="modal-backdrop" role="presentation" onClick={() => dispatch(sectionPreviewClosed())}>
             <div
               className="modal modal-wide"
               role="dialog"
@@ -379,7 +346,7 @@ export const HelplineWorkspace = ({
             >
               <div className="modal-header">
                 <h2>{target.title} in Aselo</h2>
-                <button type="button" className="link-button" onClick={() => setPreviewingSection(undefined)}>
+                <button type="button" className="link-button" onClick={() => dispatch(sectionPreviewClosed())}>
                   Close
                 </button>
               </div>
@@ -428,7 +395,7 @@ export const HelplineWorkspace = ({
           type="button"
           className="primary-button"
           disabled={changeCount === 0 || draft.saveState === 'conflict'}
-          onClick={() => setReviewing(true)}
+          onClick={() => dispatch(reviewOpened())}
         >
           {canApply ? 'Review & apply' : 'Review & submit'}
         </button>
@@ -440,7 +407,7 @@ export const HelplineWorkspace = ({
           {draft.conflict.updatedAt ? ` at ${new Date(draft.conflict.updatedAt).toLocaleString()}` : ''}{' '}
           while you were editing, so your latest changes weren't saved. Reload to see their
           version, then make your changes again.
-          <button type="button" className="link-button" onClick={onReload}>
+          <button type="button" className="link-button" onClick={() => dispatch(reloadHelpline())}>
             Reload
           </button>
         </div>
@@ -449,7 +416,7 @@ export const HelplineWorkspace = ({
       {draft.notice && (
         <div className="alert alert-info">
           {draft.notice}
-          <button type="button" className="link-button" onClick={draft.dismissNotice}>
+          <button type="button" className="link-button" onClick={() => dispatch(noticeDismissed())}>
             Dismiss
           </button>
         </div>
@@ -568,7 +535,7 @@ export const HelplineWorkspace = ({
           files={files}
           focus={tryItOut.focus}
           initialTab={tryItOut.tab as never}
-          onClose={() => setTryItOut(undefined)}
+          onClose={() => dispatch(tryItOutClosed())}
         />
       )}
 
@@ -578,15 +545,15 @@ export const HelplineWorkspace = ({
           version={version}
           originalFiles={originalFiles}
           draftFiles={files}
-          changedPaths={draft.changedPaths}
+          changedPaths={changedPaths}
           mode={canApply ? 'apply' : 'submit'}
           applyInBuilder={applyInBuilder}
           alreadySubmitted={draft.meta?.status === 'submitted'}
-          onSubmit={draft.submit}
-          onApply={draft.apply}
+          onSubmit={() => dispatch(submitDraft())}
+          onApply={(description) => dispatch(applyDraft(description))}
           issues={reviewIssues}
           webchatDefaultLocale={definitions.webchat?.defaultLocale}
-          onClose={() => setReviewing(false)}
+          onClose={() => dispatch(reviewClosed())}
         />
       )}
     </>

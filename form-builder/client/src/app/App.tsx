@@ -14,68 +14,30 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { useEffect, useState } from 'react';
-import type { DefinitionFiles, HelplineSummary } from '@tech-matters/form-builder-shared';
-import type { Me } from '@tech-matters/form-builder-shared';
-import { fetchDefinitionFiles, fetchHelplines } from './api';
+import { useEffect } from 'react';
 import { isSignInEnabled, signOut } from './auth';
-import { DraftClient, httpDraftClient } from '../drafts/draftClient';
+import { useAppDispatch, useAppSelector } from './store';
+import { loadSession, selectIsAseloStaff, selectUser, viewAsHelplineStaffSet } from './sessionSlice';
 import { HelplineWorkspace } from '../workspace/HelplineWorkspace';
+import { openHelpline, selectWorkspace } from '../workspace/workspaceSlice';
 import { DraftsList } from '../drafts/DraftsList';
 
-type Props = {
-  draftClient?: DraftClient;
-};
+export const App = () => {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector(selectUser);
+  const isAseloStaff = useAppSelector(selectIsAseloStaff);
+  const { helplines, viewAsHelplineStaff, error: sessionError } = useAppSelector((state) => state.session);
+  const { code, version, definitions, loading, error: helplineError } = useAppSelector(selectWorkspace);
+  const error = sessionError ?? helplineError;
 
-export const App = ({ draftClient = httpDraftClient }: Props) => {
-  const [user, setUser] = useState<Me>();
-  const [helplines, setHelplines] = useState<HelplineSummary[]>([]);
-  const [code, setCode] = useState('');
-  const [version, setVersion] = useState('');
-  const [definitions, setDefinitions] = useState<DefinitionFiles>();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>();
-  // Bumped to load the helpline again (after applying, or when someone else changed the draft)
-  const [reloadCount, setReloadCount] = useState(0);
-  // Aselo staff can see the app as helpline staff do
-  const [viewAsHelplineStaff, setViewAsHelplineStaff] = useState(false);
-
-  const isAseloStaff = user?.role === 'aselo-staff';
-  const actingAsStaff = isAseloStaff && !viewAsHelplineStaff;
+  useEffect(() => {
+    dispatch(loadSession());
+  }, [dispatch]);
 
   const selectHelpline = (newCode: string, newVersion?: string) => {
-    setCode(newCode);
     const versions = helplines.find((helpline) => helpline.code === newCode)?.versions ?? [];
-    setVersion(newVersion ?? versions[0] ?? '');
+    dispatch(openHelpline(newCode, newVersion ?? versions[0] ?? ''));
   };
-
-  useEffect(() => {
-    Promise.all([draftClient.me(), fetchHelplines()])
-      .then(([me, loadedHelplines]) => {
-        setUser(me);
-        setHelplines(loadedHelplines);
-        // Allow linking straight to a helpline, e.g. ?helpline=usnm
-        const linkedCode = new URLSearchParams(window.location.search).get('helpline');
-        const linked = loadedHelplines.find((helpline) => helpline.code === linkedCode);
-        if (linked) {
-          setCode(linked.code);
-          setVersion(linked.versions[0]);
-        }
-      })
-      .catch((err: Error) => setError(err.message));
-  }, [draftClient]);
-
-  useEffect(() => {
-    if (!code || !version) return;
-    setLoading(true);
-    setError(undefined);
-    setDefinitions(undefined);
-    fetchDefinitionFiles(code, version)
-      .then(setDefinitions)
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setLoading(false));
-  }, [code, version, reloadCount]);
-
   const versions = helplines.find((helpline) => helpline.code === code)?.versions ?? [];
 
   return (
@@ -96,7 +58,7 @@ export const App = ({ draftClient = httpDraftClient }: Props) => {
         {versions.length > 1 && (
           <label>
             Version
-            <select value={version} onChange={(e) => setVersion(e.target.value)}>
+            <select value={version} onChange={(e) => selectHelpline(code, e.target.value)}>
               {versions.map((v) => (
                 <option key={v} value={v}>
                   {v}
@@ -125,7 +87,7 @@ export const App = ({ draftClient = httpDraftClient }: Props) => {
             <input
               type="checkbox"
               checked={viewAsHelplineStaff}
-              onChange={(e) => setViewAsHelplineStaff(e.target.checked)}
+              onChange={(e) => dispatch(viewAsHelplineStaffSet(e.target.checked))}
             />
             View as helpline staff
           </label>
@@ -138,11 +100,7 @@ export const App = ({ draftClient = httpDraftClient }: Props) => {
         <main className="empty-state">
           <p>Choose a helpline to see and edit its forms.</p>
           {user && (
-            <DraftsList
-              draftClient={draftClient}
-              isAseloStaff={isAseloStaff}
-              onOpen={(draftCode, draftVersion) => selectHelpline(draftCode, draftVersion)}
-            />
+            <DraftsList />
           )}
         </main>
       )}
@@ -150,15 +108,8 @@ export const App = ({ draftClient = httpDraftClient }: Props) => {
       {loading && <main className="empty-state">Loading forms…</main>}
 
       {definitions && user && (
-        <HelplineWorkspace
-          key={`${definitions.code}/${definitions.version}/${reloadCount}`}
-          definitions={definitions}
-          staffMode={actingAsStaff}
-          canApply={actingAsStaff}
-          applyInBuilder={user?.applyInBuilder !== false}
-          draftClient={draftClient}
-          onReload={() => setReloadCount((count) => count + 1)}
-        />
+        // Reloading starts it again (the workspace slice's editorRevision restarts the editors)
+        <HelplineWorkspace key={`${definitions.code}/${definitions.version}`} />
       )}
     </div>
   );

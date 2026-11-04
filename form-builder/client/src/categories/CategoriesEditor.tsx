@@ -16,159 +16,46 @@
 
 /**
  * Edits the issue categories (tabbedForms/IssueCategorizationTab.json) next to the Aselo
- * categories tab. See categories.ts for what can change freely and what needs Aselo staff.
+ * categories tab. What's edited and how lives in categoriesSlice.ts; see categories.ts for what
+ * can change freely and what needs Aselo staff.
  */
-import { useMemo, useState } from 'react';
-import type { CategoriesDefinition } from '@hrm-form-definitions/formDefinition/types';
-import type { DefinitionFileMap } from '../common/definitions';
+import { useEffect, useMemo } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
 import { getCategoriesByHelpline } from '../common/definitions';
+import { selectDraftFiles, selectOriginalFiles } from '../drafts/draftSlice';
+import { selectDefinitions, selectSectionIssues, selectWorkspace, tryItOutOpened } from '../workspace/workspaceSlice';
+import { DEFAULT_MAX_SELECTIONS, getHelplineCategories } from './categories';
 import {
-  CATEGORY_COLORS,
-  DEFAULT_MAX_SELECTIONS,
-  getHelplineCategories,
-  setHelplineCategories,
-  Subcategory,
-} from './categories';
-import type { ValidationIssue } from '../forms/validation';
-import { AseloCategories, SelectedCategories } from '../aseloPreview/AseloCategories';
+  addCategory,
+  addPastedSubcategories,
+  addSubcategory,
+  bulkChanged,
+  categoryToggled,
+  openCategories,
+  previewSelectedChanged,
+  removeCategory,
+  removeSubcategory,
+  renameCategory,
+  reorderCategories,
+  reorderSubcategories,
+  selectCategories,
+  setCategoryColor,
+  setMaxSelections,
+  setSubcategory,
+} from './categoriesSlice';
+import { AseloCategories } from '../aseloPreview/AseloCategories';
 import { translate, useStrings } from '../aseloPreview/translations';
-import { Row, SortableRows, toRows } from '../common/SortableRows';
+import { SortableRows } from '../common/SortableRows';
 import '../aseloPreview/aselo.css';
 
-type Props = {
-  draftFiles: DefinitionFileMap;
-  originalFiles: DefinitionFileMap;
-  staffMode: boolean;
-  helplineLanguage?: string;
-  issues: ValidationIssue[];
-  onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
-  onTryItOut: () => void;
-};
-
-// Editor rows: names can change while editing, so rows carry ids
-type CategoryValue = {
-  name: string;
-  // The name it was loaded with, for categories that existed before this draft
-  originalName?: string;
-  // Everything else on the category (color, and anything the editor doesn't know about)
-  entry: Omit<CategoriesDefinition['categories'][string], 'subcategories'>;
-  subcategories: Row<Subcategory>[];
-};
-
-const toCategoryRows = (
-  definition: CategoriesDefinition | undefined,
-  original: CategoriesDefinition | undefined,
-): Row<CategoryValue>[] =>
-  toRows(
-    Object.entries(definition?.categories ?? {}).map(([name, { subcategories, ...entry }]) => ({
-      name,
-      originalName: original?.categories[name] ? name : undefined,
-      entry,
-      subcategories: toRows(subcategories ?? []),
-    })),
-  );
-
-const HelplineCategories = ({
-  helpline,
-  draftFiles,
-  originalFiles,
-  staffMode,
-  strings,
-  onChangeFiles,
-}: {
-  helpline: string;
-  draftFiles: DefinitionFileMap;
-  originalFiles: DefinitionFileMap;
-  staffMode: boolean;
-  strings: Record<string, string>;
-  onChangeFiles: Props['onChangeFiles'];
-}) => {
-  const original = useMemo(() => getHelplineCategories(originalFiles, helpline), [originalFiles, helpline]);
-  const [rows, setRows] = useState(() => toCategoryRows(getHelplineCategories(draftFiles, helpline), original));
-  // Subcategories that existed before this draft, by row id (their names are locked)
-  const [existingSubIds] = useState(
-    () =>
-      new Set(
-        rows.flatMap(({ value }) =>
-          value.subcategories
-            .filter((sub) =>
-              original?.categories[value.originalName ?? '']?.subcategories.some((old) => old.label === sub.value.label),
-            )
-            .map((sub) => sub.id),
-        ),
-      ),
-  );
-  const [openId, setOpenId] = useState<string>();
-  const [bulk, setBulk] = useState<{ id: string; text: string }>();
-  const definition = getHelplineCategories(draftFiles, helpline);
-  const maxSelections = definition?.maxSelections ?? DEFAULT_MAX_SELECTIONS;
-
-  // Names are keys in the file, so nothing is saved while two categories share one
-  const hasDuplicateNames = (candidates: Row<CategoryValue>[]) =>
-    new Set(candidates.map((row) => row.value.name)).size < candidates.length;
-
-  const write = (next: Row<CategoryValue>[], changes: Partial<CategoriesDefinition> = {}) => {
-    setRows(next);
-    if (hasDuplicateNames(next)) return;
-    onChangeFiles((files) => {
-      const current = getHelplineCategories(files, helpline);
-      return setHelplineCategories(files, helpline, {
-        ...current,
-        ...changes,
-        categories: Object.fromEntries(
-          next.map(({ value }) => [
-            value.name,
-            { ...value.entry, subcategories: value.subcategories.map((sub) => sub.value) },
-          ]),
-        ) as CategoriesDefinition['categories'],
-      });
-    });
-  };
-
-  const updateCategory = (id: string, update: (value: CategoryValue) => CategoryValue) =>
-    write(rows.map((row) => (row.id === id ? { ...row, value: update(row.value) } : row)));
-
-
-  const uniqueName = (base: string, taken: string[]) => {
-    let name = base;
-    for (let n = 2; taken.includes(name); n += 1) name = `${base} ${n}`;
-    return name;
-  };
-
-  const addCategory = () => {
-    const name = uniqueName('New category', rows.map((row) => row.value.name));
-    const [row] = toRows([
-      {
-        name,
-        entry: { color: CATEGORY_COLORS[rows.length % CATEGORY_COLORS.length] },
-        subcategories: toRows([{ label: 'Other' }]),
-      },
-    ]);
-    write([...rows, row]);
-    setOpenId(row.id);
-  };
-
-  const removeCategory = (row: Row<CategoryValue>) => {
-    if (
-      row.value.originalName !== undefined &&
-      !window.confirm(
-        `Remove the category “${row.value.name}”? Contacts already saved with it keep it; counselors just can't choose it anymore.`,
-      )
-    ) {
-      return;
-    }
-    write(rows.filter((candidate) => candidate.id !== row.id));
-  };
-
-  const addSubcategories = (id: string, labels: string[]) =>
-    updateCategory(id, (value) => {
-      const taken = value.subcategories.map((sub) => sub.value.label);
-      const added = labels
-        .map((label) => label.trim())
-        .filter((label) => label && !taken.includes(label))
-        .filter((label, index, all) => all.indexOf(label) === index);
-      return { ...value, subcategories: [...value.subcategories, ...toRows(added.map((label) => ({ label })))] };
-    });
+const HelplineCategories = ({ strings }: { strings: Record<string, string> }) => {
+  const dispatch = useAppDispatch();
+  const staffMode = useAppSelector(selectActingAsStaff);
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const { helpline, rows, existingSubIds, openId, bulk } = useAppSelector(selectCategories);
+  const maxSelections =
+    (helpline && getHelplineCategories(draftFiles, helpline)?.maxSelections) || DEFAULT_MAX_SELECTIONS;
 
   return (
     <>
@@ -179,7 +66,7 @@ const HelplineCategories = ({
           min={1}
           max={20}
           value={maxSelections}
-          onChange={(e) => write(rows, { maxSelections: Number(e.target.value) })}
+          onChange={(e) => dispatch(setMaxSelections(Number(e.target.value)))}
           className="narrow-input"
         />
       </label>
@@ -187,7 +74,7 @@ const HelplineCategories = ({
       <SortableRows
         rows={rows}
         labelOf={(value) => value.name}
-        onReorder={(next) => write(next)}
+        onReorder={(next) => dispatch(reorderCategories(next))}
         renderRow={(row) => {
           const { value } = row;
           const nameLocked = !staffMode && value.originalName !== undefined;
@@ -200,9 +87,7 @@ const HelplineCategories = ({
                   type="color"
                   aria-label={`Colour of ${value.name}`}
                   value={/^#[0-9a-f]{6}$/i.test(String(value.entry.color)) ? String(value.entry.color) : '#bbe3ff'}
-                  onChange={(e) =>
-                    updateCategory(row.id, (current) => ({ ...current, entry: { ...current.entry, color: e.target.value } }))
-                  }
+                  onChange={(e) => dispatch(setCategoryColor(row.id, e.target.value))}
                 />
                 <input
                   type="text"
@@ -210,13 +95,13 @@ const HelplineCategories = ({
                   value={value.name}
                   disabled={nameLocked}
                   title={nameLocked ? 'Contacts and reports use this name, so only Aselo staff can rename it.' : undefined}
-                  onChange={(e) => updateCategory(row.id, (current) => ({ ...current, name: e.target.value }))}
+                  onChange={(e) => dispatch(renameCategory(row.id, e.target.value))}
                 />
                 <button
                   type="button"
                   className="secondary-button"
                   aria-expanded={open}
-                  onClick={() => setOpenId(open ? undefined : row.id)}
+                  onClick={() => dispatch(categoryToggled(row.id))}
                 >
                   {value.subcategories.length} subcategories
                 </button>
@@ -224,7 +109,16 @@ const HelplineCategories = ({
                   type="button"
                   className="icon-button"
                   aria-label={`Remove ${value.name}`}
-                  onClick={() => removeCategory(row)}
+                  onClick={() => {
+                    if (
+                      value.originalName === undefined ||
+                      window.confirm(
+                        `Remove the category “${value.name}”? Contacts already saved with it keep it; counselors just can't choose it anymore.`,
+                      )
+                    ) {
+                      dispatch(removeCategory(row.id));
+                    }
+                  }}
                 >
                   ×
                 </button>
@@ -243,17 +137,10 @@ const HelplineCategories = ({
                   <SortableRows
                     rows={value.subcategories}
                     labelOf={(sub) => sub.label}
-                    onReorder={(subcategories) => updateCategory(row.id, (current) => ({ ...current, subcategories }))}
+                    onReorder={(subcategories) => dispatch(reorderSubcategories(row.id, subcategories))}
                     renderRow={(subRow) => {
-                      const subExists = existingSubIds.has(subRow.id);
+                      const subExists = existingSubIds.includes(subRow.id);
                       const subLocked = !staffMode && subExists;
-                      const setSub = (sub: Subcategory) =>
-                        updateCategory(row.id, (current) => ({
-                          ...current,
-                          subcategories: current.subcategories.map((candidate) =>
-                            candidate.id === subRow.id ? { ...candidate, value: sub } : candidate,
-                          ),
-                        }));
                       return (
                         <div className="subcategory-row">
                           <div className="row-inline">
@@ -263,7 +150,9 @@ const HelplineCategories = ({
                               value={subRow.value.label}
                               disabled={subLocked}
                               title={subLocked ? 'Contacts and reports use this name, so only Aselo staff can rename it.' : undefined}
-                              onChange={(e) => setSub({ ...subRow.value, label: e.target.value })}
+                              onChange={(e) =>
+                                dispatch(setSubcategory(row.id, subRow.id, { ...subRow.value, label: e.target.value }))
+                              }
                             />
                             <button
                               type="button"
@@ -271,17 +160,13 @@ const HelplineCategories = ({
                               aria-label={`Remove ${subRow.value.label}`}
                               onClick={() => {
                                 if (
-                                  subExists &&
-                                  !window.confirm(
+                                  !subExists ||
+                                  window.confirm(
                                     `Remove “${subRow.value.label}” from “${value.name}”? Contacts already saved with it keep it.`,
                                   )
                                 ) {
-                                  return;
+                                  dispatch(removeSubcategory(row.id, subRow.id));
                                 }
-                                updateCategory(row.id, (current) => ({
-                                  ...current,
-                                  subcategories: current.subcategories.filter((candidate) => candidate.id !== subRow.id),
-                                }));
                               }}
                             >
                               ×
@@ -295,7 +180,9 @@ const HelplineCategories = ({
                             value={subRow.value.toolkitUrl ?? ''}
                             onChange={(e) => {
                               const { toolkitUrl, ...rest } = subRow.value;
-                              setSub(e.target.value ? { ...rest, toolkitUrl: e.target.value } : rest);
+                              dispatch(
+                                setSubcategory(row.id, subRow.id, e.target.value ? { ...rest, toolkitUrl: e.target.value } : rest),
+                              );
                             }}
                           />
                         </div>
@@ -310,38 +197,31 @@ const HelplineCategories = ({
                         value={bulk.text}
                         aria-label="Subcategories, one per line"
                         placeholder="One subcategory per line"
-                        onChange={(e) => setBulk({ id: row.id, text: e.target.value })}
+                        onChange={(e) => dispatch(bulkChanged({ id: row.id, text: e.target.value }))}
                       />
                       <div className="option-actions">
                         <button
                           type="button"
                           className="secondary-button"
-                          onClick={() => {
-                            addSubcategories(row.id, bulk.text.split('\n'));
-                            setBulk(undefined);
-                          }}
+                          onClick={() => dispatch(addPastedSubcategories())}
                         >
                           Add these
                         </button>
-                        <button type="button" className="link-button" onClick={() => setBulk(undefined)}>
+                        <button type="button" className="link-button" onClick={() => dispatch(bulkChanged(undefined))}>
                           Cancel
                         </button>
                       </div>
                     </div>
                   ) : (
                     <div className="option-actions">
-                      <button
-                        type="button"
-                        className="secondary-button"
-                        onClick={() =>
-                          addSubcategories(row.id, [
-                            uniqueName('New subcategory', value.subcategories.map((sub) => sub.value.label)),
-                          ])
-                        }
-                      >
+                      <button type="button" className="secondary-button" onClick={() => dispatch(addSubcategory(row.id))}>
                         + Add a subcategory
                       </button>
-                      <button type="button" className="link-button" onClick={() => setBulk({ id: row.id, text: '' })}>
+                      <button
+                        type="button"
+                        className="link-button"
+                        onClick={() => dispatch(bulkChanged({ id: row.id, text: '' }))}
+                      >
                         Paste several at once
                       </button>
                     </div>
@@ -353,7 +233,7 @@ const HelplineCategories = ({
         }}
       />
       <div className="option-actions">
-        <button type="button" className="secondary-button" onClick={addCategory}>
+        <button type="button" className="secondary-button" onClick={() => dispatch(addCategory())}>
           + Add a category
         </button>
       </div>
@@ -361,19 +241,22 @@ const HelplineCategories = ({
   );
 };
 
-export const CategoriesEditor = ({
-  draftFiles,
-  originalFiles,
-  staffMode,
-  helplineLanguage,
-  issues,
-  onChangeFiles,
-  onTryItOut,
-}: Props) => {
+export const CategoriesEditor = () => {
+  const dispatch = useAppDispatch();
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const originalFiles = useAppSelector(selectOriginalFiles);
+  const helplineLanguage = useAppSelector(selectDefinitions)?.helplineLanguage;
+  const { editorRevision } = useAppSelector(selectWorkspace);
+  const sectionIssues = useAppSelector(selectSectionIssues);
+  const { helpline, previewSelected } = useAppSelector(selectCategories);
   const strings = useStrings(helplineLanguage ?? 'en-US', draftFiles);
   const helplines = useMemo(() => Object.keys(getCategoriesByHelpline(originalFiles)), [originalFiles]);
-  const [helpline, setHelpline] = useState(helplines[0]);
-  const [selected, setSelected] = useState<SelectedCategories>({});
+  const issues = sectionIssues.filter((issue) => issue.message.startsWith('Issue categories'));
+
+  // Starts from the draft when it opens, and when the draft's files are replaced (discarded, reloaded)
+  useEffect(() => {
+    dispatch(openCategories(helplines[0]));
+  }, [dispatch, helplines, editorRevision]);
 
   return (
     <div className="section-editor">
@@ -397,7 +280,7 @@ export const CategoriesEditor = ({
                   role="tab"
                   aria-selected={name === helpline}
                   className={name === helpline ? 'active' : ''}
-                  onClick={() => setHelpline(name)}
+                  onClick={() => dispatch(openCategories(name))}
                 >
                   {name}
                 </button>
@@ -413,16 +296,8 @@ export const CategoriesEditor = ({
               ))}
             </ul>
           )}
-          {helpline ? (
-            <HelplineCategories
-              key={helpline}
-              helpline={helpline}
-              draftFiles={draftFiles}
-              originalFiles={originalFiles}
-              staffMode={staffMode}
-              strings={strings}
-              onChangeFiles={onChangeFiles}
-            />
+          {helplines.length > 0 ? (
+            helpline && <HelplineCategories strings={strings} />
           ) : (
             <p className="muted">This helpline has no issue categories.</p>
           )}
@@ -432,7 +307,11 @@ export const CategoriesEditor = ({
       <aside className="section-preview">
         <div className="section-preview-header">
           <span className="field-label">How it looks in Aselo</span>
-          <button type="button" className="secondary-button" onClick={onTryItOut}>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => dispatch(tryItOutOpened({ focus: 'form', tab: 'categories' }))}
+          >
             Try it out in Aselo
           </button>
         </div>
@@ -440,10 +319,10 @@ export const CategoriesEditor = ({
           <div className="aselo-tab-content">
             <AseloCategories
               definition={helpline ? getHelplineCategories(draftFiles, helpline) : undefined}
-              selected={selected}
+              selected={previewSelected}
               hasError={false}
               strings={strings}
-              onChange={setSelected}
+              onChange={(selected) => dispatch(previewSelectedChanged(selected))}
             />
           </div>
         </div>

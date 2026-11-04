@@ -18,36 +18,20 @@
  * Drafts in progress, on the start page. Aselo staff see every helpline's drafts, with those
  * submitted for review first; helpline staff see their own.
  */
-import { useEffect, useState } from 'react';
-import type { DraftSummary } from '@tech-matters/form-builder-shared';
-import type { DraftClient } from './draftClient';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectIsAseloStaff } from '../app/sessionSlice';
+import { openHelpline } from '../workspace/workspaceSlice';
+import { loadDrafts, selectDrafts } from './draftsListSlice';
 
-type Props = {
-  draftClient: DraftClient;
-  isAseloStaff: boolean;
-  onOpen: (code: string, version: string) => void;
-};
-
-export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
-  const [drafts, setDrafts] = useState<DraftSummary[]>();
-
+export const DraftsList = () => {
+  const dispatch = useAppDispatch();
+  const drafts = useAppSelector(selectDrafts);
+  const isAseloStaff = useAppSelector(selectIsAseloStaff);
   useEffect(() => {
-    draftClient
-      .list()
-      .then((list) =>
-        setDrafts(
-          [...list].sort((a, b) =>
-            a.meta.status === b.meta.status
-              ? b.meta.updatedAt.localeCompare(a.meta.updatedAt)
-              : a.meta.status === 'submitted'
-                ? -1
-                : 1,
-          ),
-        ),
-      )
-      .catch(() => setDrafts([]));
-  }, [draftClient]);
-
+    dispatch(loadDrafts());
+  }, [dispatch]);
+  const onOpen = (code: string, version: string) => dispatch(openHelpline(code, version));
   if (!drafts || drafts.length === 0) return null;
 
   return (
