@@ -15,11 +15,12 @@
  */
 
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { ITask } from '@twilio/flex-ui';
+import { useDispatch, useSelector } from 'react-redux';
+import { Actions, ITask } from '@twilio/flex-ui';
 
 import { RootState } from '../../states';
 import { selectQueueGreeting } from '../../states/configuration/selectDefinitions';
+import { newSetQueueGreetingDismissedAction } from '../../states/routing/actions';
 import { GuidancePill, GuidancePillContainer } from './styles';
 
 const MAX_PILL_TEXT_LENGTH = 20;
@@ -30,12 +31,20 @@ type Props = {
 };
 
 const QueueGreetingPill: React.FC<Props> = ({ task, selectedTaskSid }) => {
+  const dispatch = useDispatch();
   const queueGreeting = useSelector((state: RootState) => selectQueueGreeting(state, task?.queueName));
   if (!queueGreeting) return null;
 
+  const reopenGreeting = () => {
+    dispatch(newSetQueueGreetingDismissedAction(task.taskSid, false));
+    Actions.invokeAction('SelectTask', { sid: task.sid });
+  };
+
   return (
     <GuidancePillContainer isSelected={Boolean(task) && task.sid === selectedTaskSid}>
-      <GuidancePill>{queueGreeting.pillText.slice(0, MAX_PILL_TEXT_LENGTH)}</GuidancePill>
+      <GuidancePill type="button" onClick={reopenGreeting}>
+        {queueGreeting.pillText.slice(0, MAX_PILL_TEXT_LENGTH)}
+      </GuidancePill>
     </GuidancePillContainer>
   );
 };
