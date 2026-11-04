@@ -71,7 +71,7 @@ const simulatorSlice = createSlice({
       state.run = action.payload;
       if (action.payload) state.memory = EMPTY_MEMORY;
     },
-    runBack: (state) => {
+    runBack: state => {
       const previous = state.history.pop();
       if (previous) state.run = previous;
     },
@@ -100,11 +100,11 @@ const simulatorSlice = createSlice({
       if (state.run) state.run.pauseEach = action.payload || undefined;
     },
   },
-  extraReducers: (builder) =>
+  extraReducers: builder =>
     builder
       // Each board, and each mode, starts without a run (the Test panel as new)
       .addCase(boardOpened, () => initialState)
-      .addCase(modeSwitched, (state) => ({ ...initialState, showTested: state.showTested })),
+      .addCase(modeSwitched, state => ({ ...initialState, showTested: state.showTested })),
 });
 
 declare module '../app/store' {
@@ -123,9 +123,9 @@ export const selectSimulator = (state: RootState) => state.simulator ?? initialS
 // Where a run can start: each trigger, named after its frame
 export const startsOf = (content: ReturnType<typeof selectContent>) =>
   content.objects
-    .filter((object) => object.type === 'incoming')
-    .map((object) => {
-      const frame = content.frames.find((candidate) => candidate.id === object.frameId);
+    .filter(object => object.type === 'incoming')
+    .map(object => {
+      const frame = content.frames.find(candidate => candidate.id === object.frameId);
       return {
         id: object.id,
         label: frame
@@ -138,7 +138,7 @@ export const startsOf = (content: ReturnType<typeof selectContent>) =>
 const startOf = (state: RootState) => {
   const starts = startsOf(selectContent(state));
   const { startId } = selectSimulator(state);
-  return starts.find((candidate) => candidate.id === startId)?.id ?? starts[0]?.id;
+  return starts.find(candidate => candidate.id === startId)?.id ?? starts[0]?.id;
 };
 
 export const playRun = (): AppThunk => (dispatch, getState) => {
@@ -147,7 +147,7 @@ export const playRun = (): AppThunk => (dispatch, getState) => {
   dispatch(runStarted(startRun(selectContent(getState()), start, selectSimulator(getState()).pauseEach)));
 };
 
-export const clearRun = (): AppThunk => (dispatch) => {
+export const clearRun = (): AppThunk => dispatch => {
   dispatch(runStarted(undefined));
 };
 

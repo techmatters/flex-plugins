@@ -109,7 +109,9 @@ export type Workflow = {
 
 // Who can work in a queue: skills (every group needed, any skill of a group), nobody, or custom
 export type QueueWorkers =
-  { kind: 'skills'; allOf: string[][] } | { kind: 'nobody' } | { kind: 'custom'; expression: string };
+  | { kind: 'skills'; allOf: string[][] }
+  | { kind: 'nobody' }
+  | { kind: 'custom'; expression: string };
 
 export type Queue = {
   key: string;
@@ -216,12 +218,12 @@ export const VALUE_LABELS: Record<string, string> = {
 export const attributeLabel = (attribute: string) => ATTRIBUTE_LABELS[attribute] ?? attribute;
 export const valueLabel = (value: string | number | boolean) =>
   typeof value === 'string'
-    ? (VALUE_LABELS[value] ?? value)
+    ? VALUE_LABELS[value] ?? value
     : value === true
-      ? 'yes'
-      : value === false
-        ? 'no'
-        : String(value);
+    ? 'yes'
+    : value === false
+    ? 'no'
+    : String(value);
 
 export const emptyRouting = (helpline: string): RoutingDesign => ({
   schemaVersion: ROUTING_SCHEMA_VERSION,

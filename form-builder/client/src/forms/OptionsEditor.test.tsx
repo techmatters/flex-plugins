@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 import { useState } from 'react';
 import { afterEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
@@ -54,7 +53,7 @@ const Harness = ({ initial, staffMode = false }: { initial: SelectOption[]; staf
     <Provider store={store}>
       <OptionsEditor
         options={options}
-        originalValues={new Set(initial.map((option) => String(option.value)))}
+        originalValues={new Set(initial.map(option => String(option.value)))}
         staffMode={staffMode}
         onChange={setOptions}
       />
@@ -85,7 +84,14 @@ describe('saved values', () => {
   });
 
   test('a new answer follows its text until it gets its own saved value', () => {
-    render(<Harness initial={[{ value: 'Unknown', label: '' }, { value: 'Yes', label: 'Yes' }]} />);
+    render(
+      <Harness
+        initial={[
+          { value: 'Unknown', label: '' },
+          { value: 'Yes', label: 'Yes' },
+        ]}
+      />,
+    );
     expect(screen.getByText(/saved as “Unknown”/)).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Show saved values' }));
     fireEvent.click(screen.getByRole('button', { name: '+ Add an answer' }));

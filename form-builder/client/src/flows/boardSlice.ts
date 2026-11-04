@@ -173,7 +173,7 @@ const mapVariantObjects = (
   nodes: CanvasNode[],
   change: (object: ObjectNode['data']['object'], node: ObjectNode) => ObjectNode['data']['object'],
 ): CanvasNode[] =>
-  nodes.map((node) =>
+  nodes.map(node =>
     node.type !== 'object' || !variesByVariant(node.data.object)
       ? node
       : { ...node, data: { object: change(node.data.object, node) } },
@@ -184,7 +184,7 @@ const withVariantMessages = (
   nodes: CanvasNode[],
   change: (messages: NonNullable<FlowObject['variantMessages']>) => FlowObject['variantMessages'],
 ) =>
-  mapVariantObjects(nodes, (current) => {
+  mapVariantObjects(nodes, current => {
     const variantMessages = change(current.variantMessages ?? {});
     const { variantMessages: _old, ...object } = current;
     return variantMessages && Object.keys(variantMessages).length > 0 ? { ...object, variantMessages } : object;
@@ -231,8 +231,8 @@ const boardSlice = createSlice({
 
     // ----- Adding (the new nodes come selected; nothing else stays selected)
     nodesAdded: (state, action: PayloadAction<{ nodes: CanvasNode[]; edges?: ConnectionEdge[] }>) => {
-      state.nodes = [...state.nodes.map((node) => ({ ...node, selected: false })), ...action.payload.nodes];
-      state.edges = [...state.edges.map((edge) => ({ ...edge, selected: false })), ...(action.payload.edges ?? [])];
+      state.nodes = [...state.nodes.map(node => ({ ...node, selected: false })), ...action.payload.nodes];
+      state.edges = [...state.edges.map(edge => ({ ...edge, selected: false })), ...(action.payload.edges ?? [])];
     },
     edgeAdded: (state, action: PayloadAction<ConnectionEdge>) => {
       state.notice = undefined;
@@ -243,7 +243,7 @@ const boardSlice = createSlice({
       action: PayloadAction<{ oldEdge: ConnectionEdge; connection: FlowConnection; exit?: string }>,
     ) => {
       const { oldEdge, connection, exit } = action.payload;
-      state.edges = reconnectEdge(oldEdge, connection, state.edges, { shouldReplaceId: false }).map((edge) =>
+      state.edges = reconnectEdge(oldEdge, connection, state.edges, { shouldReplaceId: false }).map(edge =>
         edge.id === oldEdge.id ? { ...edge, data: { exit } } : edge,
       );
     },
@@ -257,18 +257,18 @@ const boardSlice = createSlice({
     },
     nodeDataChanged: (state, action: PayloadAction<{ id: string; data: CanvasNode['data'] }>) => {
       const { id, data } = action.payload;
-      state.nodes = state.nodes.map((node) => (node.id === id ? ({ ...node, data } as CanvasNode) : node));
+      state.nodes = state.nodes.map(node => (node.id === id ? ({ ...node, data } as CanvasNode) : node));
     },
     objectTypeChanged: (state, action: PayloadAction<{ id: string; type: FlowObjectType }>) => {
       const { id, type } = action.payload;
-      state.nodes = state.nodes.map((node) => {
+      state.nodes = state.nodes.map(node => {
         if (node.id !== id || node.type !== 'object') return node;
         const info = OBJECT_TYPES[type];
         // (A profile check starts with its own: its flags, not blocked and failed)
         const exits = info.editableExits
           ? type === 'checkClientProfile'
             ? info.exits
-            : (node.data.object.exits ?? info.exits)
+            : node.data.object.exits ?? info.exits
           : undefined;
         return { ...node, data: { object: { ...node.data.object, type, exits: exits ? [...exits] : undefined } } };
       });
@@ -278,7 +278,7 @@ const boardSlice = createSlice({
       action: PayloadAction<{ id: string; exits: string[]; renamed?: { from: string; to: string } }>,
     ) => {
       const { id, exits, renamed } = action.payload;
-      state.nodes = state.nodes.map((node) => {
+      state.nodes = state.nodes.map(node => {
         if (node.id !== id || node.type !== 'object') return node;
         // A split's operators follow their way out (and go with it)
         const operators = Object.entries(node.data.object.exitOperators ?? {})
@@ -288,21 +288,21 @@ const boardSlice = createSlice({
         return { ...node, data: { object: { ...node.data.object, exits, exitOperators } } };
       });
       if (renamed) {
-        state.edges = state.edges.map((edge) =>
+        state.edges = state.edges.map(edge =>
           edge.source === id && edge.data?.exit === renamed.from ? { ...edge, data: { exit: renamed.to } } : edge,
         );
       }
     },
     edgeExitChanged: (state, action: PayloadAction<{ id: string; exit: string | undefined }>) => {
       const { id, exit } = action.payload;
-      state.edges = state.edges.map((edge) => (edge.id === id ? { ...edge, data: { exit } } : edge));
+      state.edges = state.edges.map(edge => (edge.id === id ? { ...edge, data: { exit } } : edge));
     },
     // A way out left unconnected on purpose: the flow ends there
     exitEnded: (state, action: PayloadAction<{ objectId: string; exit: string; ends?: boolean }>) => {
       const { objectId, exit, ends = true } = action.payload;
-      state.nodes = state.nodes.map((node) => {
+      state.nodes = state.nodes.map(node => {
         if (node.id !== objectId || node.type !== 'object') return node;
-        const others = (node.data.object.endedExits ?? []).filter((candidate) => candidate !== exit);
+        const others = (node.data.object.endedExits ?? []).filter(candidate => candidate !== exit);
         const endedExits = ends ? [...others, exit] : others;
         return {
           ...node,
@@ -317,7 +317,7 @@ const boardSlice = createSlice({
     // Recordings given their standard names: the widgets stop pointing at the old ones
     recordingFilesCleared: (state, action: PayloadAction<string[]>) => {
       const ids = new Set(action.payload);
-      state.nodes = state.nodes.map((node) => {
+      state.nodes = state.nodes.map(node => {
         if (node.type !== 'object' || !ids.has(node.id)) return node;
         const { recordingFile, ...message } = node.data.object.message ?? {};
         return { ...node, data: { object: { ...node.data.object, message } } };
@@ -325,8 +325,8 @@ const boardSlice = createSlice({
     },
     // Selects one node (or nothing), e.g. to show it
     nodeSelected: (state, action: PayloadAction<string | undefined>) => {
-      state.nodes = state.nodes.map((node) => ({ ...node, selected: node.id === action.payload }));
-      state.edges = state.edges.map((edge) => ({ ...edge, selected: false }));
+      state.nodes = state.nodes.map(node => ({ ...node, selected: node.id === action.payload }));
+      state.edges = state.edges.map(edge => ({ ...edge, selected: false }));
     },
 
     // ----- The board's flow and the flows sharing its template
@@ -342,16 +342,16 @@ const boardSlice = createSlice({
       const { locale, label } = action.payload;
       const variants = variantsOf(state);
       const language =
-        VARIANT_LANGUAGES.find((candidate) => candidate.locale === locale) ?? (label ? { locale, label } : undefined);
+        VARIANT_LANGUAGES.find(candidate => candidate.locale === locale) ?? (label ? { locale, label } : undefined);
       if (!language || !state.flow || variants.length === 0) return;
       const added = variantInLanguage(variants[0], language.locale, language.label);
-      if (variants.some((candidate) => candidate.key === added.key)) {
+      if (variants.some(candidate => candidate.key === added.key)) {
         state.notice = `There is already a flow called ${added.key}.`;
         return;
       }
       const code = language.locale.split('-')[0];
       state.flow = { ...state.flow, variants: [...variants, added] };
-      state.nodes = mapVariantObjects(state.nodes, (object) => ({
+      state.nodes = mapVariantObjects(state.nodes, object => ({
         ...object,
         variantMessages: { ...object.variantMessages, [added.key]: { language: code } },
       }));
@@ -364,7 +364,7 @@ const boardSlice = createSlice({
       if (languages.length === 0) return;
       const shared = sharedLanguageVariants(state.title, languages);
       state.flow = { ...state.flow, variants: shared };
-      state.nodes = state.nodes.map((node) => {
+      state.nodes = state.nodes.map(node => {
         if (node.type !== 'object' || node.parentId || !variesByVariant(node.data.object)) return node;
         const { object } = node.data;
         return {
@@ -389,10 +389,10 @@ const boardSlice = createSlice({
     },
     // Back to one flow, its messages named per language: only for flows added on the board (imported
     // ones are studio_flows entries in the helpline's config); the other languages' texts go
-    languagesUnshared: (state) => {
+    languagesUnshared: state => {
       const variants = variantsOf(state);
-      if (!state.flow || variants.some((candidate) => !candidate.added)) return;
-      const languages = variants.map((candidate) => candidate.key.split('_').pop() ?? candidate.key);
+      if (!state.flow || variants.some(candidate => !candidate.added)) return;
+      const languages = variants.map(candidate => candidate.key.split('_').pop() ?? candidate.key);
       const { variants: _removed, ...rest } = state.flow;
       state.flow = { ...rest, naming: { ...rest.naming, languages } };
       state.nodes = withVariantMessages(state.nodes, () => undefined);
@@ -403,9 +403,9 @@ const boardSlice = createSlice({
       const key = action.payload;
       const variants = variantsOf(state);
       const mainVariant = variants[0]?.key;
-      const leaving = variants.find((candidate) => candidate.key === key);
+      const leaving = variants.find(candidate => candidate.key === key);
       if (!state.flow || !leaving?.added || key === mainVariant) return;
-      state.flow = { ...state.flow, variants: variants.filter((candidate) => candidate.key !== key) };
+      state.flow = { ...state.flow, variants: variants.filter(candidate => candidate.key !== key) };
       state.nodes = withVariantMessages(state.nodes, ({ [key]: _removed, ...others }) => others);
       if (state.variantKey === key) state.variantKey = mainVariant;
     },
@@ -415,15 +415,15 @@ const boardSlice = createSlice({
       const { key, renamed } = action.payload;
       const variants = variantsOf(state);
       const next = toSnake(renamed);
-      const variant = variants.find((candidate) => candidate.key === key);
+      const variant = variants.find(candidate => candidate.key === key);
       if (!state.flow || !variant?.added || !next || next === key) return;
-      if (variants.some((candidate) => candidate.key === next)) {
+      if (variants.some(candidate => candidate.key === next)) {
         state.notice = `There is already a flow called ${next}.`;
         return;
       }
       state.flow = {
         ...state.flow,
-        variants: variants.map((candidate) =>
+        variants: variants.map(candidate =>
           candidate.key === key
             ? {
                 ...candidate,
@@ -443,9 +443,9 @@ const boardSlice = createSlice({
       const { key, notice } = action.payload;
       const variants = variantsOf(state);
       if (!state.flow) return;
-      state.flow = { ...state.flow, variants: variants.filter((candidate) => candidate.key !== key) };
+      state.flow = { ...state.flow, variants: variants.filter(candidate => candidate.key !== key) };
       state.variantKey = variants[0]?.key;
-      state.nodes = state.nodes.map((node) => {
+      state.nodes = state.nodes.map(node => {
         if (node.type !== 'object' || !node.data.object.variantMessages?.[key]) return node;
         const { [key]: _removed, ...others } = node.data.object.variantMessages;
         return {
@@ -463,7 +463,7 @@ const boardSlice = createSlice({
       const { key, ignore } = action.payload;
       state.ignoredChecks = ignore
         ? [...new Set([...state.ignoredChecks, key])]
-        : state.ignoredChecks.filter((other) => other !== key);
+        : state.ignoredChecks.filter(other => other !== key);
     },
     testedPathAdded: (state, action: PayloadAction<TestedPath>) => {
       state.testedPaths.push(action.payload);
@@ -472,27 +472,27 @@ const boardSlice = createSlice({
     // One tested path forgotten, or all of them
     testedPathForgotten: (state, action: PayloadAction<string | undefined>) => {
       const pathId = action.payload;
-      state.testedPaths = pathId ? state.testedPaths.filter((path) => path.id !== pathId) : [];
+      state.testedPaths = pathId ? state.testedPaths.filter(path => path.id !== pathId) : [];
     },
     testedPathsKept: (state, action: PayloadAction<TestedPath[]>) => {
       state.testedPaths = action.payload;
     },
 
     // ----- Undo and redo
-    historySnapshotTaken: (state) => {
-      if (state.nodes.some((node) => node.dragging)) return;
+    historySnapshotTaken: state => {
+      if (state.nodes.some(node => node.dragging)) return;
       const json = canvasJsonOf(state);
       const { stack, index } = state.history;
       if (stack[index] === json) return;
       const next = [...stack.slice(0, index + 1), json].slice(-HISTORY_LIMIT);
       state.history = { stack: next, index: next.length - 1 };
     },
-    historyUndone: (state) => {
+    historyUndone: state => {
       if (state.history.index <= 0) return;
       state.history.index -= 1;
       restore(state, state.history.stack[state.history.index]);
     },
-    historyRedone: (state) => {
+    historyRedone: state => {
       if (state.history.index >= state.history.stack.length - 1) return;
       state.history.index += 1;
       restore(state, state.history.stack[state.history.index]);
@@ -502,7 +502,7 @@ const boardSlice = createSlice({
     copied: (state, action: PayloadAction<{ nodes: CanvasNode[]; edges: ConnectionEdge[] }>) => {
       state.clipboard = { ...action.payload, pastes: 0 };
     },
-    pasted: (state) => {
+    pasted: state => {
       if (state.clipboard) state.clipboard.pastes += 1;
     },
 
@@ -514,7 +514,7 @@ const boardSlice = createSlice({
       else if (state.sideTab === 'test' || (next === 'sketch' && state.sideTab === 'recordings')) {
         state.sideTab = 'settings';
       }
-      state.nodes = state.nodes.map((node) => (node.selected ? { ...node, selected: false } : node));
+      state.nodes = state.nodes.map(node => (node.selected ? { ...node, selected: false } : node));
     },
     sideTabShown: (state, action: PayloadAction<SideTab>) => {
       state.sideTab = action.payload;
@@ -522,7 +522,7 @@ const boardSlice = createSlice({
     noticeShown: (state, action: PayloadAction<string>) => {
       state.notice = action.payload;
     },
-    noticeDismissed: (state) => {
+    noticeDismissed: state => {
       state.notice = undefined;
     },
     tasksFilterChanged: (state, action: PayloadAction<TaskFilter>) => {
@@ -632,12 +632,12 @@ export const selectMode = (state: RootState) => selectBoard(state).mode;
 export const selectReadOnly = (state: RootState) => !selectActingAsStaff(state);
 // Test mode can't change the board either
 export const selectLocked = (state: RootState) => selectReadOnly(state) || selectMode(state) === 'test';
-export const selectDragging = (state: RootState) => selectNodes(state).some((node) => node.dragging);
-export const selectHasSelection = (state: RootState) => selectNodes(state).some((node) => node.selected);
+export const selectDragging = (state: RootState) => selectNodes(state).some(node => node.dragging);
+export const selectHasSelection = (state: RootState) => selectNodes(state).some(node => node.selected);
 
 // What's on the canvas; the status isn't part of it (nor of undo)
 export const selectCanvasContent = createSelector([selectTitle, selectNodes, selectEdges], toContent);
-export const selectCanvasJson = createSelector([selectCanvasContent], (content) => JSON.stringify(content));
+export const selectCanvasJson = createSelector([selectCanvasContent], content => JSON.stringify(content));
 export const selectContent = createSelector(
   [selectCanvasContent, selectStatus, selectFlow, selectIgnoredChecks, selectTestedPaths],
   (canvasContent, status, flow, ignoredChecks, testedPaths): BoardContent => ({
@@ -648,7 +648,7 @@ export const selectContent = createSelector(
     ...(testedPaths.length > 0 ? { testedPaths } : {}),
   }),
 );
-export const selectContentJson = createSelector([selectContent], (content) => JSON.stringify(content));
+export const selectContentJson = createSelector([selectContent], content => JSON.stringify(content));
 // The part of the board that is the design: changing it means it's being worked on again
 export const selectDesign = createSelector([selectCanvasContent], designOf);
 
@@ -658,7 +658,7 @@ export const selectMainVariant = (state: RootState) => selectVariants(state)[0]?
 export const selectVariant = (state: RootState) => {
   const variants = selectVariants(state);
   const { variantKey } = selectBoard(state);
-  return variants.find((candidate) => candidate.key === variantKey) ?? variants[0];
+  return variants.find(candidate => candidate.key === variantKey) ?? variants[0];
 };
 
 // The helpline's recordings, or the shown variant's own folder (flows sharing a template)
@@ -698,7 +698,7 @@ export const selectApprovals = createSelector(
   [selectContent, (state: RootState) => selectVariant(state)?.key, selectMainVariant, selectRecordings],
   (content, variantKey, mainVariant, recordings) => {
     const found = new Map<string, 'Approved' | 'Published'>();
-    content.objects.forEach((object) => {
+    content.objects.forEach(object => {
       const approval = approvalOf(
         { ...object, message: messageFor(object, variantKey, mainVariant) },
         flowDetailsOf(content, object.frameId),
@@ -788,7 +788,7 @@ export const loadHelplineChoices =
 // Shows a board just loaded (or loaded again), with its people and the helpline's choices
 export const boardLoaded =
   (board: Board): AppThunk =>
-  (dispatch) => {
+  dispatch => {
     dispatch(boardOpened({ board, mode: keptMode(board) }));
     dispatch(loadBoardPeople());
     dispatch(loadHelplineChoices());
@@ -884,8 +884,8 @@ export const redo = (): AppThunk => (dispatch, getState) => {
 
 // Selected nodes, plus everything inside selected frames
 const selectedWithContents = (nodes: CanvasNode[]) => {
-  const ids = new Set(nodes.filter((node) => node.selected).map((node) => node.id));
-  return nodes.filter((node) => ids.has(node.id) || (node.parentId && ids.has(node.parentId)));
+  const ids = new Set(nodes.filter(node => node.selected).map(node => node.id));
+  return nodes.filter(node => ids.has(node.id) || (node.parentId && ids.has(node.parentId)));
 };
 
 export const copySelection = (): AppThunk => (dispatch, getState) => {
@@ -900,7 +900,7 @@ const pasteCopies =
   (dispatch, getState) => {
     const step = 40 * pastes;
     const nodes = selectNodes(getState());
-    const copies = duplicate(source.nodes, source.edges, new Set(nodes.map((node) => node.id)), { x: step, y: step });
+    const copies = duplicate(source.nodes, source.edges, new Set(nodes.map(node => node.id)), { x: step, y: step });
     dispatch(nodesAdded(copies));
   };
 
@@ -953,7 +953,7 @@ export const splitVariant =
     const variants = selectVariants(state);
     const mainVariant = selectMainVariant(state);
     const content = selectContent(state);
-    const leaving = variants.find((candidate) => candidate.key === key);
+    const leaving = variants.find(candidate => candidate.key === key);
     if (!board || !leaving || !flow?.studio) return;
     const template = flow.studio.template;
     const objects = content.objects.map(({ variantMessages, ...object }) => {
@@ -985,8 +985,8 @@ export const splitVariant =
 // Whether any object has texts written in the board's other languages
 export const hasOtherLanguageTexts = (nodes: CanvasNode[]) =>
   nodes.some(
-    (node) =>
-      node.type === 'object' && Object.values(node.data.object.variantMessages ?? {}).some((message) => message.script),
+    node =>
+      node.type === 'object' && Object.values(node.data.object.variantMessages ?? {}).some(message => message.script),
   );
 
 // ---------------------------------------------------------------------------------------------

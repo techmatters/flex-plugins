@@ -98,7 +98,7 @@ describe('reading', () => {
 });
 
 describe('writing', () => {
-  test.each(['usnm', 'usch', 'usvc'])('reads and writes %s back unchanged', (code) => {
+  test.each(['usnm', 'usch', 'usvc'])('reads and writes %s back unchanged', code => {
     const files = { usnm, usch, usvc }[code]!.files;
     const info = readFormSelector(files);
     expect(formSelectorJson(info.selector)).toEqual(mappingsOf(files).formSelector);
@@ -140,7 +140,7 @@ describe('writing', () => {
 
 describe('checks', () => {
   const messages = (draft: DefinitionFileMap, original: DefinitionFileMap) =>
-    validateFormSelector(draft, original).map((found) => `${found.severity}: ${found.message}`);
+    validateFormSelector(draft, original).map(found => `${found.severity}: ${found.message}`);
 
   test('unknown and empty tabs are errors', () => {
     const unknown = setFormSelector(usnm.files, { kind: 'static', tabs: ['ContactlessTaskTab'] });
@@ -159,7 +159,7 @@ describe('checks', () => {
     expect(messages(usnm.files, usnm.files)).toContain(
       'warning: Filling in the contact: “province” from the webchat form fills in Help seeker information, which is never filled in.',
     );
-    expect(validateSections(usnm.files, usnm.files).every((found) => found.severity === 'warning')).toBe(true);
+    expect(validateSections(usnm.files, usnm.files).every(found => found.severity === 'warning')).toBe(true);
   });
 
   test('webchat answers must be questions of the webchat form, with the answer among its options', () => {

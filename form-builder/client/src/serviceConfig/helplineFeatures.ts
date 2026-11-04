@@ -39,7 +39,10 @@ export type HelplineFeatures = {
 // Where each switch lives. Client profiles are read by the plugin from
 // attributes.enableClientProfiles; the feature flag is kept in step.
 const LOCATIONS: Record<keyof HelplineFeatures, string[][]> = {
-  enableClientProfiles: [['attributes', 'enableClientProfiles'], ['attributes', 'feature_flags', 'enable_client_profiles']],
+  enableClientProfiles: [
+    ['attributes', 'enableClientProfiles'],
+    ['attributes', 'feature_flags', 'enable_client_profiles'],
+  ],
   enableCannedResponses: [['attributes', 'feature_flags', 'enable_canned_responses']],
   usePrepopulateMappings: [['attributes', 'feature_flags', 'use_prepopulate_mappings']],
 };
@@ -94,7 +97,9 @@ export const getPermissionConfig = (files: DefinitionFileMap, defaults?: ConfigO
  */
 export const setFeature = (files: DefinitionFileMap, feature: keyof HelplineFeatures, value: boolean) =>
   LOCATIONS[feature].reduce((current, location) => {
-    const setting = SERVICE_CONFIG_FILE_NAMES.filter((name) => getIn(getServiceConfigFile(current, name), location) !== undefined);
+    const setting = SERVICE_CONFIG_FILE_NAMES.filter(
+      name => getIn(getServiceConfigFile(current, name), location) !== undefined,
+    );
     return (setting.length > 0 ? setting : (['common'] as const)).reduce(
       (updated, name) => setServiceConfigValue(updated, name, location, value),
       current,
@@ -106,8 +111,8 @@ export const summarizeFeatureChanges = (
   draftFiles: DefinitionFileMap,
 ): { title: string; lines: string[] }[] => {
   // A switch changes when a file writes it differently (setFeature writes the same value everywhere)
-  const lines = FEATURE_INFO.flatMap((info) => {
-    const written = SERVICE_CONFIG_FILE_NAMES.map((name) => ({
+  const lines = FEATURE_INFO.flatMap(info => {
+    const written = SERVICE_CONFIG_FILE_NAMES.map(name => ({
       before: getIn(getServiceConfigFile(originalFiles, name), LOCATIONS[info.key][0]),
       after: getIn(getServiceConfigFile(draftFiles, name), LOCATIONS[info.key][0]),
     })).find(({ before, after }) => before !== after && typeof after === 'boolean');

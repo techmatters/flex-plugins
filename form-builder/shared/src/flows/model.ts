@@ -146,7 +146,7 @@ export const NAMING_LANGUAGES = [
 ] as const;
 
 export const namingLanguageOf = (code: string) =>
-  NAMING_LANGUAGES.find((language) => language.code === code) ?? { code, label: code, locale: code };
+  NAMING_LANGUAGES.find(language => language.code === code) ?? { code, label: code, locale: code };
 
 /**
  * A new board's flows, one per language, sharing its template (FlowDetails.variants): each a
@@ -155,7 +155,7 @@ export const namingLanguageOf = (code: string) =>
  */
 export const sharedLanguageVariants = (title: string, languages: string[]): FlowVariant[] => {
   const base = toSnake(title) || 'flow';
-  return languages.map((code) => {
+  return languages.map(code => {
     const key = `${base}_${code}`;
     return { key, label: namingLanguageOf(code).label, recordingsFolder: key, added: true };
   });
@@ -382,7 +382,7 @@ export const emptyBoard = (title: string): BoardContent => ({
 // A board imported from a live helpline has frames read from its Studio flows; any other board
 // (empty, or from a template) is new
 export const isImportedBoard = (content: Pick<BoardContent, 'frames' | 'flow'>) =>
-  content.flow?.studio !== undefined || content.frames.some((frame) => frame.studio !== undefined);
+  content.flow?.studio !== undefined || content.frames.some(frame => frame.studio !== undefined);
 
 /**
  * Variants (FlowDetails.variants): which messages differ between them, and each variant's
@@ -437,7 +437,7 @@ export const withVariantMessage = <T extends Pick<FlowObject, 'message' | 'varia
 export const flowDetailsOf = (
   content: Pick<BoardContent, 'frames' | 'flow'>,
   frameId?: string,
-): FlowDetails | undefined => (frameId ? content.frames.find((frame) => frame.id === frameId) : content.flow);
+): FlowDetails | undefined => (frameId ? content.frames.find(frame => frame.id === frameId) : content.flow);
 
 export const statusOf = (content: Pick<BoardContent, 'frames' | 'flow' | 'status'>): DesignStatus =>
   content.status ?? (isImportedBoard(content) ? 'imported' : STATUS_AFTER_CHANGE);
@@ -599,7 +599,7 @@ export const flowChannelOf = (details?: Pick<Frame, 'channel' | 'naming'>): Chan
   if (details?.channel) return details.channel;
   const channels = details?.naming?.channels ?? [];
   if (channels.length === 0) return undefined;
-  return (channels.find((channel) => channel !== 'voice') ?? 'voice') as Channel;
+  return (channels.find(channel => channel !== 'voice') ?? 'voice') as Channel;
 };
 
 // Who a message is from, as the person sees it: the helpline's name (${helpline}, from its
@@ -618,7 +618,7 @@ const FROM_FIELD: ObjectField = {
 
 // The kinds whose messages say who they're from (FROM_FIELD); kinds since replaced have no type info
 export const hasFromField = (type: FlowObjectType) =>
-  Boolean(OBJECT_TYPES[type]?.fields?.some((field) => field.key === FROM_FIELD.key));
+  Boolean(OBJECT_TYPES[type]?.fields?.some(field => field.key === FROM_FIELD.key));
 
 // Who an imported widget's message is from, as it is live: a Send Message's or Send and Wait for
 // Reply's from, or the from a sendMessageAndRunJanitor call is given (none: undefined)
@@ -655,7 +655,7 @@ export const fieldProblem = (field: Pick<ObjectField, 'kind'>, value: string): s
   if (field.kind === 'json') {
     // Placeholders standing as values (not inside quotes) become null to check the rest
     const checked = value
-      .replace(/"(?:[^"\\]|\\.)*"/g, (quoted) => quoted.replace(/[{}$]/g, '_'))
+      .replace(/"(?:[^"\\]|\\.)*"/g, quoted => quoted.replace(/[{}$]/g, '_'))
       .replace(/\{\{[^}]*\}\}|\$\{[^}]*\}/g, 'null');
     try {
       JSON.parse(checked);
@@ -1271,12 +1271,10 @@ export const exitsOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio'>): 
  * now Repeat, a counter and a split, whose way back round is the one way out it had.
  */
 export const upgradeContent = (content: BoardContent): BoardContent => {
-  const waits = new Set(
-    content.objects.filter((object) => (object.type as string) === 'wait').map((object) => object.id),
-  );
+  const waits = new Set(content.objects.filter(object => (object.type as string) === 'wait').map(object => object.id));
   // Send to queue's ways out are Studio's events now (imported ones always were)
   const queues = new Set(
-    content.objects.filter((object) => object.type === 'sendToQueue' && !object.studio).map((object) => object.id),
+    content.objects.filter(object => object.type === 'sendToQueue' && !object.studio).map(object => object.id),
   );
   const queueExit = (exit?: string) => QUEUE_EXITS_BEFORE[exit ?? ''] ?? exit;
   // Repeats named after their counter (set_var_menu_counter) are named repeat_menu now
@@ -1284,10 +1282,10 @@ export const upgradeContent = (content: BoardContent): BoardContent => {
     object.type === 'repeat' && Boolean(object.studioName?.match(/^(postqueue_)?set_var_/));
   // Imported splits' ways out are their values ("2"), not Studio's names for them ("If value equal_to 2")
   const splitExits = new Map<string, Map<string, string>>();
-  content.objects.forEach((object) => {
+  content.objects.forEach(object => {
     if (object.studio?.type !== 'split-based-on' || !object.exits) return;
     const renamed = new Map<string, string>();
-    object.exits.forEach((exit) => {
+    object.exits.forEach(exit => {
       const value = exit.match(STUDIO_CONDITION_NAME)?.[1];
       if (value && !object.exits!.includes(value) && ![...renamed.values()].includes(value)) renamed.set(exit, value);
     });
@@ -1306,19 +1304,19 @@ export const upgradeContent = (content: BoardContent): BoardContent => {
     waits.has(object.id) ||
     oldRepeat(object) ||
     splitExits.has(object.id) ||
-    (queues.has(object.id) && (object.endedExits ?? []).some((exit) => queueExit(exit) !== exit));
+    (queues.has(object.id) && (object.endedExits ?? []).some(exit => queueExit(exit) !== exit));
   if (!content.connections.some(changes) && !content.objects.some(objectChanges)) return content;
   return {
     ...content,
-    objects: content.objects.map((given) => {
+    objects: content.objects.map(given => {
       const from = liveFrom(given);
       const object = from === undefined ? given : { ...given, settings: { ...given.settings, from } };
       if (waits.has(object.id)) return { ...object, type: 'repeat' };
       if (splitExits.has(object.id)) {
         return {
           ...object,
-          exits: object.exits!.map((exit) => splitExit(object.id, exit)),
-          ...(object.endedExits ? { endedExits: object.endedExits.map((exit) => splitExit(object.id, exit)) } : {}),
+          exits: object.exits!.map(exit => splitExit(object.id, exit)),
+          ...(object.endedExits ? { endedExits: object.endedExits.map(exit => splitExit(object.id, exit)) } : {}),
         };
       }
       if (oldRepeat(object)) {
@@ -1327,11 +1325,11 @@ export const upgradeContent = (content: BoardContent): BoardContent => {
         return { ...object, studioName, settings: Object.keys(settings).length > 0 ? settings : undefined };
       }
       if (queues.has(object.id) && object.endedExits) {
-        return { ...object, endedExits: object.endedExits.map((exit) => queueExit(exit)!) };
+        return { ...object, endedExits: object.endedExits.map(exit => queueExit(exit)!) };
       }
       return object;
     }),
-    connections: content.connections.map((connection) => {
+    connections: content.connections.map(connection => {
       if (waits.has(connection.from) && !connection.exit) return { ...connection, exit: 'repeat' };
       if (queues.has(connection.from)) return { ...connection, exit: queueExit(connection.exit) };
       if (splitExits.has(connection.from) && connection.exit) {
@@ -1394,7 +1392,7 @@ export const widgetNamesOf = (
   }
   const splitAfter =
     FOLLOWED_BY_SPLIT.has(object.type) ||
-    (object.type === 'menuVoice' && exitsOf(object).some((exit) => !MENU_EVENTS.includes(exit)));
+    (object.type === 'menuVoice' && exitsOf(object).some(exit => !MENU_EVENTS.includes(exit)));
   return splitAfter ? [name, followingSplitName(name)] : [name];
 };
 
@@ -1448,9 +1446,9 @@ export const suggestStudioName = (
       const suffix = info.nameSuffixFrom
         ? toSnake(object.settings?.[info.nameSuffixFrom] ?? '')
         : info.nameSuffixFromText
-          ? // Its text, without the kind's own words (a new one says "Send message and close")
-            toSnake(object.text.toLowerCase().replace(info.label.toLowerCase(), ''))
-          : '';
+        ? // Its text, without the kind's own words (a new one says "Send message and close")
+          toSnake(object.text.toLowerCase().replace(info.label.toLowerCase(), ''))
+        : '';
       return `${postqueue}f_${routeName(info.studioRoute)}${suffix ? `_${suffix}` : ''}`;
     }
     return `${postqueue}f_${toCamel(object.text) || 'function'}`;
@@ -1462,15 +1460,15 @@ export const suggestStudioName = (
   const byParts = isNamedByParts(object.type);
   const only = (values?: string[]) => (values?.length === 1 ? values[0] : undefined);
   const channel = byParts
-    ? (object.message?.channel ?? only(choices?.channels) ?? messageChannelOf(object, frame))
+    ? object.message?.channel ?? only(choices?.channels) ?? messageChannelOf(object, frame)
     : undefined;
-  const language = byParts ? (object.message?.language ?? only(choices?.languages)) : undefined;
+  const language = byParts ? object.message?.language ?? only(choices?.languages) : undefined;
   const service = byParts ? only(choices?.services) : undefined;
   // Text that repeats the prefix (e.g. a new "Play message (voice)") doesn't say it twice
   const prefixWords = info.studioPrefix.replace(/_$/, '');
   let described = toSnake(object.text).replace(new RegExp(`^${prefixWords}(_|$)`), '');
   // ...nor repeats the channel, language or service (a new voice message's text says "voice")
-  [channel, language, service].forEach((word) => {
+  [channel, language, service].forEach(word => {
     if (word) described = described.replace(new RegExp(`(^|_)${word}(?=_|$)`), '').replace(/^_+/, '');
   });
   const parts = [channel, language, service, described].filter(Boolean);
@@ -1508,20 +1506,18 @@ export const namingChoicesOf = (
   const used = (valueOf: (object: Pick<FlowObject, 'type' | 'message'>) => string | undefined) =>
     [...new Set(objects.map(valueOf).filter((value): value is string => Boolean(value)))].sort();
   // Only messages have a channel in their names
-  const messages = objects.filter((object) => isNamedByParts(object.type));
+  const messages = objects.filter(object => isNamedByParts(object.type));
   return {
     channels:
       details?.naming?.channels ??
       (details?.channel
         ? [details.channel]
-        : [...new Set(messages.map((object) => messageChannelOf(object)))]
+        : [...new Set(messages.map(object => messageChannelOf(object)))]
             .filter((value): value is string => Boolean(value))
             .sort()),
     // A flow per language sharing the template (variants): the same widgets run in each, so their
     // names have no language
-    languages: details?.variants?.length
-      ? []
-      : (details?.naming?.languages ?? used((object) => object.message?.language)),
+    languages: details?.variants?.length ? [] : details?.naming?.languages ?? used(object => object.message?.language),
     services: details?.naming?.services ?? [],
   };
 };
@@ -1548,7 +1544,7 @@ export const nameParts = (name: string, prefix: string, choices: NamingChoices):
   const take = (values: string[]) => {
     const found = [...values]
       .sort((a, b) => b.length - a.length)
-      .find((value) => rest === value || rest.startsWith(`${value}_`));
+      .find(value => rest === value || rest.startsWith(`${value}_`));
     if (found) rest = rest.slice(found.length).replace(/^_/, '');
     return found;
   };
@@ -1628,7 +1624,7 @@ export const prefixedName = (name: string, prefixes: string[]): PrefixedName | u
   const unprefixed = postqueue ? name.slice('postqueue_'.length) : name;
   const prefix = [...prefixes]
     .sort((a, b) => b.length - a.length)
-    .find((candidate) =>
+    .find(candidate =>
       candidate.endsWith('_')
         ? unprefixed.startsWith(candidate)
         : unprefixed === candidate || unprefixed.startsWith(`${candidate}_`),
@@ -1672,7 +1668,7 @@ export const FLOW_MEMORY_REFERENCE = '{{trigger.conversation.ChannelAttributes.f
  */
 export const splitInputsOf = (objects: Pick<FlowObject, 'type' | 'variables' | 'studioName' | 'settings'>[]) => {
   const inputs = new Map<string, string>();
-  objects.forEach((object) => {
+  objects.forEach(object => {
     (object.variables ?? []).forEach(({ key }) => {
       if (!key) return;
       if (object.type === 'setFlowMemory') {
@@ -1705,7 +1701,7 @@ export const splitInputsOf = (objects: Pick<FlowObject, 'type' | 'variables' | '
 
 // A widget's answer, for a split right after it: a reply's text, the keys pressed or what was said
 const answerOf = (object: FlowObject, exit?: string) => {
-  const name = object.studio ? (object.studioName ?? object.studio.name) : object.studioName;
+  const name = object.studio ? object.studioName ?? object.studio.name : object.studioName;
   if (!name) return undefined;
   if (object.type === 'questionMessaging') return `{{widgets.${name}.inbound.Body}}`;
   if (object.type === 'menuVoice') {
@@ -1722,11 +1718,11 @@ const answerOf = (object: FlowObject, exit?: string) => {
  * when everything leading to it gives the same one.
  */
 export const defaultSplitInputOf = (content: Pick<BoardContent, 'objects' | 'connections'>, objectId: string) => {
-  const byId = new Map(content.objects.map((object) => [object.id, object]));
+  const byId = new Map(content.objects.map(object => [object.id, object]));
   const answers = new Set(
     content.connections
-      .filter((connection) => connection.to === objectId)
-      .map((connection) => {
+      .filter(connection => connection.to === objectId)
+      .map(connection => {
         const from = byId.get(connection.from);
         return from && answerOf(from, connection.exit);
       }),
@@ -1750,9 +1746,9 @@ export const fixedExitsOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio
   const transitions = object.studio?.transitions;
   if (transitions) return exits.filter((_, index) => transitions[index] && transitions[index].event !== 'match');
   if (object.type === 'other') return [];
-  if (object.type === 'checkClientProfile') return exits.filter((exit) => PROFILE_FIXED_EXITS.includes(exit));
-  const own = isSplitObject(object) ? [] : (OBJECT_TYPES[object.type].exits ?? []);
-  return exits.filter((exit) => exit === 'noMatch' || own.includes(exit));
+  if (object.type === 'checkClientProfile') return exits.filter(exit => PROFILE_FIXED_EXITS.includes(exit));
+  const own = isSplitObject(object) ? [] : OBJECT_TYPES[object.type].exits ?? [];
+  return exits.filter(exit => exit === 'noMatch' || own.includes(exit));
 };
 
 // Studio's Split Based On operators, as its editor names them
@@ -1823,7 +1819,7 @@ export const exitConditionOf = (
   const onFlags = (liveType ?? automatic) === 'equal_to' && isProfileFlagsInput(splitInputOf(object) ?? defaultInput);
   const blockedContains = onFlags && value === 'blocked';
   const flagContains = onFlags && (blockedContains || !live);
-  const type = object.exitOperators?.[exit] ?? (flagContains ? 'contains' : (liveType ?? automatic));
+  const type = object.exitOperators?.[exit] ?? (flagContains ? 'contains' : liveType ?? automatic);
   return {
     type,
     value,

@@ -38,7 +38,11 @@
  * to storage (a signed upload link when deployed), since the Lambda can't take large bodies.
  */
 import type { Recording, RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
-import { MAX_RECORDING_BYTES, RECORDING_CONTENT_TYPES, RECORDING_FILE_PATTERN } from '@tech-matters/form-builder-shared/flows/recordings';
+import {
+  MAX_RECORDING_BYTES,
+  RECORDING_CONTENT_TYPES,
+  RECORDING_FILE_PATTERN,
+} from '@tech-matters/form-builder-shared/flows/recordings';
 import type { ApiResponse, ApiUser } from './api';
 import type { RecordingFiles, RecordingLog, RecordingLogStore } from './recordingStores';
 
@@ -155,7 +159,7 @@ export const handleRecordingRequest = async (
     if (content.byteLength > MAX_RECORDING_BYTES) return fail(413, `${name} is too big for a recording.`);
     const extension = name.split('.').pop() as keyof typeof RECORDING_CONTENT_TYPES;
     await stores.files.store(code, environment, name, content, RECORDING_CONTENT_TYPES[extension]);
-    await updateLog(stores.log, code, (log) => {
+    await updateLog(stores.log, code, log => {
       const entry = { ...log[name], importedFrom: { ...log[name]?.importedFrom, [environment]: sourceUrl } };
       log[name] =
         environment === 'staging'
@@ -184,12 +188,12 @@ export const handleRecordingRequest = async (
   }
 
   const list = await listRecordings(stores, code);
-  const recording = list.recordings.find((candidate) => candidate.fileName === fileName);
+  const recording = list.recordings.find(candidate => candidate.fileName === fileName);
 
   if (method === 'POST' && action === 'uploaded') {
     if (!isStaff(user)) return fail(403, 'Only Aselo staff upload recordings for now.');
     if (!recording?.staging) return fail(404, "The file didn't arrive. Please upload it again.");
-    await updateLog(stores.log, code, (log) => {
+    await updateLog(stores.log, code, log => {
       log[fileName] = { ...log[fileName], uploadedBy: user.name, uploadedAt: now };
     });
     await stores.files.refresh(code, 'staging', fileName);
@@ -200,7 +204,7 @@ export const handleRecordingRequest = async (
     if (!isStaff(user)) return fail(403, 'Only Aselo staff approve recordings.');
     if (!recording?.staging) return fail(404, 'There is no recording to approve.');
     const approved = (body as { approved?: unknown } | undefined)?.approved !== false;
-    await updateLog(stores.log, code, (log) => {
+    await updateLog(stores.log, code, log => {
       const { approvedBy, approvedAt, approvedEtag, ...rest } = log[fileName] ?? {};
       log[fileName] = approved
         ? { ...rest, approvedBy: user.name, approvedAt: now, approvedEtag: recording.staging!.etag }
@@ -214,7 +218,7 @@ export const handleRecordingRequest = async (
     if (!recording?.staging) return fail(404, 'There is no recording to publish.');
     if (!recording.approvedBy) return fail(409, 'Approve the recording before publishing it.');
     await stores.files.publish(code, fileName);
-    await updateLog(stores.log, code, (log) => {
+    await updateLog(stores.log, code, log => {
       log[fileName] = { ...log[fileName], publishedBy: user.name, publishedAt: now };
     });
     await stores.files.refresh(code, 'production', fileName);
@@ -228,12 +232,12 @@ export const handleRecordingRequest = async (
     if (typeof to !== 'string' || !RECORDING_FILE_PATTERN.test(to)) return fail(400, 'Invalid recording name');
     if (to === fileName) return fail(400, 'It already has that name.');
     if (!recording?.staging && !recording?.production) return fail(404, `There is no ${fileName} to copy.`);
-    const environments = (['staging', 'production'] as const).filter((environment) => recording[environment]);
+    const environments = (['staging', 'production'] as const).filter(environment => recording[environment]);
     for (const environment of environments) {
       await stores.files.copy(code, environment, fileName, to);
       await stores.files.refresh(code, environment, to);
     }
-    await updateLog(stores.log, code, (log) => {
+    await updateLog(stores.log, code, log => {
       log[to] = { ...log[fileName], renamedFrom: fileName };
     });
     return ok(await listRecordings(stores, code));
@@ -246,7 +250,7 @@ export const handleRecordingRequest = async (
       return fail(409, 'This recording is published. Ask the Aselo team to remove it from production first.');
     }
     await stores.files.remove(code, 'staging', fileName);
-    await updateLog(stores.log, code, (log) => {
+    await updateLog(stores.log, code, log => {
       delete log[fileName];
     });
     return ok(await listRecordings(stores, code));

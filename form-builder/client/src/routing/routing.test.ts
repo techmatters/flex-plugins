@@ -39,7 +39,7 @@ import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
 const codes = readdirSync(helplinesDir).filter(
-  (code) =>
+  code =>
     /^[a-z0-9]+$/.test(code) &&
     (existsSync(path.join(helplinesDir, code, 'staging.hcl')) ||
       existsSync(path.join(helplinesDir, code, 'production.hcl'))),
@@ -127,13 +127,13 @@ describe('reading TaskRouter expressions', () => {
 describe('a routing design from a live helpline', () => {
   test('USNM: workflows, queues, skills and capacity', async () => {
     const { design, report } = await importRouting(helplinesDir, 'usnm');
-    expect(design.workflows.map((workflow) => [workflow.key, workflow.shared])).toEqual([
+    expect(design.workflows.map(workflow => [workflow.key, workflow.shared])).toEqual([
       ['master', false],
       ['sms', false],
       ['queue_transfers', true],
       ['survey', true],
     ]);
-    expect(design.queues.find((queue) => queue.key === 'es_tya')).toMatchObject({
+    expect(design.queues.find(queue => queue.key === 'es_tya')).toMatchObject({
       name: 'Spanish TYA',
       workers: { kind: 'skills', allOf: [['Calls', 'SMS'], ['TYA'], ['Spanish']] },
     });
@@ -143,7 +143,7 @@ describe('a routing design from a live helpline', () => {
       voicemailOneAtATime: true,
     });
 
-    const esTya = design.workflows[0].rules.find((rule) => rule.name === 'ES TYA Call')!;
+    const esTya = design.workflows[0].rules.find(rule => rule.name === 'ES TYA Call')!;
     expect(esTya.when).toEqual([
       [
         { kind: 'compare', attribute: 'channelType', operator: '==', values: ['voice'] },
@@ -151,7 +151,7 @@ describe('a routing design from a live helpline', () => {
         { kind: 'compare', attribute: 'serviceLanguage', operator: '==', values: ['spanish'] },
       ],
     ]);
-    expect(esTya.targets.map((target) => [target.queue, target.priority, target.moveOn.kind])).toEqual([
+    expect(esTya.targets.map(target => [target.queue, target.priority, target.moveOn.kind])).toEqual([
       ['es_tya', 60, 'skip'],
       ['es_tya', 60, 'wait'],
     ]);
@@ -185,27 +185,27 @@ describe('a routing design from a live helpline', () => {
   test('USCH: alternatives, offline-contact leftovers, skill levels', async () => {
     const { design } = await importRouting(helplinesDir, 'usch');
     const rule = design.workflows
-      .flatMap((workflow) => workflow.rules)
-      .find((candidate) => candidate.name === 'Childhelp - ChatText - Spanish')!;
+      .flatMap(workflow => workflow.rules)
+      .find(candidate => candidate.name === 'Childhelp - ChatText - Spanish')!;
     expect(rule.when).toHaveLength(2);
     expect(rule.targets[0].who).toContainEqual({ kind: 'offlineContactAlternative' });
     expect(rule.targets[0].who).toContainEqual({ kind: 'skills', skills: ['ChatText', 'Spanish'] });
-    expect(design.skills.find((skill) => skill.name === 'ChatText')).toEqual({
+    expect(design.skills.find(skill => skill.name === 'ChatText')).toEqual({
       name: 'ChatText',
       levels: true,
     });
     const issues = routingChecks(design);
-    expect(issues.some((issue) => issue.ruleId === rule.id && issue.key.endsWith('-offline'))).toBe(true);
-    expect(issues.some((issue) => issue.key.endsWith('-levels'))).toBe(false);
+    expect(issues.some(issue => issue.ruleId === rule.id && issue.key.endsWith('-offline'))).toBe(true);
+    expect(issues.some(issue => issue.key.endsWith('-levels'))).toBe(false);
   });
 
   test('changes are written from the blocks: a new skill, a new rule order', async () => {
     const { design } = await importRouting(helplinesDir, 'usnm');
     const [calls] = design.workflows;
-    const rule = calls.rules.find((candidate) => candidate.name === 'ES TYA Call')!;
-    const skills = rule.targets[0].who.find((block) => block.kind === 'skills')!;
+    const rule = calls.rules.find(candidate => candidate.name === 'ES TYA Call')!;
+    const skills = rule.targets[0].who.find(block => block.kind === 'skills')!;
     if (skills.kind === 'skills') skills.skills.push('Crisis');
-    calls.rules = [rule, ...calls.rules.filter((candidate) => candidate !== rule)];
+    calls.rules = [rule, ...calls.rules.filter(candidate => candidate !== rule)];
 
     const written = parseTemplate(generateRouting(design).workflows[0].text) as {
       task_routing: {
@@ -231,29 +231,29 @@ describe('common rules', () => {
   };
   const design = (queues: string[]) => ({
     ...emptyRouting('xx'),
-    queues: queues.map((key) => ({ key, name: key, workers: { kind: 'nobody' as const } })),
+    queues: queues.map(key => ({ key, name: key, workers: { kind: 'nobody' as const } })),
   });
 
   test('are written as in the shared master workflow, to the helpline’s queues', () => {
-    const live = Object.fromEntries(masterFilters().map((filter) => [filter.filter_friendly_name, filter]));
+    const live = Object.fromEntries(masterFilters().map(filter => [filter.filter_friendly_name, filter]));
     const withE2e = design(['master', 'e2e_test']);
-    ['Direct Transfers', 'Offline Contacts', 'E2E Test'].forEach((name) => {
-      const common = COMMON_RULES.find((candidate) => candidate.name === name)!;
+    ['Direct Transfers', 'Offline Contacts', 'E2E Test'].forEach(name => {
+      const common = COMMON_RULES.find(candidate => candidate.name === name)!;
       expect(writeRule(commonRule(withE2e, common))).toEqual(live[name]);
     });
     // Without an E2E queue, the E2E tests go to the main queue
-    const e2e = COMMON_RULES.find((candidate) => candidate.name === 'E2E Test')!;
+    const e2e = COMMON_RULES.find(candidate => candidate.name === 'E2E Test')!;
     expect(writeRule(commonRule(design(['en_std']), e2e)).targets).toMatchObject([{ queue: '${task_queues.en_std}' }]);
   });
 
   test('go before the helpline’s own rules (the catch-all after them), and are only added once', () => {
     const routing = design(['master']);
-    const named = (name: string) => COMMON_RULES.find((candidate) => candidate.name === name)!;
+    const named = (name: string) => COMMON_RULES.find(candidate => candidate.name === name)!;
     let workflow: Workflow = { key: 'master', name: 'Master', rules: [{ ...newRule('Calls') }] };
     workflow = addCommonRule(workflow, routing, named('E2E Test'));
     workflow = addCommonRule(workflow, routing, named('Everyone else'));
     workflow = addCommonRule(workflow, routing, named('Direct Transfers'));
-    expect(workflow.rules.map((rule) => rule.name)).toEqual(['Direct Transfers', 'E2E Test', 'Calls', 'Everyone else']);
+    expect(workflow.rules.map(rule => rule.name)).toEqual(['Direct Transfers', 'E2E Test', 'Calls', 'Everyone else']);
     expect(hasCommonRule(workflow, routing, named('E2E Test'))).toBe(true);
     expect(hasCommonRule(workflow, routing, named('Offline Contacts'))).toBe(false);
   });

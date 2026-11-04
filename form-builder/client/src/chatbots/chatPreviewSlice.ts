@@ -58,7 +58,7 @@ const chatPreviewSlice = createSlice({
     },
   },
   selectors: {
-    selectChatPreview: (state) => state,
+    selectChatPreview: state => state,
   },
 });
 
@@ -140,8 +140,8 @@ export const submitTypedAnswer = (): AppThunk => (dispatch, getState) => {
     if (kind === 'builtin') return said;
     if (kind === 'pattern') return matchesPattern(type.pattern ?? '', said) ? said : undefined;
     const lower = said.toLowerCase();
-    return type.values.find((option) =>
-      [option.value, ...option.synonyms].some((candidate) => candidate.toLowerCase() === lower),
+    return type.values.find(option =>
+      [option.value, ...option.synonyms].some(candidate => candidate.toLowerCase() === lower),
     )?.value;
   };
   dispatch(answerPreview(said, understand()));

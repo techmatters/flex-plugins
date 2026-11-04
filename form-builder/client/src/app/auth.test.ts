@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 import { afterEach, describe, expect, test, jest } from '@jest/globals';
 import { apiFetch, initAuth, setAuthConfigForTests } from './auth';
 
@@ -58,7 +57,9 @@ describe('signing in', () => {
     const authorizeUrl = new URL(assign.mock.calls[0][0]);
     expect(authorizeUrl.origin + authorizeUrl.pathname).toBe(`${CONFIG.issuer}/v1/authorize`);
     expect(authorizeUrl.searchParams.get('code_challenge_method')).toBe('S256');
-    expect(authorizeUrl.searchParams.get('redirect_uri')).toBe('https://form-builder.tl.techmatters.org/login/callback');
+    expect(authorizeUrl.searchParams.get('redirect_uri')).toBe(
+      'https://form-builder.tl.techmatters.org/login/callback',
+    );
     const state = authorizeUrl.searchParams.get('state');
 
     // Back from Okta

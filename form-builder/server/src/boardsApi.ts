@@ -100,7 +100,7 @@ export const handleBoardRequest = async (
     const summaries = await boards.list();
     return ok(
       summaries
-        .filter((summary) => canSee(user, summary.code))
+        .filter(summary => canSee(user, summary.code))
         .sort((a, b) => b.meta.updatedAt.localeCompare(a.meta.updatedAt)),
     );
   }

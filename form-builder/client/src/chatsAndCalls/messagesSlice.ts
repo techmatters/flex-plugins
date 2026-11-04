@@ -49,7 +49,7 @@ const messagesSlice = createSlice({
     },
   },
   selectors: {
-    selectMessages: (state) => state,
+    selectMessages: state => state,
   },
 });
 
@@ -62,7 +62,9 @@ const { messagesOpened } = messagesSlice.actions;
 export const { languageSelected, newLanguageChanged } = messagesSlice.actions;
 
 // The post-survey messages, grouped by language even when the file is flat
-export const getSurveyMessages = (files: DefinitionFileMap): { surveyIsFlat: boolean; surveyMessages: LocalizedMessages } => {
+export const getSurveyMessages = (
+  files: DefinitionFileMap,
+): { surveyIsFlat: boolean; surveyMessages: LocalizedMessages } => {
   const surveyFile = files[POST_SURVEY_MESSAGES_FILE];
   const surveyIsFlat = isFlatMessages(surveyFile);
   return {
@@ -77,7 +79,7 @@ export const getSurveyMessages = (files: DefinitionFileMap): { surveyIsFlat: boo
 export const getMessageLanguages = (files: DefinitionFileMap): string[] => [
   ...new Set(
     [...Object.keys(getMessages(files)), ...Object.keys(getSurveyMessages(files).surveyMessages)].filter(
-      (language) => language !== ALL_LANGUAGES,
+      language => language !== ALL_LANGUAGES,
     ),
   ),
 ];
@@ -108,7 +110,7 @@ export const setChatMessage =
   (dispatch, getState) => {
     const { language } = selectMessages(getState());
     dispatch(
-      editDraftFiles((files) => ({ ...files, [MESSAGES_FILE]: withMessage(files[MESSAGES_FILE], language, key, text) })),
+      editDraftFiles(files => ({ ...files, [MESSAGES_FILE]: withMessage(files[MESSAGES_FILE], language, key, text) })),
     );
   };
 
@@ -121,7 +123,7 @@ export const setSurveyMessage =
       ? ALL_LANGUAGES
       : selectMessages(state).language;
     dispatch(
-      editDraftFiles((files) => ({
+      editDraftFiles(files => ({
         ...files,
         [POST_SURVEY_MESSAGES_FILE]: withMessage(files[POST_SURVEY_MESSAGES_FILE], surveyLanguage, key, text),
       })),

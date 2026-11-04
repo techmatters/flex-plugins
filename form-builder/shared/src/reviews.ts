@@ -55,8 +55,7 @@ export type ReviewThread = ThreadMessage & {
   resolvedAt?: string;
 };
 
-export type ReviewAction =
-  'approved' | 'unapproved' | 'flagged' | 'replied' | 'resolved' | 'reopened' | 'deleted';
+export type ReviewAction = 'approved' | 'unapproved' | 'flagged' | 'replied' | 'resolved' | 'reopened' | 'deleted';
 
 export type ReviewLogEntry = {
   at: string;
@@ -76,8 +75,7 @@ export type DraftReview = {
 
 export const approvalKey = (side: ReviewSide, target: string) => `${side}|${target}`;
 
-export const sideOf = (user: ApiUser): ReviewSide =>
-  user.role === 'aselo-staff' ? 'aselo' : 'helpline';
+export const sideOf = (user: ApiUser): ReviewSide => (user.role === 'aselo-staff' ? 'aselo' : 'helpline');
 
 const TARGET_PATTERN = /^(contactTab|caseSection):[A-Za-z0-9_-]{1,100}(#[A-Za-z0-9_-]{1,100})?$/;
 const FINGERPRINT_PATTERN = /^[0-9a-f]{1,16}$/;
@@ -104,26 +102,16 @@ const validText = (text: unknown): text is string =>
 
 // Approve a target for the actor's side (with the fingerprint of what they saw), or take the
 // approval back (fingerprint null)
-export const applyApproval = (
-  review: DraftReview,
-  body: unknown,
-  actor: Actor,
-  now: string,
-): Outcome => {
+export const applyApproval = (review: DraftReview, body: unknown, actor: Actor, now: string): Outcome => {
   const { target, fingerprint } = (body ?? {}) as { target?: unknown; fingerprint?: unknown };
   if (!isValidTarget(target)) return failed(400, 'Invalid form or field');
-  if (
-    fingerprint !== null &&
-    (typeof fingerprint !== 'string' || !FINGERPRINT_PATTERN.test(fingerprint))
-  ) {
+  if (fingerprint !== null && (typeof fingerprint !== 'string' || !FINGERPRINT_PATTERN.test(fingerprint))) {
     return failed(400, 'Invalid fingerprint');
   }
   const key = approvalKey(actor.side, target);
   const { [key]: _previous, ...others } = review.approvals ?? {};
   const approvals =
-    fingerprint === null
-      ? others
-      : { ...others, [key]: { side: actor.side, by: actor.name, at: now, fingerprint } };
+    fingerprint === null ? others : { ...others, [key]: { side: actor.side, by: actor.name, at: now, fingerprint } };
   return {
     ok: true,
     review: withLog(
@@ -163,18 +151,11 @@ export const applyThreadChange = (
     const { target, kind, text, assignee, assigneeEmail } = change;
     if (!isValidTarget(target)) return failed(400, 'Invalid form or field');
     if (!FLAG_KINDS.includes(kind as FlagKind)) return failed(400, 'Invalid kind of flag');
-    if (!validText(text))
-      return failed(400, `A comment needs text, up to ${MAX_TEXT_LENGTH} characters.`);
-    if (
-      assignee !== undefined &&
-      (typeof assignee !== 'string' || !assignee.trim() || assignee.length > 200)
-    ) {
+    if (!validText(text)) return failed(400, `A comment needs text, up to ${MAX_TEXT_LENGTH} characters.`);
+    if (assignee !== undefined && (typeof assignee !== 'string' || !assignee.trim() || assignee.length > 200)) {
       return failed(400, 'Invalid assignee');
     }
-    if (
-      assigneeEmail !== undefined &&
-      (typeof assigneeEmail !== 'string' || assigneeEmail.length > 200)
-    ) {
+    if (assigneeEmail !== undefined && (typeof assigneeEmail !== 'string' || assigneeEmail.length > 200)) {
       return failed(400, 'Invalid assignee email');
     }
     if (threads.length >= MAX_THREADS) return failed(400, 'This draft has too many comments.');
@@ -191,23 +172,18 @@ export const applyThreadChange = (
     };
     return {
       ok: true,
-      review: withLog(
-        { ...review, threads: [...threads, thread] },
-        log('flagged', target, thread.kind),
-      ),
+      review: withLog({ ...review, threads: [...threads, thread] }, log('flagged', target, thread.kind)),
     };
   }
 
-  const thread = threads.find((candidate) => candidate.id === change.id);
+  const thread = threads.find(candidate => candidate.id === change.id);
   if (!thread) return failed(404, 'No such comment');
   const replace = (next: ReviewThread | undefined) =>
-    threads.flatMap((candidate) => (candidate === thread ? (next ? [next] : []) : [candidate]));
+    threads.flatMap(candidate => (candidate === thread ? (next ? [next] : []) : [candidate]));
 
   if (change.action === 'reply') {
-    if (!validText(change.text))
-      return failed(400, `A reply needs text, up to ${MAX_TEXT_LENGTH} characters.`);
-    if ((thread.replies ?? []).length >= MAX_REPLIES)
-      return failed(400, 'This comment has too many replies.');
+    if (!validText(change.text)) return failed(400, `A reply needs text, up to ${MAX_TEXT_LENGTH} characters.`);
+    if ((thread.replies ?? []).length >= MAX_REPLIES) return failed(400, 'This comment has too many replies.');
     const reply: ThreadMessage = {
       id: newId(),
       text: change.text.trim(),
@@ -216,25 +192,18 @@ export const applyThreadChange = (
       at: now,
     };
     let next: ReviewThread = { ...thread, replies: [...(thread.replies ?? []), reply] };
-    let reviewed = withLog(
-      { ...review, threads: replace(next) },
-      log('replied', thread.target, thread.kind),
-    );
+    let reviewed = withLog({ ...review, threads: replace(next) }, log('replied', thread.target, thread.kind));
     // "Answer and resolve": e.g. Aselo answers a helpline's question, which takes its icon away
     if (change.resolve === true) {
       next = { ...next, resolvedBy: actor.name, resolvedAt: now };
-      reviewed = withLog(
-        { ...reviewed, threads: replace(next) },
-        log('resolved', thread.target, thread.kind),
-      );
+      reviewed = withLog({ ...reviewed, threads: replace(next) }, log('resolved', thread.target, thread.kind));
     }
     return { ok: true, review: reviewed };
   }
 
   if (change.action === 'resolve') {
     const { resolvedBy: _by, resolvedAt: _at, ...open } = thread;
-    const next =
-      change.resolved === true ? { ...open, resolvedBy: actor.name, resolvedAt: now } : open;
+    const next = change.resolved === true ? { ...open, resolvedBy: actor.name, resolvedAt: now } : open;
     return {
       ok: true,
       review: withLog(
@@ -250,10 +219,7 @@ export const applyThreadChange = (
     }
     return {
       ok: true,
-      review: withLog(
-        { ...review, threads: replace(undefined) },
-        log('deleted', thread.target, thread.kind),
-      ),
+      review: withLog({ ...review, threads: replace(undefined) }, log('deleted', thread.target, thread.kind)),
     };
   }
 

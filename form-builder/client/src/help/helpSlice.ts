@@ -54,10 +54,10 @@ const helpSlice = createSlice({
       if (state.view.kind !== 'questions') state.view = { kind: 'home' };
     },
     // Typing paused
-    querySettled: (state) => {
+    querySettled: state => {
       state.searched = state.query.trim();
     },
-    querySubmitted: (state) => {
+    querySubmitted: state => {
       state.searched = state.query.trim();
       state.view = { kind: 'home' };
     },
@@ -65,17 +65,17 @@ const helpSlice = createSlice({
       state.feedback = undefined;
       state.view = { kind: 'article', slug: action.payload };
     },
-    homeShown: (state) => {
+    homeShown: state => {
       state.view = { kind: 'home' };
     },
     feedbackGiven: (state, action: PayloadAction<'yes' | 'no'>) => {
       state.feedback = action.payload;
     },
-    sendStarted: (state) => {
+    sendStarted: state => {
       state.sending = true;
       state.error = undefined;
     },
-    questionSent: (state) => {
+    questionSent: state => {
       state.sending = false;
       state.view = { kind: 'sent' };
     },
@@ -83,7 +83,7 @@ const helpSlice = createSlice({
       state.sending = false;
       state.error = action.payload;
     },
-    questionsShown: (state) => {
+    questionsShown: state => {
       state.view = { kind: 'questions' };
     },
     questionsLoaded: (state, action: PayloadAction<HelpQuestion[]>) => {
@@ -96,7 +96,7 @@ const helpSlice = createSlice({
       state.copied = action.payload;
     },
   },
-  extraReducers: (builder) =>
+  extraReducers: builder =>
     builder
       // Opened or closed: it starts again
       .addCase(helpToggled, () => initialState)
@@ -111,7 +111,7 @@ const helpSlice = createSlice({
         state.view = { kind: 'article', slug };
       }),
   selectors: {
-    selectHelp: (state) => state,
+    selectHelp: state => state,
   },
 });
 
@@ -155,7 +155,7 @@ export const loadSentQuestions =
     }
   };
 
-export const showSentQuestions = (): AppThunk => (dispatch) => {
+export const showSentQuestions = (): AppThunk => dispatch => {
   dispatch(questionsShown());
   dispatch(loadSentQuestions());
 };
@@ -163,7 +163,7 @@ export const showSentQuestions = (): AppThunk => (dispatch) => {
 // A question sent, copied as a line for its closest article's questions: list
 export const copyPhrasing =
   (question: string, slug: string): AppThunk<Promise<void>> =>
-  async (dispatch) => {
+  async dispatch => {
     try {
       await navigator.clipboard.writeText(`  - ${question}`);
       dispatch(phrasingCopied(`${question}→${slug}`));

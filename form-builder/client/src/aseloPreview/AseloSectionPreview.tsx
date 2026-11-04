@@ -38,7 +38,7 @@ export const AseloSectionPreview = ({ title, form, files, helplineLanguage, spli
   const strings = useStrings(helplineLanguage ?? 'en-US', files);
   const referenceData = getReferenceData(files);
   const [values, setValues] = useState<FormValues>(() =>
-    Object.fromEntries(form.map((item) => [item.name, initialValueFor(item, referenceData)])),
+    Object.fromEntries(form.map(item => [item.name, initialValueFor(item, referenceData)])),
   );
 
   return (
@@ -59,8 +59,8 @@ export const AseloSectionPreview = ({ title, form, files, helplineLanguage, spli
             onChange={(name, value) => {
               const next = { ...values, [name]: value };
               form
-                .filter((item) => item.type === 'dependent-select' && item.dependsOn === name)
-                .forEach((item) => {
+                .filter(item => item.type === 'dependent-select' && item.dependsOn === name)
+                .forEach(item => {
                   next[item.name] = initialValueFor(item, referenceData);
                 });
               setValues(next);

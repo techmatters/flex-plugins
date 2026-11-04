@@ -41,12 +41,12 @@ export const PeopleManager = () => {
   };
 
   const onList = (person: Person) =>
-    people?.some((other) =>
+    people?.some(other =>
       other.email && person.email
         ? other.email === person.email
         : other.name.toLowerCase() === person.name.toLowerCase(),
     );
-  const teamToAdd = code === ASELO_PEOPLE_CODE ? [] : team.filter((person) => !onList(person));
+  const teamToAdd = code === ASELO_PEOPLE_CODE ? [] : team.filter(person => !onList(person));
 
   if (codes.length === 0) return null;
 
@@ -59,8 +59,8 @@ export const PeopleManager = () => {
       </p>
       <label className="field">
         <span className="field-label">List</span>
-        <select value={code} onChange={(e) => dispatch(choosePeopleList(e.target.value))}>
-          {codes.map((candidate) => (
+        <select value={code} onChange={e => dispatch(choosePeopleList(e.target.value))}>
+          {codes.map(candidate => (
             <option key={candidate} value={candidate}>
               {candidate === ASELO_PEOPLE_CODE
                 ? 'Aselo team (to add to helplines, and templates)'
@@ -74,7 +74,7 @@ export const PeopleManager = () => {
       {people && (
         <ul className="flows-list" aria-label="People">
           {people.length === 0 && <li className="field-hint">Nobody yet.</li>}
-          {people.map((person) => (
+          {people.map(person => (
             <li key={person.email ?? person.name}>
               <span>{person.name}</span>
               <span className="field-hint">{person.email ?? 'no email'}</span>
@@ -83,7 +83,7 @@ export const PeopleManager = () => {
                   type="button"
                   className="link-button danger"
                   aria-label={`Remove ${person.name}`}
-                  onClick={() => save(people.filter((other) => other !== person))}
+                  onClick={() => save(people.filter(other => other !== person))}
                 >
                   Remove
                 </button>
@@ -99,14 +99,14 @@ export const PeopleManager = () => {
             aria-label="Name"
             placeholder="Name"
             value={name}
-            onChange={(e) => dispatch(personTyped({ name: e.target.value }))}
+            onChange={e => dispatch(personTyped({ name: e.target.value }))}
           />
           <input
             type="email"
             aria-label="Email"
             placeholder="Email (optional)"
             value={email}
-            onChange={(e) => dispatch(personTyped({ email: e.target.value }))}
+            onChange={e => dispatch(personTyped({ email: e.target.value }))}
           />
           <button type="submit" className="secondary-button" disabled={!name.trim()}>
             Add
@@ -118,13 +118,13 @@ export const PeopleManager = () => {
           <span className="field-label">Add from the Aselo team</span>
           <select
             value=""
-            onChange={(e) => {
-              const person = teamToAdd.find((candidate) => (candidate.email ?? candidate.name) === e.target.value);
+            onChange={e => {
+              const person = teamToAdd.find(candidate => (candidate.email ?? candidate.name) === e.target.value);
               if (person) void save([...people, person]);
             }}
           >
             <option value="">Choose someone…</option>
-            {teamToAdd.map((person) => (
+            {teamToAdd.map(person => (
               <option key={person.email ?? person.name} value={person.email ?? person.name}>
                 {person.name}
               </option>

@@ -44,7 +44,8 @@ export type SaveDraftRequest = {
 export type DraftConflict = { updatedBy?: string; updatedAt?: string; branch?: string };
 
 export type SaveOutcome =
-  { ok: true; meta: Partial<DraftMeta> & { revision: number } } | { ok: false; conflict: DraftConflict };
+  | { ok: true; meta: Partial<DraftMeta> & { revision: number } }
+  | { ok: false; conflict: DraftConflict };
 
 export type DraftClient = {
   me(): Promise<Me>;

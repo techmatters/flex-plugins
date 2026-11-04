@@ -92,10 +92,7 @@ export class MemoryPeopleStore implements PeopleStore {
 }
 
 export class S3PeopleStore implements PeopleStore {
-  constructor(
-    private readonly bucket: string,
-    private readonly s3: Pick<S3Client, 'send'> = new S3Client({}),
-  ) {}
+  constructor(private readonly bucket: string, private readonly s3: Pick<S3Client, 'send'> = new S3Client({})) {}
 
   private key(code: string) {
     if (!isValidPeopleCode(code)) throw new Error(`Invalid helpline ${code}`);

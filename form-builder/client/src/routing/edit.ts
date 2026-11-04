@@ -17,7 +17,15 @@
 /**
  * Changes to a routing design, as plain functions (the editor calls them; tests can too).
  */
-import type { Capacity, Role, RoutingDesign, Rule, Target, WhoBlock, Workflow } from '@tech-matters/form-builder-shared/routing/model';
+import type {
+  Capacity,
+  Role,
+  RoutingDesign,
+  Rule,
+  Target,
+  WhoBlock,
+  Workflow,
+} from '@tech-matters/form-builder-shared/routing/model';
 
 let nextId = 0;
 export const newRoutingId = (prefix: string) => {
@@ -54,17 +62,17 @@ export const updateWorkflow = (
   change: (workflow: Workflow) => Workflow,
 ): RoutingDesign => ({
   ...design,
-  workflows: design.workflows.map((workflow) => (workflow.key === key ? change(workflow) : workflow)),
+  workflows: design.workflows.map(workflow => (workflow.key === key ? change(workflow) : workflow)),
 });
 
 export const updateRule = (workflow: Workflow, ruleId: string, change: (rule: Rule) => Rule): Workflow => ({
   ...workflow,
-  rules: workflow.rules.map((rule) => (rule.id === ruleId ? change(rule) : rule)),
+  rules: workflow.rules.map(rule => (rule.id === ruleId ? change(rule) : rule)),
 });
 
 export const updateTarget = (rule: Rule, targetId: string, change: (target: Target) => Target): Rule => ({
   ...rule,
-  targets: rule.targets.map((target) => (target.id === targetId ? change(target) : target)),
+  targets: rule.targets.map(target => (target.id === targetId ? change(target) : target)),
 });
 
 // ---------------------------------------------------------------------------------------------
@@ -84,29 +92,28 @@ const ORDER: WhoBlock['kind'][] = [
   'offlineContactAlternative',
 ];
 
-export const hasBlock = (target: Target, kind: WhoBlock['kind']) => target.who.some((block) => block.kind === kind);
+export const hasBlock = (target: Target, kind: WhoBlock['kind']) => target.who.some(block => block.kind === kind);
 
 // Adds or removes a block, keeping the usual order
 export const toggleBlock = (target: Target, block: WhoBlock, on: boolean): Target => {
-  const others = target.who.filter((candidate) => candidate.kind !== block.kind);
+  const others = target.who.filter(candidate => candidate.kind !== block.kind);
   if (!on) return { ...target, who: others };
   const who = [...others, block].sort((a, b) => ORDER.indexOf(a.kind) - ORDER.indexOf(b.kind));
   return { ...target, who };
 };
 
-export const skillsOf = (target: Target) =>
-  target.who.flatMap((block) => (block.kind === 'skills' ? block.skills : []));
+export const skillsOf = (target: Target) => target.who.flatMap(block => (block.kind === 'skills' ? block.skills : []));
 
 export const setSkills = (target: Target, skills: string[]): Target =>
   hasBlock(target, 'skills')
     ? {
         ...target,
-        who: target.who.map((block) => (block.kind === 'skills' ? { kind: 'skills', skills } : block)),
+        who: target.who.map(block => (block.kind === 'skills' ? { kind: 'skills', skills } : block)),
       }
     : toggleBlock(target, { kind: 'skills', skills }, true);
 
 export const rolesOf = (target: Target): Role[] | undefined => {
-  const block = target.who.find((candidate) => candidate.kind === 'roles');
+  const block = target.who.find(candidate => candidate.kind === 'roles');
   return block?.kind === 'roles' ? block.roles : undefined;
 };
 
@@ -122,11 +129,11 @@ const isVoicemailRule = (rule: Rule) =>
   rule.when
     .flat()
     .some(
-      (condition) =>
+      condition =>
         condition.kind === 'compare' &&
         condition.attribute === 'channelType' &&
         (condition.operator === '==' || condition.operator === 'IN') &&
-        condition.values.every((value) => value === 'voicemail'),
+        condition.values.every(value => value === 'voicemail'),
     );
 
 export const setCapacity = (design: RoutingDesign, changes: Partial<Capacity>): RoutingDesign => {
@@ -144,15 +151,15 @@ export const setCapacity = (design: RoutingDesign, changes: Partial<Capacity>): 
   return {
     ...design,
     capacity,
-    workflows: design.workflows.map((workflow) =>
+    workflows: design.workflows.map(workflow =>
       workflow.templateText
         ? workflow
         : {
             ...workflow,
-            rules: workflow.rules.map((rule) => ({
+            rules: workflow.rules.map(rule => ({
               ...rule,
               // Transfers and offline contacts go to one counselor: capacity isn't for them
-              targets: rule.targets.map((target) => (target.knownWorker ? target : apply(rule, target))),
+              targets: rule.targets.map(target => (target.knownWorker ? target : apply(rule, target))),
             })),
           },
     ),
@@ -164,23 +171,23 @@ export const renameSkill = (design: RoutingDesign, from: string, to: string): Ro
   const rename = (skill: string) => (skill === from ? to : skill);
   return {
     ...design,
-    skills: design.skills.map((skill) => (skill.name === from ? { ...skill, name: to } : skill)),
-    queues: design.queues.map((queue) =>
+    skills: design.skills.map(skill => (skill.name === from ? { ...skill, name: to } : skill)),
+    queues: design.queues.map(queue =>
       queue.workers.kind === 'skills'
         ? {
             ...queue,
             workers: {
               kind: 'skills',
-              allOf: queue.workers.allOf.map((group) => group.map(rename)),
+              allOf: queue.workers.allOf.map(group => group.map(rename)),
             },
           }
         : queue,
     ),
-    workflows: design.workflows.map((workflow) => ({
+    workflows: design.workflows.map(workflow => ({
       ...workflow,
-      rules: workflow.rules.map((rule) => ({
+      rules: workflow.rules.map(rule => ({
         ...rule,
-        targets: rule.targets.map((target) =>
+        targets: rule.targets.map(target =>
           skillsOf(target).includes(from) ? setSkills(target, skillsOf(target).map(rename)) : target,
         ),
       })),

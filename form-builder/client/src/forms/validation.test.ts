@@ -47,7 +47,7 @@ const withForm = (
 ) => ({ ...files, [filePath]: update(getForm(files, filePath) ?? []) });
 
 const errorsOf = (issues: ReturnType<typeof validateContactTab>) =>
-  issues.filter((issue) => issue.severity === 'error').map((issue) => issue.message);
+  issues.filter(issue => issue.severity === 'error').map(issue => issue.message);
 
 describe('validateContactTab', () => {
   test('unchanged definitions never block export, for every helpline', async () => {
@@ -56,7 +56,10 @@ describe('validateContactTab', () => {
       for (const version of versions) {
         const { files } = await loadDefinitionFiles(formDefinitionsDir, code, version);
         for (const tab of CONTACT_TABS) {
-          expect({ at: `${code}/${version}`, value: errorsOf(validateContactTab(files, files, tab)) }).toEqual({ at: `${code}/${version}`, value: [] });
+          expect({ at: `${code}/${version}`, value: errorsOf(validateContactTab(files, files, tab)) }).toEqual({
+            at: `${code}/${version}`,
+            value: [],
+          });
         }
       }
     }
@@ -64,11 +67,11 @@ describe('validateContactTab', () => {
 
   test('a blank first answer saved as Unknown can sit next to an "Unknown" answer, and repeats name their form', () => {
     // The demo's caller Age: blank answer saved as "Unknown" (not required), plus "Unknown"
-    const messages = validateContactTab(demo, demo, callerTab).map((issue) => issue.message);
-    expect(messages.filter((message) => message.includes('more than once'))).toEqual([]);
+    const messages = validateContactTab(demo, demo, callerTab).map(issue => issue.message);
+    expect(messages.filter(message => message.includes('more than once'))).toEqual([]);
 
-    const draft = withForm(demo, callerTab.filePath, (form) =>
-      form.map((item) =>
+    const draft = withForm(demo, callerTab.filePath, form =>
+      form.map(item =>
         item.name === 'age' && 'options' in item && Array.isArray(item.options)
           ? ({ ...item, options: [...item.options, { value: '01', label: 'One' }] } as FormItemJsonDefinition)
           : item,
@@ -80,9 +83,7 @@ describe('validateContactTab', () => {
   });
 
   test('removing a field the Aselo specification requires is an error', () => {
-    const draft = withForm(demo, caseTab.filePath, (form) =>
-      form.filter((item) => item.name !== 'callSummary'),
-    );
+    const draft = withForm(demo, caseTab.filePath, form => form.filter(item => item.name !== 'callSummary'));
     expect(errorsOf(validateContactTab(draft, demo, caseTab))).toContain(
       'Aselo requires a field saved as “callSummary” in Case information.',
     );
@@ -99,12 +100,17 @@ describe('validateContactTab', () => {
   });
 
   test('flags duplicate names, missing labels and dropdowns without answers', () => {
-    const draft = withForm(usnm, callerTab.filePath, (form) => [
-      ...form,
-      { ...createField('input', []), name: form[0].name },
-      { ...createField('input', []), name: 'unlabelled', label: '' },
-      { ...createField('select', []), name: 'emptyChoice', options: [{ value: '', label: '' }] },
-    ] as FormItemJsonDefinition[]);
+    const draft = withForm(
+      usnm,
+      callerTab.filePath,
+      form =>
+        [
+          ...form,
+          { ...createField('input', []), name: form[0].name },
+          { ...createField('input', []), name: 'unlabelled', label: '' },
+          { ...createField('select', []), name: 'emptyChoice', options: [{ value: '', label: '' }] },
+        ] as FormItemJsonDefinition[],
+    );
     const errors = errorsOf(validateContactTab(draft, usnm, callerTab));
     expect(errors).toEqual(
       expect.arrayContaining([
@@ -116,9 +122,7 @@ describe('validateContactTab', () => {
   });
 
   test('warns, without blocking, when reporting expects a removed field', () => {
-    const draft = withForm(usnm, childTab.filePath, (form) =>
-      form.filter((item) => item.name !== 'zipCode'),
-    );
+    const draft = withForm(usnm, childTab.filePath, form => form.filter(item => item.name !== 'zipCode'));
     const issues = validateContactTab(draft, usnm, childTab);
     expect(issues).toContainEqual(
       expect.objectContaining({

@@ -48,11 +48,7 @@ describe('branches', () => {
       { value: 'alejandro-c/usvc/update_1029', label: 'alejandro-c/usvc/update_1029' },
     ]);
     const local = new GitHubBranches('/nowhere', 'This checkout (local files)', 'techmatters/flex-plugins', fakeFetch);
-    expect((await local.choices()).map((choice) => choice.value)).toEqual([
-      '',
-      'alejandro-c/usvc/update_1029',
-      'master',
-    ]);
+    expect((await local.choices()).map(choice => choice.value)).toEqual(['', 'alejandro-c/usvc/update_1029', 'master']);
     expect(isValidBranch('alejandro-c/usnm/update_0929')).toBe(true);
     expect(isValidBranch('../etc')).toBe(false);
     expect(isValidBranch('-x')).toBe(false);
@@ -62,7 +58,7 @@ describe('branches', () => {
     // A branch "snapshot" that is this checkout, to read real helplines
     const branches: BranchSource = {
       choices: async () => [{ value: '', label: 'master' }],
-      snapshot: async (branch) => {
+      snapshot: async branch => {
         if (branch === 'missing') throw new Error('no such branch');
         return {
           sha: SHA,

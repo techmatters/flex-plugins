@@ -103,7 +103,7 @@ const FloatingCard = ({
       aria-label={label}
       className={`step-help-card step-help-${side} ${place?.flipped ? 'flipped' : ''} ${place ? 'shown' : ''}`}
       style={place ? { left: place.left, top: place.top } : { left: -9999, top: 0 }}
-      onPointerDown={(e) => e.stopPropagation()}
+      onPointerDown={e => e.stopPropagation()}
     >
       <span className="step-help-arrow" style={arrowStyle} aria-hidden />
       <div className="step-help-scroll">{children}</div>
@@ -161,7 +161,7 @@ const HelpContent = ({
         <>
           {expanded && (
             <div id={moreId} className="step-help-more">
-              {more.details.map((paragraph) => (
+              {more.details.map(paragraph => (
                 <p key={paragraph}>{paragraph}</p>
               ))}
               {more.example && (
@@ -241,9 +241,9 @@ export const StepInfoButton = ({ object }: { object: Pick<FlowObject, 'type' | '
         aria-label={`What “${label}” does`}
         aria-expanded={Boolean(anchor)}
         title="What this step does"
-        onPointerDown={(e) => e.stopPropagation()}
-        onDoubleClick={(e) => e.stopPropagation()}
-        onClick={(e) => {
+        onPointerDown={e => e.stopPropagation()}
+        onDoubleClick={e => e.stopPropagation()}
+        onClick={e => {
           e.stopPropagation();
           if (anchor) close();
           else setAnchor(e.currentTarget.getBoundingClientRect());

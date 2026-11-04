@@ -38,8 +38,8 @@ export const BranchPicker = ({ load, value, onChange }: Props) => {
       .then(setChoices)
       .catch(() => setChoices([]));
   }, [load]);
-  const defaultLabel = choices?.find((choice) => choice.value === '')?.label ?? 'master';
-  const unknown = Boolean(value && choices && choices.length > 1 && !choices.some((choice) => choice.value === value));
+  const defaultLabel = choices?.find(choice => choice.value === '')?.label ?? 'master';
+  const unknown = Boolean(value && choices && choices.length > 1 && !choices.some(choice => choice.value === value));
   return (
     <label className="branch-picker">
       <GitBranch size={14} aria-hidden />
@@ -51,12 +51,12 @@ export const BranchPicker = ({ load, value, onChange }: Props) => {
         placeholder={defaultLabel}
         aria-label="Branch to import from"
         spellCheck={false}
-        onChange={(e) => onChange(e.target.value.trim())}
+        onChange={e => onChange(e.target.value.trim())}
       />
       <datalist id={listId}>
         {(choices ?? [])
-          .filter((choice) => choice.value !== '')
-          .map((choice) => (
+          .filter(choice => choice.value !== '')
+          .map(choice => (
             <option key={choice.value} value={choice.value} />
           ))}
       </datalist>

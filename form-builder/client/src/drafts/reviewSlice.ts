@@ -45,7 +45,7 @@ const reviewSlice = createSlice({
   name: 'review',
   initialState,
   reducers: {
-    reviewStarted: (state) => {
+    reviewStarted: state => {
       state.busy = true;
       state.failure = undefined;
     },
@@ -53,7 +53,7 @@ const reviewSlice = createSlice({
       state.busy = false;
       state.failure = action.payload;
     },
-    reviewSubmitted: (state) => {
+    reviewSubmitted: state => {
       state.busy = false;
       state.submitted = true;
     },
@@ -61,16 +61,16 @@ const reviewSlice = createSlice({
       state.busy = false;
       state.applied = action.payload;
     },
-    reviewExported: (state) => {
+    reviewExported: state => {
       state.exported = true;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     // Each time the dialog opens it starts afresh
     builder.addCase(reviewOpened, () => initialState).addCase(reviewClosed, () => initialState);
   },
   selectors: {
-    selectReview: (state) => state,
+    selectReview: state => state,
   },
 });
 
@@ -101,7 +101,7 @@ const exportInputs = (state: RootState) => {
     version,
     originalFiles,
     draftFiles,
-    warnings: selectReviewIssues(state).filter((issue) => issue.severity === 'warning'),
+    warnings: selectReviewIssues(state).filter(issue => issue.severity === 'warning'),
     webchatDefaultLocale: selectWebchatDefaultLocale(state),
   };
 };
@@ -109,7 +109,7 @@ const exportInputs = (state: RootState) => {
 // Runs a submit or apply, keeping its error to show in the dialog
 const run =
   (action: () => Promise<void>): AppThunk<Promise<void>> =>
-  async (dispatch) => {
+  async dispatch => {
     dispatch(reviewStarted());
     try {
       await action();
@@ -118,7 +118,7 @@ const run =
     }
   };
 
-export const submitReview = (): AppThunk<Promise<void>> => (dispatch) =>
+export const submitReview = (): AppThunk<Promise<void>> => dispatch =>
   dispatch(
     run(async () => {
       await dispatch(submitDraft());

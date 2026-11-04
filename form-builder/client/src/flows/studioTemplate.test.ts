@@ -30,7 +30,7 @@ import { expectAt } from '../testing/expectAt';
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
 
 const codes = readdirSync(helplinesDir).filter(
-  (code) =>
+  code =>
     /^[a-z0-9]+$/.test(code) &&
     (existsSync(path.join(helplinesDir, code, 'staging.hcl')) ||
       existsSync(path.join(helplinesDir, code, 'production.hcl'))),
@@ -39,9 +39,9 @@ const codes = readdirSync(helplinesDir).filter(
 // A parsed template with its blocked checks on a client profile's flags using contains, not equal_to
 const withBlockedContains = (flow: unknown) => {
   const copy = structuredClone(flow) as { states?: { transitions?: { conditions?: Record<string, unknown>[] }[] }[] };
-  copy.states?.forEach((state) =>
-    state.transitions?.forEach((transition) =>
-      transition.conditions?.forEach((condition) => {
+  copy.states?.forEach(state =>
+    state.transitions?.forEach(transition =>
+      transition.conditions?.forEach(condition => {
         const [argument] = (condition.arguments as string[] | undefined) ?? [];
         if (condition.type === 'equal_to' && condition.value === 'blocked' && /\.parsed\.flags\}\}$/.test(argument)) {
           condition.type = 'contains';
@@ -79,13 +79,13 @@ describe('Studio templates from boards', () => {
     expect(compared).toBeGreaterThan(50);
     // Only USCH's live flows still use equal_to
     expect(blockedFixed.length).toBeGreaterThan(0);
-    blockedFixed.forEach((template) => expect(template).toMatch(/^usch\//));
+    blockedFixed.forEach(template => expect(template).toMatch(/^usch\//));
   }, 120_000);
 
   test('changes on the board: new connections, texts in flow_vars or in the template, renamed widgets', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
-    const sms = boards.find((board) => board.content.flow?.studio?.template.endsWith('/sms.tftpl'))!.content;
-    const find = (studioName: string) => sms.objects.find((object) => object.studioName === studioName)!;
+    const sms = boards.find(board => board.content.flow?.studio?.template.endsWith('/sms.tftpl'))!.content;
+    const find = (studioName: string) => sms.objects.find(object => object.studioName === studioName)!;
 
     const welcome = find('send_wait_sms_welcome');
     welcome.message = { ...welcome.message, script: 'Hello from the board' };
@@ -99,18 +99,18 @@ describe('Studio templates from boards', () => {
       value: 'Hello from the board',
       widget: 'send_wait_sms_welcome',
     });
-    const state = (name: string) => generated.flow.states.find((candidate) => candidate.name === name)!;
+    const state = (name: string) => generated.flow.states.find(candidate => candidate.name === name)!;
     expect(state('send_wait_sms_welcome').properties.body).toBe('${flow_vars.send_wait_sms_welcome}');
 
     // A connection moved on the board moves in the flow
-    const connection = sms.connections.find((candidate) => candidate.from === welcome.id)!;
+    const connection = sms.connections.find(candidate => candidate.from === welcome.id)!;
     const original = state('send_wait_sms_welcome').transitions.find(
-      (transition) => transition.event === connection.exit,
+      transition => transition.event === connection.exit,
     )?.next;
     connection.to = crisis.id;
     const moved = toStudioFlow(sms);
-    const after = moved.flow.states.find((candidate) => candidate.name === 'send_wait_sms_welcome')!;
-    expect(after.transitions.find((transition) => transition.event === connection.exit)?.next).toBe(
+    const after = moved.flow.states.find(candidate => candidate.name === 'send_wait_sms_welcome')!;
+    expect(after.transitions.find(transition => transition.event === connection.exit)?.next).toBe(
       'send_message_sms_tya_info',
     );
     expect(original).not.toBe('send_message_sms_tya_info');
@@ -154,10 +154,10 @@ describe('Studio templates from boards', () => {
       ],
     };
     const generated = toStudioFlow(content, content.frames[0]);
-    const state = (name: string) => generated.flow.states.find((candidate) => candidate.name === name)!;
+    const state = (name: string) => generated.flow.states.find(candidate => candidate.name === name)!;
 
     expect(generated.flow).toMatchObject({ initial_state: 'Trigger', description: '${flow_description}' });
-    expect(state('Trigger').transitions.find((transition) => transition.event === 'incomingCall')?.next).toBe(
+    expect(state('Trigger').transitions.find(transition => transition.event === 'incomingCall')?.next).toBe(
       'gather_input_voice_en_service',
     );
     // A voice menu is a Gather and a Split on its digits; with no recording yet, it says its script
@@ -191,15 +191,15 @@ describe('Studio templates from boards', () => {
 
   test('an imported widget made another kind on the board is built as a new one of that kind', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usch');
-    const webchat = boards.find((board) =>
+    const webchat = boards.find(board =>
       board.content.flow?.studio?.template.endsWith('/webchat-no-lex-conv-sd.tftpl'),
     )!.content;
-    const blocked = webchat.objects.find((object) => object.studioName === 'send_message_webchat_blocked_client')!;
+    const blocked = webchat.objects.find(object => object.studioName === 'send_message_webchat_blocked_client')!;
     blocked.type = 'sendMessageAndClose';
     blocked.studioName = 'f_sendMessageAndRunJanitor_webchat_blocked_client';
     blocked.message = { ...blocked.message, script: 'We are unable to take your contact at this time.' };
     const generated = toStudioFlow(webchat);
-    const state = generated.flow.states.find((candidate) => candidate.name === blocked.studioName)!;
+    const state = generated.flow.states.find(candidate => candidate.name === blocked.studioName)!;
     expect(state.type).toBe('make-http-request');
     expect(state.properties).toMatchObject({
       url: '${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor',
@@ -222,23 +222,23 @@ describe('Studio templates from boards', () => {
     );
     // What led to it leads to it, by its new name
     expect(
-      generated.flow.states.some((candidate) =>
-        candidate.transitions.some((transition) => transition.next === blocked.studioName),
+      generated.flow.states.some(candidate =>
+        candidate.transitions.some(transition => transition.next === blocked.studioName),
       ),
     ).toBe(true);
   });
 
   test('messages changed on the board read trigger.conversation; the ones nobody changed stay as they are', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
-    const sms = boards.find((board) => board.content.flow?.studio?.template.endsWith('/sms.tftpl'))!.content;
-    const welcome = sms.objects.find((object) => object.studioName === 'send_wait_sms_welcome')!;
+    const sms = boards.find(board => board.content.flow?.studio?.template.endsWith('/sms.tftpl'))!.content;
+    const welcome = sms.objects.find(object => object.studioName === 'send_wait_sms_welcome')!;
     const legacy = { service: '{{trigger.message.InstanceSid}}', channel: '{{trigger.message.ChannelSid}}' };
     const conversation = {
       service: '{{trigger.conversation.InstanceSid}}',
       channel: '{{trigger.conversation.ChannelSid}}',
     };
     const propertiesOf = (content: BoardContent, studioName: string) =>
-      toStudioFlow(content).flow.states.find((state) => state.name === studioName)!.properties;
+      toStudioFlow(content).flow.states.find(state => state.name === studioName)!.properties;
 
     // Untouched, or only its flow_vars text or position changed: exactly as live
     expect(propertiesOf(sms, 'send_wait_sms_welcome')).toMatchObject(legacy);
@@ -332,7 +332,7 @@ describe('Other function / HTTP request', () => {
       connections: [],
     };
     const generated = toStudioFlow(content);
-    const state = (name: string) => generated.flow.states.find((candidate) => candidate.name === name)!;
+    const state = (name: string) => generated.flow.states.find(candidate => candidate.name === name)!;
     expect(state('f_new').properties).toMatchObject({
       method: 'GET',
       content_type: 'application/json;charset=utf-8',
@@ -340,7 +340,7 @@ describe('Other function / HTTP request', () => {
       body: '{"b": 1}',
       url: 'https://example.org/x',
     });
-    expect(generated.todo.some((item) => /f_new/.test(item) && /address/.test(item))).toBe(false);
+    expect(generated.todo.some(item => /f_new/.test(item) && /address/.test(item))).toBe(false);
     // Unchanged: exactly as Studio had it
     expect(state('f_savePostSurvey').properties).toMatchObject(studioWidget.properties);
     expect(state('f_moved').properties).toMatchObject({
@@ -379,8 +379,8 @@ describe('Splits and the standard requests', () => {
       }),
     ]);
     const generated = toStudioFlow(content, content.frames[0]);
-    const split = generated.flow.states.find((state) => state.name === 'split_answer')!;
-    expect(split.transitions.map((transition) => transition.conditions)).toEqual([
+    const split = generated.flow.states.find(state => state.name === 'split_answer')!;
+    expect(split.transitions.map(transition => transition.conditions)).toEqual([
       undefined,
       [
         {
@@ -414,7 +414,7 @@ describe('Splits and the standard requests', () => {
     };
     const imported = (extra: Partial<FlowObject>) => {
       const content = smsBoard([object('language', 'decision', { studioName: 'split_language', studio, ...extra })]);
-      return toStudioFlow(content, content.frames[0]).flow.states.find((state) => state.name === 'split_language')!;
+      return toStudioFlow(content, content.frames[0]).flow.states.find(state => state.name === 'split_language')!;
     };
 
     // Unchanged: as live
@@ -470,7 +470,7 @@ describe('Splits and the standard requests', () => {
       }),
     ]);
     const generated = toStudioFlow(content, content.frames[0]);
-    const state = (name: string) => generated.flow.states.find((candidate) => candidate.name === name)!;
+    const state = (name: string) => generated.flow.states.find(candidate => candidate.name === name)!;
 
     expect(state('f_getProfileFlagsForIdentifier_blocked').properties.body).toBe(
       '{ "trigger": {{trigger | to_json}}, "channelType": "{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}"}',
@@ -511,7 +511,7 @@ describe('Splits and the standard requests', () => {
       { id: 'c4', from: 'check', to: 'queue', exit: 'failed' },
     );
     const { flow } = toStudioFlow(content, content.frames[0]);
-    const state = (name: string) => flow.states.find((candidate) => candidate.name === name)!;
+    const state = (name: string) => flow.states.find(candidate => candidate.name === name)!;
     expect(state('f_getProfileFlagsForIdentifier').transitions).toEqual([
       { event: 'success', next: 'split_get_profile_flags_for_identifier' },
       { event: 'failed', next: 'send_to_queue' },
@@ -542,7 +542,7 @@ describe('Splits and the standard requests', () => {
       object('q', 'sendToQueue', { studioName: 'send_to_queue', settings: { workflow: 'master' } }),
     ]);
     const channelIn = (board: BoardContent) =>
-      toStudioFlow(board, board.frames[0]).flow.states.find((state) => state.name === 'send_to_queue')!.properties
+      toStudioFlow(board, board.frames[0]).flow.states.find(state => state.name === 'send_to_queue')!.properties
         .channel;
     expect(channelIn(content)).toBe('${task_channel_sids.chat}');
     expect(channelIn({ ...content, frames: [{ ...content.frames[0], channel: 'voice' }] })).toBe(
@@ -593,8 +593,7 @@ describe('Splits and the standard requests', () => {
       }),
     ]);
     const result = toStudioFlow(board, board.frames[0]);
-    const attributesOf = (name: string) =>
-      result.flow.states.find((state) => state.name === name)!.properties.attributes;
+    const attributesOf = (name: string) => result.flow.states.find(state => state.name === name)!.properties.attributes;
     expect(attributesOf('send_to_queue_english')).toBe('${channel_attributes.default}');
     expect(attributesOf('send_to_queue_spanish')).toBe(spanish);
     expect(attributesOf('send_to_queue_advocate')).toBe(advocate);
@@ -617,8 +616,8 @@ describe('Splits and the standard requests', () => {
       object('loggedIn', 'checkWorkerLoggedIn', { studioName: 'f_isSkilledWorkerLoggedIn_chattext_spanish' }),
     ]);
     const inputs = toStudioFlow(content, content.frames[0])
-      .flow.states.filter((state) => state.type === 'split-based-on')
-      .map((state) => state.properties.input);
+      .flow.states.filter(state => state.type === 'split-based-on')
+      .map(state => state.properties.input);
     expect(inputs).toEqual([
       '{{widgets.f_isSkilledWorkerAvailable_spanish.parsed.totalAvailableWorkers}}',
       '{{widgets.f_isSkilledWorkerLoggedIn_chattext_spanish.parsed.totalLoggedInWorkers}}',
@@ -633,11 +632,11 @@ describe("the blocked check on a client profile's flags (a list): contains, not 
     return boards.find(({ content }) => content.flow?.studio?.template.endsWith('/voice-childhelp-sd.tftpl'))!.content;
   };
   const stateOf = (content: BoardContent, name: string) =>
-    toStudioFlow(content).flow.states.find((state) => state.name === name)!;
+    toStudioFlow(content).flow.states.find(state => state.name === name)!;
 
   test("USCH's live equal_to is exported as contains, the rest of the split as live, and said in the TODOs", async () => {
     const content = await voiceBoard();
-    const live = content.objects.find((object) => object.studioName === 'split_contact_routing')!.studio!;
+    const live = content.objects.find(object => object.studioName === 'split_contact_routing')!.studio!;
     const split = stateOf(content, 'split_contact_routing');
     expect(split.transitions).toEqual([
       live.transitions![0],
@@ -653,14 +652,14 @@ describe("the blocked check on a client profile's flags (a list): contains, not 
       '“split_contact_routing”: blocked check now uses contains, was equal_to.',
     );
     // As exported it's the standard: nothing to warn about
-    expect(boardChecks(content).map((issue) => issue.message)).not.toContainEqual(
+    expect(boardChecks(content).map(issue => issue.message)).not.toContainEqual(
       expect.stringContaining("profile's flags"),
     );
   });
 
   test('equal_to chosen on the board stays, with a warning that it misses contacts with more than one flag', async () => {
     const content = await voiceBoard();
-    const routing = content.objects.find((object) => object.studioName === 'split_contact_routing')!;
+    const routing = content.objects.find(object => object.studioName === 'split_contact_routing')!;
     routing.exitOperators = { blocked: 'equal_to' };
     const [, blocked] = stateOf(content, 'split_contact_routing').transitions;
     expect(blocked.conditions).toEqual([expect.objectContaining({ type: 'equal_to', value: 'blocked' })]);
@@ -676,7 +675,7 @@ describe("the blocked check on a client profile's flags (a list): contains, not 
 
   test('a new Decision on the flags (chosen, or after an imported client profile check) defaults to contains', async () => {
     const content = await voiceBoard();
-    const check = content.objects.find((object) => object.studioName === 'f_getProfileFlagsForIdentifier')!;
+    const check = content.objects.find(object => object.studioName === 'f_getProfileFlagsForIdentifier')!;
     const decision: FlowObject = {
       id: 'new-split',
       type: 'decision',
@@ -703,12 +702,12 @@ describe("the blocked check on a client profile's flags (a list): contains, not 
     expect(abusive.conditions).toEqual([
       { friendly_name: 'If value contains abusive', arguments: [FLAGS], type: 'contains', value: 'abusive' },
     ]);
-    expect(boardChecks(withDecision(decision)).map((issue) => issue.message)).not.toContainEqual(
+    expect(boardChecks(withDecision(decision)).map(issue => issue.message)).not.toContainEqual(
       expect.stringContaining("profile's flags"),
     );
     // Unless equal to is chosen for it, which is warned about
     const equalTo = { ...decision, exitOperators: { abusive: 'equal_to' } };
-    expect(boardChecks(withDecision(equalTo)).map((issue) => issue.message)).toContainEqual(
+    expect(boardChecks(withDecision(equalTo)).map(issue => issue.message)).toContainEqual(
       expect.stringMatching(/^“Blocked\?”: “abusive” uses “equal to”/),
     );
     // Its input set on the board, not connected after the check

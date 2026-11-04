@@ -55,7 +55,7 @@ export const ImportHelpline = () => {
   const onOpen = (boardCode: string, id: string) => dispatch(openBoard({ code: boardCode, id }));
 
   const environmentsOf = (environment: string) =>
-    chosenRecordings.filter((recording) => recording.environment === environment).length;
+    chosenRecordings.filter(recording => recording.environment === environment).length;
 
   return (
     <section className="flows-import">
@@ -69,10 +69,10 @@ export const ImportHelpline = () => {
         <select
           value={code}
           aria-label="Helpline to import"
-          onChange={(e) => dispatch(importSourceChosen({ code: e.target.value }))}
+          onChange={e => dispatch(importSourceChosen({ code: e.target.value }))}
         >
           <option value="">Choose a helpline…</option>
-          {helplineCodes.map((candidate) => (
+          {helplineCodes.map(candidate => (
             <option key={candidate} value={candidate}>
               {candidate.toUpperCase()}
             </option>
@@ -81,7 +81,7 @@ export const ImportHelpline = () => {
         <BranchPicker
           load={loadBranches}
           value={branch}
-          onChange={(next) => dispatch(importSourceChosen({ branch: next }))}
+          onChange={next => dispatch(importSourceChosen({ branch: next }))}
         />
         <button
           type="button"
@@ -120,7 +120,7 @@ export const ImportHelpline = () => {
                       <strong className="flow-import-name">{flow.name}</strong>
                     )}
                     : {flow.widgets} widgets{' '}
-                    {flow.environments.map((environment) => (
+                    {flow.environments.map(environment => (
                       <span key={environment} className={`flow-env-badge ${environment}`}>
                         {environment === 'staging' ? 'Staging' : 'Production'}
                       </span>
@@ -151,13 +151,15 @@ export const ImportHelpline = () => {
           <p>
             {chosenRecordings.length === 0
               ? 'No recordings to copy.'
-              : `${chosenRecordings.length} recordings to copy: ${environmentsOf('staging')} for staging, ${environmentsOf('production')} for production.`}
+              : `${chosenRecordings.length} recordings to copy: ${environmentsOf(
+                  'staging',
+                )} for staging, ${environmentsOf('production')} for production.`}
           </p>
           {preview.report.notes.length > 0 && (
             <>
               <h4>To look at</h4>
               <ul className="flows-import-notes">
-                {preview.report.notes.map((note) => (
+                {preview.report.notes.map(note => (
                   <li key={note}>{note}</li>
                 ))}
               </ul>
@@ -171,12 +173,12 @@ export const ImportHelpline = () => {
                   <input
                     type="checkbox"
                     checked={copyRecordings}
-                    onChange={(e) => dispatch(importOptionsChanged({ copyRecordings: e.target.checked }))}
+                    onChange={e => dispatch(importOptionsChanged({ copyRecordings: e.target.checked }))}
                   />
                   <span>Copy the recordings</span>
                 </label>
               )}
-              {copyRecordings && chosenRecordings.some((recording) => recording.widgets?.length) && (
+              {copyRecordings && chosenRecordings.some(recording => recording.widgets?.length) && (
                 <label
                   className="field-checkbox"
                   title="Each copy is named after the widget that plays it, and the widgets play those. The Studio flows then need the Aselo recordings bucket as their recordings folder."
@@ -184,11 +186,11 @@ export const ImportHelpline = () => {
                   <input
                     type="checkbox"
                     checked={standardNames}
-                    onChange={(e) => dispatch(importOptionsChanged({ standardNames: e.target.checked }))}
+                    onChange={e => dispatch(importOptionsChanged({ standardNames: e.target.checked }))}
                   />
                   <span>
                     Give recordings with older names the standard one (
-                    {chosenRecordings.filter((recording) => recording.widgets?.length).length} files)
+                    {chosenRecordings.filter(recording => recording.widgets?.length).length} files)
                   </span>
                 </label>
               )}
@@ -213,7 +215,7 @@ export const ImportHelpline = () => {
             <div className="alert alert-error">
               Not copied:
               <ul>
-                {copying.failed.map((failure) => (
+                {copying.failed.map(failure => (
                   <li key={failure}>{failure}</li>
                 ))}
               </ul>
@@ -223,7 +225,7 @@ export const ImportHelpline = () => {
             <>
               <h4>Boards made</h4>
               <ul className="flows-import-boards">
-                {created.map((board) => (
+                {created.map(board => (
                   <li key={board.id}>
                     <button type="button" className="link-button" onClick={() => onOpen(board.code, board.id)}>
                       {board.title}

@@ -60,7 +60,7 @@ export const PostStudioFlowsEditor = () => {
   const write = (file: Parameters<typeof setPostStudioFlow>[0], queueKey: string, value: unknown) =>
     dispatch(setPostStudioFlow(file, queueKey, value));
 
-  const triggerHint = FLOW_TRIGGERS.find((trigger) => trigger.value === flowTrigger)?.hint;
+  const triggerHint = FLOW_TRIGGERS.find(trigger => trigger.value === flowTrigger)?.hint;
   const flowChoices = choices?.flows ?? [];
 
   return (
@@ -84,7 +84,7 @@ export const PostStudioFlowsEditor = () => {
             </tr>
           </thead>
           <tbody>
-            {entries.map((entry) => {
+            {entries.map(entry => {
               const label = `${queueLabel(entry.queue, choices)} in ${entry.file}.json`;
               const flowKey = keyOf(entry.studioFlowSid, 'studio_flow_sids');
               const warnings = entryWarnings(entry, choices);
@@ -92,7 +92,7 @@ export const PostStudioFlowsEditor = () => {
                 <tr key={`${entry.file}:${entry.queue}`}>
                   <td>
                     {queueLabel(entry.queue, choices)}
-                    {warnings.map((warning) => (
+                    {warnings.map(warning => (
                       <span key={warning} className="field-hint config-post-flows-warning">
                         {warning}
                       </span>
@@ -102,17 +102,17 @@ export const PostStudioFlowsEditor = () => {
                     <select
                       aria-label={`When, for ${label}`}
                       value={entry.flowTrigger}
-                      onChange={(e) =>
+                      onChange={e =>
                         write(entry.file, entry.queue, {
                           flowTrigger: e.target.value,
                           studioFlowSid: entry.studioFlowSid,
                         })
                       }
                     >
-                      {!FLOW_TRIGGERS.some((trigger) => trigger.value === entry.flowTrigger) && (
+                      {!FLOW_TRIGGERS.some(trigger => trigger.value === entry.flowTrigger) && (
                         <option value={entry.flowTrigger}>{entry.flowTrigger || '(not set)'}</option>
                       )}
-                      {FLOW_TRIGGERS.map((trigger) => (
+                      {FLOW_TRIGGERS.map(trigger => (
                         <option key={trigger.value} value={trigger.value}>
                           {trigger.label}
                         </option>
@@ -124,17 +124,17 @@ export const PostStudioFlowsEditor = () => {
                       <select
                         aria-label={`Survey flow, for ${label}`}
                         value={entry.studioFlowSid}
-                        onChange={(e) =>
+                        onChange={e =>
                           write(entry.file, entry.queue, {
                             flowTrigger: entry.flowTrigger,
                             studioFlowSid: e.target.value,
                           })
                         }
                       >
-                        {!flowChoices.some((candidate) => flowRef(candidate.key) === entry.studioFlowSid) && (
+                        {!flowChoices.some(candidate => flowRef(candidate.key) === entry.studioFlowSid) && (
                           <option value={entry.studioFlowSid}>{flowKey ?? entry.studioFlowSid}</option>
                         )}
-                        {flowChoices.map((candidate) => (
+                        {flowChoices.map(candidate => (
                           <option key={candidate.key} value={flowRef(candidate.key)}>
                             {flowOptionLabel(candidate)}
                           </option>
@@ -170,10 +170,10 @@ export const PostStudioFlowsEditor = () => {
           <select
             aria-label="Survey queue"
             value={queue}
-            onChange={(e) => dispatch(newSurveyChanged({ queue: e.target.value }))}
+            onChange={e => dispatch(newSurveyChanged({ queue: e.target.value }))}
           >
             <option value="">Choose…</option>
-            {(choices?.queues ?? []).map((candidate) => (
+            {(choices?.queues ?? []).map(candidate => (
               <option key={candidate.key} value={queueRef(candidate.key)}>
                 {candidate.name && candidate.name !== candidate.key
                   ? `${candidate.name} (${candidate.key})`
@@ -181,7 +181,7 @@ export const PostStudioFlowsEditor = () => {
                 {candidate.environments.length === 0 ? ' · routing design only' : ''}
               </option>
             ))}
-            {CHANNEL_KEYS.map((channel) => (
+            {CHANNEL_KEYS.map(channel => (
               <option key={channel.key} value={channel.key}>
                 {channel.label}
               </option>
@@ -193,9 +193,9 @@ export const PostStudioFlowsEditor = () => {
           <select
             aria-label="Survey trigger"
             value={flowTrigger}
-            onChange={(e) => dispatch(newSurveyChanged({ flowTrigger: e.target.value }))}
+            onChange={e => dispatch(newSurveyChanged({ flowTrigger: e.target.value }))}
           >
-            {FLOW_TRIGGERS.map((trigger) => (
+            {FLOW_TRIGGERS.map(trigger => (
               <option key={trigger.value} value={trigger.value}>
                 {trigger.label}
               </option>
@@ -207,10 +207,10 @@ export const PostStudioFlowsEditor = () => {
           <select
             aria-label="Survey flow"
             value={flow}
-            onChange={(e) => dispatch(newSurveyChanged({ flow: e.target.value }))}
+            onChange={e => dispatch(newSurveyChanged({ flow: e.target.value }))}
           >
             <option value="">{flowChoices.length > 0 ? 'Choose…' : 'No post_call_survey_* flows'}</option>
-            {flowChoices.map((candidate) => (
+            {flowChoices.map(candidate => (
               <option key={candidate.key} value={candidate.key}>
                 {flowOptionLabel(candidate)}
               </option>
@@ -222,9 +222,9 @@ export const PostStudioFlowsEditor = () => {
           <select
             aria-label="Survey environments"
             value={where}
-            onChange={(e) => dispatch(newSurveyChanged({ where: e.target.value as Where }))}
+            onChange={e => dispatch(newSurveyChanged({ where: e.target.value as Where }))}
           >
-            {(Object.keys(WHERE_LABELS) as Where[]).map((key) => (
+            {(Object.keys(WHERE_LABELS) as Where[]).map(key => (
               <option key={key} value={key}>
                 {WHERE_LABELS[key]}
               </option>
@@ -238,7 +238,7 @@ export const PostStudioFlowsEditor = () => {
       {triggerHint && <p className="field-hint">{triggerHint}</p>}
       {queue &&
         flow &&
-        entryWarnings({ file: FILE_OF[where], queue, studioFlowSid: flowRef(flow) }, choices).map((warning) => (
+        entryWarnings({ file: FILE_OF[where], queue, studioFlowSid: flowRef(flow) }, choices).map(warning => (
           <p key={warning} className="issue issue-warning">
             {warning} Add it there (or choose another environment) before applying.
           </p>

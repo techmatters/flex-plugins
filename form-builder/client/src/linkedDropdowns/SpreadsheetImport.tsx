@@ -21,12 +21,7 @@
  */
 import { useEffect, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/store';
-import {
-  AnswerNode,
-  countByLevel,
-  makeKeyValuesUnique,
-  rowsToTree,
-} from './linkedDropdowns';
+import { AnswerNode, countByLevel, makeKeyValuesUnique, rowsToTree } from './linkedDropdowns';
 import { parseDelimitedText, SPREADSHEET_FILE_TYPES } from './spreadsheet';
 import {
   acceptSpreadsheetRows,
@@ -60,10 +55,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
     };
   }, [dispatch]);
 
-  const dataRows = useMemo(
-    () => (rows ? (firstRowIsHeader ? rows.slice(1) : rows) : []),
-    [rows, firstRowIsHeader],
-  );
+  const dataRows = useMemo(() => (rows ? (firstRowIsHeader ? rows.slice(1) : rows) : []), [rows, firstRowIsHeader]);
 
   const result = useMemo(() => {
     if (!dataRows.length) return undefined;
@@ -72,7 +64,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
     return { roots, stats, counts: countByLevel(roots, depth), renamed: unique.renamed };
   }, [dataRows, depth, currentRoots]);
 
-  const columnCount = Math.max(0, ...dataRows.map((row) => row.length));
+  const columnCount = Math.max(0, ...dataRows.map(row => row.length));
 
   if (!state) return null;
 
@@ -81,9 +73,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
     const current = countByLevel(currentRoots, depth).reduce((a, b) => a + b, 0);
     if (
       current > 0 &&
-      !window.confirm(
-        `Replace all ${current.toLocaleString()} current answers with the ones from ${source}?`,
-      )
+      !window.confirm(`Replace all ${current.toLocaleString()} current answers with the ones from ${source}?`)
     ) {
       return;
     }
@@ -101,7 +91,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
           <table className="import-example">
             <thead>
               <tr>
-                {levelLabels.map((label) => (
+                {levelLabels.map(label => (
                   <th key={label}>{label}</th>
                 ))}
               </tr>
@@ -120,7 +110,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
             <textarea
               rows={8}
               value={pastedText}
-              onChange={(e) => dispatch(spreadsheetImportChanged({ pastedText: e.target.value }))}
+              onChange={e => dispatch(spreadsheetImportChanged({ pastedText: e.target.value }))}
               placeholder={levelLabels.join('\t')}
             />
           </label>
@@ -129,7 +119,9 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
               type="button"
               className="secondary-button"
               disabled={!pastedText.trim()}
-              onClick={() => dispatch(acceptSpreadsheetRows(parseDelimitedText(pastedText), 'the pasted cells', levelLabels))}
+              onClick={() =>
+                dispatch(acceptSpreadsheetRows(parseDelimitedText(pastedText), 'the pasted cells', levelLabels))
+              }
             >
               Use pasted cells
             </button>
@@ -139,7 +131,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
               <input
                 type="file"
                 accept={SPREADSHEET_FILE_TYPES}
-                onChange={(e) => {
+                onChange={e => {
                   const file = e.target.files?.[0];
                   if (file) dispatch(readSpreadsheet(file, levelLabels));
                 }}
@@ -151,7 +143,11 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
         <>
           <p>
             Read <strong>{rows.length.toLocaleString()}</strong> rows from {source}.{' '}
-            <button type="button" className="link-button" onClick={() => dispatch(spreadsheetImportChanged({ rows: undefined }))}>
+            <button
+              type="button"
+              className="link-button"
+              onClick={() => dispatch(spreadsheetImportChanged({ rows: undefined }))}
+            >
               Use something else
             </button>
           </p>
@@ -159,7 +155,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
             <input
               type="checkbox"
               checked={firstRowIsHeader}
-              onChange={(e) => dispatch(spreadsheetImportChanged({ firstRowIsHeader: e.target.checked }))}
+              onChange={e => dispatch(spreadsheetImportChanged({ firstRowIsHeader: e.target.checked }))}
             />
             <span>The first row has column names (don't import it)</span>
           </label>
@@ -168,7 +164,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
             <table>
               <thead>
                 <tr>
-                  {levelLabels.map((label) => (
+                  {levelLabels.map(label => (
                     <th key={label}>{label}</th>
                   ))}
                 </tr>
@@ -190,8 +186,8 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
 
           {columnCount < depth && (
             <p className="issue issue-warning">
-              The rows have {columnCount} column(s) but there are {depth} levels, so the last
-              level(s) will have no answers.
+              The rows have {columnCount} column(s) but there are {depth} levels, so the last level(s) will have no
+              answers.
             </p>
           )}
 
@@ -205,35 +201,25 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
               {result.stats.duplicateRows > 0 && (
                 <li className="muted">{result.stats.duplicateRows} repeated row(s) skipped</li>
               )}
-              {result.stats.emptyRows > 0 && (
-                <li className="muted">{result.stats.emptyRows} empty row(s) skipped</li>
-              )}
+              {result.stats.emptyRows > 0 && <li className="muted">{result.stats.emptyRows} empty row(s) skipped</li>}
               {result.stats.rowsWithGaps > 0 && (
                 <li className="issue issue-warning">
-                  {result.stats.rowsWithGaps} row(s) skipped because a level in the middle was
-                  empty
+                  {result.stats.rowsWithGaps} row(s) skipped because a level in the middle was empty
                 </li>
               )}
-              {result.stats.extraColumns && (
-                <li className="muted">Columns after the {depth} level(s) were ignored</li>
-              )}
+              {result.stats.extraColumns && <li className="muted">Columns after the {depth} level(s) were ignored</li>}
               {result.renamed > 0 && (
                 <li className="muted">
-                  {result.renamed} answers share a name with another under a different parent.
-                  They'll be saved with the parent added (e.g. “San Jose (Batangas)”) so each one
-                  keeps its own list. Counselors still see just the name.
+                  {result.renamed} answers share a name with another under a different parent. They'll be saved with the
+                  parent added (e.g. “San Jose (Batangas)”) so each one keeps its own list. Counselors still see just
+                  the name.
                 </li>
               )}
             </ul>
           )}
 
           <div className="option-actions">
-            <button
-              type="button"
-              className="primary-button"
-              disabled={!result}
-              onClick={confirmImport}
-            >
+            <button type="button" className="primary-button" disabled={!result} onClick={confirmImport}>
               Replace all answers with these
             </button>
             <button type="button" className="link-button" onClick={onCancel}>

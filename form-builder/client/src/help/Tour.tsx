@@ -55,25 +55,23 @@ export const findTarget = (target: string, root: ParentNode = document): HTMLEle
     }
   }
   if (kind === 'label') {
-    return visible(root.querySelectorAll('[aria-label]')).find(
-      (element) => element.getAttribute('aria-label') === value,
-    );
+    return visible(root.querySelectorAll('[aria-label]')).find(element => element.getAttribute('aria-label') === value);
   }
   const wanted = normalize(value);
   if (kind === 'button') {
     const buttons = visible(root.querySelectorAll('button, [role="button"], a'));
     return (
-      buttons.find((button) => normalize(button.textContent) === wanted) ??
-      buttons.find((button) => normalize(button.textContent).startsWith(wanted)) ??
-      buttons.find((button) => normalize(button.textContent).includes(wanted))
+      buttons.find(button => normalize(button.textContent) === wanted) ??
+      buttons.find(button => normalize(button.textContent).startsWith(wanted)) ??
+      buttons.find(button => normalize(button.textContent).includes(wanted))
     );
   }
   if (kind === 'text') {
     // The innermost element with exactly that text
     const matches = visible(
       root.querySelectorAll('h1, h2, h3, h4, h5, label, legend, th, span, strong, p, div'),
-    ).filter((element) => normalize(element.textContent) === wanted);
-    return matches.find((element) => !matches.some((other) => other !== element && element.contains(other)));
+    ).filter(element => normalize(element.textContent) === wanted);
+    return matches.find(element => !matches.some(other => other !== element && element.contains(other)));
   }
   return undefined;
 };
@@ -109,7 +107,7 @@ export const Tour = () => {
         element.scrollIntoView?.({ block: 'center', inline: 'nearest', behavior: 'smooth' });
       }
       const box = element?.getBoundingClientRect();
-      setRect((current) =>
+      setRect(current =>
         box &&
         current &&
         current.top === box.top &&

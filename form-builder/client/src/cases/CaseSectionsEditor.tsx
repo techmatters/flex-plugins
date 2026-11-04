@@ -53,9 +53,12 @@ export const CaseSectionsEditor = () => {
   const { editorRevision } = useAppSelector(selectWorkspace);
   const sectionIssues = useAppSelector(selectSectionIssues);
   const { rows, newLabel } = useAppSelector(selectCaseSections);
-  const issues = sectionIssues.filter((issue) => issue.message.startsWith('Case sections'));
+  const issues = sectionIssues.filter(issue => issue.message.startsWith('Case sections'));
   const strings = useStrings(helplineLanguage ?? 'en-US', draftFiles);
-  const originalKeys = useMemo(() => new Set(getCaseSections(originalFiles).map((section) => section.key)), [originalFiles]);
+  const originalKeys = useMemo(
+    () => new Set(getCaseSections(originalFiles).map(section => section.key)),
+    [originalFiles],
+  );
   const sections = getCaseSections(draftFiles);
 
   // Starts from the draft when it opens, and when the draft's files are replaced (discarded, reloaded)
@@ -75,12 +78,10 @@ export const CaseSectionsEditor = () => {
   };
 
   const listSections = rows
-    .map((row) => sections.find((section) => section.key === row.value))
+    .map(row => sections.find(section => section.key === row.value))
     .filter((section): section is NonNullable<typeof section> => Boolean(section));
   const placed = (location: 'list' | 'timeline') =>
-    listSections.filter(
-      (section) => (getSectionLayout(draftFiles, section.key).caseHomeLocation ?? 'list') === location,
-    );
+    listSections.filter(section => (getSectionLayout(draftFiles, section.key).caseHomeLocation ?? 'list') === location);
 
   return (
     <div className="section-editor">
@@ -88,12 +89,12 @@ export const CaseSectionsEditor = () => {
         <section className="panel">
           <h2>Case sections</h2>
           <p className="muted">
-            What counselors can add to a case, like notes or referrals. Each section has its own
-            form: open it from the menu on the left, or with “Edit the form”.
+            What counselors can add to a case, like notes or referrals. Each section has its own form: open it from the
+            menu on the left, or with “Edit the form”.
           </p>
           {issues.length > 0 && (
             <ul className="issue-list">
-              {issues.map((issue) => (
+              {issues.map(issue => (
                 <li key={issue.message} className={`issue issue-${issue.severity}`}>
                   {issue.message}
                 </li>
@@ -102,10 +103,10 @@ export const CaseSectionsEditor = () => {
           )}
           <SortableRows
             rows={rows}
-            labelOf={(key) => sections.find((section) => section.key === key)?.label ?? key}
-            onReorder={(next) => dispatch(reorderSections(next))}
-            renderRow={(row) => {
-              const section = sections.find((candidate) => candidate.key === row.value);
+            labelOf={key => sections.find(section => section.key === key)?.label ?? key}
+            onReorder={next => dispatch(reorderSections(next))}
+            renderRow={row => {
+              const section = sections.find(candidate => candidate.key === row.value);
               if (!section) return null;
               const layout = getSectionLayout(draftFiles, section.key);
               const form = getForm(draftFiles, section.formPath) ?? [];
@@ -118,7 +119,7 @@ export const CaseSectionsEditor = () => {
                       type="text"
                       aria-label="Section name"
                       value={section.label}
-                      onChange={(e) => dispatch(renameSection(section.key, e.target.value))}
+                      onChange={e => dispatch(renameSection(section.key, e.target.value))}
                     />
                     <button
                       type="button"
@@ -144,7 +145,7 @@ export const CaseSectionsEditor = () => {
                       <input
                         type="text"
                         value={translate(strings, titleKey(section.key))}
-                        onChange={(e) => dispatch(setSectionText(titleKey(section.key), e.target.value))}
+                        onChange={e => dispatch(setSectionText(titleKey(section.key), e.target.value))}
                       />
                     </label>
                     <label className="field">
@@ -152,16 +153,14 @@ export const CaseSectionsEditor = () => {
                       <input
                         type="text"
                         value={translate(strings, addKey(section.key))}
-                        onChange={(e) => dispatch(setSectionText(addKey(section.key), e.target.value))}
+                        onChange={e => dispatch(setSectionText(addKey(section.key), e.target.value))}
                       />
                     </label>
                     <label className="field">
                       <span className="field-label">Shown</span>
                       <select
                         value={layout.caseHomeLocation ?? 'list'}
-                        onChange={(e) =>
-                          dispatch(setSectionLocation(section.key, e.target.value as 'list' | 'timeline'))
-                        }
+                        onChange={e => dispatch(setSectionLocation(section.key, e.target.value as 'list' | 'timeline'))}
                       >
                         <option value="list">As its own list on the case</option>
                         <option value="timeline">On the case timeline</option>
@@ -170,7 +169,7 @@ export const CaseSectionsEditor = () => {
                   </div>
                   <fieldset className="status-transitions">
                     <legend>Fields shown in the list</legend>
-                    {form.map((item) => {
+                    {form.map(item => {
                       const checked = previewFields.includes(item.name);
                       return (
                         <label key={item.name} className="field-checkbox">
@@ -195,8 +194,8 @@ export const CaseSectionsEditor = () => {
               aria-label="New section name"
               placeholder="New section, e.g. Safety plan"
               value={newLabel}
-              onChange={(e) => dispatch(newLabelChanged(e.target.value))}
-              onKeyDown={(e) => e.key === 'Enter' && dispatch(addSection())}
+              onChange={e => dispatch(newLabelChanged(e.target.value))}
+              onKeyDown={e => e.key === 'Enter' && dispatch(addSection())}
             />
             <button
               type="button"
@@ -209,8 +208,8 @@ export const CaseSectionsEditor = () => {
           </div>
           {!staffMode && (
             <p className="field-hint">
-              Sections that already exist can only be removed by Aselo staff, because counselors would
-              stop seeing what was saved in them.
+              Sections that already exist can only be removed by Aselo staff, because counselors would stop seeing what
+              was saved in them.
             </p>
           )}
         </section>
@@ -224,19 +223,25 @@ export const CaseSectionsEditor = () => {
           <div className="case-page-timeline">
             <strong>{translate(strings, 'Case-Timeline-Title')}</strong>
             {placed('timeline').length > 0 && (
-              <span className="muted"> · also shows {placed('timeline').map((section) => section.label).join(', ')}</span>
+              <span className="muted">
+                {' '}
+                · also shows{' '}
+                {placed('timeline')
+                  .map(section => section.label)
+                  .join(', ')}
+              </span>
             )}
           </div>
-          {placed('list').map((section) => (
+          {placed('list').map(section => (
             <div key={section.key} className="case-page-section">
               <span className="case-page-section-title">{translate(strings, titleKey(section.key))}</span>
               <button type="button" className="case-page-add" tabIndex={-1}>
                 + {translate(strings, addKey(section.key))}
               </button>
               <div className="case-page-preview-row">
-                {(getSectionLayout(draftFiles, section.key).previewFields ?? []).map((name) => (
+                {(getSectionLayout(draftFiles, section.key).previewFields ?? []).map(name => (
                   <span key={name}>
-                    {getForm(draftFiles, section.formPath)?.find((item) => item.name === name)?.label ?? name}
+                    {getForm(draftFiles, section.formPath)?.find(item => item.name === name)?.label ?? name}
                   </span>
                 ))}
               </div>

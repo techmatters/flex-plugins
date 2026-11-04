@@ -72,7 +72,7 @@ export type Entry = {
 };
 
 export const postStudioFlowEntries = (files: DefinitionFileMap): Entry[] =>
-  FILES.flatMap((file) => {
+  FILES.flatMap(file => {
     const flows = getServiceConfigFile(files, file)?.attributes;
     const configured = isConfigObject(flows) ? flows.postStudioFlows : undefined;
     if (!isConfigObject(configured)) return [];
@@ -102,12 +102,12 @@ export const entryWarnings = (entry: Pick<Entry, 'file' | 'queue' | 'studioFlowS
   const warnings: string[] = [];
   const queueKey = keyOf(entry.queue, 'task_queues');
   const flowKey = keyOf(entry.studioFlowSid, 'studio_flow_sids');
-  environmentsOf(entry.file).forEach((environment) => {
-    const queue = choices.queues.find((candidate) => candidate.key === queueKey);
+  environmentsOf(entry.file).forEach(environment => {
+    const queue = choices.queues.find(candidate => candidate.key === queueKey);
     if (queueKey && !queue?.environments.includes(environment)) {
       warnings.push(`${environment}.hcl has no queue ${queueKey} yet.`);
     }
-    const flow = choices.flows.find((candidate) => candidate.key === flowKey);
+    const flow = choices.flows.find(candidate => candidate.key === flowKey);
     if (flowKey && !flow?.environments.includes(environment)) {
       warnings.push(`${environment}.hcl has no ${flowKey} studio flow yet.`);
     }
@@ -117,8 +117,8 @@ export const entryWarnings = (entry: Pick<Entry, 'file' | 'queue' | 'studioFlowS
 
 export const queueLabel = (ref: string, choices?: PostFlowChoices) => {
   const key = keyOf(ref, 'task_queues');
-  if (!key) return CHANNEL_KEYS.find((channel) => channel.key === ref)?.label ?? ref;
-  const name = choices?.queues.find((queue) => queue.key === key)?.name;
+  if (!key) return CHANNEL_KEYS.find(channel => channel.key === ref)?.label ?? ref;
+  const name = choices?.queues.find(queue => queue.key === key)?.name;
   return name && name !== key ? `${name} (${key})` : key;
 };
 

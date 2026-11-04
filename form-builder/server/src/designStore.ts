@@ -67,8 +67,8 @@ export class LocalDesignStore<T extends { code: string }> implements DesignStore
   async list() {
     const files = await fs.readdir(this.rootDir).catch(() => [] as string[]);
     return files
-      .filter((name) => name.endsWith('.json'))
-      .map((name) => name.slice(0, -'.json'.length))
+      .filter(name => name.endsWith('.json'))
+      .map(name => name.slice(0, -'.json'.length))
       .filter(isValidDesignCode);
   }
 }
@@ -133,7 +133,7 @@ export class S3DesignStore<T extends { code: string }> implements DesignStore<T>
       const page: ListObjectsV2CommandOutput = await this.s3.send(
         new ListObjectsV2Command({ Bucket: this.bucket, Prefix: `${this.prefix}/`, ContinuationToken: token }),
       );
-      (page.Contents ?? []).forEach((object) => {
+      (page.Contents ?? []).forEach(object => {
         const code = object.Key?.match(pattern)?.[1];
         if (code) codes.push(code);
       });

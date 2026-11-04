@@ -33,10 +33,7 @@ const PREFIX = 'boards/';
 const KEY_PATTERN = /^boards\/([a-z0-9_]+)\/([a-z0-9-]+)\.json$/;
 
 export class S3BoardStore implements BoardStore {
-  constructor(
-    private readonly bucket: string,
-    private readonly s3: Pick<S3Client, 'send'> = new S3Client({}),
-  ) {}
+  constructor(private readonly bucket: string, private readonly s3: Pick<S3Client, 'send'> = new S3Client({})) {}
 
   private key(code: string, id: string) {
     if (!isValidBoardKey(code, id)) throw new Error(`Invalid board ${code}/${id}`);
@@ -75,14 +72,14 @@ export class S3BoardStore implements BoardStore {
       const page: ListObjectsV2CommandOutput = await this.s3.send(
         new ListObjectsV2Command({ Bucket: this.bucket, Prefix: PREFIX, ContinuationToken: token }),
       );
-      (page.Contents ?? []).forEach((object) => object.Key && keys.push(object.Key));
+      (page.Contents ?? []).forEach(object => object.Key && keys.push(object.Key));
       token = page.NextContinuationToken;
     } while (token);
 
     const boards = await Promise.all(
       keys
-        .map((key) => key.match(KEY_PATTERN))
-        .flatMap((match) => (match && isValidBoardKey(match[1], match[2]) ? [this.get(match[1], match[2])] : [])),
+        .map(key => key.match(KEY_PATTERN))
+        .flatMap(match => (match && isValidBoardKey(match[1], match[2]) ? [this.get(match[1], match[2])] : [])),
     );
     return boards.filter((board): board is Board => board !== undefined).map(summaryOf);
   }

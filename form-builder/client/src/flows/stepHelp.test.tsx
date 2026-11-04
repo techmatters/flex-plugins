@@ -29,7 +29,7 @@ afterEach(cleanup);
 
 describe("steps' help for helpline staff", () => {
   test('every kind of step says what it does, and describes its usual ways out', () => {
-    (Object.keys(OBJECT_TYPES) as FlowObjectType[]).forEach((type) => {
+    (Object.keys(OBJECT_TYPES) as FlowObjectType[]).forEach(type => {
       expect(STEP_HELP[type].summary.length).toBeGreaterThan(20);
       // Each way out described is one the step has
       (STEP_HELP[type].paths ?? []).forEach(({ exit }) => expect(OBJECT_TYPES[type].exits ?? []).toContain(exit));
@@ -39,7 +39,7 @@ describe("steps' help for helpline staff", () => {
   test("a step's paths are those on the board: its own, and ones added (a flag, a Decision's answer)", () => {
     expect(
       pathsOf({ type: 'checkClientProfile', exits: ['blocked', 'not blocked', 'failed', 'case management'] }).map(
-        (path) => path.exit,
+        path => path.exit,
       ),
     ).toEqual(['blocked', 'not blocked', 'failed', 'case management']);
     expect(pathsOf({ type: 'decision', exits: ['English', 'noMatch'] })[0].text).toBe(STEP_HELP.decision.otherPath);
@@ -78,7 +78,7 @@ describe("steps' help for helpline staff", () => {
   });
 
   test('every kind of step has more info', () => {
-    (Object.keys(OBJECT_TYPES) as FlowObjectType[]).forEach((type) =>
+    (Object.keys(OBJECT_TYPES) as FlowObjectType[]).forEach(type =>
       expect(STEP_DETAILS[type].details.length).toBeGreaterThan(0),
     );
   });

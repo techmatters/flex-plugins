@@ -32,24 +32,24 @@ const withoutComments = <T extends object>(value: T): T =>
 
 // What the chatbot does, with everything it depends on
 const fingerprint = (design: ChatbotDesign, bot: Chatbot) => {
-  const questions = bot.intents.flatMap((intent) => intent.questions);
+  const questions = bot.intents.flatMap(intent => intent.questions);
   const types: Record<string, AnswerType | undefined> = {};
-  questions.forEach((question) => {
+  questions.forEach(question => {
     types[question.answerType] = design.answerTypes[bot.language]?.[question.answerType];
   });
   const mappings = Object.fromEntries(
-    questions.map((question) => [question.slot, design.formMappings?.[question.slot] ?? null]),
+    questions.map(question => [question.slot, design.formMappings?.[question.slot] ?? null]),
   );
   return JSON.stringify(withoutComments({ bot, types, mappings }));
 };
 
 export const isNewBot = (design: ChatbotDesign, bot: Chatbot) =>
-  !(design.imported?.bots ?? []).some((candidate) => candidate.id === bot.id);
+  !(design.imported?.bots ?? []).some(candidate => candidate.id === bot.id);
 
 // As set, else worked out: unchanged since the import is Imported; anything else In progress
 export const botStatusOf = (design: ChatbotDesign, bot: Chatbot): DesignStatus => {
   if (bot.status) return bot.status;
-  const imported = design.imported?.bots.find((candidate) => candidate.id === bot.id);
+  const imported = design.imported?.bots.find(candidate => candidate.id === bot.id);
   if (!imported) return STATUS_AFTER_CHANGE;
   const importedDesign = { ...design, ...design.imported } as ChatbotDesign;
   return fingerprint(importedDesign, imported) === fingerprint(design, bot) ? 'imported' : STATUS_AFTER_CHANGE;
@@ -61,8 +61,8 @@ export const botStatusOf = (design: ChatbotDesign, bot: Chatbot): DesignStatus =
  */
 export const withStatusUpdates = (before: ChatbotDesign, after: ChatbotDesign): ChatbotDesign => {
   let changed = false;
-  const bots = after.bots.map((bot) => {
-    const previous = before.bots.find((candidate) => candidate.id === bot.id);
+  const bots = after.bots.map(bot => {
+    const previous = before.bots.find(candidate => candidate.id === bot.id);
     if (!previous || botStatusOf(after, bot) === STATUS_AFTER_CHANGE) return bot;
     if (fingerprint(before, previous) === fingerprint(after, bot)) return bot;
     changed = true;
@@ -73,5 +73,5 @@ export const withStatusUpdates = (before: ChatbotDesign, after: ChatbotDesign): 
 
 export const setBotStatus = (design: ChatbotDesign, botId: string, status: DesignStatus): ChatbotDesign => ({
   ...design,
-  bots: design.bots.map((bot) => (bot.id === botId ? { ...bot, status } : bot)),
+  bots: design.bots.map(bot => (bot.id === botId ? { ...bot, status } : bot)),
 });

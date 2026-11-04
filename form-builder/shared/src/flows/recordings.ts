@@ -82,7 +82,7 @@ export const RECORDINGS_URL_VARIABLE = 'recordings_url';
 export const isRecordingsBucketUrl = (value: unknown, baseUrls?: RecordingsList['baseUrls']) =>
   typeof value === 'string' &&
   Boolean(baseUrls) &&
-  Object.values(baseUrls!).some((url) => value.startsWith(new URL(url).origin));
+  Object.values(baseUrls!).some(url => value.startsWith(new URL(url).origin));
 
 // Each flow's recordings folder, for flows sharing a template: the recordings loaded are one
 // variant's folder, and the helpline's folder is above it
@@ -126,10 +126,10 @@ export const playsWaitRecording = (object: Pick<FlowObject, 'type' | 'settings'>
 export const recordingOf = (object: Pick<FlowObject, 'studioName' | 'message'>, recordings: Recording[] = []) => {
   // Imported from a helpline whose files aren't named after their widgets
   const own = object.message?.recordingFile;
-  if (own) return recordings.find((recording) => recording.fileName === own);
+  if (own) return recordings.find(recording => recording.fileName === own);
   return object.studioName
-    ? recordings.find((recording) =>
-        RECORDING_EXTENSIONS.some((extension) => recording.fileName === `${object.studioName}.${extension}`),
+    ? recordings.find(recording =>
+        RECORDING_EXTENSIONS.some(extension => recording.fileName === `${object.studioName}.${extension}`),
       )
     : undefined;
 };

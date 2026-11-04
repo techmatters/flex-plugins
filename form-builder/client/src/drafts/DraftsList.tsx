@@ -33,8 +33,8 @@ import '../common/designStatus.css';
 
 // e.g. ["2 open questions", "1 change needed"]: the flags still open on its forms (formReviews.ts)
 const changesNeededOf = (draft: DraftSummary) => {
-  const open = (draft.meta.threads ?? []).filter((thread) => !thread.resolvedAt);
-  const count = (kind: FlagKind) => open.filter((thread) => thread.kind === kind).length;
+  const open = (draft.meta.threads ?? []).filter(thread => !thread.resolvedAt);
+  const count = (kind: FlagKind) => open.filter(thread => thread.kind === kind).length;
   const parts = [
     [count('question'), 'open question', 'open questions'],
     [count('changes'), 'change needed', 'changes needed'],
@@ -83,9 +83,9 @@ export const DraftsList = () => {
       <h3>{isAseloStaff ? 'Forms' : 'Your forms'}</h3>
       <div className="area-home-filters">
         <HelplineFilter
-          codes={drafts.map((draft) => draft.code)}
+          codes={drafts.map(draft => draft.code)}
           value={helpline}
-          onChange={(code) => dispatch(helplineFilterChanged(code))}
+          onChange={code => dispatch(helplineFilterChanged(code))}
         />
       </div>
       <table className="area-home-table">
@@ -100,8 +100,8 @@ export const DraftsList = () => {
         </thead>
         <tbody>
           {drafts
-            .filter((draft) => !helpline || draft.code === helpline)
-            .map((draft) => (
+            .filter(draft => !helpline || draft.code === helpline)
+            .map(draft => (
               <tr key={keyOf(draft)}>
                 <td className="area-home-name">
                   {draft.code.toUpperCase()} {draft.version}
@@ -118,7 +118,7 @@ export const DraftsList = () => {
                   ) : (
                     <span className="design-status design-status-in-progress">In progress</span>
                   )}
-                  {changesNeededOf(draft).map((text) => (
+                  {changesNeededOf(draft).map(text => (
                     <div key={text} className="drafts-changes-needed">
                       {text}
                     </div>

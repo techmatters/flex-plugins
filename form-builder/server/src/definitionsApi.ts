@@ -24,15 +24,26 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
-import { SERVICE_CONFIG_FILE_NAMES, serviceConfigPath, WEBCHAT_TRANSLATIONS_PREFIX } from '@tech-matters/form-builder-shared';
-import type { HelplineSummary, DefinitionFileError, DefinitionFiles, WebchatSettings } from '@tech-matters/form-builder-shared';
-export type { HelplineSummary, DefinitionFileError, DefinitionFiles, WebchatSettings } from '@tech-matters/form-builder-shared';
+import {
+  SERVICE_CONFIG_FILE_NAMES,
+  serviceConfigPath,
+  WEBCHAT_TRANSLATIONS_PREFIX,
+} from '@tech-matters/form-builder-shared';
+import type {
+  HelplineSummary,
+  DefinitionFileError,
+  DefinitionFiles,
+  WebchatSettings,
+} from '@tech-matters/form-builder-shared';
+export type {
+  HelplineSummary,
+  DefinitionFileError,
+  DefinitionFiles,
+  WebchatSettings,
+} from '@tech-matters/form-builder-shared';
 
 export class DefinitionsApiError extends Error {
-  constructor(
-    message: string,
-    public readonly statusCode: number,
-  ) {
+  constructor(message: string, public readonly statusCode: number) {
     super(message);
   }
 }
@@ -47,27 +58,25 @@ export const listHelplines = async (rootDir: string): Promise<HelplineSummary[]>
   const entries = await fs.readdir(rootDir, { withFileTypes: true });
   const helplines = await Promise.all(
     entries
-      .filter((entry) => entry.isDirectory() && HELPLINE_CODE_PATTERN.test(entry.name))
-      .map(async (entry) => {
+      .filter(entry => entry.isDirectory() && HELPLINE_CODE_PATTERN.test(entry.name))
+      .map(async entry => {
         const versionEntries = await fs.readdir(path.join(rootDir, entry.name), {
           withFileTypes: true,
         });
         const versions = versionEntries
-          .filter((version) => version.isDirectory() && VERSION_PATTERN.test(version.name))
-          .map((version) => version.name)
+          .filter(version => version.isDirectory() && VERSION_PATTERN.test(version.name))
+          .map(version => version.name)
           .sort();
         return { code: entry.name, versions };
       }),
   );
-  return helplines
-    .filter((helpline) => helpline.versions.length > 0)
-    .sort((a, b) => a.code.localeCompare(b.code));
+  return helplines.filter(helpline => helpline.versions.length > 0).sort((a, b) => a.code.localeCompare(b.code));
 };
 
 const listJsonFiles = async (dir: string): Promise<string[]> => {
   const entries = await fs.readdir(dir, { withFileTypes: true });
   const nested = await Promise.all(
-    entries.map(async (entry) => {
+    entries.map(async entry => {
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) return listJsonFiles(fullPath);
       return entry.name.endsWith('.json') ? [fullPath] : [];
@@ -105,17 +114,14 @@ export const readHelplineLanguage = (helplinesConfigDir: string, code: string) =
   readServiceConfigValue(
     helplinesConfigDir,
     code,
-    (config) => config.attributes?.helplineLanguage ?? config.helplineLanguage,
+    config => config.attributes?.helplineLanguage ?? config.helplineLanguage,
   );
 
 /**
  * The helpline's production feature flags, merged the way Terraform merges the service
  * configuration: shared defaults.json, then the helpline's common.json, then production.json.
  */
-export const readFeatureFlags = async (
-  helplinesConfigDir: string,
-  code: string,
-): Promise<Record<string, boolean>> => {
+export const readFeatureFlags = async (helplinesConfigDir: string, code: string): Promise<Record<string, boolean>> => {
   if (!HELPLINE_CODE_PATTERN.test(code)) return {};
   const serviceConfigFiles = [
     path.join(helplinesConfigDir, 'configs', 'service-configuration', 'defaults.json'),
@@ -137,12 +143,10 @@ export const readFeatureFlags = async (
 // The logo in Flex's header (attributes.logo_url). Staging logos are labelled "STAGING", so
 // only production and common settings are used; without one the preview shows a wordmark.
 export const readLogoUrl = (helplinesConfigDir: string, code: string) =>
-  readServiceConfigValue(
-    helplinesConfigDir,
-    code,
-    (config) => config.attributes?.logo_url ?? config.logo_url,
-    ['production.json', 'common.json'],
-  );
+  readServiceConfigValue(helplinesConfigDir, code, config => config.attributes?.logo_url ?? config.logo_url, [
+    'production.json',
+    'common.json',
+  ]);
 
 const readJsonFile = async (filePath: string): Promise<Record<string, any> | undefined> => {
   try {
@@ -165,7 +169,7 @@ export const loadServiceConfigFiles = async (
   if (!HELPLINE_CODE_PATTERN.test(code)) return { files, errors };
   const dir = path.join(helplinesConfigDir, code, 'configs', 'service-configuration');
   await Promise.all(
-    SERVICE_CONFIG_FILE_NAMES.map(async (name) => {
+    SERVICE_CONFIG_FILE_NAMES.map(async name => {
       const text = await fs.readFile(path.join(dir, `${name}.json`), 'utf8').catch(() => undefined);
       if (text === undefined) return;
       const key = serviceConfigPath(name);
@@ -176,7 +180,9 @@ export const loadServiceConfigFiles = async (
       }
     }),
   );
-  const defaults = await readJsonFile(path.join(helplinesConfigDir, 'configs', 'service-configuration', 'defaults.json'));
+  const defaults = await readJsonFile(
+    path.join(helplinesConfigDir, 'configs', 'service-configuration', 'defaults.json'),
+  );
   return { files, errors, defaults };
 };
 
@@ -189,7 +195,9 @@ export const loadServiceConfigFiles = async (
 export const loadWebchatFiles = async (
   webchatConfigDir: string,
   code: string,
-): Promise<{ files: Record<string, unknown>; errors: DefinitionFileError[]; settings: WebchatSettings } | undefined> => {
+): Promise<
+  { files: Record<string, unknown>; errors: DefinitionFileError[]; settings: WebchatSettings } | undefined
+> => {
   if (!HELPLINE_CODE_PATTERN.test(code)) return undefined;
   const helplineDir = path.join(webchatConfigDir, code);
   const common = await readJsonFile(path.join(helplineDir, 'common.json'));
@@ -206,8 +214,8 @@ export const loadWebchatFiles = async (
   const fileNames = await fs.readdir(translationsDir).catch(() => [] as string[]);
   await Promise.all(
     fileNames
-      .filter((fileName) => /^[A-Za-z0-9_-]+\.json$/.test(fileName))
-      .map(async (fileName) => {
+      .filter(fileName => /^[A-Za-z0-9_-]+\.json$/.test(fileName))
+      .map(async fileName => {
         const key = `${WEBCHAT_TRANSLATIONS_PREFIX}${fileName}`;
         const text = await fs.readFile(path.join(translationsDir, fileName), 'utf8');
         try {
@@ -242,7 +250,7 @@ export const loadDefinitionFiles = async (
   const versionDir = path.join(rootDir, code, version);
   const exists = await fs
     .stat(versionDir)
-    .then((stat) => stat.isDirectory())
+    .then(stat => stat.isDirectory())
     .catch(() => false);
   if (!exists) {
     throw new DefinitionsApiError(`No form definitions found for ${code}/${version}`, 404);
@@ -253,7 +261,7 @@ export const loadDefinitionFiles = async (
 
   const filePaths = await listJsonFiles(versionDir);
   await Promise.all(
-    filePaths.map(async (filePath) => {
+    filePaths.map(async filePath => {
       const relativePath = toPosixPath(path.relative(versionDir, filePath));
       const text = await fs.readFile(filePath, 'utf8');
       try {
@@ -265,13 +273,9 @@ export const loadDefinitionFiles = async (
     }),
   );
 
-  const helplineLanguage = helplinesConfigDir
-    ? await readHelplineLanguage(helplinesConfigDir, code)
-    : undefined;
+  const helplineLanguage = helplinesConfigDir ? await readHelplineLanguage(helplinesConfigDir, code) : undefined;
   const logoUrl = helplinesConfigDir ? await readLogoUrl(helplinesConfigDir, code) : undefined;
-  const featureFlags = helplinesConfigDir
-    ? await readFeatureFlags(helplinesConfigDir, code)
-    : undefined;
+  const featureFlags = helplinesConfigDir ? await readFeatureFlags(helplinesConfigDir, code) : undefined;
   const webchat = webchatConfigDir ? await loadWebchatFiles(webchatConfigDir, code) : undefined;
   // The service configuration, as files the draft can change (Aselo staff only)
   const serviceConfig = helplinesConfigDir ? await loadServiceConfigFiles(helplinesConfigDir, code) : undefined;

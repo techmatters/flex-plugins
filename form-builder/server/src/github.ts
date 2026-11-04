@@ -44,10 +44,7 @@ export const createAppJwt = (appId: string, privateKey: string, now = Date.now()
 };
 
 export class GitHubError extends Error {
-  constructor(
-    message: string,
-    public readonly status: number,
-  ) {
+  constructor(message: string, public readonly status: number) {
     super(message);
   }
 }
@@ -95,7 +92,10 @@ export class GitHubClient {
     });
     if (!response.ok) {
       const detail = await response.text().catch(() => '');
-      throw new GitHubError(`GitHub ${method} ${repoPath} failed (${response.status}) ${detail}`.trim(), response.status);
+      throw new GitHubError(
+        `GitHub ${method} ${repoPath} failed (${response.status}) ${detail}`.trim(),
+        response.status,
+      );
     }
     return response;
   }

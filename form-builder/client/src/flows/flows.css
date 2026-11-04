@@ -1976,9 +1976,7 @@ body.flow-resizing {
   color: var(--color-text);
   border: 1px solid var(--color-border);
   border-radius: 12px;
-  box-shadow:
-    0 10px 30px rgba(25, 43, 51, 0.18),
-    0 2px 6px rgba(25, 43, 51, 0.08);
+  box-shadow: 0 10px 30px rgba(25, 43, 51, 0.18), 0 2px 6px rgba(25, 43, 51, 0.08);
   font-size: 13px;
   line-height: 1.45;
   opacity: 0;
@@ -2162,10 +2160,7 @@ body.flow-resizing {
   color: var(--color-accent);
   cursor: pointer;
   opacity: 0.55;
-  transition:
-    opacity 120ms,
-    transform 120ms,
-    box-shadow 120ms;
+  transition: opacity 120ms, transform 120ms, box-shadow 120ms;
 }
 
 .react-flow__node:hover .step-info-button,

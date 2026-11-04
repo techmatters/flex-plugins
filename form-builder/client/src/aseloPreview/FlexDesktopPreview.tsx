@@ -82,10 +82,7 @@ const MIN_FORM_WIDTH = 520;
 
 // The helpline's own welcome message (customStrings/Messages.json), if it has one
 const welcomeMessage = (files: DefinitionFileMap, language: string) => {
-  const messages = (files['customStrings/Messages.json'] ?? {}) as Record<
-    string,
-    Record<string, string>
-  >;
+  const messages = (files['customStrings/Messages.json'] ?? {}) as Record<string, Record<string, string>>;
   const [baseLanguage] = language.split('-');
   return (messages[baseLanguage] ?? messages.en)?.WelcomeMsg;
 };
@@ -107,9 +104,7 @@ const ChatCanvas = ({
   const draftMessage = useAppSelector(selectPreview).message;
   const messages: { from: 'contact' | 'counselor'; author: string; text: string; time: string }[] = [
     { from: 'contact', author: 'Anonymous', text: 'Hi, I would like to talk to someone.', time: '10:02 AM' },
-    ...(welcome
-      ? [{ from: 'counselor' as const, author: 'Aselo', text: welcome, time: '10:03 AM' }]
-      : []),
+    ...(welcome ? [{ from: 'counselor' as const, author: 'Aselo', text: welcome, time: '10:03 AM' }] : []),
     {
       from: 'counselor',
       author: 'You',
@@ -149,7 +144,7 @@ const ChatCanvas = ({
               className="aselo-select aselo-select-full"
               aria-label={translate(strings, 'CannedResponses')}
               value=""
-              onChange={(e) => dispatch(cannedResponseChosen(e.target.value))}
+              onChange={e => dispatch(cannedResponseChosen(e.target.value))}
             >
               <option value="" disabled>
                 {translate(strings, 'CannedResponses')}
@@ -200,7 +195,7 @@ const ContactsWaiting = ({ channel, queueName }: { channel: Channel; queueName: 
   <aside className="flex-queues" aria-label="Contacts waiting (sample)">
     <h2 className="flex-queues-title">Contacts waiting</h2>
     <div className="flex-queues-list">
-      {[queueName].map((queue) => (
+      {[queueName].map(queue => (
         <div key={queue} className="flex-queue">
           <p className="flex-queue-name">{queue}</p>
           <div className="flex-channel-boxes">
@@ -230,7 +225,7 @@ const ContactsWaiting = ({ channel, queueName }: { channel: Channel; queueName: 
       </span>
     </div>
     <h2 className="flex-queues-title">Add...</h2>
-    {['Another Task', 'Offline Contact Record'].map((label) => (
+    {['Another Task', 'Offline Contact Record'].map(label => (
       <div key={label} className="flex-task disabled">
         <span className="flex-task-icon">
           <AddIcon size={22} />
@@ -270,10 +265,7 @@ export const FlexDesktopPreview = () => {
     if (!area) return;
     const move = (moveEvent: PointerEvent) => {
       const { left, width } = area.getBoundingClientRect();
-      const taskWidth = Math.min(
-        Math.max(moveEvent.clientX - left, MIN_TASK_WIDTH),
-        width - MIN_FORM_WIDTH,
-      );
+      const taskWidth = Math.min(Math.max(moveEvent.clientX - left, MIN_TASK_WIDTH), width - MIN_FORM_WIDTH);
       setTaskShare(taskWidth / width);
     };
     const stop = () => {
@@ -291,20 +283,18 @@ export const FlexDesktopPreview = () => {
     <div className="flex-preview-overlay" role="dialog" aria-modal="true" aria-label="Try it out in Aselo">
       <div className="flex-preview-bar">
         <strong>Try it out</strong>
-        <span className="flex-preview-note">
-          The form on the right is your draft. Everything else is a sample.
-        </span>
+        <span className="flex-preview-note">The form on the right is your draft. Everything else is a sample.</span>
         <label>
           Task
-          <select value={channel} onChange={(e) => dispatch(channelChanged(e.target.value as Channel))}>
+          <select value={channel} onChange={e => dispatch(channelChanged(e.target.value as Channel))}>
             <option value="chat">Chat</option>
             <option value="call">Call</option>
           </select>
         </label>
         <label>
           Language
-          <select value={language} onChange={(e) => dispatch(languageChanged(e.target.value))}>
-            {[...new Set([language, ...AVAILABLE_LANGUAGES])].map((code) => (
+          <select value={language} onChange={e => dispatch(languageChanged(e.target.value))}>
+            {[...new Set([language, ...AVAILABLE_LANGUAGES])].map(code => (
               <option key={code} value={code}>
                 {code}
                 {code === definitions.helplineLanguage ? ' (this helpline)' : ''}
@@ -314,15 +304,13 @@ export const FlexDesktopPreview = () => {
         </label>
         {focus === 'cannedResponses' && !cannedResponsesEnabled && (
           <span className="flex-preview-invalid">
-            Canned responses are switched off for this helpline (enable_canned_responses), so
-            counselors don't see them yet.
+            Canned responses are switched off for this helpline (enable_canned_responses), so counselors don't see them
+            yet.
           </span>
         )}
         {saveResult === 'saved' && <span className="flex-preview-ok">Aselo would save this contact.</span>}
         {saveResult === 'invalid' && (
-          <span className="flex-preview-invalid">
-            Aselo wouldn't save it yet: check the tabs marked in red.
-          </span>
+          <span className="flex-preview-invalid">Aselo wouldn't save it yet: check the tabs marked in red.</span>
         )}
         <button type="button" className="flex-preview-close" onClick={onClose}>
           Back to editing
@@ -357,11 +345,7 @@ export const FlexDesktopPreview = () => {
         <div className="flex-main">
           <nav className="flex-sidenav" aria-label="Side bar (sample)">
             {SIDE_NAV.map(({ label, Icon, active }) => (
-              <span
-                key={label}
-                className={active ? 'flex-sidenav-link active' : 'flex-sidenav-link'}
-                title={label}
-              >
+              <span key={label} className={active ? 'flex-sidenav-link active' : 'flex-sidenav-link'} title={label}>
                 <Icon />
               </span>
             ))}

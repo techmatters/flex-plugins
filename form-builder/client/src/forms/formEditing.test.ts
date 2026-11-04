@@ -111,10 +111,7 @@ describe('getAllowedTypeSwitches', () => {
 
   test('existing fields only allow the safe short/long text switch for helpline staff', () => {
     expect(getAllowedTypeSwitches(select, { isNew: false, staffMode: false })).toEqual(['select']);
-    expect(getAllowedTypeSwitches(input, { isNew: false, staffMode: false })).toEqual([
-      'input',
-      'textarea',
-    ]);
+    expect(getAllowedTypeSwitches(input, { isNew: false, staffMode: false })).toEqual(['input', 'textarea']);
   });
 
   test('new fields and staff can switch within the group', () => {
@@ -122,16 +119,23 @@ describe('getAllowedTypeSwitches', () => {
       'select',
       'listbox-multiselect',
     ]);
-    expect(getAllowedTypeSwitches(select, { isNew: false, staffMode: true })).toContain(
-      'listbox-multiselect',
-    );
+    expect(getAllowedTypeSwitches(select, { isNew: false, staffMode: true })).toContain('listbox-multiselect');
   });
 });
 
 describe('the blank first answer', () => {
   const firstOption = (item: FormItemJsonDefinition) => (item as unknown as { options: SelectOption[] }).options[0];
   const select = (value: string, extra = {}) =>
-    field({ name: 'x', label: 'X', type: 'select', options: [{ value, label: '' }, { value: 'A', label: 'A' }], ...extra });
+    field({
+      name: 'x',
+      label: 'X',
+      type: 'select',
+      options: [
+        { value, label: '' },
+        { value: 'A', label: 'A' },
+      ],
+      ...extra,
+    });
 
   test('is "" for required dropdowns and Unknown for the rest', () => {
     expect(blankOptionValueFor(true)).toBe('');
@@ -163,7 +167,13 @@ describe('the blank first answer', () => {
   });
 
   test('switching a required list to a dropdown adds a blank answer saved as ""', () => {
-    const list = field({ name: 'x', label: 'X', type: 'listbox-multiselect', options: [{ value: 'A', label: 'A' }], required: { value: true, message: 'RequiredFieldError' } });
+    const list = field({
+      name: 'x',
+      label: 'X',
+      type: 'listbox-multiselect',
+      options: [{ value: 'A', label: 'A' }],
+      required: { value: true, message: 'RequiredFieldError' },
+    });
     const dropdown = changeFieldType(list, 'select');
     expect(firstOption(dropdown)).toEqual({ value: '', label: '' });
   });

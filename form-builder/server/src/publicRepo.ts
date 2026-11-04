@@ -30,7 +30,7 @@ export const readBranchHeads = async (
   const response = await fetchImpl(url, { headers: { 'User-Agent': 'aselo-form-builder' } });
   if (!response.ok) throw new Error(`Could not read ${ownerAndRepo} from GitHub (${response.status})`);
   const heads = new Map<string, string>();
-  (await response.text()).split('\n').forEach((line) => {
+  (await response.text()).split('\n').forEach(line => {
     const match = line.match(/([0-9a-f]{40}) refs\/heads\/(\S+?)(\0|$)/);
     if (match) heads.set(match[2], match[1]);
   });

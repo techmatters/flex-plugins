@@ -64,19 +64,13 @@ export const MessagesEditor = () => {
   }, [dispatch, editorRevision]);
 
   const otherChatKeys = Object.keys(chatMessages[language] ?? {}).filter(
-    (key) => !CHAT_MESSAGES.some((info) => info.key === key),
+    key => !CHAT_MESSAGES.some(info => info.key === key),
   );
   const otherSurveyKeys = Object.keys(surveyMessages[surveyLanguage] ?? {}).filter(
-    (key) => !POST_SURVEY_MESSAGES.some((info) => info.key === key),
+    key => !POST_SURVEY_MESSAGES.some(info => info.key === key),
   );
 
-  const messageCard = (
-    key: string,
-    title: string,
-    when: string,
-    value: string,
-    onChange: (text: string) => void,
-  ) => (
+  const messageCard = (key: string, title: string, when: string, value: string, onChange: (text: string) => void) => (
     <div key={key} className="message-card">
       <span className="field-label">{title}</span>
       <span className="field-hint">{when}</span>
@@ -85,7 +79,7 @@ export const MessagesEditor = () => {
         value={value}
         aria-label={title}
         placeholder={DEFAULT_MESSAGES[key] ? `Default: ${DEFAULT_MESSAGES[key]}` : ''}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={e => onChange(e.target.value)}
       />
       {DEFAULT_MESSAGES[key] && !value && (
         <span className="field-hint">Empty, so Aselo's default (shown above) is sent.</span>
@@ -113,7 +107,7 @@ export const MessagesEditor = () => {
           <p className="muted">Messages Aselo sends to the contact by itself, in each language.</p>
 
           <div className="language-tabs" role="tablist" aria-label="Language">
-            {languages.map((languageCode) => (
+            {languages.map(languageCode => (
               <button
                 key={languageCode}
                 type="button"
@@ -127,7 +121,7 @@ export const MessagesEditor = () => {
             ))}
             <form
               className="language-add"
-              onSubmit={(e) => {
+              onSubmit={e => {
                 e.preventDefault();
                 dispatch(addLanguage());
               }}
@@ -137,39 +131,37 @@ export const MessagesEditor = () => {
                 value={newLanguage}
                 placeholder="Add a language (e.g. es)"
                 aria-label="Language code to add"
-                onChange={(e) => dispatch(newLanguageChanged(e.target.value))}
+                onChange={e => dispatch(newLanguageChanged(e.target.value))}
               />
             </form>
           </div>
 
           <h3 className="section-heading">During the chat</h3>
-          {CHAT_MESSAGES.map((info) =>
-            messageCard(info.key, info.title, info.when, chatMessages[language]?.[info.key] ?? '', (text) =>
+          {CHAT_MESSAGES.map(info =>
+            messageCard(info.key, info.title, info.when, chatMessages[language]?.[info.key] ?? '', text =>
               dispatch(setChatMessage(info.key, text)),
             ),
           )}
-          {otherChatKeys.map((key) =>
-            messageCard(key, key, 'A message specific to this helpline.', chatMessages[language]?.[key] ?? '', (text) =>
+          {otherChatKeys.map(key =>
+            messageCard(key, key, 'A message specific to this helpline.', chatMessages[language]?.[key] ?? '', text =>
               dispatch(setChatMessage(key, text)),
             ),
           )}
 
           <h3 className="section-heading">Post-chat survey</h3>
           {surveyIsFlat && (
-            <p className="field-hint">
-              This helpline uses the same survey messages for every language.
-            </p>
+            <p className="field-hint">This helpline uses the same survey messages for every language.</p>
           )}
-          {POST_SURVEY_MESSAGES.map((info) =>
+          {POST_SURVEY_MESSAGES.map(info =>
             messageCard(
               `survey-${info.key}`,
               info.title,
               info.when,
               surveyMessages[surveyLanguage]?.[info.key] ?? '',
-              (text) => dispatch(setSurveyMessage(info.key, text)),
+              text => dispatch(setSurveyMessage(info.key, text)),
             ),
           )}
-          {otherSurveyKeys.map((key) =>
+          {otherSurveyKeys.map(key =>
             messageCard(
               `survey-${key}`,
               key,
@@ -177,7 +169,7 @@ export const MessagesEditor = () => {
                 ? 'This looks like a misspelling of postSurveyCompleteMessage, so it may never be used.'
                 : 'A survey message specific to this helpline.',
               surveyMessages[surveyLanguage]?.[key] ?? '',
-              (text) => dispatch(setSurveyMessage(key, text)),
+              text => dispatch(setSurveyMessage(key, text)),
             ),
           )}
         </section>
@@ -191,12 +183,19 @@ export const MessagesEditor = () => {
           <div className="flex-messages">
             {previewTimeline.map((entry, index) => {
               const text = entry.key
-                ? shown(entry.key, entry.survey ? surveyMessages : chatMessages, entry.survey ? surveyLanguage : language)
+                ? shown(
+                    entry.key,
+                    entry.survey ? surveyMessages : chatMessages,
+                    entry.survey ? surveyLanguage : language,
+                  )
                 : entry.text;
               if (!text) return null;
               const isContact = entry.from === 'contact';
               return (
-                <div key={index} className={`flex-message ${isContact ? 'flex-message-contact' : 'flex-message-counselor'}`}>
+                <div
+                  key={index}
+                  className={`flex-message ${isContact ? 'flex-message-contact' : 'flex-message-counselor'}`}
+                >
                   <div className="flex-message-meta">
                     <strong>{isContact ? 'Contact' : entry.from === 'helpline' ? helplineName : 'Counselor'}</strong>
                   </div>

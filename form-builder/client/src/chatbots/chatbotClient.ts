@@ -23,11 +23,17 @@ import type { Send } from '../drafts/draftClient';
 import type { ChatbotImport } from '@tech-matters/form-builder-shared';
 import type { BranchChoice, FromBranch } from '@tech-matters/form-builder-shared';
 import type { DefinitionFiles, HelplineSummary } from '@tech-matters/form-builder-shared';
-import type { ChatbotDesign, ChatbotMeta, ChatbotsSummary, StoredChatbots } from '@tech-matters/form-builder-shared/chatbots/model';
+import type {
+  ChatbotDesign,
+  ChatbotMeta,
+  ChatbotsSummary,
+  StoredChatbots,
+} from '@tech-matters/form-builder-shared/chatbots/model';
 import { ContactForms, contactFormsOf } from '@tech-matters/form-builder-shared/chatbots/formMappings';
 
 export type ChatbotSaveOutcome =
-  { ok: true; meta: ChatbotMeta } | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
+  | { ok: true; meta: ChatbotMeta }
+  | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
 
 export type ChatbotClient = {
   list(): Promise<ChatbotsSummary[]>;
@@ -70,7 +76,7 @@ export const chatbotClientFor = (send: Send): ChatbotClient => {
     branches: () => expectOk('GET', '/api/branches'),
     async contactForms(code, version) {
       const helplines = (await expectOk('GET', '/api/helplines')) as HelplineSummary[];
-      const versions = helplines.find((helpline) => helpline.code === code)?.versions ?? [];
+      const versions = helplines.find(helpline => helpline.code === code)?.versions ?? [];
       const chosen = version && versions.includes(version) ? version : versions[versions.length - 1];
       if (!chosen) return undefined;
       const definitions = (await expectOk('GET', `/api/definitions/${code}/${chosen}`)) as DefinitionFiles;

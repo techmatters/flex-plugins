@@ -22,7 +22,7 @@ const memoryStore = (): HelpQuestionStore & { months: Map<string, HelpQuestion[]
   const months = new Map<string, HelpQuestion[]>();
   return {
     months,
-    get: async (month) => months.get(month) ?? [],
+    get: async month => months.get(month) ?? [],
     put: async (month, questions) => {
       months.set(month, questions);
     },
@@ -34,7 +34,7 @@ const aseloStaff: ApiUser = { name: 'Alejandro', role: 'aselo-staff', helplines:
 
 describe('questions sent from the help panel', () => {
   const contextWith = (store: HelpQuestionStore, at: string) =>
-    ({ helpQuestions: store, now: () => new Date(at) }) as unknown as ApiContext;
+    ({ helpQuestions: store, now: () => new Date(at) } as unknown as ApiContext);
 
   test('anyone sends one; only Aselo staff read them, newest first, from the last three months', async () => {
     const store = memoryStore();
@@ -69,7 +69,7 @@ describe('questions sent from the help panel', () => {
     expect((await list(helplineStaff)).status).toBe(403);
     const { status, body } = await list(aseloStaff);
     expect(status).toBe(200);
-    expect((body as HelpQuestion[]).map((question) => question.question)).toEqual([
+    expect((body as HelpQuestion[]).map(question => question.question)).toEqual([
       'still lost',
       'how do I add a logo',
       'old one',

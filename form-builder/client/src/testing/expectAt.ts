@@ -41,5 +41,4 @@ const withLabel = <T extends object>(target: T, label: string): T =>
     },
   });
 
-export const expectAt = <T>(label: string, value: T): ReturnType<typeof expect<T>> =>
-  withLabel(expect(value), label);
+export const expectAt = <T>(label: string, value: T): ReturnType<typeof expect<T>> => withLabel(expect(value), label);

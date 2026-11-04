@@ -42,17 +42,17 @@ let usch: HelplineImport;
 let welcome: BoardContent;
 beforeAll(async () => {
   usch = await importHelpline(helplinesDir, 'usch');
-  welcome = usch.boards.find(({ content }) => content.objects.some((object) => object.studioName === WIDGET))!.content;
+  welcome = usch.boards.find(({ content }) => content.objects.some(object => object.studioName === WIDGET))!.content;
 });
 
 describe('recordings with older names', () => {
   test('the import keeps the name it plays, says who plays it, and the check flags it', () => {
-    const object = welcome.objects.find((candidate) => candidate.studioName === WIDGET)!;
+    const object = welcome.objects.find(candidate => candidate.studioName === WIDGET)!;
     expect(object.message?.recordingFile).toBe(OLD);
     expect(hasNonStandardRecording(object)).toBe(true);
     expect(standardRecordingName(WIDGET, OLD)).toBe(`${WIDGET}.mp3`);
-    expect(usch.recordings.find((recording) => recording.fileName === OLD)?.widgets).toEqual([WIDGET]);
-    expect(boardChecks(welcome).map((issue) => issue.message)).toContain(
+    expect(usch.recordings.find(recording => recording.fileName === OLD)?.widgets).toEqual([WIDGET]);
+    expect(boardChecks(welcome).map(issue => issue.message)).toContain(
       `“${object.text}” plays ${OLD}, not a file named after it (${WIDGET}).`,
     );
   });
@@ -60,12 +60,12 @@ describe('recordings with older names', () => {
   test('given its standard name on the board, the widget plays that file; otherwise it is as live', () => {
     const [unchanged] = toStudioFlows(welcome);
     const playOf = (generated: typeof unchanged) =>
-      String(generated.flow.states.find((state) => state.name === WIDGET)?.properties.play);
+      String(generated.flow.states.find(state => state.name === WIDGET)?.properties.play);
     expect(playOf(unchanged)).toMatch(new RegExp(`/${OLD}$`));
 
     const renamed = {
       ...welcome,
-      objects: welcome.objects.map((object) => {
+      objects: welcome.objects.map(object => {
         if (object.studioName !== WIDGET) return object;
         const { recordingFile, ...message } = object.message!;
         return { ...object, message };
@@ -92,20 +92,20 @@ describe('recordings with older names', () => {
     const SCRIPT = 'If this is a life-threatening emergency, hang up and call 911. For Spanish, press 1.';
     const recordingsOf = (files: string[]): RecordingsList => ({
       baseUrls: BUCKET,
-      recordings: files.map((fileName) => ({
+      recordings: files.map(fileName => ({
         fileName,
         staging: { etag: 'e', size: 1, lastModified: 'now', url: `${BUCKET.staging}/${fileName}` },
       })),
     });
-    const RECORDED = Object.values(RENAMED).map((name) => `${name}.mp3`);
+    const RECORDED = Object.values(RENAMED).map(name => `${name}.mp3`);
     // The widgets renamed (their recordings given the new names, as the builder copies them), and a
     // new menu with a script and no recording
     const designed = (): BoardContent => {
-      const frameId = welcome.objects.find((object) => object.studioName === WIDGET)!.frameId;
+      const frameId = welcome.objects.find(object => object.studioName === WIDGET)!.frameId;
       return {
         ...welcome,
         objects: [
-          ...welcome.objects.map((object) => {
+          ...welcome.objects.map(object => {
             const name = object.studioName && RENAMED[object.studioName];
             if (!name) return object;
             const { recordingFile: _old, ...message } = object.message!;
@@ -127,22 +127,22 @@ describe('recordings with older names', () => {
       };
     };
     const stateOf = (generated: ReturnType<typeof toStudioFlows>[number], name: string) =>
-      generated.flow.states.find((state) => state.name === name)!;
+      generated.flow.states.find(state => state.name === name)!;
 
     test('the renamed ones play from ${flow_vars.recordings_url}, set for both environments', () => {
       const [generated] = toStudioFlows(designed(), recordingsOf(RECORDED));
-      Object.values(RENAMED).forEach((name) =>
+      Object.values(RENAMED).forEach(name =>
         expect(stateOf(generated, name).properties.play).toBe(`\${flow_vars.recordings_url}/${name}.mp3`),
       );
-      expect(generated.flowVars.filter((variable) => variable.name === 'recordings_url')).toEqual([
+      expect(generated.flowVars.filter(variable => variable.name === 'recordings_url')).toEqual([
         expect.objectContaining({ value: BUCKET.staging, values: BUCKET, environmentSpecific: true }),
       ]);
       expect(generated.todo.join('\n')).not.toMatch(/Serverless|recordings_url/);
       // Hold music is a Twilio Function: as live
       const [live] = toStudioFlows(welcome);
       generated.flow.states
-        .filter((state) => state.type === 'send-to-flex')
-        .forEach((state) => expect(state.properties.waitUrl).toBe(stateOf(live, state.name).properties.waitUrl));
+        .filter(state => state.type === 'send-to-flex')
+        .forEach(state => expect(state.properties.waitUrl).toBe(stateOf(live, state.name).properties.waitUrl));
       // Recordings nobody changed still play from where they do live
       expect(String(stateOf(generated, 'gather_input_childhelp_voice_spanish_option').properties.play)).toMatch(
         /^\$\{flow_vars\.serverless_usch_functions_url\}\//,
@@ -164,17 +164,17 @@ describe('recordings with older names', () => {
       const [recorded] = toStudioFlows(designed(), recordingsOf([...RECORDED, `${MENU}.mp3`]));
       expect(stateOf(recorded, MENU).properties).toMatchObject({ play: `\${flow_vars.recordings_url}/${MENU}.mp3` });
       expect(stateOf(recorded, MENU).properties).not.toHaveProperty('say');
-      expect(recorded.flowVars.map((variable) => variable.name)).not.toContain(MENU);
+      expect(recorded.flowVars.map(variable => variable.name)).not.toContain(MENU);
 
       // A renamed live one whose recording isn't uploaded yet, with a script: said too (in Spanish)
       const spanish = 'play_message_voice_es_childhelp_no_spanish_counselor_prequeue';
       const scripted = designed();
-      scripted.objects = scripted.objects.map((object) =>
+      scripted.objects = scripted.objects.map(object =>
         object.studioName === spanish
           ? { ...object, message: { ...object.message, script: 'No hay consejero.' } }
           : object,
       );
-      const [said] = toStudioFlows(scripted, recordingsOf(RECORDED.filter((file) => !file.startsWith(spanish))));
+      const [said] = toStudioFlows(scripted, recordingsOf(RECORDED.filter(file => !file.startsWith(spanish))));
       expect(stateOf(said, spanish).properties).toMatchObject({
         say: `\${flow_vars.${spanish}}`,
         language: 'es-MX',
@@ -205,7 +205,7 @@ describe('recordings with older names', () => {
     const copied = await call(staff, 'POST', `/api/recordings/usch/files/${OLD}/copy`, { to: `${WIDGET}.mp3` });
     expect(copied.status).toBe(200);
     const list = copied.body as { recordings: { fileName: string; renamedFrom?: string; uploadedBy?: string }[] };
-    expect(list.recordings.map((recording) => recording.fileName)).toEqual([OLD, `${WIDGET}.mp3`]);
+    expect(list.recordings.map(recording => recording.fileName)).toEqual([OLD, `${WIDGET}.mp3`]);
     expect(list.recordings[1]).toMatchObject({ renamedFrom: OLD, uploadedBy: 'Aselo person' });
     expect(files.files.get(`usch/staging/${WIDGET}.mp3`)?.content).toBe('welcome audio');
     // Nothing in production to copy there

@@ -51,8 +51,8 @@ const SYNONYMS: string[][] = [
 ];
 
 const synonymsOf = new Map<string, string[]>();
-SYNONYMS.forEach((group) =>
-  group.forEach((word) => synonymsOf.set(word, [...new Set([...(synonymsOf.get(word) ?? []), ...group])])),
+SYNONYMS.forEach(group =>
+  group.forEach(word => synonymsOf.set(word, [...new Set([...(synonymsOf.get(word) ?? []), ...group])])),
 );
 
 // Words that say nothing about what's asked
@@ -69,7 +69,7 @@ const tokenize = (text: string) =>
       .toLowerCase()
       .replace(/['’]\w+/g, '')
       .match(/[a-z0-9áéíóúñü]+/g) ?? []
-  ).filter((word) => word.length > 1);
+  ).filter(word => word.length > 1);
 
 type Indexed = HelpArticle & { questionsText: string; keywordsText: string };
 
@@ -78,7 +78,7 @@ const buildIndex = (articles: HelpArticle[]) => {
     idField: 'slug',
     fields: ['title', 'questionsText', 'keywordsText', 'body'],
     storeFields: ['slug'],
-    processTerm: (term) => (STOP_WORDS.has(term) ? null : term.toLowerCase()),
+    processTerm: term => (STOP_WORDS.has(term) ? null : term.toLowerCase()),
     searchOptions: {
       boost: { title: 3, questionsText: 3, keywordsText: 2, body: 1 },
       fuzzy: 0.2,
@@ -87,7 +87,7 @@ const buildIndex = (articles: HelpArticle[]) => {
     },
   });
   index.addAll(
-    articles.map((article) => ({
+    articles.map(article => ({
       ...article,
       questionsText: article.questions.join(' . '),
       keywordsText: article.keywords.join(' '),
@@ -110,33 +110,33 @@ export const searchHelp = (
   query: string,
   { area, isAseloStaff, articles }: { area: HelpArea; isAseloStaff: boolean; articles?: HelpArticle[] },
 ): { results: HelpResult[]; confident: boolean } => {
-  const words = tokenize(query).filter((word) => !STOP_WORDS.has(word));
+  const words = tokenize(query).filter(word => !STOP_WORDS.has(word));
   if (words.length === 0) return { results: [], confident: false };
   const pool = articles ?? HELP_ARTICLES;
   const index = articles ? buildIndex(articles) : (defaultIndex ??= buildIndex(pool));
-  const bySlug = new Map(pool.map((article) => [article.slug, article]));
+  const bySlug = new Map(pool.map(article => [article.slug, article]));
   // Each word, or any of its synonyms (the word itself counts most)
   const asked = new Set(words);
-  const perWord: Query[] = words.map((word) => ({
+  const perWord: Query[] = words.map(word => ({
     combineWith: 'OR',
-    queries: [word, ...(synonymsOf.get(word) ?? []).filter((synonym) => synonym !== word)],
+    queries: [word, ...(synonymsOf.get(word) ?? []).filter(synonym => synonym !== word)],
   }));
   const run = (combineWith: 'AND' | 'OR') =>
     index.search(
       { combineWith, queries: perWord },
       {
         // The area the person is in counts triple; sections (what a screen is for) a bit less than how-tos
-        boostDocument: (slug) => {
+        boostDocument: slug => {
           const article = bySlug.get(String(slug));
           return (article?.area === area ? 3 : 1) * (article?.kind === 'section' ? 0.7 : 1);
         },
         // The words asked count more than their synonyms
-        boostTerm: (term) => (asked.has(term) ? 1 : 0.4),
+        boostTerm: term => (asked.has(term) ? 1 : 0.4),
       },
     );
   // Every word matching first; otherwise the best partial matches
   const strict = run('AND');
-  const results = (strict.length > 0 ? strict : run('OR')).filter((result) => {
+  const results = (strict.length > 0 ? strict : run('OR')).filter(result => {
     const article = bySlug.get(String(result.id));
     return article && visibleTo(article, isAseloStaff);
   });
@@ -144,14 +144,14 @@ export const searchHelp = (
   // How many of the words asked (or their synonyms) the best one has: in a longer question, most is enough
   const matched = best
     ? words.filter((word, index) =>
-        (perWord[index] as { queries: string[] }).queries.some((term) => best.queryTerms.includes(term)),
+        (perWord[index] as { queries: string[] }).queries.some(term => best.queryTerms.includes(term)),
       ).length
     : 0;
   return {
     results: results
-      .filter((result) => result.score >= best.score * 0.25)
+      .filter(result => result.score >= best.score * 0.25)
       .slice(0, 5)
-      .map((result) => ({ article: bySlug.get(String(result.id))!, score: result.score })),
+      .map(result => ({ article: bySlug.get(String(result.id))!, score: result.score })),
     confident: Boolean(best) && (strict.length > 0 || (words.length >= 3 && matched / words.length >= 0.75)),
   };
 };

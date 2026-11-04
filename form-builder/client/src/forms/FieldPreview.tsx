@@ -75,11 +75,7 @@ export const FieldPreview = ({ item, referenceData, value, dependeeValue, onChan
       return (
         <label className="field">
           <Label item={item} />
-          <input
-            type={inputType}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-          />
+          <input type={inputType} value={value} onChange={e => onChange(e.target.value)} />
         </label>
       );
     }
@@ -91,7 +87,7 @@ export const FieldPreview = ({ item, referenceData, value, dependeeValue, onChan
           <textarea
             rows={'rows' in item && item.rows ? item.rows : 4}
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={e => onChange(e.target.value)}
           />
         </label>
       );
@@ -101,7 +97,7 @@ export const FieldPreview = ({ item, referenceData, value, dependeeValue, onChan
       return (
         <label className="field">
           <Label item={item} />
-          <select value={value} onChange={(e) => onChange(e.target.value)}>
+          <select value={value} onChange={e => onChange(e.target.value)}>
             <SelectOptions options={options} />
           </select>
         </label>
@@ -114,11 +110,7 @@ export const FieldPreview = ({ item, referenceData, value, dependeeValue, onChan
       return (
         <label className="field">
           <Label item={item} />
-          <select
-            value={value}
-            disabled={options.length === 0}
-            onChange={(e) => onChange(e.target.value)}
-          >
+          <select value={value} disabled={options.length === 0} onChange={e => onChange(e.target.value)}>
             {item.defaultOption && <SelectOptions options={[item.defaultOption]} />}
             <SelectOptions options={options} />
           </select>
@@ -167,9 +159,7 @@ export const FieldPreview = ({ item, referenceData, value, dependeeValue, onChan
         <label className="field field-checkbox">
           <input type="checkbox" defaultChecked={item.initialChecked === true} />
           <Label item={item} />
-          {item.type === 'copy-to' && (
-            <span className="field-hint">Copies values from “{item.target}”</span>
-          )}
+          {item.type === 'copy-to' && <span className="field-hint">Copies values from “{item.target}”</span>}
         </label>
       );
 
@@ -200,9 +190,7 @@ export const FieldPreview = ({ item, referenceData, value, dependeeValue, onChan
       return (
         <div className="field">
           <Label item={item} />
-          <div className="custom-component">
-            Unsupported field type: {(item as { type: string }).type}
-          </div>
+          <div className="custom-component">Unsupported field type: {(item as { type: string }).type}</div>
         </div>
       );
   }

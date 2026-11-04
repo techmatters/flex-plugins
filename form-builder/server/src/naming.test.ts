@@ -152,7 +152,7 @@ describe('names by parts', () => {
         }),
       ],
     };
-    expect(boardChecks(content).map((issue) => issue.message)).toContainEqual(
+    expect(boardChecks(content).map(issue => issue.message)).toContainEqual(
       expect.stringContaining('the standard is play_message_voice_en_childhelp_welcome'),
     );
   });

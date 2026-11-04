@@ -122,7 +122,7 @@ const sendJson = (res: ServerResponse, statusCode: number, body: unknown) => {
 const readBody = (req: IncomingMessage): Promise<unknown> =>
   new Promise((resolve, reject) => {
     let text = '';
-    req.on('data', (chunk) => {
+    req.on('data', chunk => {
       text += chunk;
     });
     req.on('end', () => {

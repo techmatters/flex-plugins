@@ -92,7 +92,7 @@ const previewSlice = createSlice({
     tabSelected: (state, action: PayloadAction<number>) => {
       state.tabIndex = action.payload;
     },
-    backToCallTypes: (state) => {
+    backToCallTypes: state => {
       state.screen = 'callTypes';
     },
     dataCallTypeChosen: (state, action: PayloadAction<CallType>) => {
@@ -102,7 +102,7 @@ const previewSlice = createSlice({
       state.saveResult = undefined;
     },
     // A call type that closes the contact without a form (e.g. a silent or joke contact)
-    nonDataCallTypeChosen: (state) => {
+    nonDataCallTypeChosen: state => {
       state.saveResult = 'saved';
     },
     answersChanged: (state, action: PayloadAction<{ tabKey: ContactTabKey; values: FormValues }>) => {
@@ -118,12 +118,12 @@ const previewSlice = createSlice({
       state.saveResult = action.payload;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     // Each preview starts afresh
     builder.addCase(tryItOutOpened, () => initialState).addCase(tryItOutClosed, () => initialState);
   },
   selectors: {
-    selectPreview: (state) => state,
+    selectPreview: state => state,
   },
 });
 
@@ -148,12 +148,12 @@ const categoriesForDefaultHelpline = (files: DefinitionFileMap): CategoriesDefin
   const byHelpline = getCategoriesByHelpline(files);
   const info = files['HelplineInformation.json'] as { helplines?: { value: string; default?: boolean }[] } | undefined;
   const helplines = info?.helplines ?? [];
-  const defaultHelpline = (helplines.find((h) => h.default) ?? helplines[0])?.value;
+  const defaultHelpline = (helplines.find(h => h.default) ?? helplines[0])?.value;
   return (defaultHelpline && byHelpline[defaultHelpline]) || Object.values(byHelpline)[0];
 };
 
 const formsOf = (files: DefinitionFileMap) =>
-  Object.fromEntries(CONTACT_TABS.map((tab) => [tab.key, getForm(files, tab.filePath) ?? []])) as Record<
+  Object.fromEntries(CONTACT_TABS.map(tab => [tab.key, getForm(files, tab.filePath) ?? []])) as Record<
     ContactTabKey,
     FormItemJsonDefinition[]
   >;
@@ -178,11 +178,11 @@ export const selectContactPanel = createSelector([selectPreview, selectDraftFile
   const maxSelections = categories?.maxSelections ?? DEFAULT_MAXIMUM_SELECTIONS;
   const tabs = tabsFor(preview.callType);
   const errorsByTab = Object.fromEntries(
-    contactTabsIn(tabs).map((tabKey) => [
+    contactTabsIn(tabs).map(tabKey => [
       tabKey,
       preview.submitted
         ? Object.fromEntries(
-            forms[tabKey].map((item) => [item.name, validateField(item, preview.values[tabKey], referenceData)]),
+            forms[tabKey].map(item => [item.name, validateField(item, preview.values[tabKey], referenceData)]),
           )
         : {},
     ]),
@@ -219,10 +219,10 @@ export const openPreview = (): AppThunk => (dispatch, getState) => {
       callType,
       tabIndex: Math.max(1, tabsFor(callType).indexOf(initialTab ?? 'ChildInformationTab')),
       values: Object.fromEntries(
-        CONTACT_TABS.map((tab) => [
+        CONTACT_TABS.map(tab => [
           tab.key,
           Object.fromEntries(
-            (getForm(files, tab.filePath) ?? []).map((item) => [item.name, initialValueFor(item, referenceData)]),
+            (getForm(files, tab.filePath) ?? []).map(item => [item.name, initialValueFor(item, referenceData)]),
           ),
         ]),
       ) as Record<ContactTabKey, FormValues>,
@@ -241,8 +241,8 @@ export const setPreviewAnswer =
     const tabValues = { ...selectPreview(state).values[tabKey], [name]: value };
     // A linked dropdown goes back to its blank answer when the one above changes
     formsOf(files)
-      [tabKey].filter((item) => item.type === 'dependent-select' && item.dependsOn === name)
-      .forEach((item) => {
+      [tabKey].filter(item => item.type === 'dependent-select' && item.dependsOn === name)
+      .forEach(item => {
         tabValues[item.name] = initialValueFor(item, referenceData);
       });
     dispatch(answersChanged({ tabKey, values: tabValues }));
@@ -254,7 +254,7 @@ export const nextPreviewTab = (): AppThunk => (dispatch, getState) =>
 // Call types that open the form: "caller" adds the Caller tab
 export const chooseDataCallType =
   (name: string): AppThunk =>
-  (dispatch) =>
+  dispatch =>
     dispatch(previewSlice.actions.dataCallTypeChosen(name === 'caller' ? 'caller' : 'child'));
 
 // "Save and End": checks the answers the way Aselo does
@@ -267,8 +267,8 @@ export const saveAndEnd = (): AppThunk => (dispatch, getState) => {
   const maxSelections = categoriesForDefaultHelpline(files)?.maxSelections ?? DEFAULT_MAXIMUM_SELECTIONS;
   const selectedCount = countSelected(preview.selectedCategories);
   const invalid =
-    contactTabsIn(tabsFor(preview.callType)).some((tabKey) =>
-      forms[tabKey].some((item) => validateField(item, preview.values[tabKey], referenceData)),
+    contactTabsIn(tabsFor(preview.callType)).some(tabKey =>
+      forms[tabKey].some(item => validateField(item, preview.values[tabKey], referenceData)),
     ) ||
     selectedCount < 1 ||
     selectedCount > maxSelections;

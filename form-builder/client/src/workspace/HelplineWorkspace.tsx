@@ -22,7 +22,13 @@ import type { FlagKind, ReviewSide } from '@tech-matters/form-builder-shared';
 import { NeedHelp } from '../help/HelpContext';
 import { ImportedFrom } from '../common/BranchPicker';
 import { Loading } from '../common/Loading';
-import { CATEGORIES_FILE, CONTACT_TABS, getCaseSections, getCaseSectionSplitFormAt, getForm } from '../common/definitions';
+import {
+  CATEGORIES_FILE,
+  CONTACT_TABS,
+  getCaseSections,
+  getCaseSectionSplitFormAt,
+  getForm,
+} from '../common/definitions';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { noticeDismissed, SaveState, selectChangedPaths, selectDraft } from '../drafts/draftSlice';
@@ -99,7 +105,8 @@ const CONTACT_TAB_HELP: Record<string, { slug: string; what: string }> = {
   ChildInformationTab: { slug: 'section-service-user-information', what: 'service user information' },
   CaseInformationTab: { slug: 'section-case-information', what: 'case information' },
 };
-const sectionHelpOf = (view: View) => (view.kind === 'contactTab' ? CONTACT_TAB_HELP[view.tabKey] : SECTION_HELP[view.kind]);
+const sectionHelpOf = (view: View) =>
+  view.kind === 'contactTab' ? CONTACT_TAB_HELP[view.tabKey] : SECTION_HELP[view.kind];
 
 // Defined outside the workspace so its buttons survive re-renders (e.g. when the draft loads)
 const NavItem = ({
@@ -128,10 +135,10 @@ const NavItem = ({
       >
         {review && (
           <span className="nav-review">
-            {SIDES.map((side) => (
+            {SIDES.map(side => (
               <ApprovalIcon key={side} side={side} state={review.approvals[side]} size={13} />
             ))}
-            {review.flags.map((kind) => (
+            {review.flags.map(kind => (
               <FlagIcon key={kind} kind={kind} size={13} />
             ))}
           </span>
@@ -174,18 +181,16 @@ export const HelplineWorkspace = () => {
   const setTryItOut = (preview: { focus: PreviewFocus; tab?: string }) => dispatch(tryItOutOpened(preview));
 
   const sectionErrorCount = (prefix: string) =>
-    sectionIssues.filter((issue) => issue.severity === 'error' && issue.message.startsWith(prefix))
-      .length;
-  const errorCount = (tabKey: string) =>
-    issuesByTab[tabKey]?.filter((issue) => issue.severity === 'error').length ?? 0;
+    sectionIssues.filter(issue => issue.severity === 'error' && issue.message.startsWith(prefix)).length;
+  const errorCount = (tabKey: string) => issuesByTab[tabKey]?.filter(issue => issue.severity === 'error').length ?? 0;
 
   const caseSections = getCaseSections(files);
   const changeCount = changedPaths.length;
 
   const formTargetFor = (formView: FormView) =>
     formView.kind === 'contactTab'
-      ? CONTACT_TABS.find((tab) => tab.key === formView.tabKey)
-      : caseTargets.find((target) => target.key === formView.sectionKey);
+      ? CONTACT_TABS.find(tab => tab.key === formView.tabKey)
+      : caseTargets.find(target => target.key === formView.sectionKey);
   const formFingerprintOf = (formView: FormView) => {
     const target = formTargetFor(formView);
     return formFingerprint(target ? getForm(files, target.filePath) : undefined);
@@ -197,18 +202,23 @@ export const HelplineWorkspace = () => {
     const fingerprint = formFingerprintOf(target);
     return {
       approvals: Object.fromEntries(
-        SIDES.map((reviewSide) => [reviewSide, approvalState(draft.meta?.approvals, reviewSide, formTarget, fingerprint)]),
+        SIDES.map(reviewSide => [
+          reviewSide,
+          approvalState(draft.meta?.approvals, reviewSide, formTarget, fingerprint),
+        ]),
       ),
       flags: flagKinds(openThreadsInForm(draft.meta?.threads, formTarget)),
     };
   };
   const formViews: FormView[] = [
-    ...CONTACT_TABS.filter((tab) => files[tab.filePath]).map((tab): FormView => ({ kind: 'contactTab', tabKey: tab.key })),
+    ...CONTACT_TABS.filter(tab => files[tab.filePath]).map(
+      (tab): FormView => ({ kind: 'contactTab', tabKey: tab.key }),
+    ),
     ...caseSections.map((section): FormView => ({ kind: 'caseSection', sectionKey: section.key })),
   ];
   const approvedForms = (reviewSide: ReviewSide) =>
-    formViews.filter((formView) => reviewOf(formView)?.approvals[reviewSide] === 'approved').length;
-  const openFlags = (draft.meta?.threads ?? []).filter((thread) => isOpen(thread) && thread.kind !== 'note').length;
+    formViews.filter(formView => reviewOf(formView)?.approvals[reviewSide] === 'approved').length;
+  const openFlags = (draft.meta?.threads ?? []).filter(thread => isOpen(thread) && thread.kind !== 'note').length;
 
   // The form's own review, above its editor; its fields' reviews are in the editor
   const renderFormReview = (formView: FormView, title: string) =>
@@ -230,7 +240,7 @@ export const HelplineWorkspace = () => {
   };
 
   const renderContactTab = (tabKey: string) => {
-    const tab = CONTACT_TABS.find((contactTab) => contactTab.key === tabKey)!;
+    const tab = CONTACT_TABS.find(contactTab => contactTab.key === tabKey)!;
     const form = getForm(files, tab.filePath);
     if (!form) return <p className="muted">This helpline has no {tab.title} form.</p>;
     return (
@@ -257,63 +267,41 @@ export const HelplineWorkspace = () => {
     if (view.kind === 'contactTab') return renderContactTab(view.tabKey);
     const editorKey = `${view.kind}-${editorRevision}`;
     if (view.kind === 'callTypes') {
-      return (
-        <CallTypesEditor key={editorKey} />
-      );
+      return <CallTypesEditor key={editorKey} />;
     }
     if (view.kind === 'cannedResponses') {
-      return (
-        <CannedResponsesEditor key={editorKey} />
-      );
+      return <CannedResponsesEditor key={editorKey} />;
     }
     if (view.kind === 'messages') {
-      return (
-        <MessagesEditor key={editorKey} />
-      );
+      return <MessagesEditor key={editorKey} />;
     }
     if (view.kind === 'webchat') {
-      return (
-        <WebchatFormEditor key={editorKey} />
-      );
+      return <WebchatFormEditor key={editorKey} />;
     }
     if (view.kind === 'formSelector') {
-      return (
-        <FormSelectorEditor key={editorKey} />
-      );
+      return <FormSelectorEditor key={editorKey} />;
     }
     if (view.kind === 'categories') {
-      return (
-        <CategoriesEditor key={editorKey} />
-      );
+      return <CategoriesEditor key={editorKey} />;
     }
     if (view.kind === 'profiles') {
-      return (
-        <ProfilesEditor key={editorKey} />
-      );
+      return <ProfilesEditor key={editorKey} />;
     }
     if (view.kind === 'features' && canApply) {
-      return (
-        <FeaturesEditor key={editorKey} />
-      );
+      return <FeaturesEditor key={editorKey} />;
     }
     if (view.kind === 'serviceConfig' && canApply) {
-      return (
-        <ServiceConfigEditor key={editorKey} />
-      );
+      return <ServiceConfigEditor key={editorKey} />;
     }
     if (view.kind === 'caseSections') {
-      return (
-        <CaseSectionsEditor key={editorKey} />
-      );
+      return <CaseSectionsEditor key={editorKey} />;
     }
     if (view.kind === 'caseStatus') {
-      return (
-        <CaseStatusEditor key={editorKey} />
-      );
+      return <CaseStatusEditor key={editorKey} />;
     }
     // e.g. Features after switching to "View as helpline staff"
     if (view.kind !== 'caseSection') return renderContactTab(CONTACT_TABS[0].key);
-    const target = caseTargets.find((caseTarget) => caseTarget.key === view.sectionKey);
+    const target = caseTargets.find(caseTarget => caseTarget.key === view.sectionKey);
     const form = target && getForm(files, target.filePath);
     if (!target || !form) return <p className="muted">This case section has no form.</p>;
     return (
@@ -323,7 +311,9 @@ export const HelplineWorkspace = () => {
           <button type="button" className="secondary-button" onClick={() => dispatch(sectionPreviewOpened(target.key))}>
             Preview in Aselo
           </button>
-          <span className="muted">See the draft form as counselors see it when they add a {target.title} to a case.</span>
+          <span className="muted">
+            See the draft form as counselors see it when they add a {target.title} to a case.
+          </span>
         </div>
         <ContactFormEditor key={`case-${target.key}-${editorRevision}`} tab={target} />
         {previewingSection === target.key && (
@@ -333,7 +323,7 @@ export const HelplineWorkspace = () => {
               role="dialog"
               aria-modal="true"
               aria-label={`${target.title} in Aselo`}
-              onClick={(e) => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
             >
               <div className="modal-header">
                 <h2>{target.title} in Aselo</h2>
@@ -364,8 +354,8 @@ export const HelplineWorkspace = () => {
           {changeCount
             ? `Draft: ${changeCount} file${changeCount === 1 ? '' : 's'} changed · ${SAVE_STATE_TEXT[draft.saveState]}`
             : draft.saveState === 'loading'
-              ? SAVE_STATE_TEXT.loading
-              : 'No changes yet'}
+            ? SAVE_STATE_TEXT.loading
+            : 'No changes yet'}
         </span>
         {draft.meta?.status === 'submitted' && changeCount > 0 && (
           <span className="badge badge-new draft-status">
@@ -382,7 +372,9 @@ export const HelplineWorkspace = () => {
         {reviewContext && formViews.length > 0 && (
           <span className="review-progress">
             Forms approved:{' '}
-            {SIDES.map((reviewSide) => `${SIDE_LABELS[reviewSide]} ${approvedForms(reviewSide)}/${formViews.length}`).join(' · ')}
+            {SIDES.map(
+              reviewSide => `${SIDE_LABELS[reviewSide]} ${approvedForms(reviewSide)}/${formViews.length}`,
+            ).join(' · ')}
             {openFlags > 0 ? ` · ${openFlags} open flag${openFlags === 1 ? '' : 's'}` : ''}
           </span>
         )}
@@ -415,9 +407,8 @@ export const HelplineWorkspace = () => {
       {draft.conflict && !draft.conflict.branch && (
         <div className="alert alert-error">
           {draft.conflict.updatedBy ?? 'Someone else'} changed this draft
-          {draft.conflict.updatedAt ? ` at ${new Date(draft.conflict.updatedAt).toLocaleString()}` : ''}{' '}
-          while you were editing, so your latest changes weren't saved. Reload to see their
-          version, then make your changes again.
+          {draft.conflict.updatedAt ? ` at ${new Date(draft.conflict.updatedAt).toLocaleString()}` : ''} while you were
+          editing, so your latest changes weren't saved. Reload to see their version, then make your changes again.
           <button type="button" className="link-button" onClick={() => dispatch(reloadHelpline())}>
             Reload
           </button>
@@ -440,7 +431,13 @@ export const HelplineWorkspace = () => {
             <>
               <h3>Helpline</h3>
               <ul>
-                <NavItem current={view} onSelect={setView} reviewOf={reviewOf} target={{ kind: 'features' }} label="Features" />
+                <NavItem
+                  current={view}
+                  onSelect={setView}
+                  reviewOf={reviewOf}
+                  target={{ kind: 'features' }}
+                  label="Features"
+                />
                 <NavItem
                   current={view}
                   onSelect={setView}
@@ -453,7 +450,7 @@ export const HelplineWorkspace = () => {
           )}
           <h3>Contact forms</h3>
           <ul>
-            {CONTACT_TABS.filter((tab) => files[tab.filePath]).map((tab) => (
+            {CONTACT_TABS.filter(tab => files[tab.filePath]).map(tab => (
               <NavItem
                 current={view}
                 onSelect={setView}
@@ -501,7 +498,13 @@ export const HelplineWorkspace = () => {
               label="Canned responses"
               errors={sectionErrorCount('Canned responses')}
             />
-            <NavItem current={view} onSelect={setView} reviewOf={reviewOf} target={{ kind: 'messages' }} label="Automatic messages" />
+            <NavItem
+              current={view}
+              onSelect={setView}
+              reviewOf={reviewOf}
+              target={{ kind: 'messages' }}
+              label="Automatic messages"
+            />
             {originalFiles[PRE_ENGAGEMENT_FILE] !== undefined && (
               <NavItem
                 current={view}
@@ -531,7 +534,7 @@ export const HelplineWorkspace = () => {
               label="Case statuses"
               errors={sectionErrorCount('Case statuses')}
             />
-            {caseSections.map((section) => (
+            {caseSections.map(section => (
               <NavItem
                 current={view}
                 onSelect={setView}
@@ -539,7 +542,7 @@ export const HelplineWorkspace = () => {
                 key={section.key}
                 target={{ kind: 'caseSection', sectionKey: section.key }}
                 label={section.label}
-                errors={issuesByTab[`case:${section.key}`]?.filter((issue) => issue.severity === 'error').length}
+                errors={issuesByTab[`case:${section.key}`]?.filter(issue => issue.severity === 'error').length}
               />
             ))}
           </ul>
@@ -564,7 +567,7 @@ export const HelplineWorkspace = () => {
             <div className="alert alert-error">
               Some files could not be read:
               <ul>
-                {definitions.errors.map((fileError) => (
+                {definitions.errors.map(fileError => (
                   <li key={fileError.path}>
                     <code>{fileError.path}</code>: {fileError.message}
                   </li>
@@ -577,13 +580,9 @@ export const HelplineWorkspace = () => {
         </main>
       </div>
 
-      {tryItOut && (
-        <FlexDesktopPreview />
-      )}
+      {tryItOut && <FlexDesktopPreview />}
 
-      {reviewing && (
-        <ReviewChanges />
-      )}
+      {reviewing && <ReviewChanges />}
     </>
   );
 };

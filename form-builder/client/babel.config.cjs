@@ -15,7 +15,7 @@
  */
 
 // Turns the app's TypeScript and JSX into JavaScript, for webpack and for Jest
-module.exports = (api) => {
+module.exports = api => {
   const test = api.env('test');
   return {
     presets: [

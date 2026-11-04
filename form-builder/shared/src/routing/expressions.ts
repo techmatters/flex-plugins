@@ -106,13 +106,13 @@ const readClause = (clause: string): WhoBlock => {
   if (VOICE_CHAT.includes(`(${inner})`) || VOICE_CHAT.includes(text)) return { kind: 'voiceChatExclusive' };
   if (`(${inner})` === VOICEMAIL) return { kind: 'voicemailOneAtATime' };
   if (TARGET_WORKER.test(inner)) return { kind: 'targetWorker' };
-  const parts = splitTopLevel(inner, 'AND').map((part) => unwrap(part));
-  if (parts.length === 2 && parts.some((part) => TARGET_WORKER.test(part)) && parts.includes(CONTACTLESS)) {
+  const parts = splitTopLevel(inner, 'AND').map(part => unwrap(part));
+  if (parts.length === 2 && parts.some(part => TARGET_WORKER.test(part)) && parts.includes(CONTACTLESS)) {
     return { kind: 'offlineContactOwner' };
   }
-  const skills = splitTopLevel(inner, 'AND').map((part) => unwrap(part).match(SKILL)?.[1]);
+  const skills = splitTopLevel(inner, 'AND').map(part => unwrap(part).match(SKILL)?.[1]);
   if (skills.every(Boolean)) return { kind: 'skills', skills: skills as string[] };
-  const roles = splitTopLevel(inner, 'OR').map((part) => unwrap(part).match(ROLE)?.[1]);
+  const roles = splitTopLevel(inner, 'OR').map(part => unwrap(part).match(ROLE)?.[1]);
   if (roles.every(Boolean)) return { kind: 'roles', roles: roles as Role[] };
   return { kind: 'custom', expression: clause.trim() };
 };
@@ -124,7 +124,7 @@ export const readWho = (expression: string | undefined): WhoBlock[] => {
   // (blocks) OR (the offline contact alternative)
   if (alternatives.length === 2 && unwrap(canonical(alternatives[1])) === OFFLINE_CONTACT) {
     const first = readWho(alternatives[0]);
-    if (!first.some((block) => block.kind === 'offlineContactAlternative')) {
+    if (!first.some(block => block.kind === 'offlineContactAlternative')) {
       return [...first, { kind: 'offlineContactAlternative' }];
     }
   }
@@ -134,7 +134,7 @@ export const readWho = (expression: string | undefined): WhoBlock[] => {
     return [{ kind: 'custom', expression: expression.trim() }];
   }
   const blocks: WhoBlock[] = [];
-  clauses.forEach((clause) => {
+  clauses.forEach(clause => {
     const block = readClause(clause);
     // Skills written as separate clauses are one set of skills
     const previous = blocks[blocks.length - 1];
@@ -143,9 +143,9 @@ export const readWho = (expression: string | undefined): WhoBlock[] => {
   });
   // "the counselor it was sent to" and "an offline contact", written as separate clauses
   const contactless = blocks.findIndex(
-    (block) => block.kind === 'custom' && unwrap(canonical(block.expression)) === CONTACTLESS,
+    block => block.kind === 'custom' && unwrap(canonical(block.expression)) === CONTACTLESS,
   );
-  const target = blocks.findIndex((block) => block.kind === 'targetWorker');
+  const target = blocks.findIndex(block => block.kind === 'targetWorker');
   if (contactless >= 0 && target >= 0) {
     return blocks
       .map((block, index): WhoBlock => (index === target ? { kind: 'offlineContactOwner' } : block))
@@ -167,9 +167,9 @@ const writeBlock = (block: WhoBlock): string => {
     case 'voicemailOneAtATime':
       return "(task.channelType == 'voicemail' AND worker.channel.voicemail.assigned_tasks == 0)";
     case 'skills':
-      return `(${block.skills.map((skill) => `'${skill}' IN worker.routing.skills`).join(' AND ')})`;
+      return `(${block.skills.map(skill => `'${skill}' IN worker.routing.skills`).join(' AND ')})`;
     case 'roles':
-      return `(${block.roles.map((role) => `worker.roles HAS '${role}'`).join(' OR ')})`;
+      return `(${block.roles.map(role => `worker.roles HAS '${role}'`).join(' OR ')})`;
     case 'offlineContactAlternative':
       return '';
     case 'offlineContactOwner':
@@ -184,10 +184,10 @@ const writeBlock = (block: WhoBlock): string => {
 export const writeWho = (blocks: WhoBlock[]): string | undefined => {
   // Custom conditions left empty in the editor aren't written
   const rest = blocks.filter(
-    (block) => block.kind !== 'offlineContactAlternative' && !(block.kind === 'custom' && !block.expression.trim()),
+    block => block.kind !== 'offlineContactAlternative' && !(block.kind === 'custom' && !block.expression.trim()),
   );
   const main = rest.length === 0 ? undefined : `(${rest.map(writeBlock).join(' AND ')})`;
-  if (!blocks.some((block) => block.kind === 'offlineContactAlternative')) return main;
+  if (!blocks.some(block => block.kind === 'offlineContactAlternative')) return main;
   return `${main ?? '(1==1)'} OR (${OFFLINE_CONTACT})`;
 };
 
@@ -209,7 +209,7 @@ const readCondition = (clause: string): Condition => {
   const list = text.match(/^([A-Za-z_][\w.]*) (NOT IN|IN) \[(.*)\]$/);
   if (list) {
     const values = list[3].split(',').map(parseValue);
-    if (values.every((value) => value !== undefined)) {
+    if (values.every(value => value !== undefined)) {
       return {
         kind: 'compare',
         attribute: list[1],
@@ -252,7 +252,7 @@ const writeGroup = (conditions: Condition[]): string =>
   conditions.length === 0
     ? '1==1'
     : conditions
-        .map((condition) => {
+        .map(condition => {
           if (condition.kind === 'custom') {
             return splitTopLevel(unwrap(condition.expression), 'OR').length > 1
               ? `(${condition.expression})`
@@ -267,9 +267,9 @@ const writeGroup = (conditions: Condition[]): string =>
 
 export const writeConditions = (groups: Condition[][]): string => {
   // An empty group is every task
-  if (groups.length === 0 || groups.some((group) => group.length === 0)) return '1==1';
+  if (groups.length === 0 || groups.some(group => group.length === 0)) return '1==1';
   if (groups.length === 1) return writeGroup(groups[0]);
-  return groups.map((group) => `(${writeGroup(group)})`).join(' OR ');
+  return groups.map(group => `(${writeGroup(group)})`).join(' OR ');
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -280,10 +280,10 @@ const QUEUE_SKILL = /^routing\.skills HAS ['"]([^'"]+)['"]$/;
 export const readQueueWorkers = (expression: string | undefined): QueueWorkers => {
   const text = (expression ?? '').trim();
   if (/^1\s*==?\s*0$/.test(text)) return { kind: 'nobody' };
-  const groups = splitTopLevel(unwrap(text), 'AND').map((group) =>
-    splitTopLevel(unwrap(group), 'OR').map((part) => unwrap(part).match(QUEUE_SKILL)?.[1]),
+  const groups = splitTopLevel(unwrap(text), 'AND').map(group =>
+    splitTopLevel(unwrap(group), 'OR').map(part => unwrap(part).match(QUEUE_SKILL)?.[1]),
   );
-  if (text && groups.every((group) => group.every(Boolean))) return { kind: 'skills', allOf: groups as string[][] };
+  if (text && groups.every(group => group.every(Boolean))) return { kind: 'skills', allOf: groups as string[][] };
   return { kind: 'custom', expression: text };
 };
 
@@ -292,8 +292,8 @@ export const writeQueueWorkers = (workers: QueueWorkers): string => {
   if (workers.kind === 'custom') return workers.expression;
   if (workers.allOf.length === 0) return '1==1';
   return workers.allOf
-    .map((group) => {
-      const skills = group.map((skill) => `routing.skills HAS '${skill}'`);
+    .map(group => {
+      const skills = group.map(skill => `routing.skills HAS '${skill}'`);
       return skills.length > 1 ? `(${skills.join(' OR ')})` : skills[0];
     })
     .join(' AND ');
@@ -301,4 +301,4 @@ export const writeQueueWorkers = (workers: QueueWorkers): string => {
 
 // Every skill named in an expression (for the helpline's skills list)
 export const skillsIn = (blocks: WhoBlock[]): string[] =>
-  blocks.flatMap((block) => (block.kind === 'skills' ? block.skills : []));
+  blocks.flatMap(block => (block.kind === 'skills' ? block.skills : []));

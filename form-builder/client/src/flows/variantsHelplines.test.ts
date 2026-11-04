@@ -51,7 +51,7 @@ describe('flows sharing a template', () => {
       },
       expect.objectContaining({ key: 'survey_es', label: 'Spanish', recordingsFolder: 'survey_es' }),
     ]);
-    const thanks = content.objects.find((object) => object.studioName === 'play_message_voice_thanks')!;
+    const thanks = content.objects.find(object => object.studioName === 'play_message_voice_thanks')!;
     expect(thanks.message).toMatchObject({ script: 'Thank you for your answers.', language: 'en' });
     expect(messageFor(thanks, 'survey_es', 'survey_en')).toMatchObject({
       script: 'Gracias por sus respuestas.',
@@ -82,7 +82,7 @@ describe('flows sharing a template', () => {
 
     const changed = {
       ...content,
-      objects: content.objects.map((object) =>
+      objects: content.objects.map(object =>
         object.studioName === 'play_message_voice_thanks'
           ? withVariantMessage(object, 'survey_es', 'survey_en', {
               ...messageFor(object, 'survey_es', 'survey_en'),
@@ -104,7 +104,7 @@ describe('flows sharing a template', () => {
       },
     ]);
     // The English one is untouched
-    expect(changed.objects.find((object) => object.studioName === 'play_message_voice_thanks')!.message?.script).toBe(
+    expect(changed.objects.find(object => object.studioName === 'play_message_voice_thanks')!.message?.script).toBe(
       'Thank you for your answers.',
     );
   });
@@ -113,11 +113,11 @@ describe('flows sharing a template', () => {
     const { boards } = await importHelpline(fixtures, 'zz');
     const content = {
       ...boards[0].content,
-      objects: boards[0].content.objects.map((object) =>
+      objects: boards[0].content.objects.map(object =>
         object.studioName === 'play_message_voice_thanks' ? { ...object, variantMessages: undefined } : object,
       ),
     };
-    expect(boardChecks(content).map((issue) => issue.message)).toContain('Spanish: “Thanks” has no script yet.');
+    expect(boardChecks(content).map(issue => issue.message)).toContain('Spanish: “Thanks” has no script yet.');
     const board: Board = {
       code: 'zz',
       id: 'b',

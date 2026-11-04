@@ -64,7 +64,7 @@ export const TaskAttributesSection = ({
   const channelTemplate = channelTemplateOf(attributes);
   const usesChannel = usesChannelAttributes(attributes);
   const changed = !channelTemplate && attributes.imported !== undefined && attributes.json !== attributes.imported;
-  const otherChannels = attributes.otherChannels?.flatMap((other) => other.channels) ?? [];
+  const otherChannels = attributes.otherChannels?.flatMap(other => other.channels) ?? [];
   return (
     <section className="flow-inspector-section" aria-label="Task attributes">
       <h3>Task attributes</h3>
@@ -78,7 +78,7 @@ export const TaskAttributesSection = ({
             type="checkbox"
             checked={usesChannel}
             disabled={readOnly}
-            onChange={(event) =>
+            onChange={event =>
               onChange(
                 event.target.checked
                   ? {
@@ -118,14 +118,14 @@ export const TaskAttributesSection = ({
         spellCheck={false}
         aria-label="Task attributes JSON"
         disabled={readOnly || usesChannel}
-        isValid={(json) => !taskAttributesProblem(json)}
-        onValueChange={(json) => onChange({ ...attributes, json })}
+        isValid={json => !taskAttributesProblem(json)}
+        onValueChange={json => onChange({ ...attributes, json })}
       />
       {problem ? (
         <p className="field-hint flow-task-attributes-problem">Not valid JSON: {problem}</p>
       ) : (
         <p className="flow-task-attribute-names">
-          {names.map((name) => (
+          {names.map(name => (
             <span
               key={name}
               className={`flow-task-attribute ${ROUTING_ATTRIBUTES.has(name) ? 'routing' : ''}`}
@@ -148,7 +148,7 @@ export const TaskAttributesSection = ({
           </button>
         </p>
       )}
-      {attributes.otherChannels?.map((other) => (
+      {attributes.otherChannels?.map(other => (
         <details key={other.template} className="flow-task-attributes-other">
           <summary>
             {other.channels.join(', ')} get <code>{other.template}</code>

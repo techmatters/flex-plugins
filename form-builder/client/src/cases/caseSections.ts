@@ -106,7 +106,7 @@ export const addCaseSection = (
     [CASE_SECTIONS_FILE]: { ...sections, [key]: { label, formPath } },
     [formPath]: [{ name: 'details', label: 'Details', type: 'textarea', isPII: true }],
   };
-  const orders = getCaseSections(files).map((section) => getSectionLayout(files, section.key).caseHomeOrder ?? 0);
+  const orders = getCaseSections(files).map(section => getSectionLayout(files, section.key).caseHomeOrder ?? 0);
   next = setSectionLayout(next, key, {
     caseHomeOrder: Math.max(0, ...orders) + 1,
     previewFields: ['details'],
@@ -127,7 +127,7 @@ export const removeCaseSection = (files: DefinitionFileMap, key: string): Defini
   delete sections[key];
   const next: DefinitionFileMap = setSectionLayout({ ...files, [CASE_SECTIONS_FILE]: sections }, key, undefined);
   // Another section could share the form file
-  if (formPath && !Object.values(sections).some((section) => section.formPath === formPath)) delete next[formPath];
+  if (formPath && !Object.values(sections).some(section => section.formPath === formPath)) delete next[formPath];
   return next;
 };
 
@@ -136,15 +136,15 @@ export const removeCaseSection = (files: DefinitionFileMap, key: string): Defini
  */
 const checkCaseSections = (files: DefinitionFileMap): ValidationIssue[] => {
   const issues: ValidationIssue[] = [];
-  getCaseSections(files).forEach((section) => {
+  getCaseSections(files).forEach(section => {
     const add = (message: string) => issues.push({ severity: 'error', message: `Case sections: ${message}` });
     if (!String(section.label ?? '').trim()) add(`the section saved as “${section.key}” has no name.`);
     const form = getForm(files, section.formPath);
     if (!form) add(`“${section.label}” has no form (${section.formPath}).`);
     else if (form.length === 0) add(`“${section.label}” has no fields.`);
     (getSectionLayout(files, section.key).previewFields ?? [])
-      .filter((name) => form && !form.some((item) => item.name === name))
-      .forEach((name) =>
+      .filter(name => form && !form.some(item => item.name === name))
+      .forEach(name =>
         issues.push({
           severity: 'warning',
           message: `Case sections: “${section.label}” shows “${name}” in its list, but its form has no such field.`,
@@ -158,8 +158,8 @@ export const validateCaseSections = (
   draftFiles: DefinitionFileMap,
   originalFiles: DefinitionFileMap,
 ): ValidationIssue[] => {
-  const before = new Set(checkCaseSections(originalFiles).map((found) => found.message));
-  return checkCaseSections(draftFiles).map((found) =>
+  const before = new Set(checkCaseSections(originalFiles).map(found => found.message));
+  return checkCaseSections(draftFiles).map(found =>
     found.severity === 'error' && before.has(found.message)
       ? {
           ...found,
@@ -177,8 +177,8 @@ export const summarizeCaseSectionChanges = (
   const before = getCaseSections(originalFiles);
   const after = getCaseSections(draftFiles);
   const lines: string[] = [];
-  after.forEach((section) => {
-    const previous = before.find((old) => old.key === section.key);
+  after.forEach(section => {
+    const previous = before.find(old => old.key === section.key);
     if (!previous) {
       lines.push(`Added the section “${section.label}”`);
       return;
@@ -187,19 +187,24 @@ export const summarizeCaseSectionChanges = (
     const layoutBefore = getSectionLayout(originalFiles, section.key);
     const layoutAfter = getSectionLayout(draftFiles, section.key);
     if ((layoutBefore.caseHomeLocation ?? 'list') !== (layoutAfter.caseHomeLocation ?? 'list')) {
-      lines.push(`“${section.label}” now shows ${layoutAfter.caseHomeLocation === 'timeline' ? 'on the timeline' : 'as a list'}`);
+      lines.push(
+        `“${section.label}” now shows ${layoutAfter.caseHomeLocation === 'timeline' ? 'on the timeline' : 'as a list'}`,
+      );
     }
     if (!isSameJson(layoutBefore.previewFields, layoutAfter.previewFields)) {
       lines.push(`“${section.label}” shows different fields in its list`);
     }
   });
   before
-    .filter((section) => !after.some((other) => other.key === section.key))
-    .forEach((section) => lines.push(`Removed the section “${section.label}”`));
+    .filter(section => !after.some(other => other.key === section.key))
+    .forEach(section => lines.push(`Removed the section “${section.label}”`));
   const orderOf = (files: DefinitionFileMap, sections: typeof before) =>
-    sections.map((section) => `${section.key}:${getSectionLayout(files, section.key).caseHomeOrder ?? ''}`);
+    sections.map(section => `${section.key}:${getSectionLayout(files, section.key).caseHomeOrder ?? ''}`);
   const kept = (files: DefinitionFileMap, sections: typeof before, others: typeof before) =>
-    orderOf(files, sections.filter((section) => others.some((other) => other.key === section.key)));
+    orderOf(
+      files,
+      sections.filter(section => others.some(other => other.key === section.key)),
+    );
   if (!isSameJson(kept(originalFiles, before, after), kept(draftFiles, after, before))) {
     lines.push('Sections were reordered');
   }

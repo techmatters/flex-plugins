@@ -55,7 +55,7 @@ beforeEach(() => {
 describe('access', () => {
   test('helpline staff only see and open their own helplines', async () => {
     const helplines = (await call(usnmStaff, 'GET', '/api/helplines')).body as { code: string }[];
-    expect(helplines.map((helpline) => helpline.code)).toEqual(['usnm']);
+    expect(helplines.map(helpline => helpline.code)).toEqual(['usnm']);
     expect((await call(usnmStaff, 'GET', '/api/definitions/usch/v1')).status).toBe(403);
     expect((await call(usnmStaff, 'PUT', '/api/drafts/usch/v1', saveBody(0))).status).toBe(403);
     expect((await call(staff, 'GET', '/api/definitions/usch/v1')).status).toBe(200);
@@ -108,7 +108,9 @@ describe('drafts', () => {
     expect(context.notifier.draftSubmitted).toHaveBeenCalledTimes(1);
 
     const listed = (await call(staff, 'GET', '/api/drafts')).body as { code: string; meta: { status: string } }[];
-    expect(listed).toEqual([expect.objectContaining({ code: 'usnm', meta: expect.objectContaining({ status: 'submitted' }) })]);
+    expect(listed).toEqual([
+      expect.objectContaining({ code: 'usnm', meta: expect.objectContaining({ status: 'submitted' }) }),
+    ]);
 
     // Submitting doesn't change the content, so it doesn't create a new revision
     const edited = await call(usnmStaff, 'PUT', '/api/drafts/usnm/v1', saveBody(1));
@@ -125,10 +127,20 @@ describe('drafts', () => {
     const helpline = await approve(usnmStaff, { target: field, fingerprint: 'abc' });
     expect(helpline.body).toMatchObject({
       revision: 0,
-      approvals: { [`helpline|${field}`]: { side: 'helpline', by: 'NAMI person', at: '2026-10-26T12:00:00.000Z', fingerprint: 'abc' } },
+      approvals: {
+        [`helpline|${field}`]: {
+          side: 'helpline',
+          by: 'NAMI person',
+          at: '2026-10-26T12:00:00.000Z',
+          fingerprint: 'abc',
+        },
+      },
     });
     const aselo = await approve(staff, { target: field, fingerprint: 'abc' });
-    expect(Object.keys((aselo.body as { approvals: object }).approvals).sort()).toEqual([`aselo|${field}`, `helpline|${field}`]);
+    expect(Object.keys((aselo.body as { approvals: object }).approvals).sort()).toEqual([
+      `aselo|${field}`,
+      `helpline|${field}`,
+    ]);
 
     // Saves keep the review; a save with nothing changed keeps a draft that holds one
     expect((await call(usnmStaff, 'PUT', '/api/drafts/usnm/v1', saveBody(0))).body).toMatchObject({
@@ -150,7 +162,13 @@ describe('drafts', () => {
   test('a helpline question on a field, answered and resolved by Aselo', async () => {
     const thread = (user: ApiUser, body: unknown) => call(user, 'POST', '/api/drafts/usnm/v1/threads', body);
     const field = 'contactTab:CallerInformationTab#age';
-    const ask = { action: 'add', target: field, kind: 'question', text: ' Can this be a range? ', assignee: 'Aselo person' };
+    const ask = {
+      action: 'add',
+      target: field,
+      kind: 'question',
+      text: ' Can this be a range? ',
+      assignee: 'Aselo person',
+    };
     expect((await thread(usnmStaff, { ...ask, kind: 'rant' })).status).toBe(400);
     expect((await thread(usnmStaff, { ...ask, text: '  ' })).status).toBe(400);
     expect((await thread(usnmStaff, { ...ask, target: 'no such target' })).status).toBe(400);
@@ -166,13 +184,18 @@ describe('drafts', () => {
       assignee: 'Aselo person',
     });
 
-    const answered = await thread(staff, { action: 'reply', id: question.id, text: 'Yes: use a dropdown', resolve: true });
+    const answered = await thread(staff, {
+      action: 'reply',
+      id: question.id,
+      text: 'Yes: use a dropdown',
+      resolve: true,
+    });
     const [done] = (answered.body as { threads: Record<string, unknown>[] }).threads;
     expect(done).toMatchObject({
       replies: [expect.objectContaining({ text: 'Yes: use a dropdown', author: 'Aselo person', side: 'aselo' })],
       resolvedBy: 'Aselo person',
     });
-    expect((answered.body as { reviewLog: { action: string }[] }).reviewLog.map((entry) => entry.action)).toEqual([
+    expect((answered.body as { reviewLog: { action: string }[] }).reviewLog.map(entry => entry.action)).toEqual([
       'flagged',
       'replied',
       'resolved',
@@ -202,7 +225,7 @@ describe('local services', () => {
     };
     await store.put(draft);
     expect(await store.get('usnm', 'v1')).toEqual(draft);
-    expect((await store.list()).map((summary) => summary.changedFiles)).toEqual([
+    expect((await store.list()).map(summary => summary.changedFiles)).toEqual([
       ['tabbedForms/CallerInformationTab.json'],
     ]);
 
@@ -249,7 +272,11 @@ describe('local services', () => {
   test('locally you are Aselo staff unless told otherwise', () => {
     expect(localUser({ FORM_BUILDER_USER: 'alex' })).toEqual({ name: 'alex', role: 'aselo-staff', helplines: 'all' });
     expect(
-      localUser({ FORM_BUILDER_USER: 'sam', FORM_BUILDER_ROLE: 'helpline-staff', FORM_BUILDER_HELPLINES: 'usnm, usch' }),
+      localUser({
+        FORM_BUILDER_USER: 'sam',
+        FORM_BUILDER_ROLE: 'helpline-staff',
+        FORM_BUILDER_HELPLINES: 'usnm, usch',
+      }),
     ).toEqual({ name: 'sam', role: 'helpline-staff', helplines: ['usnm', 'usch'] });
   });
 });

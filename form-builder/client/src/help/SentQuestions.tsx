@@ -49,7 +49,7 @@ export const groupQuestions = (questions: HelpQuestion[]): QuestionGroup[] => {
   const groups = new Map<string, QuestionGroup & { askers: Set<string> }>();
   [...questions]
     .sort((a, b) => b.at.localeCompare(a.at))
-    .forEach((question) => {
+    .forEach(question => {
       const key = normalize(question.question);
       const group = groups.get(key) ?? {
         question: question.question,
@@ -83,7 +83,7 @@ export const SentQuestions = ({ areaLabels }: { areaLabels: Record<string, strin
   if (questions.length === 0) return <p>None yet.</p>;
   return (
     <ul className="help-sent-questions">
-      {groupQuestions(questions).map((group) => {
+      {groupQuestions(questions).map(group => {
         const closest = searchHelp(group.question, {
           area: (group.areas[0] as HelpArea) ?? 'general',
           isAseloStaff: true,
@@ -99,11 +99,11 @@ export const SentQuestions = ({ areaLabels }: { areaLabels: Record<string, strin
               )}
             </div>
             <span className="field-hint">
-              {group.areas.map((area) => areaLabels[area] ?? area).join(', ')} ·{' '}
+              {group.areas.map(area => areaLabels[area] ?? area).join(', ')} ·{' '}
               {group.people === 1 ? '1 person' : `${group.people} people`} · last{' '}
               {new Date(group.latest).toLocaleDateString()}
               {group.notHelpful.length > 0 &&
-                ` · didn’t help: ${group.notHelpful.map((slug) => articleBySlug(slug)?.title ?? slug).join(', ')}`}
+                ` · didn’t help: ${group.notHelpful.map(slug => articleBySlug(slug)?.title ?? slug).join(', ')}`}
             </span>
             {closest ? (
               <span className="help-sent-closest">

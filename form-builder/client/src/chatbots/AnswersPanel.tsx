@@ -76,12 +76,12 @@ const SynonymsInput = ({
         setText(joined);
         setEditing(true);
       }}
-      onChange={(e) => setText(e.target.value)}
+      onChange={e => setText(e.target.value)}
       onBlur={() => {
         setEditing(false);
         const next = text
           .split(',')
-          .map((said) => said.trim())
+          .map(said => said.trim())
           .filter(Boolean);
         if (next.join(', ') !== joined) onCommit(next);
       }}
@@ -101,7 +101,7 @@ const PatternEditor = ({
   const [tryText, setTryText] = useState('');
   const pattern = type.pattern ?? '';
   const problem = patternProblem(pattern);
-  const preset = PATTERN_PRESETS.find((candidate) => candidate.pattern === pattern);
+  const preset = PATTERN_PRESETS.find(candidate => candidate.pattern === pattern);
   return (
     <div className="chatbot-pattern">
       <label className="field">
@@ -111,10 +111,10 @@ const PatternEditor = ({
             value={preset?.pattern ?? ''}
             aria-label="Ready-made patterns"
             disabled={readOnly}
-            onChange={(e) => e.target.value && onChange({ ...type, pattern: e.target.value })}
+            onChange={e => e.target.value && onChange({ ...type, pattern: e.target.value })}
           >
             <option value="">{preset ? preset.label : 'A pattern of my own'}</option>
-            {PATTERN_PRESETS.map((candidate) => (
+            {PATTERN_PRESETS.map(candidate => (
               <option key={candidate.pattern} value={candidate.pattern}>
                 {candidate.label}
               </option>
@@ -127,7 +127,7 @@ const PatternEditor = ({
             aria-label={`Pattern for ${type.name}`}
             disabled={readOnly}
             spellCheck={false}
-            onChange={(e) => onChange({ ...type, pattern: e.target.value })}
+            onChange={e => onChange({ ...type, pattern: e.target.value })}
           />
         </span>
       </label>
@@ -143,7 +143,7 @@ const PatternEditor = ({
       )}
       <label className="chatbot-pattern-try">
         Try an answer{' '}
-        <input type="text" value={tryText} aria-label="Try an answer" onChange={(e) => setTryText(e.target.value)} />
+        <input type="text" value={tryText} aria-label="Try an answer" onChange={e => setTryText(e.target.value)} />
         {tryText &&
           (matchesPattern(pattern, tryText) ? (
             <span className="chatbot-pattern-yes">
@@ -184,7 +184,7 @@ const ValueRow = ({
             value={option.value}
             aria-label={`Answer ${index + 1}`}
             disabled={readOnly}
-            onChange={(e) => onChange({ ...option, value: e.target.value })}
+            onChange={e => onChange({ ...option, value: e.target.value })}
           />
         </td>
         <td>
@@ -192,7 +192,7 @@ const ValueRow = ({
             synonyms={option.synonyms}
             label={`Ways to say ${option.value}`}
             readOnly={readOnly}
-            onCommit={(synonyms) => onChange({ ...option, synonyms })}
+            onCommit={synonyms => onChange({ ...option, synonyms })}
           />
         </td>
         <td className="chatbot-values-actions">
@@ -217,7 +217,7 @@ const ValueRow = ({
               author={author}
               canEdit={!readOnly}
               placeholder={`A comment on “${option.value}”…`}
-              onChange={(comments) => onChange({ ...option, comments })}
+              onChange={comments => onChange({ ...option, comments })}
             />
           </td>
         </tr>
@@ -244,7 +244,7 @@ const AnswerTypeCard = ({
   onRemove: () => void;
 }) => {
   const [newValue, setNewValue] = useState('');
-  const [showComments, setShowComments] = useState((type.comments ?? []).some((comment) => !comment.resolved));
+  const [showComments, setShowComments] = useState((type.comments ?? []).some(comment => !comment.resolved));
   const kind = answerKindOf(type);
   return (
     <li className={`chatbot-type-card ${kind}`} id={`answers-${type.name}`}>
@@ -279,7 +279,7 @@ const AnswerTypeCard = ({
       <p className="field-hint">{usedBy.length > 0 ? `Asked in: ${usedBy.join(', ')}` : 'Not used by any question'}</p>
       {issues.length > 0 && (
         <ul className="chatbot-issues">
-          {issues.map((issue) => (
+          {issues.map(issue => (
             <li key={issue.key} className={issue.severity}>
               {issue.message.replace(/^Answers “[^”]*” \([^)]*\)(: | )/, '')}
             </li>
@@ -292,7 +292,7 @@ const AnswerTypeCard = ({
           author={author}
           canEdit={!readOnly}
           placeholder={`A comment on ${type.name}, for the team and for Claude…`}
-          onChange={(comments) => onChange({ ...type, comments })}
+          onChange={comments => onChange({ ...type, comments })}
         />
       )}
       {kind === 'pattern' && <PatternEditor type={type} readOnly={readOnly} onChange={onChange} />}
@@ -314,7 +314,7 @@ const AnswerTypeCard = ({
                   index={index}
                   author={author}
                   readOnly={readOnly}
-                  onChange={(changed) =>
+                  onChange={changed =>
                     onChange({
                       ...type,
                       values: type.values.map((candidate, i) => (i === index ? changed : candidate)),
@@ -332,7 +332,7 @@ const AnswerTypeCard = ({
                 value={newValue}
                 placeholder="New answer"
                 aria-label={`New answer for ${type.name}`}
-                onChange={(e) => setNewValue(e.target.value)}
+                onChange={e => setNewValue(e.target.value)}
               />
               <button
                 type="button"
@@ -363,13 +363,13 @@ export const AnswersPanel = () => {
   const { newAnswerTypes } = useAppSelector(selectChatbots);
   const usedBy = (language: string, name: string) =>
     design.bots
-      .filter((bot) => bot.language === language)
-      .flatMap((bot) =>
-        bot.intents.flatMap((intent) =>
-          intent.questions.filter((question) => question.answerType === name).map((question) => question.slot),
+      .filter(bot => bot.language === language)
+      .flatMap(bot =>
+        bot.intents.flatMap(intent =>
+          intent.questions.filter(question => question.answerType === name).map(question => question.slot),
         ),
       );
-  const languages = [...new Set([...design.bots.map((bot) => bot.language), ...Object.keys(design.answerTypes)])];
+  const languages = [...new Set([...design.bots.map(bot => bot.language), ...Object.keys(design.answerTypes)])];
   return (
     <div className="chatbot-panel" role="region" aria-label="Answers">
       <p className="field-hint">
@@ -378,12 +378,12 @@ export const AnswersPanel = () => {
         matches; <strong>Lex&apos;s own</strong> types understand things like a US state or a number. New lists and
         patterns are written to the helpline&apos;s own folder.
       </p>
-      {languages.map((language) => {
+      {languages.map(language => {
         const types = design.answerTypes[language] ?? {};
         const own = Object.values(types)
-          .filter((type) => !type.builtin)
+          .filter(type => !type.builtin)
           .sort((a, b) => a.name.localeCompare(b.name));
-        const builtins = Object.values(types).filter((type) => type.builtin);
+        const builtins = Object.values(types).filter(type => type.builtin);
         const form = newAnswerTypes[language] ?? { kind: 'list', name: '' };
         const { name } = form;
         return (
@@ -391,7 +391,7 @@ export const AnswersPanel = () => {
             <h3>{languageLabel(language)}</h3>
             {builtins.length > 0 && (
               <ul className="chatbot-builtins">
-                {builtins.map((type) => {
+                {builtins.map(type => {
                   const info = builtinInfo(type.name);
                   return (
                     <li key={type.name}>
@@ -415,17 +415,17 @@ export const AnswersPanel = () => {
               </ul>
             )}
             <ul className="chatbot-type-list">
-              {own.map((type) => (
+              {own.map(type => (
                 <AnswerTypeCard
                   key={type.name}
                   type={type}
                   usedBy={usedBy(language, type.name)}
                   issues={issues.filter(
-                    (issue) => issue.answerType?.language === language && issue.answerType.name === type.name,
+                    issue => issue.answerType?.language === language && issue.answerType.name === type.name,
                   )}
                   author={author}
                   readOnly={readOnly}
-                  onChange={(changed) => dispatch(changeAnswerType(language, type.name, changed))}
+                  onChange={changed => dispatch(changeAnswerType(language, type.name, changed))}
                   onRemove={() => dispatch(removeAnswerTypeNamed(language, type.name))}
                 />
               ))}
@@ -435,7 +435,7 @@ export const AnswersPanel = () => {
                 <select
                   value={form.kind}
                   aria-label={`Kind of answers (${language})`}
-                  onChange={(e) =>
+                  onChange={e =>
                     dispatch(
                       newAnswerTypeChanged({ language, form: { ...form, kind: e.target.value as 'list' | 'pattern' } }),
                     )
@@ -449,7 +449,7 @@ export const AnswersPanel = () => {
                   value={name}
                   placeholder="Its name, e.g. contactReason"
                   aria-label={`New list of answers (${language})`}
-                  onChange={(e) => dispatch(newAnswerTypeChanged({ language, form: { ...form, name: e.target.value } }))}
+                  onChange={e => dispatch(newAnswerTypeChanged({ language, form: { ...form, name: e.target.value } }))}
                 />
                 <button
                   type="button"

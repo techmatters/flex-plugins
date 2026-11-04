@@ -45,12 +45,12 @@ export const CaseStatusEditor = () => {
   const { editorRevision } = useAppSelector(selectWorkspace);
   const sectionIssues = useAppSelector(selectSectionIssues);
   const { rows, current } = useAppSelector(selectCaseStatus);
-  const issues = sectionIssues.filter((issue) => issue.message.startsWith('Case statuses'));
+  const issues = sectionIssues.filter(issue => issue.message.startsWith('Case statuses'));
   const originalValues = useMemo(
-    () => new Set(Object.values(getCaseStatusMap(originalFiles)).map((status) => status.value)),
+    () => new Set(Object.values(getCaseStatusMap(originalFiles)).map(status => status.value)),
     [originalFiles],
   );
-  const statuses = rows.map((row) => row.value.status);
+  const statuses = rows.map(row => row.value.status);
 
   // Starts from the draft when it opens, and when the draft's files are replaced (discarded, reloaded)
   useEffect(() => {
@@ -58,7 +58,7 @@ export const CaseStatusEditor = () => {
   }, [dispatch, editorRevision]);
 
   const remove = (id: string) => {
-    const { status } = rows.find((row) => row.id === id)!.value;
+    const { status } = rows.find(row => row.id === id)!.value;
     if (
       originalValues.has(status.value) &&
       !window.confirm(
@@ -71,7 +71,7 @@ export const CaseStatusEditor = () => {
   };
 
   const offered = availableTransitions(statuses, current);
-  const currentStatus = statuses.find((status) => status.value === current);
+  const currentStatus = statuses.find(status => status.value === current);
 
   return (
     <div className="section-editor">
@@ -79,16 +79,16 @@ export const CaseStatusEditor = () => {
         <section className="panel">
           <h2>Case statuses</h2>
           <p className="muted">
-            Where a case is up to. Counselors change it from the case, choosing among the statuses
-            it's allowed to move to.
+            Where a case is up to. Counselors change it from the case, choosing among the statuses it's allowed to move
+            to.
           </p>
           <p className="field-hint">
-            Cases save the status itself, so names can change any time. “Open” (new cases) and
-            “Closed” are needed by Aselo and can't be removed.
+            Cases save the status itself, so names can change any time. “Open” (new cases) and “Closed” are needed by
+            Aselo and can't be removed.
           </p>
           {issues.length > 0 && (
             <ul className="issue-list">
-              {issues.map((issue) => (
+              {issues.map(issue => (
                 <li key={issue.message} className={`issue issue-${issue.severity}`}>
                   {issue.message}
                 </li>
@@ -97,9 +97,9 @@ export const CaseStatusEditor = () => {
           )}
           <SortableRows
             rows={rows}
-            labelOf={(value) => value.status.label}
-            onReorder={(next) => dispatch(reorderStatuses(next))}
-            renderRow={(row) => {
+            labelOf={value => value.status.label}
+            onReorder={next => dispatch(reorderStatuses(next))}
+            renderRow={row => {
               const { status } = row.value;
               const isNew = !originalValues.has(status.value);
               return (
@@ -108,9 +108,9 @@ export const CaseStatusEditor = () => {
                     <select
                       aria-label={`Colour of ${status.label}`}
                       value={status.color}
-                      onChange={(e) => dispatch(setStatusColor(row.id, e.target.value))}
+                      onChange={e => dispatch(setStatusColor(row.id, e.target.value))}
                     >
-                      {[...new Set([...STATUS_COLORS, status.color])].map((color) => (
+                      {[...new Set([...STATUS_COLORS, status.color])].map(color => (
                         <option key={color} value={color}>
                           {color}
                         </option>
@@ -121,7 +121,7 @@ export const CaseStatusEditor = () => {
                       type="text"
                       aria-label="Status name"
                       value={status.label}
-                      onChange={(e) => dispatch(renameStatus(row.id, e.target.value))}
+                      onChange={e => dispatch(renameStatus(row.id, e.target.value))}
                     />
                     {!REQUIRED_STATUSES.includes(status.value) && (
                       <button
@@ -137,20 +137,20 @@ export const CaseStatusEditor = () => {
                   <fieldset className="status-transitions">
                     <legend>Can move to</legend>
                     {statuses
-                      .filter((other) => other.value !== status.value)
-                      .map((other) => (
+                      .filter(other => other.value !== status.value)
+                      .map(other => (
                         <label key={other.value} className="field-checkbox">
                           <input
                             type="checkbox"
                             checked={status.transitions.includes(other.value)}
-                            onChange={(e) => dispatch(setTransition(row.id, other.value, e.target.checked))}
+                            onChange={e => dispatch(setTransition(row.id, other.value, e.target.checked))}
                           />
                           <span>{other.label}</span>
                         </label>
                       ))}
                     {status.transitions
-                      .filter((target) => !statuses.some((other) => other.value === target))
-                      .map((target) => (
+                      .filter(target => !statuses.some(other => other.value === target))
+                      .map(target => (
                         <label key={target} className="field-checkbox missing-status">
                           <input
                             type="checkbox"
@@ -186,8 +186,8 @@ export const CaseStatusEditor = () => {
         <div className="aselo section-preview-frame case-status-preview">
           <label className="field">
             <span className="field-label">If the case is now</span>
-            <select value={current} onChange={(e) => dispatch(currentChanged(e.target.value))}>
-              {statuses.map((status) => (
+            <select value={current} onChange={e => dispatch(currentChanged(e.target.value))}>
+              {statuses.map(status => (
                 <option key={status.value} value={status.value}>
                   {status.label}
                 </option>
@@ -196,7 +196,7 @@ export const CaseStatusEditor = () => {
           </label>
           <p className="field-label">Counselors can choose</p>
           <ul className="case-status-options" aria-label="Statuses offered">
-            {offered.map((status) => (
+            {offered.map(status => (
               <li key={status.value}>
                 <span className="status-pill" style={{ background: status.color }}>
                   {status.label}
@@ -206,11 +206,11 @@ export const CaseStatusEditor = () => {
             ))}
           </ul>
           {currentStatus?.value === 'closed' && (
-            <p className="field-hint">Reopening a closed case also needs the counselor to have permission to reopen cases.</p>
+            <p className="field-hint">
+              Reopening a closed case also needs the counselor to have permission to reopen cases.
+            </p>
           )}
-          {offered.length <= 1 && (
-            <p className="field-hint">This is a final status: cases can't move on from it.</p>
-          )}
+          {offered.length <= 1 && <p className="field-hint">This is a final status: cases can't move on from it.</p>}
         </div>
       </aside>
     </div>

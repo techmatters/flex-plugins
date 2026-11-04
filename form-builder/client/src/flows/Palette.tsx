@@ -19,7 +19,12 @@
  * of the view.
  */
 import { Frame as FrameIcon, StickyNote } from 'lucide-react';
-import { FAMILY_COLORS, FlowObjectType, OBJECT_TYPES, ObjectTypeInfo } from '@tech-matters/form-builder-shared/flows/model';
+import {
+  FAMILY_COLORS,
+  FlowObjectType,
+  OBJECT_TYPES,
+  ObjectTypeInfo,
+} from '@tech-matters/form-builder-shared/flows/model';
 import { ObjectIcon, ShapeOutline } from './shapes';
 import { BOARD_HELP } from './stepHelp';
 import { useHoverHelp } from './StepHelpCard';
@@ -61,9 +66,9 @@ const PaletteButton = ({
     type="button"
     className="flow-palette-item"
     draggable
-    title={hoverProps ? undefined : (title ?? label)}
+    title={hoverProps ? undefined : title ?? label}
     {...hoverProps}
-    onDragStart={(e) => {
+    onDragStart={e => {
       hoverProps?.onDragStart?.(e);
       e.dataTransfer.setData(PALETTE_MIME, JSON.stringify(item));
       e.dataTransfer.effectAllowed = 'copy';
@@ -115,7 +120,7 @@ export const Palette = ({ onAdd }: Props) => (
         </span>
       </PaletteButton>
     </div>
-    {GROUPS.map((group) => (
+    {GROUPS.map(group => (
       <div key={group} className="flow-palette-group">
         <h3>{group}</h3>
         {(Object.entries(OBJECT_TYPES) as [FlowObjectType, ObjectTypeInfo][])

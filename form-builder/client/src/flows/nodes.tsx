@@ -119,9 +119,9 @@ const InlineText = ({
         className={`flow-inline-input nodrag nowheel ${className ?? ''}`}
         value={draft}
         aria-label="Text"
-        onChange={(e) => setDraft(e.target.value)}
+        onChange={e => setDraft(e.target.value)}
         onBlur={finish}
-        onKeyDown={(e) => {
+        onKeyDown={e => {
           e.stopPropagation();
           if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -168,11 +168,11 @@ export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<
   const info = OBJECT_TYPES[object.type];
   const comments = openComments(object.thread);
   // In Test mode the run's way and tested paths show instead of problems
-  const objectProblems = simulation ? [] : (problems?.get(id) ?? []);
+  const objectProblems = simulation ? [] : problems?.get(id) ?? [];
   const steps = simulation?.visited.get(id);
   const tested = Boolean(simulation?.tested?.objects.has(id));
   let stroke = sketch ? '#78909c' : '#37474f';
-  const hasErrors = objectProblems.some((issue) => issue.severity === 'error');
+  const hasErrors = objectProblems.some(issue => issue.severity === 'error');
   if (objectProblems.length > 0) stroke = hasErrors ? '#c62828' : '#e65100';
   if (tested) stroke = '#2e7d32';
   if (steps) stroke = '#1565c0';
@@ -202,7 +202,7 @@ export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<
       {objectProblems.length > 0 && (
         <span
           className={`flow-problem-badge ${hasErrors ? 'error' : 'warning'}`}
-          title={objectProblems.map((issue) => issue.message).join('\n')}
+          title={objectProblems.map(issue => issue.message).join('\n')}
           aria-label={hasErrors ? 'Has errors' : 'Has warnings'}
         >
           <TriangleAlert size={13} aria-hidden />
@@ -216,7 +216,7 @@ export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<
           className="flow-object-text"
           value={object.text}
           placeholder={info.label}
-          onChange={(text) => dispatch(nodeDataChanged({ id, data: { object: { ...object, text } } }))}
+          onChange={text => dispatch(nodeDataChanged({ id, data: { object: { ...object, text } } }))}
         />
         {object.studioName ? (
           <span className="flow-object-caption" title={info.studioWidget}>
@@ -257,7 +257,7 @@ export const FrameNodeView = ({ id, data, selected }: NodeProps<FrameNode>) => {
         <InlineText
           value={frame.title}
           placeholder="Frame"
-          onChange={(title) => dispatch(nodeDataChanged({ id, data: { frame: { ...frame, title } } }))}
+          onChange={title => dispatch(nodeDataChanged({ id, data: { frame: { ...frame, title } } }))}
         />
         {(frame.channel || frame.stage) && (
           <span className="flow-frame-tags">
@@ -309,7 +309,7 @@ export const StickyNodeView = ({ id, data, selected }: NodeProps<StickyNode>) =>
         className="flow-sticky-text"
         value={sticky.text}
         placeholder="Double-click to write"
-        onChange={(text) => dispatch(nodeDataChanged({ id, data: { sticky: { ...sticky, text } } }))}
+        onChange={text => dispatch(nodeDataChanged({ id, data: { sticky: { ...sticky, text } } }))}
       />
     </div>
   );
@@ -318,7 +318,7 @@ export const StickyNodeView = ({ id, data, selected }: NodeProps<StickyNode>) =>
 // Where this connection's label goes among those with the same source and target (as
 // "index/count", so the edge only re-renders when that changes)
 const useLabelSlot = (id: string, source: string, target: string) =>
-  useStore((state) => labelSlot(state.edges as ConnectionEdge[], { id, source, target }));
+  useStore(state => labelSlot(state.edges as ConnectionEdge[], { id, source, target }));
 
 // Straight lines with rounded corners, an arrow, and the exit it stands for
 export const ConnectionEdgeView = ({

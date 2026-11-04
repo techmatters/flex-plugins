@@ -34,16 +34,9 @@ export const ApprovalIcon = ({
 }) => {
   if (!state) return null;
   const label =
-    state === 'approved'
-      ? `Approved by ${SIDE_LABELS[side]}`
-      : `Changed since ${SIDE_LABELS[side]} approved it`;
+    state === 'approved' ? `Approved by ${SIDE_LABELS[side]}` : `Changed since ${SIDE_LABELS[side]} approved it`;
   return (
-    <span
-      className={`review-icon approval-${side} approval-${state}`}
-      role="img"
-      aria-label={label}
-      title={label}
-    >
+    <span className={`review-icon approval-${side} approval-${state}`} role="img" aria-label={label} title={label}>
       {state === 'approved' ? <CircleCheck size={size} aria-hidden /> : '●'}
     </span>
   );

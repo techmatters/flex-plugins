@@ -86,7 +86,7 @@ describe('boards', () => {
     const loaded = (await call(staff, 'GET', `/api/boards/usnm/${board.id}`)).body as Board;
     expect(loaded.content.frames).toHaveLength(1);
     const list = (await call(staff, 'GET', '/api/boards')).body as BoardSummary[];
-    expect(list.map((summary) => [summary.code, summary.title, summary.status, summary.isNew])).toEqual([
+    expect(list.map(summary => [summary.code, summary.title, summary.status, summary.isNew])).toEqual([
       ['usnm', 'USNM contact flows', 'in-progress', true],
     ]);
   });
@@ -123,7 +123,7 @@ describe('boards', () => {
       meta: { ...board.meta, revision: 3 },
       content: {
         ...old,
-        frames: old.frames.map((frame) => ({
+        frames: old.frames.map(frame => ({
           ...frame,
           studio: { template: 'usnm/templates/studio-flows/voice.tftpl', channels: ['voice'], settings: {} },
         })),
@@ -157,7 +157,7 @@ describe('boards', () => {
     expect((await call(usnmStaff, 'POST', '/api/boards/usch', { title: 'Mine' })).status).toBe(403);
     expect((await call(usnmStaff, 'GET', `/api/boards/usch/${usch.id}`)).status).toBe(403);
     const list = (await call(usnmStaff, 'GET', '/api/boards')).body as BoardSummary[];
-    expect(list.map((summary) => summary.code).sort()).toEqual(['_templates', 'usnm']);
+    expect(list.map(summary => summary.code).sort()).toEqual(['_templates', 'usnm']);
 
     expect((await call(usnmStaff, 'GET', `/api/boards/_templates/${template.id}`)).status).toBe(200);
     expect(
@@ -180,7 +180,7 @@ describe('boards', () => {
 
     const copy = await create(staff, 'usnm', 'USNM flows', { code: '_templates', id: template.id });
     expect(copy.content.title).toBe('USNM flows');
-    expect(copy.content.frames.map((frame) => frame.title)).toEqual(['Voice: pre-queue']);
+    expect(copy.content.frames.map(frame => frame.title)).toEqual(['Voice: pre-queue']);
     // A new design, whatever the template's status
     expect(copy.content.status).toBe('in-progress');
   });
@@ -245,10 +245,10 @@ const fakeS3 = () => {
       if (!objects.has(Key)) throw Object.assign(new Error('missing'), { name: 'NoSuchKey' });
       return { Body: { transformToString: async () => objects.get(Key) } };
     } else if (command instanceof ListObjectsV2Command) {
-      const keys = [...objects.keys()].filter((key) => key.startsWith(Prefix)).sort();
+      const keys = [...objects.keys()].filter(key => key.startsWith(Prefix)).sort();
       const index = ContinuationToken ? Number(ContinuationToken) : 0;
       return {
-        Contents: keys.slice(index, index + 1).map((key) => ({ Key: key })),
+        Contents: keys.slice(index, index + 1).map(key => ({ Key: key })),
         NextContinuationToken: index + 1 < keys.length ? String(index + 1) : undefined,
       };
     }
@@ -276,7 +276,7 @@ describe('board stores', () => {
       'boards/usnm/abcd1234.json',
       'drafts/usnm/v1/draft.json',
     ]);
-    expect((await store.list()).map((summary) => summary.title).sort()).toEqual(['_templates board', 'usnm board']);
+    expect((await store.list()).map(summary => summary.title).sort()).toEqual(['_templates board', 'usnm board']);
     expect(await store.get('usnm', 'abcd1234')).toEqual(boardOf('usnm', 'abcd1234'));
     await store.remove('usnm', 'abcd1234');
     expect(await store.get('usnm', 'abcd1234')).toBeUndefined();
@@ -289,7 +289,7 @@ describe('board stores', () => {
       const store = new LocalBoardStore(dir);
       await store.put(boardOf('usnm', 'abcd1234'));
       expect(await fs.readdir(path.join(dir, 'usnm'))).toEqual(['abcd1234.json']);
-      expect((await store.list()).map((summary) => summary.id)).toEqual(['abcd1234']);
+      expect((await store.list()).map(summary => summary.id)).toEqual(['abcd1234']);
       await store.remove('usnm', 'abcd1234');
       expect(await store.list()).toEqual([]);
     } finally {

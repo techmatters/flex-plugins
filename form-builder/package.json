@@ -14,17 +14,12 @@
     "build": "npm run build -w client",
     "build:lambda": "npm run build:lambda -w server",
     "test": "npm test -w server -w client",
-    "typecheck": "npm run typecheck -w shared -w server -w client"
-  },
-  "prettier": {
-    "printWidth": 100,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "all",
-    "tabWidth": 2,
-    "endOfLine": "auto"
+    "typecheck": "npm run typecheck -w shared -w server -w client",
+    "format": "prettier --write \"{client,server,shared}/**/*.{ts,tsx,js,cjs,css}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"{client,server,shared}/**/*.{ts,tsx,js,cjs,css}\" --ignore-path .gitignore"
   },
   "devDependencies": {
-    "concurrently": "^9.1.0"
+    "concurrently": "^9.1.0",
+    "prettier": "^2.8.8"
   }
 }

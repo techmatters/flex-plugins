@@ -89,7 +89,7 @@ import './chatbots.css';
 // "When they answer Yes" for intents started by a reply; the bot's own name otherwise
 const intentLabel = (name: string, utterances: string[], botName: string) => {
   if (name === botName || name === `${botName}_intent`) return botLabel(botName);
-  const reply = utterances.find((utterance) => !/^trigger/i.test(utterance));
+  const reply = utterances.find(utterance => !/^trigger/i.test(utterance));
   return reply ? `When they answer “${reply}”` : botLabel(name);
 };
 
@@ -107,13 +107,13 @@ const NewChatbotForm = () => {
   const { design, newChatbot } = useAppSelector(selectChatbots);
   if (!design || !newChatbot) return null;
   const { name, language, locale, copyFrom } = newChatbot;
-  const languages = [...new Set(design.bots.map((bot) => bot.language))];
+  const languages = [...new Set(design.bots.map(bot => bot.language))];
   const taken = isNewChatbotTaken(design, newChatbot);
   return (
     <form
       className="chatbot-new"
       aria-label="New chatbot"
-      onSubmit={(e) => {
+      onSubmit={e => {
         e.preventDefault();
         dispatch(createChatbot());
       }}
@@ -125,7 +125,7 @@ const NewChatbotForm = () => {
           type="text"
           value={name}
           aria-label="Chatbot name"
-          onChange={(e) => dispatch(newChatbotNameChanged(e.target.value))}
+          onChange={e => dispatch(newChatbotNameChanged(e.target.value))}
         />
         <span className="field-hint">As Lex calls it, e.g. pre_survey, post_survey, language_selector</span>
       </label>
@@ -136,10 +136,10 @@ const NewChatbotForm = () => {
           value={language}
           list="chatbot-languages"
           aria-label="Chatbot language"
-          onChange={(e) => dispatch(newChatbotLanguageChanged(e.target.value))}
+          onChange={e => dispatch(newChatbotLanguageChanged(e.target.value))}
         />
         <datalist id="chatbot-languages">
-          {languages.map((candidate) => (
+          {languages.map(candidate => (
             <option key={candidate} value={candidate} />
           ))}
         </datalist>
@@ -150,9 +150,9 @@ const NewChatbotForm = () => {
         <select
           value={locale}
           aria-label="Lex locale"
-          onChange={(e) => dispatch(newChatbotLocaleChanged(e.target.value))}
+          onChange={e => dispatch(newChatbotLocaleChanged(e.target.value))}
         >
-          {[...new Set([locale, ...LOCALES])].map((candidate) => (
+          {[...new Set([locale, ...LOCALES])].map(candidate => (
             <option key={candidate} value={candidate}>
               {candidate}
             </option>
@@ -164,10 +164,10 @@ const NewChatbotForm = () => {
         <select
           value={copyFrom}
           aria-label="Start from"
-          onChange={(e) => dispatch(newChatbotCopyFromChanged(e.target.value))}
+          onChange={e => dispatch(newChatbotCopyFromChanged(e.target.value))}
         >
           <option value="">An empty chatbot</option>
-          {design.bots.map((bot) => (
+          {design.bots.map(bot => (
             <option key={bot.id} value={bot.id}>
               A copy of {botLabel(bot.name)} ({bot.language})
             </option>
@@ -216,7 +216,7 @@ const BotNotes = ({ bot }: { bot: Chatbot }) => {
           value={bot.notes ?? ''}
           aria-label="Notes about this chatbot"
           placeholder="What it's for, who it talks to, where it starts (which flow and channel), anything Claude should know…"
-          onChange={(e) => dispatch(changeBot(bot.id, { notes: e.target.value || undefined }))}
+          onChange={e => dispatch(changeBot(bot.id, { notes: e.target.value || undefined }))}
         />
       )}
       {showComments && (
@@ -224,7 +224,7 @@ const BotNotes = ({ bot }: { bot: Chatbot }) => {
           comments={bot.comments}
           author={author}
           canEdit={!readOnly}
-          onChange={(comments) => dispatch(changeBot(bot.id, { comments }))}
+          onChange={comments => dispatch(changeBot(bot.id, { comments }))}
         />
       )}
     </section>
@@ -255,7 +255,7 @@ const Editor = () => {
     }
   };
 
-  const errors = issues.filter((issue) => issue.severity === 'error').length;
+  const errors = issues.filter(issue => issue.severity === 'error').length;
 
   return (
     <div className="chatbot-editor">
@@ -281,11 +281,7 @@ const Editor = () => {
           </span>
         )}
         {staffMode && (
-          <button
-            type="button"
-            className="secondary-button flow-refresh"
-            onClick={() => dispatch(exportForClaude())}
-          >
+          <button type="button" className="secondary-button flow-refresh" onClick={() => dispatch(exportForClaude())}>
             <Download size={15} aria-hidden /> Export for Claude
           </button>
         )}
@@ -303,9 +299,9 @@ const Editor = () => {
 
       <div className="chatbot-layout">
         <nav className="chatbot-list" aria-label="Chatbots">
-          {design.bots.map((candidate) => {
+          {design.bots.map(candidate => {
             const count = candidate.intents.reduce((total, item) => total + item.questions.length, 0);
-            const botIssues = issues.filter((issue) => issue.botId === candidate.id);
+            const botIssues = issues.filter(issue => issue.botId === candidate.id);
             return (
               <button
                 key={candidate.id}
@@ -322,12 +318,12 @@ const Editor = () => {
                   <span>{languageLabel(candidate.language)}</span>
                   <span className="chatbot-list-meta">
                     {count} question{count === 1 ? '' : 's'}
-                    {candidate.environments.map((environment) => (
+                    {candidate.environments.map(environment => (
                       <span key={environment} className={`flow-env-badge ${environment}`}>
                         {environment === 'production' ? 'Production' : 'Staging'}
                       </span>
                     ))}
-                    {botIssues.some((issue) => issue.severity === 'error') && (
+                    {botIssues.some(issue => issue.severity === 'error') && (
                       <CircleAlert size={13} className="chatbot-list-error" aria-label="Has errors" />
                     )}
                   </span>
@@ -392,7 +388,7 @@ const Editor = () => {
                     <BotNotes bot={bot} />
                     {bot.intents.length > 1 && (
                       <div className="chatbot-intents" role="tablist" aria-label="Paths">
-                        {bot.intents.map((candidate) => (
+                        {bot.intents.map(candidate => (
                           <button
                             key={candidate.id}
                             type="button"
@@ -431,7 +427,7 @@ const Editor = () => {
                     {issues.length === 0 ? 'Nothing to fix.' : `${errors} errors, ${issues.length - errors} warnings`}
                   </p>
                   <ul className="flow-issue-list">
-                    {issues.map((issue) => (
+                    {issues.map(issue => (
                       <li key={issue.key} className={`flow-issue ${issue.severity}`}>
                         <span className="flow-issue-icon">
                           {issue.severity === 'error' ? <CircleAlert size={15} /> : <TriangleAlert size={15} />}
@@ -457,7 +453,7 @@ const ImportPreview = ({ preview, onUse }: { preview: ChatbotImport & FromBranch
     <h4>Found in the live config</h4>
     <ImportedFrom source={preview.source} />
     <ul>
-      {preview.report.bots.map((found) => (
+      {preview.report.bots.map(found => (
         <li key={`${found.language}/${found.name}`}>
           <strong>{botLabel(found.name)}</strong> · {languageLabel(found.language)}: {found.questions} questions (
           {found.environments.join(', ')}) <span className="field-hint">{found.file}</span>
@@ -466,7 +462,7 @@ const ImportPreview = ({ preview, onUse }: { preview: ChatbotImport & FromBranch
     </ul>
     {preview.report.notes.length > 0 && (
       <ul className="flows-import-notes">
-        {preview.report.notes.map((note) => (
+        {preview.report.notes.map(note => (
           <li key={note}>{note}</li>
         ))}
       </ul>
@@ -492,10 +488,10 @@ const ChatbotsHome = () => {
     dispatch(loadChatbotsList());
   }, [dispatch]);
 
-  const allRows = (summaries ?? []).flatMap((summary) => summary.bots.map((bot) => ({ summary, bot })));
-  const rows = allRows.filter((row) => !helpline || row.summary.code === helpline);
-  const shown = rows.filter((row) => filter === 'all' || row.bot.status === filter);
-  const withDesign = new Set((summaries ?? []).map((summary) => summary.code));
+  const allRows = (summaries ?? []).flatMap(summary => summary.bots.map(bot => ({ summary, bot })));
+  const rows = allRows.filter(row => !helpline || row.summary.code === helpline);
+  const shown = rows.filter(row => filter === 'all' || row.bot.status === filter);
+  const withDesign = new Set((summaries ?? []).map(summary => summary.code));
 
   return (
     <main className="area-home chatbots-home">
@@ -509,9 +505,9 @@ const ChatbotsHome = () => {
       <div className="area-home-actions">
         <label className="field">
           <span className="field-label">Open a helpline&apos;s chatbots</span>
-          <select value={code} aria-label="Helpline" onChange={(e) => dispatch(homeCodeChanged(e.target.value))}>
+          <select value={code} aria-label="Helpline" onChange={e => dispatch(homeCodeChanged(e.target.value))}>
             <option value="">Choose…</option>
-            {helplineCodes.map((candidate) => (
+            {helplineCodes.map(candidate => (
               <option key={candidate} value={candidate}>
                 {candidate.toUpperCase()}
                 {withDesign.has(candidate) ? '' : ' (no design yet)'}
@@ -519,12 +515,7 @@ const ChatbotsHome = () => {
             ))}
           </select>
         </label>
-        <button
-          type="button"
-          className="primary-button"
-          disabled={!code}
-          onClick={() => dispatch(openChatbots(code))}
-        >
+        <button type="button" className="primary-button" disabled={!code} onClick={() => dispatch(openChatbots(code))}>
           {code && !withDesign.has(code) && staffMode ? 'Start' : 'Open'}
         </button>
       </div>
@@ -535,14 +526,14 @@ const ChatbotsHome = () => {
         <>
           <div className="area-home-filters">
             <HelplineFilter
-              codes={allRows.map((row) => row.summary.code)}
+              codes={allRows.map(row => row.summary.code)}
               value={helpline}
-              onChange={(value) => dispatch(homeHelplineChanged(value))}
+              onChange={value => dispatch(homeHelplineChanged(value))}
             />
             <div className="area-home-filter" role="group" aria-label="Show">
-              {(['all', ...DESIGN_STATUSES.map((status) => status.value)] as ChatbotsFilter[]).map((candidate) => {
+              {(['all', ...DESIGN_STATUSES.map(status => status.value)] as ChatbotsFilter[]).map(candidate => {
                 const count =
-                  candidate === 'all' ? rows.length : rows.filter((row) => row.bot.status === candidate).length;
+                  candidate === 'all' ? rows.length : rows.filter(row => row.bot.status === candidate).length;
                 return (
                   <button
                     key={candidate}
@@ -551,8 +542,8 @@ const ChatbotsHome = () => {
                     aria-pressed={filter === candidate}
                     onClick={() => dispatch(homeFilterChanged(candidate))}
                   >
-                    {candidate === 'all' ? 'All' : DESIGN_STATUSES.find((status) => status.value === candidate)?.label}{' '}
-                    ({count})
+                    {candidate === 'all' ? 'All' : DESIGN_STATUSES.find(status => status.value === candidate)?.label} (
+                    {count})
                   </button>
                 );
               })}
@@ -584,7 +575,7 @@ const ChatbotsHome = () => {
                   <td>
                     {bot.environments.length === 0
                       ? '–'
-                      : bot.environments.map((environment) => (
+                      : bot.environments.map(environment => (
                           <span key={environment} className={`flow-env-badge ${environment}`}>
                             {environment === 'production' ? 'Production' : 'Staging'}
                           </span>
@@ -640,7 +631,7 @@ export const ChatbotsArea = () => {
           )}
           {staffMode && stored && !preview && (
             <>
-              <BranchPicker load={loadBranches} value={branch} onChange={(value) => dispatch(branchChanged(value))} />
+              <BranchPicker load={loadBranches} value={branch} onChange={value => dispatch(branchChanged(value))} />
               <button
                 type="button"
                 className="link-button"
@@ -661,7 +652,7 @@ export const ChatbotsArea = () => {
           <p>{code.toUpperCase()} has no chatbots design yet.</p>
           {staffMode ? (
             <div className="chatbot-start-options">
-              <BranchPicker load={loadBranches} value={branch} onChange={(value) => dispatch(branchChanged(value))} />
+              <BranchPicker load={loadBranches} value={branch} onChange={value => dispatch(branchChanged(value))} />
               <button
                 type="button"
                 className="primary-button"

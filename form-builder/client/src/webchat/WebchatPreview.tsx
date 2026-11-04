@@ -44,8 +44,7 @@ const validate = (field: WebchatField, value: Value): string | undefined => {
 };
 
 // As the webchat does: every question but a checkbox starts empty (it doesn't read defaultValue)
-const initialValue = (field: WebchatField): Value =>
-  field.type === 'checkbox' ? Boolean(field.initialChecked) : '';
+const initialValue = (field: WebchatField): Value => (field.type === 'checkbox' ? Boolean(field.initialChecked) : '');
 
 type Props = {
   form: PreEngagementForm;
@@ -61,15 +60,13 @@ export const WebchatPreview = ({ form, strings }: Props) => {
 
   const valueOf = (field: WebchatField) => values[field.name] ?? initialValue(field);
   const errorOf = (field: WebchatField) => validate(field, valueOf(field));
-  const valid = fields.every((field) => !errorOf(field));
+  const valid = fields.every(field => !errorOf(field));
 
   const setValue = (name: string, value: Value) => dispatch(answerPreview(fields, name, value));
 
   const renderError = (field: WebchatField) => {
     const error = errorOf(field);
-    return error && touched.includes(field.name) ? (
-      <span className="webchat-error">{t(error)}</span>
-    ) : null;
+    return error && touched.includes(field.name) ? <span className="webchat-error">{t(error)}</span> : null;
   };
 
   const renderLabel = (field: WebchatField) => (
@@ -93,7 +90,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
               className={`webchat-input${error ? ' has-error' : ''}`}
               placeholder={field.placeholder === undefined ? undefined : t(field.placeholder)}
               value={String(valueOf(field))}
-              onChange={(e) => setValue(field.name, e.target.value)}
+              onChange={e => setValue(field.name, e.target.value)}
             />
           </label>
         );
@@ -105,7 +102,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
               id={id}
               className={`webchat-select${error ? ' has-error' : ''}`}
               value={String(valueOf(field))}
-              onChange={(e) => setValue(field.name, e.target.value)}
+              onChange={e => setValue(field.name, e.target.value)}
             >
               {((field.options ?? []) as SelectOption[]).map((option, index) => (
                 <option key={index} value={String(option.value)}>
@@ -117,9 +114,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
         );
       case 'dependent-select': {
         const above = field.dependsOn ? values[field.dependsOn] : undefined;
-        const list = above
-          ? ((field.options as Record<string, SelectOption[]> | undefined)?.[String(above)] ?? [])
-          : [];
+        const list = above ? (field.options as Record<string, SelectOption[]> | undefined)?.[String(above)] ?? [] : [];
         return (
           <label htmlFor={id} className="webchat-label">
             {renderLabel(field)}
@@ -128,7 +123,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
               className={`webchat-select${error ? ' has-error' : ''}`}
               disabled={!above}
               value={String(valueOf(field))}
-              onChange={(e) => setValue(field.name, e.target.value)}
+              onChange={e => setValue(field.name, e.target.value)}
             >
               {list.map((option, index) => (
                 <option key={index} value={String(option.value)}>
@@ -147,7 +142,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
               type="checkbox"
               className={error ? 'has-error' : ''}
               checked={Boolean(valueOf(field))}
-              onChange={(e) => setValue(field.name, e.target.checked)}
+              onChange={e => setValue(field.name, e.target.checked)}
             />
             <span>
               {/* The webchat shows checkbox labels as HTML, so they can hold a link */}
@@ -173,10 +168,9 @@ export const WebchatPreview = ({ form, strings }: Props) => {
         <div className="webchat-started">
           <p>Here the chat would start, and a counselor would see these answers.</p>
           <ul>
-            {fields.map((field) => (
+            {fields.map(field => (
               <li key={field.name}>
-                <strong>{t(field.label).replace(/<[^>]*>/g, '')}</strong>:{' '}
-                {String(valueOf(field)) || '—'}
+                <strong>{t(field.label).replace(/<[^>]*>/g, '')}</strong>: {String(valueOf(field)) || '—'}
               </li>
             ))}
           </ul>
@@ -187,7 +181,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
       ) : (
         <form
           className="webchat-form"
-          onSubmit={(e) => {
+          onSubmit={e => {
             e.preventDefault();
             dispatch(previewStartedSet(true));
           }}
@@ -195,7 +189,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
           {title && <h3 className="webchat-title">{title}</h3>}
           {description && <p className="webchat-description">{description}</p>}
           <div className="webchat-fields">
-            {fields.map((field) => (
+            {fields.map(field => (
               <div key={field.name} className="webchat-field">
                 {renderField(field)}
                 {renderError(field)}

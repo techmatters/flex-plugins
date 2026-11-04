@@ -43,10 +43,10 @@ export const DESIGN_STATUSES: { value: DesignStatus; label: string; hint: string
 ];
 
 export const isDesignStatus = (value: unknown): value is DesignStatus =>
-  DESIGN_STATUSES.some((status) => status.value === value);
+  DESIGN_STATUSES.some(status => status.value === value);
 
 export const statusLabel = (status: DesignStatus) =>
-  DESIGN_STATUSES.find((candidate) => candidate.value === status)?.label ?? status;
+  DESIGN_STATUSES.find(candidate => candidate.value === status)?.label ?? status;
 
 // Any change to the design itself means it's being worked on again, whatever it was before
 export const STATUS_AFTER_CHANGE: DesignStatus = 'in-progress';

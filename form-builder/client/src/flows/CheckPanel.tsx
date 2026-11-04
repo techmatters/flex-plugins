@@ -37,8 +37,8 @@ type Props = {
 export const CheckPanel = ({ issues, ignored, readOnly, onShow, onEndHere, onIgnore }: Props) => {
   const [showWarnings, setShowWarnings] = useState(true);
   const [showIgnored, setShowIgnored] = useState(false);
-  const errors = issues.filter((issue) => issue.severity === 'error');
-  const warnings = issues.filter((issue) => issue.severity === 'warning');
+  const errors = issues.filter(issue => issue.severity === 'error');
+  const warnings = issues.filter(issue => issue.severity === 'warning');
   const shown = showWarnings ? issues : errors;
 
   const message = (issue: Issue) => {
@@ -61,17 +61,19 @@ export const CheckPanel = ({ issues, ignored, readOnly, onShow, onEndHere, onIgn
       <p className="flow-check-summary">
         {errors.length === 0 && warnings.length === 0
           ? 'Nothing to fix.'
-          : `${errors.length} error${errors.length === 1 ? '' : 's'}, ${warnings.length} warning${warnings.length === 1 ? '' : 's'}`}
+          : `${errors.length} error${errors.length === 1 ? '' : 's'}, ${warnings.length} warning${
+              warnings.length === 1 ? '' : 's'
+            }`}
         {ignored.length > 0 && ` · ${ignored.length} ignored`}
       </p>
       {warnings.length > 0 && (
         <label className="field-checkbox">
-          <input type="checkbox" checked={showWarnings} onChange={(e) => setShowWarnings(e.target.checked)} />
+          <input type="checkbox" checked={showWarnings} onChange={e => setShowWarnings(e.target.checked)} />
           <span>Show warnings</span>
         </label>
       )}
       <ul className="flow-issue-list">
-        {shown.map((issue) => (
+        {shown.map(issue => (
           <li key={issue.key} className={`flow-issue ${issue.severity}`}>
             <span className="flow-issue-icon" aria-label={issue.severity === 'error' ? 'Error' : 'Warning'}>
               {issue.severity === 'error' ? <CircleAlert size={15} /> : <TriangleAlert size={15} />}
@@ -112,7 +114,7 @@ export const CheckPanel = ({ issues, ignored, readOnly, onShow, onEndHere, onIgn
           </button>
           {showIgnored && (
             <ul className="flow-issue-list">
-              {ignored.map((issue) => (
+              {ignored.map(issue => (
                 <li key={issue.key} className="flow-issue ignored">
                   <span className="flow-issue-icon" aria-label="Ignored">
                     <EyeOff size={15} />

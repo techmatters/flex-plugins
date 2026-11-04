@@ -69,7 +69,7 @@ const postStudioFlowsSlice = createSlice({
     ) => {
       Object.assign(state, action.payload);
     },
-    surveyAdded: (state) => {
+    surveyAdded: state => {
       state.queue = '';
       state.error = undefined;
     },
@@ -78,7 +78,7 @@ const postStudioFlowsSlice = createSlice({
     },
   },
   selectors: {
-    selectPostStudioFlows: (state) => state,
+    selectPostStudioFlows: state => state,
   },
 });
 
@@ -104,9 +104,9 @@ export const openPostStudioFlows = (): AppThunk<Promise<void>> => async (dispatc
 // Sets (or, with undefined, removes) one queue's survey in one file
 export const setPostStudioFlow =
   (file: ServiceConfigFileName, queueKey: string, value: unknown): AppThunk =>
-  (dispatch) =>
+  dispatch =>
     dispatch(
-      editServiceConfig((files) => setServiceConfigValue(files, file, [...POST_STUDIO_FLOWS_KEYS, queueKey], value)),
+      editServiceConfig(files => setServiceConfigValue(files, file, [...POST_STUDIO_FLOWS_KEYS, queueKey], value)),
     );
 
 // Adds the survey chosen, unless its file already has one for that queue
@@ -117,9 +117,7 @@ export const addPostStudioFlow = (): AppThunk => (dispatch, getState) => {
     return;
   }
   const file = FILE_OF[where];
-  if (
-    postStudioFlowEntries(selectDraftFiles(getState())).some((entry) => entry.file === file && entry.queue === queue)
-  ) {
+  if (postStudioFlowEntries(selectDraftFiles(getState())).some(entry => entry.file === file && entry.queue === queue)) {
     dispatch(addFailed(`${file}.json already has a survey for ${queueLabel(queue, choices)}: change it in the list.`));
     return;
   }

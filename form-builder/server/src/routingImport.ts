@@ -39,12 +39,14 @@ export const importRouting = async (helplinesDir: string, code: string): Promise
   const notes: string[] = [];
   const readFrom = environments[0];
   const config = configs[readFrom]!;
-  const other = environments.find((environment) => environment !== readFrom);
+  const other = environments.find(environment => environment !== readFrom);
   if (other) {
-    (['workflows', 'task_queues'] as const).forEach((key) => {
+    (['workflows', 'task_queues'] as const).forEach(key => {
       if (JSON.stringify(configs[other]![key]) !== JSON.stringify(config[key])) {
         notes.push(
-          `${other} has different ${key === 'workflows' ? 'workflows' : 'queues'} from ${readFrom}; ${readFrom}'s were read.`,
+          `${other} has different ${
+            key === 'workflows' ? 'workflows' : 'queues'
+          } from ${readFrom}; ${readFrom}'s were read.`,
         );
       }
     });
@@ -67,7 +69,9 @@ export const importRouting = async (helplinesDir: string, code: string): Promise
     const template = templatefile && templatePathOf(templatefile);
     if (!template) {
       notes.push(
-        `Workflow “${key}”: its template ${templatefile ?? '(none)'} isn't under twilio-iac/helplines, so it wasn't read.`,
+        `Workflow “${key}”: its template ${
+          templatefile ?? '(none)'
+        } isn't under twilio-iac/helplines, so it wasn't read.`,
       );
       continue;
     }
@@ -111,34 +115,38 @@ export const importRouting = async (helplinesDir: string, code: string): Promise
   }
 
   // The skills and capacity rules in use
-  const targets = design.workflows.flatMap((workflow) => workflow.rules.flatMap((rule) => rule.targets));
+  const targets = design.workflows.flatMap(workflow => workflow.rules.flatMap(rule => rule.targets));
   const skills = new Set<string>([
-    ...design.queues.flatMap((queue) => (queue.workers.kind === 'skills' ? queue.workers.allOf.flat() : [])),
-    ...targets.flatMap((target) => skillsIn(target.who)),
+    ...design.queues.flatMap(queue => (queue.workers.kind === 'skills' ? queue.workers.allOf.flat() : [])),
+    ...targets.flatMap(target => skillsIn(target.who)),
   ]);
   // Skills that steps prefer by level (order_by worker.routing.levels.<skill>) have levels
   const levelled = new Set(
-    targets.map((target) => levelOrderOf(target.orderBy)?.skill).filter((skill): skill is string => Boolean(skill)),
+    targets.map(target => levelOrderOf(target.orderBy)?.skill).filter((skill): skill is string => Boolean(skill)),
   );
-  levelled.forEach((skill) => skills.add(skill));
-  design.skills = [...skills].sort().map((name) => (levelled.has(name) ? { name, levels: true } : { name }));
+  levelled.forEach(skill => skills.add(skill));
+  design.skills = [...skills].sort().map(name => (levelled.has(name) ? { name, levels: true } : { name }));
   design.capacity = {
-    voiceAndChatExclusive: targets.some((target) => target.who.some((block) => block.kind === 'voiceChatExclusive')),
-    voicemailOneAtATime: targets.some((target) => target.who.some((block) => block.kind === 'voicemailOneAtATime')),
+    voiceAndChatExclusive: targets.some(target => target.who.some(block => block.kind === 'voiceChatExclusive')),
+    voicemailOneAtATime: targets.some(target => target.who.some(block => block.kind === 'voicemailOneAtATime')),
   };
 
-  const customTargets = targets.filter((target) => target.who.some((block) => block.kind === 'custom')).length;
+  const customTargets = targets.filter(target => target.who.some(block => block.kind === 'custom')).length;
   if (customTargets > 0) {
     notes.push(
-      `${customTargets} target${customTargets === 1 ? ' has' : 's have'} conditions the designer shows as written (custom).`,
+      `${customTargets} target${
+        customTargets === 1 ? ' has' : 's have'
+      } conditions the designer shows as written (custom).`,
     );
   }
-  const offlineAlternatives = targets.filter((target) =>
-    target.who.some((block) => block.kind === 'offlineContactAlternative'),
+  const offlineAlternatives = targets.filter(target =>
+    target.who.some(block => block.kind === 'offlineContactAlternative'),
   ).length;
   if (offlineAlternatives > 0) {
     notes.push(
-      `${offlineAlternatives} target${offlineAlternatives === 1 ? ' also takes' : 's also take'} "the offline contact the counselor is recording"; see Check for the ones outside the Offline Contacts rule.`,
+      `${offlineAlternatives} target${
+        offlineAlternatives === 1 ? ' also takes' : 's also take'
+      } "the offline contact the counselor is recording"; see Check for the ones outside the Offline Contacts rule.`,
     );
   }
   if (design.workflows.length === 0) notes.push('No workflows found.');
@@ -149,7 +157,7 @@ export const importRouting = async (helplinesDir: string, code: string): Promise
       helpline: code,
       readFrom,
       environments: [...environments],
-      workflows: design.workflows.map((workflow) => ({
+      workflows: design.workflows.map(workflow => ({
         key: workflow.key,
         name: workflow.name,
         template: workflow.template,
@@ -157,7 +165,7 @@ export const importRouting = async (helplinesDir: string, code: string): Promise
         rules: workflow.rules.length,
       })),
       queues: design.queues.length,
-      skills: design.skills.map((skill) => skill.name),
+      skills: design.skills.map(skill => skill.name),
       notes,
     },
   };

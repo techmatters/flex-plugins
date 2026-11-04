@@ -87,10 +87,7 @@ type LayoutDefinitions = {
   case?: { sectionTypes?: Record<string, LayoutEntry> };
 };
 
-export const getForm = (
-  files: DefinitionFileMap,
-  filePath: string,
-): FormItemJsonDefinition[] | undefined => {
+export const getForm = (files: DefinitionFileMap, filePath: string): FormItemJsonDefinition[] | undefined => {
   const form = files[filePath];
   return Array.isArray(form) ? (form as FormItemJsonDefinition[]) : undefined;
 };
@@ -98,8 +95,7 @@ export const getForm = (
 export const getReferenceData = (files: DefinitionFileMap): Record<string, unknown> =>
   (files[REFERENCE_DATA_FILE] as Record<string, unknown>) ?? {};
 
-const getLayout = (files: DefinitionFileMap): LayoutDefinitions =>
-  (files[LAYOUT_FILE] as LayoutDefinitions) ?? {};
+const getLayout = (files: DefinitionFileMap): LayoutDefinitions => (files[LAYOUT_FILE] as LayoutDefinitions) ?? {};
 
 export const getContactSplitFormAt = (files: DefinitionFileMap, tab: ContactTab) =>
   getLayout(files).contact?.[tab.layoutKey]?.splitFormAt;
@@ -116,10 +112,7 @@ export const getCaseSectionSplitFormAt = (files: DefinitionFileMap, sectionKey: 
   getLayout(files).case?.sectionTypes?.[sectionKey]?.splitFormAt;
 
 export const getCaseSections = (files: DefinitionFileMap): CaseSection[] => {
-  const sections = (files[CASE_SECTIONS_FILE] ?? {}) as Record<
-    string,
-    { label: string; formPath: string }
-  >;
+  const sections = (files[CASE_SECTIONS_FILE] ?? {}) as Record<string, { label: string; formPath: string }>;
   return Object.entries(sections).map(([key, { label, formPath }]) => ({ key, label, formPath }));
 };
 
@@ -134,9 +127,9 @@ export const caseSectionTarget = (section: CaseSection): FormTarget => ({
 
 // A readable name for a form file, e.g. "Service user information" or "Household Member (case)"
 export const describeDefinitionFile = (files: DefinitionFileMap, filePath: string): string => {
-  const tab = CONTACT_TABS.find((contactTab) => contactTab.filePath === filePath);
+  const tab = CONTACT_TABS.find(contactTab => contactTab.filePath === filePath);
   if (tab) return tab.title;
-  const section = getCaseSections(files).find((caseSection) => caseSection.formPath === filePath);
+  const section = getCaseSections(files).find(caseSection => caseSection.formPath === filePath);
   return section ? `${section.label} (case)` : filePath;
 };
 
@@ -146,7 +139,7 @@ export const getHelplineName = (files: DefinitionFileMap, code: string): string 
     | { helplines?: { label?: string; value: string; default?: boolean }[] }
     | undefined;
   const helplines = info?.helplines ?? [];
-  const helpline = helplines.find((h) => h.default) ?? helplines[0];
+  const helpline = helplines.find(h => h.default) ?? helplines[0];
   return helpline?.label || helpline?.value || code.toUpperCase();
 };
 
@@ -154,9 +147,7 @@ export const getCaseStatuses = (files: DefinitionFileMap): StatusInfo[] =>
   Object.values((files[CASE_STATUS_FILE] ?? {}) as Record<string, StatusInfo>);
 
 // IssueCategorizationTab is keyed by the helpline display name (e.g. "NAMI"), not the short code
-export const getCategoriesByHelpline = (
-  files: DefinitionFileMap,
-): Record<string, CategoriesDefinition> =>
+export const getCategoriesByHelpline = (files: DefinitionFileMap): Record<string, CategoriesDefinition> =>
   (files[CATEGORIES_FILE] ?? {}) as Record<string, CategoriesDefinition>;
 
 /**

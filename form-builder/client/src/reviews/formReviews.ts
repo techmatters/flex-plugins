@@ -28,8 +28,7 @@ import { approvalKey } from '@tech-matters/form-builder-shared';
 import { hashJson } from '../drafts/draftSlice';
 
 // The builder's screens that are forms
-export type FormView =
-  { kind: 'contactTab'; tabKey: string } | { kind: 'caseSection'; sectionKey: string };
+export type FormView = { kind: 'contactTab'; tabKey: string } | { kind: 'caseSection'; sectionKey: string };
 
 export const SIDES: ReviewSide[] = ['helpline', 'aselo'];
 
@@ -51,8 +50,7 @@ export const isFormView = (view: { kind: string }): view is FormView =>
 export const formTargetOf = (view: FormView) =>
   view.kind === 'contactTab' ? `contactTab:${view.tabKey}` : `caseSection:${view.sectionKey}`;
 
-export const fieldTargetOf = (formTarget: string, fieldName: string) =>
-  `${formTarget}#${fieldName}`;
+export const fieldTargetOf = (formTarget: string, fieldName: string) => `${formTarget}#${fieldName}`;
 
 const formOfTarget = (target: string) => target.split('#')[0];
 
@@ -63,11 +61,8 @@ export const fieldFingerprint = (item: FormItemJsonDefinition) => hashJson(item)
 // approved: approved, and unchanged since; changed: approved, then changed
 export type ApprovalState = 'approved' | 'changed';
 
-export const approvalOf = (
-  approvals: Record<string, Approval> | undefined,
-  side: ReviewSide,
-  target: string,
-) => approvals?.[approvalKey(side, target)];
+export const approvalOf = (approvals: Record<string, Approval> | undefined, side: ReviewSide, target: string) =>
+  approvals?.[approvalKey(side, target)];
 
 export const approvalState = (
   approvals: Record<string, Approval> | undefined,
@@ -83,16 +78,15 @@ export const approvalState = (
 export const isOpen = (thread: ReviewThread) => !thread.resolvedAt;
 
 // A question someone on the other side has replied to
-export const isAnswered = (thread: ReviewThread) =>
-  (thread.replies ?? []).some((reply) => reply.side !== thread.side);
+export const isAnswered = (thread: ReviewThread) => (thread.replies ?? []).some(reply => reply.side !== thread.side);
 
 export const threadsOn = (threads: ReviewThread[] | undefined, target: string) =>
-  (threads ?? []).filter((thread) => thread.target === target);
+  (threads ?? []).filter(thread => thread.target === target);
 
 // Open threads on a form or any of its fields
 export const openThreadsInForm = (threads: ReviewThread[] | undefined, formTarget: string) =>
-  (threads ?? []).filter((thread) => isOpen(thread) && formOfTarget(thread.target) === formTarget);
+  (threads ?? []).filter(thread => isOpen(thread) && formOfTarget(thread.target) === formTarget);
 
 // The kinds of open flags, most pressing first (each once), for icons
 export const flagKinds = (threads: ReviewThread[]) =>
-  FLAG_ORDER.filter((kind) => threads.some((thread) => isOpen(thread) && thread.kind === kind));
+  FLAG_ORDER.filter(kind => threads.some(thread => isOpen(thread) && thread.kind === kind));

@@ -76,7 +76,12 @@ import type {
   ObjectField,
   Person,
 } from '@tech-matters/form-builder-shared/flows/model';
-import { hasNonStandardRecording, isVoiceMessage, playsWaitRecording, withStudioName } from '@tech-matters/form-builder-shared/flows/recordings';
+import {
+  hasNonStandardRecording,
+  isVoiceMessage,
+  playsWaitRecording,
+  withStudioName,
+} from '@tech-matters/form-builder-shared/flows/recordings';
 import { JsonTextarea } from './JsonTextarea';
 import { CanvasNode, ConnectionEdge, FrameNode, newId, ObjectNode, StickyNode } from './canvasModel';
 import type { HelplineChoices } from './boardClient';
@@ -190,15 +195,15 @@ const suggestionsFor = (
   if (source === 'splitInputs') return splitInputs;
   if (!source || !choices) return [];
   if (source === 'chatbots') {
-    return [...new Set(choices.chatbots.map((bot) => bot.name))].map((name) => ({
+    return [...new Set(choices.chatbots.map(bot => bot.name))].map(name => ({
       value: name,
       detail: choices.chatbots
-        .filter((bot) => bot.name === name)
-        .map((bot) => bot.language)
+        .filter(bot => bot.name === name)
+        .map(bot => bot.language)
         .join(', '),
     }));
   }
-  if (source === 'skills') return choices.skills.map((skill) => ({ value: skill, detail: '' }));
+  if (source === 'skills') return choices.skills.map(skill => ({ value: skill, detail: '' }));
   return choices[source].map(({ key, name }) => ({ value: key, detail: name === key ? '' : name }));
 };
 
@@ -230,7 +235,7 @@ const NamePartsEditor = ({
   const parts: NameParts = (name && nameParts(name, prefix, choices)) || {
     postqueue,
     prefix,
-    channel: choices.channels.includes(channel ?? '') ? channel : (only(choices.channels) ?? channel),
+    channel: choices.channels.includes(channel ?? '') ? channel : only(choices.channels) ?? channel,
     language: choices.languages.includes(language ?? '') ? language : only(choices.languages),
     service: only(choices.services),
     rest: '',
@@ -257,10 +262,10 @@ const NamePartsEditor = ({
         title={label}
         value={parts[key] ?? ''}
         disabled={readOnly}
-        onChange={(e) => set({ [key]: e.target.value || undefined })}
+        onChange={e => set({ [key]: e.target.value || undefined })}
       >
         <option value="">no {label.toLowerCase()}</option>
-        {values.map((value) => (
+        {values.map(value => (
           <option key={value} value={value}>
             {value}
           </option>
@@ -286,7 +291,7 @@ const NamePartsEditor = ({
           placeholder="service_menu"
           disabled={readOnly}
           spellCheck={false}
-          onChange={(e) => set({ rest: e.target.value })}
+          onChange={e => set({ rest: e.target.value })}
         />
       </div>
       {name && <code className="flow-name-full">{name}</code>}
@@ -344,9 +349,9 @@ const PrefixedNameEditor = ({
             aria-label="Name's start"
             value={parts.prefix}
             disabled={readOnly}
-            onChange={(e) => set({ prefix: e.target.value })}
+            onChange={e => set({ prefix: e.target.value })}
           >
-            {prefixes.map((prefix) => (
+            {prefixes.map(prefix => (
               <option key={prefix} value={prefix}>
                 {prefix}
               </option>
@@ -365,7 +370,7 @@ const PrefixedNameEditor = ({
           placeholder={placeholder}
           disabled={readOnly}
           spellCheck={false}
-          onChange={(e) => set({ rest: e.target.value })}
+          onChange={e => set({ rest: e.target.value })}
         />
       </div>
       {name && <code className="flow-name-full">{name}</code>}
@@ -417,7 +422,7 @@ const VariablesSection = ({
             disabled={readOnly}
             spellCheck={false}
             aria-invalid={Boolean(variable.key && variableKeyProblem(variable.key))}
-            onChange={(e) => set(index, { key: e.target.value.trim() })}
+            onChange={e => set(index, { key: e.target.value.trim() })}
           />
           <span aria-hidden>=</span>
           <input
@@ -427,7 +432,7 @@ const VariablesSection = ({
             placeholder="es"
             disabled={readOnly}
             spellCheck={false}
-            onChange={(e) => set(index, { value: e.target.value })}
+            onChange={e => set(index, { value: e.target.value })}
           />
           {!readOnly && (
             <button
@@ -492,9 +497,9 @@ const ListInput = ({
         value={shown}
         placeholder={placeholder}
         disabled={readOnly}
-        onChange={(e) => setText(e.target.value)}
+        onChange={e => setText(e.target.value)}
         onBlur={commit}
-        onKeyDown={(e) => e.key === 'Enter' && commit()}
+        onKeyDown={e => e.key === 'Enter' && commit()}
       />
       <span className="field-hint">{hint}</span>
     </label>
@@ -524,7 +529,7 @@ const MultiSelect = ({
   onChange: (values: string[]) => void;
 }) => {
   const [typing, setTyping] = useState<string>();
-  const labelOf = (value: string) => options.find((option) => option.value === value)?.label ?? value;
+  const labelOf = (value: string) => options.find(option => option.value === value)?.label ?? value;
   const add = (value: string) => {
     const added = toSnake(value);
     if (added && !values.includes(added)) onChange([...values, added]);
@@ -537,7 +542,7 @@ const MultiSelect = ({
     <div className="field">
       <span className="field-label">{label}</span>
       <span className="flow-chips">
-        {values.map((value) => (
+        {values.map(value => (
           <span key={value} className="flow-chip">
             {labelOf(value)}
             {!readOnly && (
@@ -545,7 +550,7 @@ const MultiSelect = ({
                 type="button"
                 className="link-button"
                 aria-label={`Remove ${labelOf(value)}`}
-                onClick={() => onChange(values.filter((candidate) => candidate !== value))}
+                onClick={() => onChange(values.filter(candidate => candidate !== value))}
               >
                 ×
               </button>
@@ -561,9 +566,9 @@ const MultiSelect = ({
             aria-label={`Other ${label.toLowerCase()}`}
             value={typing}
             placeholder={other}
-            onChange={(e) => setTyping(e.target.value)}
+            onChange={e => setTyping(e.target.value)}
             onBlur={stopTyping}
-            onKeyDown={(e) => {
+            onKeyDown={e => {
               if (e.key === 'Enter') stopTyping();
               else if (e.key === 'Escape') setTyping(undefined);
             }}
@@ -572,12 +577,12 @@ const MultiSelect = ({
           <select
             aria-label={`Add ${label.toLowerCase()}`}
             value=""
-            onChange={(e) => (e.target.value === OTHER ? setTyping('') : add(e.target.value))}
+            onChange={e => (e.target.value === OTHER ? setTyping('') : add(e.target.value))}
           >
             <option value="">+ Add</option>
             {options
-              .filter((option) => !values.includes(option.value))
-              .map((option) => (
+              .filter(option => !values.includes(option.value))
+              .map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -625,7 +630,7 @@ const NamingSection = ({
   const variants = details?.variants ?? [];
   const shared = variants.length > 0;
   // Flows from the helpline's config (studio_flows entries) can't be made one again here
-  const imported = variants.some((variant) => !variant.added);
+  const imported = variants.some(variant => !variant.added);
   const chosenLanguages = naming.languages ?? [];
   return (
     <section className="flow-inspector-section">
@@ -642,7 +647,7 @@ const NamingSection = ({
         options={CHANNELS}
         hint={`Not set: ${found.channels.join(', ') || 'none'} (the flow's channel).`}
         readOnly={readOnly}
-        onChange={(values) => set('channels', values)}
+        onChange={values => set('channels', values)}
       />
       {shared ? (
         <div className="field">
@@ -659,8 +664,8 @@ const NamingSection = ({
                     type="text"
                     aria-label={`${variant.label} studio_flows key`}
                     defaultValue={variant.key}
-                    onBlur={(e) => sharing.onRename(variant.key, e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
+                    onBlur={e => sharing.onRename(variant.key, e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && e.currentTarget.blur()}
                   />
                 ) : (
                   <code>{variant.key}</code>
@@ -677,14 +682,14 @@ const NamingSection = ({
             <select
               aria-label="Add a language's flow"
               value=""
-              onChange={(e) => {
+              onChange={e => {
                 if (!e.target.value) return;
                 const language = namingLanguageOf(e.target.value);
                 sharing.onAdd(language.locale, language.label);
               }}
             >
               <option value="">+ Add a language</option>
-              {NAMING_LANGUAGES.filter(({ label }) => !variants.some((variant) => variant.label === label)).map(
+              {NAMING_LANGUAGES.filter(({ label }) => !variants.some(variant => variant.label === label)).map(
                 ({ code, label }) => (
                   <option key={code} value={code}>
                     {label} ({code})
@@ -706,7 +711,7 @@ const NamingSection = ({
           other="e.g. ar"
           hint={`Not set: ${found.languages.join(', ') || 'none'} (its messages' languages).`}
           readOnly={readOnly}
-          onChange={(values) => set('languages', values)}
+          onChange={values => set('languages', values)}
         />
       )}
       {sharing && (shared || chosenLanguages.length > 1) && (
@@ -747,7 +752,7 @@ const NamingSection = ({
         placeholder="childhelp, tya"
         hint="Comma-separated: e.g. the lines or programs the flow serves."
         readOnly={readOnly}
-        onChange={(values) => set('services', values)}
+        onChange={values => set('services', values)}
       />
     </section>
   );
@@ -774,7 +779,7 @@ const ChoiceOrText = ({
       <select
         value={typing ? CUSTOM : chosen}
         disabled={disabled}
-        onChange={(e) => {
+        onChange={e => {
           const picked = e.target.value;
           setTyping(picked === CUSTOM);
           if (picked !== CUSTOM) onChange(picked);
@@ -787,7 +792,7 @@ const ChoiceOrText = ({
             Choose…
           </option>
         )}
-        {options.map((option) => (
+        {options.map(option => (
           <option key={option} value={option}>
             {field.optionLabels?.[option] ?? option}
           </option>
@@ -801,7 +806,7 @@ const ChoiceOrText = ({
           placeholder="e.g. NAMI or ${flow_vars.widget_from}"
           aria-label={`${field.label} (custom)`}
           disabled={disabled}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={e => onChange(e.target.value)}
         />
       )}
     </>
@@ -822,10 +827,10 @@ const ChannelSelect = ({
     <select
       value={value ?? ''}
       disabled={disabled}
-      onChange={(e) => onChange((e.target.value || undefined) as Channel | undefined)}
+      onChange={e => onChange((e.target.value || undefined) as Channel | undefined)}
     >
       <option value="">Not set</option>
-      {CHANNELS.map((channel) => (
+      {CHANNELS.map(channel => (
         <option key={channel.value} value={channel.value}>
           {channel.label}
         </option>
@@ -863,7 +868,7 @@ const Comments = ({
       </h3>
       {comments.length === 0 && <p className="field-hint">No comments yet.</p>}
       <ul className="flow-comments">
-        {comments.map((comment) => (
+        {comments.map(comment => (
           <li key={comment.id}>
             <span className="flow-comment-author">{comment.author}</span>{' '}
             <span className="field-hint">{new Date(comment.at).toLocaleString()}</span>
@@ -878,7 +883,7 @@ const Comments = ({
             value={text}
             aria-label="New comment"
             placeholder="Write a comment"
-            onChange={(e) => setText(e.target.value)}
+            onChange={e => setText(e.target.value)}
           />
           <div className="option-actions">
             <button type="button" className="secondary-button" onClick={add} disabled={!text.trim()}>
@@ -941,9 +946,9 @@ const ExitsEditor = ({
               aria-label={`Comparison for ${exit}`}
               value={operatorOf(exit)}
               disabled={readOnly}
-              onChange={(e) => onOperator?.(exit, e.target.value)}
+              onChange={e => onOperator?.(exit, e.target.value)}
             >
-              {SPLIT_OPERATORS.map((operator) => (
+              {SPLIT_OPERATORS.map(operator => (
                 <option key={operator.type} value={operator.type}>
                   {operator.label}
                 </option>
@@ -956,7 +961,7 @@ const ExitsEditor = ({
             aria-label="Way out"
             disabled={readOnly || fixed.includes(exit)}
             title={fixed.includes(exit) ? 'Studio always has this way out' : undefined}
-            onChange={(e) =>
+            onChange={e =>
               onChange(
                 exits.map((candidate, i) => (i === index ? e.target.value : candidate)),
                 { from: exit, to: e.target.value },
@@ -993,7 +998,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
   const { object } = node.data;
   const info = OBJECT_TYPES[object.type];
   // Its settings shown (in a sketch, only those a high-level design needs)
-  const fields = (info.fields ?? []).filter((field) => fieldShown(field, object.settings) && (!sketch || field.sketch));
+  const fields = (info.fields ?? []).filter(field => fieldShown(field, object.settings) && (!sketch || field.sketch));
   const frame = props.nodes.find((candidate): candidate is FrameNode => candidate.id === node.parentId);
   const update = (changes: Partial<ObjectNode['data']['object']>) =>
     onNodeData(node.id, { object: { ...object, ...changes } });
@@ -1002,7 +1007,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
   // The flow's channels, languages and services, the parts messages' names are built from
   const choices = namingChoicesOf(
     details,
-    props.content.objects.filter((candidate) => candidate.frameId === node.parentId),
+    props.content.objects.filter(candidate => candidate.frameId === node.parentId),
   );
   const suggested = suggestStudioName(object, details, choices);
   // What a split can read: the flow memory, variables and chatbot flags set on this board
@@ -1038,7 +1043,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
   // The message as the shown variant has it (flows sharing a template), and changing it there
   const variants = props.content.flow?.variants ?? [];
   const mainVariant = variants[0]?.key;
-  const shownVariant = variants.find((candidate) => candidate.key === props.variant);
+  const shownVariant = variants.find(candidate => candidate.key === props.variant);
   const message = messageFor(object, props.variant, mainVariant);
   const setMessage = (changed: NonNullable<typeof message>) => {
     const next = withVariantMessage(object, props.variant, mainVariant, changed);
@@ -1059,7 +1064,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
     <>
       {problems.length > 0 && (
         <ul className="flow-problems" aria-label="Problems">
-          {problems.map((issue) => (
+          {problems.map(issue => (
             <li key={issue.key} className={issue.severity}>
               {issue.message}
             </li>
@@ -1072,9 +1077,9 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
           <select
             value={object.type}
             disabled={readOnly}
-            onChange={(e) => props.onChangeType(node.id, e.target.value as FlowObjectType)}
+            onChange={e => props.onChangeType(node.id, e.target.value as FlowObjectType)}
           >
-            {(Object.keys(OBJECT_TYPES) as FlowObjectType[]).map((type) => (
+            {(Object.keys(OBJECT_TYPES) as FlowObjectType[]).map(type => (
               <option key={type} value={type}>
                 {OBJECT_TYPES[type].label}
               </option>
@@ -1084,18 +1089,13 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
         </label>
         <label className="field">
           <span className="field-label">Text</span>
-          <textarea
-            rows={2}
-            value={object.text}
-            disabled={readOnly}
-            onChange={(e) => update({ text: e.target.value })}
-          />
+          <textarea rows={2} value={object.text} disabled={readOnly} onChange={e => update({ text: e.target.value })} />
         </label>
         {!sketch && (
           <div className="field">
             <span className="field-label">Colour</span>
             <div className="flow-swatches">
-              {OBJECT_COLORS.map((color) => (
+              {OBJECT_COLORS.map(color => (
                 <button
                   key={color}
                   type="button"
@@ -1124,14 +1124,16 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
             <ChannelSelect
               value={object.message?.channel}
               disabled={readOnly}
-              onChange={(channel) => update({ message: { ...object.message, channel } })}
+              onChange={channel => update({ message: { ...object.message, channel } })}
             />
           )}
           {info.hasMessage && variants.length > 1 && shownVariant && (
             <p className="field-hint flow-variant-hint">
               {sharedText
                 ? 'This text is written in the template the flows share: changing it changes every one of them.'
-                : `${shownVariant.label} (${shownVariant.key}): this flow's own script${messageChannelOf(object, details) === 'voice' ? ' and recording' : ''}.`}
+                : `${shownVariant.label} (${shownVariant.key}): this flow's own script${
+                    messageChannelOf(object, details) === 'voice' ? ' and recording' : ''
+                  }.`}
             </p>
           )}
           {info.hasMessage && (
@@ -1146,10 +1148,10 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                     value={message?.language ?? ''}
                     disabled={readOnly}
                     placeholder="en"
-                    onChange={(e) => setMessage({ ...message, language: e.target.value || undefined })}
+                    onChange={e => setMessage({ ...message, language: e.target.value || undefined })}
                   />
                   <datalist id="flow-languages">
-                    {['en', 'es', 'fr', 'pt', 'mt', 'zh'].map((language) => (
+                    {['en', 'es', 'fr', 'pt', 'mt', 'zh'].map(language => (
                       <option key={language} value={language} />
                     ))}
                   </datalist>
@@ -1163,7 +1165,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                   value={message?.script ?? ''}
                   disabled={readOnly}
                   placeholder="What the caller hears, or the message sent"
-                  onChange={(e) => setMessage({ ...message, script: e.target.value || undefined })}
+                  onChange={e => setMessage({ ...message, script: e.target.value || undefined })}
                 />
               </label>
             </>
@@ -1180,7 +1182,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
             staff={props.recordings.staff}
             readOnly={readOnly}
             userName={props.userName}
-            onApprove={(approved) => setMessage({ ...message, approved })}
+            onApprove={approved => setMessage({ ...message, approved })}
           />
         </>
       )}
@@ -1219,7 +1221,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                 value={object.studioName ?? ''}
                 disabled={readOnly}
                 placeholder={suggestion}
-                onChange={(e) => rename(e.target.value.trim() || undefined)}
+                onChange={e => rename(e.target.value.trim() || undefined)}
               />
             </label>
           )}
@@ -1255,7 +1257,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
               A Twilio Function in Studio (<code>run-function</code>): its settings stay as they are live.
             </p>
           )}
-          {fields.map((field) => {
+          {fields.map(field => {
             const value = object.settings?.[field.key] ?? '';
             // Not chosen: a Send to queue's task channel follows the flow's channel
             const flowChannel = flowChannelOf(details);
@@ -1263,12 +1265,10 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
               field.key === 'taskChannel'
                 ? taskChannelOf({}, flowChannel)
                 : field.key === 'targetChannel'
-                  ? workerChannelOf({}, flowChannel)
-                  : undefined;
+                ? workerChannelOf({}, flowChannel)
+                : undefined;
             const emptyChoiceLabel = (choice: typeof field) =>
-              automatic
-                ? `Automatic: ${automatic} (from the flow’s channel)`
-                : (choice.optionLabels?.[''] ?? 'Not set');
+              automatic ? `Automatic: ${automatic} (from the flow’s channel)` : choice.optionLabels?.[''] ?? 'Not set';
             // A split's default comes first, then what else it can read
             const fromBefore = field.suggestions === 'splitInputs' ? defaultSplitInput : undefined;
             const suggestions = [
@@ -1276,18 +1276,18 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                 ? [{ value: fromBefore, detail: 'the answer of the widget before it (the default)' }]
                 : []),
               ...suggestionsFor(field.suggestions, props.helplineChoices, splitInputs).filter(
-                (suggestion) => suggestion.value !== fromBefore,
+                suggestion => suggestion.value !== fromBefore,
               ),
             ];
             // Skills are a comma-separated list: they're added to it, not chosen instead of it
-            const listed = value.split(',').map((item) => item.trim());
+            const listed = value.split(',').map(item => item.trim());
             const set = (newValue: string) => {
               const { [field.key]: _removed, ...others } = object.settings ?? {};
               const settings: Record<string, string> = newValue ? { ...others, [field.key]: newValue } : others;
               // A chatbot of the helpline's chosen: its language too (Lex's en_USCH is en-USCH here)
               const bot =
                 field.suggestions === 'chatbots' &&
-                props.helplineChoices?.chatbots.find((candidate) => candidate.name === newValue);
+                props.helplineChoices?.chatbots.find(candidate => candidate.name === newValue);
               if (bot && !settings.language) settings.language = bot.language.replace('_', '-');
               update({ settings: Object.keys(settings).length > 0 ? settings : undefined });
             };
@@ -1300,11 +1300,11 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                 {field.custom ? (
                   <ChoiceOrText key={node.id} field={field} value={value} disabled={readOnly} onChange={set} />
                 ) : field.options ? (
-                  <select value={value} disabled={readOnly} onChange={(e) => set(e.target.value)}>
+                  <select value={value} disabled={readOnly} onChange={e => set(e.target.value)}>
                     <option value="">{emptyChoiceLabel(field)}</option>
                     {/* A value set before (e.g. imported) that isn't one of the choices any more */}
                     {value && !field.options.includes(value) && <option value={value}>{value}</option>}
-                    {field.options.map((option) => (
+                    {field.options.map(option => (
                       <option key={option} value={option}>
                         {field.optionLabels?.[option] ?? option}
                       </option>
@@ -1320,7 +1320,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                     disabled={readOnly}
                     spellCheck={false}
                     aria-invalid={Boolean(fieldProblem(field, value))}
-                    isValid={(text) => Boolean(text.trim()) && !fieldProblem(field, text)}
+                    isValid={text => Boolean(text.trim()) && !fieldProblem(field, text)}
                     onValueChange={set}
                   />
                 ) : (
@@ -1339,7 +1339,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                     disabled={readOnly}
                     spellCheck={field.kind === 'url' ? false : undefined}
                     aria-invalid={Boolean(fieldProblem(field, value))}
-                    onChange={(e) => set(e.target.value)}
+                    onChange={e => set(e.target.value)}
                   />
                 )}
                 {suggestions.length > 0 && field.suggestions !== 'skills' && (
@@ -1395,7 +1395,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
           variables={object.variables}
           flowMemory={object.type === 'setFlowMemory'}
           readOnly={readOnly}
-          onChange={(variables) => update({ variables })}
+          onChange={variables => update({ variables })}
         />
       )}
 
@@ -1404,7 +1404,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
           attributes={object.taskAttributes}
           channel={details?.channel}
           readOnly={readOnly}
-          onChange={(taskAttributes) => update({ taskAttributes })}
+          onChange={taskAttributes => update({ taskAttributes })}
         />
       )}
 
@@ -1412,10 +1412,8 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
         <section className="flow-inspector-section">
           <h3>Where it goes</h3>
           <ul className="flow-exit-targets">
-            {exits.map((exit) => {
-              const connection = props.edges.find(
-                (edge) => edge.source === node.id && (edge.data?.exit ?? '') === exit,
-              );
+            {exits.map(exit => {
+              const connection = props.edges.find(edge => edge.source === node.id && (edge.data?.exit ?? '') === exit);
               const ended = (object.endedExits ?? []).includes(exit);
               return (
                 <li key={exit || 'next'}>
@@ -1428,7 +1426,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                         type="checkbox"
                         checked={ended}
                         disabled={readOnly}
-                        onChange={(e) => props.onEndHere(node.id, exit, e.target.checked)}
+                        onChange={e => props.onEndHere(node.id, exit, e.target.checked)}
                       />
                       <span>{ended ? 'The flow ends here' : 'Not connected: the flow ends here on purpose'}</span>
                     </label>
@@ -1481,7 +1479,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
         thread={object.thread}
         readOnly={readOnly}
         userName={props.userName}
-        onChange={(thread) => update({ thread })}
+        onChange={thread => update({ thread })}
       />
     </>
   );
@@ -1499,17 +1497,17 @@ const FrameSettings = ({ node, props }: { node: FrameNode; props: InspectorProps
           type="text"
           value={frame.title}
           disabled={props.readOnly}
-          onChange={(e) => update({ title: e.target.value })}
+          onChange={e => update({ title: e.target.value })}
         />
       </label>
       <p className="field-hint">When the frame is one Studio flow, say which, so the exports know.</p>
-      <ChannelSelect value={frame.channel} disabled={props.readOnly} onChange={(channel) => update({ channel })} />
+      <ChannelSelect value={frame.channel} disabled={props.readOnly} onChange={channel => update({ channel })} />
       <label className="field">
         <span className="field-label">Part of the flow</span>
         <select
           value={frame.stage ?? ''}
           disabled={props.readOnly}
-          onChange={(e) => update({ stage: (e.target.value || undefined) as FlowStage | undefined })}
+          onChange={e => update({ stage: (e.target.value || undefined) as FlowStage | undefined })}
         >
           <option value="">Not set</option>
           <option value="prequeue">Before the queue (pre-queue)</option>
@@ -1521,9 +1519,9 @@ const FrameSettings = ({ node, props }: { node: FrameNode; props: InspectorProps
       </button>
       <NamingSection
         details={frame}
-        objects={props.content.objects.filter((object) => object.frameId === node.id)}
+        objects={props.content.objects.filter(object => object.frameId === node.id)}
         readOnly={props.readOnly}
-        onChange={(naming) => update({ naming })}
+        onChange={naming => update({ naming })}
       />
     </section>
   );
@@ -1544,7 +1542,7 @@ const StickySettings = ({ node, props }: { node: StickyNode; props: InspectorPro
     ? { name: task.assignee, ...(task.assigneeEmail ? { email: task.assigneeEmail } : {}) }
     : undefined;
   const choices =
-    assignee && !props.people.some((person) => personKey(person) === personKey(assignee))
+    assignee && !props.people.some(person => personKey(person) === personKey(assignee))
       ? [...props.people, assignee]
       : props.people;
   return (
@@ -1556,7 +1554,7 @@ const StickySettings = ({ node, props }: { node: StickyNode; props: InspectorPro
             rows={5}
             value={sticky.text}
             disabled={props.readOnly}
-            onChange={(e) => update({ text: e.target.value })}
+            onChange={e => update({ text: e.target.value })}
           />
         </label>
         <div className="field">
@@ -1594,7 +1592,7 @@ const StickySettings = ({ node, props }: { node: StickyNode; props: InspectorPro
               <select
                 value={task.status}
                 disabled={props.readOnly}
-                onChange={(e) => updateTask({ status: e.target.value as TaskStatus })}
+                onChange={e => updateTask({ status: e.target.value as TaskStatus })}
               >
                 {(Object.entries(TASK_STATUSES) as [TaskStatus, string][]).map(([status, label]) => (
                   <option key={status} value={status}>
@@ -1608,13 +1606,13 @@ const StickySettings = ({ node, props }: { node: StickyNode; props: InspectorPro
               <select
                 value={assignee ? personKey(assignee) : ''}
                 disabled={props.readOnly}
-                onChange={(e) => {
-                  const person = choices.find((candidate) => personKey(candidate) === e.target.value);
+                onChange={e => {
+                  const person = choices.find(candidate => personKey(candidate) === e.target.value);
                   updateTask({ assignee: person?.name, assigneeEmail: person?.email });
                 }}
               >
                 <option value="">Not assigned</option>
-                {choices.map((person) => (
+                {choices.map(person => (
                   <option key={personKey(person)} value={personKey(person)}>
                     {personLabel(person)}
                   </option>
@@ -1632,7 +1630,7 @@ const StickySettings = ({ node, props }: { node: StickyNode; props: InspectorPro
                 type="date"
                 value={task.due ?? ''}
                 disabled={props.readOnly}
-                onChange={(e) => updateTask({ due: e.target.value || undefined })}
+                onChange={e => updateTask({ due: e.target.value || undefined })}
               />
             </label>
             {!props.readOnly && (
@@ -1649,13 +1647,11 @@ const StickySettings = ({ node, props }: { node: StickyNode; props: InspectorPro
 
 const ConnectionSettings = ({ edge, props }: { edge: ConnectionEdge; props: InspectorProps }) => {
   const source = props.nodes.find((node): node is ObjectNode => node.id === edge.source && node.type === 'object');
-  const target = props.nodes.find((node) => node.id === edge.target);
+  const target = props.nodes.find(node => node.id === edge.target);
   const exits = source ? exitsOf(source.data.object).filter(Boolean) : [];
   // Each way out leads to one place: those other connections use can't be picked
   const usedElsewhere = new Set(
-    props.edges
-      .filter((other) => other.source === edge.source && other.id !== edge.id)
-      .map((other) => other.data?.exit),
+    props.edges.filter(other => other.source === edge.source && other.id !== edge.id).map(other => other.data?.exit),
   );
   const nameOf = (node?: CanvasNode) =>
     node?.type === 'object' ? node.data.object.text : node?.type === 'sticky' ? 'note' : 'frame';
@@ -1671,10 +1667,10 @@ const ConnectionSettings = ({ edge, props }: { edge: ConnectionEdge; props: Insp
           <select
             value={edge.data?.exit ?? ''}
             disabled={props.readOnly}
-            onChange={(e) => props.onEdgeExit(edge.id, e.target.value || undefined)}
+            onChange={e => props.onEdgeExit(edge.id, e.target.value || undefined)}
           >
             <option value="">Not set</option>
-            {exits.map((exit) => (
+            {exits.map(exit => (
               <option key={exit} value={exit} disabled={usedElsewhere.has(exit)}>
                 {exit}
                 {usedElsewhere.has(exit) ? ' (already connected)' : ''}
@@ -1690,7 +1686,7 @@ const ConnectionSettings = ({ edge, props }: { edge: ConnectionEdge; props: Insp
 const BoardSettings = ({ props }: { props: InspectorProps }) => {
   const frames = props.nodes.filter((node): node is FrameNode => node.type === 'frame');
   // The board's own flow: its objects outside frames (an imported board's are all there)
-  const unframed = props.content.objects.filter((object) => !object.frameId);
+  const unframed = props.content.objects.filter(object => !object.frameId);
   return (
     <>
       <section className="flow-inspector-section">
@@ -1700,7 +1696,7 @@ const BoardSettings = ({ props }: { props: InspectorProps }) => {
             type="text"
             value={props.title}
             disabled={props.readOnly}
-            onChange={(e) => props.onTitleChange(e.target.value)}
+            onChange={e => props.onTitleChange(e.target.value)}
           />
         </label>
       </section>
@@ -1709,7 +1705,7 @@ const BoardSettings = ({ props }: { props: InspectorProps }) => {
           details={props.content.flow}
           objects={unframed}
           readOnly={props.readOnly}
-          onChange={(naming) => props.onBoardFlow?.({ ...props.content.flow, naming })}
+          onChange={naming => props.onBoardFlow?.({ ...props.content.flow, naming })}
           languages={props.languages}
         />
       )}
@@ -1717,7 +1713,7 @@ const BoardSettings = ({ props }: { props: InspectorProps }) => {
         <h3>Frames</h3>
         {frames.length === 0 && <p className="field-hint">No frames yet. Add one from the left to hold a flow.</p>}
         <ul className="flow-frame-list">
-          {frames.map((frame) => (
+          {frames.map(frame => (
             <li key={frame.id}>
               <button type="button" className="link-button" onClick={() => props.onFocusFrame(frame.id)}>
                 {frame.data.frame.title || 'Frame'}
@@ -1763,7 +1759,7 @@ const useInspectorProps = (): InspectorProps => {
     edges,
     readOnly,
     userName,
-    onTitleChange: (next) => dispatch(titleChanged(next)),
+    onTitleChange: next => dispatch(titleChanged(next)),
     onNodeData: (id, data) => dispatch(nodeDataChanged({ id, data })),
     onChangeType: (id, type) => dispatch(objectTypeChanged({ id, type })),
     onRenameExit: (id, exits, renamed) => dispatch(exitsRenamed({ id, exits, renamed })),
@@ -1776,11 +1772,11 @@ const useInspectorProps = (): InspectorProps => {
     variant,
     helplineChoices,
     onRefreshChoices: () => void dispatch(loadHelplineChoices()),
-    onBoardFlow: (next) => dispatch(flowChanged(next)),
+    onBoardFlow: next => dispatch(flowChanged(next)),
     languages: {
-      onShare: (languages) => dispatch(languagesShared(languages)),
+      onShare: languages => dispatch(languagesShared(languages)),
       onUnshare: () => {
-        if (!flow || variants.some((candidate) => !candidate.added)) return;
+        if (!flow || variants.some(candidate => !candidate.added)) return;
         // eslint-disable-next-line no-alert
         if (
           hasOtherLanguageTexts(nodes) &&
@@ -1790,8 +1786,8 @@ const useInspectorProps = (): InspectorProps => {
         dispatch(languagesUnshared());
       },
       onAdd: (locale, label) => dispatch(languageAdded({ locale, label })),
-      onRemove: (key) => {
-        const leaving = variants.find((candidate) => candidate.key === key);
+      onRemove: key => {
+        const leaving = variants.find(candidate => candidate.key === key);
         if (!flow || !leaving?.added || key === variants[0]?.key) return;
         // eslint-disable-next-line no-alert
         if (!window.confirm(`Remove ${leaving.label} (${key}) and its texts?`)) return;
@@ -1805,8 +1801,8 @@ const useInspectorProps = (): InspectorProps => {
 
 export const Inspector = () => {
   const props = useInspectorProps();
-  const selectedNodes = props.nodes.filter((node) => node.selected);
-  const selectedEdges = props.edges.filter((edge) => edge.selected);
+  const selectedNodes = props.nodes.filter(node => node.selected);
+  const selectedEdges = props.edges.filter(edge => edge.selected);
   const count = selectedNodes.length + selectedEdges.length;
 
   let content: JSX.Element;

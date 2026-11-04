@@ -59,8 +59,8 @@ export const useCanvasView = () => {
   const deleteSelected = () => {
     if (locked) return;
     flow.deleteElements({
-      nodes: flow.getNodes().filter((node) => node.selected),
-      edges: flow.getEdges().filter((edge) => edge.selected),
+      nodes: flow.getNodes().filter(node => node.selected),
+      edges: flow.getEdges().filter(edge => edge.selected),
     });
   };
 

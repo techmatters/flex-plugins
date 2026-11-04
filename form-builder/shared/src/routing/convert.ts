@@ -19,7 +19,14 @@
  * design. Reading keeps what each part was; writing gives back exactly that for whatever wasn't
  * changed, and builds the rest from the design's blocks.
  */
-import { readConditions, readQueueWorkers, readWho, writeConditions, writeQueueWorkers, writeWho } from './expressions.ts';
+import {
+  readConditions,
+  readQueueWorkers,
+  readWho,
+  writeConditions,
+  writeQueueWorkers,
+  writeWho,
+} from './expressions.ts';
 import type { MoveOn, Queue, Rule, Target, Workflow } from './model.ts';
 
 type Json = Record<string, unknown>;
@@ -28,7 +35,7 @@ type Json = Record<string, unknown>;
 const QUEUE_REFERENCE = /^\$\{\s*task_queues(?:\.([A-Za-z_][A-Za-z0-9_]*)|\["([^"]+)"\])\s*\}$/;
 export const queueKeyOf = (queue: string) => {
   const found = queue.match(QUEUE_REFERENCE);
-  return found ? (found[1] ?? found[2]) : undefined;
+  return found ? found[1] ?? found[2] : undefined;
 };
 export const queueReference = (key: string) =>
   /^[A-Za-z_][A-Za-z0-9_]*$/.test(key) ? `\${task_queues.${key}}` : `\${task_queues["${key}"]}`;
@@ -106,7 +113,7 @@ export const readRule = (filter: Json): Rule => ({
   id: newId('r'),
   name: textOf(filter.filter_friendly_name) ?? '',
   when: readConditions(textOf(filter.expression)),
-  targets: (Array.isArray(filter.targets) ? filter.targets : []).map((target) => readTarget(target as Json)),
+  targets: (Array.isArray(filter.targets) ? filter.targets : []).map(target => readTarget(target as Json)),
   original: filter,
 });
 
@@ -147,7 +154,7 @@ export const readWorkflow = (
     ...(numberOf(settings.task_reservation_timeout) !== undefined
       ? { reservationTimeout: numberOf(settings.task_reservation_timeout) }
       : {}),
-    rules: (Array.isArray(filters) ? filters : []).map((filter) => readRule(filter as Json)),
+    rules: (Array.isArray(filters) ? filters : []).map(filter => readRule(filter as Json)),
     ...source,
     settings: routingRest,
     templateSettings: templateRest,

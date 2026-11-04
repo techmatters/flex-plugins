@@ -20,7 +20,14 @@
  * - the recordings and scripts list, as a spreadsheet for the helpline.
  * See docs/flow-designer.md, "Outputs".
  */
-import type { Board, BoardContent, Channel, FlowNaming, FlowObject, Frame } from '@tech-matters/form-builder-shared/flows/model';
+import type {
+  Board,
+  BoardContent,
+  Channel,
+  FlowNaming,
+  FlowObject,
+  Frame,
+} from '@tech-matters/form-builder-shared/flows/model';
 import {
   exitsOf,
   flowDetailsOf,
@@ -215,13 +222,13 @@ const variableTargetsOf = (code: string, variable: FlowVarChange, channels: stri
   const blocks =
     variable.scope === 'channel_flow_vars'
       ? channels.length > 0
-        ? channels.map((channel) => `channels.${channel}.channel_flow_vars`)
+        ? channels.map(channel => `channels.${channel}.channel_flow_vars`)
         : ['channels.<channel>.channel_flow_vars']
       : variable.flow
-        ? [`studio_flows.${variable.flow}.flow_vars`]
-        : ['flow_vars'];
-  return ['staging', 'production'].flatMap((environment) =>
-    blocks.map((block) => `${code}/${environment}.hcl: ${block}.${variable.name}`),
+      ? [`studio_flows.${variable.flow}.flow_vars`]
+      : ['flow_vars'];
+  return ['staging', 'production'].flatMap(environment =>
+    blocks.map(block => `${code}/${environment}.hcl: ${block}.${variable.name}`),
   );
 };
 
@@ -230,17 +237,17 @@ const mentionsClaude = (text: string) => /@claude\b/i.test(text);
 // Sticky notes stay on the board, except the ones (and open comments) addressed to @claude
 const forClaudeOf = (content: BoardContent): FlowExport['forClaude'] => [
   ...content.stickies
-    .filter((sticky) => mentionsClaude(sticky.text))
+    .filter(sticky => mentionsClaude(sticky.text))
     .map(({ text, id, frameId }) => ({
       text,
       from: 'note' as const,
       objectId: id,
       ...(frameId ? { frame: frameId } : {}),
     })),
-  ...content.objects.flatMap((object) =>
+  ...content.objects.flatMap(object =>
     object.thread && !object.thread.resolved
       ? object.thread.comments
-          .filter((comment) => mentionsClaude(comment.text))
+          .filter(comment => mentionsClaude(comment.text))
           .map(({ text, author }) => ({ text, from: 'comment' as const, author, objectId: object.id }))
       : [],
   ),
@@ -255,16 +262,16 @@ const recordingFileOf = (object: FlowObject, frame?: Pick<Frame, 'channel'>, rec
 
 export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExport => {
   const { content } = board;
-  const byId = new Map(content.objects.map((object) => [object.id, object]));
+  const byId = new Map(content.objects.map(object => [object.id, object]));
   const frameOf = (object: FlowObject) => flowDetailsOf(content, object.frameId);
 
   const exportObject = (object: FlowObject): ExportedObject => {
     const info = OBJECT_TYPES[object.type];
     const frame = frameOf(object);
-    const out = content.connections.filter((connection) => connection.from === object.id);
+    const out = content.connections.filter(connection => connection.from === object.id);
     const ended = new Set(object.endedExits ?? []);
     const exits = exitsOf(object).map((name): ExportedExit => {
-      const connection = out.find((candidate) => (candidate.exit ?? '') === name);
+      const connection = out.find(candidate => (candidate.exit ?? '') === name);
       const target = connection && byId.get(connection.to);
       return {
         name,
@@ -344,18 +351,18 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
       });
     return flows.get(key)!;
   };
-  content.frames.forEach((frame) =>
+  content.frames.forEach(frame =>
     flowFor({ frameId: frame.id }).frames.push({
       id: frame.id,
       title: frame.title,
       ...(frame.stage ? { stage: frame.stage } : {}),
     }),
   );
-  content.objects.forEach((object) => flowFor(object).objects.push(exportObject(object)));
+  content.objects.forEach(object => flowFor(object).objects.push(exportObject(object)));
 
   const layout: FlowExport['layout'] = {};
   // Sticky notes are the team's own (comments on widgets are exported with them)
-  [...content.frames, ...content.objects].forEach((item) => {
+  [...content.frames, ...content.objects].forEach(item => {
     const { x, y, width, height } = item;
     const frame = 'frameId' in item ? item.frameId : undefined;
     const color = 'color' in item ? item.color : undefined;
@@ -380,7 +387,7 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
     ...(recordings ? { recordingsBaseUrl: recordings.baseUrls } : {}),
     ...sharedTemplateOf(content, recordings),
     ...(forClaude && forClaude.length > 0 ? { forClaude } : {}),
-    flows: [...flows.values()].filter((flow) => flow.objects.length > 0 || flow.frames.length > 0),
+    flows: [...flows.values()].filter(flow => flow.objects.length > 0 || flow.frames.length > 0),
     studioTemplates: toStudioFlows(content, recordings).map(
       ({ title, template, sharedWith, changeShared, channels, text, flowVars, taskAttributes, todo }) => ({
         title,
@@ -391,7 +398,7 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
         ...(changeShared ? { changeShared } : {}),
         channels,
         text,
-        variables: flowVars.map((variable) => ({
+        variables: flowVars.map(variable => ({
           ...variable,
           addTo: variableTargetsOf(board.code, variable, channels),
         })),
@@ -426,13 +433,13 @@ const sharedTemplateOf = (content: BoardContent, recordings?: RecordingsList): P
   if (variants.length === 0) return parts;
   const recordingsUrlVariable = content.objects
     .map(
-      (object) => String(object.studio?.properties?.play ?? '').match(/^\$\{\s*flow_vars\.([A-Za-z0-9_]+)\s*\}\//)?.[1],
+      object => String(object.studio?.properties?.play ?? '').match(/^\$\{\s*flow_vars\.([A-Za-z0-9_]+)\s*\}\//)?.[1],
     )
     .find(Boolean);
   parts.sharedTemplate = {
     ...(flow?.studio ? { template: flow.studio.template } : {}),
     ...(recordingsUrlVariable ? { recordingsUrlVariable } : {}),
-    flows: variants.map((variant) => ({
+    flows: variants.map(variant => ({
       key: variant.key,
       label: variant.label,
       ...(variant.flowVars ? { flowVars: variant.flowVars } : {}),
@@ -469,15 +476,15 @@ export type ScriptRow = Record<(typeof SCRIPT_COLUMNS)[number], string>;
 export const scriptRows = (content: BoardContent, recordings?: RecordingsList): ScriptRow[] => {
   const frameOrder = new Map(content.frames.map((frame, index) => [frame.id, index]));
   return content.objects
-    .filter((object) => OBJECT_TYPES[object.type].hasMessage)
+    .filter(object => OBJECT_TYPES[object.type].hasMessage)
     .sort(
       (a, b) =>
         (frameOrder.get(a.frameId ?? '') ?? Infinity) - (frameOrder.get(b.frameId ?? '') ?? Infinity) ||
         a.y - b.y ||
         a.x - b.x,
     )
-    .map((object) => {
-      const frame = content.frames.find((candidate) => candidate.id === object.frameId);
+    .map(object => {
+      const frame = content.frames.find(candidate => candidate.id === object.frameId);
       const details = flowDetailsOf(content, object.frameId);
       return {
         Frame: frame?.title ?? '',
@@ -519,9 +526,9 @@ export const downloadScripts = async (board: Board, recordings?: RecordingsList)
   const rows = scriptRows(board.content, recordings);
   const sheet = XLSX.utils.aoa_to_sheet([
     [...SCRIPT_COLUMNS],
-    ...rows.map((row) => SCRIPT_COLUMNS.map((column) => row[column])),
+    ...rows.map(row => SCRIPT_COLUMNS.map(column => row[column])),
   ]);
-  sheet['!cols'] = SCRIPT_COLUMNS.map((column) => ({ wch: column === 'Script' ? 60 : 24 }));
+  sheet['!cols'] = SCRIPT_COLUMNS.map(column => ({ wch: column === 'Script' ? 60 : 24 }));
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, sheet, 'Recordings and scripts');
   XLSX.writeFile(workbook, exportFileName(board, '-scripts.xlsx'));

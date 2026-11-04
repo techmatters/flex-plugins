@@ -183,7 +183,9 @@ const notifyErrorBody = (text: string) => {
     .replace(/[[\]"\\]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
-  return `{ "text": "Issue detected ${what ? `[${what}] ` : ''}on \${short_helpline} \${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  " }`;
+  return `{ "text": "Issue detected ${
+    what ? `[${what}] ` : ''
+  }on \${short_helpline} \${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  " }`;
 };
 
 const condition = (input: string, type: string, value: string, friendlyName: string) => ({
@@ -258,12 +260,12 @@ const canonical = (value: unknown): unknown =>
   Array.isArray(value)
     ? value.map(canonical)
     : value && typeof value === 'object'
-      ? Object.fromEntries(
-          Object.entries(value)
-            .sort(([a], [b]) => a.localeCompare(b))
-            .map(([key, item]) => [key, canonical(item)]),
-        )
-      : value;
+    ? Object.fromEntries(
+        Object.entries(value)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([key, item]) => [key, canonical(item)]),
+      )
+    : value;
 const sameJson = (a: unknown, b: unknown) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
 
 // A message widget's properties with the legacy service and channel replaced
@@ -305,11 +307,13 @@ export const toHcl = (value: unknown, indent = ''): string => {
   if (!Array.isArray(value) && isExpression(value)) return String((value as { expression: string }).expression);
   const inner = `${indent}  `;
   if (Array.isArray(value)) {
-    return value.length === 0 ? '[]' : `[\n${value.map((item) => inner + toHcl(item, inner)).join(',\n')}\n${indent}]`;
+    return value.length === 0 ? '[]' : `[\n${value.map(item => inner + toHcl(item, inner)).join(',\n')}\n${indent}]`;
   }
   const entries = Object.entries(value).filter(([, item]) => item !== undefined);
   if (entries.length === 0) return '{}';
-  return `{\n${entries.map(([key, item]) => `${inner}${JSON.stringify(key)}: ${toHcl(item, inner)}`).join(',\n')}\n${indent}}`;
+  return `{\n${entries
+    .map(([key, item]) => `${inner}${JSON.stringify(key)}: ${toHcl(item, inner)}`)
+    .join(',\n')}\n${indent}}`;
 };
 
 export const toTemplateText = (flow: StudioFlow) => `\${\n  jsonencode(${toHcl(flow, '  ')})\n}\n`;
@@ -322,15 +326,15 @@ export const toStudioFlow = (
   frame?: Frame,
   recordings?: RecordingsList,
 ): GeneratedStudioFlow => {
-  const objects = content.objects.filter((object) => object.frameId === frame?.id);
+  const objects = content.objects.filter(object => object.frameId === frame?.id);
   // What the flow is: the frame's, or the board's own (an imported board's Studio flow)
   const details = frame ?? content.flow;
   // Studio flows sharing the template: the template is one; each has its own flow_vars
-  const variants = frame ? [] : (content.flow?.variants ?? []);
+  const variants = frame ? [] : content.flow?.variants ?? [];
   const mainVariant = variants.length > 1 ? variants[0].key : undefined;
-  const ids = new Set(objects.map((object) => object.id));
-  const connections = content.connections.filter((connection) => ids.has(connection.from) && ids.has(connection.to));
-  const byId = new Map(objects.map((object) => [object.id, object]));
+  const ids = new Set(objects.map(object => object.id));
+  const connections = content.connections.filter(connection => ids.has(connection.from) && ids.has(connection.to));
+  const byId = new Map(objects.map(object => [object.id, object]));
   const todo: string[] = [];
   const flowVars: FlowVarChange[] = [];
   const taskAttributes: TaskAttributesChange[] = [];
@@ -348,21 +352,25 @@ export const toStudioFlow = (
     if (source.kind === 'inline') {
       if (source.movedFrom) {
         todo.push(
-          `${label(object)} has task attributes of its own, written in the widget; ${source.movedFrom.template} stays as it is.`,
+          `${label(object)} has task attributes of its own, written in the widget; ${
+            source.movedFrom.template
+          } stays as it is.`,
         );
       }
       return;
     }
     const { template, channels } = source;
     todo.push(
-      `${label(object)} uses the channel's task attributes: check that the flow's channels${channels.length > 0 ? ` (${channels.join(', ')})` : ''} get ${template} (channel_attributes in common.hcl, or defaults.hcl).`,
+      `${label(object)} uses the channel's task attributes: check that the flow's channels${
+        channels.length > 0 ? ` (${channels.join(', ')})` : ''
+      } get ${template} (channel_attributes in common.hcl, or defaults.hcl).`,
     );
   };
 
   // The recordings folder variable this flow's voice widgets already use, for new ones
   const recordingsVariable = objects
     .map(
-      (object) => String(object.studio?.properties?.play ?? '').match(/^\$\{\s*flow_vars\.([A-Za-z0-9_]+)\s*\}\//)?.[1],
+      object => String(object.studio?.properties?.play ?? '').match(/^\$\{\s*flow_vars\.([A-Za-z0-9_]+)\s*\}\//)?.[1],
     )
     .find(Boolean);
 
@@ -372,10 +380,8 @@ export const toStudioFlow = (
   const bucketUrls = recordings?.baseUrls;
   const bucketVariable =
     recordingsVariable &&
-    variants.some((variant) =>
-      Object.values(variant.flowVars ?? {}).some((vars) =>
-        isRecordingsBucketUrl(vars?.[recordingsVariable], bucketUrls),
-      ),
+    variants.some(variant =>
+      Object.values(variant.flowVars ?? {}).some(vars => isRecordingsBucketUrl(vars?.[recordingsVariable], bucketUrls)),
     )
       ? recordingsVariable
       : RECORDINGS_URL_VARIABLE;
@@ -389,7 +395,7 @@ export const toStudioFlow = (
         );
       } else {
         const folders = variants.length > 0 ? variants : [undefined];
-        folders.forEach((variant) => {
+        folders.forEach(variant => {
           const values = variant ? variantRecordingsUrls(bucketUrls, variants, variant.recordingsFolder) : bucketUrls;
           flowVars.push({
             scope: 'flow_vars',
@@ -418,9 +424,9 @@ export const toStudioFlow = (
   const sayVoiceOf = (language?: string) => {
     const code = (language ?? 'en').split(/[-_]/)[0].toLowerCase();
     const like = objects
-      .map((object) => object.studio?.properties)
+      .map(object => object.studio?.properties)
       .find(
-        (properties) =>
+        properties =>
           typeof properties?.say === 'string' &&
           typeof properties.language === 'string' &&
           !properties.language.includes('${') &&
@@ -452,7 +458,9 @@ export const toStudioFlow = (
   const saysScript = (object: FlowObject, widget: string) => {
     pushText(object, widget, widget);
     todo.push(
-      `${label(object)} says its script (\${flow_vars.${widget}}) until its recording is uploaded: export the board again then, and it plays the recording.`,
+      `${label(
+        object,
+      )} says its script (\${flow_vars.${widget}}) until its recording is uploaded: export the board again then, and it plays the recording.`,
     );
     // Its language: the message's, otherwise the one in its name (play_message_voice_es_...)
     const named = widget.match(/(?:^|_)(en|es|fr|pt|vi)_/)?.[1];
@@ -485,18 +493,20 @@ export const toStudioFlow = (
   };
   // Where a way out leads: the widget it's connected to (End, or nothing, ends the flow)
   const nextOf = (object: FlowObject, exit: string) => {
-    const connection = connections.find((candidate) => candidate.from === object.id && (candidate.exit ?? '') === exit);
+    const connection = connections.find(candidate => candidate.from === object.id && (candidate.exit ?? '') === exit);
     const target = connection && byId.get(connection.to);
     if (!target || target.type === 'end') return undefined;
     const name = nameOf(target);
     if (!name)
       todo.push(
-        `${label(object)} leads to ${label(target)} (${OBJECT_TYPES[target.type].label}), which isn't a Studio widget: connect it to one.`,
+        `${label(object)} leads to ${label(target)} (${
+          OBJECT_TYPES[target.type].label
+        }), which isn't a Studio widget: connect it to one.`,
       );
     return name;
   };
   const withNext = (transition: Record<string, unknown>, next?: string): StudioTransition =>
-    ({ ...transition, ...(next ? { next } : {}) }) as StudioTransition;
+    ({ ...transition, ...(next ? { next } : {}) } as StudioTransition);
   const offsetOf = (object: FlowObject) =>
     object.studio?.offset ?? { x: Math.round(object.x), y: Math.round(object.y * 2) };
 
@@ -538,7 +548,13 @@ export const toStudioFlow = (
     if (object.studio && kindChanged) {
       const variable = String(object.studio.properties?.body ?? object.studio.properties?.say ?? '').match(VARIABLE);
       todo.push(
-        `${label(object)} was ${object.studio.name} (${object.studio.type}) in Studio and is a ${OBJECT_TYPES[object.type].label} now: built as a new one${variable ? `; \${${variable[1]}.${variable[2]}} isn't read by it any more (remove it from the .hcl files if nothing else uses it)` : ''}.`,
+        `${label(object)} was ${object.studio.name} (${object.studio.type}) in Studio and is a ${
+          OBJECT_TYPES[object.type].label
+        } now: built as a new one${
+          variable
+            ? `; \${${variable[1]}.${variable[2]}} isn't read by it any more (remove it from the .hcl files if nothing else uses it)`
+            : ''
+        }.`,
       );
     }
 
@@ -550,7 +566,9 @@ export const toStudioFlow = (
       let liveTransitions = studio.transitions;
       if (object.studioName && object.studioName !== studio.name) {
         todo.push(
-          `${label(object)} was ${studio.name} in Studio: renaming a live widget also means its recording file and any monitoring that uses the name.`,
+          `${label(object)} was ${
+            studio.name
+          } in Studio: renaming a live widget also means its recording file and any monitoring that uses the name.`,
         );
       }
       const attributes = object.taskAttributes;
@@ -615,7 +633,7 @@ export const toStudioFlow = (
         // What it splits on, changed on the board: its conditions read the new one too
         const previous = properties.input;
         properties.input = object.settings.input;
-        liveTransitions = studio.transitions?.map((transition) =>
+        liveTransitions = studio.transitions?.map(transition =>
           Array.isArray(transition.conditions)
             ? {
                 ...transition,
@@ -623,7 +641,7 @@ export const toStudioFlow = (
                   Array.isArray(condition.arguments)
                     ? {
                         ...condition,
-                        arguments: condition.arguments.map((argument) =>
+                        arguments: condition.arguments.map(argument =>
                           argument === previous ? object.settings!.input : argument,
                         ),
                       }
@@ -662,7 +680,7 @@ export const toStudioFlow = (
           });
         if (!same) {
           properties.variables = object.variables.map(({ key, value }) => ({
-            type: live.find((variable) => variable.key === key)?.type ?? 'string',
+            type: live.find(variable => variable.key === key)?.type ?? 'string',
             value,
             key,
           }));
@@ -691,7 +709,7 @@ export const toStudioFlow = (
       } else if (['function', 'notifyError', 'checkOperatingHours', 'checkClientProfile'].includes(object.type)) {
         // The request as set on the board (method, address, body), where it differs from Studio's
         if (studio.type === 'make-http-request') {
-          (['method', 'url', 'body'] as const).forEach((key) => {
+          (['method', 'url', 'body'] as const).forEach(key => {
             const value = object.settings?.[key];
             if (value !== undefined && value !== properties[key]) properties[key] = value;
           });
@@ -736,7 +754,7 @@ export const toStudioFlow = (
       // Ways out added on the board (e.g. a decision's new answer)
       const splitInput =
         studio.type === 'split-based-on' && typeof properties.input === 'string' ? properties.input : '';
-      exits.slice(original.length).forEach((exit) => {
+      exits.slice(original.length).forEach(exit => {
         const added = exitConditionOf(object, exit);
         if (!splitInput || !added) {
           todo.push(`${label(object)} has a new way out “${exit}”: set the condition it stands for.`);
@@ -817,7 +835,7 @@ export const toStudioFlow = (
           {
             name,
             type: 'trigger',
-            transitions: TRIGGER_EVENTS.map((candidate) =>
+            transitions: TRIGGER_EVENTS.map(candidate =>
               withNext({ event: candidate }, candidate === event ? next(exits[0] ?? '') : undefined),
             ),
             properties: { offset },
@@ -875,7 +893,7 @@ export const toStudioFlow = (
         ];
       case 'menuVoice': {
         // Boards made when a menu's options were its ways out (1, 2, noMatch) get a split for them
-        const digits = exits.filter((exit) => !['keypress', 'speech', 'noMatch', 'timeout'].includes(exit));
+        const digits = exits.filter(exit => !['keypress', 'speech', 'noMatch', 'timeout'].includes(exit));
         const input = `{{widgets.${name}.Digits}}`;
         return [
           {
@@ -906,7 +924,7 @@ export const toStudioFlow = (
                 split(
                   splitName,
                   input,
-                  digits.map((digit) => ({ exit: digit, type: 'equal_to', value: digit })),
+                  digits.map(digit => ({ exit: digit, type: 'equal_to', value: digit })),
                   'noMatch',
                 ),
               ]
@@ -960,7 +978,7 @@ export const toStudioFlow = (
       case 'chatbot': {
         const settings = object.settings ?? {};
         const missing = ['botSuffix', 'language', 'triggerType', 'message', 'releaseType'].filter(
-          (key) => !settings[key],
+          key => !settings[key],
         );
         if (missing.length > 0) {
           todo.push(
@@ -1015,8 +1033,8 @@ export const toStudioFlow = (
             transitions: [
               withNext({ event: 'noMatch' }, next('noMatch')),
               ...exits
-                .filter((exit) => exit !== 'noMatch')
-                .map((exit) => {
+                .filter(exit => exit !== 'noMatch')
+                .map(exit => {
                   // Equal to it, or any of a list ("Si,si,ok"), or the operator chosen on the board
                   const type = exitConditionOf(object, exit, input)?.type ?? 'equal_to';
                   return withNext(
@@ -1107,15 +1125,15 @@ export const toStudioFlow = (
           (object.type === 'checkClientProfile'
             ? profileFlagsBody(channel)
             : operatingHoursBody(channel, todo, label(object)));
-        const results = exits.filter((exit) => exit !== 'failed');
+        const results = exits.filter(exit => exit !== 'failed');
         // As the helplines' are: each flag the profile's flags include, in order (blocked, then e.g.
         // NZ's "case management"), otherwise not blocked; open, closed or holiday
         const profile = object.type === 'checkClientProfile';
         const matches = profile
           ? results
-              .filter((exit) => exit && !PROFILE_FIXED_EXITS.includes(exit))
-              .map((exit) => ({ exit, type: 'contains', value: exit }))
-          : results.slice(0, -1).map((exit) => ({ exit, type: 'equal_to', value: exit }));
+              .filter(exit => exit && !PROFILE_FIXED_EXITS.includes(exit))
+              .map(exit => ({ exit, type: 'contains', value: exit }))
+          : results.slice(0, -1).map(exit => ({ exit, type: 'equal_to', value: exit }));
         return [
           {
             name,
@@ -1180,7 +1198,7 @@ export const toStudioFlow = (
             properties: {
               offset,
               ...httpRequest(
-                object.type === 'notifyError' ? '${webhook_url_studio_errors}' : (url ?? TODO),
+                object.type === 'notifyError' ? '${webhook_url_studio_errors}' : url ?? TODO,
                 body ?? TODO,
               ),
               ...(object.settings?.method ? { method: object.settings.method } : {}),
@@ -1194,7 +1212,9 @@ export const toStudioFlow = (
         if (!workflow || !taskChannel) todo.push(`${label(object)}: set its workflow and task channel.`);
         if (queue) {
           todo.push(
-            `${label(object)} should end up in the ${queue} queue: check that the ${workflow ?? 'chosen'} workflow's rules send it there (with its task attributes).`,
+            `${label(object)} should end up in the ${queue} queue: check that the ${
+              workflow ?? 'chosen'
+            } workflow's rules send it there (with its task attributes).`,
           );
         }
         const attributes = object.taskAttributes;
@@ -1218,8 +1238,8 @@ export const toStudioFlow = (
               attributes: !attributes
                 ? TODO
                 : usesChannelAttributes(attributes)
-                  ? CHANNEL_ATTRIBUTES_REFERENCE
-                  : attributes.json,
+                ? CHANNEL_ATTRIBUTES_REFERENCE
+                : attributes.json,
             },
           },
         ];
@@ -1320,12 +1340,12 @@ export const toStudioFlow = (
           index % 2 === 1
             ? part
             : part
-                .replace(ENVIRONMENT_URL, (url) => environmentVariable(widget, url))
-                .replace(ENVIRONMENT_SID, (sid) => environmentVariable(widget, sid)),
+                .replace(ENVIRONMENT_URL, url => environmentVariable(widget, url))
+                .replace(ENVIRONMENT_SID, sid => environmentVariable(widget, sid)),
         )
         .join('');
     }
-    if (Array.isArray(value)) return value.map((item) => withEnvironmentVariables(widget, item));
+    if (Array.isArray(value)) return value.map(item => withEnvironmentVariables(widget, item));
     if (value && typeof value === 'object') {
       return Object.fromEntries(
         Object.entries(value).map(([key, item]) => [key, withEnvironmentVariables(widget, item)]),
@@ -1334,16 +1354,16 @@ export const toStudioFlow = (
     return value;
   };
 
-  const states: StudioState[] = objects.flatMap((object) =>
+  const states: StudioState[] = objects.flatMap(object =>
     object.studio
       ? widgetsOf(object)
-      : widgetsOf(object).map((state) => ({
+      : widgetsOf(object).map(state => ({
           ...state,
           properties: withEnvironmentVariables(state.name, state.properties) as Record<string, unknown>,
         })),
   );
 
-  if (!states.some((state) => state.type === 'trigger'))
+  if (!states.some(state => state.type === 'trigger'))
     todo.push('The flow has no incoming call or message (its Trigger).');
 
   const flow: StudioFlow = { ...(details?.studio?.settings ?? DEFAULT_SETTINGS), states };
@@ -1365,9 +1385,9 @@ export const toStudioFlow = (
 // One flow per frame (and one for objects outside frames, if any)
 export const toStudioFlows = (content: BoardContent, recordings?: RecordingsList): GeneratedStudioFlow[] => [
   ...content.frames
-    .filter((frame) => content.objects.some((object) => object.frameId === frame.id))
-    .map((frame) => toStudioFlow(content, frame, recordings)),
-  ...(content.objects.some((object) => !object.frameId || !content.frames.some((frame) => frame.id === object.frameId))
+    .filter(frame => content.objects.some(object => object.frameId === frame.id))
+    .map(frame => toStudioFlow(content, frame, recordings)),
+  ...(content.objects.some(object => !object.frameId || !content.frames.some(frame => frame.id === object.frameId))
     ? [toStudioFlow(content, undefined, recordings)]
     : []),
 ];

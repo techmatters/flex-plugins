@@ -65,11 +65,11 @@ export const FlowsHome = () => {
     dispatch(showFlowsHome());
   }, [dispatch]);
 
-  const templates = (boards ?? []).filter((board) => board.code === TEMPLATES_CODE);
-  const helplineBoards = (boards ?? []).filter((board) => board.code !== TEMPLATES_CODE);
+  const templates = (boards ?? []).filter(board => board.code === TEMPLATES_CODE);
+  const helplineBoards = (boards ?? []).filter(board => board.code !== TEMPLATES_CODE);
   const matches = (board: BoardSummary, candidate: Filter) => candidate === 'all' || board.status === candidate;
-  const inHelpline = helplineBoards.filter((board) => !helpline || board.code === helpline);
-  const shown = inHelpline.filter((board) => matches(board, filter));
+  const inHelpline = helplineBoards.filter(board => !helpline || board.code === helpline);
+  const shown = inHelpline.filter(board => matches(board, filter));
   const targetCodes = isAseloStaff ? [...helplineCodes, TEMPLATES_CODE] : helplineCodes;
 
   const onOpen = (boardCode: string, id: string) => dispatch(openBoard({ code: boardCode, id }));
@@ -121,9 +121,9 @@ export const FlowsHome = () => {
             <h3>New board</h3>
             <label className="field">
               <span className="field-label">For</span>
-              <select value={code} onChange={(e) => dispatch(newBoardChanged({ code: e.target.value }))} required>
+              <select value={code} onChange={e => dispatch(newBoardChanged({ code: e.target.value }))} required>
                 <option value="">Choose…</option>
-                {targetCodes.map((candidate) => (
+                {targetCodes.map(candidate => (
                   <option key={candidate} value={candidate}>
                     {labelOf(candidate)}
                   </option>
@@ -136,16 +136,16 @@ export const FlowsHome = () => {
                 type="text"
                 value={title}
                 placeholder="e.g. USNM contact flows"
-                onChange={(e) => dispatch(newBoardChanged({ title: e.target.value }))}
+                onChange={e => dispatch(newBoardChanged({ title: e.target.value }))}
                 required
               />
             </label>
             {templates.length > 0 && (
               <label className="field">
                 <span className="field-label">Start from</span>
-                <select value={template} onChange={(e) => dispatch(newBoardChanged({ template: e.target.value }))}>
+                <select value={template} onChange={e => dispatch(newBoardChanged({ template: e.target.value }))}>
                   <option value="">An empty board</option>
-                  {templates.map((board) => (
+                  {templates.map(board => (
                     <option key={board.id} value={board.id}>
                       Template: {board.title}
                     </option>
@@ -166,12 +166,12 @@ export const FlowsHome = () => {
         <section aria-label="Boards">
           <div className="area-home-filters">
             <HelplineFilter
-              codes={helplineBoards.map((board) => board.code)}
+              codes={helplineBoards.map(board => board.code)}
               value={helpline}
-              onChange={(value) => dispatch(helplineFilterChanged(value))}
+              onChange={value => dispatch(helplineFilterChanged(value))}
             />
             <div className="area-home-filter" role="group" aria-label="Show boards">
-              {FILTERS.map((candidate) => (
+              {FILTERS.map(candidate => (
                 <button
                   key={candidate}
                   type="button"
@@ -179,7 +179,7 @@ export const FlowsHome = () => {
                   aria-pressed={filter === candidate}
                   onClick={() => dispatch(boardFilterChanged(candidate))}
                 >
-                  {filterLabel(candidate)} ({inHelpline.filter((board) => matches(board, candidate)).length})
+                  {filterLabel(candidate)} ({inHelpline.filter(board => matches(board, candidate)).length})
                 </button>
               ))}
             </div>
@@ -200,7 +200,7 @@ export const FlowsHome = () => {
                 </tr>
               </thead>
               <tbody>
-                {shown.map((board) => (
+                {shown.map(board => (
                   <tr key={`${board.code}/${board.id}`}>
                     <td>{labelOf(board.code)}</td>
                     <td className="area-home-name">{openButton(board)}</td>
@@ -230,7 +230,7 @@ export const FlowsHome = () => {
               </tr>
             </thead>
             <tbody>
-              {templates.map((board) => (
+              {templates.map(board => (
                 <tr key={board.id}>
                   <td className="area-home-name">{openButton(board)}</td>
                   <td className="field-hint">{lastChange(board)}</td>

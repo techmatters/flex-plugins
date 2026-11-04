@@ -26,7 +26,13 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
-import type { AnswerType, Chatbot, ChatbotDesign, ChatbotIntent, ChatbotQuestion } from '@tech-matters/form-builder-shared/chatbots/model';
+import type {
+  AnswerType,
+  Chatbot,
+  ChatbotDesign,
+  ChatbotIntent,
+  ChatbotQuestion,
+} from '@tech-matters/form-builder-shared/chatbots/model';
 import { CHATBOT_SCHEMA_VERSION } from '@tech-matters/form-builder-shared/chatbots/model';
 import { PREPOPULATE_FILE, readSurveyMappings } from '@tech-matters/form-builder-shared/chatbots/formMappings';
 import { readHelplineConfigs } from './flowImport';
@@ -66,7 +72,7 @@ export const formsVersionOf = async (helplinesDir: string, formDefinitionsDir: s
   }
   const folders = await fs.readdir(path.join(formDefinitionsDir, code)).catch(() => [] as string[]);
   return folders
-    .filter((folder) => /^v\d+$/.test(folder))
+    .filter(folder => /^v\d+$/.test(folder))
     .sort()
     .pop();
 };
@@ -111,9 +117,9 @@ export const importChatbots = async (
 
   // Which bots, in which languages and environments
   const wanted = new Map<string, { language: string; name: string; environments: string[] }>();
-  environments.forEach((environment) => {
+  environments.forEach(environment => {
     Object.entries(objectOf(configs[environment]!.lex_v2_bot_languages)).forEach(([language, bots]) => {
-      (Array.isArray(bots) ? bots : []).forEach((name) => {
+      (Array.isArray(bots) ? bots : []).forEach(name => {
         if (typeof name !== 'string') return;
         const key = `${language}/${name}`;
         const entry = wanted.get(key) ?? { language, name, environments: [] };
@@ -185,13 +191,13 @@ export const importChatbots = async (
         ? (intentJson.slotPriorities as Json[])
             .slice()
             .sort((a, b) => Number(a.priority) - Number(b.priority))
-            .map((slot) => textOf(slot.slotName))
+            .map(slot => textOf(slot.slotName))
             .filter((slot): slot is string => Boolean(slot))
-        : botSlots.map((slot) => textOf(slot.slot_name)).filter((slot): slot is string => Boolean(slot));
+        : botSlots.map(slot => textOf(slot.slot_name)).filter((slot): slot is string => Boolean(slot));
 
       const questions: ChatbotQuestion[] = [];
       for (const slotName of order) {
-        const botSlot = botSlots.find((slot) => slot.slot_name === slotName) ?? {};
+        const botSlot = botSlots.find(slot => slot.slot_name === slotName) ?? {};
         const slotFile = await locate(language, 'slots', slotName);
         if (!slotFile) notes.push(`${language} ${name} › ${intentName}: no slots/${slotName}.json found.`);
         const slot = slotFile?.json ?? {};
@@ -222,10 +228,10 @@ export const importChatbots = async (
         id: id('i'),
         name: intentName,
         utterances: (utterances ?? [])
-          .map((utterance) => textOf(objectOf(utterance).utterance))
+          .map(utterance => textOf(objectOf(utterance).utterance))
           .filter((utterance): utterance is string => Boolean(utterance)),
-        ...((opening ?? botOpening) ? { opening: opening ?? botOpening } : {}),
-        ...((closing ?? botClosing) ? { closing: closing ?? botClosing } : {}),
+        ...(opening ?? botOpening ? { opening: opening ?? botOpening } : {}),
+        ...(closing ?? botClosing ? { closing: closing ?? botClosing } : {}),
         questions,
         ...(intentFile ? { file: intentFile.file, shared: intentFile.shared } : {}),
       };
@@ -247,12 +253,12 @@ export const importChatbots = async (
         const selection = objectOf(typeFile.json.valueSelectionSetting);
         const answerType: AnswerType = {
           name: question.answerType,
-          values: (Array.isArray(typeFile.json.slotTypeValues) ? typeFile.json.slotTypeValues : []).map((entry) => {
+          values: (Array.isArray(typeFile.json.slotTypeValues) ? typeFile.json.slotTypeValues : []).map(entry => {
             const value = objectOf(entry);
             return {
               value: textOf(objectOf(value.sampleValue).value) ?? '',
               synonyms: (Array.isArray(value.synonyms) ? value.synonyms : [])
-                .map((synonym) => textOf(objectOf(synonym).value))
+                .map(synonym => textOf(objectOf(synonym).value))
                 .filter((synonym): synonym is string => synonym !== undefined),
             };
           }),
@@ -301,7 +307,7 @@ export const importChatbots = async (
     design,
     report: {
       helpline: code,
-      bots: design.bots.map((bot) => ({
+      bots: design.bots.map(bot => ({
         language: bot.language,
         name: bot.name,
         environments: bot.environments,

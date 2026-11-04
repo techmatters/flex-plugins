@@ -32,9 +32,9 @@ export const taskNodes = (nodes: CanvasNode[]) =>
   nodes.filter((node): node is StickyNode => node.type === 'sticky' && Boolean(node.data.sticky.task));
 
 export const openTaskCount = (nodes: CanvasNode[]) =>
-  taskNodes(nodes).filter((node) => node.data.sticky.task?.status !== 'done').length;
+  taskNodes(nodes).filter(node => node.data.sticky.task?.status !== 'done').length;
 
-const firstLine = (text: string) => text.split('\n').find((line) => line.trim()) ?? 'Untitled task';
+const firstLine = (text: string) => text.split('\n').find(line => line.trim()) ?? 'Untitled task';
 
 const ORDER: Record<TaskStatus, number> = { doing: 0, todo: 1, done: 2 };
 
@@ -95,7 +95,7 @@ export const TasksPanel = () => {
         </p>
       )}
       <ul className="flow-task-list">
-        {tasks.map((node) => {
+        {tasks.map(node => {
           const { sticky } = node.data;
           const task = sticky.task!;
           const done = task.status === 'done';

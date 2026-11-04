@@ -30,12 +30,12 @@ import { newChatbotId, PATTERN_PARENT } from '@tech-matters/form-builder-shared/
 
 export const updateBot = (design: ChatbotDesign, botId: string, change: (bot: Chatbot) => Chatbot): ChatbotDesign => ({
   ...design,
-  bots: design.bots.map((bot) => (bot.id === botId ? change(bot) : bot)),
+  bots: design.bots.map(bot => (bot.id === botId ? change(bot) : bot)),
 });
 
 export const updateIntent = (bot: Chatbot, intentId: string, change: (intent: ChatbotIntent) => ChatbotIntent) => ({
   ...bot,
-  intents: bot.intents.map((intent) => (intent.id === intentId ? change(intent) : intent)),
+  intents: bot.intents.map(intent => (intent.id === intentId ? change(intent) : intent)),
 });
 
 export const updateQuestion = (
@@ -44,7 +44,7 @@ export const updateQuestion = (
   change: (question: ChatbotQuestion) => ChatbotQuestion,
 ) => ({
   ...intent,
-  questions: intent.questions.map((question) => (question.id === questionId ? change(question) : question)),
+  questions: intent.questions.map(question => (question.id === questionId ? change(question) : question)),
 });
 
 export const moveQuestion = (intent: ChatbotIntent, from: number, to: number): ChatbotIntent => {
@@ -58,7 +58,7 @@ export const moveQuestion = (intent: ChatbotIntent, from: number, to: number): C
 // A new question, saving its answer under a name not used yet in the intent
 export const newQuestion = (intent: ChatbotIntent, answerType: string): ChatbotQuestion => {
   let index = intent.questions.length + 1;
-  while (intent.questions.some((question) => question.slot === `question${index}`)) index += 1;
+  while (intent.questions.some(question => question.slot === `question${index}`)) index += 1;
   return {
     id: newChatbotId('q'),
     slot: `question${index}`,
@@ -145,12 +145,12 @@ export const updateComment = <T extends { comments?: DesignComment[] }>(
   change: (comment: DesignComment) => DesignComment | undefined,
 ): T => {
   const comments = (item.comments ?? [])
-    .map((comment) => (comment.id === commentId ? change(comment) : comment))
+    .map(comment => (comment.id === commentId ? change(comment) : comment))
     .filter((comment): comment is DesignComment => comment !== undefined);
   return { ...item, comments: comments.length > 0 ? comments : undefined };
 };
 
-export const openComments = (comments?: DesignComment[]) => (comments ?? []).filter((comment) => !comment.resolved);
+export const openComments = (comments?: DesignComment[]) => (comments ?? []).filter(comment => !comment.resolved);
 
 /**
  * A new chatbot: empty (one conversation, no questions yet) or a copy of another. Intents and
@@ -163,7 +163,7 @@ export const addChatbot = (design: ChatbotDesign, { name, language, locale, copy
   const intentName = (old: string) =>
     copyFrom && old.startsWith(copyFrom.name) ? `${name}${old.slice(copyFrom.name.length)}` : `${name}_${old}`;
   const intents: ChatbotIntent[] = copyFrom
-    ? copyFrom.intents.map((intent) => ({
+    ? copyFrom.intents.map(intent => ({
         id: newChatbotId('i'),
         name: intentName(intent.name),
         utterances: [...intent.utterances],
@@ -186,10 +186,10 @@ export const addChatbot = (design: ChatbotDesign, { name, language, locale, copy
   };
   let answerTypes = design.answerTypes;
   if (copyFrom && copyFrom.language !== language) {
-    const used = new Set(intents.flatMap((intent) => intent.questions.map((question) => question.answerType)));
+    const used = new Set(intents.flatMap(intent => intent.questions.map(question => question.answerType)));
     const copied = Object.fromEntries(
       [...used]
-        .map((typeName) => design.answerTypes[copyFrom.language]?.[typeName])
+        .map(typeName => design.answerTypes[copyFrom.language]?.[typeName])
         .filter((type): type is AnswerType => Boolean(type))
         .map(({ file, shared, comments, ...type }) => [type.name, structuredClone(type)]),
     );

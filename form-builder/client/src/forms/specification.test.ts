@@ -18,7 +18,7 @@ import { describe, expect, test } from '@jest/globals';
 import { isProtectedField } from './specification';
 import { CONTACT_TABS, ContactTab } from '../common/definitions';
 
-const tab = (key: ContactTab['key']) => CONTACT_TABS.find((candidate) => candidate.key === key)!;
+const tab = (key: ContactTab['key']) => CONTACT_TABS.find(candidate => candidate.key === key)!;
 
 describe('specification', () => {
   test('marks fields the Aselo specification requires as protected', () => {

@@ -14,12 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  DeleteObjectCommand,
-  GetObjectCommand,
-  ListObjectsV2Command,
-  PutObjectCommand,
-} from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command, PutObjectCommand } from '@aws-sdk/client-s3';
 import { describe, expect, test } from '@jest/globals';
 import { Draft } from './drafts';
 import { S3DraftStore } from './s3DraftStore';
@@ -35,10 +30,10 @@ const fakeS3 = () => {
       if (!objects.has(Key)) throw Object.assign(new Error('missing'), { name: 'NoSuchKey' });
       return { Body: { transformToString: async () => objects.get(Key) } };
     } else if (command instanceof ListObjectsV2Command) {
-      const keys = [...objects.keys()].filter((key) => key.startsWith(Prefix)).sort();
+      const keys = [...objects.keys()].filter(key => key.startsWith(Prefix)).sort();
       const index = ContinuationToken ? Number(ContinuationToken) : 0;
       return {
-        Contents: keys.slice(index, index + 1).map((key) => ({ Key: key })),
+        Contents: keys.slice(index, index + 1).map(key => ({ Key: key })),
         NextContinuationToken: index + 1 < keys.length ? String(index + 1) : undefined,
       };
     }
@@ -66,7 +61,7 @@ describe('drafts in S3', () => {
     expect(await store.get('usnm', 'v1')).toEqual(draft('usnm', { 'tabbedForms/CallerInformationTab.json': [] }));
 
     const listed = await store.list();
-    expect(listed.map((summary) => [summary.code, summary.changedFiles])).toEqual([
+    expect(listed.map(summary => [summary.code, summary.changedFiles])).toEqual([
       ['as', ['CallTypeButtons.json', 'service-configuration/common.json']],
       ['usnm', ['tabbedForms/CallerInformationTab.json']],
     ]);

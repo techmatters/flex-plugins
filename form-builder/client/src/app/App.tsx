@@ -20,15 +20,14 @@ import { ImportForms } from '../drafts/ImportForms';
 import { Loading } from '../common/Loading';
 import { isSignInEnabled, signOut } from './auth';
 import { useAppDispatch, useAppSelector } from './store';
-import { loadSession, selectIsAseloStaff, selectActingAsStaff, selectUser, viewAsHelplineStaffSet } from './sessionSlice';
 import {
-  AREA_LABELS,
-  AREAS,
-  helpToggled,
-  openHelp,
-  selectApp,
-  switchArea,
-} from './appSlice';
+  loadSession,
+  selectIsAseloStaff,
+  selectActingAsStaff,
+  selectUser,
+  viewAsHelplineStaffSet,
+} from './sessionSlice';
+import { AREA_LABELS, AREAS, helpToggled, openHelp, selectApp, switchArea } from './appSlice';
 import { HelplineWorkspace } from '../workspace/HelplineWorkspace';
 import { closeHelpline, selectWorkspace } from '../workspace/workspaceSlice';
 import { AseloBuilderLogo } from './AseloBuilderLogo';
@@ -46,7 +45,7 @@ export const App = () => {
   const isAseloStaff = useAppSelector(selectIsAseloStaff);
   // Aselo staff can see the app as helpline staff do
   const actingAsStaff = useAppSelector(selectActingAsStaff);
-  const { viewAsHelplineStaff, error: sessionError } = useAppSelector((state) => state.session);
+  const { viewAsHelplineStaff, error: sessionError } = useAppSelector(state => state.session);
   // The forms open (chosen in the list): their helpline, and its files once loaded
   const { code, definitions, loading, error: helplineError } = useAppSelector(selectWorkspace);
   const { area, opened, helpOpen, tour } = useAppSelector(selectApp);
@@ -67,7 +66,7 @@ export const App = () => {
             <AseloBuilderLogo />
           </h1>
           <nav className="area-switch" aria-label="Area">
-            {AREAS.map((candidate) => (
+            {AREAS.map(candidate => (
               <button
                 key={candidate}
                 type="button"
@@ -108,7 +107,7 @@ export const App = () => {
               <input
                 type="checkbox"
                 checked={viewAsHelplineStaff}
-                onChange={(e) => dispatch(viewAsHelplineStaffSet(e.target.checked))}
+                onChange={e => dispatch(viewAsHelplineStaffSet(e.target.checked))}
               />
               View as helpline staff
             </label>
@@ -117,9 +116,7 @@ export const App = () => {
 
         {error && <div className="alert alert-error">{error}</div>}
 
-        {helpOpen && (
-          <HelpPanel />
-        )}
+        {helpOpen && <HelpPanel />}
         {tour?.tour && <Tour key={tour.slug} />}
 
         {opened.includes('chatbots') && user && (
@@ -157,9 +154,7 @@ export const App = () => {
                 from the chatbot. Open one from the list to see and edit it.
               </p>
               {!user && <Loading text="Loading helplines…" />}
-              {user && actingAsStaff && (
-                <ImportForms />
-              )}
+              {user && actingAsStaff && <ImportForms />}
               {user && <DraftsList />}
             </main>
           )}
@@ -172,9 +167,7 @@ export const App = () => {
 
           {definitions && user && (
             // Reloading starts it again (the workspace slice's editorRevision restarts the editors)
-            <HelplineWorkspace
-              key={`${definitions.source?.branch ?? ''}/${definitions.code}/${definitions.version}`}
-            />
+            <HelplineWorkspace key={`${definitions.source?.branch ?? ''}/${definitions.code}/${definitions.version}`} />
           )}
         </div>
       </div>

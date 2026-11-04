@@ -19,12 +19,7 @@
  * read the open design from the store (routingSlice.ts) and change it with its actions.
  */
 import { CircleAlert, Trash2, TriangleAlert, X } from 'lucide-react';
-import type {
-  Condition,
-  QueueWorkers,
-  RoutingDesign,
-  Workflow,
-} from '@tech-matters/form-builder-shared/routing/model';
+import type { Condition, QueueWorkers, RoutingDesign, Workflow } from '@tech-matters/form-builder-shared/routing/model';
 import { attributeLabel, valueLabel } from '@tech-matters/form-builder-shared/routing/model';
 import {
   attributesOf,
@@ -74,10 +69,7 @@ const useShowIssue = () => {
     dispatch(issueShown(issue));
     if (issue.workflow && issue.ruleId) {
       setTimeout(
-        () =>
-          document
-            .getElementById(`rule-${issue.ruleId}`)
-            ?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+        () => document.getElementById(`rule-${issue.ruleId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }),
         50,
       );
     }
@@ -88,12 +80,12 @@ const useShowIssue = () => {
 export const SkillsBar = ({ design }: { design: RoutingDesign }) => (
   <div className="routing-skills-bar" aria-label="Skills">
     <span className="field-hint">Skills (drag onto a step or a queue):</span>
-    {design.skills.map((skill) => (
+    {design.skills.map(skill => (
       <span
         key={skill.name}
         className="routing-chip skill"
         draggable
-        onDragStart={(e) => {
+        onDragStart={e => {
           e.dataTransfer.setData(SKILL_MIME, skill.name);
           e.dataTransfer.effectAllowed = 'copy';
         }}
@@ -101,9 +93,7 @@ export const SkillsBar = ({ design }: { design: RoutingDesign }) => (
         {skill.name}
       </span>
     ))}
-    {design.skills.length === 0 && (
-      <span className="field-hint">none yet (add them under Skills &amp; capacity)</span>
-    )}
+    {design.skills.length === 0 && <span className="field-hint">none yet (add them under Skills &amp; capacity)</span>}
   </div>
 );
 
@@ -128,11 +118,7 @@ const WorkersEditor = ({
           value={workers.kind}
           disabled={readOnly}
           aria-label="Who can work in it"
-          onChange={(e) =>
-            onChange(
-              e.target.value === 'skills' ? { kind: 'skills', allOf: [] } : { kind: 'nobody' },
-            )
-          }
+          onChange={e => onChange(e.target.value === 'skills' ? { kind: 'skills', allOf: [] } : { kind: 'nobody' })}
         >
           <option value="skills">Counselors with skills</option>
           <option value="nobody">Nobody (a holding queue)</option>
@@ -144,7 +130,7 @@ const WorkersEditor = ({
             value={workers.expression}
             aria-label="Custom condition"
             disabled={readOnly}
-            onChange={(e) => onChange({ kind: 'custom', expression: e.target.value })}
+            onChange={e => onChange({ kind: 'custom', expression: e.target.value })}
           />
         )}
       </div>
@@ -155,7 +141,7 @@ const WorkersEditor = ({
       kind: 'skills',
       allOf: workers.allOf
         .map((candidate, i) => (i === index ? group : candidate))
-        .filter((candidate) => candidate.length > 0),
+        .filter(candidate => candidate.length > 0),
     });
   return (
     <div className="routing-queue-groups">
@@ -163,7 +149,7 @@ const WorkersEditor = ({
         value="skills"
         disabled={readOnly}
         aria-label="Who can work in it"
-        onChange={(e) => onChange(e.target.value === 'nobody' ? { kind: 'nobody' } : workers)}
+        onChange={e => onChange(e.target.value === 'nobody' ? { kind: 'nobody' } : workers)}
       >
         <option value="skills">Counselors with</option>
         <option value="nobody">Nobody (a holding queue)</option>
@@ -173,10 +159,10 @@ const WorkersEditor = ({
           {index > 0 && <span className="routing-and">and</span>}
           <span
             className="routing-group-box"
-            onDragOver={(e) => {
+            onDragOver={e => {
               if (!readOnly && e.dataTransfer.types.includes(SKILL_MIME)) e.preventDefault();
             }}
-            onDrop={(e) => {
+            onDrop={e => {
               const skill = e.dataTransfer.getData(SKILL_MIME);
               if (skill && !group.includes(skill)) setGroup(index, [...group, skill]);
             }}
@@ -192,7 +178,7 @@ const WorkersEditor = ({
                     onClick={() =>
                       setGroup(
                         index,
-                        group.filter((other) => other !== skill),
+                        group.filter(other => other !== skill),
                       )
                     }
                   >
@@ -205,12 +191,12 @@ const WorkersEditor = ({
               <select
                 value=""
                 aria-label="Add a skill to this group"
-                onChange={(e) => e.target.value && setGroup(index, [...group, e.target.value])}
+                onChange={e => e.target.value && setGroup(index, [...group, e.target.value])}
               >
                 <option value="">+ or…</option>
                 {design.skills
-                  .filter((skill) => !group.includes(skill.name))
-                  .map((skill) => (
+                  .filter(skill => !group.includes(skill.name))
+                  .map(skill => (
                     <option key={skill.name} value={skill.name}>
                       {skill.name}
                     </option>
@@ -224,13 +210,10 @@ const WorkersEditor = ({
         <select
           value=""
           aria-label="Add a skill they also need"
-          onChange={(e) =>
-            e.target.value &&
-            onChange({ kind: 'skills', allOf: [...workers.allOf, [e.target.value]] })
-          }
+          onChange={e => e.target.value && onChange({ kind: 'skills', allOf: [...workers.allOf, [e.target.value]] })}
         >
           <option value="">{workers.allOf.length === 0 ? '+ skill' : '+ and…'}</option>
-          {design.skills.map((skill) => (
+          {design.skills.map(skill => (
             <option key={skill.name} value={skill.name}>
               {skill.name}
             </option>
@@ -246,15 +229,13 @@ export const QueuesPanel = () => {
   const { editor, design, readOnly } = useOpenDesign();
   const newName = editor.newQueueName;
   const used = (key: string) =>
-    design.workflows.some((workflow) =>
-      workflow.rules.some((rule) => rule.targets.some((target) => target.queue === key)),
-    );
+    design.workflows.some(workflow => workflow.rules.some(rule => rule.targets.some(target => target.queue === key)));
   return (
     <div className="routing-panel" role="region" aria-label="Queues">
       <SkillsBar design={design} />
       <p className="field-hint">Where tasks wait for a counselor, and who can work in each one.</p>
       <ul className="routing-queue-list">
-        {design.queues.map((queue) => (
+        {design.queues.map(queue => (
           <li key={queue.key}>
             <div className="routing-queue-head">
               <input
@@ -262,7 +243,7 @@ export const QueuesPanel = () => {
                 value={queue.name}
                 aria-label="Queue name"
                 disabled={readOnly}
-                onChange={(e) => dispatch(queueChanged({ ...queue, name: e.target.value }))}
+                onChange={e => dispatch(queueChanged({ ...queue, name: e.target.value }))}
               />
               <code className="field-hint">{queue.key}</code>
               {!readOnly && !used(queue.key) && (
@@ -280,7 +261,7 @@ export const QueuesPanel = () => {
               workers={queue.workers}
               design={design}
               readOnly={readOnly}
-              onChange={(workers) => dispatch(queueChanged({ ...queue, workers }))}
+              onChange={workers => dispatch(queueChanged({ ...queue, workers }))}
             />
             <span className="field-hint">{describeQueueWorkers(queue.workers)}</span>
           </li>
@@ -293,7 +274,7 @@ export const QueuesPanel = () => {
             value={newName}
             placeholder="New queue's name"
             aria-label="New queue's name"
-            onChange={(e) => dispatch(newQueueNameChanged(e.target.value))}
+            onChange={e => dispatch(newQueueNameChanged(e.target.value))}
           />
           <button
             type="button"
@@ -320,26 +301,24 @@ export const SkillsPanel = () => {
     <div className="routing-panel" role="region" aria-label="Skills and capacity">
       <h3>Skills</h3>
       <p className="field-hint">
-        What counselors can be given in Flex (Teams view). The same skills have to exist in each
-        Flex account; the export lists them.
+        What counselors can be given in Flex (Teams view). The same skills have to exist in each Flex account; the
+        export lists them.
       </p>
       <p className="field-hint">
-        <strong>Levels</strong>: counselors also get a level of the skill (a number, set in Flex). A
-        step can then prefer counselors by level (&quot;Prefer&quot; on the step), e.g. the most
-        experienced first.
+        <strong>Levels</strong>: counselors also get a level of the skill (a number, set in Flex). A step can then
+        prefer counselors by level (&quot;Prefer&quot; on the step), e.g. the most experienced first.
       </p>
       <ul className="routing-skill-list">
-        {design.skills.map((skill) => (
+        {design.skills.map(skill => (
           <li key={skill.name}>
             <input
               type="text"
               defaultValue={skill.name}
               aria-label="Skill name"
               disabled={readOnly}
-              onBlur={(e) => {
+              onBlur={e => {
                 const name = e.target.value.trim();
-                if (name && name !== skill.name)
-                  dispatch(skillRenamed({ from: skill.name, to: name }));
+                if (name && name !== skill.name) dispatch(skillRenamed({ from: skill.name, to: name }));
               }}
             />
             <input
@@ -348,7 +327,7 @@ export const SkillsPanel = () => {
               placeholder="What it means (optional)"
               aria-label="What it means"
               disabled={readOnly}
-              onChange={(e) =>
+              onChange={e =>
                 dispatch(
                   skillChanged({
                     name: skill.name,
@@ -365,7 +344,7 @@ export const SkillsPanel = () => {
                 type="checkbox"
                 checked={Boolean(skill.levels)}
                 disabled={readOnly}
-                onChange={(e) =>
+                onChange={e =>
                   dispatch(
                     skillChanged({
                       name: skill.name,
@@ -396,7 +375,7 @@ export const SkillsPanel = () => {
             value={newSkill}
             placeholder="New skill"
             aria-label="New skill"
-            onChange={(e) => dispatch(newSkillNameChanged(e.target.value))}
+            onChange={e => dispatch(newSkillNameChanged(e.target.value))}
           />
           <button
             type="button"
@@ -410,15 +389,13 @@ export const SkillsPanel = () => {
       )}
 
       <h3>Capacity</h3>
-      <p className="field-hint">
-        How much a counselor handles at once. These apply to every step they concern.
-      </p>
+      <p className="field-hint">How much a counselor handles at once. These apply to every step they concern.</p>
       <label className="field-checkbox">
         <input
           type="checkbox"
           checked={design.capacity.voiceAndChatExclusive}
           disabled={readOnly}
-          onChange={(e) => dispatch(capacityChanged({ voiceAndChatExclusive: e.target.checked }))}
+          onChange={e => dispatch(capacityChanged({ voiceAndChatExclusive: e.target.checked }))}
         />
         <span>Never a call and a chat at the same time</span>
       </label>
@@ -427,7 +404,7 @@ export const SkillsPanel = () => {
           type="checkbox"
           checked={design.capacity.voicemailOneAtATime}
           disabled={readOnly}
-          onChange={(e) => dispatch(capacityChanged({ voicemailOneAtATime: e.target.checked }))}
+          onChange={e => dispatch(capacityChanged({ voicemailOneAtATime: e.target.checked }))}
         />
         <span>One voicemail at a time (taken whatever else they're handling)</span>
       </label>
@@ -439,15 +416,9 @@ export const SkillsPanel = () => {
           value={design.capacity.maxChats ?? ''}
           placeholder="Not set here"
           disabled={readOnly}
-          onChange={(e) =>
-            dispatch(
-              capacityChanged({ maxChats: e.target.value ? Number(e.target.value) : undefined }),
-            )
-          }
+          onChange={e => dispatch(capacityChanged({ maxChats: e.target.value ? Number(e.target.value) : undefined }))}
         />
-        <span className="field-hint">
-          The counselors&apos; maxMessageCapacity in Flex; listed in the export.
-        </span>
+        <span className="field-hint">The counselors&apos; maxMessageCapacity in Flex; listed in the export.</span>
       </label>
     </div>
   );
@@ -477,9 +448,9 @@ const testValueLabel = (design: RoutingDesign, value: string | number | boolean)
 // Why a rule didn't take the task: the first condition that failed, in each alternative
 const whyNot = (design: RoutingDesign, groups: GroupResult[]) =>
   groups
-    .map((group) => group.conditions.find((condition) => condition.result === false)?.condition)
+    .map(group => group.conditions.find(condition => condition.result === false)?.condition)
     .filter((condition): condition is Condition => Boolean(condition))
-    .map((condition) => `needs ${describeCondition(condition)}`)
+    .map(condition => `needs ${describeCondition(condition)}`)
     .join('; or ');
 
 export const TestTaskPanel = () => {
@@ -489,23 +460,19 @@ export const TestTaskPanel = () => {
   const onShowRule = (workflowKey: string, ruleId: string) =>
     showIssue({ key: ruleId, severity: 'warning', message: '', workflow: workflowKey, ruleId });
   const { workflowKey, task } = editor.test;
-  const workflows = design.workflows.filter((candidate) => !candidate.templateText);
-  const workflow = workflows.find((candidate) => candidate.key === workflowKey);
+  const workflows = design.workflows.filter(candidate => !candidate.templateText);
+  const workflow = workflows.find(candidate => candidate.key === workflowKey);
   if (!workflow) return <p className="field-hint">No workflows to test.</p>;
   const attributes = attributesOf(workflow);
   const order = (attribute: string) =>
-    MAIN_ATTRIBUTES.includes(attribute)
-      ? MAIN_ATTRIBUTES.indexOf(attribute)
-      : MAIN_ATTRIBUTES.length;
+    MAIN_ATTRIBUTES.includes(attribute) ? MAIN_ATTRIBUTES.indexOf(attribute) : MAIN_ATTRIBUTES.length;
   const main = Object.entries(attributes)
     .filter(([attribute]) => !DETAIL_ATTRIBUTES.includes(attribute))
     .sort(([a], [b]) => order(a) - order(b));
-  const details = Object.entries(attributes).filter(([attribute]) =>
-    DETAIL_ATTRIBUTES.includes(attribute),
-  );
+  const details = Object.entries(attributes).filter(([attribute]) => DETAIL_ATTRIBUTES.includes(attribute));
   const result = testTask(workflow, task);
   const matchedIndex = result.matched ? workflow.rules.indexOf(result.matched) : -1;
-  const skipped = result.checked.filter((check) => check.rule !== result.matched);
+  const skipped = result.checked.filter(check => check.rule !== result.matched);
 
   const set = (attribute: string, value?: string | number | boolean) =>
     dispatch(testAttributeSet({ attribute, value }));
@@ -521,7 +488,7 @@ export const TestTaskPanel = () => {
         >
           Any
         </button>
-        {values.map((value) => (
+        {values.map(value => (
           <button
             key={String(value)}
             type="button"
@@ -538,12 +505,8 @@ export const TestTaskPanel = () => {
           className="routing-test-other"
           aria-label={`Another ${attributeLabel(attribute)}`}
           placeholder="Other…"
-          value={
-            task[attribute] !== undefined && !values.includes(task[attribute])
-              ? String(task[attribute])
-              : ''
-          }
-          onChange={(e) => set(attribute, e.target.value || undefined)}
+          value={task[attribute] !== undefined && !values.includes(task[attribute]) ? String(task[attribute]) : ''}
+          onChange={e => set(attribute, e.target.value || undefined)}
         />
       </span>
     </div>
@@ -555,14 +518,13 @@ export const TestTaskPanel = () => {
   return (
     <div className="routing-panel routing-test" role="region" aria-label="Test a task">
       <p className="field-hint">
-        Pretend a contact arrives: pick what it looks like, and see which rule takes it and who is
-        offered it.
+        Pretend a contact arrives: pick what it looks like, and see which rule takes it and who is offered it.
       </p>
       {workflows.length > 1 && (
         <>
           <h3>1. Where it arrives</h3>
           <div className="routing-test-choices">
-            {workflows.map((candidate) => (
+            {workflows.map(candidate => (
               <button
                 key={candidate.key}
                 type="button"
@@ -577,9 +539,7 @@ export const TestTaskPanel = () => {
         </>
       )}
       <h3>{workflows.length > 1 ? '2. ' : ''}The contact</h3>
-      {main.length === 0 && (
-        <p className="field-hint">This workflow&apos;s rules don&apos;t look at the contact.</p>
-      )}
+      {main.length === 0 && <p className="field-hint">This workflow&apos;s rules don&apos;t look at the contact.</p>}
       {main.map(row)}
       {details.length > 0 && (
         <details className="routing-test-more">
@@ -595,14 +555,11 @@ export const TestTaskPanel = () => {
 
       <h3>{workflows.length > 1 ? '3. ' : ''}What happens</h3>
       <div className="routing-test-result" role="status">
-        <p className="routing-test-contact">
-          {described ? `A contact with ${described}` : 'Any contact'}
-        </p>
+        <p className="routing-test-contact">{described ? `A contact with ${described}` : 'Any contact'}</p>
         {result.matched ? (
           <>
             <p>
-              is taken by rule {matchedIndex + 1},{' '}
-              <strong>{result.matched.name || 'unnamed'}</strong>{' '}
+              is taken by rule {matchedIndex + 1}, <strong>{result.matched.name || 'unnamed'}</strong>{' '}
               <button
                 type="button"
                 className="link-button"
@@ -617,9 +574,7 @@ export const TestTaskPanel = () => {
                 <li key={target.id}>
                   <span>
                     in <strong>{queueName(design, target.queue)}</strong> to{' '}
-                    {target.knownWorker
-                      ? 'the counselor it was transferred to'
-                      : describeWho(target.who).toLowerCase()}
+                    {target.knownWorker ? 'the counselor it was transferred to' : describeWho(target.who).toLowerCase()}
                     {target.priority !== undefined ? ` (priority ${target.priority})` : ''}.
                   </span>
                   <span className="field-hint">
@@ -633,16 +588,14 @@ export const TestTaskPanel = () => {
           </>
         ) : (
           <p>
-            isn&apos;t taken by any rule: TaskRouter would send it to the workflow&apos;s default
-            queue (if there is one).
+            isn&apos;t taken by any rule: TaskRouter would send it to the workflow&apos;s default queue (if there is
+            one).
           </p>
         )}
         {skipped.length > 0 && (
           <details>
             <summary>
-              {result.matched
-                ? `Rules before it (${skipped.length})`
-                : `Rules tried (${skipped.length})`}
+              {result.matched ? `Rules before it (${skipped.length})` : `Rules tried (${skipped.length})`}
             </summary>
             <ul className="routing-test-steps">
               {skipped.map(({ rule, groups, matched }) => (
@@ -672,19 +625,17 @@ export const CheckList = () => {
       <p className="flow-check-summary">
         {issues.length === 0
           ? 'Nothing to fix.'
-          : `${issues.filter((issue) => issue.severity === 'error').length} errors, ${issues.filter((issue) => issue.severity === 'warning').length} warnings`}
+          : `${issues.filter(issue => issue.severity === 'error').length} errors, ${
+              issues.filter(issue => issue.severity === 'warning').length
+            } warnings`}
       </p>
       <ul className="flow-issue-list">
-        {issues.map((issue) => (
+        {issues.map(issue => (
           <li key={issue.key} className={`flow-issue ${issue.severity}`}>
             <span className="flow-issue-icon">
               {issue.severity === 'error' ? <CircleAlert size={15} /> : <TriangleAlert size={15} />}
             </span>
-            <button
-              type="button"
-              className="link-button flow-issue-message"
-              onClick={() => onShow(issue)}
-            >
+            <button type="button" className="link-button flow-issue-message" onClick={() => onShow(issue)}>
               {issue.message}
             </button>
           </li>

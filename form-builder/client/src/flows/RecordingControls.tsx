@@ -84,8 +84,8 @@ export const useRecordingActions = (): RecordingActions => {
     readOnly,
     upload: (fileName, file) => dispatch(uploadRecording(fileName, file)),
     approve: (fileName, approved) => dispatch(approveRecording(fileName, approved)),
-    publish: (fileName) => dispatch(publishRecording(fileName)),
-    remove: (fileName) => dispatch(removeRecording(fileName)),
+    publish: fileName => dispatch(publishRecording(fileName)),
+    remove: fileName => dispatch(removeRecording(fileName)),
     rename: (objectIds, objects) => dispatch(renameRecordings(objectIds, objects)),
   };
 };
@@ -177,7 +177,7 @@ const UploadButton = ({
         accept={ACCEPT}
         hidden
         aria-label={label}
-        onChange={(e) => {
+        onChange={e => {
           const file = e.target.files?.[0];
           if (file) onFile(file);
           e.target.value = '';
@@ -372,7 +372,7 @@ export const RecordingsPanel = () => {
   const variant = useAppSelector(selectVariant)?.key;
   const mainVariant = useAppSelector(selectMainVariant);
   // Every message on the board, in the flow shown
-  const messages: BoardMessage[] = content.objects.map((object) => ({
+  const messages: BoardMessage[] = content.objects.map(object => ({
     object: { ...object, message: messageFor(object, variant, mainVariant) },
     frame: flowDetailsOf(content, object.frameId),
   }));
@@ -382,8 +382,8 @@ export const RecordingsPanel = () => {
   const recordings = actions.list?.recordings ?? [];
   const voice = messages.filter(({ object, frame }) => isVoiceMessage(object, frame));
   const used = new Set(voice.map(({ object }) => recordingOf(object, recordings)?.fileName).filter(Boolean));
-  const others = recordings.filter((recording) => !used.has(recording.fileName));
-  const approvedWaiting = recordings.filter((recording) => isApproved(recording) && !isPublished(recording));
+  const others = recordings.filter(recording => !used.has(recording.fileName));
+  const approvedWaiting = recordings.filter(recording => isApproved(recording) && !isPublished(recording));
   // Voice messages whose recording has an older name, not the widget's
   const oldNames = voice.filter(({ object }) => hasNonStandardRecording(object));
   const [renaming, setRenaming] = useState(false);
@@ -442,7 +442,7 @@ export const RecordingsPanel = () => {
               multiple
               hidden
               aria-label="Upload several recordings"
-              onChange={(e) => {
+              onChange={e => {
                 const files = [...(e.target.files ?? [])];
                 e.target.value = '';
                 if (files.length > 0) uploadMany(files);
@@ -482,7 +482,9 @@ export const RecordingsPanel = () => {
           onClick={async () => {
             // eslint-disable-next-line no-alert
             const sure = window.confirm(
-              `Publish ${approvedWaiting.length} approved recording${approvedWaiting.length === 1 ? '' : 's'} to production? Callers will hear them on their next call.`,
+              `Publish ${approvedWaiting.length} approved recording${
+                approvedWaiting.length === 1 ? '' : 's'
+              } to production? Callers will hear them on their next call.`,
             );
             if (!sure) return;
             for (const recording of approvedWaiting) await actions.publish(recording.fileName);
@@ -493,7 +495,7 @@ export const RecordingsPanel = () => {
       )}
       {report.length > 0 && (
         <ul className="flow-upload-report">
-          {report.map((line) => (
+          {report.map(line => (
             <li key={line}>{line}</li>
           ))}
         </ul>
@@ -502,7 +504,7 @@ export const RecordingsPanel = () => {
         <div className="alert alert-info">
           No widget on this board is named after these (the file name, without .mp3 or .wav, has to be the Studio name):
           <ul>
-            {unmatched.map((file) => (
+            {unmatched.map(file => (
               <li key={file.name}>{file.name}</li>
             ))}
           </ul>
@@ -552,15 +554,15 @@ export const RecordingsPanel = () => {
             Recordings of this helpline that no widget here is named after: another board, or a typo.
           </p>
           <ul className="flow-recording-list">
-            {others.map((recording) => (
+            {others.map(recording => (
               <li key={recording.fileName}>
                 <code>{recording.fileName}</code>
                 <span className="field-hint">
                   {isPublished(recording)
                     ? 'Published'
                     : recording.production
-                      ? 'In production (older)'
-                      : 'Staging only'}
+                    ? 'In production (older)'
+                    : 'Staging only'}
                 </span>
                 {recording.staging && (
                   <audio

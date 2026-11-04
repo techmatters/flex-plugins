@@ -18,7 +18,17 @@
  * The routing design in plain words, for people with no technical background; and "test a task":
  * which rule a task would match, and who could get it.
  */
-import type { Condition, MoveOn, QueueWorkers, Role, RoutingDesign, Rule, Target, WhoBlock, Workflow } from './model.ts';
+import type {
+  Condition,
+  MoveOn,
+  QueueWorkers,
+  Role,
+  RoutingDesign,
+  Rule,
+  Target,
+  WhoBlock,
+  Workflow,
+} from './model.ts';
 import { attributeLabel, valueLabel } from './model.ts';
 
 const list = (items: string[], last = 'and') =>
@@ -45,7 +55,7 @@ const describeGroup = (conditions: Condition[]) =>
 
 // "Channel: Voice · Service: ChildHelp, or Transferred to: master · Channel: Voice"
 export const describeConditions = (groups: Condition[][]) =>
-  groups.length === 0 || groups.some((group) => group.length === 0)
+  groups.length === 0 || groups.some(group => group.length === 0)
     ? 'Every task'
     : groups.map(describeGroup).join(groups.length > 1 ? ', or ' : '');
 
@@ -87,8 +97,8 @@ export const describeBlock = (block: WhoBlock): string => {
 
 // "Counselors with Calls, Spanish and TYA"
 export const describeWho = (blocks: WhoBlock[]): string => {
-  const roles = blocks.find((block) => block.kind === 'roles');
-  const skills = blocks.find((block) => block.kind === 'skills');
+  const roles = blocks.find(block => block.kind === 'roles');
+  const skills = blocks.find(block => block.kind === 'skills');
   const who = roles?.kind === 'roles' ? rolesLabel(roles.roles) : 'Anyone';
   return skills?.kind === 'skills' && skills.skills.length > 0 ? `${who} with ${list(skills.skills)}` : who;
 };
@@ -118,7 +128,11 @@ export const describeMoveOn = (moveOn: MoveOn): string => {
   }
   if (moveOn.kind === 'timeout') {
     const minutes = moveOn.seconds / 60;
-    return `If nobody takes it in ${Number.isInteger(minutes) && minutes >= 1 ? `${minutes} minute${minutes === 1 ? '' : 's'}` : `${moveOn.seconds} seconds`}, try the next one`;
+    return `If nobody takes it in ${
+      Number.isInteger(minutes) && minutes >= 1
+        ? `${minutes} minute${minutes === 1 ? '' : 's'}`
+        : `${moveOn.seconds} seconds`
+    }, try the next one`;
   }
   return 'Wait here until someone takes it';
 };
@@ -127,11 +141,11 @@ export const describeQueueWorkers = (workers: QueueWorkers): string => {
   if (workers.kind === 'nobody') return 'Nobody (a holding queue)';
   if (workers.kind === 'custom') return `Custom: ${workers.expression}`;
   if (workers.allOf.length === 0) return 'Everyone';
-  return `Counselors with ${list(workers.allOf.map((group) => list(group, 'or')))}`;
+  return `Counselors with ${list(workers.allOf.map(group => list(group, 'or')))}`;
 };
 
 export const queueName = (design: RoutingDesign, key: string) =>
-  design.queues.find((queue) => queue.key === key)?.name ?? key;
+  design.queues.find(queue => queue.key === key)?.name ?? key;
 
 // ---------------------------------------------------------------------------------------------
 // Test a task
@@ -143,7 +157,7 @@ export type ConditionResult = { condition: Condition; result: boolean | 'unknown
 const matches = (condition: Condition, task: TaskAttributes): boolean | 'unknown' => {
   if (condition.kind === 'custom') return 'unknown';
   const value = task[condition.attribute];
-  const found = condition.values.some((candidate) => candidate === value);
+  const found = condition.values.some(candidate => candidate === value);
   switch (condition.operator) {
     case '==':
     case 'IN':
@@ -174,14 +188,14 @@ const anyOf = (results: (boolean | 'unknown')[]): boolean | 'unknown' =>
 export const testTask = (workflow: Workflow, task: TaskAttributes): TaskTest => {
   const checked: TaskTest['checked'] = [];
   for (const rule of workflow.rules) {
-    const groups = rule.when.map((group) => {
-      const conditions = group.map((condition) => ({
+    const groups = rule.when.map(group => {
+      const conditions = group.map(condition => ({
         condition,
         result: matches(condition, task),
       }));
-      return { conditions, matched: allOf(conditions.map((condition) => condition.result)) };
+      return { conditions, matched: allOf(conditions.map(condition => condition.result)) };
     });
-    const matched = groups.length === 0 ? true : anyOf(groups.map((group) => group.matched));
+    const matched = groups.length === 0 ? true : anyOf(groups.map(group => group.matched));
     checked.push({ rule, groups, matched });
     if (matched === true) return { checked, matched: rule };
   }
@@ -191,11 +205,11 @@ export const testTask = (workflow: Workflow, task: TaskAttributes): TaskTest => 
 // The attributes the workflow's rules look at, with the values they compare to
 export const attributesOf = (workflow: Workflow): Record<string, (string | number | boolean)[]> => {
   const attributes: Record<string, Set<string | number | boolean>> = {};
-  workflow.rules.forEach((rule) =>
-    rule.when.flat().forEach((condition) => {
+  workflow.rules.forEach(rule =>
+    rule.when.flat().forEach(condition => {
       if (condition.kind !== 'compare') return;
       attributes[condition.attribute] ??= new Set();
-      condition.values.forEach((value) => attributes[condition.attribute].add(value));
+      condition.values.forEach(value => attributes[condition.attribute].add(value));
     }),
   );
   return Object.fromEntries(Object.entries(attributes).map(([attribute, values]) => [attribute, [...values]]));
@@ -203,4 +217,4 @@ export const attributesOf = (workflow: Workflow): Record<string, (string | numbe
 
 // The target's skills, for checks and the diagram
 export const targetSkills = (target: Target) =>
-  target.who.flatMap((block) => (block.kind === 'skills' ? block.skills : []));
+  target.who.flatMap(block => (block.kind === 'skills' ? block.skills : []));

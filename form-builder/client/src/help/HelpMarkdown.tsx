@@ -71,7 +71,7 @@ export const blocksOf = (source: string): Block[] => {
     if (paragraph.length) blocks.push({ kind: 'paragraph', text: paragraph.join(' ') });
     paragraph = [];
   };
-  lines.forEach((raw) => {
+  lines.forEach(raw => {
     const line = raw.trimEnd();
     const heading = line.match(/^(##|###)\s+(.*)$/);
     const bullet = line.match(/^(\s*)-\s+(.*)$/);

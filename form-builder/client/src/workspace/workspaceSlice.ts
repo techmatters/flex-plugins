@@ -109,7 +109,7 @@ const workspaceSlice = createSlice({
       state.loading = false;
     },
     // Back to the Forms start page
-    helplineClosed: (state) => ({ ...initialState, editorRevision: state.editorRevision + 1 }),
+    helplineClosed: state => ({ ...initialState, editorRevision: state.editorRevision + 1 }),
     peopleLoaded: (state, action: PayloadAction<{ code: string; people: Person[] }>) => {
       // Only while that helpline is still open
       if (state.code === action.payload.code) state.people = action.payload.people;
@@ -120,22 +120,22 @@ const workspaceSlice = createSlice({
     tryItOutOpened: (state, action: PayloadAction<{ focus: PreviewFocus; tab?: string }>) => {
       state.tryItOut = action.payload;
     },
-    tryItOutClosed: (state) => {
+    tryItOutClosed: state => {
       state.tryItOut = undefined;
     },
-    reviewOpened: (state) => {
+    reviewOpened: state => {
       state.reviewing = true;
     },
-    reviewClosed: (state) => {
+    reviewClosed: state => {
       state.reviewing = false;
     },
     sectionPreviewOpened: (state, action: PayloadAction<string>) => {
       state.previewingSection = action.payload;
     },
-    sectionPreviewClosed: (state) => {
+    sectionPreviewClosed: state => {
       state.previewingSection = undefined;
     },
-    editorsRestarted: (state) => {
+    editorsRestarted: state => {
       state.editorRevision += 1;
     },
   },
@@ -165,9 +165,9 @@ const loadPeople =
   async (dispatch, _getState, services) => {
     const load = services.loadPeople;
     if (!load) return;
-    const lists = await Promise.all([code, ASELO_PEOPLE_CODE].map((list) => load(list).catch((): Person[] => [])));
+    const lists = await Promise.all([code, ASELO_PEOPLE_CODE].map(list => load(list).catch((): Person[] => [])));
     const seen = new Set<string>();
-    const people = lists.flat().filter((person) => {
+    const people = lists.flat().filter(person => {
       const key = person.email ?? person.name;
       if (seen.has(key)) return false;
       seen.add(key);
@@ -202,19 +202,19 @@ export const reloadHelpline = (): AppThunk<Promise<void>> => (dispatch, getState
 };
 
 // Back to the Forms start page, saving what's still waiting
-export const closeHelpline = (): AppThunk<Promise<void>> => async (dispatch) => {
+export const closeHelpline = (): AppThunk<Promise<void>> => async dispatch => {
   const saving = dispatch(saveBeforeLeaving());
   dispatch(helplineClosed());
   await saving;
 };
 
-export const discardWorkspaceDraft = (): AppThunk<Promise<void>> => async (dispatch) => {
+export const discardWorkspaceDraft = (): AppThunk<Promise<void>> => async dispatch => {
   await dispatch(discardDraft());
   dispatch(editorsRestarted());
 };
 
 // The forms the draft has: the contact tabs, and each case section's form
-export const selectCaseTargets = createSelector([selectDraftFiles], (files) =>
+export const selectCaseTargets = createSelector([selectDraftFiles], files =>
   getCaseSections(files).map(caseSectionTarget),
 );
 
@@ -223,8 +223,8 @@ export const selectIssuesByTab = createSelector(
   [selectDraftFiles, selectOriginalFiles, selectCaseTargets],
   (files, originalFiles, caseTargets) =>
     Object.fromEntries([
-      ...CONTACT_TABS.map((tab) => [tab.key, validateContactTab(files, originalFiles, tab)]),
-      ...caseTargets.map((target) => [`case:${target.key}`, validateContactTab(files, originalFiles, target)]),
+      ...CONTACT_TABS.map(tab => [tab.key, validateContactTab(files, originalFiles, tab)]),
+      ...caseTargets.map(target => [`case:${target.key}`, validateContactTab(files, originalFiles, target)]),
     ]) as Record<string, ValidationIssue[]>,
 );
 
@@ -252,9 +252,9 @@ export const selectReviewIssues = createSelector(
   (issuesByTab, sectionIssues, caseTargets, changedPaths) => {
     const changed = new Set(changedPaths);
     return [
-      ...[...CONTACT_TABS, ...caseTargets].flatMap((target) => {
+      ...[...CONTACT_TABS, ...caseTargets].flatMap(target => {
         const issues = issuesByTab[isContactTab(target) ? target.key : `case:${target.key}`] ?? [];
-        return changed.has(target.filePath) ? issues : issues.filter((issue) => issue.severity === 'error');
+        return changed.has(target.filePath) ? issues : issues.filter(issue => issue.severity === 'error');
       }),
       ...sectionIssues,
     ];

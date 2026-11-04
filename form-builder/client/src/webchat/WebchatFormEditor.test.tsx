@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 /**
  * The webchat form editor, driven through the workspace with CA's (translated, two
  * languages) and AS's (text in the form) real definitions and webchat translations.
@@ -25,12 +24,7 @@ import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-li
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { Provider } from 'react-redux';
 import { createAppStore } from '../app/store';
-import {
-  createHarness,
-  formDefinitionsDir,
-  helplinesConfigDir,
-  webchatConfigDir,
-} from '../testing/workspaceHarness';
+import { createHarness, formDefinitionsDir, helplinesConfigDir, webchatConfigDir } from '../testing/workspaceHarness';
 import { baseWebchatStrings, PRE_ENGAGEMENT_FILE } from './webchat';
 import { WebchatPreview } from './WebchatPreview';
 
@@ -120,7 +114,7 @@ describe('webchat form editor', () => {
     // A copy: definitions opened before are frozen in the store
     const withStart = structuredClone(as);
     const fields = withStart.files[PRE_ENGAGEMENT_FILE] as { fields: { name: string; defaultValue?: string }[] };
-    fields.fields.find((field) => field.name === 'gender')!.defaultValue = 'Girl';
+    fields.fields.find(field => field.name === 'gender')!.defaultValue = 'Girl';
     await openWebchat(withStart);
     expect((within(preview()).getByLabelText(/^Gender/) as HTMLSelectElement).value).toBe('');
 
@@ -143,7 +137,7 @@ describe('filling in the contact form', () => {
     expect(screen.getByText(/Nothing: counselors don't get this answer filled in/)).toBeTruthy();
 
     const firstName = (as.files['tabbedForms/ChildInformationTab.json'] as { name: string; label: string }[]).find(
-      (item) => item.name === 'firstName',
+      item => item.name === 'firstName',
     )!;
     fireEvent.change(screen.getByRole('combobox', { name: 'Fill in another contact form field' }), {
       target: { value: 'ChildInformationTab.firstName' },

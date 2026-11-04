@@ -16,7 +16,14 @@
 
 import { describe, expect, test } from '@jest/globals';
 import type { BoardContent } from '@tech-matters/form-builder-shared/flows/model';
-import { BOARD_SCHEMA_VERSION, designOf, emptyBoard, exitsOf, statusOf, suggestStudioName } from '@tech-matters/form-builder-shared/flows/model';
+import {
+  BOARD_SCHEMA_VERSION,
+  designOf,
+  emptyBoard,
+  exitsOf,
+  statusOf,
+  suggestStudioName,
+} from '@tech-matters/form-builder-shared/flows/model';
 import {
   CanvasNode,
   duplicate,
@@ -100,24 +107,24 @@ describe('canvas model', () => {
   test('frames come first and hold their objects', () => {
     const nodes = toNodes(board);
     expect(nodes[0]).toMatchObject({ id: 'f-voice', type: 'frame' });
-    expect(nodes.find((node) => node.id === 'o-hours')?.parentId).toBe('f-voice');
-    expect(nodes.find((node) => node.id === 'o-closed')?.parentId).toBeUndefined();
+    expect(nodes.find(node => node.id === 'o-hours')?.parentId).toBe('f-voice');
+    expect(nodes.find(node => node.id === 'o-closed')?.parentId).toBeUndefined();
   });
 
   test('moving an object onto a frame puts it in the frame, and off it takes it out', () => {
     let nodes: CanvasNode[] = toNodes(board);
     // o-closed is at 1200,300 (absolute); move it over the frame
-    nodes = nodes.map((node) => (node.id === 'o-closed' ? { ...node, position: { x: 400, y: 400 } } : node));
+    nodes = nodes.map(node => (node.id === 'o-closed' ? { ...node, position: { x: 400, y: 400 } } : node));
     nodes = reparent(nodes, 'o-closed');
-    expect(nodes.find((node) => node.id === 'o-closed')).toMatchObject({
+    expect(nodes.find(node => node.id === 'o-closed')).toMatchObject({
       parentId: 'f-voice',
       position: { x: 300, y: 300 },
     });
 
     // o-hours is at 40,40 in the frame (140,140 absolute); move it out
-    nodes = nodes.map((node) => (node.id === 'o-hours' ? { ...node, position: { x: 1000, y: 40 } } : node));
+    nodes = nodes.map(node => (node.id === 'o-hours' ? { ...node, position: { x: 1000, y: 40 } } : node));
     nodes = reparent(nodes, 'o-hours');
-    expect(nodes.find((node) => node.id === 'o-hours')).toMatchObject({
+    expect(nodes.find(node => node.id === 'o-hours')).toMatchObject({
       parentId: undefined,
       position: { x: 1100, y: 140 },
     });
@@ -127,7 +134,7 @@ describe('canvas model', () => {
   test('a new connection takes the next unused way out, and each way out connects once', () => {
     const nodes = toNodes(board);
     const edges = toEdges(board);
-    const node = (id: string) => nodes.find((candidate) => candidate.id === id) as ObjectNode;
+    const node = (id: string) => nodes.find(candidate => candidate.id === id) as ObjectNode;
 
     expect(nextExit(node('o-english'), edges)).toEqual({ ok: true, exit: 'Yes' });
     expect(nextExit(node('o-hours'), edges)).toEqual({ ok: true, exit: 'closed' });
@@ -165,11 +172,11 @@ describe('canvas model', () => {
   test('copies get new ids, keep the connections between them, and stay in their frame', () => {
     const nodes = toNodes(board);
     const edges = toEdges(board);
-    const copied = nodes.filter((node) => node.id === 'o-hours' || node.id === 'o-english');
-    const result = duplicate(copied, edges, new Set(nodes.map((node) => node.id)));
+    const copied = nodes.filter(node => node.id === 'o-hours' || node.id === 'o-english');
+    const result = duplicate(copied, edges, new Set(nodes.map(node => node.id)));
     expect(result.nodes).toHaveLength(2);
-    expect(result.nodes.map((node) => node.id)).not.toContain('o-hours');
-    expect(result.nodes.map((node) => node.parentId)).toEqual(['f-voice', 'f-voice']);
+    expect(result.nodes.map(node => node.id)).not.toContain('o-hours');
+    expect(result.nodes.map(node => node.parentId)).toEqual(['f-voice', 'f-voice']);
     expect(result.nodes[0].position).toEqual({ x: 80, y: 80 });
     expect(result.edges).toHaveLength(1);
     expect(result.edges[0]).toMatchObject({
@@ -182,7 +189,7 @@ describe('canvas model', () => {
     const withFrame = duplicate(nodes, edges, new Set());
     const frameCopy = withFrame.nodes[0];
     expect(frameCopy.type).toBe('frame');
-    expect(withFrame.nodes.filter((node) => node.parentId === frameCopy.id)).toHaveLength(3);
+    expect(withFrame.nodes.filter(node => node.parentId === frameCopy.id)).toHaveLength(3);
   });
 
   test("a copy of an imported widget is a new widget: it isn't the live one", () => {
@@ -205,7 +212,7 @@ describe('canvas model', () => {
           },
         },
       ],
-    }).filter((node) => node.type === 'object');
+    }).filter(node => node.type === 'object');
     const [copy] = duplicate([original], [], new Set([original.id])).nodes;
     if (copy.type !== 'object' || original.type !== 'object') throw new Error('not an object');
     expect(original.data.object.studio).toBeDefined();
@@ -220,8 +227,8 @@ describe('canvas model', () => {
       }),
       [],
       new Set(),
-    ).nodes.filter((node) => node.type === 'frame');
-    expect(frames.every((node) => node.type === 'frame' && !node.data.frame.studio)).toBe(true);
+    ).nodes.filter(node => node.type === 'frame');
+    expect(frames.every(node => node.type === 'frame' && !node.data.frame.studio)).toBe(true);
   });
 });
 
@@ -302,13 +309,7 @@ describe('connection labels', () => {
       { id: 'noMatch', source: 'menu', target: 'next', data: { exit: 'No match' } },
       { id: 'unlabelled', source: 'menu', target: 'next', data: {} },
     ];
-    const offset = (id: string) =>
-      labelOffsetOf(
-        labelSlot(
-          edges,
-          edges.find((edge) => edge.id === id)!,
-        ),
-      );
+    const offset = (id: string) => labelOffsetOf(labelSlot(edges, edges.find(edge => edge.id === id)!));
     expect(offset('english')).toBe(-11);
     expect(offset('noMatch')).toBe(11);
     // Alone on its path: where it always was

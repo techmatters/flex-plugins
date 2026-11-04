@@ -38,8 +38,8 @@ export const isChannelAttributesReference = (value: unknown): boolean => {
     typeof value === 'string'
       ? value
       : value && typeof value === 'object' && typeof (value as { expression?: unknown }).expression === 'string'
-        ? `\${${(value as { expression: string }).expression}}`
-        : undefined;
+      ? `\${${(value as { expression: string }).expression}}`
+      : undefined;
   return Boolean(text && /^\$\{\s*channel_attributes(?:\.default|\[\s*"default"\s*\])\s*\}$/.test(text.trim()));
 };
 
@@ -158,7 +158,7 @@ export const taskAttributesSourceOf = (attributes: TaskAttributes): TaskAttribut
 // Liquid (filled in by Studio) and Terraform values: inside quotes they're text, outside a value
 const filledIn = (json: string) =>
   json
-    .replace(/"(?:[^"\\]|\\.)*"/g, (quoted) => quoted.replace(/\{\{[\s\S]*?\}\}|\{%[\s\S]*?%\}|\$\{[^}]*\}/g, 'x'))
+    .replace(/"(?:[^"\\]|\\.)*"/g, quoted => quoted.replace(/\{\{[\s\S]*?\}\}|\{%[\s\S]*?%\}|\$\{[^}]*\}/g, 'x'))
     .replace(/\{\{[\s\S]*?\}\}|\$\{[^}]*\}/g, 'null');
 
 export const taskAttributesProblem = (json: string): string | undefined => {

@@ -48,7 +48,7 @@ export const FeaturesEditor = () => {
         <p className="muted">This helpline’s Flex service configuration wasn’t found.</p>
       ) : (
         <ul className="feature-list">
-          {FEATURE_INFO.map((info) => (
+          {FEATURE_INFO.map(info => (
             <li key={info.key}>
               <label className="feature-switch">
                 <input
@@ -56,7 +56,7 @@ export const FeaturesEditor = () => {
                   role="switch"
                   checked={features[info.key]}
                   disabled={!canChange}
-                  onChange={(e) => dispatch(switchFeature(info.key, e.target.checked))}
+                  onChange={e => dispatch(switchFeature(info.key, e.target.checked))}
                 />
                 <span>
                   <strong>{info.title}</strong>
@@ -76,9 +76,8 @@ export const FeaturesEditor = () => {
               <span>
                 <strong>Cases</strong>
                 <span className="field-hint">
-                  What counselors can do with cases (open, edit, close, reopen) is set by Aselo’s
-                  permission rules{permissionConfig ? ` (“${permissionConfig}”)` : ''}, not here.
-                  Contact the Aselo team to change them.
+                  What counselors can do with cases (open, edit, close, reopen) is set by Aselo’s permission rules
+                  {permissionConfig ? ` (“${permissionConfig}”)` : ''}, not here. Contact the Aselo team to change them.
                 </span>
               </span>
             </div>

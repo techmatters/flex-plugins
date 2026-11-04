@@ -112,9 +112,9 @@ export const HelpPanel = ({ articles = HELP_ARTICLES }: Props) => {
     return () => window.removeEventListener('keydown', onKey);
   }, [dispatch]);
 
-  const visible = articles.filter((article) => visibleTo(article, isAseloStaff));
-  const ofArea = visible.filter((article) => article.area === area);
-  const general = visible.filter((article) => article.area === 'general');
+  const visible = articles.filter(article => visibleTo(article, isAseloStaff));
+  const ofArea = visible.filter(article => article.area === area);
+  const general = visible.filter(article => article.area === 'general');
   const { results, confident } = useMemo(
     () =>
       searched
@@ -131,7 +131,7 @@ export const HelpPanel = ({ articles = HELP_ARTICLES }: Props) => {
     if (isAseloStaff) dispatch(loadSentQuestions(true));
   }, [isAseloStaff, dispatch]);
 
-  const article = view.kind === 'article' ? articles.find((candidate) => candidate.slug === view.slug) : undefined;
+  const article = view.kind === 'article' ? articles.find(candidate => candidate.slug === view.slug) : undefined;
   const back = (
     <button type="button" className="link-button help-back" onClick={() => dispatch(homeShown())}>
       <ArrowLeft size={14} aria-hidden /> {searched ? 'Back to the answers' : 'All help'}
@@ -152,7 +152,7 @@ export const HelpPanel = ({ articles = HELP_ARTICLES }: Props) => {
       <form
         className="help-search"
         role="search"
-        onSubmit={(e) => {
+        onSubmit={e => {
           e.preventDefault();
           dispatch(querySubmitted());
         }}
@@ -164,7 +164,7 @@ export const HelpPanel = ({ articles = HELP_ARTICLES }: Props) => {
           value={query}
           aria-label="Ask a question"
           placeholder="Ask a question, e.g. how do I send my changes?"
-          onChange={(e) => dispatch(queryTyped(e.target.value))}
+          onChange={e => dispatch(queryTyped(e.target.value))}
         />
       </form>
 
@@ -297,14 +297,14 @@ export const HelpPanel = ({ articles = HELP_ARTICLES }: Props) => {
                 {area === 'flows' && ' Meanwhile, the (i) on each step says what it does.'}
               </p>
             )}
-            {(['guide', 'section', 'answer'] as const).map((kind) => {
-              const list = ofArea.filter((candidate) => candidate.kind === kind);
+            {(['guide', 'section', 'answer'] as const).map(kind => {
+              const list = ofArea.filter(candidate => candidate.kind === kind);
               return (
                 list.length > 0 && (
                   <section key={kind}>
                     <p className="help-section-title">{KIND_TITLES[kind]}</p>
                     <ul className="help-list">
-                      {list.map((candidate) => (
+                      {list.map(candidate => (
                         <ArticleLink key={candidate.slug} article={candidate} onOpen={open} />
                       ))}
                     </ul>
@@ -316,7 +316,7 @@ export const HelpPanel = ({ articles = HELP_ARTICLES }: Props) => {
               <section>
                 <p className="help-section-title">{HELP_AREA_LABELS.general}</p>
                 <ul className="help-list">
-                  {general.map((candidate) => (
+                  {general.map(candidate => (
                     <ArticleLink key={candidate.slug} article={candidate} onOpen={open} />
                   ))}
                 </ul>

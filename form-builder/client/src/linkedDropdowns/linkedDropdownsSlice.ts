@@ -74,7 +74,7 @@ export type LinkedDropdownsState = {
 const initialState: LinkedDropdownsState = {};
 
 // What the column at a level shows the answers under (see LinkedAnswersEditor)
-const columnParent = (selected: string[], level: number) => (level === 0 ? 'top' : (selected[level - 1] ?? 'none'));
+const columnParent = (selected: string[], level: number) => (level === 0 ? 'top' : selected[level - 1] ?? 'none');
 
 // Columns whose parent answer changed start afresh (search, typed answers)
 const keepColumnsWithSameParent = (answers: AnswersEditorState, nextSelected: string[]) =>
@@ -98,7 +98,7 @@ const linkedDropdownsSlice = createSlice({
         columns: {},
       };
     },
-    answersEditorClosed: (state) => {
+    answersEditorClosed: state => {
       state.answers = undefined;
     },
     answerSelected: (state, action: PayloadAction<{ level: number; id: string }>) => {
@@ -140,10 +140,10 @@ const linkedDropdownsSlice = createSlice({
       state.answers.changed = true;
       state.answers.importing = false;
     },
-    spreadsheetImportOpened: (state) => {
+    spreadsheetImportOpened: state => {
       state.spreadsheetImport = { pastedText: '', firstRowIsHeader: true };
     },
-    spreadsheetImportClosed: (state) => {
+    spreadsheetImportClosed: state => {
       state.spreadsheetImport = undefined;
     },
     spreadsheetImportChanged: (state, action: PayloadAction<Partial<SpreadsheetImportState>>) => {
@@ -158,7 +158,7 @@ const linkedDropdownsSlice = createSlice({
         roots: [],
       };
     },
-    wizardClosed: (state) => {
+    wizardClosed: state => {
       state.wizard = undefined;
     },
     wizardChanged: (state, action: PayloadAction<Partial<WizardState>>) => {
@@ -166,9 +166,9 @@ const linkedDropdownsSlice = createSlice({
     },
   },
   selectors: {
-    selectAnswersEditor: (state) => state.answers,
-    selectSpreadsheetImport: (state) => state.spreadsheetImport,
-    selectWizard: (state) => state.wizard,
+    selectAnswersEditor: state => state.answers,
+    selectSpreadsheetImport: state => state.spreadsheetImport,
+    selectWizard: state => state.wizard,
   },
 });
 
@@ -219,13 +219,13 @@ export const addAnswers =
     const answers = selectAnswersEditor(getState());
     const current = answers && answersAtLevel(answers, level);
     if (!current) return;
-    const existing = new Set(current.map((answer) => answer.label.trim().toLowerCase()));
+    const existing = new Set(current.map(answer => answer.label.trim().toLowerCase()));
     const toAdd: string[] = [];
     const skipped: string[] = [];
     labels
-      .map((text) => text.trim())
+      .map(text => text.trim())
       .filter(Boolean)
-      .forEach((text) => {
+      .forEach(text => {
         if (existing.has(text.toLowerCase())) skipped.push(text);
         else {
           existing.add(text.toLowerCase());
@@ -233,7 +233,7 @@ export const addAnswers =
         }
       });
     if (toAdd.length)
-      dispatch(levelChanged({ level, answers: [...current, ...toAdd.map((text) => newAnswerNode(text))] }));
+      dispatch(levelChanged({ level, answers: [...current, ...toAdd.map(text => newAnswerNode(text))] }));
     dispatch(
       columnInputsChanged({
         level,
@@ -269,8 +269,8 @@ export const finishRenaming =
     const { id, text } = renaming;
     dispatch(renamingChanged(undefined));
     dispatch(
-      updateLevel(level, (answers) =>
-        answers.map((answer) => {
+      updateLevel(level, answers =>
+        answers.map(answer => {
           if (answer.id !== id || !text.trim() || text === answer.label) return answer;
           // Answers that already existed keep their saved value, so past contacts still match
           return answer.existing ? { ...answer, label: text } : { ...answer, label: text, value: text.trim() };
@@ -280,17 +280,17 @@ export const finishRenaming =
   };
 
 export const removeAnswer = (level: number, id: string): AppThunk =>
-  updateLevel(level, (answers) => answers.filter((other) => other.id !== id));
+  updateLevel(level, answers => answers.filter(other => other.id !== id));
 
 export const sortAnswers = (level: number): AppThunk =>
-  updateLevel(level, (answers) =>
+  updateLevel(level, answers =>
     [...answers].sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true })),
   );
 
 export const moveAnswer = (level: number, activeId: string, overId: string): AppThunk =>
-  updateLevel(level, (answers) => {
-    const oldIndex = answers.findIndex((answer) => answer.id === activeId);
-    const newIndex = answers.findIndex((answer) => answer.id === overId);
+  updateLevel(level, answers => {
+    const oldIndex = answers.findIndex(answer => answer.id === activeId);
+    const newIndex = answers.findIndex(answer => answer.id === overId);
     const moved = [...answers];
     moved.splice(newIndex, 0, ...moved.splice(oldIndex, 1));
     return moved;
@@ -304,17 +304,17 @@ export const moveAnswer = (level: number, activeId: string, overId: string): App
 const looksLikeHeader = (row: string[] | undefined, levelLabels: string[]) =>
   Boolean(
     row &&
-    levelLabels.some((label, index) =>
-      String(row[index] ?? '')
-        .trim()
-        .toLowerCase()
-        .includes(label.trim().toLowerCase().split(' ')[0]),
-    ),
+      levelLabels.some((label, index) =>
+        String(row[index] ?? '')
+          .trim()
+          .toLowerCase()
+          .includes(label.trim().toLowerCase().split(' ')[0]),
+      ),
   );
 
 export const acceptSpreadsheetRows =
   (rows: string[][], source: string, levelLabels: string[]): AppThunk =>
-  (dispatch) =>
+  dispatch =>
     dispatch(
       spreadsheetImportChanged({
         rows,
@@ -326,7 +326,7 @@ export const acceptSpreadsheetRows =
 
 export const readSpreadsheet =
   (file: File, levelLabels: string[]): AppThunk<Promise<void>> =>
-  async (dispatch) => {
+  async dispatch => {
     try {
       dispatch(acceptSpreadsheetRows(await readSpreadsheetFile(file), file.name, levelLabels));
     } catch (err) {

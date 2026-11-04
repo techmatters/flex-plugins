@@ -27,7 +27,7 @@ const FROM_NODE = ['fetch', 'Request', 'Response', 'Headers', 'TextEncoder', 'Te
 class JsdomEnvironment extends TestEnvironment {
   constructor(config, context) {
     super(config, context);
-    FROM_NODE.forEach((name) => {
+    FROM_NODE.forEach(name => {
       if (this.global[name] === undefined) this.global[name] = globalThis[name];
     });
     if (!this.global.crypto?.subtle) {

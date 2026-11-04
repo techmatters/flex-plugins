@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';

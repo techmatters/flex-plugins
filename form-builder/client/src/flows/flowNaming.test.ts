@@ -22,7 +22,12 @@
 
 import { describe, expect, test } from '@jest/globals';
 import type { BoardContent, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
-import { emptyBoard, flowChannelOf, namingChoicesOf, sharedLanguageVariants } from '@tech-matters/form-builder-shared/flows/model';
+import {
+  emptyBoard,
+  flowChannelOf,
+  namingChoicesOf,
+  sharedLanguageVariants,
+} from '@tech-matters/form-builder-shared/flows/model';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
 import { toStudioFlow } from './studioTemplate';
 
@@ -39,8 +44,8 @@ const object = (id: string, type: FlowObject['type'], extra: Partial<FlowObject>
 
 const namingWarnings = (content: Pick<BoardContent, 'objects' | 'frames' | 'connections' | 'flow'>) =>
   boardChecks(content)
-    .filter((issue) => issue.key.includes('|naming-'))
-    .map((issue) => issue.message);
+    .filter(issue => issue.key.includes('|naming-'))
+    .map(issue => issue.message);
 
 describe('a flow says its channels, languages and services', () => {
   test('not saying them is a warning (for each flow with widgets), one that can be ignored', () => {
@@ -112,8 +117,8 @@ describe('Skilled worker available? asks about the flow’s channel when none is
     const { body, todo, content } = bodyOf(undefined);
     expect(body.targetChannel).toBe('TODO');
     expect(todo).toContain('“f_isSkilledWorkerAvailable_spanish”: set its channel (voice or chat).');
-    expect(boardChecks(content).map((issue) => issue.message)).toContain('“check”: set its channel.');
-    expect(boardChecks(bodyOf('sms').content).map((issue) => issue.message)).not.toContain('“check”: set its channel.');
+    expect(boardChecks(content).map(issue => issue.message)).toContain('“check”: set its channel.');
+    expect(boardChecks(bodyOf('sms').content).map(issue => issue.message)).not.toContain('“check”: set its channel.');
   });
 });
 

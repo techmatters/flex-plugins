@@ -34,8 +34,20 @@ import {
   Play,
   Trash2,
 } from 'lucide-react';
-import type { AnswerType, Chatbot, ChatbotIntent, ChatbotQuestion } from '@tech-matters/form-builder-shared/chatbots/model';
-import { answerKindOf, answerTypeOf, BUILTIN_TYPES, builtinInfo, builtinLabel, fillsInContact } from '@tech-matters/form-builder-shared/chatbots/model';
+import type {
+  AnswerType,
+  Chatbot,
+  ChatbotIntent,
+  ChatbotQuestion,
+} from '@tech-matters/form-builder-shared/chatbots/model';
+import {
+  answerKindOf,
+  answerTypeOf,
+  BUILTIN_TYPES,
+  builtinInfo,
+  builtinLabel,
+  fillsInContact,
+} from '@tech-matters/form-builder-shared/chatbots/model';
 import { openComments } from './edit';
 import { Loading } from '../common/Loading';
 import type { ContactForms } from '@tech-matters/form-builder-shared/chatbots/formMappings';
@@ -89,7 +101,7 @@ const Bubble = ({
       aria-label={label}
       placeholder={placeholder}
       disabled={readOnly}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={e => onChange(e.target.value)}
     />
   </div>
 );
@@ -133,8 +145,8 @@ const Utterances = ({
               value={adding}
               placeholder="Add a phrase…"
               aria-label="Add a phrase that starts it"
-              onChange={(e) => setAdding(e.target.value)}
-              onKeyDown={(e) => {
+              onChange={e => setAdding(e.target.value)}
+              onKeyDown={e => {
                 if (e.key === 'Enter' && adding.trim()) {
                   onChange([...intent.utterances, adding.trim()]);
                   setAdding('');
@@ -160,7 +172,15 @@ const NEW_PATTERN = '__new-pattern';
  * Which answers a question takes: one of the language's lists or patterns, one of Lex's own types,
  * or a new list or pattern (named after the question by default)
  */
-const AnswerPicker = ({ bot, intent, question }: { bot: Chatbot; intent: ChatbotIntent; question: ChatbotQuestion }) => {
+const AnswerPicker = ({
+  bot,
+  intent,
+  question,
+}: {
+  bot: Chatbot;
+  intent: ChatbotIntent;
+  question: ChatbotQuestion;
+}) => {
   const dispatch = useAppDispatch();
   const design = useAppSelector(selectChatbotDesign)!;
   const readOnly = useAppSelector(selectChatbotsReadOnly);
@@ -168,12 +188,10 @@ const AnswerPicker = ({ bot, intent, question }: { bot: Chatbot; intent: Chatbot
   const picker = useAppSelector(selectChatbots).answerPickers[question.id];
   const creating = picker?.kind;
   const name = picker?.name ?? '';
-  const types = Object.values(design.answerTypes[bot.language] ?? {}).filter((type) => !type.builtin);
-  const lists = types.filter((type) => answerKindOf(type) === 'list').sort((a, b) => a.name.localeCompare(b.name));
-  const patterns = types
-    .filter((type) => answerKindOf(type) === 'pattern')
-    .sort((a, b) => a.name.localeCompare(b.name));
-  const known = new Set([...types.map((type) => type.name), ...BUILTIN_TYPES.map((type) => type.name)]);
+  const types = Object.values(design.answerTypes[bot.language] ?? {}).filter(type => !type.builtin);
+  const lists = types.filter(type => answerKindOf(type) === 'list').sort((a, b) => a.name.localeCompare(b.name));
+  const patterns = types.filter(type => answerKindOf(type) === 'pattern').sort((a, b) => a.name.localeCompare(b.name));
+  const known = new Set([...types.map(type => type.name), ...BUILTIN_TYPES.map(type => type.name)]);
   const taken = (candidate: string) => Boolean(design.answerTypes[bot.language]?.[candidate]);
   return (
     <span className="chatbot-answer-picker">
@@ -181,7 +199,7 @@ const AnswerPicker = ({ bot, intent, question }: { bot: Chatbot; intent: Chatbot
         value={question.answerType}
         aria-label="Answers it takes"
         disabled={readOnly}
-        onChange={(e) => {
+        onChange={e => {
           const value = e.target.value;
           if (value === NEW_LIST || value === NEW_PATTERN) {
             dispatch(
@@ -200,7 +218,7 @@ const AnswerPicker = ({ bot, intent, question }: { bot: Chatbot; intent: Chatbot
       >
         {!known.has(question.answerType) && <option value={question.answerType}>{question.answerType}</option>}
         <optgroup label="A list of answers">
-          {lists.map((type) => (
+          {lists.map(type => (
             <option key={type.name} value={type.name}>
               {type.name} ({type.values.length})
             </option>
@@ -208,7 +226,7 @@ const AnswerPicker = ({ bot, intent, question }: { bot: Chatbot; intent: Chatbot
           {!readOnly && <option value={NEW_LIST}>+ New list of answers…</option>}
         </optgroup>
         <optgroup label="Anything matching a pattern">
-          {patterns.map((type) => (
+          {patterns.map(type => (
             <option key={type.name} value={type.name}>
               {type.name} ({type.pattern})
             </option>
@@ -216,7 +234,7 @@ const AnswerPicker = ({ bot, intent, question }: { bot: Chatbot; intent: Chatbot
           {!readOnly && <option value={NEW_PATTERN}>+ New pattern…</option>}
         </optgroup>
         <optgroup label="Lex's own">
-          {BUILTIN_TYPES.map((type) => (
+          {BUILTIN_TYPES.map(type => (
             <option key={type.name} value={type.name}>
               Any {type.label} ({type.name})
             </option>
@@ -229,7 +247,7 @@ const AnswerPicker = ({ bot, intent, question }: { bot: Chatbot; intent: Chatbot
             type="text"
             value={name}
             aria-label={creating === 'list' ? 'Name of the new list' : 'Name of the new pattern'}
-            onChange={(e) =>
+            onChange={e =>
               dispatch(answerPickerChanged({ questionId: question.id, form: { kind: creating, name: e.target.value } }))
             }
           />
@@ -284,7 +302,7 @@ const AnswerChips = ({ type }: { type?: AnswerType }) => {
   const shown = type.values.slice(0, 12);
   return (
     <div className="chatbot-chips">
-      {shown.map((option) => (
+      {shown.map(option => (
         <span
           key={option.value}
           className="chatbot-chip answer"
@@ -307,11 +325,11 @@ const AnswerChips = ({ type }: { type?: AnswerType }) => {
 // Each field of a tab, to choose one ("ChildInformationTab.age"), leaving out the ones already chosen
 const FieldOptions = ({ forms, exclude }: { forms: ContactForms; exclude: string[] }) => (
   <>
-    {forms.tabs.map((tab) => (
+    {forms.tabs.map(tab => (
       <optgroup key={tab.key} label={tab.key}>
         {tab.fields
-          .filter((field) => !exclude.includes(`${tab.key}.${field.name}`))
-          .map((field) => (
+          .filter(field => !exclude.includes(`${tab.key}.${field.name}`))
+          .map(field => (
             <option key={field.name} value={`${tab.key}.${field.name}`} title={field.label}>
               {tab.key}.{field.name}
             </option>
@@ -359,7 +377,7 @@ const FormFieldsRow = ({ question, type }: { question: ChatbotQuestion; type?: A
                       type="button"
                       aria-label={`Remove ${target} from the first of`}
                       onClick={() =>
-                        set(groups.map((other, i) => (i === index ? other.filter((item) => item !== target) : other)))
+                        set(groups.map((other, i) => (i === index ? other.filter(item => item !== target) : other)))
                       }
                     >
                       ×
@@ -373,7 +391,7 @@ const FormFieldsRow = ({ question, type }: { question: ChatbotQuestion; type?: A
                   className="chatbot-field-or-select"
                   aria-label={`Or, if ${group[group.length - 1]} isn't there`}
                   title="Add a field to fill in instead when this one's tab isn't filled in"
-                  onChange={(e) =>
+                  onChange={e =>
                     e.target.value && set(groups.map((other, i) => (i === index ? [...other, e.target.value] : other)))
                   }
                 >
@@ -392,7 +410,7 @@ const FormFieldsRow = ({ question, type }: { question: ChatbotQuestion; type?: A
               )}
             </span>
             {forms &&
-              group.map((target) => {
+              group.map(target => {
                 const unmatched = unmatchedAnswers(question.slot, type, forms, target);
                 if (unmatched === 'any') {
                   return (
@@ -403,7 +421,7 @@ const FormFieldsRow = ({ question, type }: { question: ChatbotQuestion; type?: A
                 }
                 return unmatched.length > 0 ? (
                   <span key={target} className="chatbot-form-warning">
-                    {target} has no option for {unmatched.map((value) => `“${value}”`).join(', ')}: saved as Unknown.
+                    {target} has no option for {unmatched.map(value => `“${value}”`).join(', ')}: saved as Unknown.
                   </span>
                 ) : null;
               })}
@@ -414,7 +432,7 @@ const FormFieldsRow = ({ question, type }: { question: ChatbotQuestion; type?: A
           <select
             value=""
             aria-label="Fill in a contact form field"
-            onChange={(e) => e.target.value && set([...groups, [e.target.value]])}
+            onChange={e => e.target.value && set([...groups, [e.target.value]])}
           >
             <option value="">+ Fill in a field…</option>
             <FieldOptions forms={forms} exclude={targets} />
@@ -442,7 +460,7 @@ const QuestionCard = ({
   const allIssues = useAppSelector(selectChatbotIssues);
   const author = useAppSelector(selectCommentAuthor);
   const readOnly = useAppSelector(selectChatbotsReadOnly);
-  const issues = allIssues.filter((issue) => issue.questionId === question.id);
+  const issues = allIssues.filter(issue => issue.questionId === question.id);
   // Layout only: whether its comments are unfolded
   const [showComments, setShowComments] = useState(openComments(question.comments).length > 0);
   const type = answerTypeOf(design, bot, question.answerType);
@@ -463,7 +481,7 @@ const QuestionCard = ({
               value={question.slot}
               aria-label="Saved as"
               disabled={readOnly}
-              onChange={(e) =>
+              onChange={e =>
                 dispatch(renameQuestionSlot(bot.id, intent.id, question.id, e.target.value.replace(/\s/g, '')))
               }
             />
@@ -473,7 +491,7 @@ const QuestionCard = ({
               type="checkbox"
               checked={question.required}
               disabled={readOnly}
-              onChange={(e) => set({ required: e.target.checked })}
+              onChange={e => set({ required: e.target.checked })}
             />
             <span>Required</span>
           </label>
@@ -518,7 +536,7 @@ const QuestionCard = ({
         </div>
         {issues.length > 0 && (
           <ul className="chatbot-issues">
-            {issues.map((issue) => (
+            {issues.map(issue => (
               <li key={issue.key} className={issue.severity}>
                 {issue.message.replace(/^.*?question \d+[:]? ?/, '').replace(/^Contact form: /, '')}
               </li>
@@ -531,7 +549,7 @@ const QuestionCard = ({
           label={`Question ${index + 1}`}
           placeholder="What the chatbot asks"
           readOnly={readOnly}
-          onChange={(text) => set({ question: text })}
+          onChange={text => set({ question: text })}
         />
 
         <div className="chatbot-answers">
@@ -554,7 +572,7 @@ const QuestionCard = ({
               value={question.retries}
               aria-label="Times it asks again"
               disabled={readOnly}
-              onChange={(e) => set({ retries: Number(e.target.value) })}
+              onChange={e => set({ retries: Number(e.target.value) })}
             />
             {question.retries === 1 ? 'time' : 'times'}, then says
           </span>
@@ -564,7 +582,7 @@ const QuestionCard = ({
             label={`If question ${index + 1} isn't understood`}
             placeholder="What it says before stopping"
             readOnly={readOnly}
-            onChange={(text) => set({ failureMessage: text || undefined })}
+            onChange={text => set({ failureMessage: text || undefined })}
           />
         </div>
 
@@ -574,7 +592,7 @@ const QuestionCard = ({
             author={author}
             canEdit={!readOnly}
             placeholder="A comment on this question, for the team and for Claude…"
-            onChange={(comments) => set({ comments })}
+            onChange={comments => set({ comments })}
           />
         )}
       </div>
@@ -591,7 +609,7 @@ export const Conversation = () => {
   const change = (changes: Partial<ChatbotIntent>) => dispatch(changeIntent(bot.id, intent.id, changes));
   return (
     <div className="chatbot-conversation" aria-label="Conversation">
-      <Utterances intent={intent} readOnly={readOnly} onChange={(utterances) => change({ utterances })} />
+      <Utterances intent={intent} readOnly={readOnly} onChange={utterances => change({ utterances })} />
 
       <div className="chatbot-step">
         <span className="chatbot-step-icon greet" aria-hidden>
@@ -604,7 +622,7 @@ export const Conversation = () => {
             label="Greeting"
             placeholder="Optional: what the chatbot says first"
             readOnly={readOnly}
-            onChange={(text) => change({ opening: text || undefined })}
+            onChange={text => change({ opening: text || undefined })}
           />
         </div>
       </div>
@@ -636,7 +654,7 @@ export const Conversation = () => {
             label="Goodbye"
             placeholder="What the chatbot says at the end"
             readOnly={readOnly}
-            onChange={(text) => change({ closing: text || undefined })}
+            onChange={text => change({ closing: text || undefined })}
           />
         </div>
       </div>

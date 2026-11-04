@@ -103,9 +103,9 @@ const reviewPanelSlice = createSlice({
       state.saving[action.payload.key] = { busy: false, error: action.payload.error };
     },
   },
-  extraReducers: (builder) => builder.addCase(draftStarted, () => initialState),
+  extraReducers: builder => builder.addCase(draftStarted, () => initialState),
   selectors: {
-    selectReviewPanel: (state) => state,
+    selectReviewPanel: state => state,
   },
 });
 
@@ -121,7 +121,7 @@ export const { replyChanged, newFlagStarted, newFlagChanged, newFlagCancelled, r
 // Runs a review change, keeping track of it being saved and of errors; true if it was saved
 const runSaving =
   (key: string, save: AppThunk<Promise<void>>): AppThunk<Promise<boolean>> =>
-  async (dispatch) => {
+  async dispatch => {
     dispatch(saveStarted(key));
     try {
       await dispatch(save);
@@ -137,13 +137,13 @@ const runSaving =
 // takes the approval back (null)
 export const approveTarget =
   (target: string, fingerprint: string | null): AppThunk<Promise<boolean>> =>
-  (dispatch) =>
+  dispatch =>
     dispatch(runSaving(savingKey.approvals(target), approveReview(target, fingerprint)));
 
 // Resolves, reopens or deletes a thread
 export const changeThread =
   (change: Extract<ThreadChange, { action: 'resolve' | 'delete' }>): AppThunk<Promise<boolean>> =>
-  (dispatch) =>
+  dispatch =>
     dispatch(runSaving(savingKey.thread(change.id), changeReviewThread(change)));
 
 // Sends the reply written (and resolves the thread, if asked); it's cleared once saved
@@ -163,7 +163,7 @@ export const addFlag =
   async (dispatch, getState) => {
     const flag = selectReviewPanel(getState()).newFlags[target];
     if (!flag?.text.trim()) return;
-    const assignee = selectPeople(getState()).find((person) => personKey(person) === flag.assigneeKey);
+    const assignee = selectPeople(getState()).find(person => personKey(person) === flag.assigneeKey);
     const added = await dispatch(
       runSaving(
         savingKey.newFlag(target),

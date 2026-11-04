@@ -51,7 +51,7 @@ const callTypesSlice = createSlice({
     },
   },
   selectors: {
-    selectCallTypes: (state) => state,
+    selectCallTypes: state => state,
   },
 });
 
@@ -66,25 +66,28 @@ export const { bulkTextChanged } = callTypesSlice.actions;
 const NEW_CALLER_LABEL = 'Someone calling about another person';
 
 const dataButtonsOf = (state: RootState) =>
-  getCallTypeButtons(state.draft.files).filter((button) => button.category === 'data');
+  getCallTypeButtons(state.draft.files).filter(button => button.category === 'data');
 
 // Names of the buttons the helpline already had: contacts are saved with them
 const originalButtonNames = (state: RootState) =>
-  new Set(getCallTypeButtons(state.draft.original).map((button) => button.name));
+  new Set(getCallTypeButtons(state.draft.original).map(button => button.name));
 
 // Starts editing from the draft
 export const openCallTypes = (): AppThunk => (dispatch, getState) => {
   const buttons = getCallTypeButtons(getState().draft.files);
-  dispatch(callTypesOpened(toRows(buttons.filter((button) => button.category === 'non-data'))));
+  dispatch(callTypesOpened(toRows(buttons.filter(button => button.category === 'non-data'))));
 };
 
 // Both kinds of buttons as they are now, written to the draft
 const write =
   (data: CallTypeButtonsEntry[], nonDataRows: Row<CallTypeButtonsEntry>[]): AppThunk =>
-  (dispatch) => {
+  dispatch => {
     dispatch(nonDataRowsChanged(nonDataRows));
     dispatch(
-      editDraftFiles((files) => ({ ...files, [CALL_TYPE_BUTTONS_FILE]: [...data, ...nonDataRows.map((row) => row.value)] })),
+      editDraftFiles(files => ({
+        ...files,
+        [CALL_TYPE_BUTTONS_FILE]: [...data, ...nonDataRows.map(row => row.value)],
+      })),
     );
   };
 
@@ -98,7 +101,7 @@ export const setDataLabel =
   (dispatch, getState) =>
     dispatch(
       write(
-        dataButtonsOf(getState()).map((button) => (button.name === name ? { ...button, label } : button)),
+        dataButtonsOf(getState()).map(button => (button.name === name ? { ...button, label } : button)),
         selectCallTypes(getState()).nonDataRows,
       ),
     );
@@ -106,15 +109,15 @@ export const setDataLabel =
 // Adds or removes the "someone calling about another person" button (which adds the Caller tab)
 export const toggleCaller = (): AppThunk => (dispatch, getState) => {
   const dataButtons = dataButtonsOf(getState());
-  const next = dataButtons.some((button) => button.name === 'caller')
-    ? dataButtons.filter((button) => button.name !== 'caller')
+  const next = dataButtons.some(button => button.name === 'caller')
+    ? dataButtons.filter(button => button.name !== 'caller')
     : [...dataButtons, { type: 'button' as const, name: 'caller', label: NEW_CALLER_LABEL, category: 'data' as const }];
   dispatch(write(next, selectCallTypes(getState()).nonDataRows));
 };
 
 const takenNames = (state: RootState) => [
-  ...dataButtonsOf(state).map((button) => button.name),
-  ...selectCallTypes(state).nonDataRows.map((row) => row.value.name),
+  ...dataButtonsOf(state).map(button => button.name),
+  ...selectCallTypes(state).nonDataRows.map(row => row.value.name),
 ];
 
 export const addNonDataButtons =
@@ -122,7 +125,7 @@ export const addNonDataButtons =
   (dispatch, getState) => {
     const names = takenNames(getState());
     const added = labels
-      .map((label) => label.trim())
+      .map(label => label.trim())
       .filter(Boolean)
       .map((label): CallTypeButtonsEntry => {
         const name = uniqueFieldName(toFieldName(label), names);
@@ -146,11 +149,11 @@ export const renameNonData =
     const taken = takenNames(state);
     dispatch(
       writeNonData(
-        selectCallTypes(state).nonDataRows.map((row) => {
+        selectCallTypes(state).nonDataRows.map(row => {
           if (row.id !== id) return row;
           const isNew = !originalNames.has(row.value.name);
           // A new button's name follows its label; an existing one keeps its name
-          const others = taken.filter((name) => name !== row.value.name);
+          const others = taken.filter(name => name !== row.value.name);
           const name = isNew ? uniqueFieldName(toFieldName(label), others) : row.value.name;
           return { ...row, value: { ...row.value, label, name } };
         }),
@@ -161,6 +164,6 @@ export const renameNonData =
 export const removeNonData =
   (id: string): AppThunk =>
   (dispatch, getState) =>
-    dispatch(writeNonData(selectCallTypes(getState()).nonDataRows.filter((row) => row.id !== id)));
+    dispatch(writeNonData(selectCallTypes(getState()).nonDataRows.filter(row => row.id !== id)));
 
 export const reorderNonData = (rows: Row<CallTypeButtonsEntry>[]): AppThunk => writeNonData(rows);

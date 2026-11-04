@@ -63,7 +63,12 @@ export const ChatPreview = () => {
     <div className="chatbot-phone" aria-label="Preview">
       <div className="chatbot-phone-head">
         <span>{botLabel(bot.name)}</span>
-        <button type="button" className="icon-button" aria-label="Start again" onClick={() => dispatch(restartPreview())}>
+        <button
+          type="button"
+          className="icon-button"
+          aria-label="Start again"
+          onClick={() => dispatch(restartPreview())}
+        >
           <RotateCcw size={14} />
         </button>
       </div>
@@ -88,7 +93,7 @@ export const ChatPreview = () => {
       {!state.ended && question && (
         <div className="chatbot-phone-answers">
           {kind === 'list' &&
-            type?.values.slice(0, 10).map((option) => (
+            type?.values.slice(0, 10).map(option => (
               <button
                 key={option.value}
                 type="button"
@@ -101,7 +106,7 @@ export const ChatPreview = () => {
             ))}
           <form
             className="chatbot-type"
-            onSubmit={(e) => {
+            onSubmit={e => {
               e.preventDefault();
               dispatch(submitTypedAnswer());
             }}
@@ -113,11 +118,11 @@ export const ChatPreview = () => {
                 kind === 'builtin'
                   ? `Type ${builtinLabel(type!.name)}…`
                   : kind === 'pattern'
-                    ? `Type an answer matching ${type!.pattern}…`
-                    : 'Or type what they’d write…'
+                  ? `Type an answer matching ${type!.pattern}…`
+                  : 'Or type what they’d write…'
               }
               aria-label="Type an answer"
-              onChange={(e) => dispatch(typedChanged(e.target.value))}
+              onChange={e => dispatch(typedChanged(e.target.value))}
             />
           </form>
           <button type="button" className="chatbot-quick not-understood" onClick={() => answer('🤔 …')}>

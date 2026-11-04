@@ -45,10 +45,10 @@ describe('task attributes of "Send to queue" widgets', () => {
 
   test('every channel-attributes template reads as JSON once Studio and Terraform fill it in', () => {
     const templates = readdirSync(helplinesDir, { recursive: true, encoding: 'utf8' }).filter(
-      (file) => /channel-attributes[\\/][^\\/]+\.tftpl$/.test(file) && !file.includes('node_modules'),
+      file => /channel-attributes[\\/][^\\/]+\.tftpl$/.test(file) && !file.includes('node_modules'),
     );
     expect(templates.length).toBeGreaterThan(10);
-    templates.forEach((file) => {
+    templates.forEach(file => {
       const json = readFileSync(path.join(helplinesDir, file), 'utf8');
       expectAt(file, taskAttributesProblem(json)).toBeUndefined();
     });
@@ -72,9 +72,9 @@ describe('task attributes of "Send to queue" widgets', () => {
 
   test("the import shows the channel's attributes, picked as Terraform picks them", async () => {
     const { boards } = await importHelpline(helplinesDir, 'usch');
-    const queues = boards.flatMap((board) => board.content.objects.filter((object) => object.type === 'sendToQueue'));
+    const queues = boards.flatMap(board => board.content.objects.filter(object => object.type === 'sendToQueue'));
     const sms = queues.find(
-      (object) =>
+      object =>
         object.taskAttributes?.source.kind === 'channelAttributes' &&
         object.taskAttributes.source.template ===
           'usch/templates/channel-attributes/sms_courage_first-conversations.tftpl',
@@ -91,26 +91,26 @@ describe('task attributes of "Send to queue" widgets', () => {
       ).trimEnd(),
     );
     // Written in the widget (USCH's voice flows)
-    expect(queues.some((object) => object.taskAttributes?.source.kind === 'inline')).toBe(true);
+    expect(queues.some(object => object.taskAttributes?.source.kind === 'inline')).toBe(true);
   });
 
   test("changed on the board, they're the widget's own: written in it, and the template stays as it is", async () => {
     const { boards } = await importHelpline(helplinesDir, 'usch');
-    const board = boards.find((candidate) =>
+    const board = boards.find(candidate =>
       candidate.content.objects.some(
-        (object) => object.type === 'sendToQueue' && object.taskAttributes?.source.kind === 'channelAttributes',
+        object => object.type === 'sendToQueue' && object.taskAttributes?.source.kind === 'channelAttributes',
       ),
     )!;
     const content = structuredClone(board.content);
     const queue = content.objects.find(
-      (object) => object.type === 'sendToQueue' && object.taskAttributes?.source.kind === 'channelAttributes',
+      object => object.type === 'sendToQueue' && object.taskAttributes?.source.kind === 'channelAttributes',
     )!;
     queue.taskAttributes!.json = queue.taskAttributes!.json.replace('{', '{\n  "priorityContact": true,');
     const flow = toStudioFlow(
       content,
-      content.frames.find((frame) => frame.id === queue.frameId),
+      content.frames.find(frame => frame.id === queue.frameId),
     );
-    const state = flow.flow.states.find((candidate) => candidate.name === queue.studio!.name)!;
+    const state = flow.flow.states.find(candidate => candidate.name === queue.studio!.name)!;
     expect(isChannelAttributesReference(state.properties.attributes)).toBe(false);
     expect(state.properties.attributes).toBe(queue.taskAttributes!.json);
     expect(flow.taskAttributes).toEqual([
@@ -148,8 +148,8 @@ describe('task attributes of "Send to queue" widgets', () => {
       change: 'new',
       source: { template: 'templates/channel-attributes/custom-channel-conversations.tftpl' },
     });
-    expect(boardChecks(content).some((issue) => /task attributes/.test(issue.message))).toBe(false);
+    expect(boardChecks(content).some(issue => /task attributes/.test(issue.message))).toBe(false);
     queue.taskAttributes = { ...queue.taskAttributes!, json: '{ "channelType": ' };
-    expect(boardChecks(content).some((issue) => /task attributes aren't valid JSON/.test(issue.message))).toBe(true);
+    expect(boardChecks(content).some(issue => /task attributes aren't valid JSON/.test(issue.message))).toBe(true);
   });
 });

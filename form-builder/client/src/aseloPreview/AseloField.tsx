@@ -19,10 +19,7 @@
  * plugin-hrm-form/src/components/forms/components; the styles are in aselo.css.
  */
 import { useState } from 'react';
-import type {
-  FormItemJsonDefinition,
-  SelectOption,
-} from '@hrm-form-definitions/formDefinition/types';
+import type { FormItemJsonDefinition, SelectOption } from '@hrm-form-definitions/formDefinition/types';
 import { resolveOptions } from '../common/definitions';
 import { dependentOptionsFor, FieldValue, FormValues } from './aseloFields';
 import { Strings, translate } from './translations';
@@ -71,9 +68,7 @@ const Description = ({ item, strings }: { item: FormItemJsonDefinition; strings:
   return (
     <div className="aselo-description">
       <strong>{translate(strings, description.title)}</strong>
-      <span className={expanded ? '' : 'aselo-description-collapsed'}>
-        {translate(strings, description.content)}
-      </span>
+      <span className={expanded ? '' : 'aselo-description-collapsed'}>{translate(strings, description.content)}</span>
       <button type="button" className="aselo-link" onClick={() => setExpanded(!expanded)}>
         {translate(strings, expanded ? 'ReadLess' : 'ReadMore')}
       </button>
@@ -132,7 +127,7 @@ export const AseloField = ({ item, values, referenceData, strings, error, onChan
               className={`aselo-input ${error ? 'has-error' : ''}`}
               value={typeof value === 'string' ? value : ''}
               aria-invalid={Boolean(error)}
-              onChange={(e) => onChange(e.target.value)}
+              onChange={e => onChange(e.target.value)}
             />
             {errorText}
           </label>
@@ -148,7 +143,7 @@ export const AseloField = ({ item, values, referenceData, strings, error, onChan
                 id={id}
                 className="aselo-input"
                 value={typeof value === 'string' ? value : ''}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={e => onChange(e.target.value)}
               />
             </span>
           </label>
@@ -170,7 +165,7 @@ export const AseloField = ({ item, values, referenceData, strings, error, onChan
               style={{ width: cssSize(item.width, 217) }}
               value={typeof value === 'string' ? value : ''}
               aria-invalid={Boolean(error)}
-              onChange={(e) => onChange(e.target.value)}
+              onChange={e => onChange(e.target.value)}
             />
             {errorText}
           </label>
@@ -180,19 +175,12 @@ export const AseloField = ({ item, values, referenceData, strings, error, onChan
       case 'dependent-select': {
         const isDependent = item.type === 'dependent-select';
         const options = isDependent
-          ? [
-              ...(item.defaultOption ? [item.defaultOption] : []),
-              ...dependentOptionsFor(item, values, referenceData),
-            ]
+          ? [...(item.defaultOption ? [item.defaultOption] : []), ...dependentOptionsFor(item, values, referenceData)]
           : resolveOptions(item, referenceData) ?? [];
         // A linked dropdown with nothing to choose from yet is faded out and disabled
         const disabled = isDependent && options.length <= 1;
         return (
-          <label
-            className="aselo-form-label"
-            htmlFor={id}
-            style={disabled ? { opacity: 0.3 } : undefined}
-          >
+          <label className="aselo-form-label" htmlFor={id} style={disabled ? { opacity: 0.3 } : undefined}>
             {labelRow}
             <span className="aselo-select-wrapper">
               <select
@@ -201,7 +189,7 @@ export const AseloField = ({ item, values, referenceData, strings, error, onChan
                 value={typeof value === 'string' ? value : ''}
                 disabled={disabled}
                 aria-invalid={Boolean(error)}
-                onChange={(e) => onChange(e.target.value)}
+                onChange={e => onChange(e.target.value)}
               >
                 <Options options={options} strings={strings} />
               </select>
@@ -221,7 +209,7 @@ export const AseloField = ({ item, values, referenceData, strings, error, onChan
                 type="checkbox"
                 className="aselo-visually-hidden"
                 checked={value === true}
-                onChange={(e) => onChange(e.target.checked)}
+                onChange={e => onChange(e.target.checked)}
               />
               <CheckboxBox state={value === true} />
               <span>
@@ -264,9 +252,7 @@ export const AseloField = ({ item, values, referenceData, strings, error, onChan
         const options = resolveOptions(item, referenceData) ?? [];
         const toggle = (optionValue: string) =>
           onChange(
-            selected.includes(optionValue)
-              ? selected.filter((v) => v !== optionValue)
-              : [...selected, optionValue],
+            selected.includes(optionValue) ? selected.filter(v => v !== optionValue) : [...selected, optionValue],
           );
         return (
           <div
@@ -335,11 +321,7 @@ export const AseloField = ({ item, values, referenceData, strings, error, onChan
         );
 
       case 'custom-contact-component':
-        return (
-          <div className="aselo-custom-component">
-            Aselo built-in: {item.component}
-          </div>
-        );
+        return <div className="aselo-custom-component">Aselo built-in: {item.component}</div>;
 
       default:
         return <div className="aselo-custom-component">INVALID FORM INPUT: {item.name}</div>;

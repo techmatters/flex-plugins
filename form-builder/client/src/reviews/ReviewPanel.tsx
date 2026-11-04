@@ -74,7 +74,7 @@ export type ReviewContext = {
 
 // A change being saved (savingKey), and why the last one failed
 const useSaving = (key: string) => {
-  const saving = useAppSelector((state) => selectReviewPanel(state).saving[key]);
+  const saving = useAppSelector(state => selectReviewPanel(state).saving[key]);
   return { busy: saving?.busy ?? false, error: saving?.error };
 };
 
@@ -94,7 +94,7 @@ const Approvals = ({
   const { busy, error } = useSaving(savingKey.approvals(target));
   return (
     <div className="review-approvals">
-      {SIDES.map((side) => {
+      {SIDES.map(side => {
         const approval = approvalOf(review.approvals, side, target);
         const state = approvalState(review.approvals, side, target, fingerprint);
         const mine = side === review.side;
@@ -104,7 +104,9 @@ const Approvals = ({
             <span>
               {SIDE_LABELS[side]}:{' '}
               {approval
-                ? `${state === 'approved' ? 'approved' : 'changed since approved'} by ${approval.by}, ${when(approval.at)}`
+                ? `${state === 'approved' ? 'approved' : 'changed since approved'} by ${approval.by}, ${when(
+                    approval.at,
+                  )}`
                 : 'not approved yet'}
             </span>
             {mine && state !== 'approved' && (
@@ -137,7 +139,7 @@ const Approvals = ({
 
 const Thread = ({ review, thread }: { review: ReviewContext; thread: ReviewThread }) => {
   const dispatch = useAppDispatch();
-  const reply = useAppSelector((state) => selectReviewPanel(state).replies[thread.id] ?? '');
+  const reply = useAppSelector(state => selectReviewPanel(state).replies[thread.id] ?? '');
   const { busy, error } = useSaving(savingKey.thread(thread.id));
   const open = isOpen(thread);
   return (
@@ -181,7 +183,7 @@ const Thread = ({ review, thread }: { review: ReviewContext; thread: ReviewThrea
         </span>
       </div>
       <p>{thread.text}</p>
-      {(thread.replies ?? []).map((message) => (
+      {(thread.replies ?? []).map(message => (
         <div key={message.id} className="review-reply">
           <div className="review-thread-head">
             <span>
@@ -198,7 +200,7 @@ const Thread = ({ review, thread }: { review: ReviewContext; thread: ReviewThrea
             value={reply}
             placeholder={thread.kind === 'question' ? 'Answer…' : 'Reply…'}
             aria-label="Reply"
-            onChange={(e) => dispatch(replyChanged({ id: thread.id, text: e.target.value }))}
+            onChange={e => dispatch(replyChanged({ id: thread.id, text: e.target.value }))}
           />
           <button
             type="button"
@@ -225,7 +227,7 @@ const Thread = ({ review, thread }: { review: ReviewContext; thread: ReviewThrea
 
 const NewFlag = ({ review, target }: { review: ReviewContext; target: string }) => {
   const dispatch = useAppDispatch();
-  const flag = useAppSelector((state) => selectReviewPanel(state).newFlags[target]);
+  const flag = useAppSelector(state => selectReviewPanel(state).newFlags[target]);
   const { busy, error } = useSaving(savingKey.newFlag(target));
   const defaultKind: FlagKind = review.side === 'helpline' ? 'question' : 'changes';
 
@@ -242,15 +244,15 @@ const NewFlag = ({ review, target }: { review: ReviewContext; target: string }) 
   return (
     <form
       className="review-flag-add"
-      onSubmit={(e) => {
+      onSubmit={e => {
         e.preventDefault();
         if (text.trim()) dispatch(addFlag(target, defaultKind));
       }}
     >
       <label className="review-flag-field">
         <span>Kind</span>
-        <select value={kind} onChange={(e) => change({ kind: e.target.value as FlagKind })}>
-          {FLAG_KINDS.map((option) => (
+        <select value={kind} onChange={e => change({ kind: e.target.value as FlagKind })}>
+          {FLAG_KINDS.map(option => (
             <option key={option} value={option}>
               {FLAG_LABELS[option]}
             </option>
@@ -259,9 +261,9 @@ const NewFlag = ({ review, target }: { review: ReviewContext; target: string }) 
       </label>
       <label className="review-flag-field">
         <span>For</span>
-        <select value={assigneeKey} onChange={(e) => change({ assigneeKey: e.target.value })}>
+        <select value={assigneeKey} onChange={e => change({ assigneeKey: e.target.value })}>
           <option value="">No one in particular</option>
-          {review.people.map((person) => (
+          {review.people.map(person => (
             <option key={personKey(person)} value={personKey(person)}>
               {personLabel(person)}
             </option>
@@ -272,8 +274,8 @@ const NewFlag = ({ review, target }: { review: ReviewContext; target: string }) 
         value={text}
         placeholder={kind === 'question' ? 'Your question…' : 'What should change, or why…'}
         aria-label="New comment"
-        onChange={(e) => change({ text: e.target.value })}
-        onKeyDown={(e) => {
+        onChange={e => change({ text: e.target.value })}
+        onKeyDown={e => {
           if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) e.currentTarget.form?.requestSubmit();
         }}
       />
@@ -304,17 +306,17 @@ export const ReviewPanel = ({
   title: string;
 }) => {
   const dispatch = useAppDispatch();
-  const showResolved = useAppSelector((state) => selectReviewPanel(state).showResolved[target] ?? false);
+  const showResolved = useAppSelector(state => selectReviewPanel(state).showResolved[target] ?? false);
   const threads = threadsOn(review.threads, target);
-  const resolved = threads.filter((thread) => !isOpen(thread));
-  const shown = threads.filter((thread) => isOpen(thread) || showResolved);
+  const resolved = threads.filter(thread => !isOpen(thread));
+  const shown = threads.filter(thread => isOpen(thread) || showResolved);
   return (
     <section className="review-panel" aria-label={title}>
       <h3>{title}</h3>
       <Approvals review={review} target={target} fingerprint={fingerprint} what={what} />
       {shown.length > 0 && (
         <ul className="review-threads">
-          {shown.map((thread) => (
+          {shown.map(thread => (
             <Thread key={thread.id} review={review} thread={thread} />
           ))}
         </ul>

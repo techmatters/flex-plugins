@@ -79,19 +79,14 @@ describe('a rule card', () => {
       <Card
         start={{
           ...transfers,
-          when: [
-            [
-              ...transfers.when[0],
-              { kind: 'compare', attribute: 'targetSid', operator: '==', values: [] },
-            ],
-          ],
+          when: [[...transfers.when[0], { kind: 'compare', attribute: 'targetSid', operator: '==', values: [] }]],
         }}
       />,
     );
     // No value yet: it's an error, and never written as "undefined"
-    expect(
-      routingChecks({ ...design, workflows: [{ ...design.workflows[0], rules: [latest] }] }),
-    ).toContainEqual(expect.objectContaining({ key: 'r1-novalue', severity: 'error' }));
+    expect(routingChecks({ ...design, workflows: [{ ...design.workflows[0], rules: [latest] }] })).toContainEqual(
+      expect.objectContaining({ key: 'r1-novalue', severity: 'error' }),
+    );
 
     const add = screen.getByRole('combobox', { name: 'Add a queue' });
     expect(within(add).getByRole('option', { name: 'Childhelp Spanish' })).toBeTruthy();
@@ -102,9 +97,9 @@ describe('a rule card', () => {
       values: ['${task_queues.childhelp_spanish}'],
     });
     // Shown by its name, and changed from the same list
-    expect(
-      (screen.getByRole('combobox', { name: 'Transferred to queue' }) as HTMLSelectElement).value,
-    ).toBe('${task_queues.childhelp_spanish}');
+    expect((screen.getByRole('combobox', { name: 'Transferred to queue' }) as HTMLSelectElement).value).toBe(
+      '${task_queues.childhelp_spanish}',
+    );
     fireEvent.click(screen.getByRole('tab', { name: 'JSON' }));
     const json = screen.getByLabelText('Filter JSON').textContent ?? '';
     expect(json).toContain("targetSid == '${task_queues.childhelp_spanish}'");

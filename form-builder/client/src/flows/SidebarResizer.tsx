@@ -26,8 +26,7 @@ const STORAGE_KEY = 'flow-sidebar-width';
 const KEY_STEP = 20;
 
 const maxWidth = () => Math.max(SIDEBAR_MIN_WIDTH, Math.round(window.innerWidth * 0.7));
-const clamp = (width: number) =>
-  Math.min(Math.max(Math.round(width), SIDEBAR_MIN_WIDTH), maxWidth());
+const clamp = (width: number) => Math.min(Math.max(Math.round(width), SIDEBAR_MIN_WIDTH), maxWidth());
 
 export const useSidebarWidth = () => {
   const [width, setWidth] = useState(() => {
@@ -76,7 +75,7 @@ export const SidebarResizer = ({
       aria-valuenow={width}
       tabIndex={0}
       title="Drag to make the panel wider; double-click to go back"
-      onPointerDown={(e) => {
+      onPointerDown={e => {
         if (e.button !== 0) return;
         e.preventDefault();
         const startX = e.clientX;
@@ -96,7 +95,7 @@ export const SidebarResizer = ({
         window.addEventListener('pointerup', up);
       }}
       onDoubleClick={() => resizeBy(SIDEBAR_MIN_WIDTH - width)}
-      onKeyDown={(e) => {
+      onKeyDown={e => {
         if (e.key === 'ArrowLeft') resizeBy(KEY_STEP);
         else if (e.key === 'ArrowRight') resizeBy(-KEY_STEP);
         else return;

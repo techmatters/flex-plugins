@@ -41,13 +41,13 @@ describe('importing a live helpline', () => {
 
   // The board of the flow read from this template
   const boardOf = (template: string) =>
-    usnm.boards[usnm.report.flows.findIndex((flow) => flow.template === template)].content;
+    usnm.boards[usnm.report.flows.findIndex(flow => flow.template === template)].content;
   const find = (content: BoardContent, studioName: string) =>
-    content.objects.find((object) => object.studioName === studioName)!;
+    content.objects.find(object => object.studioName === studioName)!;
 
   test('one board per Studio flow: channels sharing a template, system down, the other Studio flows', () => {
     expect(usnm.report.environments).toEqual(['production', 'staging']);
-    expect(usnm.report.flows.map((flow) => flow.template)).toEqual([
+    expect(usnm.report.flows.map(flow => flow.template)).toEqual([
       'usnm/templates/studio-flows/voice.tftpl',
       'usnm/templates/studio-flows/sms.tftpl',
       'usnm/templates/studio-flows/sms-redirect.tftpl',
@@ -58,7 +58,7 @@ describe('importing a live helpline', () => {
     ]);
     expect(usnm.report.flows[1].channels).toEqual(expect.arrayContaining(['sms', 'sms_shortcode']));
     // Where each flow is live, and its channels that are in one environment only
-    expect(usnm.report.flows.map((flow) => [flow.title, flow.environments])).toContainEqual([
+    expect(usnm.report.flows.map(flow => [flow.title, flow.environments])).toContainEqual([
       '[sms_longcode, sms_state_longcode] · sms-redirect',
       ['production'],
     ]);
@@ -68,8 +68,8 @@ describe('importing a live helpline', () => {
       sms_shortcode: ['production'],
       chat: ['staging'],
     });
-    expect(usnm.boards.map((board) => board.title)).toContain('USNM · [voice] · voice');
-    expect(usnm.boards.map((board) => board.content.flow?.channel)).toEqual([
+    expect(usnm.boards.map(board => board.title)).toContain('USNM · [voice] · voice');
+    expect(usnm.boards.map(board => board.content.flow?.channel)).toEqual([
       'voice',
       'sms',
       'sms',
@@ -82,7 +82,7 @@ describe('importing a live helpline', () => {
       // One Studio flow per board: no frame around it, the board says what flow it is
       expect(content.frames).toEqual([]);
       expect(content.flow?.studio?.template).toMatch(/\.tftpl$/);
-      content.objects.forEach((object) => {
+      content.objects.forEach(object => {
         expect(object.frameId).toBeUndefined();
         expect(object.x).toBeGreaterThanOrEqual(0);
         expect(object.y).toBeGreaterThanOrEqual(0);
@@ -90,7 +90,7 @@ describe('importing a live helpline', () => {
       // Widget names are only unique within their own flow; two flows can use the same one
       expect(
         boardChecks(content)
-          .map((issue) => issue.message)
+          .map(issue => issue.message)
           .join('\n'),
       ).not.toMatch(/also named/);
     });
@@ -116,20 +116,20 @@ describe('importing a live helpline', () => {
       const overlapping = content.objects.flatMap((a, i) =>
         content.objects
           .slice(i + 1)
-          .filter((b) => a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height)
-          .map((b) => `${a.studioName ?? a.text} / ${b.studioName ?? b.text}`),
+          .filter(b => a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height)
+          .map(b => `${a.studioName ?? a.text} / ${b.studioName ?? b.text}`),
       );
       expectAt(title, overlapping).toEqual([]);
     });
     // The voice flow spans 4000px or so in Studio; on the board, much less
     // The voice flow is 5,600px tall in Studio; on the board, about half
     const voice = boardOf('usnm/templates/studio-flows/voice.tftpl');
-    expect(Math.max(...voice.objects.map((object) => object.y + object.height))).toBeLessThan(3200);
+    expect(Math.max(...voice.objects.map(object => object.y + object.height))).toBeLessThan(3200);
   });
 
   test("each board knows the recordings it plays, so only the chosen boards' are copied", () => {
     expect(usnm.boards[0].recordingFiles).toContain('play_message_voice_outside_us.mp3');
-    const smsBoard = usnm.boards[usnm.report.flows.findIndex((flow) => flow.template.endsWith('/sms.tftpl'))];
+    const smsBoard = usnm.boards[usnm.report.flows.findIndex(flow => flow.template.endsWith('/sms.tftpl'))];
     expect(smsBoard.recordingFiles).toEqual([]);
   });
 
@@ -137,10 +137,10 @@ describe('importing a live helpline', () => {
     const voice = boardOf('usnm/templates/studio-flows/voice.tftpl');
     const sms = boardOf('usnm/templates/studio-flows/sms.tftpl');
 
-    const trigger = voice.objects.find((object) => object.type === 'incoming')!;
+    const trigger = voice.objects.find(object => object.type === 'incoming')!;
     expect(trigger).toMatchObject({ text: 'Incoming voice', exits: ['incomingCall'] });
-    const firstStep = voice.connections.find((connection) => connection.from === trigger.id)!;
-    expect(voice.objects.find((object) => object.id === firstStep.to)?.studioName).toBe('f_countryVoipFilter');
+    const firstStep = voice.connections.find(connection => connection.from === trigger.id)!;
+    expect(voice.objects.find(object => object.id === firstStep.to)?.studioName).toBe('f_countryVoipFilter');
 
     expect(find(voice, 'f_isSkilledWorkerAvailable_tya_calls')).toMatchObject({
       type: 'checkQueueAvailability',
@@ -162,8 +162,8 @@ describe('importing a live helpline', () => {
 
     // Every connection leaves by one of its object's ways out
     usnm.boards.forEach(({ content }) => {
-      const byId = new Map(content.objects.map((object) => [object.id, object]));
-      content.connections.forEach((connection) => {
+      const byId = new Map(content.objects.map(object => [object.id, object]));
+      content.connections.forEach(connection => {
         expect(exitsOf(byId.get(connection.from)!)).toContain(connection.exit ?? '');
         expect(byId.has(connection.to)).toBe(true);
       });
@@ -192,7 +192,7 @@ describe('importing a live helpline', () => {
 
   test('a template other helplines use too: who, and where a change to it goes', async () => {
     const { boards } = await importHelpline(helplinesDir, 'clhs');
-    const studioOf = (name: string) => boards.find((board) => board.title.endsWith(name))!.content.flow!.studio!;
+    const studioOf = (name: string) => boards.find(board => board.title.endsWith(name))!.content.flow!.studio!;
     // System down is shared by most helplines; CLHS is the only one using its messaging template
     expect(studioOf('System down').sharedWith).toEqual(expect.arrayContaining(['usch', 'usnc', 'usnm']));
     expect(studioOf('System down').sharedWith).not.toContain('clhs');
@@ -204,7 +204,7 @@ describe('importing a live helpline', () => {
       meta: { revision: 1, createdAt: '', createdBy: '', updatedAt: '', updatedBy: '' },
       content,
     });
-    const systemDown = boards.find((candidate) => candidate.title.endsWith('System down'))!.content;
+    const systemDown = boards.find(candidate => candidate.title.endsWith('System down'))!.content;
     // By default a change gives CLHS a copy of its own; the shared one only when Aselo staff choose it
     expect(toFlowExport(board(systemDown)).studioTemplates[0]).toMatchObject({
       template: 'templates/studio-flows/system-down.tftpl',
@@ -220,7 +220,7 @@ describe('importing a live helpline', () => {
       changeShared: true,
     });
     // A template only this helpline uses is changed where it is
-    const preq = boards.find((candidate) => candidate.title.endsWith('messaging-blocking-preq-lambda-sd'))!.content;
+    const preq = boards.find(candidate => candidate.title.endsWith('messaging-blocking-preq-lambda-sd'))!.content;
     expect(toFlowExport(board(preq)).studioTemplates[0].writeTo).toBe(
       'templates/studio-flows/messaging-blocking-preq-lambda-sd.tftpl',
     );
@@ -228,14 +228,14 @@ describe('importing a live helpline', () => {
 
   test("recordings whose address isn't a URL yet: one note per flow and address, with its value", async () => {
     const { report } = await importHelpline(helplinesDir, 'usvc');
-    expect(report.notes.filter((note) => note.startsWith('System down:'))).toEqual([
+    expect(report.notes.filter(note => note.startsWith('System down:'))).toEqual([
       "System down: 1 recording not copied, as its address isn't a URL yet in staging and production: ${system_down_flow_vars.recording_url} (it's “https://<place_holder>.mp3”). Upload them in the builder once recorded.",
     ]);
   });
 
   test('every helpline with environment files imports, and its board can be checked', async () => {
     const codes = readdirSync(helplinesDir).filter(
-      (code) =>
+      code =>
         /^[a-z0-9]+$/.test(code) &&
         (existsSync(path.join(helplinesDir, code, 'staging.hcl')) ||
           existsSync(path.join(helplinesDir, code, 'production.hcl'))),
@@ -272,7 +272,7 @@ describe('the import routes', () => {
       recordings: {
         files,
         log: new MemoryRecordingLogStore(),
-        fetchSource: async (url) => new TextEncoder().encode(`audio from ${url}`),
+        fetchSource: async url => new TextEncoder().encode(`audio from ${url}`),
       },
       notifier: { draftSubmitted: async () => {} },
       now: () => new Date('2026-10-28T12:00:00Z'),

@@ -48,7 +48,7 @@ const importFormsSlice = createSlice({
       state.imported = [];
       state.error = undefined;
     },
-    importStarted: (state) => {
+    importStarted: state => {
       state.working = true;
       state.error = undefined;
     },
@@ -66,7 +66,7 @@ const importFormsSlice = createSlice({
     },
   },
   selectors: {
-    selectImportForms: (state) => state,
+    selectImportForms: state => state,
   },
 });
 
@@ -91,7 +91,7 @@ export const previewImport =
     const { code, branch } = selectImportForms(getState());
     dispatch(importStarted());
     try {
-      const helpline = (await fetchHelplines(branch)).find((candidate) => candidate.code === code);
+      const helpline = (await fetchHelplines(branch)).find(candidate => candidate.code === code);
       if (!helpline) throw new Error(`${branch || 'master'} has no forms for ${code.toUpperCase()}.`);
       dispatch(previewRead(helpline.versions));
     } catch (err) {

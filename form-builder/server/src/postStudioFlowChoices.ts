@@ -49,7 +49,7 @@ export const loadPostFlowChoices = async (
   if (stores.helplinesConfigDir) {
     try {
       const { configs } = await readHelplineConfigs(stores.helplinesConfigDir, code);
-      (['staging', 'production'] as const).forEach((environment) => {
+      (['staging', 'production'] as const).forEach(environment => {
         const config = configs[environment];
         if (!config) return;
         Object.entries(objectOf(config.task_queues)).forEach(([key, settings]) => {
@@ -57,8 +57,8 @@ export const loadPostFlowChoices = async (
           queue(key, typeof name === 'string' ? name : key).environments.push(environment);
         });
         Object.keys(objectOf(config.studio_flows))
-          .filter((key) => key.startsWith(POST_CALL_SURVEY_PREFIX))
-          .forEach((key) => flow(key).environments.push(environment));
+          .filter(key => key.startsWith(POST_CALL_SURVEY_PREFIX))
+          .forEach(key => flow(key).environments.push(environment));
       });
     } catch {
       // A helpline without staging.hcl or production.hcl yet: only what the builder has
@@ -71,12 +71,12 @@ export const loadPostFlowChoices = async (
   });
 
   if (stores.boards) {
-    const summaries = (await stores.boards.list().catch(() => [])).filter((summary) => summary.code === code);
+    const summaries = (await stores.boards.list().catch(() => [])).filter(summary => summary.code === code);
     for (const summary of summaries) {
       const board = await stores.boards.get(code, summary.id).catch(() => undefined);
       (board?.content.flow?.variants ?? [])
-        .filter((variant) => variant.key.startsWith(POST_CALL_SURVEY_PREFIX))
-        .forEach((variant) => {
+        .filter(variant => variant.key.startsWith(POST_CALL_SURVEY_PREFIX))
+        .forEach(variant => {
           const found = flow(variant.key);
           if (!found.boards.includes(summary.title)) found.boards.push(summary.title);
         });

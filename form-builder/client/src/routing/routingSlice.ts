@@ -23,14 +23,7 @@
  * If someone else saved it in between, saving stops and the user is asked to reload, rather than
  * either person silently overwriting the other.
  */
-import {
-  addListener,
-  createSelector,
-  createSlice,
-  PayloadAction,
-  UnknownAction,
-  WithSlice,
-} from '@reduxjs/toolkit';
+import { addListener, createSelector, createSlice, PayloadAction, UnknownAction, WithSlice } from '@reduxjs/toolkit';
 import type { ListenerEffectAPI } from '@reduxjs/toolkit';
 import type { BranchChoice, FromBranch, RoutingImport } from '@tech-matters/form-builder-shared';
 import type { DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
@@ -131,12 +124,11 @@ const initialState: RoutingState = {
 };
 
 const firstTestWorkflow = (design: RoutingDesign) =>
-  design.workflows.find((workflow) => !workflow.templateText)?.key ?? '';
+  design.workflows.find(workflow => !workflow.templateText)?.key ?? '';
 
 const editorFor = (stored: StoredRouting): RoutingEditorState => {
   const { design } = stored;
-  const firstWorkflow =
-    design.workflows.find((workflow) => !workflow.templateText) ?? design.workflows[0];
+  const firstWorkflow = design.workflows.find(workflow => !workflow.templateText) ?? design.workflows[0];
   return {
     code: stored.code,
     design,
@@ -158,11 +150,8 @@ const changeDesign = (editor: RoutingEditorState, design: RoutingDesign) => {
   if (editor.saveState !== 'conflict') editor.saveState = 'unsaved';
 };
 
-const changeWorkflow = (
-  editor: RoutingEditorState,
-  key: string,
-  change: (workflow: Workflow) => Workflow,
-) => changeDesign(editor, updateWorkflow(editor.design, key, change));
+const changeWorkflow = (editor: RoutingEditorState, key: string, change: (workflow: Workflow) => Workflow) =>
+  changeDesign(editor, updateWorkflow(editor.design, key, change));
 
 const queueKeyFor = (design: RoutingDesign, name: string) => {
   let key =
@@ -170,7 +159,7 @@ const queueKeyFor = (design: RoutingDesign, name: string) => {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '_')
       .replace(/^_|_$/g, '') || 'queue';
-  while (design.queues.some((queue) => queue.key === key)) key = `${key}_2`;
+  while (design.queues.some(queue => queue.key === key)) key = `${key}_2`;
   return key;
 };
 
@@ -199,12 +188,12 @@ const routingSlice = createSlice({
   name: 'routing',
   initialState,
   reducers: {
-    routingEntered: (state) => {
+    routingEntered: state => {
       state.entered = true;
     },
 
     // ----- The start page
-    listRequested: (state) => {
+    listRequested: state => {
       state.home = initialHome;
     },
     listLoaded: (state, action: PayloadAction<RoutingSummary[]>) => {
@@ -231,15 +220,12 @@ const routingSlice = createSlice({
       state.error = undefined;
       state.editor = undefined;
     },
-    loadStarted: (state) => {
+    loadStarted: state => {
       state.stored = undefined;
       state.preview = undefined;
       state.error = undefined;
     },
-    routingLoaded: (
-      state,
-      action: PayloadAction<{ code: string; stored: StoredRouting | null }>,
-    ) => {
+    routingLoaded: (state, action: PayloadAction<{ code: string; stored: StoredRouting | null }>) => {
       if (action.payload.code !== state.code) return;
       state.stored = action.payload.stored;
       state.editor = action.payload.stored ? editorFor(action.payload.stored) : undefined;
@@ -250,7 +236,7 @@ const routingSlice = createSlice({
     branchChosen: (state, action: PayloadAction<string>) => {
       state.branch = action.payload;
     },
-    importStarted: (state) => {
+    importStarted: state => {
       state.error = undefined;
       state.importing = true;
     },
@@ -263,7 +249,7 @@ const routingSlice = createSlice({
       if (action.payload.preview) state.preview = action.payload.preview;
       if (action.payload.error) state.error = action.payload.error;
     },
-    previewCleared: (state) => {
+    previewCleared: state => {
       state.preview = undefined;
     },
     workingSet: (state, action: PayloadAction<boolean>) => {
@@ -274,22 +260,18 @@ const routingSlice = createSlice({
     },
 
     // ----- Saving
-    saveStarted: onEditor<void>((editor) => {
+    saveStarted: onEditor<void>(editor => {
       editor.saving = true;
       editor.saveState = 'saving';
     }),
-    routingSaved: (
-      state,
-      action: PayloadAction<{ code: string; revision: number; json: string }>,
-    ) => {
+    routingSaved: (state, action: PayloadAction<{ code: string; revision: number; json: string }>) => {
       const { editor } = state;
       if (!editor || editor.code !== action.payload.code) return;
       editor.saving = false;
       editor.revision = action.payload.revision;
       editor.savedJson = action.payload.json;
       // Edits made while it was saving still need saving
-      editor.saveState =
-        JSON.stringify(editor.design) === action.payload.json ? 'saved' : 'unsaved';
+      editor.saveState = JSON.stringify(editor.design) === action.payload.json ? 'saved' : 'unsaved';
     },
     saveConflicted: (state, action: PayloadAction<{ code: string; conflict: RoutingConflict }>) => {
       const { editor } = state;
@@ -327,7 +309,7 @@ const routingSlice = createSlice({
     cardToggled: onEditor<string>((editor, action) => {
       const ruleId = action.payload;
       editor.expanded = editor.expanded.includes(ruleId)
-        ? editor.expanded.filter((candidate) => candidate !== ruleId)
+        ? editor.expanded.filter(candidate => candidate !== ruleId)
         : [...editor.expanded, ruleId];
     }),
     cardsExpanded: onEditor<string[]>((editor, action) => {
@@ -342,53 +324,46 @@ const routingSlice = createSlice({
       changeWorkflow(editor, action.payload.key, () => action.payload),
     ),
     // A rule just added opens, to be filled in
-    ruleAdded: onEditor<{ workflowKey: string; rules: Rule[]; ruleId: string }>(
-      (editor, action) => {
-        const { workflowKey, rules, ruleId } = action.payload;
-        changeWorkflow(editor, workflowKey, (workflow) => ({ ...workflow, rules }));
-        if (!editor.expanded.includes(ruleId)) editor.expanded.push(ruleId);
-        editor.selectedRuleId = ruleId;
-      },
-    ),
+    ruleAdded: onEditor<{ workflowKey: string; rules: Rule[]; ruleId: string }>((editor, action) => {
+      const { workflowKey, rules, ruleId } = action.payload;
+      changeWorkflow(editor, workflowKey, workflow => ({ ...workflow, rules }));
+      if (!editor.expanded.includes(ruleId)) editor.expanded.push(ruleId);
+      editor.selectedRuleId = ruleId;
+    }),
     ruleChanged: onEditor<{ workflowKey: string; rule: Rule }>((editor, action) => {
       const { workflowKey, rule } = action.payload;
-      changeWorkflow(editor, workflowKey, (workflow) => updateRule(workflow, rule.id, () => rule));
+      changeWorkflow(editor, workflowKey, workflow => updateRule(workflow, rule.id, () => rule));
     }),
     ruleRemoved: onEditor<{ workflowKey: string; ruleId: string }>((editor, action) => {
       const { workflowKey, ruleId } = action.payload;
-      changeWorkflow(editor, workflowKey, (workflow) => ({
+      changeWorkflow(editor, workflowKey, workflow => ({
         ...workflow,
-        rules: workflow.rules.filter((candidate) => candidate.id !== ruleId),
+        rules: workflow.rules.filter(candidate => candidate.id !== ruleId),
       }));
     }),
     // A card dragged onto another's place
-    ruleMoved: onEditor<{ workflowKey: string; ruleId: string; overId: string }>(
-      (editor, action) => {
-        const { workflowKey, ruleId, overId } = action.payload;
-        changeWorkflow(editor, workflowKey, (workflow) => {
-          const from = workflow.rules.findIndex((rule) => rule.id === ruleId);
-          const to = workflow.rules.findIndex((rule) => rule.id === overId);
-          const rules = [...workflow.rules];
-          rules.splice(to, 0, ...rules.splice(from, 1));
-          return { ...workflow, rules };
-        });
-      },
-    ),
+    ruleMoved: onEditor<{ workflowKey: string; ruleId: string; overId: string }>((editor, action) => {
+      const { workflowKey, ruleId, overId } = action.payload;
+      changeWorkflow(editor, workflowKey, workflow => {
+        const from = workflow.rules.findIndex(rule => rule.id === ruleId);
+        const to = workflow.rules.findIndex(rule => rule.id === overId);
+        const rules = [...workflow.rules];
+        rules.splice(to, 0, ...rules.splice(from, 1));
+        return { ...workflow, rules };
+      });
+    }),
 
     // ----- Queues
     newQueueNameChanged: onEditor<string>((editor, action) => {
       editor.newQueueName = action.payload;
     }),
-    queueAdded: onEditor<void>((editor) => {
+    queueAdded: onEditor<void>(editor => {
       const name = editor.newQueueName.trim();
       if (!name) return;
       const { design } = editor;
       changeDesign(editor, {
         ...design,
-        queues: [
-          ...design.queues,
-          { key: queueKeyFor(design, name), name, workers: { kind: 'skills', allOf: [] } },
-        ],
+        queues: [...design.queues, { key: queueKeyFor(design, name), name, workers: { kind: 'skills', allOf: [] } }],
       });
       editor.newQueueName = '';
     }),
@@ -396,16 +371,14 @@ const routingSlice = createSlice({
       const { design } = editor;
       changeDesign(editor, {
         ...design,
-        queues: design.queues.map((candidate) =>
-          candidate.key === action.payload.key ? action.payload : candidate,
-        ),
+        queues: design.queues.map(candidate => (candidate.key === action.payload.key ? action.payload : candidate)),
       });
     }),
     queueRemoved: onEditor<string>((editor, action) => {
       const { design } = editor;
       changeDesign(editor, {
         ...design,
-        queues: design.queues.filter((candidate) => candidate.key !== action.payload),
+        queues: design.queues.filter(candidate => candidate.key !== action.payload),
       });
     }),
 
@@ -413,33 +386,29 @@ const routingSlice = createSlice({
     newSkillNameChanged: onEditor<string>((editor, action) => {
       editor.newSkillName = action.payload;
     }),
-    skillAdded: onEditor<void>((editor) => {
+    skillAdded: onEditor<void>(editor => {
       const name = editor.newSkillName.trim();
       const { design } = editor;
-      if (!name || design.skills.some((skill) => skill.name === name)) return;
+      if (!name || design.skills.some(skill => skill.name === name)) return;
       changeDesign(editor, { ...design, skills: [...design.skills, { name }] });
       editor.newSkillName = '';
     }),
     skillRenamed: onEditor<{ from: string; to: string }>((editor, action) =>
       changeDesign(editor, renameSkill(editor.design, action.payload.from, action.payload.to)),
     ),
-    skillChanged: onEditor<{ name: string; changes: Partial<Omit<Skill, 'name'>> }>(
-      (editor, action) => {
-        const { name, changes } = action.payload;
-        const { design } = editor;
-        changeDesign(editor, {
-          ...design,
-          skills: design.skills.map((candidate) =>
-            candidate.name === name ? { ...candidate, ...changes } : candidate,
-          ),
-        });
-      },
-    ),
+    skillChanged: onEditor<{ name: string; changes: Partial<Omit<Skill, 'name'>> }>((editor, action) => {
+      const { name, changes } = action.payload;
+      const { design } = editor;
+      changeDesign(editor, {
+        ...design,
+        skills: design.skills.map(candidate => (candidate.name === name ? { ...candidate, ...changes } : candidate)),
+      });
+    }),
     skillRemoved: onEditor<string>((editor, action) => {
       const { design } = editor;
       changeDesign(editor, {
         ...design,
-        skills: design.skills.filter((candidate) => candidate.name !== action.payload),
+        skills: design.skills.filter(candidate => candidate.name !== action.payload),
       });
     }),
     capacityChanged: onEditor<Partial<Capacity>>((editor, action) =>
@@ -451,21 +420,19 @@ const routingSlice = createSlice({
       editor.test.workflowKey = action.payload;
     }),
     // A detail of the pretend contact (none: any)
-    testAttributeSet: onEditor<{ attribute: string; value?: string | number | boolean }>(
-      (editor, action) => {
-        const { attribute, value } = action.payload;
-        if (value === undefined) delete editor.test.task[attribute];
-        else editor.test.task[attribute] = value;
-      },
-    ),
-    testReset: onEditor<void>((editor) => {
+    testAttributeSet: onEditor<{ attribute: string; value?: string | number | boolean }>((editor, action) => {
+      const { attribute, value } = action.payload;
+      if (value === undefined) delete editor.test.task[attribute];
+      else editor.test.task[attribute] = value;
+    }),
+    testReset: onEditor<void>(editor => {
       editor.test.task = {};
     }),
   },
   selectors: {
-    selectRouting: (state) => state,
-    selectRoutingEditor: (state) => state.editor,
-    selectRoutingDesign: (state) => state.editor?.design,
+    selectRouting: state => state,
+    selectRoutingEditor: state => state.editor,
+    selectRoutingDesign: state => state.editor?.design,
   },
 });
 
@@ -528,15 +495,13 @@ const {
 } = routingSlice.actions;
 
 // The checks of the open design
-export const selectRoutingIssues = createSelector(
-  [selectRoutingDesign],
-  (design): RoutingIssue[] => (design ? routingChecks(design) : []),
+export const selectRoutingIssues = createSelector([selectRoutingDesign], (design): RoutingIssue[] =>
+  design ? routingChecks(design) : [],
 );
 
 // The helplines this person can open
-export const selectRoutingHelplineCodes = createSelector(
-  [(state: RootState) => state.session.helplines],
-  (helplines) => helplines.map((helpline) => helpline.code),
+export const selectRoutingHelplineCodes = createSelector([(state: RootState) => state.session.helplines], helplines =>
+  helplines.map(helpline => helpline.code),
 );
 
 // ---------------------------------------------------------------------------------------------
@@ -644,9 +609,7 @@ const createRouting =
       const current = await routingClient.load(code);
       const outcome = await routingClient.save(code, current?.meta.revision ?? 0, design);
       if (!outcome.ok)
-        throw new Error(
-          `${outcome.conflict.updatedBy ?? 'Someone else'} just saved a design for ${code}: reload.`,
-        );
+        throw new Error(`${outcome.conflict.updatedBy ?? 'Someone else'} just saved a design for ${code}: reload.`);
       created = true;
     } catch (err) {
       dispatch(routingErrorSet((err as Error).message));
@@ -664,15 +627,11 @@ export const adoptRoutingImport = (): AppThunk<Promise<void>> => async (dispatch
   const { preview } = routingOf(getState());
   if (!preview) return;
   dispatch(previewCleared());
-  await dispatch(
-    createRouting(
-      preview.source ? { ...preview.design, importedFrom: preview.source } : preview.design,
-    ),
-  );
+  await dispatch(createRouting(preview.source ? { ...preview.design, importedFrom: preview.source } : preview.design));
 };
 
 const workflowOf = (state: RootState, key: string) =>
-  routingOf(state).editor?.design.workflows.find((workflow) => workflow.key === key);
+  routingOf(state).editor?.design.workflows.find(workflow => workflow.key === key);
 
 // A new rule at the end of the workflow
 export const addRoutingRule =
@@ -692,41 +651,40 @@ export const addRoutingCommonRule =
     const design = routingOf(getState()).editor?.design;
     if (!workflow || !design) return;
     const changed = addCommonRule(workflow, design, common);
-    const rule = changed.rules.find((candidate) => !workflow.rules.includes(candidate))!;
+    const rule = changed.rules.find(candidate => !workflow.rules.includes(candidate))!;
     dispatch(ruleAdded({ workflowKey, rules: changed.rules, ruleId: rule.id }));
   };
 
 // The "Export for Claude" file: the design, what it generates, and its checks
-export const routingExport =
-  (): AppThunk<{ fileName: string; text: string } | undefined> => (_dispatch, getState) => {
-    const { stored, editor } = routingOf(getState());
-    if (!stored || !editor) return undefined;
-    const { design } = editor;
-    const generated = generateRouting(design);
-    return {
-      fileName: `${stored.code}-routing.json`,
-      text: `${JSON.stringify(
-        {
-          schemaVersion: 1,
-          about:
-            "A helpline's TaskRouter routing, designed in the Aselo Builder (docs/routing-designer.md). generated.workflows are the workflow templates (.tftpl) to write under twilio-iac/helplines (a shared template's changes go to a template of this helpline's own), generated.workflowsBlock and generated.queuesBlock replace the workflows and task_queues in the helpline's common.hcl, and skills/capacity are what Flex needs (each account's skills, the counselors' maxMessageCapacity). Anything not changed in the designer is exactly as it is live.",
-          helpline: stored.code,
-          updatedAt: stored.meta.updatedAt,
-          // Implement it only when it's 'ready' (Ready for Claude)
-          status: routingStatusOf(design),
-          isNew: !design.imported,
-          design,
-          generated,
-          checks: selectRoutingIssues(getState()).map(({ severity, message }) => ({
-            severity,
-            message,
-          })),
-        },
-        null,
-        2,
-      )}\n`,
-    };
+export const routingExport = (): AppThunk<{ fileName: string; text: string } | undefined> => (_dispatch, getState) => {
+  const { stored, editor } = routingOf(getState());
+  if (!stored || !editor) return undefined;
+  const { design } = editor;
+  const generated = generateRouting(design);
+  return {
+    fileName: `${stored.code}-routing.json`,
+    text: `${JSON.stringify(
+      {
+        schemaVersion: 1,
+        about:
+          "A helpline's TaskRouter routing, designed in the Aselo Builder (docs/routing-designer.md). generated.workflows are the workflow templates (.tftpl) to write under twilio-iac/helplines (a shared template's changes go to a template of this helpline's own), generated.workflowsBlock and generated.queuesBlock replace the workflows and task_queues in the helpline's common.hcl, and skills/capacity are what Flex needs (each account's skills, the counselors' maxMessageCapacity). Anything not changed in the designer is exactly as it is live.",
+        helpline: stored.code,
+        updatedAt: stored.meta.updatedAt,
+        // Implement it only when it's 'ready' (Ready for Claude)
+        status: routingStatusOf(design),
+        isNew: !design.imported,
+        design,
+        generated,
+        checks: selectRoutingIssues(getState()).map(({ severity, message }) => ({
+          severity,
+          message,
+        })),
+      },
+      null,
+      2,
+    )}\n`,
   };
+};
 
 // Saves a moment after the last change to the open design (until someone else saved it in between).
 // Added by enterRouting rather than in createAppStore: store.ts importing this module would be an
@@ -737,10 +695,7 @@ const routingAutosave = {
     const before = routingOf(previous).editor;
     return Boolean(now && before && now.code === before.code && now.design !== before.design);
   },
-  effect: async (
-    _action: UnknownAction,
-    listenerApi: ListenerEffectAPI<RootState, AppDispatch, Services>,
-  ) => {
+  effect: async (_action: UnknownAction, listenerApi: ListenerEffectAPI<RootState, AppDispatch, Services>) => {
     if (routingOf(listenerApi.getState()).editor?.conflict) return;
     // A newer change restarts the wait
     listenerApi.cancelActiveListeners();

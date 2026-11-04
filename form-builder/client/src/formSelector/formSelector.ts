@@ -57,7 +57,8 @@ export type ChoiceSource = 'survey' | 'preEngagement';
 export type ServiceUserChoice = { form: ChoiceSource; input: string; aboutSelfValue?: string };
 
 export type FormSelector =
-  { kind: 'static'; tabs: string[]; callType?: string } | { kind: 'choice'; choices: ServiceUserChoice[] };
+  | { kind: 'static'; tabs: string[]; callType?: string }
+  | { kind: 'choice'; choices: ServiceUserChoice[] };
 
 export type FormSelectorInfo = {
   selector: FormSelector;
@@ -150,8 +151,8 @@ export const setFormSelector = (files: DefinitionFileMap, selector: FormSelector
     mappings === undefined
       ? { formSelector, survey: {}, preEngagement: {} }
       : 'formSelector' in mappings
-        ? { ...mappings, formSelector }
-        : { formSelector, ...mappings };
+      ? { ...mappings, formSelector }
+      : { formSelector, ...mappings };
   return { ...files, [PREPOPULATE_MAPPINGS_FILE]: next };
 };
 
@@ -167,7 +168,7 @@ export const removeFormSelector = (files: DefinitionFileMap): DefinitionFileMap 
  * What it does, in plain words
  */
 
-export const tabTitle = (tabKey: string) => CONTACT_TABS.find((tab) => tab.key === tabKey)?.title ?? tabKey;
+export const tabTitle = (tabKey: string) => CONTACT_TABS.find(tab => tab.key === tabKey)?.title ?? tabKey;
 
 const listTabs = (tabs: string[]) => (tabs.length > 0 ? tabs.map(tabTitle).join(', ') : 'nothing');
 
@@ -193,7 +194,7 @@ export const formSelectorOutcomes = (selector: FormSelector): FormSelectorOutcom
   if (selector.choices.length > 0) {
     outcomes.push(
       {
-        when: `The answer is ${values.map((value) => `“${value}”`).join(' or ')} (about themselves)`,
+        when: `The answer is ${values.map(value => `“${value}”`).join(' or ')} (about themselves)`,
         tabs: ABOUT_SELF_TABS,
         callType: CALL_TYPE_CHILD,
       },
@@ -213,7 +214,9 @@ export const summarizeFormSelector = (info: FormSelectorInfo | FormSelector): st
   const selector = 'kind' in info ? info : info.selector;
   const implicit = 'kind' in info ? false : info.implicit;
   if (selector.kind === 'static') {
-    return `Every contact fills in ${listTabs(selector.tabs)}; call type: ${selector.callType ?? 'none (the counselor picks)'}`;
+    return `Every contact fills in ${listTabs(selector.tabs)}; call type: ${
+      selector.callType ?? 'none (the counselor picks)'
+    }`;
   }
   const by = implicit ? ' (Aselo’s default, nothing is set)' : '';
   if (selector.choices.length === 0) {
@@ -241,11 +244,11 @@ export const getSurveyAnswerNames = (files: DefinitionFileMap): string[] => {
 };
 
 export const getWebchatQuestions = (files: DefinitionFileMap) =>
-  (getPreEngagementForm(files)?.fields ?? []).map((field) => ({
+  (getPreEngagementForm(files)?.fields ?? []).map(field => ({
     name: field.name,
     label: plainText(field.label),
     // Saved values of a dropdown's answers
-    values: field.type === 'select' ? visibleOptions(field.options).map((option) => String(option.value)) : undefined,
+    values: field.type === 'select' ? visibleOptions(field.options).map(option => String(option.value)) : undefined,
   }));
 
 /**
@@ -263,7 +266,7 @@ const reachableTabs = (selector: FormSelector): string[] =>
 
 // Mapping targets: [[a, b], c] means "a, or b if a's tab isn't filled in" and "c"
 const mappingGroups = (value: unknown): string[][] =>
-  (Array.isArray(value) ? value : [value]).map((entry) =>
+  (Array.isArray(value) ? value : [value]).map(entry =>
     (Array.isArray(entry) ? entry : [entry]).filter((target): target is string => typeof target === 'string'),
   );
 
@@ -282,7 +285,7 @@ const checkFormSelector = (files: DefinitionFileMap): ValidationIssue[] => {
     );
   }
   const hasForm = (tabKey: string) => {
-    const tab = CONTACT_TABS.find((contactTab) => contactTab.key === tabKey);
+    const tab = CONTACT_TABS.find(contactTab => contactTab.key === tabKey);
     return Boolean(tab && files[tab.filePath] !== undefined);
   };
 
@@ -290,11 +293,11 @@ const checkFormSelector = (files: DefinitionFileMap): ValidationIssue[] => {
     if (info.missingTabs) issues.push(issue('error', 'the list of contact form tabs to fill in is missing.'));
     else if (selector.tabs.length === 0) issues.push(issue('error', 'no contact form tab is filled in.'));
     selector.tabs
-      .filter((tab) => !(SELECTABLE_TABS as readonly string[]).includes(tab))
-      .forEach((tab) => issues.push(issue('error', `“${tab}” isn’t a contact form tab Aselo can fill in.`)));
+      .filter(tab => !(SELECTABLE_TABS as readonly string[]).includes(tab))
+      .forEach(tab => issues.push(issue('error', `“${tab}” isn’t a contact form tab Aselo can fill in.`)));
     selector.tabs
-      .filter((tab) => (SELECTABLE_TABS as readonly string[]).includes(tab) && !hasForm(tab))
-      .forEach((tab) => issues.push(issue('warning', `this helpline has no ${tabTitle(tab)} form.`)));
+      .filter(tab => (SELECTABLE_TABS as readonly string[]).includes(tab) && !hasForm(tab))
+      .forEach(tab => issues.push(issue('warning', `this helpline has no ${tabTitle(tab)} form.`)));
     if (selector.callType && !PRESELECTABLE_CALL_TYPES.includes(selector.callType)) {
       issues.push(issue('error', `“${selector.callType}” isn’t a call type Aselo can preselect.`));
     }
@@ -307,7 +310,7 @@ const checkFormSelector = (files: DefinitionFileMap): ValidationIssue[] => {
         return;
       }
       if (choice.form !== 'preEngagement') return;
-      const question = questions.find((candidate) => candidate.name === choice.input);
+      const question = questions.find(candidate => candidate.name === choice.input);
       if (!question) {
         issues.push(issue('warning', `${name} isn’t a question in the webchat form.`));
       } else if (question.values && !question.values.includes(aboutSelfValueOf(choice))) {
@@ -323,16 +326,16 @@ const checkFormSelector = (files: DefinitionFileMap): ValidationIssue[] => {
 
   // Answers mapped onto tabs that are never filled in
   const reachable = reachableTabs(selector);
-  (['survey', 'preEngagement'] as const).forEach((source) => {
+  (['survey', 'preEngagement'] as const).forEach(source => {
     Object.entries(mappings[source] ?? {}).forEach(([answer, value]) => {
       mappingGroups(value)
-        .filter((group) => group.length > 0 && !group.some((target) => reachable.includes(target.split('.')[0])))
-        .forEach((group) =>
+        .filter(group => group.length > 0 && !group.some(target => reachable.includes(target.split('.')[0])))
+        .forEach(group =>
           issues.push(
             issue(
               'warning',
               `“${answer}” from the ${SOURCE_TITLES[source]} fills in ${group
-                .map((target) => tabTitle(target.split('.')[0]))
+                .map(target => tabTitle(target.split('.')[0]))
                 .join(' or ')}, which is never filled in.`,
             ),
           ),
@@ -347,8 +350,8 @@ export const validateFormSelector = (
   draftFiles: DefinitionFileMap,
   originalFiles: DefinitionFileMap,
 ): ValidationIssue[] => {
-  const before = new Set(checkFormSelector(originalFiles).map((found) => found.message));
-  return checkFormSelector(draftFiles).map((found) =>
+  const before = new Set(checkFormSelector(originalFiles).map(found => found.message));
+  return checkFormSelector(draftFiles).map(found =>
     found.severity === 'error' && before.has(found.message)
       ? {
           ...found,

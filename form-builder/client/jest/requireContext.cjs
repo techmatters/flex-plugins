@@ -23,13 +23,13 @@ const fs = require('fs');
 const path = require('path');
 
 const filesIn = (dir, recursive) =>
-  fs.readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
+  fs.readdirSync(dir, { withFileTypes: true }).flatMap(entry => {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) return recursive ? filesIn(full, recursive) : [];
     return [full];
   });
 
-const load = (file) => {
+const load = file => {
   if (file.endsWith('.json')) return JSON.parse(fs.readFileSync(file, 'utf8'));
   if (/\.[cm]?[jt]sx?$/.test(file)) return require(file);
   return fs.readFileSync(file, 'utf8');
@@ -39,16 +39,16 @@ module.exports = (fromDir, dir, recursive = true, regExp = /^\.\/.*$/, mode = 's
   const root = path.resolve(fromDir, dir);
   const byKey = new Map(
     filesIn(root, recursive)
-      .map((file) => [`./${path.relative(root, file).split(path.sep).join('/')}`, file])
+      .map(file => [`./${path.relative(root, file).split(path.sep).join('/')}`, file])
       .filter(([key]) => regExp.test(key)),
   );
-  const context = (key) => {
+  const context = key => {
     const file = byKey.get(key);
     if (!file) throw new Error(`Cannot find module '${key}' in ${root}`);
     return mode === 'lazy' ? Promise.resolve(load(file)) : load(file);
   };
   context.keys = () => [...byKey.keys()];
-  context.resolve = (key) => byKey.get(key);
+  context.resolve = key => byKey.get(key);
   context.id = root;
   return context;
 };

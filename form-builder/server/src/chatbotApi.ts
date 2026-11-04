@@ -54,7 +54,7 @@ const summaryOf = (stored?: StoredChatbots): ChatbotsSummary | undefined =>
   stored && {
     code: stored.code,
     meta: stored.meta,
-    bots: stored.design.bots.map((bot) => ({
+    bots: stored.design.bots.map(bot => ({
       id: bot.id,
       name: bot.name,
       language: bot.language,
@@ -91,8 +91,8 @@ export const handleChatbotRequest = async (
 ): Promise<ApiResponse> => {
   if (!store) return fail(501, "The chatbot designer isn't set up here.");
   if (method === 'GET' && path === '/api/chatbots') {
-    const codes = (await store.list()).filter((code) => canOpen(user, code)).sort();
-    const summaries = await Promise.all(codes.map(async (code) => summaryOf(await store.get(code))));
+    const codes = (await store.list()).filter(code => canOpen(user, code)).sort();
+    const summaries = await Promise.all(codes.map(async code => summaryOf(await store.get(code))));
     return ok(summaries.filter((summary): summary is ChatbotsSummary => Boolean(summary)));
   }
   const match = path.match(/^\/api\/chatbots\/([^/]+)(\/import)?$/);

@@ -47,7 +47,7 @@ const board = (objects: FlowObject[], connections: Connection[]): BoardContent =
   objects,
   connections,
 });
-const path = (run: SimRun) => run.steps.map((step) => (step.exit ? `${step.objectId}:${step.exit}` : step.objectId));
+const path = (run: SimRun) => run.steps.map(step => (step.exit ? `${step.objectId}:${step.exit}` : step.objectId));
 
 describe('Liquid', () => {
   const values: Record<string, unknown> = { 'flow.variables.count': '2', 'a.b': 'Yes' };
@@ -150,7 +150,7 @@ describe('a run', () => {
       'chosen:en',
       'queue:callComplete',
     ]);
-    expect(run.steps.map((step) => step.execution)).toEqual([1, 1, 1, 1, 1, 1, 2, 2, 2, 2]);
+    expect(run.steps.map(step => step.execution)).toEqual([1, 1, 1, 1, 1, 1, 2, 2, 2, 2]);
     const visited = visitedBy(run);
     expect(visited.objects.get('trigger')).toEqual([1, 7]);
     expect(visited.connections.has('chosen>queue')).toBe(true);
@@ -225,7 +225,9 @@ describe('a run', () => {
     // The second split knows it now
     expect(run.attributes).toEqual({ pre_engagement_data: { language: 'Spanish' } });
     expect(path(run).slice(0, 4)).toEqual(['trigger', 'lang:Spanish', 'hello', 'again:Spanish']);
-    expect(run.steps[3].note).toBe('{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}} = “Spanish”');
+    expect(run.steps[3].note).toBe(
+      '{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}} = “Spanish”',
+    );
 
     // No match: the next split doesn't know either, so it's asked too
     run = answer(webchat, startRun(webchat, 'trigger'), { kind: 'exit', exit: 'noMatch' });
@@ -239,7 +241,7 @@ describe('a run', () => {
     expect(run.ended).toMatchObject({ kind: 'deadEnd', objectId: 'lang', exit: '2' });
     const ended = {
       ...content,
-      objects: content.objects.map((candidate) =>
+      objects: content.objects.map(candidate =>
         candidate.id === 'lang' ? { ...candidate, endedExits: ['2'] } : candidate,
       ),
     };
@@ -248,7 +250,7 @@ describe('a run', () => {
 
     const unknown = {
       ...content,
-      objects: content.objects.map((candidate) =>
+      objects: content.objects.map(candidate =>
         candidate.id === 'done'
           ? { ...candidate, settings: { input: '{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}' } }
           : candidate,
@@ -264,12 +266,12 @@ describe('a run', () => {
   test('a way out listing values matches any of them (any case); another comparison works as Studio', () => {
     const listed = {
       ...content,
-      objects: content.objects.map((candidate) =>
+      objects: content.objects.map(candidate =>
         candidate.id === 'lang'
           ? { ...candidate, exits: ['1,one,English', 'help', 'noMatch'], exitOperators: { help: 'contains' } }
           : candidate,
       ),
-      connections: content.connections.map((connection) =>
+      connections: content.connections.map(connection =>
         connection.from === 'lang' && connection.exit === '1' ? { ...connection, exit: '1,one,English' } : connection,
       ),
     };
@@ -287,17 +289,17 @@ describe('a run', () => {
     const tested = testedPathOf(content, run, 'Alejandro', 'p1');
     expect(validTestedPaths(content, [tested])).toHaveLength(1);
     const coverage = coverageOf(content, [tested]);
-    expect(coverage.waysOut.find((way) => way.objectId === 'lang' && way.exit === 'noMatch')?.tested).toBe(true);
-    expect(coverage.waysOut.find((way) => way.objectId === 'lang' && way.exit === '1')?.tested).toBe(false);
+    expect(coverage.waysOut.find(way => way.objectId === 'lang' && way.exit === 'noMatch')?.tested).toBe(true);
+    expect(coverage.waysOut.find(way => way.objectId === 'lang' && way.exit === '1')?.tested).toBe(false);
     // Moving or renaming the text doesn't matter; a way out changed on the path does
     const moved = {
       ...content,
-      objects: content.objects.map((candidate) => ({ ...candidate, x: 500, text: 'Moved' })),
+      objects: content.objects.map(candidate => ({ ...candidate, x: 500, text: 'Moved' })),
     };
     expect(validTestedPaths(moved, [tested])).toHaveLength(1);
     const changed = {
       ...content,
-      objects: content.objects.map((candidate) =>
+      objects: content.objects.map(candidate =>
         candidate.id === 'lang' ? { ...candidate, exits: ['1', '2', '3', 'noMatch'] } : candidate,
       ),
     };

@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/globals';
@@ -66,7 +65,7 @@ const renderArea = (user: ApiUser, helplineCodes: string[], userName = user.name
   appStore.dispatch(
     sessionLoaded({
       user: { ...user, name: userName, applyInBuilder: false },
-      helplines: helplineCodes.map((code) => ({ code, versions: [] })),
+      helplines: helplineCodes.map(code => ({ code, versions: [] })),
     }),
   );
   render(
@@ -125,7 +124,7 @@ describe('chatbot designer', () => {
     const phone = within(screen.getByLabelText('Preview'));
     expect(phone.getByText(/press 1/)).toBeTruthy();
     fireEvent.click(phone.getByRole('button', { name: 'Yes' }));
-    expect(phone.getAllByText('Yes').some((element) => element.className.includes('contact'))).toBe(true);
+    expect(phone.getAllByText('Yes').some(element => element.className.includes('contact'))).toBe(true);
     expect(phone.getByText('What is your gender identity?')).toBeTruthy();
     // A typed answer that doesn't match the pattern (letters only) is asked again
     fireEvent.change(phone.getByRole('textbox', { name: 'Type an answer' }), { target: { value: '123' } });

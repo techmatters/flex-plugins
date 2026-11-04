@@ -67,9 +67,9 @@ export const withJanitorValues = (
   if (parameters && parameters.length > 0) {
     const kept = parameters
       .filter(({ key }) => !(key in changes) || changes[key] !== undefined)
-      .map((parameter) => (parameter.key in changes ? { ...parameter, value: changes[parameter.key]! } : parameter));
+      .map(parameter => (parameter.key in changes ? { ...parameter, value: changes[parameter.key]! } : parameter));
     const added = Object.entries(changes)
-      .filter(([key, value]) => value !== undefined && !parameters.some((parameter) => parameter.key === key))
+      .filter(([key, value]) => value !== undefined && !parameters.some(parameter => parameter.key === key))
       .map(([key, value]) => ({ key, value: value! }));
     return { ...properties, parameters: [...kept, ...added] };
   }

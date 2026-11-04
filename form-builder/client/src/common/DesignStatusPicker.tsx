@@ -29,7 +29,7 @@ export const DesignStatusBadge = ({ status, isNew }: BadgeProps) => (
     {isNew && <span className="design-status design-status-new">New</span>}
     <span
       className={`design-status design-status-${status}`}
-      title={DESIGN_STATUSES.find((candidate) => candidate.value === status)?.hint}
+      title={DESIGN_STATUSES.find(candidate => candidate.value === status)?.hint}
     >
       {statusLabel(status)}
     </span>
@@ -52,10 +52,10 @@ export const DesignStatusPicker = ({ status, isNew, editable, onChange, label = 
         className={`design-status design-status-select design-status-${status}`}
         aria-label={label}
         value={status}
-        title={DESIGN_STATUSES.find((candidate) => candidate.value === status)?.hint}
-        onChange={(e) => onChange(e.target.value as DesignStatus)}
+        title={DESIGN_STATUSES.find(candidate => candidate.value === status)?.hint}
+        onChange={e => onChange(e.target.value as DesignStatus)}
       >
-        {DESIGN_STATUSES.map((candidate) => (
+        {DESIGN_STATUSES.map(candidate => (
           <option key={candidate.value} value={candidate.value}>
             {candidate.label}
           </option>

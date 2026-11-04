@@ -23,7 +23,7 @@ import { HclObject, isObject, localsOf, parseHcl, parseTemplate } from './hcl';
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../twilio-iac/helplines');
 
 const filesUnder = (dir: string, accept: (file: string) => boolean): string[] =>
-  readdirSync(dir).flatMap((name) => {
+  readdirSync(dir).flatMap(name => {
     const full = path.join(dir, name);
     if (statSync(full).isDirectory()) return filesUnder(full, accept);
     return accept(full) ? [full] : [];
@@ -53,7 +53,7 @@ describe('HCL', () => {
         path = find_in_parent_folders()
       }
     `);
-    expect(body.blocks.map((block) => [block.type, block.labels])).toEqual([
+    expect(body.blocks.map(block => [block.type, block.labels])).toEqual([
       ['locals', []],
       ['include', ['root']],
     ]);
@@ -83,20 +83,20 @@ describe('HCL', () => {
   });
 
   test("reads every helpline's Terragrunt files and Studio flow templates", () => {
-    const hclFiles = filesUnder(helplinesDir, (file) => file.endsWith('.hcl'));
-    const templates = filesUnder(helplinesDir, (file) => file.includes('studio-flows') && file.endsWith('.tftpl'));
+    const hclFiles = filesUnder(helplinesDir, file => file.endsWith('.hcl'));
+    const templates = filesUnder(helplinesDir, file => file.includes('studio-flows') && file.endsWith('.tftpl'));
     expect(hclFiles.length).toBeGreaterThan(50);
     expect(templates.length).toBeGreaterThan(50);
 
     const failures: string[] = [];
-    hclFiles.forEach((file) => {
+    hclFiles.forEach(file => {
       try {
         localsOf(parseHcl(readFileSync(file, 'utf8')));
       } catch (err) {
         failures.push(`${path.relative(helplinesDir, file)}: ${(err as Error).message}`);
       }
     });
-    templates.forEach((file) => {
+    templates.forEach(file => {
       try {
         const flow = parseTemplate(readFileSync(file, 'utf8'));
         if (!isObject(flow) || !Array.isArray((flow as HclObject).states))

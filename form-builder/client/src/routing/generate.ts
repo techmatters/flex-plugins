@@ -20,7 +20,11 @@
  * helpline and not changed gives back exactly its live config.
  */
 import { hclString, toHcl } from '../flows/studioTemplate';
-import { writeQueue, writeWorkflowSettings, writeWorkflowTemplate } from '@tech-matters/form-builder-shared/routing/convert';
+import {
+  writeQueue,
+  writeWorkflowSettings,
+  writeWorkflowTemplate,
+} from '@tech-matters/form-builder-shared/routing/convert';
 import type { RoutingDesign } from '@tech-matters/form-builder-shared/routing/model';
 
 export type GeneratedWorkflow = {
@@ -62,7 +66,7 @@ const block = (name: string, entries: [string, Record<string, unknown>][]) =>
     .join(',\n')}\n}\n`;
 
 export const generateRouting = (design: RoutingDesign): GeneratedRouting => ({
-  workflows: design.workflows.map((workflow) => {
+  workflows: design.workflows.map(workflow => {
     const value = writeWorkflowTemplate(workflow);
     return {
       key: workflow.key,
@@ -79,12 +83,12 @@ export const generateRouting = (design: RoutingDesign): GeneratedRouting => ({
   }),
   workflowsBlock: block(
     'workflows',
-    design.workflows.map((workflow) => [workflow.key, writeWorkflowSettings(workflow)]),
+    design.workflows.map(workflow => [workflow.key, writeWorkflowSettings(workflow)]),
   ),
   queuesBlock: block(
     'task_queues',
-    design.queues.map((queue) => [queue.key, writeQueue(queue)]),
+    design.queues.map(queue => [queue.key, writeQueue(queue)]),
   ),
-  skills: design.skills.map((skill) => skill.name),
-  skillsWithLevels: design.skills.filter((skill) => skill.levels).map((skill) => skill.name),
+  skills: design.skills.map(skill => skill.name),
+  skillsWithLevels: design.skills.filter(skill => skill.levels).map(skill => skill.name),
 });

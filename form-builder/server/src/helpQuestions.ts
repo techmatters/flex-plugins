@@ -64,10 +64,7 @@ export class LocalHelpQuestionStore implements HelpQuestionStore {
 }
 
 export class S3HelpQuestionStore implements HelpQuestionStore {
-  constructor(
-    private readonly bucket: string,
-    private readonly s3: Pick<S3Client, 'send'> = new S3Client({}),
-  ) {}
+  constructor(private readonly bucket: string, private readonly s3: Pick<S3Client, 'send'> = new S3Client({})) {}
 
   private key(month: string) {
     if (!MONTH_PATTERN.test(month)) throw new Error(`Invalid month ${month}`);
@@ -127,10 +124,10 @@ export const handleHelpRequest = async (
   if (method === 'GET') {
     if (user.role !== 'aselo-staff') return { status: 403, body: { message: 'Only Aselo staff see these.' } };
     const today = now();
-    const months = [0, 1, 2].map((back) =>
+    const months = [0, 1, 2].map(back =>
       monthOf(new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() - back, 1))),
     );
-    const questions = (await Promise.all(months.map((month) => store.get(month)))).flat();
+    const questions = (await Promise.all(months.map(month => store.get(month)))).flat();
     return { status: 200, body: questions.sort((a, b) => b.at.localeCompare(a.at)) };
   }
   return { status: 405, body: { message: 'Not allowed.' } };

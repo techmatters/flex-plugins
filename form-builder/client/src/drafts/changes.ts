@@ -30,17 +30,13 @@ export type FormChangeSummary = {
   reordered: boolean;
 };
 
-const fieldLabel = (item: FormItemJsonDefinition) =>
-  item.label ? `${item.label} (${item.name})` : item.name;
+const fieldLabel = (item: FormItemJsonDefinition) => (item.label ? `${item.label} (${item.name})` : item.name);
 
 export const isSameJson = (a: unknown, b: unknown) => JSON.stringify(a) === JSON.stringify(b);
 
-export const getChangedFilePaths = (
-  originalFiles: DefinitionFileMap,
-  draftFiles: DefinitionFileMap,
-): string[] =>
+export const getChangedFilePaths = (originalFiles: DefinitionFileMap, draftFiles: DefinitionFileMap): string[] =>
   Object.keys(draftFiles)
-    .filter((filePath) => !isSameJson(originalFiles[filePath], draftFiles[filePath]))
+    .filter(filePath => !isSameJson(originalFiles[filePath], draftFiles[filePath]))
     .sort();
 
 export const summarizeFormChanges = (
@@ -48,21 +44,21 @@ export const summarizeFormChanges = (
   originalForm: FormItemJsonDefinition[],
   draftForm: FormItemJsonDefinition[],
 ): FormChangeSummary => {
-  const originalByName = new Map(originalForm.map((item) => [item.name, item]));
-  const draftNames = new Set(draftForm.map((item) => item.name));
+  const originalByName = new Map(originalForm.map(item => [item.name, item]));
+  const draftNames = new Set(draftForm.map(item => item.name));
 
-  const added = draftForm.filter((item) => !originalByName.has(item.name)).map(fieldLabel);
-  const removed = originalForm.filter((item) => !draftNames.has(item.name)).map(fieldLabel);
+  const added = draftForm.filter(item => !originalByName.has(item.name)).map(fieldLabel);
+  const removed = originalForm.filter(item => !draftNames.has(item.name)).map(fieldLabel);
   const edited = draftForm
-    .filter((item) => {
+    .filter(item => {
       const original = originalByName.get(item.name);
       return original && !isSameJson(original, item);
     })
     .map(fieldLabel);
 
   // Compare the order of fields that exist in both versions
-  const keptOriginalOrder = originalForm.map((item) => item.name).filter((n) => draftNames.has(n));
-  const keptDraftOrder = draftForm.map((item) => item.name).filter((n) => originalByName.has(n));
+  const keptOriginalOrder = originalForm.map(item => item.name).filter(n => draftNames.has(n));
+  const keptDraftOrder = draftForm.map(item => item.name).filter(n => originalByName.has(n));
   const reordered = !isSameJson(keptOriginalOrder, keptDraftOrder);
 
   return { tab, added, removed, edited, reordered };
@@ -76,9 +72,9 @@ export const summarizeContactFormChanges = (
     ...CONTACT_TABS,
     // Case sections, including any added or removed in the draft
     ...[...getCaseSections(originalFiles), ...getCaseSections(draftFiles)]
-      .filter((section, index, all) => all.findIndex((other) => other.formPath === section.formPath) === index)
+      .filter((section, index, all) => all.findIndex(other => other.formPath === section.formPath) === index)
       .map(caseSectionTarget),
-  ].flatMap((tab) => {
+  ].flatMap(tab => {
     const originalForm = getForm(originalFiles, tab.filePath) ?? [];
     const draftForm = getForm(draftFiles, tab.filePath) ?? [];
     if (isSameJson(originalForm, draftForm)) return [];

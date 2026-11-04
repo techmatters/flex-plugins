@@ -51,7 +51,7 @@ export const AseloCategories = ({ definition, selected, hasError, strings, onCha
     onChange({
       ...selected,
       [category]: current.includes(subcategory)
-        ? current.filter((label) => label !== subcategory)
+        ? current.filter(label => label !== subcategory)
         : [...current, subcategory],
     });
   };

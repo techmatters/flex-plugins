@@ -29,10 +29,10 @@ describe('simulating imported flows', () => {
   test("usnm's voice flow: pressing 2 for Spanish takes the Spanish welcome, on the live split's conditions", async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const content = boards.find(({ content: candidate }) =>
-      candidate.objects.some((object) => object.studioName === 'split_voice_language'),
+      candidate.objects.some(object => object.studioName === 'split_voice_language'),
     )!.content;
-    const trigger = content.objects.find((object) => object.type === 'incoming')!;
-    const nameOf = (id?: string) => content.objects.find((object) => object.id === id)?.studioName;
+    const trigger = content.objects.find(object => object.type === 'incoming')!;
+    const nameOf = (id?: string) => content.objects.find(object => object.id === id)?.studioName;
 
     let run = startRun(content, trigger.id);
     // Up to the language menu, in opening hours
@@ -45,8 +45,8 @@ describe('simulating imported flows', () => {
       // Open, and otherwise on along the way that's connected
       const connected =
         prompt.kind === 'choose'
-          ? prompt.exits.filter((exit) =>
-              content.connections.some((connection) => connection.from === prompt.objectId && connection.exit === exit),
+          ? prompt.exits.filter(exit =>
+              content.connections.some(connection => connection.from === prompt.objectId && connection.exit === exit),
             )
           : [];
       run =
@@ -57,7 +57,7 @@ describe('simulating imported flows', () => {
     expect(run.ended).toBeUndefined();
     expect(run.prompt).toMatchObject({ kind: 'dialpad' });
     run = answer(content, run, { kind: 'digits', digits: '2' });
-    const split = run.steps.find((step) => nameOf(step.objectId) === 'split_voice_language')!;
+    const split = run.steps.find(step => nameOf(step.objectId) === 'split_voice_language')!;
     expect(split.exit).toBe('2');
     expect(split.note).toContain('= “2”');
     const after = run.steps[run.steps.indexOf(split) + 1];

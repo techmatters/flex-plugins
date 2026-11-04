@@ -32,13 +32,10 @@ const Harness = () => {
     imported,
     source: { kind: 'inline' },
   });
-  return (
-    <TaskAttributesSection attributes={attributes} readOnly={false} onChange={setAttributes} />
-  );
+  return <TaskAttributesSection attributes={attributes} readOnly={false} onChange={setAttributes} />;
 };
 
-const box = () =>
-  screen.getByRole('textbox', { name: 'Task attributes JSON' }) as HTMLTextAreaElement;
+const box = () => screen.getByRole('textbox', { name: 'Task attributes JSON' }) as HTMLTextAreaElement;
 
 describe('task attributes JSON', () => {
   test('is laid out when you leave it after an edit, and only if it is valid', () => {
@@ -57,8 +54,7 @@ describe('task attributes JSON', () => {
 
     fireEvent.change(box(), {
       target: {
-        value:
-          '{"channelType":"voice","memory":{{trigger.memory | to_json}},"helpline":"${helpline}"}',
+        value: '{"channelType":"voice","memory":{{trigger.memory | to_json}},"helpline":"${helpline}"}',
       },
     });
     fireEvent.blur(box());

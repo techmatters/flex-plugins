@@ -50,7 +50,7 @@ const caseStatusSlice = createSlice({
     },
   },
   selectors: {
-    selectCaseStatus: (state) => state,
+    selectCaseStatus: state => state,
   },
 });
 
@@ -64,17 +64,19 @@ export const { currentChanged } = caseStatusSlice.actions;
 
 // Starts editing from the draft, with the preview's case in the first status
 export const openCaseStatus = (): AppThunk => (dispatch, getState) => {
-  const rows = toRows(Object.entries(getCaseStatusMap(getState().draft.files)).map(([key, status]) => ({ key, status })));
+  const rows = toRows(
+    Object.entries(getCaseStatusMap(getState().draft.files)).map(([key, status]) => ({ key, status })),
+  );
   dispatch(caseStatusOpened({ rows, current: rows[0]?.value.status.value ?? 'open' }));
 };
 
 // The rows as they are now, written to the draft
 const write =
   (rows: Row<StatusRow>[]): AppThunk =>
-  (dispatch) => {
+  dispatch => {
     dispatch(rowsChanged(rows));
     dispatch(
-      editDraftFiles((files) => ({
+      editDraftFiles(files => ({
         ...files,
         [CASE_STATUS_FILE]: Object.fromEntries(rows.map(({ value }) => [value.key, value.status])),
       })),
@@ -86,7 +88,7 @@ const update =
   (dispatch, getState) =>
     dispatch(
       write(
-        selectCaseStatus(getState()).rows.map((row) =>
+        selectCaseStatus(getState()).rows.map(row =>
           row.id === id ? { ...row, value: { ...row.value, status: change(row.value.status) } } : row,
         ),
       ),
@@ -94,13 +96,13 @@ const update =
 
 export const reorderStatuses = (rows: Row<StatusRow>[]): AppThunk => write(rows);
 
-export const setStatusColor = (id: string, color: string): AppThunk => update(id, (old) => ({ ...old, color }));
+export const setStatusColor = (id: string, color: string): AppThunk => update(id, old => ({ ...old, color }));
 
 // Lets a status move to another one, or not
 export const setTransition = (id: string, target: string, allowed: boolean): AppThunk =>
-  update(id, (old) => ({
+  update(id, old => ({
     ...old,
-    transitions: allowed ? [...old.transitions, target] : old.transitions.filter((other) => other !== target),
+    transitions: allowed ? [...old.transitions, target] : old.transitions.filter(other => other !== target),
   }));
 
 // A new status is saved under a value made from its name; existing ones keep theirs
@@ -109,24 +111,27 @@ export const renameStatus =
   (dispatch, getState) => {
     const state = getState();
     const { rows, current } = selectCaseStatus(state);
-    const row = rows.find((candidate) => candidate.id === id);
+    const row = rows.find(candidate => candidate.id === id);
     if (!row) return;
     const { status } = row.value;
-    const originalValues = new Set(Object.values(getCaseStatusMap(state.draft.original)).map((old) => old.value));
+    const originalValues = new Set(Object.values(getCaseStatusMap(state.draft.original)).map(old => old.value));
     if (originalValues.has(status.value)) {
-      dispatch(update(id, (old) => ({ ...old, label })));
+      dispatch(update(id, old => ({ ...old, label })));
       return;
     }
     const value = newStatusValue(
       label,
-      rows.filter((other) => other.id !== id).map((other) => other.value.status.value),
+      rows.filter(other => other.id !== id).map(other => other.value.status.value),
     );
     const renamed = (target: string) => (target === status.value ? value : target);
     dispatch(
       write(
-        rows.map((candidate) =>
+        rows.map(candidate =>
           candidate.id === id
-            ? { ...candidate, value: { key: value, status: { ...status, label, value, transitions: status.transitions } } }
+            ? {
+                ...candidate,
+                value: { key: value, status: { ...status, label, value, transitions: status.transitions } },
+              }
             : {
                 ...candidate,
                 value: {
@@ -144,9 +149,11 @@ export const addStatus = (): AppThunk => (dispatch, getState) => {
   const { rows } = selectCaseStatus(getState());
   const value = newStatusValue(
     'New status',
-    rows.map((row) => row.value.status.value),
+    rows.map(row => row.value.status.value),
   );
-  const [row] = toRows([{ key: value, status: { value, label: 'New status', color: 'blue', transitions: ['closed'] } }]);
+  const [row] = toRows([
+    { key: value, status: { value, label: 'New status', color: 'blue', transitions: ['closed'] } },
+  ]);
   dispatch(write([...rows, row]));
 };
 
@@ -154,19 +161,19 @@ export const removeStatus =
   (id: string): AppThunk =>
   (dispatch, getState) => {
     const { rows } = selectCaseStatus(getState());
-    const removed = rows.find((row) => row.id === id)?.value.status.value;
+    const removed = rows.find(row => row.id === id)?.value.status.value;
     dispatch(
       write(
         rows
-          .filter((candidate) => candidate.id !== id)
+          .filter(candidate => candidate.id !== id)
           // Nothing can move to a status that's gone
-          .map((candidate) => ({
+          .map(candidate => ({
             ...candidate,
             value: {
               ...candidate.value,
               status: {
                 ...candidate.value.status,
-                transitions: candidate.value.status.transitions.filter((target) => target !== removed),
+                transitions: candidate.value.status.transitions.filter(target => target !== removed),
               },
             },
           })),

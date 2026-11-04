@@ -38,7 +38,13 @@ import {
 import '@xyflow/react/dist/style.css';
 import { FastForward, Hourglass, Inbox, PhoneIncoming, Timer, Users } from 'lucide-react';
 import type { Condition, MoveOn, RoutingDesign, Workflow } from '@tech-matters/form-builder-shared/routing/model';
-import { describeMoveOn, describeOrderBy, describeWho, queueName, targetSkills } from '@tech-matters/form-builder-shared/routing/describe';
+import {
+  describeMoveOn,
+  describeOrderBy,
+  describeWho,
+  queueName,
+  targetSkills,
+} from '@tech-matters/form-builder-shared/routing/describe';
 import { ConditionChip, FamilyLegend } from './ConditionChip';
 
 type RuleData = {
@@ -81,7 +87,7 @@ const StartNode = () => (
 );
 
 const RuleNode = ({ data }: NodeProps<Node<RuleData>>) => {
-  const everyTask = data.when.length === 0 || data.when.some((group) => group.length === 0);
+  const everyTask = data.when.length === 0 || data.when.some(group => group.length === 0);
   return (
     <div className={`routing-node routing-rule ${data.selected ? 'selected' : ''}`}>
       <Handle type="target" position={Position.Top} />
@@ -127,7 +133,7 @@ const TargetNode = ({ data }: NodeProps<Node<TargetData>>) => {
       </span>
       {data.skills.length > 0 && (
         <span className="routing-node-chips">
-          {data.skills.map((skill) => (
+          {data.skills.map(skill => (
             <span key={skill} className="routing-chip skill">
               {skill}
             </span>
@@ -233,7 +239,7 @@ const Diagram = ({ design, workflow, selectedRuleId, onSelectRule }: Props) => {
       minZoom={0.1}
       onNodeClick={(_, node) => {
         const rule = workflow.rules.find(
-          (candidate) => candidate.id === node.id || candidate.targets.some((target) => target.id === node.id),
+          candidate => candidate.id === node.id || candidate.targets.some(target => target.id === node.id),
         );
         if (rule) onSelectRule(rule.id);
       }}

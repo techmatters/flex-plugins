@@ -24,7 +24,12 @@
  *
  * Helpline staff see and edit their own helplines' designs; importing is for Aselo staff.
  */
-import type { Condition, RoutingDesign, RoutingSummary, StoredRouting } from '@tech-matters/form-builder-shared/routing/model';
+import type {
+  Condition,
+  RoutingDesign,
+  RoutingSummary,
+  StoredRouting,
+} from '@tech-matters/form-builder-shared/routing/model';
 import { routingStatusOf } from '@tech-matters/form-builder-shared/routing/model';
 import { isDesignStatus } from '@tech-matters/form-builder-shared/designStatus';
 import type { ApiResponse, ApiUser } from './api';
@@ -35,14 +40,14 @@ const MAX_DESIGN_BYTES = 2_000_000;
 
 // Designs saved before rules had alternative groups of conditions: their conditions are one group
 const upgrade = (stored: StoredRouting): StoredRouting => {
-  stored.design.workflows.forEach((workflow) =>
-    workflow.rules.forEach((rule) => {
+  stored.design.workflows.forEach(workflow =>
+    workflow.rules.forEach(rule => {
       const when = rule.when as unknown[];
       if (when.length > 0 && !Array.isArray(when[0])) rule.when = [when as Condition[]];
     }),
   );
   // Designs saved before they were marked imported: imported ones have their workflows' templates
-  if (stored.design.imported === undefined && stored.design.workflows.some((workflow) => workflow.template)) {
+  if (stored.design.imported === undefined && stored.design.workflows.some(workflow => workflow.template)) {
     stored.design.imported = true;
   }
   return stored;
@@ -81,9 +86,9 @@ export const handleRoutingRequest = async (
 ): Promise<ApiResponse> => {
   if (!store) return fail(501, "The routing designer isn't set up here.");
   if (method === 'GET' && path === '/api/routing') {
-    const codes = (await store.list()).filter((code) => canOpen(user, code)).sort();
+    const codes = (await store.list()).filter(code => canOpen(user, code)).sort();
     const found = await Promise.all(
-      codes.map(async (code) => {
+      codes.map(async code => {
         const stored = await store.get(code);
         return stored && upgrade(stored);
       }),
@@ -91,14 +96,16 @@ export const handleRoutingRequest = async (
     return ok(
       found
         .filter((stored): stored is StoredRouting => Boolean(stored))
-        .map((stored): RoutingSummary => ({
-          code: stored.code,
-          meta: stored.meta,
-          status: routingStatusOf(stored.design),
-          isNew: !stored.design.imported,
-          workflows: stored.design.workflows.length,
-          queues: stored.design.queues.length,
-        })),
+        .map(
+          (stored): RoutingSummary => ({
+            code: stored.code,
+            meta: stored.meta,
+            status: routingStatusOf(stored.design),
+            isNew: !stored.design.imported,
+            workflows: stored.design.workflows.length,
+            queues: stored.design.queues.length,
+          }),
+        ),
     );
   }
   const match = path.match(/^\/api\/routing\/([^/]+)(\/import)?$/);

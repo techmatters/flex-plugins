@@ -23,7 +23,7 @@ const ALLOWED_TAGS = new Set(['A', 'B', 'STRONG', 'I', 'EM', 'U', 'BR', 'SPAN', 
 const SAFE_LINK = /^(https?:|mailto:)/i;
 
 const clean = (source: Node, target: Node, doc: Document) => {
-  source.childNodes.forEach((child) => {
+  source.childNodes.forEach(child => {
     if (child.nodeType === Node.TEXT_NODE) {
       target.appendChild(doc.createTextNode(child.textContent ?? ''));
       return;

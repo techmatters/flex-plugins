@@ -46,15 +46,12 @@ export type SnapshotSource = {
 // GitHub's tarballs put everything under one folder (techmatters-flex-plugins-<sha>/)
 const isWanted = (entryPath: string) => {
   const inRepo = entryPath.split('/').slice(1).join('/');
-  return SNAPSHOT_DIRS.some((dir) => inRepo === dir || inRepo.startsWith(`${dir}/`));
+  return SNAPSHOT_DIRS.some(dir => inRepo === dir || inRepo.startsWith(`${dir}/`));
 };
 
 export const extractSnapshot = async (tarball: Buffer, targetDir: string) => {
   await fs.mkdir(targetDir, { recursive: true });
-  await pipeline(
-    Readable.from(tarball),
-    tar.x({ cwd: targetDir, strip: 1, filter: (entryPath) => isWanted(entryPath) }),
-  );
+  await pipeline(Readable.from(tarball), tar.x({ cwd: targetDir, strip: 1, filter: entryPath => isWanted(entryPath) }));
 };
 
 const snapshotOf = (sha: string, repoRoot: string): Snapshot => ({
@@ -94,7 +91,10 @@ export class RepoSnapshots {
 
     const repoRoot = path.join(this.rootDir, sha);
     const complete = path.join(repoRoot, '.complete');
-    const alreadyThere = await fs.stat(complete).then(() => true, () => false);
+    const alreadyThere = await fs.stat(complete).then(
+      () => true,
+      () => false,
+    );
     if (!alreadyThere) {
       await fs.rm(repoRoot, { recursive: true, force: true });
       await extractSnapshot(await this.source.tarball(sha), repoRoot);

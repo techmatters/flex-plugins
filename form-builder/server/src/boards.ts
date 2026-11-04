@@ -52,7 +52,7 @@ export const summaryOf = ({ code, id, meta, content }: Board): BoardSummary => (
 });
 
 const isArrayOfObjects = (value: unknown) =>
-  Array.isArray(value) && value.every((item) => typeof item === 'object' && item !== null);
+  Array.isArray(value) && value.every(item => typeof item === 'object' && item !== null);
 
 // Only the shape that matters to the API; the canvas owns the details
 export const isBoardContent = (value: unknown): value is BoardContent => {
@@ -65,9 +65,9 @@ export const isBoardContent = (value: unknown): value is BoardContent => {
     (candidate.status === undefined || isDesignStatus(candidate.status)) &&
     (candidate.flow === undefined || (typeof candidate.flow === 'object' && candidate.flow !== null)) &&
     (candidate.ignoredChecks === undefined ||
-      (Array.isArray(candidate.ignoredChecks) && candidate.ignoredChecks.every((key) => typeof key === 'string'))) &&
+      (Array.isArray(candidate.ignoredChecks) && candidate.ignoredChecks.every(key => typeof key === 'string'))) &&
     (candidate.testedPaths === undefined || isArrayOfObjects(candidate.testedPaths)) &&
-    ['frames', 'objects', 'connections', 'stickies'].every((key) =>
+    ['frames', 'objects', 'connections', 'stickies'].every(key =>
       isArrayOfObjects(candidate[key as keyof BoardContent]),
     )
   );
@@ -102,9 +102,9 @@ export class LocalBoardStore implements BoardStore {
   async list(): Promise<BoardSummary[]> {
     const summaries: BoardSummary[] = [];
     const codes = await fs.readdir(this.rootDir, { withFileTypes: true }).catch(() => []);
-    for (const codeEntry of codes.filter((entry) => entry.isDirectory())) {
+    for (const codeEntry of codes.filter(entry => entry.isDirectory())) {
       const files = await fs.readdir(path.join(this.rootDir, codeEntry.name)).catch(() => []);
-      for (const fileName of files.filter((name) => name.endsWith('.json'))) {
+      for (const fileName of files.filter(name => name.endsWith('.json'))) {
         const id = fileName.slice(0, -'.json'.length);
         if (!isValidBoardKey(codeEntry.name, id)) continue;
         const board = await this.get(codeEntry.name, id);

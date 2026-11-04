@@ -180,7 +180,7 @@ export const newChatbotId = (prefix: string) => {
 
 // "pre_survey" -> "Pre-survey", "post_survey_yes" -> "Post-survey yes"
 export const botLabel = (name: string) => {
-  const words = name.replace(/_/g, ' ').replace(/\b(pre|post) survey\b/i, (found) => found.replace(' ', '-'));
+  const words = name.replace(/_/g, ' ').replace(/\b(pre|post) survey\b/i, found => found.replace(' ', '-'));
   return words.charAt(0).toUpperCase() + words.slice(1);
 };
 
@@ -252,7 +252,7 @@ export const BUILTIN_TYPES: { name: string; label: string; saves: string; exampl
   },
 ];
 
-export const builtinInfo = (name: string) => BUILTIN_TYPES.find((type) => type.name === name);
+export const builtinInfo = (name: string) => BUILTIN_TYPES.find(type => type.name === name);
 export const builtinLabel = (name: string) => builtinInfo(name)?.label ?? name.replace('AMAZON.', '');
 
 /**

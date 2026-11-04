@@ -285,8 +285,8 @@ class Parser {
       lines.push(line);
     }
     if (!indented) return `${lines.join('\n')}\n`;
-    const indent = Math.min(...lines.filter((line) => line.trim()).map((line) => line.match(/^\s*/)![0].length));
-    return `${lines.map((line) => line.slice(indent)).join('\n')}\n`;
+    const indent = Math.min(...lines.filter(line => line.trim()).map(line => line.match(/^\s*/)![0].length));
+    return `${lines.map(line => line.slice(indent)).join('\n')}\n`;
   }
 
   // An expression we don't read, as written: up to the end of the line (or a , } ] at depth 0)
@@ -340,4 +340,4 @@ export const parseTemplate = (text: string): HclValue => {
 
 // The locals of a Terragrunt file, merged across its locals blocks
 export const localsOf = (body: HclBody): HclObject =>
-  Object.assign({}, ...body.blocks.filter((block) => block.type === 'locals').map((block) => block.body.attributes));
+  Object.assign({}, ...body.blocks.filter(block => block.type === 'locals').map(block => block.body.attributes));

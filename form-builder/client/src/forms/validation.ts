@@ -52,17 +52,15 @@ const checkOptions = (item: FormItemJsonDefinition, options: SelectOption[], tab
   if (realOptions.length === 0) {
     problems.push(`${describeField(item, tab)} needs at least one answer to choose from.`);
   }
-  if (realOptions.some((option) => String(option.label ?? '').trim() === '')) {
+  if (realOptions.some(option => String(option.label ?? '').trim() === '')) {
     problems.push(`${describeField(item, tab)} has an answer with no text.`);
   }
   // The blank first answer may share its value with a real one: non-required dropdowns start on
   // a blank answer saved as "Unknown", and can also offer "Unknown" as an answer
-  const values = realOptions.map((option) => String(option.value));
+  const values = realOptions.map(option => String(option.value));
   const duplicates = [...new Set(values.filter((value, index) => values.indexOf(value) !== index))];
   if (duplicates.length > 0) {
-    problems.push(
-      `${describeField(item, tab)} has the same answer more than once: ${duplicates.join(', ')}.`,
-    );
+    problems.push(`${describeField(item, tab)} has the same answer more than once: ${duplicates.join(', ')}.`);
   }
   return problems;
 };
@@ -72,7 +70,7 @@ const allValuesOf = (item: FormItemJsonDefinition, referenceData: Record<string,
   const options = resolveOptions<SelectOption[] | DependentOptions>(item, referenceData);
   if (!options) return [];
   const lists = Array.isArray(options) ? [options] : Object.values(options);
-  return lists.flat().map((option) => String(option.value));
+  return lists.flat().map(option => String(option.value));
 };
 
 const checkLinkedDropdown = (
@@ -103,7 +101,7 @@ const checkLinkedDropdown = (
   }
 
   Object.entries(lists).forEach(([key, options]) => {
-    const values = options.map((option) => String(option.value));
+    const values = options.map(option => String(option.value));
     if (new Set(values).size !== values.length) {
       issues.push({
         severity: 'error',
@@ -111,7 +109,7 @@ const checkLinkedDropdown = (
         fieldName: item.name,
       });
     }
-    if (options.some((option) => !String(option.label ?? '').trim())) {
+    if (options.some(option => !String(option.label ?? '').trim())) {
       issues.push({
         severity: 'error',
         message: `${describeField(item, tab)} has an answer with no text under “${key}”.`,
@@ -120,49 +118,51 @@ const checkLinkedDropdown = (
     }
   });
 
-  const parent = form.find((other) => other.name === item.dependsOn);
+  const parent = form.find(other => other.name === item.dependsOn);
   if (!parent) return issues;
   const parentValues = allValuesOf(parent, referenceData);
   const parentValueCounts = new Map<string, number>();
-  parentValues.forEach((value) => parentValueCounts.set(value, (parentValueCounts.get(value) ?? 0) + 1));
+  parentValues.forEach(value => parentValueCounts.set(value, (parentValueCounts.get(value) ?? 0) + 1));
 
-  const unused = Object.keys(lists).filter((key) => !parentValueCounts.has(key));
+  const unused = Object.keys(lists).filter(key => !parentValueCounts.has(key));
   if (unused.length > 0) {
     issues.push({
       severity: 'warning',
-      message: `${describeField(item, tab)} has answers filed under ${unused.length} value(s) that aren't answers of ${describeField(parent)} (e.g. “${unused[0]}”), so counselors never see them.`,
+      message: `${describeField(item, tab)} has answers filed under ${
+        unused.length
+      } value(s) that aren't answers of ${describeField(parent)} (e.g. “${unused[0]}”), so counselors never see them.`,
       fieldName: item.name,
     });
   }
-  const shared = Object.keys(lists).filter((key) => (parentValueCounts.get(key) ?? 0) > 1);
+  const shared = Object.keys(lists).filter(key => (parentValueCounts.get(key) ?? 0) > 1);
   if (shared.length > 0) {
     issues.push({
       severity: 'warning',
-      message: `${shared.length} answer(s) of ${describeField(parent)} share a name with another (e.g. “${shared[0]}”), so they all show the same ${describeField(item, tab)} answers. Re-importing the list from a spreadsheet fixes this.`,
+      message: `${shared.length} answer(s) of ${describeField(parent)} share a name with another (e.g. “${
+        shared[0]
+      }”), so they all show the same ${describeField(
+        item,
+        tab,
+      )} answers. Re-importing the list from a spreadsheet fixes this.`,
       fieldName: item.name,
     });
   }
   return issues;
 };
 
-const checkForm = (
-  form: FormItemJsonDefinition[],
-  tab: FormTarget,
-  files: DefinitionFileMap,
-): ValidationIssue[] => {
+const checkForm = (form: FormItemJsonDefinition[], tab: FormTarget, files: DefinitionFileMap): ValidationIssue[] => {
   const referenceData = getReferenceData(files);
   const issues: ValidationIssue[] = [];
-  const error = (message: string, fieldName?: string) =>
-    issues.push({ severity: 'error', message, fieldName });
+  const error = (message: string, fieldName?: string) => issues.push({ severity: 'error', message, fieldName });
 
-  const names = form.map((item) => item.name);
-  form.forEach((item) => {
+  const names = form.map(item => item.name);
+  form.forEach(item => {
     if (!item.name) {
       error(`A field in ${tab.title} has no name.`);
     } else if (!FIELD_NAME_PATTERN.test(item.name)) {
       error(`Field name “${item.name}” can only use letters and numbers.`, item.name);
     }
-    if (names.filter((name) => name === item.name).length > 1) {
+    if (names.filter(name => name === item.name).length > 1) {
       error(`More than one field is saved as “${item.name}”. Field names must be unique.`, item.name);
     }
     if (!String(item.label ?? '').trim() && item.type !== 'custom-contact-component') {
@@ -173,32 +173,27 @@ const checkForm = (
       if (!options) {
         error(`The answers for ${describeField(item, tab)} could not be found.`, item.name);
       } else {
-        checkOptions(item, options, tab).forEach((message) => error(message, item.name));
+        checkOptions(item, options, tab).forEach(message => error(message, item.name));
       }
     }
     if (item.type === 'dependent-select') {
       if (!names.includes(item.dependsOn)) {
-        error(
-          `${describeField(item, tab)} depends on “${item.dependsOn}”, which isn't in this form.`,
-          item.name,
-        );
+        error(`${describeField(item, tab)} depends on “${item.dependsOn}”, which isn't in this form.`, item.name);
       }
-      checkLinkedDropdown(item, form, referenceData, tab).forEach((issue) => issues.push(issue));
+      checkLinkedDropdown(item, form, referenceData, tab).forEach(issue => issues.push(issue));
     }
   });
 
   // The Aselo specification, using the package's own validator
-  const expandedForm = form.map((item) => {
+  const expandedForm = form.map(item => {
     const options = resolveOptions(item, referenceData);
     return (options ? { ...item, options } : item) as FormDefinition[number];
   });
   const specification = getFormSpecification(tab);
-  const report = specification
-    ? validateFormDefinition(specification, expandedForm)
-    : { issues: [], itemReports: {} };
-  report.issues.forEach((message) => error(message));
+  const report = specification ? validateFormDefinition(specification, expandedForm) : { issues: [], itemReports: {} };
+  report.issues.forEach(message => error(message));
   Object.entries(report.itemReports).forEach(([fieldName, itemReport]) =>
-    itemReport.issues.forEach((message) =>
+    itemReport.issues.forEach(message =>
       error(
         message === 'Required form item not found'
           ? `Aselo requires a field saved as “${fieldName}” in ${tab.title}.`
@@ -211,11 +206,13 @@ const checkForm = (
   // Reporting config pointing at fields that no longer exist. Only Aselo staff can fix this,
   // so it doesn't block export - reviewers update the Insights mapping in the same PR.
   const oneToOne = files[ONE_TO_ONE_FILE] as OneToOneConfigSpec | undefined;
-  ((oneToOne?.[tab.insights.group] as Record<string, { name: string; insights: string[] }[]> | undefined)?.[
-    tab.insights.key
-  ] ?? [])
-    .filter((spec) => !names.includes(spec.name))
-    .forEach((spec) =>
+  (
+    (oneToOne?.[tab.insights.group] as Record<string, { name: string; insights: string[] }[]> | undefined)?.[
+      tab.insights.key
+    ] ?? []
+  )
+    .filter(spec => !names.includes(spec.name))
+    .forEach(spec =>
       issues.push({
         severity: 'warning',
         message: `Reporting still expects a field saved as “${spec.name}” in ${tab.title} (Insights column “${spec.insights[1]}”). Aselo staff will need to update the reporting setup.`,
@@ -224,9 +221,7 @@ const checkForm = (
     );
 
   // A problem found on several fields (e.g. a duplicate name) is only reported once
-  return issues.filter(
-    (issue, index) => issues.findIndex((other) => other.message === issue.message) === index,
-  );
+  return issues.filter((issue, index) => issues.findIndex(other => other.message === issue.message) === index);
 };
 
 export const validateContactTab = (
@@ -240,7 +235,7 @@ export const validateContactTab = (
   const draftIssues = checkForm(draftForm, tab, draftFiles);
   const originalForm = getForm(originalFiles, tab.filePath);
   const originalMessages = new Set(
-    originalForm ? checkForm(originalForm, tab, originalFiles).map((issue) => issue.message) : [],
+    originalForm ? checkForm(originalForm, tab, originalFiles).map(issue => issue.message) : [],
   );
 
   return draftIssues.map(

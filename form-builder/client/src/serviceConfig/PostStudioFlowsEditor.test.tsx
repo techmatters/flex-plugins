@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 import { afterEach, beforeAll, describe, expect, test } from '@jest/globals';
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { Provider } from 'react-redux';
@@ -65,8 +64,11 @@ const renderEditor = async () => {
 };
 
 const postStudioFlows = (file: string) =>
-  (store.getState().draft.files[`service-configuration/${file}.json`] as { attributes?: { postStudioFlows?: object } } | undefined)?.attributes
-    ?.postStudioFlows;
+  (
+    store.getState().draft.files[`service-configuration/${file}.json`] as
+      | { attributes?: { postStudioFlows?: object } }
+      | undefined
+  )?.attributes?.postStudioFlows;
 
 describe('post-call surveys (postStudioFlows)', () => {
   test("USNM's are listed; one is added for staging, changed and removed", async () => {
@@ -78,7 +80,7 @@ describe('post-call surveys (postStudioFlows)', () => {
     // Only post_call_survey_* flows (not USNM's plain post_call_survey)
     const flow = section.getByRole('combobox', { name: 'Survey flow' }) as HTMLSelectElement;
     await waitFor(() => expect(flow.options.length).toBeGreaterThan(1));
-    expect([...flow.options].map((option) => option.textContent)).toEqual([
+    expect([...flow.options].map(option => option.textContent)).toEqual([
       'Choose…',
       'post_call_survey_en',
       'post_call_survey_es',
@@ -86,7 +88,7 @@ describe('post-call surveys (postStudioFlows)', () => {
     ]);
     // Both kinds of trigger
     expect(
-      [...(section.getByRole('combobox', { name: 'Survey trigger' }) as HTMLSelectElement).options].map((o) => o.value),
+      [...(section.getByRole('combobox', { name: 'Survey trigger' }) as HTMLSelectElement).options].map(o => o.value),
     ).toEqual(['inProgressCall', 'rest']);
 
     // Already in common.json for that queue

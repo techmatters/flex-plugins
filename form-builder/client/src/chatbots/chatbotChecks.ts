@@ -19,7 +19,13 @@
  * refuse or can't work; warnings are what a contact would likely trip over.
  */
 import type { ChatbotDesign, ChatbotQuestion } from '@tech-matters/form-builder-shared/chatbots/model';
-import { answerTypeOf, botLabel, builtinInfo, fillsInContact, patternProblem } from '@tech-matters/form-builder-shared/chatbots/model';
+import {
+  answerTypeOf,
+  botLabel,
+  builtinInfo,
+  fillsInContact,
+  patternProblem,
+} from '@tech-matters/form-builder-shared/chatbots/model';
 import type { ContactForms } from '@tech-matters/form-builder-shared/chatbots/formMappings';
 import { findFormField, unmatchedAnswers } from '@tech-matters/form-builder-shared/chatbots/formMappings';
 
@@ -56,7 +62,7 @@ export const chatbotChecks = (design: ChatbotDesign, forms?: ContactForms): Chat
   // Answers asked before the counselor, for the contact form check
   const askedSlots = new Map<string, { botId: string; questionId: string; type?: ReturnType<typeof answerTypeOf> }>();
 
-  design.bots.forEach((bot) => {
+  design.bots.forEach(bot => {
     const botName = `${botLabel(bot.name)} (${bot.language})`;
     if (botNames.has(`${bot.language}/${bot.name}`)) {
       issues.push({
@@ -75,7 +81,7 @@ export const chatbotChecks = (design: ChatbotDesign, forms?: ContactForms): Chat
         botId: bot.id,
       });
     }
-    bot.intents.forEach((intent) => {
+    bot.intents.forEach(intent => {
       const otherBot = intentNames.get(`${bot.language}/${intent.name}`);
       if (otherBot && otherBot !== bot.id) {
         issues.push({
@@ -170,7 +176,7 @@ export const chatbotChecks = (design: ChatbotDesign, forms?: ContactForms): Chat
   });
 
   Object.entries(design.answerTypes).forEach(([language, types]) =>
-    Object.values(types).forEach((type) => {
+    Object.values(types).forEach(type => {
       if (type.builtin) return;
       const at = { answerType: { language, name: type.name } };
       if (!LEX_NAME.test(type.name)) {
@@ -210,8 +216,8 @@ export const chatbotChecks = (design: ChatbotDesign, forms?: ContactForms): Chat
       }
       // The same words for two answers: Lex can't tell which one was meant
       const meaning = new Map<string, string>();
-      type.values.forEach((option) => {
-        [option.value, ...option.synonyms].forEach((said) => {
+      type.values.forEach(option => {
+        [option.value, ...option.synonyms].forEach(said => {
           const key = said.trim().toLowerCase();
           if (!key) return;
           const other = meaning.get(key);
@@ -246,10 +252,12 @@ export const chatbotChecks = (design: ChatbotDesign, forms?: ContactForms): Chat
         issues.push({
           key: `mapping-${slot}-unused`,
           severity: 'warning',
-          message: `Contact form: “${slot}” fills in ${groups.flat().join(', ')}, but no chatbot asks it before the counselor.`,
+          message: `Contact form: “${slot}” fills in ${groups
+            .flat()
+            .join(', ')}, but no chatbot asks it before the counselor.`,
         });
       }
-      groups.flat().forEach((target) => {
+      groups.flat().forEach(target => {
         if (!findFormField(forms, target)) {
           issues.push({
             key: `mapping-${slot}-${target}-missing`,
@@ -271,7 +279,9 @@ export const chatbotChecks = (design: ChatbotDesign, forms?: ContactForms): Chat
           issues.push({
             key: `mapping-${slot}-${target}-unmatched`,
             severity: 'warning',
-            message: `Contact form: ${target} has no option for ${unmatched.map((value) => `“${value}”`).join(', ')} (answers to “${slot}”), so they're saved as Unknown.`,
+            message: `Contact form: ${target} has no option for ${unmatched
+              .map(value => `“${value}”`)
+              .join(', ')} (answers to “${slot}”), so they're saved as Unknown.`,
             ...where,
           });
         }
@@ -288,7 +298,7 @@ export const chatbotChecks = (design: ChatbotDesign, forms?: ContactForms): Chat
   }
 
   return [
-    ...issues.filter((issue) => issue.severity === 'error'),
-    ...issues.filter((issue) => issue.severity === 'warning'),
+    ...issues.filter(issue => issue.severity === 'error'),
+    ...issues.filter(issue => issue.severity === 'warning'),
   ];
 };

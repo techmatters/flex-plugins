@@ -41,7 +41,7 @@ export type Row<T> = { id: string; value: T };
 
 let nextRowId = 0;
 export const toRows = <T,>(values: T[]): Row<T>[] =>
-  values.map((value) => {
+  values.map(value => {
     nextRowId += 1;
     return { id: `row-${nextRowId}`, value };
   });
@@ -54,27 +54,15 @@ export const useRows = <T,>(initial: T[], write: (values: T[]) => void) => {
   const [rows, setRows] = useState(() => toRows(initial));
   const commit = (next: Row<T>[]) => {
     setRows(next);
-    write(next.map((row) => row.value));
+    write(next.map(row => row.value));
   };
   return { rows, commit };
 };
 
-const SortableRow = ({
-  id,
-  label,
-  children,
-}: {
-  id: string;
-  label: string;
-  children: React.ReactNode;
-}) => {
+const SortableRow = ({ id, label, children }: { id: string; label: string; children: React.ReactNode }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
   return (
-    <li
-      ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition }}
-      className="sortable-row"
-    >
+    <li ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} className="sortable-row">
       <button
         type="button"
         className="drag-handle"
@@ -103,13 +91,13 @@ export const SortableRows = <T,>({ rows, labelOf, onReorder, renderRow }: Props<
   );
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
-    const oldIndex = rows.findIndex((row) => row.id === active.id);
-    const newIndex = rows.findIndex((row) => row.id === over.id);
+    const oldIndex = rows.findIndex(row => row.id === active.id);
+    const newIndex = rows.findIndex(row => row.id === over.id);
     onReorder(arrayMove(rows, oldIndex, newIndex));
   };
   return (
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={rows.map((row) => row.id)} strategy={verticalListSortingStrategy}>
+      <SortableContext items={rows.map(row => row.id)} strategy={verticalListSortingStrategy}>
         <ul className="sortable-rows">
           {rows.map((row, index) => (
             <SortableRow key={row.id} id={row.id} label={labelOf(row.value)}>

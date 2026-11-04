@@ -34,14 +34,14 @@ export const formDefinitionsPath = (code: string, version: string) =>
 export const normaliseMapping = (value: unknown): string[][] => {
   const entries = Array.isArray(value) ? value : [value];
   return entries
-    .map((entry) => (Array.isArray(entry) ? entry : [entry]).filter((item): item is string => typeof item === 'string'))
-    .filter((group) => group.length > 0);
+    .map(entry => (Array.isArray(entry) ? entry : [entry]).filter((item): item is string => typeof item === 'string'))
+    .filter(group => group.length > 0);
 };
 
 // The simplest JSON for it: "a", ["a", "b"], or [["a", "b"], ["c"]] when a field has alternatives
 export const mappingJson = (groups: string[][]): unknown => {
-  if (groups.every((group) => group.length === 1)) {
-    const flat = groups.map((group) => group[0]);
+  if (groups.every(group => group.length === 1)) {
+    const flat = groups.map(group => group[0]);
     return flat.length === 1 ? flat[0] : flat;
   }
   return groups;
@@ -65,8 +65,8 @@ export const setFormTargets = (design: ChatbotDesign, slot: string, groups: stri
 export const renameFormTargets = (design: ChatbotDesign, from: string, to: string): ChatbotDesign => {
   const groups = design.formMappings?.[from];
   if (!groups || from === to || design.formMappings?.[to]) return design;
-  const stillUsed = design.bots.some((bot) =>
-    bot.intents.some((intent) => intent.questions.some((question) => question.slot === from)),
+  const stillUsed = design.bots.some(bot =>
+    bot.intents.some(intent => intent.questions.some(question => question.slot === from)),
   );
   if (stillUsed) return design;
   return setFormTargets(setFormTargets(design, from, []), to, groups);
@@ -106,17 +106,17 @@ export const contactFormsOf = (
     key,
     label,
     fields: (Array.isArray(files[file]) ? (files[file] as Record<string, unknown>[]) : [])
-      .filter((item) => typeof item.name === 'string' && !SKIPPED_TYPES.includes(String(item.type)))
-      .map((item) => ({
+      .filter(item => typeof item.name === 'string' && !SKIPPED_TYPES.includes(String(item.type)))
+      .map(item => ({
         name: String(item.name),
         label: typeof item.label === 'string' && item.label.trim() ? item.label : String(item.name),
         type: String(item.type),
         ...(Array.isArray(item.options)
-          ? { options: (item.options as { value?: unknown }[]).map((option) => String(option.value ?? '')) }
+          ? { options: (item.options as { value?: unknown }[]).map(option => String(option.value ?? '')) }
           : {}),
         ...(typeof item.unknownOption === 'string' ? { unknownOption: item.unknownOption } : {}),
       })),
-  })).filter((tab) => tab.fields.length > 0),
+  })).filter(tab => tab.fields.length > 0),
   survey: readSurveyMappings(files[PREPOPULATE_FILE]),
   ...(featureFlags && 'use_prepopulate_mappings' in featureFlags
     ? { inUse: featureFlags.use_prepopulate_mappings === true }
@@ -126,8 +126,8 @@ export const contactFormsOf = (
 
 export const findFormField = (forms: ContactForms, target: string) => {
   const [tabKey, name] = target.split('.');
-  const tab = forms.tabs.find((candidate) => candidate.key === tabKey);
-  const field = tab?.fields.find((candidate) => candidate.name === name);
+  const tab = forms.tabs.find(candidate => candidate.key === tabKey);
+  const field = tab?.fields.find(candidate => candidate.name === name);
   return tab && field ? { tab, field } : undefined;
 };
 
@@ -149,6 +149,6 @@ export const unmatchedAnswers = (
   const found = findFormField(forms, target);
   if (!found?.field.options || slot === 'age') return [];
   if (!type || type.builtin || type.pattern !== undefined || type.values.length === 0) return 'any';
-  const options = new Set(found.field.options.map((option) => option.toLowerCase()));
-  return type.values.map((option) => option.value).filter((value) => !options.has(value.toLowerCase()));
+  const options = new Set(found.field.options.map(option => option.toLowerCase()));
+  return type.values.map(option => option.value).filter(value => !options.has(value.toLowerCase()));
 };

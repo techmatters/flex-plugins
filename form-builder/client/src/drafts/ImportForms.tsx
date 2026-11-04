@@ -33,7 +33,7 @@ import {
 
 export const ImportForms = () => {
   const dispatch = useAppDispatch();
-  const helplineCodes = useAppSelector((state) => state.session.helplines).map((helpline) => helpline.code);
+  const helplineCodes = useAppSelector(state => state.session.helplines).map(helpline => helpline.code);
   const { code, branch, versions, imported, error, working } = useAppSelector(selectImportForms);
   // Stable, as BranchPicker loads the branches when it changes
   const loadBranches = useCallback(() => dispatch(loadImportBranches()), [dispatch]);
@@ -58,20 +58,16 @@ export const ImportForms = () => {
         <select
           value={code}
           aria-label="Helpline to import"
-          onChange={(e) => dispatch(importChosen({ code: e.target.value }))}
+          onChange={e => dispatch(importChosen({ code: e.target.value }))}
         >
           <option value="">Choose a helpline…</option>
-          {helplineCodes.map((candidate) => (
+          {helplineCodes.map(candidate => (
             <option key={candidate} value={candidate}>
               {candidate.toUpperCase()}
             </option>
           ))}
         </select>
-        <BranchPicker
-          load={loadBranches}
-          value={branch}
-          onChange={(next) => dispatch(importChosen({ branch: next }))}
-        />
+        <BranchPicker load={loadBranches} value={branch} onChange={next => dispatch(importChosen({ branch: next }))} />
         <button
           type="button"
           className="secondary-button"
@@ -89,7 +85,7 @@ export const ImportForms = () => {
             {code.toUpperCase()} in <code>{branch || 'master'}</code>
           </h4>
           <ul className="flows-import-flows">
-            {versions.map((version) => (
+            {versions.map(version => (
               <li key={version}>
                 <strong>{version}</strong>{' '}
                 {imported.includes(version) ? (

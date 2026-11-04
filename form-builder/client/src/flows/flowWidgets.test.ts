@@ -89,7 +89,7 @@ describe('menus, repeats and chatbots', () => {
       { event: 'timeout', next: 'play_message_voice_en_again' },
     ]);
     // No split of its own: the Decision after it tells the options apart
-    expect(rest.map((state) => state.name)).toEqual(['split_service', 'play_message_voice_en_again']);
+    expect(rest.map(state => state.name)).toEqual(['split_service', 'play_message_voice_en_again']);
   });
 
   test('a repeat is a counter and a split on it: back round until it has repeated enough', () => {
@@ -114,7 +114,7 @@ describe('menus, repeats and chatbots', () => {
       ],
     );
     const { flow, todo } = toStudioFlow(content, content.frames[0]);
-    const state = (name: string) => flow.states.find((candidate) => candidate.name === name);
+    const state = (name: string) => flow.states.find(candidate => candidate.name === name);
     expect(state('set_var_en_service_counter')).toMatchObject({
       type: 'set-variables',
       transitions: [{ event: 'next', next: 'split_en_service' }],
@@ -143,12 +143,12 @@ describe('menus, repeats and chatbots', () => {
     });
     expect(todo.join('\n')).not.toMatch(/Repeat|counter/);
     // The menu goes round through the counter, so it doesn't repeat for ever
-    expect(boardChecks(content).map((issue) => issue.message)).not.toContainEqual(
+    expect(boardChecks(content).map(issue => issue.message)).not.toContainEqual(
       expect.stringContaining('can repeat for ever'),
     );
 
-    const unset = { ...content, objects: content.objects.map((o) => (o.id === 'loop' ? { ...o, settings: {} } : o)) };
-    expect(boardChecks(unset).map((issue) => issue.message)).toContainEqual(
+    const unset = { ...content, objects: content.objects.map(o => (o.id === 'loop' ? { ...o, settings: {} } : o)) };
+    expect(boardChecks(unset).map(issue => issue.message)).toContainEqual(
       expect.stringContaining('set how many times it repeats.'),
     );
   });
@@ -244,9 +244,7 @@ describe('menus, repeats and chatbots', () => {
         index === 0 ? { ...candidate, endedExits: [...(candidate.endedExits ?? []), 'callFailure'] } : candidate,
       ),
     };
-    expect(boardChecks(marked).map((issue) => issue.message)).not.toContainEqual(
-      expect.stringContaining('callFailure'),
-    );
+    expect(boardChecks(marked).map(issue => issue.message)).not.toContainEqual(expect.stringContaining('callFailure'));
   });
 
   test('send to queue: what callers hear while waiting, and for how long', async () => {
@@ -282,7 +280,7 @@ describe('menus, repeats and chatbots', () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const imported = boards
       .flatMap(({ content }) => content.objects)
-      .find((candidate) => candidate.studioName === 'send_to_queue_en_std');
+      .find(candidate => candidate.studioName === 'send_to_queue_en_std');
     expect(imported?.settings).toMatchObject({
       waitMusic: 'address',
       waitUrl: '${flow_vars.custom_functions_url}/postQueueMonitor?Language=english',
@@ -333,9 +331,9 @@ describe('menus, repeats and chatbots', () => {
 
   test('imported Send to Flex widgets keep their workflow and task channel as settings', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
-    const queues = boards.flatMap(({ content }) => content.objects.filter((o) => o.type === 'sendToQueue'));
+    const queues = boards.flatMap(({ content }) => content.objects.filter(o => o.type === 'sendToQueue'));
     expect(queues.length).toBeGreaterThan(0);
-    expect(queues.every((queue) => queue.settings?.workflow && queue.settings?.taskChannel)).toBe(true);
+    expect(queues.every(queue => queue.settings?.workflow && queue.settings?.taskChannel)).toBe(true);
   });
 
   test('send message and close: a new one calls sendMessageAndRunJanitor with its message from flow_vars', () => {
@@ -371,9 +369,9 @@ describe('menus, repeats and chatbots', () => {
   test("imported ones (usnm's, form-encoded parameters) keep their message and author; changes go where they're kept", async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const sms = boards.find(({ content }) =>
-      content.objects.some((candidate) => candidate.studioName === 'f_sendMessageAndRunJanitor_voip_blocked'),
+      content.objects.some(candidate => candidate.studioName === 'f_sendMessageAndRunJanitor_voip_blocked'),
     )!.content;
-    const close = sms.objects.find((candidate) => candidate.studioName === 'f_sendMessageAndRunJanitor_voip_blocked')!;
+    const close = sms.objects.find(candidate => candidate.studioName === 'f_sendMessageAndRunJanitor_voip_blocked')!;
     expect(close.type).toBe('sendMessageAndClose');
     expect(close.settings?.from).toBeDefined();
     expect(close.message?.script).toBeTruthy();
@@ -381,7 +379,7 @@ describe('menus, repeats and chatbots', () => {
     // The text is in its flow_vars; the author is written in the widget
     const changed = {
       ...sms,
-      objects: sms.objects.map((candidate) =>
+      objects: sms.objects.map(candidate =>
         candidate.id === close.id
           ? { ...candidate, message: { ...candidate.message, script: 'New text' }, settings: { from: 'Aselo' } }
           : candidate,
@@ -391,7 +389,7 @@ describe('menus, repeats and chatbots', () => {
     expect(flowVars).toContainEqual(
       expect.objectContaining({ name: 'send_message_sms_voip_blocked', value: 'New text' }),
     );
-    const state = flow.states.find((candidate) => candidate.name === 'f_sendMessageAndRunJanitor_voip_blocked')!;
+    const state = flow.states.find(candidate => candidate.name === 'f_sendMessageAndRunJanitor_voip_blocked')!;
     expect(janitorValuesOf(state.properties)).toMatchObject({
       message: '${flow_vars.send_message_sms_voip_blocked}',
       from: 'Aselo',
@@ -402,7 +400,7 @@ describe('menus, repeats and chatbots', () => {
       const { boards: theirs } = await importHelpline(helplinesDir, code).catch(() => ({ boards: [] }));
       found += theirs
         .flatMap(({ content }) => content.objects)
-        .filter((candidate) => candidate.type === 'sendMessageAndClose').length;
+        .filter(candidate => candidate.type === 'sendMessageAndClose').length;
     }
     expect(found).toBeGreaterThan(3);
   });
@@ -429,33 +427,33 @@ describe('menus, repeats and chatbots', () => {
     expect(todo.join('\n')).not.toMatch(/set its variables/);
     // Keys Studio doesn't take are errors; none at all, a warning
     const badKey = { ...content, objects: [{ ...content.objects[0], variables: [{ key: '1st', value: 'x' }] }] };
-    expect(boardChecks(badKey).map((issue) => issue.message)).toContainEqual(
+    expect(boardChecks(badKey).map(issue => issue.message)).toContainEqual(
       expect.stringContaining('variable 1: Letters, numbers and underscores'),
     );
     const none = { ...content, objects: [{ ...content.objects[0], variables: undefined }] };
-    expect(boardChecks(none).map((issue) => issue.message)).toContainEqual(
+    expect(boardChecks(none).map(issue => issue.message)).toContainEqual(
       expect.stringContaining('add the variables it sets'),
     );
 
     // usnm's counter: imported with its key and value; a changed value written back
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const voice = boards.find(({ content: theirs }) =>
-      theirs.objects.some((candidate) => candidate.studioName === 'set_var_en_no_tya_service_counter'),
+      theirs.objects.some(candidate => candidate.studioName === 'set_var_en_no_tya_service_counter'),
     )!.content;
-    const counter = voice.objects.find((candidate) => candidate.studioName === 'set_var_en_no_tya_service_counter')!;
+    const counter = voice.objects.find(candidate => candidate.studioName === 'set_var_en_no_tya_service_counter')!;
     expect(counter.variables).toEqual([
       { key: 'en_no_tya_service_counter', value: expect.stringContaining('plus: 1') },
     ]);
     const changed = {
       ...voice,
-      objects: voice.objects.map((candidate) =>
+      objects: voice.objects.map(candidate =>
         candidate.id === counter.id
           ? { ...candidate, variables: [{ key: 'en_no_tya_service_counter', value: '1' }] }
           : candidate,
       ),
     };
     const state = toStudioFlow(changed).flow.states.find(
-      (candidate) => candidate.name === 'set_var_en_no_tya_service_counter',
+      candidate => candidate.name === 'set_var_en_no_tya_service_counter',
     )!;
     expect(state.properties.variables).toEqual([{ type: 'string', value: '1', key: 'en_no_tya_service_counter' }]);
   });
@@ -520,7 +518,7 @@ describe('menus, repeats and chatbots', () => {
     ]);
 
     const { flow, todo } = toStudioFlow(content, content.frames[0]);
-    const state = (name: string) => flow.states.find((candidate) => candidate.name === name)!;
+    const state = (name: string) => flow.states.find(candidate => candidate.name === name)!;
     expect(state('f_setFlowMemory_entry_point').properties).toMatchObject({
       url: '${lambda_twilio_account_scoped_url}/conversation/setFlowMemory',
     });
@@ -547,7 +545,7 @@ describe('menus, repeats and chatbots', () => {
     expect(todo.join('\n')).not.toMatch(/set what it splits on/);
     // Nothing chosen: pointed out
     const unset = { ...content, objects: [{ ...split, settings: undefined }] };
-    expect(boardChecks(unset).map((issue) => issue.message)).toContainEqual(
+    expect(boardChecks(unset).map(issue => issue.message)).toContainEqual(
       expect.stringContaining('choose what it splits on'),
     );
   });
@@ -555,18 +553,18 @@ describe('menus, repeats and chatbots', () => {
   test('imported splits keep what they split on; changed, their conditions read the new input too', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const voice = boards.find(({ content: theirs }) =>
-      theirs.objects.some((candidate) => candidate.studioName === 'split_end_cycle_en_no_tya_service'),
+      theirs.objects.some(candidate => candidate.studioName === 'split_end_cycle_en_no_tya_service'),
     )!.content;
-    const split = voice.objects.find((candidate) => candidate.studioName === 'split_end_cycle_en_no_tya_service')!;
+    const split = voice.objects.find(candidate => candidate.studioName === 'split_end_cycle_en_no_tya_service')!;
     expect(split.settings?.input).toBe('{{flow.variables.en_no_tya_service_counter}}');
     const changed = {
       ...voice,
-      objects: voice.objects.map((candidate) =>
+      objects: voice.objects.map(candidate =>
         candidate.id === split.id ? { ...candidate, settings: { input: '{{flow.variables.tries}}' } } : candidate,
       ),
     };
     const state = toStudioFlow(changed).flow.states.find(
-      (candidate) => candidate.name === 'split_end_cycle_en_no_tya_service',
+      candidate => candidate.name === 'split_end_cycle_en_no_tya_service',
     )!;
     expect(state.properties.input).toBe('{{flow.variables.tries}}');
     expect(JSON.stringify(state.transitions)).not.toContain('en_no_tya_service_counter');
@@ -593,20 +591,18 @@ describe('menus, repeats and chatbots', () => {
     // Imported: usnm's questions keep their timeout, and every helpline's cleanups are recognised
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const imported = boards.flatMap(({ content: theirs }) => theirs.objects);
-    expect(
-      imported.filter((candidate) => candidate.type === 'questionMessaging').every((q) => q.settings?.timeout),
-    ).toBe(true);
+    expect(imported.filter(candidate => candidate.type === 'questionMessaging').every(q => q.settings?.timeout)).toBe(
+      true,
+    );
     const mt = await importHelpline(helplinesDir, 'mt');
     expect(
-      mt.boards
-        .flatMap(({ content: theirs }) => theirs.objects)
-        .some((candidate) => candidate.type === 'chatbotCleanup'),
+      mt.boards.flatMap(({ content: theirs }) => theirs.objects).some(candidate => candidate.type === 'chatbotCleanup'),
     ).toBe(true);
   });
 
   test('imported captureChannelWithBot requests are chatbots, their settings as written (variables kept)', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usch');
-    const bots = boards.flatMap(({ content }) => content.objects.filter((candidate) => candidate.type === 'chatbot'));
+    const bots = boards.flatMap(({ content }) => content.objects.filter(candidate => candidate.type === 'chatbot'));
     expect(bots.length).toBeGreaterThan(0);
     expect(bots[0].settings).toMatchObject({ botSuffix: 'pre_survey', language: 'en-USCH' });
   });
@@ -638,24 +634,24 @@ describe('what a split splits on', () => {
       ],
     );
     const { flow } = toStudioFlow(content, content.frames[0]);
-    const inputOf = (name: string) => flow.states.find((state) => state.name === name)!.properties.input;
+    const inputOf = (name: string) => flow.states.find(state => state.name === name)!.properties.input;
     expect(inputOf('split_welcome')).toBe('{{widgets.send_wait_welcome.inbound.Body}}');
     expect(inputOf('split_language')).toBe('{{widgets.gather_input_voice_language.Digits}}');
     expect(inputOf('split_language_speech')).toBe('{{widgets.gather_input_voice_language.SpeechResult}}');
     expect(inputOf('split_service')).toBe('{{trigger.conversation.ChannelAttributes.flowMemory.service}}');
-    const keys = flow.states.find((state) => state.name === 'split_language')!;
+    const keys = flow.states.find(state => state.name === 'split_language')!;
     expect(JSON.stringify(keys.transitions)).toContain(
       '"arguments":["{{widgets.gather_input_voice_language.Digits}}"]',
     );
     // With a default, nothing to choose
     expect(
       boardChecks(content)
-        .map((issue) => issue.message)
+        .map(issue => issue.message)
         .join('\n'),
     ).not.toMatch(/choose what it splits on/);
     // Reached from widgets with different answers: no default
     const two = { ...content, connections: [...content.connections, connect('language', 'reply', 'keypress')] };
-    expect(boardChecks(two).map((issue) => issue.message)).toContainEqual(
+    expect(boardChecks(two).map(issue => issue.message)).toContainEqual(
       expect.stringContaining('“reply”: choose what it splits on'),
     );
   });
@@ -663,16 +659,14 @@ describe('what a split splits on', () => {
   test('imported splits\' ways out are their values ("2"), also on boards imported before', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const voice = boards.find(({ content }) =>
-      content.objects.some((candidate) => candidate.studioName === 'split_voice_language'),
+      content.objects.some(candidate => candidate.studioName === 'split_voice_language'),
     )!.content;
-    const split = voice.objects.find((candidate) => candidate.studioName === 'split_voice_language')!;
+    const split = voice.objects.find(candidate => candidate.studioName === 'split_voice_language')!;
     expect(split.exits).toContain('2');
-    expect(split.exits!.some((exit) => exit.startsWith('If value'))).toBe(false);
-    expect(voice.connections.filter((connection) => connection.from === split.id).map(({ exit }) => exit)).toContain(
-      '2',
-    );
+    expect(split.exits!.some(exit => exit.startsWith('If value'))).toBe(false);
+    expect(voice.connections.filter(connection => connection.from === split.id).map(({ exit }) => exit)).toContain('2');
     // Unchanged, it's generated as it is live
-    const live = toStudioFlow(voice).flow.states.find((state) => state.name === 'split_voice_language')!;
+    const live = toStudioFlow(voice).flow.states.find(state => state.name === 'split_voice_language')!;
     expect(live.transitions).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ conditions: [expect.objectContaining({ friendly_name: 'If value equal_to 2' })] }),
@@ -683,15 +677,15 @@ describe('what a split splits on', () => {
     const before = (exit?: string) => (exit && /^\d$/.test(exit) ? `If value equal_to ${exit}` : exit);
     const old = {
       ...voice,
-      objects: voice.objects.map((candidate) =>
-        candidate.id === split.id ? { ...candidate, exits: candidate.exits!.map((exit) => before(exit)!) } : candidate,
+      objects: voice.objects.map(candidate =>
+        candidate.id === split.id ? { ...candidate, exits: candidate.exits!.map(exit => before(exit)!) } : candidate,
       ),
-      connections: voice.connections.map((connection) =>
+      connections: voice.connections.map(connection =>
         connection.from === split.id ? { ...connection, exit: before(connection.exit) } : connection,
       ),
     };
     const upgraded = upgradeContent(old);
-    expect(upgraded.objects.find((candidate) => candidate.id === split.id)!.exits).toEqual(split.exits);
+    expect(upgraded.objects.find(candidate => candidate.id === split.id)!.exits).toEqual(split.exits);
     expect(upgraded.connections).toEqual(voice.connections);
     expect(upgradeContent(voice)).toBe(voice);
   });
@@ -699,7 +693,7 @@ describe('what a split splits on', () => {
 
 describe('who a message is from', () => {
   test("new messages are from Bot; the template writes From exactly as set, with Studio's other attributes", () => {
-    (['sendMessage', 'questionMessaging', 'sendMessageAndClose'] as const).forEach((type) =>
+    (['sendMessage', 'questionMessaging', 'sendMessageAndClose'] as const).forEach(type =>
       expect(createObjectNode(type, { x: 0, y: 0 }).data.object.settings).toEqual({ from: 'Bot' }),
     );
     expect(createObjectNode('playMessage', { x: 0, y: 0 }).data.object.settings).toBeUndefined();
@@ -723,7 +717,7 @@ describe('who a message is from', () => {
       [connect('send', 'ask'), connect('ask', 'close', 'reply'), connect('ask', 'thanks', 'timeout')],
     );
     const { flow } = toStudioFlow(content, content.frames[0]);
-    const state = (name: string) => flow.states.find((candidate) => candidate.name === name)!;
+    const state = (name: string) => flow.states.find(candidate => candidate.name === name)!;
     expect(state('send_message_sms_en_info').properties).toMatchObject({
       service: '{{trigger.conversation.InstanceSid}}',
       channel: '{{trigger.conversation.ChannelSid}}',
@@ -765,7 +759,7 @@ describe('who a message is from', () => {
           ],
           [],
         ),
-      ).filter((issue) => issue.key.endsWith('|noFrom|'));
+      ).filter(issue => issue.key.endsWith('|noFrom|'));
     expect(issuesOf()).toEqual([
       expect.objectContaining({
         severity: 'error',
@@ -782,16 +776,16 @@ describe('who a message is from', () => {
     const seen = new Set<string>();
     let janitors = 0;
     for (const code of readdirSync(helplinesDir).filter(
-      (name) =>
+      name =>
         /^[a-z0-9]+$/.test(name) &&
         (existsSync(path.join(helplinesDir, name, 'staging.hcl')) ||
           existsSync(path.join(helplinesDir, name, 'production.hcl'))),
     )) {
       const { boards } = await importHelpline(helplinesDir, code);
       boards
-        .flatMap((imported) => imported.content.objects)
-        .filter((candidate) => hasFromField(candidate.type) && candidate.studio)
-        .forEach((message) => {
+        .flatMap(imported => imported.content.objects)
+        .filter(candidate => hasFromField(candidate.type) && candidate.studio)
+        .forEach(message => {
           const live = liveFromOf(message);
           expectAt(`${code} ${message.studioName}`, message.settings?.from).toBe(live);
           if (live === undefined) return;
@@ -835,10 +829,10 @@ describe('who a message is from', () => {
         [],
       ),
     );
-    const fromOf = (id: string) => content.objects.find((candidate) => candidate.id === id)!.settings?.from;
+    const fromOf = (id: string) => content.objects.find(candidate => candidate.id === id)!.settings?.from;
     expect(fromOf('sendMessage')).toBe('${helpline}');
     expect(fromOf('questionMessaging')).toBe('Kellimni');
-    expect(content.objects.find((candidate) => candidate.id === 'questionMessaging')!.settings?.timeout).toBe('60');
+    expect(content.objects.find(candidate => candidate.id === 'questionMessaging')!.settings?.timeout).toBe('60');
     expect(fromOf('sendMessageAndClose')).toBe('Bot');
     expect(fromOf('legacy')).toBeUndefined();
     expect(fromOf('playMessage')).toBeUndefined();
@@ -847,21 +841,19 @@ describe('who a message is from', () => {
   test("imported messages show who they're from; changed on the board, the widget says so", async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const sms = boards.find(({ content }) =>
-      content.objects.some((candidate) => candidate.studioName === 'send_wait_sms_name_request'),
+      content.objects.some(candidate => candidate.studioName === 'send_wait_sms_name_request'),
     )!.content;
-    const ask = sms.objects.find((candidate) => candidate.studioName === 'send_wait_sms_name_request')!;
+    const ask = sms.objects.find(candidate => candidate.studioName === 'send_wait_sms_name_request')!;
     expect(ask.settings).toMatchObject({ from: 'NAMI', timeout: '180' });
     const changed = {
       ...sms,
-      objects: sms.objects.map((candidate) =>
+      objects: sms.objects.map(candidate =>
         candidate.id === ask.id
           ? { ...candidate, settings: { ...candidate.settings, from: '${helpline}' } }
           : candidate,
       ),
     };
-    const state = toStudioFlow(changed).flow.states.find(
-      (candidate) => candidate.name === 'send_wait_sms_name_request',
-    )!;
+    const state = toStudioFlow(changed).flow.states.find(candidate => candidate.name === 'send_wait_sms_name_request')!;
     expect(state.properties).toMatchObject({ from: '${helpline}', message_type: 'custom', timeout: '180' });
   });
 });

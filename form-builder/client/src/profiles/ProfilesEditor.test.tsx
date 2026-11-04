@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 /**
  * Client profiles, edited through the workspace with AS's real definitions.
  */
@@ -102,8 +101,11 @@ describe('profile helpers', () => {
   test('profiles in the repo today only produce warnings', async () => {
     for (const { code, versions } of await listHelplines(formDefinitionsDir)) {
       const { files } = await loadDefinitionFiles(formDefinitionsDir, code, versions[0]);
-      validateProfiles(files, files).forEach((issue) =>
-        expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({ at: `${code}: ${issue.message}`, value: 'warning' }),
+      validateProfiles(files, files).forEach(issue =>
+        expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({
+          at: `${code}: ${issue.message}`,
+          value: 'warning',
+        }),
       );
     }
   });

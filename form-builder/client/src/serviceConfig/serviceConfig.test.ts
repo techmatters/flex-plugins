@@ -58,7 +58,11 @@ describe('merging, as manageServiceConfig.py does', () => {
   });
 
   test('reads a real helpline: files, environments and what production gets', () => {
-    expect(Object.keys(usnm.files).filter((key) => key.startsWith('service-configuration/')).sort()).toEqual([
+    expect(
+      Object.keys(usnm.files)
+        .filter(key => key.startsWith('service-configuration/'))
+        .sort(),
+    ).toEqual([
       'service-configuration/common.json',
       'service-configuration/production.json',
       'service-configuration/staging.json',
@@ -73,7 +77,7 @@ describe('merging, as manageServiceConfig.py does', () => {
 describe('settings', () => {
   test('each setting shows what each environment gets, and from which file', () => {
     const rows = getSettingRows(usnm.files, usnm.serviceConfigDefaults);
-    const row = (settingPath: string) => rows.find((item) => item.path === settingPath)!;
+    const row = (settingPath: string) => rows.find(item => item.path === settingPath)!;
 
     // Aselo's default, overridden by the helpline
     expect(row('attributes.feature_flags.enable_canned_responses').effective.production).toEqual({
@@ -87,7 +91,7 @@ describe('settings', () => {
     expect(row('attributes.form_definitions_base_url').effective.production?.from).toEqual(['production']);
     // Objects deeper than one attribute are one setting
     expect(row('attributes.postStudioFlows').group).toBe('attributes');
-    expect(rows.some((item) => item.path.startsWith('attributes.postStudioFlows.'))).toBe(false);
+    expect(rows.some(item => item.path.startsWith('attributes.postStudioFlows.'))).toBe(false);
     expect(row('outbound_call_flows').effective.staging?.value).toBeUndefined();
   });
 
@@ -108,14 +112,20 @@ describe('settings', () => {
       use_new_dispatcher_path: '',
     });
     expect(
-      describeSetting({ keys: ['attributes', 'feature_flags', 'enable_emoji_picker'], path: '', group: 'featureFlags' }),
+      describeSetting({
+        keys: ['attributes', 'feature_flags', 'enable_emoji_picker'],
+        path: '',
+        group: 'featureFlags',
+      }),
     ).toBe('Enables Emoji Picker');
   });
 
   test('setting and removing values, per file', () => {
     const start = files({ attributes: { a: 1 } });
     const added = setServiceConfigValue(start, 'staging', ['attributes', 'feature_flags', 'enable_lex'], true);
-    expect(added['service-configuration/staging.json']).toEqual({ attributes: { feature_flags: { enable_lex: true } } });
+    expect(added['service-configuration/staging.json']).toEqual({
+      attributes: { feature_flags: { enable_lex: true } },
+    });
     const removed = setServiceConfigValue(added, 'staging', ['attributes', 'feature_flags', 'enable_lex'], undefined);
     expect(removed['service-configuration/staging.json']).toEqual({});
     // Removing what isn't there changes nothing
@@ -125,11 +135,9 @@ describe('settings', () => {
 
 describe('features', () => {
   test('are switched where the helpline sets them, else in common.json', () => {
-    const start = files(
-      { attributes: { helplineLanguage: 'en' } },
-      undefined,
-      { attributes: { feature_flags: { enable_canned_responses: true } } },
-    );
+    const start = files({ attributes: { helplineLanguage: 'en' } }, undefined, {
+      attributes: { feature_flags: { enable_canned_responses: true } },
+    });
     const defaults = { attributes: { enableClientProfiles: true, feature_flags: { enable_canned_responses: true } } };
     expect(getFeatures(start, defaults)).toEqual({
       enableClientProfiles: true,
@@ -142,7 +150,11 @@ describe('features', () => {
       attributes: { feature_flags: { enable_canned_responses: false } },
     });
     expect(updated['service-configuration/common.json']).toEqual({
-      attributes: { helplineLanguage: 'en', enableClientProfiles: false, feature_flags: { enable_client_profiles: false } },
+      attributes: {
+        helplineLanguage: 'en',
+        enableClientProfiles: false,
+        feature_flags: { enable_client_profiles: false },
+      },
     });
     expect(getFeatures(updated, defaults)).toMatchObject({ enableClientProfiles: false, enableCannedResponses: false });
     expect(summarizeFeatureChanges(start, updated)).toEqual([
@@ -158,17 +170,24 @@ describe('review', () => {
     expect(summarizeServiceConfigChanges(before, after)).toEqual([
       {
         title: 'Service configuration: common.json',
-        lines: ['attributes.a: on → off', 'attributes.b: removed (was “x”)', 'attributes.c: added, 3', 'call_recording_enabled: removed (was on)'],
+        lines: [
+          'attributes.a: on → off',
+          'attributes.b: removed (was “x”)',
+          'attributes.c: added, 3',
+          'call_recording_enabled: removed (was on)',
+        ],
       },
       { title: 'Service configuration: staging.json', lines: ['attributes.serverless_base_url: added, “https://x”'] },
     ]);
-    const messages = validateServiceConfig('xx', before, after).map((issue) => issue.message);
+    const messages = validateServiceConfig('xx', before, after).map(issue => issue.message);
     // common.json changed, so every environment needs applying
-    expect(messages[0]).toMatch(/make service-config-plan then make service-config-apply with HL=xx for HL_ENV=staging, HL_ENV=production/);
-    expect(messages.some((message) => /serverless_base_url.*replaced from SSM/.test(message))).toBe(true);
+    expect(messages[0]).toMatch(
+      /make service-config-plan then make service-config-apply with HL=xx for HL_ENV=staging, HL_ENV=production/,
+    );
+    expect(messages.some(message => /serverless_base_url.*replaced from SSM/.test(message))).toBe(true);
     // Outside attributes, removing from the repo doesn't remove it from Twilio
-    expect(messages.some((message) => /no longer sets call_recording_enabled/.test(message))).toBe(true);
-    expect(messages.some((message) => /no longer sets attributes\.b/.test(message))).toBe(false);
+    expect(messages.some(message => /no longer sets call_recording_enabled/.test(message))).toBe(true);
+    expect(messages.some(message => /no longer sets attributes\.b/.test(message))).toBe(false);
     expect(validateServiceConfig('xx', before, before)).toEqual([]);
   });
 });

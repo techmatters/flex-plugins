@@ -161,32 +161,33 @@ const ALL_LAYERS: ConfigLayer[] = ['defaults', ...SERVICE_CONFIG_FILE_NAMES];
 
 // The files a value comes from: objects and lists add up across files, anything else is the last one
 const sourcesOf = (row: Pick<SettingRow, 'byLayer'>, environment: ServiceConfigEnvironment, value: unknown) => {
-  const setters = layersFor(environment).filter((layer) => {
+  const setters = layersFor(environment).filter(layer => {
     const set = row.byLayer[layer];
     return set !== undefined && set !== null;
   });
   if (setters.length <= 1) return setters;
   const adds = (layer: ConfigLayer) =>
-    (Array.isArray(value) && Array.isArray(row.byLayer[layer])) || (isConfigObject(value) && isConfigObject(row.byLayer[layer]));
+    (Array.isArray(value) && Array.isArray(row.byLayer[layer])) ||
+    (isConfigObject(value) && isConfigObject(row.byLayer[layer]));
   return adds(setters[setters.length - 1]) ? setters.filter(adds) : setters.slice(-1);
 };
 
 export const getSettingRows = (files: DefinitionFileMap, defaults: ConfigObject | undefined): SettingRow[] => {
   const environments = serviceConfigEnvironments(files);
   const keySet = new Set<string>();
-  ALL_LAYERS.forEach((layer) => collectSettingKeys(layerValue(files, defaults, layer), [], keySet));
-  const merged = Object.fromEntries(environments.map((env) => [env, mergedServiceConfig(files, defaults, env)]));
+  ALL_LAYERS.forEach(layer => collectSettingKeys(layerValue(files, defaults, layer), [], keySet));
+  const merged = Object.fromEntries(environments.map(env => [env, mergedServiceConfig(files, defaults, env)]));
 
   return [...keySet]
-    .map((json) => JSON.parse(json) as string[])
-    .map((keys) => {
+    .map(json => JSON.parse(json) as string[])
+    .map(keys => {
       const byLayer = Object.fromEntries(
-        ALL_LAYERS.map((layer) => [layer, getIn(layerValue(files, defaults, layer), keys)]).filter(
+        ALL_LAYERS.map(layer => [layer, getIn(layerValue(files, defaults, layer), keys)]).filter(
           ([, value]) => value !== undefined,
         ),
       ) as SettingRow['byLayer'];
       const effective: SettingRow['effective'] = {};
-      environments.forEach((env) => {
+      environments.forEach(env => {
         const value = getIn(merged[env], keys);
         effective[env] = { value, from: value === undefined ? [] : sourcesOf({ byLayer }, env, value) };
       });
@@ -196,10 +197,10 @@ export const getSettingRows = (files: DefinitionFileMap, defaults: ConfigObject 
 };
 
 // The helpline sets it (in any of its own files), rather than only getting Aselo's default
-export const isSetByHelpline = (row: SettingRow) => SERVICE_CONFIG_FILE_NAMES.some((name) => name in row.byLayer);
+export const isSetByHelpline = (row: SettingRow) => SERVICE_CONFIG_FILE_NAMES.some(name => name in row.byLayer);
 
 export const differsBetweenEnvironments = (row: SettingRow) => {
-  const values = Object.values(row.effective).map((effective) => JSON.stringify(effective?.value));
+  const values = Object.values(row.effective).map(effective => JSON.stringify(effective?.value));
   return new Set(values).size > 1;
 };
 
@@ -224,7 +225,7 @@ export const setServiceConfigFile = (files: DefinitionFileMap, name: ServiceConf
 
 export const parseSettingPath = (text: string): string[] | undefined => {
   const keys = text.trim().split('.');
-  return keys.every((key) => /^[A-Za-z0-9_$-]+$/.test(key) || /^\$\{[A-Za-z0-9_.]+\}$/.test(key)) ? keys : undefined;
+  return keys.every(key => /^[A-Za-z0-9_$-]+$/.test(key) || /^\$\{[A-Za-z0-9_.]+\}$/.test(key)) ? keys : undefined;
 };
 
 // --- What the settings mean ----------------------------------------------------------------
@@ -236,12 +237,14 @@ export const parseSettingPath = (text: string): string[] | undefined => {
  */
 export const parseFeatureFlagDescriptions = (source: string): Record<string, string> => {
   const descriptions: Record<string, string> = {};
-  source.split(/\r?\n/).forEach((line) => {
+  source.split(/\r?\n/).forEach(line => {
     const declared = line.match(/^\s*(\/\/\s*)?([a-z0-9_]+):\s*boolean;\s*(?:\/\/\s*(.*))?$/);
     if (declared) {
       const [, commentedOut, flag, comment] = declared;
       const description = comment?.trim() ?? '';
-      descriptions[flag] = commentedOut ? `${description}${description ? ' ' : ''}(not read by the Flex plugin)`.trim() : description;
+      descriptions[flag] = commentedOut
+        ? `${description}${description ? ' ' : ''}(not read by the Flex plugin)`.trim()
+        : description;
       return;
     }
     const note = line.match(/^\s*\/\/\s*([a-z0-9_]+)\s+-\s+(.*)$/);
@@ -253,8 +256,7 @@ export const parseFeatureFlagDescriptions = (source: string): Record<string, str
 const FEATURE_FLAG_DESCRIPTIONS = parseFeatureFlagDescriptions(featureFlagsSource);
 
 const ATTRIBUTE_DESCRIPTIONS: Record<string, string> = {
-  'attributes.definitionVersion':
-    'Which form definitions counselors use, e.g. “usnm-v1” for form-definitions/usnm/v1.',
+  'attributes.definitionVersion': 'Which form definitions counselors use, e.g. “usnm-v1” for form-definitions/usnm/v1.',
   'attributes.helplineLanguage': 'The language of the Flex UI and the forms’ translations.',
   'attributes.permissionConfig':
     'The HRM permission rules: what counselors and supervisors can do with contacts, cases and profiles.',
@@ -279,7 +281,8 @@ const ATTRIBUTE_DESCRIPTIONS: Record<string, string> = {
   'attributes.postStudioFlows':
     'Which Studio flow runs after a conversation, per queue (e.g. the post-call survey). ${…} placeholders become SIDs when applied.',
   'attributes.serverless_base_url': 'Set from SSM when applied; a value written here is replaced.',
-  'attributes.hrm_base_url': 'Filled in when applied (hrm-<environment>.tl.techmatters.org); a value written here wins.',
+  'attributes.hrm_base_url':
+    'Filled in when applied (hrm-<environment>.tl.techmatters.org); a value written here wins.',
   'attributes.assets_bucket_url': 'Filled in when applied; a value written here wins.',
   'attributes.environment': 'Filled in when applied; a value written here wins.',
   'attributes.helpline_code': 'Filled in when applied; a value written here wins.',
@@ -295,7 +298,7 @@ export const describeSetting = (row: Pick<SettingRow, 'keys' | 'path' | 'group'>
 
 // Known settings not set anywhere yet, offered when adding one
 export const knownSettingPaths = () => [
-  ...Object.keys(FEATURE_FLAG_DESCRIPTIONS).map((flag) => `attributes.feature_flags.${flag}`),
+  ...Object.keys(FEATURE_FLAG_DESCRIPTIONS).map(flag => `attributes.feature_flags.${flag}`),
   ...Object.keys(ATTRIBUTE_DESCRIPTIONS),
 ];
 
@@ -318,7 +321,7 @@ const EXCLUDED_FIELDS = [
 const OVERRIDE_FIELDS = ['attributes', 'ui_attributes.colorTheme'];
 
 const isReplacedOnApply = (keys: string[]) =>
-  OVERRIDE_FIELDS.some((field) => keys.join('.') === field || keys.join('.').startsWith(`${field}.`));
+  OVERRIDE_FIELDS.some(field => keys.join('.') === field || keys.join('.').startsWith(`${field}.`));
 
 export const applyNoteFor = (keys: string[]): string | undefined => {
   const path = keys.join('.');
@@ -327,7 +330,8 @@ export const applyNoteFor = (keys: string[]): string | undefined => {
   return undefined;
 };
 
-export const hasPlaceholder = (value: unknown) => /\$\{(task_queues|workflow_sids|studio_flow_sids)\.[A-Za-z0-9_]+\}/.test(JSON.stringify(value) ?? '');
+export const hasPlaceholder = (value: unknown) =>
+  /\$\{(task_queues|workflow_sids|studio_flow_sids)\.[A-Za-z0-9_]+\}/.test(JSON.stringify(value) ?? '');
 
 // --- Review --------------------------------------------------------------------------------
 
@@ -343,15 +347,15 @@ export const describeValue = (value: unknown): string => {
 
 const changedFileNames = (originalFiles: DefinitionFileMap, draftFiles: DefinitionFileMap) =>
   SERVICE_CONFIG_FILE_NAMES.filter(
-    (name) => !isSameJson(getServiceConfigFile(originalFiles, name), getServiceConfigFile(draftFiles, name)),
+    name => !isSameJson(getServiceConfigFile(originalFiles, name), getServiceConfigFile(draftFiles, name)),
   );
 
 const settingChanges = (before: ConfigObject | undefined, after: ConfigObject | undefined) => {
   const keys = new Set([...collectSettingKeys(before)].concat([...collectSettingKeys(after)]));
   return [...keys]
-    .map((json) => JSON.parse(json) as string[])
-    .map((settingKeys) => ({ keys: settingKeys, before: getIn(before, settingKeys), after: getIn(after, settingKeys) }))
-    .filter((change) => !isSameJson(change.before, change.after))
+    .map(json => JSON.parse(json) as string[])
+    .map(settingKeys => ({ keys: settingKeys, before: getIn(before, settingKeys), after: getIn(after, settingKeys) }))
+    .filter(change => !isSameJson(change.before, change.after))
     .sort((a, b) => a.keys.join('.').localeCompare(b.keys.join('.')));
 };
 
@@ -359,7 +363,7 @@ export const summarizeServiceConfigChanges = (
   originalFiles: DefinitionFileMap,
   draftFiles: DefinitionFileMap,
 ): { title: string; lines: string[] }[] =>
-  changedFileNames(originalFiles, draftFiles).map((name) => ({
+  changedFileNames(originalFiles, draftFiles).map(name => ({
     title: `Service configuration: ${name}.json`,
     lines: settingChanges(getServiceConfigFile(originalFiles, name), getServiceConfigFile(draftFiles, name)).map(
       ({ keys, before, after }) => {
@@ -385,12 +389,14 @@ export const validateServiceConfig = (
   const issues: ValidationIssue[] = [
     {
       severity: 'warning',
-      message: `The service configuration changed (${repoServiceConfigDir(code)}). After the PR is merged, run make service-config-plan then make service-config-apply with HL=${code} for ${environments
-        .map((env) => `HL_ENV=${env}`)
+      message: `The service configuration changed (${repoServiceConfigDir(
+        code,
+      )}). After the PR is merged, run make service-config-plan then make service-config-apply with HL=${code} for ${environments
+        .map(env => `HL_ENV=${env}`)
         .join(', ')}.`,
     },
   ];
-  changed.forEach((name) => {
+  changed.forEach(name => {
     settingChanges(getServiceConfigFile(originalFiles, name), getServiceConfigFile(draftFiles, name)).forEach(
       ({ keys, after }) => {
         const path = keys.join('.');

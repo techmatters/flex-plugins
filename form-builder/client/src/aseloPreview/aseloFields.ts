@@ -40,10 +40,7 @@ type Rule<T> = { value: T; message: string };
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
-export const initialValueFor = (
-  item: FormItemJsonDefinition,
-  referenceData: Record<string, unknown>,
-): FieldValue => {
+export const initialValueFor = (item: FormItemJsonDefinition, referenceData: Record<string, unknown>): FieldValue => {
   const initializeWithCurrent = (item as { initializeWithCurrent?: boolean }).initializeWithCurrent;
   const now = new Date();
   switch (item.type) {
@@ -64,9 +61,7 @@ export const initialValueFor = (
     case 'radio-input':
       return item.defaultOption ? String(item.defaultOption.value) : '';
     case 'date-input':
-      return initializeWithCurrent
-        ? `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`
-        : '';
+      return initializeWithCurrent ? `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}` : '';
     case 'time-input':
       return initializeWithCurrent ? `${pad(now.getHours())}:${pad(now.getMinutes())}` : '';
     default:
@@ -81,9 +76,7 @@ const isRequired = (item: FormItemJsonDefinition) =>
   typeof item.required === 'boolean' ? item.required : Boolean(item.required?.value);
 
 const requiredMessage = (item: FormItemJsonDefinition) =>
-  typeof item.required === 'object' && item.required?.message
-    ? item.required.message
-    : REQUIRED_MESSAGE;
+  typeof item.required === 'object' && item.required?.message ? item.required.message : REQUIRED_MESSAGE;
 
 /**
  * Lists of answers a linked dropdown currently offers (none until the one above is answered)
@@ -123,9 +116,7 @@ export const validateField = (
     case 'mixed-checkbox':
       return undefined;
     case 'listbox-multiselect':
-      return required && (!Array.isArray(value) || value.length === 0)
-        ? requiredMessage(item)
-        : undefined;
+      return required && (!Array.isArray(value) || value.length === 0) ? requiredMessage(item) : undefined;
     default:
       break;
   }

@@ -65,7 +65,7 @@ export const FieldSettings = () => {
   // e.g. 'en-US': texts that are translation keys are shown and edited in this language
   const helplineLanguage = useAppSelector(selectDefinitions)?.helplineLanguage;
   const issues = (useAppSelector(selectIssuesByTab)[issuesKeyOf(tab)] ?? []).filter(
-    (issue) => issue.fieldName === item.name,
+    issue => issue.fieldName === item.name,
   );
   const onRemove = () => dispatch(removeSelectedField());
   const onClose = () => dispatch(fieldSelected(undefined));
@@ -81,7 +81,7 @@ export const FieldSettings = () => {
   // The top dropdown of a linked set has its answers edited together with the levels below
   const isLinkedTop = isLinked && linkedChains[0][0] === item.name;
   const labelOf = (name: string) => {
-    const field = formItems.find((other) => other.name === name);
+    const field = formItems.find(other => other.name === name);
     return field?.label || name;
   };
   // Switching a linked dropdown to another kind would break the link
@@ -119,7 +119,7 @@ export const FieldSettings = () => {
       'Answers already saved in this field will no longer be shown on contacts.',
     ];
     if (references.length > 0) {
-      lines.push('', 'This field is also used by:', ...references.map((ref) => `• ${ref}`));
+      lines.push('', 'This field is also used by:', ...references.map(ref => `• ${ref}`));
     }
     if (window.confirm(lines.join('\n'))) onRemove();
   };
@@ -135,7 +135,7 @@ export const FieldSettings = () => {
 
       {issues.length > 0 && (
         <ul className="issue-list">
-          {issues.map((issue) => (
+          {issues.map(issue => (
             <li key={issue.message} className={`issue issue-${issue.severity}`}>
               {issue.message}
             </li>
@@ -149,7 +149,7 @@ export const FieldSettings = () => {
           type="text"
           value={item.label}
           placeholder="What counselors will see"
-          onChange={(e) => changeLabel(e.target.value)}
+          onChange={e => changeLabel(e.target.value)}
         />
       </label>
 
@@ -161,7 +161,7 @@ export const FieldSettings = () => {
           placeholder="Title, e.g. How to ask"
           value={shownDescription.title}
           disabled={!stringsLoaded}
-          onChange={(e) => changeDescription('title', e.target.value)}
+          onChange={e => changeDescription('title', e.target.value)}
         />
         <textarea
           rows={3}
@@ -169,24 +169,18 @@ export const FieldSettings = () => {
           placeholder="Guidance for counselors about this question"
           value={shownDescription.content}
           disabled={!stringsLoaded}
-          onChange={(e) => changeDescription('content', e.target.value)}
+          onChange={e => changeDescription('content', e.target.value)}
         />
         <span className="field-hint">
-          Counselors see it in a yellow box under the field; long text shows two lines with “see
-          more”.
+          Counselors see it in a yellow box under the field; long text shows two lines with “see more”.
         </span>
       </div>
 
       <label className="field">
         <span className="field-label">Kind of answer</span>
         {allowedTypes.length > 1 ? (
-          <select
-            value={type}
-            onChange={(e) =>
-              dispatch(changeSelectedFieldType(e.target.value as FieldType))
-            }
-          >
-            {allowedTypes.map((allowedType) => (
+          <select value={type} onChange={e => dispatch(changeSelectedFieldType(e.target.value as FieldType))}>
+            {allowedTypes.map(allowedType => (
               <option key={allowedType} value={allowedType}>
                 {FIELD_TYPE_INFO[allowedType].label}
               </option>
@@ -205,14 +199,10 @@ export const FieldSettings = () => {
       {isLinked && (
         <div className="linked-section">
           <span className="field-label">Linked dropdowns</span>
-          {linkedChains.map((chain) => (
+          {linkedChains.map(chain => (
             <div key={chain.join('>')} className="linked-chain">
               <span>{chain.map(labelOf).join(' → ')}</span>
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={() => onEditLinked(chain)}
-              >
+              <button type="button" className="secondary-button" onClick={() => onEditLinked(chain)}>
                 Edit answers
               </button>
             </div>
@@ -221,20 +211,17 @@ export const FieldSettings = () => {
       )}
 
       {isSpecial ? (
-        <p className="field-hint">
-          This is a special Aselo field. Only its question can be changed here.
-        </p>
+        <p className="field-hint">This is a special Aselo field. Only its question can be changed here.</p>
       ) : (
         <>
           <label className="field field-checkbox">
             <input
               type="checkbox"
               checked={isFieldRequired(item)}
-              onChange={(e) => dispatch(setSelectedFieldRequired(e.target.checked))}
+              onChange={e => dispatch(setSelectedFieldRequired(e.target.checked))}
             />
             <span>Counselors must answer this</span>
           </label>
-
 
           {isChoiceType(type) && !usesSharedOptions && !isLinkedTop && 'options' in item && (
             <div className="field">
@@ -243,21 +230,20 @@ export const FieldSettings = () => {
                 options={item.options as SelectOption[]}
                 originalValues={
                   new Set(
-                    ((originalItem && 'options' in originalItem
-                      ? originalItem.options
-                      : []) as SelectOption[]).map((option) => String(option.value)),
+                    ((originalItem && 'options' in originalItem ? originalItem.options : []) as SelectOption[]).map(
+                      option => String(option.value),
+                    ),
                   )
                 }
                 staffMode={staffMode}
-                onChange={(options) => dispatch(setSelectedFieldOptions(options))}
+                onChange={options => dispatch(setSelectedFieldOptions(options))}
               />
             </div>
           )}
 
           {usesSharedOptions && !isLinked && (
             <p className="field-hint">
-              This field's answers come from a list shared with other fields. Ask Aselo staff to
-              change them.
+              This field's answers come from a list shared with other fields. Ask Aselo staff to change them.
             </p>
           )}
         </>
@@ -268,16 +254,13 @@ export const FieldSettings = () => {
           type="checkbox"
           checked={Boolean(item.isPII)}
           disabled={!isNew && !staffMode}
-          onChange={(e) => dispatch(setSelectedFieldPII(e.target.checked))}
+          onChange={e => dispatch(setSelectedFieldPII(e.target.checked))}
         />
-        <span>
-          Could the answer identify someone? (for example a name, phone number or address)
-        </span>
+        <span>Could the answer identify someone? (for example a name, phone number or address)</span>
       </label>
       {!isNew && !staffMode && (
         <p className="field-hint">
-          Changing this affects how answers already saved are protected, so only Aselo staff can
-          change it.
+          Changing this affects how answers already saved are protected, so only Aselo staff can change it.
         </p>
       )}
 
@@ -287,7 +270,7 @@ export const FieldSettings = () => {
           <label className="field">
             <span className="field-label">Saved as (field name)</span>
             {isNew ? (
-              <input type="text" value={item.name} onChange={(e) => changeName(e.target.value)} />
+              <input type="text" value={item.name} onChange={e => changeName(e.target.value)} />
             ) : (
               <span className="read-only-value">
                 <code>{item.name}</code>
@@ -306,7 +289,7 @@ export const FieldSettings = () => {
         <div className="references">
           <span className="field-label">This field is also used by</span>
           <ul>
-            {references.map((reference) => (
+            {references.map(reference => (
               <li key={reference}>{reference}</li>
             ))}
           </ul>
@@ -314,17 +297,10 @@ export const FieldSettings = () => {
       )}
 
       <div className="field-settings-footer">
-        <button
-          type="button"
-          className="danger-button"
-          onClick={confirmRemove}
-          disabled={isProtected}
-        >
+        <button type="button" className="danger-button" onClick={confirmRemove} disabled={isProtected}>
           Remove this field
         </button>
-        {isProtected && (
-          <span className="field-hint">Aselo needs this field, so it can't be removed.</span>
-        )}
+        {isProtected && <span className="field-hint">Aselo needs this field, so it can't be removed.</span>}
       </div>
     </div>
   );

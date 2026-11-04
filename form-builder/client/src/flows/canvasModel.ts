@@ -56,10 +56,10 @@ export const labelSlot = (
   edge: Pick<ConnectionEdge, 'id' | 'source' | 'target'>,
 ) => {
   const sharing = edges.filter(
-    (candidate) => candidate.source === edge.source && candidate.target === edge.target && candidate.data?.exit,
+    candidate => candidate.source === edge.source && candidate.target === edge.target && candidate.data?.exit,
   );
   return `${Math.max(
-    sharing.findIndex((candidate) => candidate.id === edge.id),
+    sharing.findIndex(candidate => candidate.id === edge.id),
     0,
   )}/${sharing.length}`;
 };
@@ -71,7 +71,9 @@ export const labelOffsetOf = (slot: string) => {
 };
 
 export const newId = (prefix: string) =>
-  `${prefix}-${(globalThis.crypto?.randomUUID?.() ?? Math.random().toString(16).slice(2)).replace(/-/g, '').slice(0, 8)}`;
+  `${prefix}-${(globalThis.crypto?.randomUUID?.() ?? Math.random().toString(16).slice(2))
+    .replace(/-/g, '')
+    .slice(0, 8)}`;
 
 // The record without what the node itself holds (position, size, frame)
 const strip = <T extends Position & { width: number; height: number; frameId?: string }>(record: T): Without<T> => {
@@ -80,48 +82,54 @@ const strip = <T extends Position & { width: number; height: number; frameId?: s
 };
 
 const SIDES: Side[] = ['top', 'right', 'bottom', 'left'];
-const sideOf = (handle: string | null | undefined): Side | undefined => SIDES.find((side) => side === handle);
+const sideOf = (handle: string | null | undefined): Side | undefined => SIDES.find(side => side === handle);
 
 export const toNodes = (content: BoardContent): CanvasNode[] => {
-  const frameIds = new Set(content.frames.map((frame) => frame.id));
+  const frameIds = new Set(content.frames.map(frame => frame.id));
   const parentOf = (frameId?: string) => (frameId && frameIds.has(frameId) ? frameId : undefined);
   return [
     // Parents have to come before their children
-    ...content.frames.map((frame): FrameNode => ({
-      id: frame.id,
-      type: 'frame',
-      position: { x: frame.x, y: frame.y },
-      width: frame.width,
-      height: frame.height,
-      dragHandle: '.flow-frame-title',
-      zIndex: -1,
-      data: { frame: strip(frame) },
-    })),
-    ...content.objects.map((object): ObjectNode => ({
-      id: object.id,
-      type: 'object',
-      position: { x: object.x, y: object.y },
-      width: object.width,
-      height: object.height,
-      parentId: parentOf(object.frameId),
-      data: { object: strip(object) },
-    })),
-    ...content.stickies.map((sticky): StickyNode => ({
-      id: sticky.id,
-      type: 'sticky',
-      position: { x: sticky.x, y: sticky.y },
-      width: sticky.width,
-      height: sticky.height,
-      parentId: parentOf(sticky.frameId),
-      data: { sticky: strip(sticky) },
-    })),
+    ...content.frames.map(
+      (frame): FrameNode => ({
+        id: frame.id,
+        type: 'frame',
+        position: { x: frame.x, y: frame.y },
+        width: frame.width,
+        height: frame.height,
+        dragHandle: '.flow-frame-title',
+        zIndex: -1,
+        data: { frame: strip(frame) },
+      }),
+    ),
+    ...content.objects.map(
+      (object): ObjectNode => ({
+        id: object.id,
+        type: 'object',
+        position: { x: object.x, y: object.y },
+        width: object.width,
+        height: object.height,
+        parentId: parentOf(object.frameId),
+        data: { object: strip(object) },
+      }),
+    ),
+    ...content.stickies.map(
+      (sticky): StickyNode => ({
+        id: sticky.id,
+        type: 'sticky',
+        position: { x: sticky.x, y: sticky.y },
+        width: sticky.width,
+        height: sticky.height,
+        parentId: parentOf(sticky.frameId),
+        data: { sticky: strip(sticky) },
+      }),
+    ),
   ];
 };
 
 export const ARROW = { type: MarkerType.ArrowClosed, width: 16, height: 16, color: '#37474f' };
 
 export const toEdges = (content: BoardContent): ConnectionEdge[] =>
-  content.connections.map((connection) => ({
+  content.connections.map(connection => ({
     id: connection.id,
     type: 'connection',
     markerEnd: ARROW,
@@ -145,24 +153,24 @@ const placeOf = (node: CanvasNode) => ({
 });
 
 export const toContent = (title: string, nodes: CanvasNode[], edges: ConnectionEdge[]): BoardContent => {
-  const nodeIds = new Set(nodes.map((node) => node.id));
+  const nodeIds = new Set(nodes.map(node => node.id));
   return {
     schemaVersion: BOARD_SCHEMA_VERSION,
     title,
     frames: nodes
       .filter((node): node is FrameNode => node.type === 'frame')
-      .map((node) => {
+      .map(node => {
         const { frameId, ...place } = placeOf(node);
         return { ...node.data.frame, id: node.id, ...place };
       }),
     objects: nodes
       .filter((node): node is ObjectNode => node.type === 'object')
-      .map((node) => ({ ...node.data.object, id: node.id, ...placeOf(node) })),
+      .map(node => ({ ...node.data.object, id: node.id, ...placeOf(node) })),
     stickies: nodes
       .filter((node): node is StickyNode => node.type === 'sticky')
-      .map((node) => ({ ...node.data.sticky, id: node.id, ...placeOf(node) })),
+      .map(node => ({ ...node.data.sticky, id: node.id, ...placeOf(node) })),
     connections: edges
-      .filter((edge) => nodeIds.has(edge.source) && nodeIds.has(edge.target))
+      .filter(edge => nodeIds.has(edge.source) && nodeIds.has(edge.target))
       .map((edge): Connection => {
         const fromSide = sideOf(edge.sourceHandle);
         const toSide = sideOf(edge.targetHandle);
@@ -228,7 +236,7 @@ export const createStickyNode = (position: Position, parentId?: string, color: S
 
 // The model's records keep their own id in sync with the node's
 export const withIds = (nodes: CanvasNode[]): CanvasNode[] =>
-  nodes.map((node) => {
+  nodes.map(node => {
     if (node.type === 'frame') return { ...node, data: { frame: { ...node.data.frame, id: node.id } } };
     if (node.type === 'object') return { ...node, data: { object: { ...node.data.object, id: node.id } } };
     return { ...node, data: { sticky: { ...node.data.sticky, id: node.id } } };
@@ -236,7 +244,7 @@ export const withIds = (nodes: CanvasNode[]): CanvasNode[] =>
 
 // A node's position on the canvas, adding its frame's
 export const absolutePosition = (node: CanvasNode, nodes: CanvasNode[]): Position => {
-  const parent = node.parentId ? nodes.find((candidate) => candidate.id === node.parentId) : undefined;
+  const parent = node.parentId ? nodes.find(candidate => candidate.id === node.parentId) : undefined;
   return parent ? { x: parent.position.x + node.position.x, y: parent.position.y + node.position.y } : node.position;
 };
 
@@ -244,7 +252,7 @@ export const absolutePosition = (node: CanvasNode, nodes: CanvasNode[]): Positio
 export const frameAt = (point: Position, nodes: CanvasNode[], except?: string): FrameNode | undefined =>
   nodes
     .filter((node): node is FrameNode => node.type === 'frame' && node.id !== except)
-    .filter((frame) => {
+    .filter(frame => {
       const { width, height } = sizeOf(frame);
       return (
         point.x >= frame.position.x &&
@@ -260,7 +268,7 @@ export const frameAt = (point: Position, nodes: CanvasNode[], except?: string): 
  * frame), keeping it where it is on screen. Frames stay before the nodes inside them.
  */
 export const reparent = (nodes: CanvasNode[], nodeId: string): CanvasNode[] => {
-  const node = nodes.find((candidate) => candidate.id === nodeId);
+  const node = nodes.find(candidate => candidate.id === nodeId);
   if (!node || node.type === 'frame') return nodes;
   const absolute = absolutePosition(node, nodes);
   const { width, height } = sizeOf(node);
@@ -271,8 +279,8 @@ export const reparent = (nodes: CanvasNode[], nodeId: string): CanvasNode[] => {
     parentId: frame?.id,
     position: frame ? { x: absolute.x - frame.position.x, y: absolute.y - frame.position.y } : absolute,
   };
-  const others = nodes.filter((candidate) => candidate.id !== nodeId);
-  return [...others.filter((n) => n.type === 'frame'), ...others.filter((n) => n.type !== 'frame'), moved];
+  const others = nodes.filter(candidate => candidate.id !== nodeId);
+  return [...others.filter(n => n.type === 'frame'), ...others.filter(n => n.type !== 'frame'), moved];
 };
 
 export type NextExit = { ok: true; exit?: string } | { ok: false; reason: string };
@@ -289,15 +297,15 @@ export const nextExit = (source: ObjectNode | undefined, edges: ConnectionEdge[]
   const exits = exitsOf(object);
   const name = object.text || OBJECT_TYPES[object.type].label;
   if (exits.length === 0) return { ok: false, reason: `“${name}” ends the flow, so nothing comes after it.` };
-  const outgoing = edges.filter((edge) => edge.source === source.id && edge.id !== ignoreEdge);
+  const outgoing = edges.filter(edge => edge.source === source.id && edge.id !== ignoreEdge);
   const named = exits.filter(Boolean);
   if (named.length === 0) {
     return outgoing.length === 0
       ? { ok: true }
       : { ok: false, reason: `“${name}” has only one way out, and it's already connected.` };
   }
-  const used = new Set(outgoing.map((edge) => edge.data?.exit));
-  const free = named.find((exit) => !used.has(exit));
+  const used = new Set(outgoing.map(edge => edge.data?.exit));
+  const free = named.find(exit => !used.has(exit));
   if (free !== undefined) return { ok: true, exit: free };
   return {
     ok: false,
@@ -348,7 +356,7 @@ export const duplicate = (
   existingIds: Set<string>,
   offset: Position = { x: 40, y: 40 },
 ): { nodes: CanvasNode[]; edges: ConnectionEdge[] } => {
-  const idMap = new Map(nodes.map((node) => [node.id, newId(node.id.split('-')[0] || 'n')]));
+  const idMap = new Map(nodes.map(node => [node.id, newId(node.id.split('-')[0] || 'n')]));
   const copies = nodes.map((node): CanvasNode => {
     const copiedParent = node.parentId ? idMap.get(node.parentId) : undefined;
     const keptParent = node.parentId && existingIds.has(node.parentId) ? node.parentId : undefined;
@@ -363,17 +371,14 @@ export const duplicate = (
     } as CanvasNode;
   });
   const copiedEdges = edges
-    .filter((edge) => idMap.has(edge.source) && idMap.has(edge.target))
-    .map((edge) => ({
+    .filter(edge => idMap.has(edge.source) && idMap.has(edge.target))
+    .map(edge => ({
       ...structuredClone(edge),
       id: newId('c'),
       source: idMap.get(edge.source)!,
       target: idMap.get(edge.target)!,
       selected: false,
     }));
-  const ordered = [
-    ...copies.filter((node) => node.type === 'frame'),
-    ...copies.filter((node) => node.type !== 'frame'),
-  ];
+  const ordered = [...copies.filter(node => node.type === 'frame'), ...copies.filter(node => node.type !== 'frame')];
   return { nodes: withIds(ordered), edges: copiedEdges };
 };

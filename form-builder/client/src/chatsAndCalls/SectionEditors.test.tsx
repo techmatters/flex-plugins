@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 /**
  * Call types, canned responses and automatic messages, edited through the workspace with
  * USNM's real definitions.
@@ -39,7 +38,6 @@ beforeAll(async () => {
     path.join(repoRoot, 'twilio-iac/helplines'),
   );
 });
-
 
 let harness: ReturnType<typeof createHarness>;
 beforeEach(() => {
@@ -147,9 +145,7 @@ describe('automatic messages', () => {
     fireEvent.change(screen.getByRole('textbox', { name: 'Survey thank-you' }), {
       target: { value: '¡Gracias!' },
     });
-    expect((await savedDraft('customStrings/postSurveyMessages.json')).es.postSurveyCompleteMessage).toBe(
-      '¡Gracias!',
-    );
+    expect((await savedDraft('customStrings/postSurveyMessages.json')).es.postSurveyCompleteMessage).toBe('¡Gracias!');
   });
 });
 
@@ -166,8 +162,6 @@ describe('validateSections', () => {
   });
 
   test('problems USNM already had (two canned responses called “Share more”) are only warnings', async () => {
-    expect(validateSections(usnm.files, usnm.files).every((found) => found.severity === 'warning')).toBe(
-      true,
-    );
+    expect(validateSections(usnm.files, usnm.files).every(found => found.severity === 'warning')).toBe(true);
   });
 });

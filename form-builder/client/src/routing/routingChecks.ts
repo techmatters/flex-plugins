@@ -24,9 +24,9 @@ import { levelOrderOf, targetSkills } from '@tech-matters/form-builder-shared/ro
 // The Offline Contacts rule: every group of its conditions asks for an offline contact
 export const isOfflineContactsRule = (rule: Rule) =>
   rule.when.length > 0 &&
-  rule.when.every((group) =>
+  rule.when.every(group =>
     group.some(
-      (condition) =>
+      condition =>
         condition.kind === 'compare' &&
         condition.attribute === 'isContactlessTask' &&
         condition.operator === '==' &&
@@ -46,13 +46,13 @@ export type RoutingIssue = {
 
 export const routingChecks = (design: RoutingDesign): RoutingIssue[] => {
   const issues: RoutingIssue[] = [];
-  const queueKeys = new Set(design.queues.map((queue) => queue.key));
-  const skills = new Set(design.skills.map((skill) => skill.name));
-  const withLevels = new Set(design.skills.filter((skill) => skill.levels).map((skill) => skill.name));
+  const queueKeys = new Set(design.queues.map(queue => queue.key));
+  const skills = new Set(design.skills.map(skill => skill.name));
+  const withLevels = new Set(design.skills.filter(skill => skill.levels).map(skill => skill.name));
   const usedSkills = new Set<string>();
   const usedQueues = new Set<string>();
 
-  design.workflows.forEach((workflow) => {
+  design.workflows.forEach(workflow => {
     if (workflow.templateText) return;
     const names = new Set<string>();
     let catchAll: string | undefined;
@@ -83,7 +83,9 @@ export const routingChecks = (design: RoutingDesign): RoutingIssue[] => {
           ...where,
         });
       }
-      if (rule.when.some((group) => group.some((condition) => condition.kind === 'compare' && condition.values.length === 0))) {
+      if (
+        rule.when.some(group => group.some(condition => condition.kind === 'compare' && condition.values.length === 0))
+      ) {
         issues.push({
           key: `${rule.id}-novalue`,
           severity: 'error',
@@ -91,7 +93,7 @@ export const routingChecks = (design: RoutingDesign): RoutingIssue[] => {
           ...where,
         });
       }
-      const everyTask = rule.when.length === 0 || rule.when.some((group) => group.length === 0);
+      const everyTask = rule.when.length === 0 || rule.when.some(group => group.length === 0);
       if (everyTask && !catchAll) catchAll = rule.name || `rule ${index + 1}`;
       const offlineRule = isOfflineContactsRule(rule);
       if (rule.targets.length === 0) {
@@ -104,7 +106,7 @@ export const routingChecks = (design: RoutingDesign): RoutingIssue[] => {
       }
       rule.targets.forEach((target, targetIndex) => {
         usedQueues.add(target.queue);
-        targetSkills(target).forEach((skill) => {
+        targetSkills(target).forEach(skill => {
           usedSkills.add(skill);
           if (!skills.has(skill)) {
             issues.push({
@@ -115,11 +117,13 @@ export const routingChecks = (design: RoutingDesign): RoutingIssue[] => {
             });
           }
         });
-        if (!offlineRule && target.who.some((block) => block.kind === 'offlineContactAlternative')) {
+        if (!offlineRule && target.who.some(block => block.kind === 'offlineContactAlternative')) {
           issues.push({
             key: `${target.id}-offline`,
             severity: 'warning',
-            message: `${label}: step ${targetIndex + 1} also takes "the offline contact the counselor is recording". Offline contacts should be caught by the Offline Contacts rule, before this one; here it's probably a copy-paste leftover.`,
+            message: `${label}: step ${
+              targetIndex + 1
+            } also takes "the offline contact the counselor is recording". Offline contacts should be caught by the Offline Contacts rule, before this one; here it's probably a copy-paste leftover.`,
             ...where,
           });
         }
@@ -128,7 +132,9 @@ export const routingChecks = (design: RoutingDesign): RoutingIssue[] => {
           issues.push({
             key: `${target.id}-levels`,
             severity: 'warning',
-            message: `${label}: step ${targetIndex + 1} prefers counselors by their level of “${level.skill}”, but that skill doesn't have levels turned on.`,
+            message: `${label}: step ${targetIndex + 1} prefers counselors by their level of “${
+              level.skill
+            }”, but that skill doesn't have levels turned on.`,
             ...where,
           });
         }
@@ -160,9 +166,9 @@ export const routingChecks = (design: RoutingDesign): RoutingIssue[] => {
     });
   });
 
-  design.queues.forEach((queue) => {
+  design.queues.forEach(queue => {
     if (queue.workers.kind === 'skills') {
-      queue.workers.allOf.flat().forEach((skill) => {
+      queue.workers.allOf.flat().forEach(skill => {
         usedSkills.add(skill);
         if (!skills.has(skill)) {
           issues.push({
@@ -185,8 +191,8 @@ export const routingChecks = (design: RoutingDesign): RoutingIssue[] => {
   });
 
   design.skills
-    .filter((skill) => !usedSkills.has(skill.name))
-    .forEach((skill) =>
+    .filter(skill => !usedSkills.has(skill.name))
+    .forEach(skill =>
       issues.push({
         key: `skill-${skill.name}`,
         severity: 'warning',
@@ -195,7 +201,7 @@ export const routingChecks = (design: RoutingDesign): RoutingIssue[] => {
     );
 
   return [
-    ...issues.filter((issue) => issue.severity === 'error'),
-    ...issues.filter((issue) => issue.severity === 'warning'),
+    ...issues.filter(issue => issue.severity === 'error'),
+    ...issues.filter(issue => issue.severity === 'warning'),
   ];
 };

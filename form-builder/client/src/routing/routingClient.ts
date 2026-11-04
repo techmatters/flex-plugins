@@ -22,10 +22,16 @@ import { apiFetch } from '../app/auth';
 import type { Send } from '../drafts/draftClient';
 import type { RoutingImport } from '@tech-matters/form-builder-shared';
 import type { BranchChoice, FromBranch } from '@tech-matters/form-builder-shared';
-import type { RoutingDesign, RoutingMeta, RoutingSummary, StoredRouting } from '@tech-matters/form-builder-shared/routing/model';
+import type {
+  RoutingDesign,
+  RoutingMeta,
+  RoutingSummary,
+  StoredRouting,
+} from '@tech-matters/form-builder-shared/routing/model';
 
 export type RoutingSaveOutcome =
-  { ok: true; meta: RoutingMeta } | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
+  | { ok: true; meta: RoutingMeta }
+  | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
 
 export type RoutingClient = {
   list(): Promise<RoutingSummary[]>;

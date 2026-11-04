@@ -24,10 +24,27 @@ import { useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
 import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, GripVertical, Trash2, X } from 'lucide-react';
-import type { Condition, MoveOn, Role, RoutingDesign, Rule, Target } from '@tech-matters/form-builder-shared/routing/model';
-import { ATTRIBUTE_LABELS, attributeLabel, valueLabel, VALUE_LABELS } from '@tech-matters/form-builder-shared/routing/model';
+import type {
+  Condition,
+  MoveOn,
+  Role,
+  RoutingDesign,
+  Rule,
+  Target,
+} from '@tech-matters/form-builder-shared/routing/model';
+import {
+  ATTRIBUTE_LABELS,
+  attributeLabel,
+  valueLabel,
+  VALUE_LABELS,
+} from '@tech-matters/form-builder-shared/routing/model';
 import { queueKeyOf, queueReference, writeRule } from '@tech-matters/form-builder-shared/routing/convert';
-import { describeConditions, describeOrderBy, levelOrder, queueName } from '@tech-matters/form-builder-shared/routing/describe';
+import {
+  describeConditions,
+  describeOrderBy,
+  levelOrder,
+  queueName,
+} from '@tech-matters/form-builder-shared/routing/describe';
 import { hasBlock, newTarget, rolesOf, setRoles, setSkills, skillsOf, toggleBlock, updateTarget } from './edit';
 import { isOfflineContactsRule } from './routingChecks';
 import { familyOf } from './ConditionChip';
@@ -50,7 +67,7 @@ type Props = {
 
 // "Channel: Voice · Service: TYA → TYA queue"
 const summaryOf = (rule: Rule, design: RoutingDesign) => {
-  const queues = [...new Set(rule.targets.map((target) => queueName(design, target.queue)))];
+  const queues = [...new Set(rule.targets.map(target => queueName(design, target.queue)))];
   return `${describeConditions(rule.when)}${queues.length > 0 ? ` → ${queues.join(', then ')}` : ''}`;
 };
 
@@ -67,26 +84,26 @@ const ANOTHER_VALUE = '__another value__';
 // The values seen for an attribute anywhere in the design, to choose from
 const knownValues = (design: RoutingDesign, attribute: string) => {
   const values = new Set<string>();
-  design.workflows.forEach((workflow) =>
-    workflow.rules.forEach((rule) =>
-      rule.when.flat().forEach((condition) => {
+  design.workflows.forEach(workflow =>
+    workflow.rules.forEach(rule =>
+      rule.when.flat().forEach(condition => {
         if (condition.kind === 'compare' && condition.attribute === attribute) {
-          condition.values.forEach((value) => typeof value === 'string' && values.add(value));
+          condition.values.forEach(value => typeof value === 'string' && values.add(value));
         }
       }),
     ),
   );
   if (attribute === 'channelType')
-    ['voice', 'sms', 'web', 'voicemail', 'whatsapp', 'facebook', 'instagram'].forEach((value) => values.add(value));
+    ['voice', 'sms', 'web', 'voicemail', 'whatsapp', 'facebook', 'instagram'].forEach(value => values.add(value));
   return [...values].sort();
 };
 
 // The attributes the design's conditions already use (generic or the helpline's own)
 const usedAttributes = (design: RoutingDesign) => {
   const attributes = new Set<string>();
-  design.workflows.forEach((workflow) =>
-    workflow.rules.forEach((rule) =>
-      rule.when.flat().forEach((condition) => condition.kind === 'compare' && attributes.add(condition.attribute)),
+  design.workflows.forEach(workflow =>
+    workflow.rules.forEach(rule =>
+      rule.when.flat().forEach(condition => condition.kind === 'compare' && attributes.add(condition.attribute)),
     ),
   );
   return [...attributes].sort();
@@ -121,8 +138,8 @@ const AttributePicker = ({
         aria-label="Task attribute"
         placeholder="e.g. clinical, preEngagementData.area"
         autoFocus
-        onBlur={(e) => commit(e.target.value)}
-        onKeyDown={(e) => {
+        onBlur={e => commit(e.target.value)}
+        onKeyDown={e => {
           if (e.key === 'Enter') commit(e.currentTarget.value);
           if (e.key === 'Escape') setTyping(false);
         }}
@@ -136,9 +153,9 @@ const AttributePicker = ({
       aria-label="Task detail"
       disabled={readOnly}
       title={ATTRIBUTE_LABELS[attribute] ? attribute : "This helpline's own task attribute"}
-      onChange={(e) => (e.target.value === OTHER ? setTyping(true) : onChange(e.target.value))}
+      onChange={e => (e.target.value === OTHER ? setTyping(true) : onChange(e.target.value))}
     >
-      {choices.map((choice) => (
+      {choices.map(choice => (
         <option key={choice} value={choice}>
           {ATTRIBUTE_LABELS[choice] ? attributeLabel(choice) : `${choice} (helpline's own)`}
         </option>
@@ -172,7 +189,7 @@ const ConditionRow = ({
           value={condition.expression}
           aria-label="Custom condition"
           disabled={readOnly}
-          onChange={(e) => onChange({ kind: 'custom', expression: e.target.value })}
+          onChange={e => onChange({ kind: 'custom', expression: e.target.value })}
         />
         {!readOnly && (
           <button type="button" className="icon-button" aria-label="Remove condition" onClick={onRemove}>
@@ -199,12 +216,12 @@ const ConditionRow = ({
   };
   const queueOptions = (current?: string) => (
     <>
-      {current !== undefined && !design.queues.some((queue) => queueReference(queue.key) === current) && (
+      {current !== undefined && !design.queues.some(queue => queueReference(queue.key) === current) && (
         <option value={current}>{textOf(current)}</option>
       )}
       {design.queues
-        .filter((queue) => queueReference(queue.key) === current || !condition.values.includes(queueReference(queue.key)))
-        .map((queue) => (
+        .filter(queue => queueReference(queue.key) === current || !condition.values.includes(queueReference(queue.key)))
+        .map(queue => (
           <option key={queue.key} value={queueReference(queue.key)}>
             {queue.name}
           </option>
@@ -217,13 +234,13 @@ const ConditionRow = ({
         attribute={condition.attribute}
         design={design}
         readOnly={readOnly}
-        onChange={(attribute) => onChange({ ...condition, attribute })}
+        onChange={attribute => onChange({ ...condition, attribute })}
       />
       <select
         value={condition.operator}
         aria-label="How it compares"
         disabled={readOnly}
-        onChange={(e) => {
+        onChange={e => {
           const operator = e.target.value as typeof condition.operator;
           const multiple = operator === 'IN' || operator === 'NOT IN';
           onChange({
@@ -233,7 +250,7 @@ const ConditionRow = ({
           });
         }}
       >
-        {OPERATORS.map((operator) => (
+        {OPERATORS.map(operator => (
           <option key={operator.value} value={operator.value}>
             {operator.label}
           </option>
@@ -258,7 +275,7 @@ const ConditionRow = ({
           <select
             value=""
             aria-label="Add a queue"
-            onChange={(e) => e.target.value && onChange({ ...condition, values: [...condition.values, e.target.value] })}
+            onChange={e => e.target.value && onChange({ ...condition, values: [...condition.values, e.target.value] })}
           >
             <option value="">Choose a queue…</option>
             {queueOptions()}
@@ -268,7 +285,7 @@ const ConditionRow = ({
           <select
             value={String(condition.values[0])}
             aria-label="Transferred to queue"
-            onChange={(e) => onChange({ ...condition, values: [e.target.value] })}
+            onChange={e => onChange({ ...condition, values: [e.target.value] })}
           >
             {queueOptions(String(condition.values[0]))}
           </select>
@@ -280,15 +297,15 @@ const ConditionRow = ({
               list={listId}
               aria-label="Add a value"
               placeholder="Add…"
-              onKeyDown={(e) => {
+              onKeyDown={e => {
                 if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                   e.preventDefault();
                   addTyped(e.currentTarget);
                 }
               }}
               // What was typed counts when leaving the box too, not only with Enter
-              onBlur={(e) => addTyped(e.currentTarget)}
-              onChange={(e) => {
+              onBlur={e => addTyped(e.currentTarget)}
+              onChange={e => {
                 // Picking one of the suggestions adds it straight away
                 if (values.includes(e.target.value)) {
                   onChange({ ...condition, values: [...condition.values, e.target.value] });
@@ -297,7 +314,7 @@ const ConditionRow = ({
               }}
             />
             <datalist id={listId}>
-              {values.map((value) => (
+              {values.map(value => (
                 <option key={value} value={value} label={VALUE_LABELS[value]} />
               ))}
             </datalist>
@@ -308,11 +325,9 @@ const ConditionRow = ({
             value={String(condition.values[0])}
             aria-label="Value"
             // "Another value…" empties it, so a new one (e.g. a new service) can be typed
-            onChange={(e) =>
-              onChange({ ...condition, values: e.target.value === ANOTHER_VALUE ? [] : [e.target.value] })
-            }
+            onChange={e => onChange({ ...condition, values: e.target.value === ANOTHER_VALUE ? [] : [e.target.value] })}
           >
-            {[...new Set([String(condition.values[0]), ...values])].map((value) => (
+            {[...new Set([String(condition.values[0]), ...values])].map(value => (
               <option key={value} value={value}>
                 {valueLabel(value)}
               </option>
@@ -368,18 +383,18 @@ const TargetRow = ({
     if (!skill || skills.includes(skill)) return;
     onChange(setSkills(target, [...skills, skill]));
   };
-  const custom = target.who.filter((block) => block.kind === 'custom');
+  const custom = target.who.filter(block => block.kind === 'custom');
   const levelChoices = design.skills
-    .filter((skill) => skill.levels)
-    .flatMap((skill) => [levelOrder(skill.name, 'DESC'), levelOrder(skill.name, 'ASC')]);
+    .filter(skill => skill.levels)
+    .flatMap(skill => [levelOrder(skill.name, 'DESC'), levelOrder(skill.name, 'ASC')]);
   if (target.orderBy && !levelChoices.includes(target.orderBy)) levelChoices.push(target.orderBy);
   return (
     <li
       className="routing-target-row"
-      onDragOver={(e) => {
+      onDragOver={e => {
         if (!readOnly && e.dataTransfer.types.includes(SKILL_MIME)) e.preventDefault();
       }}
-      onDrop={(e) => {
+      onDrop={e => {
         const skill = e.dataTransfer.getData(SKILL_MIME);
         if (skill && !readOnly) addSkill(skill);
       }}
@@ -391,13 +406,13 @@ const TargetRow = ({
           <select
             value={target.queue}
             disabled={readOnly}
-            onChange={(e) => onChange({ ...target, queue: e.target.value })}
+            onChange={e => onChange({ ...target, queue: e.target.value })}
           >
             <option value="">Choose…</option>
-            {!design.queues.some((queue) => queue.key === target.queue) && target.queue && (
+            {!design.queues.some(queue => queue.key === target.queue) && target.queue && (
               <option value={target.queue}>{target.queue}</option>
             )}
-            {design.queues.map((queue) => (
+            {design.queues.map(queue => (
               <option key={queue.key} value={queue.key}>
                 {queue.name}
               </option>
@@ -440,11 +455,11 @@ const TargetRow = ({
               value={roles?.join(',') ?? ''}
               aria-label="Who"
               disabled={readOnly}
-              onChange={(e) =>
-                onChange(setRoles(target, ROLE_CHOICES.find((choice) => choice.value === e.target.value)?.roles))
+              onChange={e =>
+                onChange(setRoles(target, ROLE_CHOICES.find(choice => choice.value === e.target.value)?.roles))
               }
             >
-              {ROLE_CHOICES.map((choice) => (
+              {ROLE_CHOICES.map(choice => (
                 <option key={choice.value} value={choice.value}>
                   {choice.label}
                 </option>
@@ -452,7 +467,7 @@ const TargetRow = ({
             </select>
             <span>with</span>
             {skills.length === 0 && <span className="field-hint">any skills</span>}
-            {skills.map((skill) => (
+            {skills.map(skill => (
               <span key={skill} className="routing-chip skill">
                 {skill}
                 {!readOnly && (
@@ -463,7 +478,7 @@ const TargetRow = ({
                       onChange(
                         setSkills(
                           target,
-                          skills.filter((other) => other !== skill),
+                          skills.filter(other => other !== skill),
                         ),
                       )
                     }
@@ -474,11 +489,11 @@ const TargetRow = ({
               </span>
             ))}
             {!readOnly && (
-              <select value="" aria-label="Add a skill" onChange={(e) => addSkill(e.target.value)}>
+              <select value="" aria-label="Add a skill" onChange={e => addSkill(e.target.value)}>
                 <option value="">+ skill</option>
                 {design.skills
-                  .filter((skill) => !skills.includes(skill.name))
-                  .map((skill) => (
+                  .filter(skill => !skills.includes(skill.name))
+                  .map(skill => (
                     <option key={skill.name} value={skill.name}>
                       {skill.name}
                     </option>
@@ -500,7 +515,7 @@ const TargetRow = ({
                   type="checkbox"
                   checked={hasBlock(target, block.kind)}
                   disabled={readOnly}
-                  onChange={(e) => onChange(toggleBlock(target, block, e.target.checked))}
+                  onChange={e => onChange(toggleBlock(target, block, e.target.checked))}
                 />
                 <span>{label}</span>
               </label>
@@ -559,7 +574,7 @@ const TargetRow = ({
                       aria-label="Custom worker condition"
                       placeholder="e.g. worker.routing.skills HAS task.language"
                       disabled={readOnly}
-                      onChange={(e) =>
+                      onChange={e =>
                         onChange({
                           ...target,
                           who: target.who.map((candidate, i) =>
@@ -603,7 +618,7 @@ const TargetRow = ({
             value={target.priority ?? ''}
             placeholder="0"
             disabled={readOnly}
-            onChange={(e) =>
+            onChange={e =>
               onChange({
                 ...target,
                 priority: e.target.value === '' ? undefined : Number(e.target.value),
@@ -616,19 +631,19 @@ const TargetRow = ({
           <select
             value={moveOnValue(target.moveOn)}
             disabled={readOnly}
-            onChange={(e) => {
+            onChange={e => {
               const value = e.target.value;
               const moveOn: MoveOn =
                 value === 'skip'
                   ? { kind: 'skip', expression: '1==1' }
                   : value === 'timeout'
-                    ? {
-                        kind: 'timeout',
-                        seconds: target.moveOn.kind === 'timeout' ? target.moveOn.seconds : 120,
-                      }
-                    : value === 'custom'
-                      ? target.moveOn
-                      : { kind: 'wait' };
+                  ? {
+                      kind: 'timeout',
+                      seconds: target.moveOn.kind === 'timeout' ? target.moveOn.seconds : 120,
+                    }
+                  : value === 'custom'
+                  ? target.moveOn
+                  : { kind: 'wait' };
               onChange({ ...target, moveOn });
             }}
           >
@@ -644,10 +659,10 @@ const TargetRow = ({
             <select
               value={target.orderBy ?? ''}
               disabled={readOnly}
-              onChange={(e) => onChange({ ...target, orderBy: e.target.value || undefined })}
+              onChange={e => onChange({ ...target, orderBy: e.target.value || undefined })}
             >
               <option value="">no one in particular</option>
-              {levelChoices.map((orderBy) => (
+              {levelChoices.map(orderBy => (
                 <option key={orderBy} value={orderBy}>
                   {describeOrderBy(orderBy)!.replace(/^Prefer:? (the )?/, '')}
                 </option>
@@ -663,7 +678,7 @@ const TargetRow = ({
               value={target.moveOn.seconds}
               disabled={readOnly}
               aria-label="Seconds"
-              onChange={(e) =>
+              onChange={e =>
                 onChange({
                   ...target,
                   moveOn: { kind: 'timeout', seconds: Number(e.target.value) },
@@ -703,7 +718,7 @@ const TaskConditions = ({
       ...rule,
       when: rule.when
         .map((candidate, i) => (i === groupIndex ? group : candidate))
-        .filter((candidate) => candidate.length > 0),
+        .filter(candidate => candidate.length > 0),
     });
   const several = rule.when.length > 1;
   return (
@@ -735,7 +750,7 @@ const TaskConditions = ({
                   condition={condition}
                   design={design}
                   readOnly={readOnly}
-                  onChange={(changed) =>
+                  onChange={changed =>
                     setGroup(
                       groupIndex,
                       group.map((candidate, i) => (i === conditionIndex ? changed : candidate)),
@@ -831,7 +846,7 @@ export const RuleCard = ({
           placeholder="Name this rule"
           aria-label="Rule name"
           disabled={readOnly}
-          onChange={(e) => onChange({ ...rule, name: e.target.value })}
+          onChange={e => onChange({ ...rule, name: e.target.value })}
         />
         {expanded && (
           <span className="routing-rule-tabs" role="tablist" aria-label="View">
@@ -894,11 +909,11 @@ export const RuleCard = ({
                   offlineRule={offlineRule}
                   readOnly={readOnly}
                   onChange={setTarget}
-                  onMove={(direction) => moveTarget(step, step + direction)}
+                  onMove={direction => moveTarget(step, step + direction)}
                   onRemove={() =>
                     onChange({
                       ...rule,
-                      targets: rule.targets.filter((candidate) => candidate.id !== target.id),
+                      targets: rule.targets.filter(candidate => candidate.id !== target.id),
                     })
                   }
                 />

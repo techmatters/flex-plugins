@@ -28,7 +28,10 @@ module.exports = ({ types: t }) => ({
         t.isIdentifier(callee.property, { name: 'context' })
       ) {
         nodePath.replaceWith(
-          t.callExpression(t.identifier('__jestRequireContext'), [t.identifier('__dirname'), ...nodePath.node.arguments]),
+          t.callExpression(t.identifier('__jestRequireContext'), [
+            t.identifier('__dirname'),
+            ...nodePath.node.arguments,
+          ]),
         );
       }
     },

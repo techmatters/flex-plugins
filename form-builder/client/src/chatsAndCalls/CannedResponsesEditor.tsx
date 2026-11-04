@@ -62,21 +62,19 @@ export const CannedResponsesEditor = () => {
       <div className="section-editor-main">
         <section className="panel">
           <h2>Canned responses</h2>
-          <p className="muted">
-            Ready-made messages counselors can pick in a chat, then edit before sending.
-          </p>
+          <p className="muted">Ready-made messages counselors can pick in a chat, then edit before sending.</p>
           {!enabled && (
             <p className="issue issue-warning">
-              Canned responses are switched off for this helpline, so counselors don't see them
-              yet. Ask Aselo staff to turn on <code>enable_canned_responses</code>.
+              Canned responses are switched off for this helpline, so counselors don't see them yet. Ask Aselo staff to
+              turn on <code>enable_canned_responses</code>.
             </p>
           )}
 
           <SortableRows
             rows={rows}
-            labelOf={(response) => response.label}
-            onReorder={(next) => dispatch(reorderResponses(next))}
-            renderRow={(row) => (
+            labelOf={response => response.label}
+            onReorder={next => dispatch(reorderResponses(next))}
+            renderRow={row => (
               <div className="canned-response-row">
                 <div className="row-inline">
                   <input
@@ -84,7 +82,7 @@ export const CannedResponsesEditor = () => {
                     value={row.value.label}
                     placeholder="Name shown in the list"
                     aria-label="Name"
-                    onChange={(e) => dispatch(updateResponse(row.id, { label: e.target.value }))}
+                    onChange={e => dispatch(updateResponse(row.id, { label: e.target.value }))}
                   />
                   <button
                     type="button"
@@ -100,7 +98,7 @@ export const CannedResponsesEditor = () => {
                   value={row.value.text}
                   placeholder="The message counselors will send"
                   aria-label="Message"
-                  onChange={(e) => dispatch(updateResponse(row.id, { text: e.target.value }))}
+                  onChange={e => dispatch(updateResponse(row.id, { text: e.target.value }))}
                 />
               </div>
             )}
@@ -119,14 +117,13 @@ export const CannedResponsesEditor = () => {
             <div className="bulk-add">
               <label className="field">
                 <span className="field-label">
-                  Copy two columns from Excel or Google Sheets (name, then message) and paste them
-                  here
+                  Copy two columns from Excel or Google Sheets (name, then message) and paste them here
                 </span>
                 <textarea
                   rows={6}
                   value={pasteText}
                   autoFocus
-                  onChange={(e) => dispatch(pasteTextChanged(e.target.value))}
+                  onChange={e => dispatch(pasteTextChanged(e.target.value))}
                   placeholder={'Greeting\tHi, thanks for reaching out.'}
                 />
               </label>
@@ -161,12 +158,12 @@ export const CannedResponsesEditor = () => {
                 className="aselo-select aselo-select-full"
                 aria-label={translate(strings, 'CannedResponses')}
                 value=""
-                onChange={(e) => dispatch(previewMessageChanged(e.target.value))}
+                onChange={e => dispatch(previewMessageChanged(e.target.value))}
               >
                 <option value="" disabled>
                   {translate(strings, 'CannedResponses')}
                 </option>
-                {rows.map((row) => (
+                {rows.map(row => (
                   <option key={row.id} value={row.value.text}>
                     {row.value.label}
                   </option>
@@ -182,9 +179,7 @@ export const CannedResponsesEditor = () => {
             )}
             <span className="flex-send-button">Send</span>
           </div>
-          <p className="field-hint section-preview-hint">
-            Pick a response to see it land in the message box.
-          </p>
+          <p className="field-hint section-preview-hint">Pick a response to see it land in the message box.</p>
         </div>
       </aside>
     </div>

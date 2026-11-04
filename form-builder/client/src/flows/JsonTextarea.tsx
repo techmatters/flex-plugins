@@ -33,15 +33,7 @@ type Props = Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value' | 'onChan
   minRows?: number;
 };
 
-export const JsonTextarea = ({
-  value,
-  onValueChange,
-  isValid,
-  autoGrow = false,
-  minRows,
-  onBlur,
-  ...rest
-}: Props) => {
+export const JsonTextarea = ({ value, onValueChange, isValid, autoGrow = false, minRows, onBlur, ...rest }: Props) => {
   const edited = useRef(false);
   const handlers = {
     value,
@@ -54,15 +46,10 @@ export const JsonTextarea = ({
         edited.current = false;
         const text = e.currentTarget.value;
         const formatted = isValid(text) ? formatTemplateJson(text) : undefined;
-        if (formatted !== undefined && formatted !== text && isValid(formatted))
-          onValueChange(formatted);
+        if (formatted !== undefined && formatted !== text && isValid(formatted)) onValueChange(formatted);
       }
       onBlur?.(e);
     },
   };
-  return autoGrow ? (
-    <AutoTextarea {...rest} minRows={minRows} {...handlers} />
-  ) : (
-    <textarea {...rest} {...handlers} />
-  );
+  return autoGrow ? <AutoTextarea {...rest} minRows={minRows} {...handlers} /> : <textarea {...rest} {...handlers} />;
 };

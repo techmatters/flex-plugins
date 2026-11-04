@@ -33,7 +33,12 @@ import {
 } from './edit';
 import { contactFormsOf, setFormTargets } from '@tech-matters/form-builder-shared/chatbots/formMappings';
 import { matchesPattern, patternProblem } from '@tech-matters/form-builder-shared/chatbots/model';
-import { botStatusOf, isNewBot, setBotStatus, withStatusUpdates } from '@tech-matters/form-builder-shared/chatbots/status';
+import {
+  botStatusOf,
+  isNewBot,
+  setBotStatus,
+  withStatusUpdates,
+} from '@tech-matters/form-builder-shared/chatbots/status';
 import { loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
 import { handleApiRequest } from '@tech-matters/form-builder-server/api';
@@ -55,7 +60,7 @@ const formsOf = async (code: string) => {
 describe('chatbots from a live helpline', () => {
   test('USCH: the pre-survey as Lex runs it, with answers found the lex stage way', async () => {
     const { design, report } = await importChatbots(helplinesDir, 'usch');
-    expect(report.bots.map((bot) => `${bot.language}/${bot.name}`)).toEqual([
+    expect(report.bots.map(bot => `${bot.language}/${bot.name}`)).toEqual([
       'en_USCH/pre_survey',
       'en_USCH/post_survey',
     ]);
@@ -65,7 +70,7 @@ describe('chatbots from a live helpline', () => {
     expect(intent.utterances).toContain('Incoming webchat contact');
     expect(intent.opening).toMatch(/^If this is a life-threatening emergency/);
     expect(intent.closing).toBe('Thank you, a counselor will be with you shortly.');
-    expect(intent.questions.map((question) => [question.slot, question.answerType])).toEqual([
+    expect(intent.questions.map(question => [question.slot, question.answerType])).toEqual([
       ['aboutSelf', 'yes_no'],
       ['genderInput', 'genderInput'],
       ['ageRange', 'ageRange'],
@@ -85,14 +90,14 @@ describe('chatbots from a live helpline', () => {
     expect(design.answerTypes.en_USCH['AMAZON.State']).toEqual({ name: 'AMAZON.State', builtin: true, values: [] });
     expect(design.answerTypes.en_USCH.ageRange.values[0]).toMatchObject({ value: 'Unknown' });
     // The post-survey's two paths
-    expect(design.bots[1].intents.map((candidate) => candidate.name)).toEqual(['post_survey_yes', 'post_survey_no']);
+    expect(design.bots[1].intents.map(candidate => candidate.name)).toEqual(['post_survey_yes', 'post_survey_no']);
     // Nothing changed yet
     expect(chatbotChanges(design)).toEqual([]);
   });
 
   test('every helpline with chatbots imports, and its design can be checked', async () => {
     const codes = readdirSync(helplinesDir).filter(
-      (code) =>
+      code =>
         /^[a-z0-9]+$/.test(code) &&
         (existsSync(path.join(helplinesDir, code, 'staging.hcl')) ||
           existsSync(path.join(helplinesDir, code, 'production.hcl'))),
@@ -104,9 +109,9 @@ describe('chatbots from a live helpline', () => {
       expectAt(code, () => chatbotChecks(design)).not.toThrow();
       expectAt(code, chatbotChanges(design)).toEqual([]);
       // Every question takes answers the design knows
-      design.bots.forEach((bot) =>
-        bot.intents.forEach((intent) =>
-          intent.questions.forEach((question) =>
+      design.bots.forEach(bot =>
+        bot.intents.forEach(intent =>
+          intent.questions.forEach(question =>
             expectAt(`${code} ${question.slot}`, design.answerTypes[bot.language]?.[question.answerType]).toBeDefined(),
           ),
         ),
@@ -119,23 +124,23 @@ describe('chatbots from a live helpline', () => {
     const { design } = await importChatbots(helplinesDir, 'usch');
     const bot = design.bots[0];
     const [intent] = bot.intents;
-    let changed = updateBot(design, bot.id, (current) =>
-      updateIntent(current, intent.id, (old) =>
+    let changed = updateBot(design, bot.id, current =>
+      updateIntent(current, intent.id, old =>
         moveQuestion(
-          updateQuestion(old, old.questions[2].id, (question) => ({ ...question, question: 'What is your age?' })),
+          updateQuestion(old, old.questions[2].id, question => ({ ...question, question: 'What is your age?' })),
           0,
           1,
         ),
       ),
     );
-    changed = updateAnswerType(changed, 'en_USCH', 'yes_no', (type) => ({
+    changed = updateAnswerType(changed, 'en_USCH', 'yes_no', type => ({
       ...type,
       values: type.values.map((option, index) =>
         index === 0 ? { ...option, synonyms: [...option.synonyms, 'yep'] } : option,
       ),
     }));
     const changes = chatbotChanges(changed);
-    expect(changes.map((change) => [change.what, change.writeTo])).toEqual([
+    expect(changes.map(change => [change.what, change.writeTo])).toEqual([
       ['questions and their order', 'usch/configs/lex_v2/en_USCH/intents/pre_survey.json'],
       ['question “ageRange”: question', 'usch/configs/lex_v2/en_USCH/slots/ageRange.json'],
       ['answers “yes_no”', 'usch/configs/lex_v2/en_USCH/slot_types/yes_no.json'],
@@ -160,10 +165,10 @@ describe('chatbots from a live helpline', () => {
 
     const withPattern = addAnswerType(design, 'en_USCH', 'zipCode', 'pattern');
     expect(withPattern.answerTypes.en_USCH.zipCode).toMatchObject({ parent: 'AMAZON.AlphaNumeric', values: [] });
-    const broken = updateAnswerType(withPattern, 'en_USCH', 'zipCode', (type) => ({ ...type, pattern: '.*' }));
-    expect(chatbotChecks(broken).some((issue) => /zipCode.*unlimited|zipCode.*“\.”/.test(issue.message))).toBe(true);
+    const broken = updateAnswerType(withPattern, 'en_USCH', 'zipCode', type => ({ ...type, pattern: '.*' }));
+    expect(chatbotChecks(broken).some(issue => /zipCode.*unlimited|zipCode.*“\.”/.test(issue.message))).toBe(true);
     // New answers go to the helpline's own folder
-    expect(chatbotChanges(withPattern).find((change) => change.what === 'new answers “zipCode”')?.writeTo).toBe(
+    expect(chatbotChanges(withPattern).find(change => change.what === 'new answers “zipCode”')?.writeTo).toBe(
       'usch/configs/lex_v2/en_USCH/slot_types/zipCode.json',
     );
   });
@@ -173,10 +178,10 @@ describe('chatbots from a live helpline', () => {
     expect(design.formsVersion).toBe('v1');
     expect(design.formMappings?.ageRange).toEqual([['CallerInformationTab.ageRange', 'ChildInformationTab.ageRange']]);
     const forms = await formsOf('usch');
-    expect(chatbotChecks(design, forms).filter((issue) => /Contact form/.test(issue.message))).toEqual([]);
+    expect(chatbotChecks(design, forms).filter(issue => /Contact form/.test(issue.message))).toEqual([]);
 
     const mapped = setFormTargets(design, 'aboutSelf', [['CaseInformationTab.nowhere']]);
-    expect(chatbotChecks(mapped, forms).some((issue) => /isn't a field of the contact form/.test(issue.message))).toBe(
+    expect(chatbotChecks(mapped, forms).some(issue => /isn't a field of the contact form/.test(issue.message))).toBe(
       true,
     );
     expect(chatbotChanges(mapped)).toEqual([
@@ -189,7 +194,7 @@ describe('chatbots from a live helpline', () => {
 
     // USNM's survey mappings point at fields its form doesn't have, and it has no pre-survey
     const usnm = await importChatbots(helplinesDir, 'usnm', formsDir);
-    const usnmMessages = chatbotChecks(usnm.design, await formsOf('usnm')).map((issue) => issue.message);
+    const usnmMessages = chatbotChecks(usnm.design, await formsOf('usnm')).map(issue => issue.message);
     expect(usnmMessages).toContain(
       "Contact form: “age” fills in ChildInformationTab.age, which isn't a field of the contact form (v1).",
     );
@@ -204,7 +209,7 @@ describe('chatbots from a live helpline', () => {
     const ready = setBotStatus(design, bot.id, 'ready');
     const commented = withStatusUpdates(
       ready,
-      updateBot(ready, bot.id, (current) => ({
+      updateBot(ready, bot.id, current => ({
         ...addComment(current, newComment('Check with the helpline', 'Alex')),
         notes: 'The webchat pre-survey',
       })),
@@ -214,15 +219,15 @@ describe('chatbots from a live helpline', () => {
 
     const edited = withStatusUpdates(
       commented,
-      updateBot(commented, bot.id, (current) =>
-        updateIntent(current, current.intents[0].id, (intent) => ({ ...intent, closing: 'Bye' })),
+      updateBot(commented, bot.id, current =>
+        updateIntent(current, current.intents[0].id, intent => ({ ...intent, closing: 'Bye' })),
       ),
     );
     expect(botStatusOf(edited, edited.bots[0])).toBe('in-progress');
     // Changing answers the chatbot uses counts too
     const answers = withStatusUpdates(
       ready,
-      updateAnswerType(ready, 'en_USCH', 'ageRange', (type) => ({ ...type, values: type.values.slice(1) })),
+      updateAnswerType(ready, 'en_USCH', 'ageRange', type => ({ ...type, values: type.values.slice(1) })),
     );
     expect(botStatusOf(answers, answers.bots[0])).toBe('in-progress');
     expect(botStatusOf(answers, answers.bots[1])).toBe('imported');
@@ -255,12 +260,12 @@ describe('chatbots from a live helpline', () => {
       copyFrom: design.bots[0],
     });
     expect(sameLanguage.bot.intents[0].name).toBe('pre_survey_sms');
-    const changed = updateBot(sameLanguage.design, sameLanguage.bot.id, (current) =>
-      updateIntent(current, current.intents[0].id, (intent) =>
-        updateQuestion(intent, intent.questions[0].id, (question) => ({ ...question, question: 'Different' })),
+    const changed = updateBot(sameLanguage.design, sameLanguage.bot.id, current =>
+      updateIntent(current, current.intents[0].id, intent =>
+        updateQuestion(intent, intent.questions[0].id, question => ({ ...question, question: 'Different' })),
       ),
     );
-    expect(chatbotChecks(changed).some((issue) => /share the file slots\/aboutSelf\.json/.test(issue.message))).toBe(
+    expect(chatbotChecks(changed).some(issue => /share the file slots\/aboutSelf\.json/.test(issue.message))).toBe(
       true,
     );
   });
@@ -269,20 +274,20 @@ describe('chatbots from a live helpline', () => {
     const { design } = await importChatbots(helplinesDir, 'usch');
     const bot = design.bots[0];
     const [intent] = bot.intents;
-    let changed = updateBot(design, bot.id, (current) =>
-      updateIntent(current, intent.id, (old) =>
-        updateQuestion(old, old.questions[0].id, (question) => ({ ...question, question: ' ' })),
+    let changed = updateBot(design, bot.id, current =>
+      updateIntent(current, intent.id, old =>
+        updateQuestion(old, old.questions[0].id, question => ({ ...question, question: ' ' })),
       ),
     );
-    changed = updateAnswerType(changed, 'en_USCH', 'yes_no', (type) => ({
+    changed = updateAnswerType(changed, 'en_USCH', 'yes_no', type => ({
       ...type,
       values: type.values.map((option, index) =>
         index === 1 ? { ...option, synonyms: [...option.synonyms, '1'] } : option,
       ),
     }));
-    const messages = chatbotChecks(changed).map((issue) => issue.message);
-    expect(messages.some((message) => /question 1 has no text/.test(message))).toBe(true);
-    expect(messages.some((message) => /“1” means both/.test(message))).toBe(true);
+    const messages = chatbotChecks(changed).map(issue => issue.message);
+    expect(messages.some(message => /question 1 has no text/.test(message))).toBe(true);
+    expect(messages.some(message => /“1” means both/.test(message))).toBe(true);
   });
 });
 

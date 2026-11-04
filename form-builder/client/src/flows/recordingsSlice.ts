@@ -52,7 +52,7 @@ const recordingsSlice = createSlice({
   name: 'boardRecordings',
   initialState,
   reducers: {
-    refreshStarted: (state) => {
+    refreshStarted: state => {
       state.refreshing = true;
     },
     recordingsLoaded: (state, action: PayloadAction<RecordingsList>) => {
@@ -66,7 +66,7 @@ const recordingsSlice = createSlice({
     },
     fileBusy: (state, action: PayloadAction<{ fileName: string; busy: boolean }>) => {
       const { fileName, busy } = action.payload;
-      state.busy = busy ? [...new Set([...state.busy, fileName])] : state.busy.filter((other) => other !== fileName);
+      state.busy = busy ? [...new Set([...state.busy, fileName])] : state.busy.filter(other => other !== fileName);
     },
     // A change answers with the updated list
     recordingsChanged: (state, action: PayloadAction<RecordingsList>) => {
@@ -74,7 +74,7 @@ const recordingsSlice = createSlice({
     },
   },
   // Each board starts with none, until its own are loaded
-  extraReducers: (builder) => builder.addCase(boardOpened, () => initialState),
+  extraReducers: builder => builder.addCase(boardOpened, () => initialState),
 });
 
 declare module '../app/store' {
@@ -151,12 +151,12 @@ export const renameRecordings =
     const variants = selectVariants(getState());
     const content = selectContent(getState());
     const libraries =
-      variants.length > 0 ? variants.map((candidate) => `${board.code}/f/${candidate.recordingsFolder}`) : [board.code];
+      variants.length > 0 ? variants.map(candidate => `${board.code}/f/${candidate.recordingsFolder}`) : [board.code];
     const renamed = new Set<string>();
     for (const id of objectIds) {
       // As just changed (renamed in the settings), or as on the board
       const object =
-        given.find((candidate) => candidate.id === id) ?? content.objects.find((candidate) => candidate.id === id);
+        given.find(candidate => candidate.id === id) ?? content.objects.find(candidate => candidate.id === id);
       const from = object?.message?.recordingFile;
       if (!object?.studioName || !from) continue;
       const to = standardRecordingName(object.studioName, from);
@@ -177,7 +177,9 @@ export const renameRecordings =
     if (renamed.size > 0) {
       dispatch(
         noticeShown(
-          `${renamed.size} recording${renamed.size === 1 ? '' : 's'} renamed to the standard (copied; the old files are kept).`,
+          `${renamed.size} recording${
+            renamed.size === 1 ? '' : 's'
+          } renamed to the standard (copied; the old files are kept).`,
         ),
       );
     }

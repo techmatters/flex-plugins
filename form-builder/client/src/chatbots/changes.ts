@@ -24,7 +24,14 @@
  *
  * Comments, notes and statuses aren't changes to the config: the export carries them separately.
  */
-import type { AnswerOption, AnswerType, Chatbot, ChatbotDesign, ChatbotIntent, ChatbotQuestion } from '@tech-matters/form-builder-shared/chatbots/model';
+import type {
+  AnswerOption,
+  AnswerType,
+  Chatbot,
+  ChatbotDesign,
+  ChatbotIntent,
+  ChatbotQuestion,
+} from '@tech-matters/form-builder-shared/chatbots/model';
 import { formDefinitionsPath, mappingJson } from '@tech-matters/form-builder-shared/chatbots/formMappings';
 
 export type ChatbotChange = {
@@ -67,7 +74,7 @@ const typeSettings = (type: AnswerType) => ({
 export const chatbotChanges = (design: ChatbotDesign): ChatbotChange[] => {
   const code = design.helpline;
   const changes: ChatbotChange[] = [];
-  const importedBots = new Map((design.imported?.bots ?? []).map((bot) => [bot.id, bot]));
+  const importedBots = new Map((design.imported?.bots ?? []).map(bot => [bot.id, bot]));
 
   design.bots.forEach((bot: Chatbot) => {
     const label = `${bot.language}/${bot.name}`;
@@ -77,7 +84,7 @@ export const chatbotChanges = (design: ChatbotDesign): ChatbotChange[] => {
       changes.push({ bot: label, what: 'new chatbot', writeTo: botsFile, to: bot });
       return;
     }
-    const importedIntents = new Map(before.intents.map((intent) => [intent.id, intent]));
+    const importedIntents = new Map(before.intents.map(intent => [intent.id, intent]));
     bot.intents.forEach((intent: ChatbotIntent) => {
       const old = importedIntents.get(intent.id);
       const intentFile = writeTo(code, bot.language, 'intents', intent.name, intent.file, intent.shared);
@@ -93,14 +100,14 @@ export const chatbotChanges = (design: ChatbotDesign): ChatbotChange[] => {
       if (JSON.stringify(old.utterances) !== JSON.stringify(intent.utterances))
         changes.push({ ...base, what: 'starts when (utterances)', from: old.utterances, to: intent.utterances });
 
-      const oldQuestions = new Map(old.questions.map((question) => [question.id, question]));
-      const order = intent.questions.map((question) => question.slot);
-      const oldOrder = old.questions.map((question) => question.slot);
+      const oldQuestions = new Map(old.questions.map(question => [question.id, question]));
+      const order = intent.questions.map(question => question.slot);
+      const oldOrder = old.questions.map(question => question.slot);
       if (JSON.stringify(order) !== JSON.stringify(oldOrder)) {
         // Order lives in the intent's slotPriorities and each slot's captureNextStep (slotToElicit)
         changes.push({ ...base, what: 'questions and their order', from: oldOrder, to: order });
       }
-      intent.questions.forEach((question) => {
+      intent.questions.forEach(question => {
         const previous = oldQuestions.get(question.id);
         const slotFile = writeTo(code, bot.language, 'slots', question.slot, question.file, question.shared);
         if (!previous) {
@@ -109,7 +116,7 @@ export const chatbotChanges = (design: ChatbotDesign): ChatbotChange[] => {
         }
         const now = questionFields(question);
         const then = questionFields(previous);
-        (Object.keys(now) as (keyof typeof now)[]).forEach((field) => {
+        (Object.keys(now) as (keyof typeof now)[]).forEach(field => {
           if (now[field] !== then[field]) {
             changes.push({
               ...base,
@@ -133,8 +140,8 @@ export const chatbotChanges = (design: ChatbotDesign): ChatbotChange[] => {
         }
       });
       old.questions
-        .filter((question) => !intent.questions.some((candidate) => candidate.id === question.id))
-        .forEach((question) => changes.push({ ...base, what: 'question removed', from: question.slot }));
+        .filter(question => !intent.questions.some(candidate => candidate.id === question.id))
+        .forEach(question => changes.push({ ...base, what: 'question removed', from: question.slot }));
     });
   });
 
@@ -167,7 +174,7 @@ export const chatbotChanges = (design: ChatbotDesign): ChatbotChange[] => {
     const before = design.imported?.formMappings ?? {};
     const file = formDefinitionsPath(code, design.formsVersion);
     const names = [...new Set([...Object.keys(before), ...Object.keys(design.formMappings)])].sort();
-    names.forEach((name) => {
+    names.forEach(name => {
       const then = before[name];
       const now = design.formMappings![name];
       if (JSON.stringify(then ?? []) === JSON.stringify(now ?? [])) return;

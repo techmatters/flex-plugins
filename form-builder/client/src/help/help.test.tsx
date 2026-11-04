@@ -74,9 +74,9 @@ const inStore = (store: AppStore, children: ReactNode) => render(<Provider store
 
 describe('the help articles', () => {
   test('each has a title, the ways people ask for it, a short answer, and links that lead somewhere', () => {
-    const slugs = new Set(HELP_ARTICLES.map((article) => article.slug));
-    expect(HELP_ARTICLES.filter((article) => article.area === 'forms').length).toBeGreaterThanOrEqual(15);
-    HELP_ARTICLES.forEach((article) => {
+    const slugs = new Set(HELP_ARTICLES.map(article => article.slug));
+    expect(HELP_ARTICLES.filter(article => article.area === 'forms').length).toBeGreaterThanOrEqual(15);
+    HELP_ARTICLES.forEach(article => {
       expectAt(article.slug, article.title).not.toBe('');
       expectAt(article.slug, article.questions.length).toBeGreaterThanOrEqual(2);
       expectAt(article.slug, article.summary.length).toBeGreaterThan(30);
@@ -162,7 +162,7 @@ describe('asking in your own words', () => {
   test("helpline staff don't get what's written for Aselo staff", () => {
     expect(best('download the zip and publish the draft', true)).toBe('aselo-publish-a-draft');
     const { results } = searchHelp('download the zip and publish the draft', { area: 'forms', isAseloStaff: false });
-    expect(results.map((result) => result.article.audience)).not.toContain('aselo');
+    expect(results.map(result => result.article.audience)).not.toContain('aselo');
   });
 });
 
@@ -171,7 +171,7 @@ describe('the help panel', () => {
     const sent: unknown[] = [];
     return {
       sent,
-      send: async (question) => {
+      send: async question => {
         sent.push(question);
       },
       list: async () => [
@@ -245,7 +245,7 @@ describe('the help panel', () => {
   });
 
   test('an area without help yet says so, and still offers the general articles', () => {
-    const general = HELP_ARTICLES.filter((article) => article.area === 'general');
+    const general = HELP_ARTICLES.filter(article => article.area === 'general');
     renderPanel({ area: 'routing', helpClient: client(), articles: general });
     expect(screen.getByText(/Help for Routing is on its way/)).toBeTruthy();
     expect(screen.getByRole('button', { name: /Signing in and getting access/ })).toBeTruthy();
@@ -257,7 +257,7 @@ describe('“Need help?” on a section', () => {
     const { HelpContext, NeedHelp } = await import('./HelpContext');
     const opened: (string | undefined)[] = [];
     render(
-      <HelpContext.Provider value={(slug) => opened.push(slug)}>
+      <HelpContext.Provider value={slug => opened.push(slug)}>
         <NeedHelp slug="section-service-user-information" what="service user information" />
         <NeedHelp slug="no-such-article" what="nothing" />
       </HelpContext.Provider>,
@@ -284,12 +284,12 @@ describe('“Need help?” on a section', () => {
 
 describe('“Show me” tours', () => {
   test('each tour step points at something, says something, and its kind is one Tour knows', () => {
-    const tours = HELP_ARTICLES.filter((article) => article.tour);
-    expect(tours.map((article) => article.slug).sort()).toEqual(
+    const tours = HELP_ARTICLES.filter(article => article.tour);
+    expect(tours.map(article => article.slug).sort()).toEqual(
       ['add-a-question', 'flag-or-comment', 'flows-add-and-connect-steps', 'submit-for-review'].sort(),
     );
-    tours.forEach((article) =>
-      article.tour!.forEach((step) => {
+    tours.forEach(article =>
+      article.tour!.forEach(step => {
         expectAt(article.slug, step.target).toMatch(/^(button|text|label|css):\S/);
         expectAt(article.slug, step.text.length).toBeGreaterThan(10);
       }),

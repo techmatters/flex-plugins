@@ -143,7 +143,7 @@ const flowsSlice = createSlice({
     ) => {
       Object.assign(state.home, action.payload);
     },
-    creatingStarted: (state) => {
+    creatingStarted: state => {
       state.home.creating = true;
       state.home.error = undefined;
     },
@@ -172,7 +172,7 @@ const flowsSlice = createSlice({
     personTyped: (state, action: PayloadAction<Partial<Pick<FlowsState['people'], 'name' | 'email'>>>) => {
       Object.assign(state.people, action.payload);
     },
-    peopleSaving: (state) => {
+    peopleSaving: state => {
       state.people.error = undefined;
     },
 
@@ -185,7 +185,7 @@ const flowsSlice = createSlice({
         state.importer.error = undefined;
       }
     },
-    previewStarted: (state) => {
+    previewStarted: state => {
       Object.assign(state.importer, {
         working: true,
         error: undefined,
@@ -211,7 +211,7 @@ const flowsSlice = createSlice({
     importFlowToggled: (state, action: PayloadAction<number>) => {
       const { selected } = state.importer;
       state.importer.selected = selected.includes(action.payload)
-        ? selected.filter((index) => index !== action.payload)
+        ? selected.filter(index => index !== action.payload)
         : [...selected, action.payload];
     },
     importOptionsChanged: (
@@ -267,8 +267,8 @@ const {
 } = flowsSlice.actions;
 
 export const selectFlows = (state: RootState) => state.flows ?? initialState;
-export const selectHelplineCodes = createSelector([(state: RootState) => state.session.helplines], (helplines) =>
-  helplines.map((helpline) => helpline.code),
+export const selectHelplineCodes = createSelector([(state: RootState) => state.session.helplines], helplines =>
+  helplines.map(helpline => helpline.code),
 );
 
 // ---------------------------------------------------------------------------------------------
@@ -300,7 +300,7 @@ export const loadOpenBoard =
 // Shows a board (or the boards, with none)
 export const openBoard =
   (open?: Open): AppThunk =>
-  (dispatch) => {
+  dispatch => {
     setBoardInUrl(open);
     dispatch(boardClosed());
     dispatch(boardShown(open));
@@ -315,7 +315,7 @@ export const startFlowsArea = (): AppThunk => (dispatch, getState) => {
 };
 
 // Back to the boards, once what's still waiting is saved
-export const closeBoard = (): AppThunk<Promise<void>> => async (dispatch) => {
+export const closeBoard = (): AppThunk<Promise<void>> => async dispatch => {
   await dispatch(saveBoard());
   dispatch(openBoard(undefined));
 };
@@ -403,7 +403,7 @@ export const removeBoard =
 
 export const choosePeopleList =
   (code: string): AppThunk =>
-  (dispatch) => {
+  dispatch => {
     dispatch(peopleListChosen(code));
     void dispatch(loadPeopleList());
   };
@@ -460,9 +460,9 @@ export const selectImportChoice = createSelector(
   ({ preview, selected }) => {
     const chosenBoards = preview?.boards.filter((_, index) => selected.includes(index)) ?? [];
     // Only the recordings the chosen flows play
-    const chosenFiles = new Set(chosenBoards.flatMap((board) => board.recordingFiles));
+    const chosenFiles = new Set(chosenBoards.flatMap(board => board.recordingFiles));
     const chosenRecordings =
-      preview?.recordings.filter((recording) => chosenFiles.has(importedRecordingKey(recording))) ?? [];
+      preview?.recordings.filter(recording => chosenFiles.has(importedRecordingKey(recording))) ?? [];
     return { chosenBoards, chosenRecordings };
   },
 );
@@ -481,7 +481,7 @@ export const createImportedBoards =
         // With standard names, the widgets play files named after them (copied so below)
         const objects =
           standardNames && copyRecordings
-            ? content.objects.map((object) => {
+            ? content.objects.map(object => {
                 if (!hasNonStandardRecording(object)) return object;
                 const { recordingFile, ...message } = object.message ?? {};
                 return { ...object, message };
@@ -493,9 +493,9 @@ export const createImportedBoards =
       dispatch(importedBoardsCreated(boards));
       if (copyRecordings && chosenRecordings.length > 0) {
         // A file several widgets play becomes a copy for each, named after it (the standard)
-        const copies = chosenRecordings.flatMap((recording) =>
+        const copies = chosenRecordings.flatMap(recording =>
           standardNames && recording.widgets?.length
-            ? recording.widgets.map((widget) => ({
+            ? recording.widgets.map(widget => ({
                 ...recording,
                 fileName: standardRecordingName(widget, recording.fileName),
               }))

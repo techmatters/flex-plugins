@@ -58,11 +58,11 @@ export const CallTypesEditor = () => {
   const strings = useStrings(helplineLanguage ?? 'en-US', draftFiles);
   const buttons = getCallTypeButtons(draftFiles);
   const originalNames = useMemo(
-    () => new Set(getCallTypeButtons(originalFiles).map((button) => button.name)),
+    () => new Set(getCallTypeButtons(originalFiles).map(button => button.name)),
     [originalFiles],
   );
-  const dataButtons = buttons.filter((button) => button.category === 'data');
-  const hasCaller = dataButtons.some((button) => button.name === 'caller');
+  const dataButtons = buttons.filter(button => button.category === 'data');
+  const hasCaller = dataButtons.some(button => button.name === 'caller');
 
   // Starts from the draft when it opens, and when the draft's files are replaced (discarded, reloaded)
   useEffect(() => {
@@ -83,7 +83,7 @@ export const CallTypesEditor = () => {
   };
 
   const onRemoveNonData = (id: string) => {
-    const row = nonDataRows.find((candidate) => candidate.id === id)!;
+    const row = nonDataRows.find(candidate => candidate.id === id)!;
     if (
       originalNames.has(row.value.name) &&
       !window.confirm(
@@ -101,12 +101,11 @@ export const CallTypesEditor = () => {
         <section className="panel">
           <h2>Call types</h2>
           <p className="muted">
-            The buttons counselors see before the contact form. They choose one to say what kind
-            of contact this is.
+            The buttons counselors see before the contact form. They choose one to say what kind of contact this is.
           </p>
 
           <h3 className="section-heading">Buttons that open the contact form</h3>
-          {dataButtons.map((button) => (
+          {dataButtons.map(button => (
             <label key={button.name} className="field">
               <span className="field-label">
                 {button.name === 'caller' ? 'Someone calling about another person' : 'Person calling about themselves'}
@@ -114,28 +113,27 @@ export const CallTypesEditor = () => {
               <input
                 type="text"
                 value={button.label}
-                onChange={(e) => dispatch(setDataLabel(button.name, e.target.value))}
+                onChange={e => dispatch(setDataLabel(button.name, e.target.value))}
               />
             </label>
           ))}
           <label className="field field-checkbox">
             <input type="checkbox" checked={hasCaller} onChange={onToggleCaller} />
             <span>
-              Also offer “someone calling about another person”. This adds the Caller tab to the
-              contact form.
+              Also offer “someone calling about another person”. This adds the Caller tab to the contact form.
             </span>
           </label>
 
           <h3 className="section-heading">Buttons that close the contact without a form</h3>
           <p className="field-hint">
-            For contacts like silent calls or wrong numbers. The contact is saved with the
-            button's text, so existing buttons can only be renamed by Aselo staff.
+            For contacts like silent calls or wrong numbers. The contact is saved with the button's text, so existing
+            buttons can only be renamed by Aselo staff.
           </p>
           <SortableRows
             rows={nonDataRows}
-            labelOf={(button) => button.label}
-            onReorder={(rows) => dispatch(reorderNonData(rows))}
-            renderRow={(row) => {
+            labelOf={button => button.label}
+            onReorder={rows => dispatch(reorderNonData(rows))}
+            renderRow={row => {
               const locked = originalNames.has(row.value.name) && !staffMode;
               return (
                 <div className="row-inline">
@@ -145,7 +143,7 @@ export const CallTypesEditor = () => {
                     disabled={locked}
                     aria-label="Button text"
                     title={locked ? 'Contacts are saved with this text, so only Aselo staff can rename it.' : undefined}
-                    onChange={(e) => dispatch(renameNonData(row.id, e.target.value))}
+                    onChange={e => dispatch(renameNonData(row.id, e.target.value))}
                   />
                   <button
                     type="button"
@@ -180,7 +178,7 @@ export const CallTypesEditor = () => {
                 autoFocus
                 aria-label="Button texts, one per line"
                 placeholder="One button per line"
-                onChange={(e) => dispatch(bulkTextChanged(e.target.value))}
+                onChange={e => dispatch(bulkTextChanged(e.target.value))}
               />
               <div className="option-actions">
                 <button type="button" className="secondary-button" onClick={() => dispatch(addPastedButtons())}>
@@ -208,12 +206,7 @@ export const CallTypesEditor = () => {
         </div>
         <div className="aselo section-preview-frame">
           <div className="aselo-tab-content">
-            <AseloCallTypeScreen
-              buttons={buttons}
-              strings={strings}
-              taskType="chat"
-              onDataCallType={() => {}}
-            />
+            <AseloCallTypeScreen buttons={buttons} strings={strings} taskType="chat" onDataCallType={() => {}} />
           </div>
         </div>
       </aside>

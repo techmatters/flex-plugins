@@ -76,7 +76,8 @@ export class GitHubApplier implements DraftApplier {
       head: branch,
       base: this.baseBranch,
       body: [
-        details.description?.trim() || `Files changed:\n\n${files.map(({ repoPath }) => `- \`${repoPath}\``).join('\n')}`,
+        details.description?.trim() ||
+          `Files changed:\n\n${files.map(({ repoPath }) => `- \`${repoPath}\``).join('\n')}`,
         '',
         `---`,
         `Applied by ${user.name} from the Aselo Builder. Draft last edited by ${draft.meta.updatedBy}.`,

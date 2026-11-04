@@ -65,7 +65,7 @@ const appSlice = createSlice({
       if (!state.opened.includes(action.payload)) state.opened.push(action.payload);
     },
     // The top bar's Help button: the panel's start page
-    helpToggled: (state) => {
+    helpToggled: state => {
       state.helpRequest = undefined;
       state.helpOpen = !state.helpOpen;
     },
@@ -75,7 +75,7 @@ const appSlice = createSlice({
       state.helpRequest = slug ? { slug, at } : undefined;
       state.helpOpen = true;
     },
-    helpClosed: (state) => {
+    helpClosed: state => {
       state.helpOpen = false;
     },
     tourStarted: (state, action: PayloadAction<HelpArticle>) => {
@@ -83,14 +83,14 @@ const appSlice = createSlice({
       state.tourStep = 0;
     },
     // Next (or what's highlighted was clicked): past the last step, the tour ends
-    tourStepAdvanced: (state) => {
+    tourStepAdvanced: state => {
       state.tourStep += 1;
       if (state.tourStep >= (state.tour?.tour?.length ?? 0)) state.tour = undefined;
     },
-    tourStepBack: (state) => {
+    tourStepBack: state => {
       state.tourStep = Math.max(0, state.tourStep - 1);
     },
-    tourEnded: (state) => {
+    tourEnded: state => {
       state.tour = undefined;
     },
   },
@@ -107,7 +107,7 @@ export const selectApp = (state: RootState) => state.app;
 // Shows an area, and puts it in the URL so a reload comes back to it
 export const switchArea =
   (area: Area): AppThunk =>
-  (dispatch) => {
+  dispatch => {
     dispatch(areaShown(area));
     const params = new URLSearchParams(window.location.search);
     params.set('area', area);
@@ -116,6 +116,6 @@ export const switchArea =
 
 export const openHelp =
   (slug?: string): AppThunk =>
-  (dispatch) => {
+  dispatch => {
     dispatch(helpOpened({ slug, at: Date.now() }));
   };

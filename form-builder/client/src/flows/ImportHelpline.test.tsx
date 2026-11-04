@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { afterEach, describe, expect, test } from '@jest/globals';
@@ -44,7 +43,7 @@ describe('importing a helpline from a branch', () => {
         { value: '', label: 'master' },
         { value: 'alejandro-c/usvc/x', label: 'alejandro-c/usvc/x' },
       ],
-      snapshot: async (branch) => {
+      snapshot: async branch => {
         asked.push(branch);
         return {
           sha: 'f'.repeat(40),

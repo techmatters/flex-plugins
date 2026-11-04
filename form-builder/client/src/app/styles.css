@@ -29,13 +29,7 @@
   --color-pii-bg: #fff4e5;
   --color-pii-text: #8a4b00;
   --radius: 6px;
-  font-family:
-    'Open Sans',
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
+  font-family: 'Open Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   font-size: 14px;
   color: var(--color-text);
 }

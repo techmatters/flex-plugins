@@ -39,7 +39,12 @@ import type {
 import { emptyChatbots } from '@tech-matters/form-builder-shared/chatbots/model';
 import type { ContactForms } from '@tech-matters/form-builder-shared/chatbots/formMappings';
 import { renameFormTargets, setFormTargets } from '@tech-matters/form-builder-shared/chatbots/formMappings';
-import { botStatusOf, isNewBot, setBotStatus, withStatusUpdates } from '@tech-matters/form-builder-shared/chatbots/status';
+import {
+  botStatusOf,
+  isNewBot,
+  setBotStatus,
+  withStatusUpdates,
+} from '@tech-matters/form-builder-shared/chatbots/status';
 import type { AppListenerStartListening, AppThunk, RootState, Services } from '../app/store';
 import { rootReducer } from '../app/store';
 import { selectActingAsStaff, selectUser } from '../app/sessionSlice';
@@ -83,7 +88,7 @@ export const LOCALES = [
   'fr_CA',
 ];
 const localeFor = (language: string) =>
-  ({ en: 'en_US', es: 'es_US', pt: 'pt_BR', fr: 'fr_FR' })[language.slice(0, 2).toLowerCase()] ?? 'en_US';
+  ({ en: 'en_US', es: 'es_US', pt: 'pt_BR', fr: 'fr_FR' }[language.slice(0, 2).toLowerCase()] ?? 'en_US');
 
 export type ChatbotsState = {
   // Set once the area has been shown (a person with one helpline goes straight to its chatbots)
@@ -156,11 +161,11 @@ const chatbotsSlice = createSlice({
   name: 'chatbots',
   initialState,
   reducers: {
-    chatbotsStarted: (state) => {
+    chatbotsStarted: state => {
       state.started = true;
     },
     // The start page, loading its list again each time it's shown
-    homeOpened: (state) => {
+    homeOpened: state => {
       state.home = initialHome;
     },
     summariesLoaded: (state, action: PayloadAction<ChatbotsSummary[]>) => {
@@ -187,7 +192,7 @@ const chatbotsSlice = createSlice({
       state.preview = undefined;
       state.error = undefined;
     },
-    helplineClosed: (state) => {
+    helplineClosed: state => {
       Object.assign(state, editorReset);
       state.code = '';
       state.initialBotId = undefined;
@@ -197,7 +202,7 @@ const chatbotsSlice = createSlice({
       state.error = undefined;
     },
     // Loaded again (after someone else saved, or a design was saved over it)
-    reloadRequested: (state) => {
+    reloadRequested: state => {
       state.loadCount += 1;
       state.stored = undefined;
       state.preview = undefined;
@@ -220,17 +225,17 @@ const chatbotsSlice = createSlice({
     branchChanged: (state, action: PayloadAction<string>) => {
       state.branch = action.payload;
     },
-    importStarted: (state) => {
+    importStarted: state => {
       state.error = undefined;
       state.importing = true;
     },
     importPreviewed: (state, action: PayloadAction<ChatbotImport & FromBranch>) => {
       state.preview = action.payload;
     },
-    importFinished: (state) => {
+    importFinished: state => {
       state.importing = false;
     },
-    previewDropped: (state) => {
+    previewDropped: state => {
       state.preview = undefined;
     },
     workingChanged: (state, action: PayloadAction<boolean>) => {
@@ -284,7 +289,7 @@ const chatbotsSlice = createSlice({
     newChatbotOpened: (state, action: PayloadAction<NewChatbotForm>) => {
       state.newChatbot = action.payload;
     },
-    newChatbotClosed: (state) => {
+    newChatbotClosed: state => {
       state.newChatbot = undefined;
     },
     // Names as Lex takes them
@@ -374,8 +379,8 @@ export const {
 export const selectChatbotsReadOnly = (state: RootState) => !selectActingAsStaff(state);
 // Who's writing comments
 export const selectCommentAuthor = (state: RootState) => selectUser(state)?.name ?? 'Someone';
-export const selectHelplineCodes = createSelector([(state: RootState) => state.session.helplines], (helplines) =>
-  helplines.map((helpline) => helpline.code),
+export const selectHelplineCodes = createSelector([(state: RootState) => state.session.helplines], helplines =>
+  helplines.map(helpline => helpline.code),
 );
 
 const selectBotId = (state: RootState) => selectChatbots(state).botId;
@@ -384,14 +389,14 @@ const selectIntentId = (state: RootState) => selectChatbots(state).intentId;
 // The chatbot showing (the first one, until one is chosen)
 export const selectSelectedBot = createSelector(
   [selectChatbotDesign, selectBotId],
-  (design, botId): Chatbot | undefined => design?.bots.find((candidate) => candidate.id === botId) ?? design?.bots[0],
+  (design, botId): Chatbot | undefined => design?.bots.find(candidate => candidate.id === botId) ?? design?.bots[0],
 );
 
 // The path showing (the chatbot's first, until one is chosen)
 export const selectSelectedIntent = createSelector(
   [selectSelectedBot, selectIntentId],
   (bot, intentId): ChatbotIntent | undefined =>
-    bot?.intents.find((candidate) => candidate.id === intentId) ?? bot?.intents[0],
+    bot?.intents.find(candidate => candidate.id === intentId) ?? bot?.intents[0],
 );
 
 export const selectChatbotIssues = createSelector(
@@ -399,68 +404,74 @@ export const selectChatbotIssues = createSelector(
   (design, forms): ChatbotIssue[] => (design ? chatbotChecks(design, forms) : []),
 );
 
-export const selectChatbotChanges = createSelector([selectChatbotDesign], (design) =>
+export const selectChatbotChanges = createSelector([selectChatbotDesign], design =>
   design ? chatbotChanges(design) : [],
 );
 
 // ----- The start page and opening a helpline
 
-export const loadChatbotsList = (): AppThunk<Promise<void>> => async (dispatch, _getState, { chatbotClient }) => {
-  dispatch(homeOpened());
-  try {
-    dispatch(summariesLoaded(await chatbotClient.list()));
-  } catch (err) {
-    dispatch(summariesFailed((err as Error).message));
-  }
-};
+export const loadChatbotsList =
+  (): AppThunk<Promise<void>> =>
+  async (dispatch, _getState, { chatbotClient }) => {
+    dispatch(homeOpened());
+    try {
+      dispatch(summariesLoaded(await chatbotClient.list()));
+    } catch (err) {
+      dispatch(summariesFailed((err as Error).message));
+    }
+  };
 
 // The contact form, for the fields answers fill in; designs saved before those were kept take them from it
-const loadContactForms = (): AppThunk<Promise<void>> => async (dispatch, getState, { chatbotClient }) => {
-  const { stored, loadCount } = selectChatbots(getState());
-  if (!stored) return;
-  try {
-    const found = await chatbotClient.contactForms(stored.code, stored.design.formsVersion);
-    const current = selectChatbots(getState());
-    if (!found || !current.design || current.loadCount !== loadCount) return;
-    const design =
-      current.design.formMappings !== undefined || selectChatbotsReadOnly(getState())
-        ? current.design
-        : {
-            ...current.design,
-            formMappings: found.survey,
-            formsVersion: found.version,
-            imported: {
-              ...(current.design.imported ?? { bots: [], answerTypes: {} }),
+const loadContactForms =
+  (): AppThunk<Promise<void>> =>
+  async (dispatch, getState, { chatbotClient }) => {
+    const { stored, loadCount } = selectChatbots(getState());
+    if (!stored) return;
+    try {
+      const found = await chatbotClient.contactForms(stored.code, stored.design.formsVersion);
+      const current = selectChatbots(getState());
+      if (!found || !current.design || current.loadCount !== loadCount) return;
+      const design =
+        current.design.formMappings !== undefined || selectChatbotsReadOnly(getState())
+          ? current.design
+          : {
+              ...current.design,
               formMappings: found.survey,
-            },
-          };
-    dispatch(formsLoaded({ forms: found, design }));
-  } catch {
-    // Without the contact form, answers just don't show the fields they fill in
-  }
-};
+              formsVersion: found.version,
+              imported: {
+                ...(current.design.imported ?? { bots: [], answerTypes: {} }),
+                formMappings: found.survey,
+              },
+            };
+      dispatch(formsLoaded({ forms: found, design }));
+    } catch {
+      // Without the contact form, answers just don't show the fields they fill in
+    }
+  };
 
-const loadChatbots = (): AppThunk<Promise<void>> => async (dispatch, getState, { chatbotClient }) => {
-  const { code, loadCount } = selectChatbots(getState());
-  if (!code) return;
-  try {
-    const found = await chatbotClient.load(code);
-    if (selectChatbots(getState()).loadCount !== loadCount) return;
-    dispatch(chatbotsLoaded(found ?? null));
-    if (found) await dispatch(loadContactForms());
-  } catch (err) {
-    if (selectChatbots(getState()).loadCount === loadCount) dispatch(errorSet((err as Error).message));
-  }
-};
+const loadChatbots =
+  (): AppThunk<Promise<void>> =>
+  async (dispatch, getState, { chatbotClient }) => {
+    const { code, loadCount } = selectChatbots(getState());
+    if (!code) return;
+    try {
+      const found = await chatbotClient.load(code);
+      if (selectChatbots(getState()).loadCount !== loadCount) return;
+      dispatch(chatbotsLoaded(found ?? null));
+      if (found) await dispatch(loadContactForms());
+    } catch (err) {
+      if (selectChatbots(getState()).loadCount === loadCount) dispatch(errorSet((err as Error).message));
+    }
+  };
 
 export const openChatbots =
   (code: string, botId?: string): AppThunk<Promise<void>> =>
-  async (dispatch) => {
+  async dispatch => {
     dispatch(helplineOpened({ code, botId }));
     await dispatch(loadChatbots());
   };
 
-export const reloadChatbots = (): AppThunk<Promise<void>> => async (dispatch) => {
+export const reloadChatbots = (): AppThunk<Promise<void>> => async dispatch => {
   dispatch(reloadRequested());
   await dispatch(loadChatbots());
 };
@@ -478,23 +489,25 @@ export const startChatbots = (): AppThunk => (dispatch, getState) => {
 // One save at a time for each store (each save uses the revision the previous one returned)
 const saveQueues = new WeakMap<Services, { current: Promise<void> }>();
 
-const saveNow = (): AppThunk<Promise<void>> => async (dispatch, getState, { chatbotClient }) => {
-  const state = selectChatbots(getState());
-  if (!state.design || state.conflict || selectChatbotsReadOnly(getState())) return;
-  const json = JSON.stringify(state.design);
-  if (json === state.savedJson) return;
-  const { code, loadCount } = state;
-  dispatch(saveStatusChanged('saving'));
-  try {
-    const outcome = await chatbotClient.save(code, state.revision, JSON.parse(json));
-    // Left, or loaded again, meanwhile
-    if (selectChatbots(getState()).loadCount !== loadCount) return;
-    if (outcome.ok) dispatch(chatbotsSaved({ revision: outcome.meta.revision, json }));
-    else dispatch(saveConflicted(outcome.conflict));
-  } catch {
-    dispatch(saveStatusChanged('error'));
-  }
-};
+const saveNow =
+  (): AppThunk<Promise<void>> =>
+  async (dispatch, getState, { chatbotClient }) => {
+    const state = selectChatbots(getState());
+    if (!state.design || state.conflict || selectChatbotsReadOnly(getState())) return;
+    const json = JSON.stringify(state.design);
+    if (json === state.savedJson) return;
+    const { code, loadCount } = state;
+    dispatch(saveStatusChanged('saving'));
+    try {
+      const outcome = await chatbotClient.save(code, state.revision, JSON.parse(json));
+      // Left, or loaded again, meanwhile
+      if (selectChatbots(getState()).loadCount !== loadCount) return;
+      if (outcome.ok) dispatch(chatbotsSaved({ revision: outcome.meta.revision, json }));
+      else dispatch(saveConflicted(outcome.conflict));
+    } catch {
+      dispatch(saveStatusChanged('error'));
+    }
+  };
 
 // Saves now, after any save already under way
 export const flushChatbots = (): AppThunk<Promise<void>> => (dispatch, _getState, services) => {
@@ -531,21 +544,25 @@ export const closeChatbots = (): AppThunk<Promise<void>> => async (dispatch, get
 
 // ----- Importing, or starting from scratch
 
-export const loadImportBranches = (): AppThunk<Promise<BranchChoice[]>> => (_dispatch, _getState, { chatbotClient }) =>
-  chatbotClient.branches();
+export const loadImportBranches =
+  (): AppThunk<Promise<BranchChoice[]>> =>
+  (_dispatch, _getState, { chatbotClient }) =>
+    chatbotClient.branches();
 
 // Reading the live config takes a while: said while it does
-export const previewImport = (): AppThunk<Promise<void>> => async (dispatch, getState, { chatbotClient }) => {
-  const { code, branch } = selectChatbots(getState());
-  dispatch(importStarted());
-  try {
-    dispatch(importPreviewed(await chatbotClient.previewImport(code, branch)));
-  } catch (err) {
-    dispatch(errorSet((err as Error).message));
-  } finally {
-    dispatch(importFinished());
-  }
-};
+export const previewImport =
+  (): AppThunk<Promise<void>> =>
+  async (dispatch, getState, { chatbotClient }) => {
+    const { code, branch } = selectChatbots(getState());
+    dispatch(importStarted());
+    try {
+      dispatch(importPreviewed(await chatbotClient.previewImport(code, branch)));
+    } catch (err) {
+      dispatch(errorSet((err as Error).message));
+    } finally {
+      dispatch(importFinished());
+    }
+  };
 
 // Saves a design (imported, or empty to start from scratch) over the one there is now, if any
 const createChatbots =
@@ -596,13 +613,13 @@ export const setChatbotStatus =
   };
 
 export const changeBot = (botId: string, changes: Partial<Chatbot>): AppThunk =>
-  editChatbots((design) => updateBot(design, botId, (bot) => ({ ...bot, ...changes })));
+  editChatbots(design => updateBot(design, botId, bot => ({ ...bot, ...changes })));
 
 const editIntent = (botId: string, intentId: string, change: (intent: ChatbotIntent) => ChatbotIntent) =>
-  editChatbots((design) => updateBot(design, botId, (bot) => updateIntent(bot, intentId, change)));
+  editChatbots(design => updateBot(design, botId, bot => updateIntent(bot, intentId, change)));
 
 export const changeIntent = (botId: string, intentId: string, changes: Partial<ChatbotIntent>): AppThunk =>
-  editIntent(botId, intentId, (intent) => ({ ...intent, ...changes }));
+  editIntent(botId, intentId, intent => ({ ...intent, ...changes }));
 
 export const changeQuestion = (
   botId: string,
@@ -610,57 +627,60 @@ export const changeQuestion = (
   questionId: string,
   changes: Partial<ChatbotQuestion>,
 ): AppThunk =>
-  editIntent(botId, intentId, (intent) => updateQuestion(intent, questionId, (question) => ({ ...question, ...changes })));
+  editIntent(botId, intentId, intent => updateQuestion(intent, questionId, question => ({ ...question, ...changes })));
 
 // The name the answer is saved under: the contact form fields it fills in follow it
 export const renameQuestionSlot = (botId: string, intentId: string, questionId: string, slot: string): AppThunk =>
-  editChatbots((design) => {
+  editChatbots(design => {
     const old = design.bots
-      .find((bot) => bot.id === botId)
-      ?.intents.find((intent) => intent.id === intentId)
-      ?.questions.find((question) => question.id === questionId)?.slot;
-    const renamed = updateBot(design, botId, (bot) =>
-      updateIntent(bot, intentId, (intent) => updateQuestion(intent, questionId, (question) => ({ ...question, slot }))),
+      .find(bot => bot.id === botId)
+      ?.intents.find(intent => intent.id === intentId)
+      ?.questions.find(question => question.id === questionId)?.slot;
+    const renamed = updateBot(design, botId, bot =>
+      updateIntent(bot, intentId, intent => updateQuestion(intent, questionId, question => ({ ...question, slot }))),
     );
     return old === undefined ? renamed : renameFormTargets(renamed, old, slot);
   });
 
 export const moveQuestionTo = (botId: string, intentId: string, from: number, to: number): AppThunk =>
-  editIntent(botId, intentId, (intent) => moveQuestion(intent, from, to));
+  editIntent(botId, intentId, intent => moveQuestion(intent, from, to));
 
 export const removeQuestion = (botId: string, intentId: string, questionId: string): AppThunk =>
-  editIntent(botId, intentId, (intent) => ({
+  editIntent(botId, intentId, intent => ({
     ...intent,
-    questions: intent.questions.filter((candidate) => candidate.id !== questionId),
+    questions: intent.questions.filter(candidate => candidate.id !== questionId),
   }));
 
 // A new question at the end, taking the same answers as the one before it
 export const addQuestion = (botId: string, intentId: string): AppThunk =>
-  editChatbots((design) => {
-    const bot = design.bots.find((candidate) => candidate.id === botId);
-    const intent = bot?.intents.find((candidate) => candidate.id === intentId);
+  editChatbots(design => {
+    const bot = design.bots.find(candidate => candidate.id === botId);
+    const intent = bot?.intents.find(candidate => candidate.id === intentId);
     if (!bot || !intent) return design;
     const defaultType =
       intent.questions[intent.questions.length - 1]?.answerType ??
       Object.keys(design.answerTypes[bot.language] ?? {})[0] ??
       'AMAZON.FreeFormInput';
     const base = defaultType.startsWith('AMAZON.') ? withBuiltinType(design, bot.language, defaultType) : design;
-    return updateBot(base, botId, (current) =>
-      updateIntent(current, intentId, (old) => ({ ...old, questions: [...old.questions, newQuestion(old, defaultType)] })),
+    return updateBot(base, botId, current =>
+      updateIntent(current, intentId, old => ({
+        ...old,
+        questions: [...old.questions, newQuestion(old, defaultType)],
+      })),
     );
   });
 
-const languageOf = (design: ChatbotDesign, botId: string) => design.bots.find((bot) => bot.id === botId)?.language ?? '';
+const languageOf = (design: ChatbotDesign, botId: string) => design.bots.find(bot => bot.id === botId)?.language ?? '';
 
 // One of the language's answers for a question (Lex's own are listed with its answers once used)
 export const pickAnswerType = (botId: string, intentId: string, questionId: string, answerType: string): AppThunk =>
-  editChatbots((design) => {
+  editChatbots(design => {
     const base = answerType.startsWith('AMAZON.')
       ? withBuiltinType(design, languageOf(design, botId), answerType)
       : design;
-    return updateBot(base, botId, (bot) =>
-      updateIntent(bot, intentId, (intent) =>
-        updateQuestion(intent, questionId, (question) => ({ ...question, answerType })),
+    return updateBot(base, botId, bot =>
+      updateIntent(bot, intentId, intent =>
+        updateQuestion(intent, questionId, question => ({ ...question, answerType })),
       ),
     );
   });
@@ -672,10 +692,10 @@ export const createAnswerTypeForQuestion =
     const form = selectChatbots(getState()).answerPickers[questionId];
     if (!form) return;
     dispatch(
-      editChatbots((design) =>
-        updateBot(addAnswerType(design, languageOf(design, botId), form.name, form.kind), botId, (bot) =>
-          updateIntent(bot, intentId, (intent) =>
-            updateQuestion(intent, questionId, (question) => ({ ...question, answerType: form.name })),
+      editChatbots(design =>
+        updateBot(addAnswerType(design, languageOf(design, botId), form.name, form.kind), botId, bot =>
+          updateIntent(bot, intentId, intent =>
+            updateQuestion(intent, questionId, question => ({ ...question, answerType: form.name })),
           ),
         ),
       ),
@@ -685,19 +705,19 @@ export const createAnswerTypeForQuestion =
 
 // The contact form fields an answer fills in (groups of "first of")
 export const setQuestionFormTargets = (slot: string, groups: string[][]): AppThunk =>
-  editChatbots((design) =>
+  editChatbots(design =>
     setFormTargets(
       design,
       slot,
-      groups.filter((group) => group.length > 0),
+      groups.filter(group => group.length > 0),
     ),
   );
 
 export const changeAnswerType = (language: string, name: string, type: AnswerType): AppThunk =>
-  editChatbots((design) => updateAnswerType(design, language, name, () => type));
+  editChatbots(design => updateAnswerType(design, language, name, () => type));
 
 export const removeAnswerTypeNamed = (language: string, name: string): AppThunk =>
-  editChatbots((design) => removeAnswerType(design, language, name));
+  editChatbots(design => removeAnswerType(design, language, name));
 
 // The Answers tab's new list or pattern, then its box is emptied
 export const addAnswerTypeFromForm =
@@ -705,7 +725,7 @@ export const addAnswerTypeFromForm =
   (dispatch, getState) => {
     const form = selectChatbots(getState()).newAnswerTypes[language];
     if (!form?.name) return;
-    dispatch(editChatbots((design) => addAnswerType(design, language, form.name, form.kind)));
+    dispatch(editChatbots(design => addAnswerType(design, language, form.name, form.kind)));
     dispatch(newAnswerTypeChanged({ language, form: { ...form, name: '' } }));
   };
 
@@ -714,13 +734,13 @@ export const addAnswerTypeFromForm =
 export const openNewChatbot = (): AppThunk => (dispatch, getState) => {
   const { design } = selectChatbots(getState());
   if (!design) return;
-  const languages = [...new Set(design.bots.map((bot) => bot.language))];
+  const languages = [...new Set(design.bots.map(bot => bot.language))];
   const language = languages[0] ?? `en_${design.helpline.toUpperCase()}`;
   dispatch(newChatbotOpened({ name: 'pre_survey', language, locale: localeFor(language), copyFrom: '' }));
 };
 
 export const isNewChatbotTaken = (design: ChatbotDesign, form: NewChatbotForm) =>
-  design.bots.some((bot) => bot.language === form.language && bot.name === form.name);
+  design.bots.some(bot => bot.language === form.language && bot.name === form.name);
 
 // Empty, or a copy of one of the helpline's; then it's the one showing
 export const createChatbot = (): AppThunk => (dispatch, getState) => {
@@ -730,7 +750,7 @@ export const createChatbot = (): AppThunk => (dispatch, getState) => {
     name: form.name,
     language: form.language,
     locale: form.locale,
-    copyFrom: design.bots.find((bot) => bot.id === form.copyFrom),
+    copyFrom: design.bots.find(bot => bot.id === form.copyFrom),
   });
   dispatch(designUpdated(added.design));
   dispatch(botSelected(added.bot.id));
@@ -747,9 +767,9 @@ export const showIssue =
       return;
     }
     if (!issue.botId) return;
-    const target = selectChatbots(getState()).design?.bots.find((candidate) => candidate.id === issue.botId);
-    const owner = target?.intents.find((candidate) =>
-      candidate.questions.some((question) => question.id === issue.questionId),
+    const target = selectChatbots(getState()).design?.bots.find(candidate => candidate.id === issue.botId);
+    const owner = target?.intents.find(candidate =>
+      candidate.questions.some(question => question.id === issue.questionId),
     );
     dispatch(issueShown({ tab: 'conversation', botId: issue.botId, intentId: owner?.id }));
   };
@@ -769,7 +789,7 @@ export const exportForClaude = (): AppThunk => (_dispatch, getState) => {
   if (!design || !stored) return;
   const issues = selectChatbotIssues(getState());
   const { imported, ...current } = design;
-  const bots = design.bots.map((candidate) => ({
+  const bots = design.bots.map(candidate => ({
     bot: `${candidate.language}/${candidate.name}`,
     status: botStatusOf(design, candidate),
     isNew: isNewBot(design, candidate),

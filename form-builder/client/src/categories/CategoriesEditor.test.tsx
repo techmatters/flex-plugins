@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 /**
  * Issue categories, edited through the workspace with USNM's real definitions.
  */
@@ -41,8 +40,12 @@ afterEach(() => {
 });
 
 const categories = (files: Record<string, unknown>) =>
-  (files[CATEGORIES_FILE] as Record<string, { categories: Record<string, { color: string; subcategories: { label: string }[] }> }>).NAMI
-    .categories;
+  (
+    files[CATEGORIES_FILE] as Record<
+      string,
+      { categories: Record<string, { color: string; subcategories: { label: string }[] }> }
+    >
+  ).NAMI.categories;
 
 const open = async (user = harness.renderWorkspace) => {
   user(usnm);
@@ -79,7 +82,7 @@ describe('issue categories editor', () => {
   });
 
   test('Aselo staff can rename an existing category', async () => {
-    await open((definitions) => harness.renderWorkspace(definitions, { user: aseloStaff }));
+    await open(definitions => harness.renderWorkspace(definitions, { user: aseloStaff }));
     const [firstName] = Object.keys(categories(usnm.files));
     fireEvent.change(screen.getByDisplayValue(firstName), { target: { value: `${firstName} (renamed)` } });
     expect(Object.keys((await saved()).categories)[0]).toBe(`${firstName} (renamed)`);
@@ -110,7 +113,12 @@ describe('category checks', () => {
     const helplines = await listHelplines(formDefinitionsDir);
     for (const { code, versions } of helplines) {
       const { files } = await loadDefinitionFiles(formDefinitionsDir, code, versions[0]);
-      validateCategories(files, files).forEach((issue) => expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({ at: `${code}: ${issue.message}`, value: 'warning' }));
+      validateCategories(files, files).forEach(issue =>
+        expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({
+          at: `${code}: ${issue.message}`,
+          value: 'warning',
+        }),
+      );
       expect(summarizeCategoryChanges(files, files)).toEqual([]);
     }
   });
@@ -118,7 +126,9 @@ describe('category checks', () => {
   test('a category without subcategories needs fixing', () => {
     const draft = {
       ...usnm.files,
-      [CATEGORIES_FILE]: { NAMI: { categories: { ...categories(usnm.files), Empty: { color: '#000000', subcategories: [] } } } },
+      [CATEGORIES_FILE]: {
+        NAMI: { categories: { ...categories(usnm.files), Empty: { color: '#000000', subcategories: [] } } },
+      },
     };
     expect(validateCategories(draft, usnm.files)).toContainEqual(
       expect.objectContaining({ severity: 'error', message: 'Issue categories: “Empty” has no subcategories.' }),

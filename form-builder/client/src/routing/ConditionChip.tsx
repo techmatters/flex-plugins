@@ -75,14 +75,14 @@ const iconFor = (condition: Condition): LucideIcon => {
   if (family === 'channel' && condition.values.length === 1 && condition.operator !== '!=') {
     return CHANNEL_ICONS[String(condition.values[0])] ?? MessageSquare;
   }
-  return FAMILIES.find((candidate) => candidate.family === family)!.icon;
+  return FAMILIES.find(candidate => candidate.family === family)!.icon;
 };
 
 const QUEUE_REFERENCE = /^\$\{task_queues(?:\.([\w-]+)|\[["']([^"']+)["']\])\}$/;
 
 // "Voice or SMS", "not Spanish", "queue Master"
 const valuesText = (condition: Extract<Condition, { kind: 'compare' }>, queueName: (key: string) => string) => {
-  const values = condition.values.map((value) => {
+  const values = condition.values.map(value => {
     const queue = typeof value === 'string' ? value.match(QUEUE_REFERENCE) : undefined;
     return queue ? `queue ${queueName(queue[1] ?? queue[2])}` : valueLabel(value);
   });
@@ -93,7 +93,7 @@ const valuesText = (condition: Extract<Condition, { kind: 'compare' }>, queueNam
 
 export const ConditionChip = ({
   condition,
-  queueName = (key) => key,
+  queueName = key => key,
 }: {
   condition: Condition;
   queueName?: (key: string) => string;

@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, jest } from '@jest/globals';
@@ -75,7 +74,7 @@ beforeAll(() => {
     },
   });
   (SVGElement.prototype as unknown as { getBBox: () => DOMRect }).getBBox = () =>
-    ({ x: 0, y: 0, width: 0, height: 0 }) as DOMRect;
+    ({ x: 0, y: 0, width: 0, height: 0 } as DOMRect);
 });
 
 const staff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
@@ -96,7 +95,7 @@ const clientAs = (user: ApiUser) =>
       const fileName = parts[parts.length - 1];
       const code = parts.length === 4 ? `${helpline}/${parts[2]}` : helpline;
       // jsdom's Blob has no text()
-      const content = await new Promise<string>((resolve) => {
+      const content = await new Promise<string>(resolve => {
         const reader = new FileReader();
         reader.onload = () => resolve(String(reader.result));
         reader.readAsText(file);
@@ -323,7 +322,7 @@ describe('flow designer', () => {
           expectedRevision: revision,
           design: {
             ...emptyRouting('usnm'),
-            skills: skills.map((name) => ({ name })),
+            skills: skills.map(name => ({ name })),
             queues: [{ key: 'en_std', name: 'English', workers: { kind: 'nobody' } }],
             workflows: [{ key: 'master', name: 'Master', rules: [] }],
           },
@@ -346,7 +345,7 @@ describe('flow designer', () => {
 
     // Send to queue: the queues and workflows offered, and chosen ones written in the widget
     fireEvent.click(palette().getByRole('button', { name: /^Send to queue/ }));
-    expect([...container.querySelectorAll('datalist option')].map((option) => option.getAttribute('value'))).toEqual(
+    expect([...container.querySelectorAll('datalist option')].map(option => option.getAttribute('value'))).toEqual(
       expect.arrayContaining(['en_std', 'master']),
     );
 
@@ -509,7 +508,7 @@ describe('flow designer', () => {
 
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
     const thanks = (await boards.get('usnm', board.id))!.content.objects.find(
-      (object) => object.studioName === 'play_message_voice_thanks',
+      object => object.studioName === 'play_message_voice_thanks',
     )!;
     expect(thanks.message?.script).toBe('Thank you for your answers.');
     expect(thanks.variantMessages?.survey_es?.script).toBe('Muchas gracias.');
@@ -519,7 +518,7 @@ describe('flow designer', () => {
     expect(screen.getByRole('tab', { name: 'French (Canada)' }).getAttribute('aria-selected')).toBe('true');
     expect(script().value).toBe('');
     expect(
-      [...(screen.getByRole('combobox', { name: 'Add a language' }) as HTMLSelectElement).options].map((o) => o.value),
+      [...(screen.getByRole('combobox', { name: 'Add a language' }) as HTMLSelectElement).options].map(o => o.value),
     ).not.toContain('fr-FR');
     await waitFor(
       async () =>
@@ -541,13 +540,13 @@ describe('flow designer', () => {
     fireEvent.click(screen.getByRole('tab', { name: 'Spanish' }));
     fireEvent.click(screen.getByRole('button', { name: 'Make Spanish its own flow' }));
     await waitFor(() => expect(screen.queryByRole('tab', { name: 'Spanish' })).toBeNull());
-    const spanish = (await boards.list()).find((summary) => summary.title === 'Survey (Spanish)')!;
+    const spanish = (await boards.list()).find(summary => summary.title === 'Survey (Spanish)')!;
     const { content: split } = (await boards.get('usnm', spanish.id))!;
     expect(split.flow).toMatchObject({
       variants: [expect.objectContaining({ key: 'survey_es', recordingsFolder: 'survey_es' })],
       ownTemplate: { suggested: 'zz/templates/studio-flows/survey-es.tftpl' },
     });
-    expect(split.objects.find((object) => object.studioName === 'play_message_voice_thanks')?.message?.script).toBe(
+    expect(split.objects.find(object => object.studioName === 'play_message_voice_thanks')?.message?.script).toBe(
       'Muchas gracias.',
     );
   });
@@ -557,7 +556,7 @@ describe('flow designer', () => {
       path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines'),
       'clhs',
     );
-    const systemDown = imported.find((candidate) => candidate.title.endsWith('System down'))!;
+    const systemDown = imported.find(candidate => candidate.title.endsWith('System down'))!;
     const board = await clientAs(staff).create('usnm', 'System down', undefined, systemDown.content);
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
     renderArea(staff);
@@ -586,9 +585,9 @@ describe('flow designer', () => {
     );
     const widget = 'play_message_childhelp_voice_welcome';
     const { content } = imported.find(({ content: candidate }) =>
-      candidate.objects.some((object) => object.studioName === widget),
+      candidate.objects.some(object => object.studioName === widget),
     )!;
-    const old = content.objects.find((object) => object.studioName === widget)!.message!.recordingFile!;
+    const old = content.objects.find(object => object.studioName === widget)!.message!.recordingFile!;
     recordingFiles.put('usnm', old, 'welcome audio');
     const board = await clientAs(staff).create('usnm', 'Voice', undefined, content);
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
@@ -603,9 +602,7 @@ describe('flow designer', () => {
     expect(recordingFiles.files.has(`usnm/staging/${old}`)).toBe(true);
     await waitFor(() => expect(panel.queryByRole('button', { name: /^Use the standard names/ })).toBeNull());
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
-    const saved = (await boards.get('usnm', board.id))!.content.objects.filter(
-      (object) => object.message?.recordingFile,
-    );
+    const saved = (await boards.get('usnm', board.id))!.content.objects.filter(object => object.message?.recordingFile);
     expect(saved).toEqual([]);
   });
 
@@ -678,7 +675,7 @@ describe('flow designer', () => {
       'audio from https://usnm-recordings-5659.twil.io/play_message_voice_outside_us.mp3',
     );
 
-    expect((await boards.list()).map((summary) => summary.title)).toEqual(['USNM · [voice] · voice']);
+    expect((await boards.list()).map(summary => summary.title)).toEqual(['USNM · [voice] · voice']);
     // ...and only its recordings
     expect(recordingFiles.files.has('usnm/production/play_message_voice_launch_technical_upgrade.mp3')).toBe(false);
     fireEvent.click(preview.getByRole('button', { name: 'USNM · [voice] · voice' }));
@@ -775,8 +772,8 @@ describe('flow designer', () => {
     await people.put('_aselo', [{ name: 'Aselo lead', email: 'aselo@example.org' }]);
     const board = await openNewBoard('Tasks');
     // Opening the board adds nobody: the lists are filled by hand
-    expect((await people.get('_aselo')).map((person) => person.name)).toEqual(['Aselo lead']);
-    expect((await people.get('usnm')).map((person) => person.name)).toEqual(['Ale']);
+    expect((await people.get('_aselo')).map(person => person.name)).toEqual(['Aselo lead']);
+    expect((await people.get('usnm')).map(person => person.name)).toEqual(['Ale']);
     fireEvent.click(palette().getByRole('button', { name: /^Sticky note/ }));
     fireEvent.change(settings().getByRole('textbox', { name: 'Note' }), {
       target: { value: 'Record the closed message' },
@@ -822,12 +819,12 @@ describe('people lists', () => {
     await waitFor(() =>
       expect(within(screen.getByRole('list', { name: 'People' })).getByText('Aselo lead')).toBeTruthy(),
     );
-    expect((await people.get('usnm')).map((person) => person.name)).toEqual(['Ale', 'Aselo lead']);
+    expect((await people.get('usnm')).map(person => person.name)).toEqual(['Ale', 'Aselo lead']);
     // Whoever is already on the list isn't offered again
     expect(
       within(screen.getByRole('combobox', { name: 'Add from the Aselo team' }))
         .getAllByRole('option')
-        .map((option) => option.textContent),
+        .map(option => option.textContent),
     ).toEqual(['Choose someone…', 'Other staff']);
   });
 });
@@ -895,7 +892,7 @@ describe('testing a flow (Test mode)', () => {
     await waitFor(() => expect(screen.getByText('All changes saved')).toBeTruthy(), { timeout: 4000 });
     const saved = await boards.get('usnm', board.id);
     expect(saved?.content.testedPaths).toHaveLength(1);
-    expect(saved?.content.testedPaths?.[0].steps.map((step) => step.exit)).toEqual([
+    expect(saved?.content.testedPaths?.[0].steps.map(step => step.exit)).toEqual([
       '',
       'reply',
       'noMatch',

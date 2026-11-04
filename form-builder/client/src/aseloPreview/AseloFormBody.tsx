@@ -35,15 +35,7 @@ type Props = {
   onChange: (name: string, value: FieldValue) => void;
 };
 
-export const AseloFormBody = ({
-  form,
-  values,
-  errors,
-  referenceData,
-  strings,
-  splitFormAt,
-  onChange,
-}: Props) => {
+export const AseloFormBody = ({ form, values, errors, referenceData, strings, splitFormAt, onChange }: Props) => {
   const [left, right] = splitIntoColumns(form, splitFormAt);
   const renderField = (item: FormItemJsonDefinition) => (
     <AseloField
@@ -53,7 +45,7 @@ export const AseloFormBody = ({
       referenceData={referenceData}
       strings={strings}
       error={errors[item.name]}
-      onChange={(value) => onChange(item.name, value)}
+      onChange={value => onChange(item.name, value)}
     />
   );
   return (

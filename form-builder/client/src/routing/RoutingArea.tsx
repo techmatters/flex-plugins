@@ -30,11 +30,7 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { ArrowLeft, ChevronsDownUp, ChevronsUpDown, Download } from 'lucide-react';
 import type { RoutingImport } from '@tech-matters/form-builder-shared';
 import type { FromBranch } from '@tech-matters/form-builder-shared';
@@ -97,17 +93,14 @@ const WorkflowPage = () => {
     useSensor(PointerSensor, { activationConstraint: { distance: 4 } }),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
-  const workflow =
-    tab.kind === 'workflow'
-      ? design.workflows.find((candidate) => candidate.key === tab.key)
-      : undefined;
+  const workflow = tab.kind === 'workflow' ? design.workflows.find(candidate => candidate.key === tab.key) : undefined;
   if (!workflow) return null;
   if (workflow.templateText) {
     return (
       <div className="routing-panel">
         <p className="alert alert-info">
-          “{workflowLabel(workflow)}” is built by template code from the helpline&apos;s queues (
-          {workflow.template}), so it isn&apos;t a list of rules to edit here. It stays as it is.
+          “{workflowLabel(workflow)}” is built by template code from the helpline&apos;s queues ({workflow.template}),
+          so it isn&apos;t a list of rules to edit here. It stays as it is.
         </p>
       </div>
     );
@@ -123,7 +116,7 @@ const WorkflowPage = () => {
         {!readOnly && (
           <div className="routing-common-rules" aria-label="Common rules">
             <span className="field-hint">Common rules:</span>
-            {COMMON_RULES.map((common) => {
+            {COMMON_RULES.map(common => {
               const added = hasCommonRule(workflow, design, common);
               return (
                 <button
@@ -142,8 +135,8 @@ const WorkflowPage = () => {
         )}
         {workflow.shared && (
           <p className="alert alert-info">
-            Other helplines use this workflow&apos;s template ({workflow.template}): changes here
-            are written to a template of this helpline&apos;s own.
+            Other helplines use this workflow&apos;s template ({workflow.template}): changes here are written to a
+            template of this helpline&apos;s own.
           </p>
         )}
         <label className="field routing-workflow-settings">
@@ -152,7 +145,7 @@ const WorkflowPage = () => {
             type="text"
             value={workflow.name}
             disabled={readOnly}
-            onChange={(e) => dispatch(workflowChanged({ ...workflow, name: e.target.value }))}
+            onChange={e => dispatch(workflowChanged({ ...workflow, name: e.target.value }))}
           />
         </label>
         <label className="field routing-workflow-settings">
@@ -163,7 +156,7 @@ const WorkflowPage = () => {
             value={workflow.reservationTimeout ?? ''}
             placeholder="Twilio's default (120)"
             disabled={readOnly}
-            onChange={(e) =>
+            onChange={e =>
               dispatch(
                 workflowChanged({
                   ...workflow,
@@ -175,13 +168,13 @@ const WorkflowPage = () => {
         </label>
         <div className="routing-rules-head">
           <p className="field-hint">
-            A new task goes through these rules in order; the first one it matches decides where it
-            goes. Drag the cards to change the order.
+            A new task goes through these rules in order; the first one it matches decides where it goes. Drag the cards
+            to change the order.
           </p>
           <button
             type="button"
             className="link-button"
-            onClick={() => dispatch(cardsExpanded(workflow.rules.map((rule) => rule.id)))}
+            onClick={() => dispatch(cardsExpanded(workflow.rules.map(rule => rule.id)))}
           >
             <ChevronsUpDown size={14} /> Expand all
           </button>
@@ -190,10 +183,7 @@ const WorkflowPage = () => {
           </button>
         </div>
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-          <SortableContext
-            items={workflow.rules.map((rule) => rule.id)}
-            strategy={verticalListSortingStrategy}
-          >
+          <SortableContext items={workflow.rules.map(rule => rule.id)} strategy={verticalListSortingStrategy}>
             <ol className="routing-rule-list">
               {workflow.rules.map((rule, index) => (
                 <RuleCard
@@ -206,9 +196,7 @@ const WorkflowPage = () => {
                   expanded={expanded.includes(rule.id)}
                   onToggle={() => dispatch(cardToggled(rule.id))}
                   onSelect={() => dispatch(ruleSelected(rule.id))}
-                  onChange={(changed: Rule) =>
-                    dispatch(ruleChanged({ workflowKey, rule: changed }))
-                  }
+                  onChange={(changed: Rule) => dispatch(ruleChanged({ workflowKey, rule: changed }))}
                   onRemove={() => dispatch(ruleRemoved({ workflowKey, ruleId: rule.id }))}
                 />
               ))}
@@ -216,11 +204,7 @@ const WorkflowPage = () => {
           </SortableContext>
         </DndContext>
         {!readOnly && (
-          <button
-            type="button"
-            className="secondary-button"
-            onClick={() => dispatch(addRoutingRule(workflowKey))}
-          >
+          <button type="button" className="secondary-button" onClick={() => dispatch(addRoutingRule(workflowKey))}>
             + Add a rule
           </button>
         )}
@@ -230,11 +214,9 @@ const WorkflowPage = () => {
           design={design}
           workflow={workflow}
           selectedRuleId={selectedRuleId}
-          onSelectRule={(ruleId) => {
+          onSelectRule={ruleId => {
             dispatch(ruleShown(ruleId));
-            document
-              .getElementById(`rule-${ruleId}`)
-              ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            document.getElementById(`rule-${ruleId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }}
         />
       </div>
@@ -275,7 +257,7 @@ const Editor = () => {
   };
 
   const tabs: { tab: RoutingTab; label: string }[] = [
-    ...design.workflows.map((workflow) => ({
+    ...design.workflows.map(workflow => ({
       tab: { kind: 'workflow', key: workflow.key } as RoutingTab,
       label: workflowLabel(workflow),
     })),
@@ -288,11 +270,7 @@ const Editor = () => {
   return (
     <div className="routing-editor">
       <div className="flow-toolbar">
-        <button
-          type="button"
-          className="link-button area-back"
-          onClick={() => dispatch(openRouting(''))}
-        >
+        <button type="button" className="link-button area-back" onClick={() => dispatch(openRouting(''))}>
           <ArrowLeft size={14} aria-hidden /> All routing
         </button>
         <h2>Routing · {code.toUpperCase()}</h2>
@@ -314,13 +292,8 @@ const Editor = () => {
       </div>
       {conflict && (
         <div className="alert alert-error">
-          {conflict.updatedBy ?? 'Someone else'} changed this design, so your latest changes
-          weren&apos;t saved.{' '}
-          <button
-            type="button"
-            className="secondary-button"
-            onClick={() => dispatch(loadRouting())}
-          >
+          {conflict.updatedBy ?? 'Someone else'} changed this design, so your latest changes weren&apos;t saved.{' '}
+          <button type="button" className="secondary-button" onClick={() => dispatch(loadRouting())}>
             Reload
           </button>
         </div>
@@ -333,9 +306,7 @@ const Editor = () => {
             role="tab"
             aria-selected={sameTab(candidate, tab)}
             className={
-              candidate.kind === 'check' && issues.some((issue) => issue.severity === 'error')
-                ? 'has-errors'
-                : ''
+              candidate.kind === 'check' && issues.some(issue => issue.severity === 'error') ? 'has-errors' : ''
             }
             onClick={() => dispatch(tabChosen(candidate))}
           >
@@ -352,22 +323,15 @@ const Editor = () => {
   );
 };
 
-const ImportPreview = ({
-  preview,
-  onUse,
-}: {
-  preview: RoutingImport & FromBranch;
-  onUse: () => void;
-}) => (
+const ImportPreview = ({ preview, onUse }: { preview: RoutingImport & FromBranch; onUse: () => void }) => (
   <div className="flows-import-preview" role="region" aria-label="Routing import preview">
     <h4>Found in {preview.report.readFrom}</h4>
     <ImportedFrom source={preview.source} />
     <ul>
-      {preview.report.workflows.map((workflow) => (
+      {preview.report.workflows.map(workflow => (
         <li key={workflow.key}>
           <strong>{workflow.name}</strong>: {workflow.rules} rules
-          {workflow.shared ? ' (shared template)' : ''}{' '}
-          <span className="field-hint">({workflow.template})</span>
+          {workflow.shared ? ' (shared template)' : ''} <span className="field-hint">({workflow.template})</span>
         </li>
       ))}
     </ul>
@@ -376,7 +340,7 @@ const ImportPreview = ({
     </p>
     {preview.report.notes.length > 0 && (
       <ul className="flows-import-notes">
-        {preview.report.notes.map((note) => (
+        {preview.report.notes.map(note => (
           <li key={note}>{note}</li>
         ))}
       </ul>
@@ -402,28 +366,23 @@ const RoutingHome = () => {
   }, [dispatch]);
 
   const allRows = summaries ?? [];
-  const rows = allRows.filter((row) => !helpline || row.code === helpline);
-  const shown = rows.filter((row) => filter === 'all' || row.status === filter);
-  const withDesign = new Set(allRows.map((row) => row.code));
+  const rows = allRows.filter(row => !helpline || row.code === helpline);
+  const shown = rows.filter(row => filter === 'all' || row.status === filter);
+  const withDesign = new Set(allRows.map(row => row.code));
 
   return (
     <main className="area-home routing-home">
       <h2>Routing</h2>
       <p className="field-hint area-home-intro">
-        How each helpline&apos;s contacts reach counselors: the TaskRouter workflows, queues, skills
-        and capacity.
+        How each helpline&apos;s contacts reach counselors: the TaskRouter workflows, queues, skills and capacity.
       </p>
       {error && <div className="alert alert-error">{error}</div>}
       <div className="area-home-actions">
         <label className="field">
           <span className="field-label">Open a helpline&apos;s routing</span>
-          <select
-            value={code}
-            aria-label="Helpline"
-            onChange={(e) => dispatch(helplineChosen(e.target.value))}
-          >
+          <select value={code} aria-label="Helpline" onChange={e => dispatch(helplineChosen(e.target.value))}>
             <option value="">Choose…</option>
-            {helplineCodes.map((candidate) => (
+            {helplineCodes.map(candidate => (
               <option key={candidate} value={candidate}>
                 {candidate.toUpperCase()}
                 {withDesign.has(candidate) ? '' : ' (no design yet)'}
@@ -431,12 +390,7 @@ const RoutingHome = () => {
             ))}
           </select>
         </label>
-        <button
-          type="button"
-          className="primary-button"
-          disabled={!code}
-          onClick={() => dispatch(openRouting(code))}
-        >
+        <button type="button" className="primary-button" disabled={!code} onClick={() => dispatch(openRouting(code))}>
           {code && !withDesign.has(code) && staffMode ? 'Start' : 'Open'}
         </button>
       </div>
@@ -446,31 +400,23 @@ const RoutingHome = () => {
         <>
           <div className="area-home-filters">
             <HelplineFilter
-              codes={allRows.map((row) => row.code)}
+              codes={allRows.map(row => row.code)}
               value={helpline}
               onChange={(value: string) => dispatch(helplineFilterChosen(value))}
             />
             <div className="area-home-filter" role="group" aria-label="Show">
-              {(['all', ...DESIGN_STATUSES.map((status) => status.value)] as RoutingFilter[]).map(
-                (candidate) => (
-                  <button
-                    key={candidate}
-                    type="button"
-                    className={filter === candidate ? 'active' : ''}
-                    aria-pressed={filter === candidate}
-                    onClick={() => dispatch(filterChosen(candidate))}
-                  >
-                    {candidate === 'all'
-                      ? 'All'
-                      : DESIGN_STATUSES.find((status) => status.value === candidate)?.label}{' '}
-                    (
-                    {candidate === 'all'
-                      ? rows.length
-                      : rows.filter((row) => row.status === candidate).length}
-                    )
-                  </button>
-                ),
-              )}
+              {(['all', ...DESIGN_STATUSES.map(status => status.value)] as RoutingFilter[]).map(candidate => (
+                <button
+                  key={candidate}
+                  type="button"
+                  className={filter === candidate ? 'active' : ''}
+                  aria-pressed={filter === candidate}
+                  onClick={() => dispatch(filterChosen(candidate))}
+                >
+                  {candidate === 'all' ? 'All' : DESIGN_STATUSES.find(status => status.value === candidate)?.label} (
+                  {candidate === 'all' ? rows.length : rows.filter(row => row.status === candidate).length})
+                </button>
+              ))}
             </div>
           </div>
           <table className="area-home-table">
@@ -485,7 +431,7 @@ const RoutingHome = () => {
               </tr>
             </thead>
             <tbody>
-              {shown.map((row) => (
+              {shown.map(row => (
                 <tr key={row.code}>
                   <td className="area-home-name">{row.code.toUpperCase()}</td>
                   <td>{row.workflows}</td>
@@ -518,8 +464,7 @@ const RoutingHome = () => {
 
 export const RoutingArea = () => {
   const dispatch = useAppDispatch();
-  const { code, stored, error, preview, branch, importing, working, editor } =
-    useAppSelector(selectRouting);
+  const { code, stored, error, preview, branch, importing, working, editor } = useAppSelector(selectRouting);
   const staffMode = useAppSelector(selectActingAsStaff);
   // Stable: the branch picker loads the branches again when it changes
   const loadBranches = useCallback(() => dispatch(loadRoutingBranches()), [dispatch]);
@@ -537,23 +482,14 @@ export const RoutingArea = () => {
     <main className="routing-area">
       <div className="routing-pick">
         {(stored === null || preview) && (
-          <button
-            type="button"
-            className="link-button area-back"
-            onClick={() => dispatch(openRouting(''))}
-          >
+          <button type="button" className="link-button area-back" onClick={() => dispatch(openRouting(''))}>
             <ArrowLeft size={14} aria-hidden /> All routing
           </button>
         )}
         {staffMode && code && stored && !preview && (
           <>
             <BranchPicker load={loadBranches} value={branch} onChange={chooseBranch} />
-            <button
-              type="button"
-              className="link-button"
-              disabled={importing}
-              onClick={previewImport}
-            >
+            <button type="button" className="link-button" disabled={importing} onClick={previewImport}>
               Import again from the live config
             </button>
           </>
@@ -561,20 +497,13 @@ export const RoutingArea = () => {
       </div>
       {error && <div className="alert alert-error">{error}</div>}
       {importing && <Loading text="Reading the live config…" />}
-      {stored === undefined && !error && (
-        <Loading text={`Loading ${code.toUpperCase()}'s routing…`} />
-      )}
+      {stored === undefined && !error && <Loading text={`Loading ${code.toUpperCase()}'s routing…`} />}
       {code && stored === null && !preview && (
         <div className="routing-empty">
           <p>{code.toUpperCase()} has no routing design yet.</p>
           {staffMode && <BranchPicker load={loadBranches} value={branch} onChange={chooseBranch} />}
           {staffMode && (
-            <button
-              type="button"
-              className="primary-button"
-              disabled={working || importing}
-              onClick={previewImport}
-            >
+            <button type="button" className="primary-button" disabled={working || importing} onClick={previewImport}>
               Import it from the live config
             </button>
           )}
@@ -597,9 +526,7 @@ export const RoutingArea = () => {
             // eslint-disable-next-line no-alert
             if (
               stored &&
-              !window.confirm(
-                `Replace ${code.toUpperCase()}'s routing design with the one read from the live config?`,
-              )
+              !window.confirm(`Replace ${code.toUpperCase()}'s routing design with the one read from the live config?`)
             )
               return;
             dispatch(adoptRoutingImport());

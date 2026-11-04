@@ -46,8 +46,7 @@ export const getFlagDurations = (files: DefinitionFileMap) =>
 export const getProfileOverview = (files: DefinitionFileMap) =>
   files[PROFILE_OVERVIEW_FILE] as ProfileOverview | undefined;
 
-export const hasProfiles = (files: DefinitionFileMap) =>
-  PROFILE_SECTIONS_FILE in files || FLAG_DURATIONS_FILE in files;
+export const hasProfiles = (files: DefinitionFileMap) => PROFILE_SECTIONS_FILE in files || FLAG_DURATIONS_FILE in files;
 
 // What a new section looks like, following the helplines' existing sections
 export const newProfileSection = (label: string, name: string): ProfileSectionDefinition => ({
@@ -73,12 +72,12 @@ export const DURATION_UNITS = [
 export type DurationUnit = (typeof DURATION_UNITS)[number]['unit'];
 
 export const splitDuration = (hours: number): { amount: number; unit: DurationUnit } => {
-  const fit = DURATION_UNITS.find((candidate) => hours > 0 && hours % candidate.hours === 0) ?? DURATION_UNITS[2];
+  const fit = DURATION_UNITS.find(candidate => hours > 0 && hours % candidate.hours === 0) ?? DURATION_UNITS[2];
   return { amount: hours / fit.hours, unit: fit.unit };
 };
 
 export const toHours = (amount: number, unit: DurationUnit) =>
-  amount * DURATION_UNITS.find((candidate) => candidate.unit === unit)!.hours;
+  amount * DURATION_UNITS.find(candidate => candidate.unit === unit)!.hours;
 
 // e.g. 43848 -> "about 5 years"; undefined when the exact amount says it all
 export const approximateDuration = (hours: number): string | undefined => {
@@ -100,7 +99,7 @@ const checkProfiles = (files: DefinitionFileMap): ValidationIssue[] => {
   const issues: ValidationIssue[] = [];
   const add = (message: string) => issues.push({ severity: 'error', message: `Client profiles: ${message}` });
   const sections = getProfileSections(files);
-  const names = sections.map((section) => section.name);
+  const names = sections.map(section => section.name);
   sections.forEach((section, index) => {
     if (!String(section.label ?? '').trim()) add(`profile section ${index + 1} has no title.`);
     if (names.indexOf(section.name) !== index) add(`more than one section is saved as “${section.name}”.`);
@@ -111,9 +110,7 @@ const checkProfiles = (files: DefinitionFileMap): ValidationIssue[] => {
     if (!String(duration.label ?? '').trim()) add(`a “${duration.flag}” option has no name.`);
     if (!(hours > 0)) add(`“${duration.label}” needs a duration of at least one hour.`);
     if (
-      durations.findIndex(
-        (other) => other.flag === duration.flag && Number(other.durationInHours) === hours,
-      ) !== index
+      durations.findIndex(other => other.flag === duration.flag && Number(other.durationInHours) === hours) !== index
     ) {
       add(`two “${duration.flag}” options last ${duration.durationInHours} hours; each needs a different duration.`);
     }
@@ -125,8 +122,8 @@ export const validateProfiles = (
   draftFiles: DefinitionFileMap,
   originalFiles: DefinitionFileMap,
 ): ValidationIssue[] => {
-  const before = new Set(checkProfiles(originalFiles).map((found) => found.message));
-  return checkProfiles(draftFiles).map((found) =>
+  const before = new Set(checkProfiles(originalFiles).map(found => found.message));
+  return checkProfiles(draftFiles).map(found =>
     before.has(found.message)
       ? {
           ...found,
@@ -144,16 +141,16 @@ export const summarizeProfileChanges = (
   const lines: string[] = [];
   const sectionsBefore = getProfileSections(originalFiles);
   const sectionsAfter = getProfileSections(draftFiles);
-  sectionsAfter.forEach((section) => {
-    const previous = sectionsBefore.find((old) => old.name === section.name);
+  sectionsAfter.forEach(section => {
+    const previous = sectionsBefore.find(old => old.name === section.name);
     if (!previous) lines.push(`Added the section “${section.label}”`);
     else if (!isSameJson(previous, section)) lines.push(`Changed the section “${section.label}”`);
   });
   sectionsBefore
-    .filter((section) => !sectionsAfter.some((other) => other.name === section.name))
-    .forEach((section) => lines.push(`Removed the section “${section.label}”`));
+    .filter(section => !sectionsAfter.some(other => other.name === section.name))
+    .forEach(section => lines.push(`Removed the section “${section.label}”`));
   const order = (list: ProfileSectionDefinition[], others: ProfileSectionDefinition[]) =>
-    list.map((section) => section.name).filter((name) => others.some((other) => other.name === name));
+    list.map(section => section.name).filter(name => others.some(other => other.name === name));
   if (!isSameJson(order(sectionsBefore, sectionsAfter), order(sectionsAfter, sectionsBefore))) {
     lines.push('Reordered the sections');
   }
@@ -163,7 +160,7 @@ export const summarizeProfileChanges = (
   if (!isSameJson(durationsBefore, durationsAfter)) {
     lines.push(
       `Flag options are now: ${
-        durationsAfter.map((duration) => `“${duration.label}” (${duration.durationInHours} hours)`).join(', ') || 'none'
+        durationsAfter.map(duration => `“${duration.label}” (${duration.durationInHours} hours)`).join(', ') || 'none'
       }`,
     );
   }

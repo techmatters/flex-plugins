@@ -112,7 +112,7 @@ const serviceConfigSlice = createSlice({
     },
   },
   selectors: {
-    selectServiceConfig: (state) => state,
+    selectServiceConfig: state => state,
   },
 });
 
@@ -133,12 +133,13 @@ export const selectSettingRows = createSelector([selectDraftFiles, selectService
 // Each setting's values per file as loaded, by path, to tell which ones this draft changed
 const selectOriginalSettingValues = createSelector(
   [selectOriginalFiles, selectServiceConfigDefaults],
-  (files, defaults) => new Map(getSettingRows(files, defaults).map((row) => [row.path, JSON.stringify(row.byLayer)])),
+  (files, defaults) => new Map(getSettingRows(files, defaults).map(row => [row.path, JSON.stringify(row.byLayer)])),
 );
 
 export const selectChangedSettingPaths = createSelector(
   [selectSettingRows, selectOriginalSettingValues],
-  (rows, original) => new Set(rows.filter((row) => original.get(row.path) !== JSON.stringify(row.byLayer)).map((row) => row.path)),
+  (rows, original) =>
+    new Set(rows.filter(row => original.get(row.path) !== JSON.stringify(row.byLayer)).map(row => row.path)),
 );
 
 // The settings the filter and search let through
@@ -151,7 +152,7 @@ export const selectVisibleSettingRows = createSelector(
   ],
   (rows, changed, filter, search) => {
     const query = search.trim().toLowerCase();
-    return rows.filter((row) => {
+    return rows.filter(row => {
       if (filter === 'helpline' && !isSetByHelpline(row)) return false;
       if (filter === 'differs' && !differsBetweenEnvironments(row)) return false;
       if (filter === 'changed' && !changed.has(row.path)) return false;
@@ -172,7 +173,7 @@ const parseLoose = (text: string): unknown => {
 };
 
 // Starts the editor again (when it opens, and when the draft's files are replaced)
-export const openServiceConfig = (): AppThunk => (dispatch) => {
+export const openServiceConfig = (): AppThunk => dispatch => {
   dispatch(serviceConfigOpened());
 };
 
@@ -187,8 +188,10 @@ export const editServiceConfig =
       isConfigObject(value) &&
       Object.keys(value).length === 0;
     dispatch(
-      editDraftFiles((files) =>
-        Object.fromEntries(Object.entries(updater(files)).filter(([filePath, value]) => !isNewEmptyFile(filePath, value))),
+      editDraftFiles(files =>
+        Object.fromEntries(
+          Object.entries(updater(files)).filter(([filePath, value]) => !isNewEmptyFile(filePath, value)),
+        ),
       ),
     );
   };
@@ -196,19 +199,19 @@ export const editServiceConfig =
 // Sets (or, with undefined, removes) a setting in one file; JSON being typed for it starts again from it
 export const setSettingValue =
   (path: string, keys: string[], name: ServiceConfigFileName, value: unknown): AppThunk =>
-  (dispatch) => {
+  dispatch => {
     dispatch(settingJsonChanged({ key: settingJsonKey(path, name) }));
-    dispatch(editServiceConfig((files) => setServiceConfigValue(files, name, keys, value)));
+    dispatch(editServiceConfig(files => setServiceConfigValue(files, name, keys, value)));
   };
 
 // JSON typed for a setting in one file, saved whenever it's valid
 export const typeSettingJson =
   (path: string, keys: string[], name: ServiceConfigFileName, text: string): AppThunk =>
-  (dispatch) => {
+  dispatch => {
     const key = settingJsonKey(path, name);
     try {
       const value = JSON.parse(text);
-      dispatch(editServiceConfig((files) => setServiceConfigValue(files, name, keys, value)));
+      dispatch(editServiceConfig(files => setServiceConfigValue(files, name, keys, value)));
       dispatch(settingJsonChanged({ key, json: { text } }));
     } catch (err) {
       dispatch(settingJsonChanged({ key, json: { text, error: (err as Error).message } }));
@@ -224,7 +227,7 @@ export const addSetting = (): AppThunk => (dispatch, getState) => {
     return;
   }
   const path = keys.join('.');
-  const existing = selectSettingRows(getState()).find((row) => row.path === path);
+  const existing = selectSettingRows(getState()).find(row => row.path === path);
   if (existing && existing.byLayer[fileName] !== undefined) {
     dispatch(addChanged({ error: `${fileName}.json already sets ${path}: change it in the list above.` }));
     return;
@@ -233,7 +236,7 @@ export const addSetting = (): AppThunk => (dispatch, getState) => {
     dispatch(addChanged({ error: 'Give it a value.' }));
     return;
   }
-  dispatch(editServiceConfig((files) => setServiceConfigValue(files, fileName, keys, parseLoose(valueText.trim()))));
+  dispatch(editServiceConfig(files => setServiceConfigValue(files, fileName, keys, parseLoose(valueText.trim()))));
   dispatch(settingAdded(path));
 };
 
@@ -246,7 +249,7 @@ export const typeFileJson =
     try {
       const parsed = JSON.parse(text);
       if (!isConfigObject(parsed)) throw new Error('The file must be a JSON object ({ … }).');
-      dispatch(editServiceConfig((files) => setServiceConfigFile(files, fileTab, parsed)));
+      dispatch(editServiceConfig(files => setServiceConfigFile(files, fileTab, parsed)));
       dispatch(fileJsonChanged({ text }));
     } catch (err) {
       dispatch(fileJsonChanged({ text, error: (err as Error).message }));
@@ -256,6 +259,6 @@ export const typeFileJson =
 // Switches a helpline feature on or off (FeaturesEditor)
 export const switchFeature =
   (feature: keyof HelplineFeatures, on: boolean): AppThunk =>
-  (dispatch) => {
-    dispatch(editDraftFiles((files) => setFeature(files, feature, on)));
+  dispatch => {
+    dispatch(editDraftFiles(files => setFeature(files, feature, on)));
   };

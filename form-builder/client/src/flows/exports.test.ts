@@ -140,12 +140,12 @@ describe('JSON for Claude', () => {
     expect(exported.about).toMatch(/twilio-iac\/AGENTS\.md/);
 
     // The two voice frames are one Studio flow
-    expect(exported.flows.map((flow) => [flow.key, flow.frames.map((frame) => frame.title)])).toEqual([
+    expect(exported.flows.map(flow => [flow.key, flow.frames.map(frame => frame.title)])).toEqual([
       ['channel:voice', ['Voice: pre-queue', 'Voice: post-queue']],
       ['channel:sms', ['SMS']],
     ]);
     const voice = exported.flows[0].objects;
-    expect(voice.find((item) => item.id === 'o-tya')).toEqual({
+    expect(voice.find(item => item.id === 'o-tya')).toEqual({
       id: 'o-tya',
       type: 'checkQueueAvailability',
       kind: 'Skilled worker available?',
@@ -165,13 +165,13 @@ describe('JSON for Claude', () => {
         { name: 'failed' },
       ],
     });
-    expect(voice.find((item) => item.id === 'o-welcome')).toMatchObject({
+    expect(voice.find(item => item.id === 'o-welcome')).toMatchObject({
       message: { channel: 'voice', language: 'en', recordingFile: 'play_message_voice_en_welcome.mp3' },
       exits: [{ name: '', endsFlow: true }],
       openComments: [{ author: 'Ale', text: 'Shorter?' }],
     });
     // No name yet, so no recording file yet
-    expect(voice.find((item) => item.id === 'o-closed')?.message).toEqual({
+    expect(voice.find(item => item.id === 'o-closed')?.message).toEqual({
       channel: 'voice',
       language: 'es',
       script: 'Estamos cerrados.',
@@ -210,7 +210,7 @@ describe('JSON for Claude', () => {
 
   test('carries each frame written as a Studio flow template, with its variables and TODOs', () => {
     const { studioTemplates } = toFlowExport(board);
-    expect(studioTemplates.map((template) => template.title)).toEqual(['Voice: pre-queue', 'Voice: post-queue', 'SMS']);
+    expect(studioTemplates.map(template => template.title)).toEqual(['Voice: pre-queue', 'Voice: post-queue', 'SMS']);
     const [preQueue] = studioTemplates;
     expect(preQueue.text.startsWith('${\n  jsonencode({')).toBe(true);
     expect(preQueue.text).toContain('"name": "f_isSkilledWorkerAvailable_tya_calls"');
@@ -301,7 +301,7 @@ describe('with the helpline recordings', () => {
   test('the JSON gives each recording its status and where to play it', () => {
     const exported = toFlowExport(board, recordings);
     expect(exported.recordingsBaseUrl).toEqual(recordings.baseUrls);
-    expect(exported.flows[0].objects.find((item) => item.id === 'o-welcome')?.message).toMatchObject({
+    expect(exported.flows[0].objects.find(item => item.id === 'o-welcome')?.message).toMatchObject({
       // Approved, but production still has the older file
       status: 'Approved',
       recordingFile: 'play_message_voice_en_welcome.wav',

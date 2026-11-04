@@ -235,9 +235,9 @@ export const BOARD_HELP = {
 // A step's paths as on the board: the ones described, then those added on it (a Decision's answers, flags)
 export const pathsOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio'>) => {
   const help = STEP_HELP[object.type];
-  const described = new Map((help.paths ?? []).map((path) => [path.exit, path.text]));
+  const described = new Map((help.paths ?? []).map(path => [path.exit, path.text]));
   return exitsOf(object)
     .filter(Boolean)
-    .map((exit) => ({ exit, text: described.get(exit) ?? help.otherPath }))
+    .map(exit => ({ exit, text: described.get(exit) ?? help.otherPath }))
     .filter((path): path is { exit: string; text: string } => Boolean(path.text));
 };

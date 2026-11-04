@@ -25,7 +25,13 @@
  * Also the tested paths: runs marked as tested, kept on the board while nothing on them changes.
  */
 import type { BoardContent, FlowObject, TestedPath } from '@tech-matters/form-builder-shared/flows/model';
-import { defaultSplitInputOf, exitConditionOf, exitsOf, OBJECT_TYPES, repeatWidgetNames } from '@tech-matters/form-builder-shared/flows/model';
+import {
+  defaultSplitInputOf,
+  exitConditionOf,
+  exitsOf,
+  OBJECT_TYPES,
+  repeatWidgetNames,
+} from '@tech-matters/form-builder-shared/flows/model';
 
 // ---------------------------------------------------------------------------------------------
 // A tiny Liquid: {{ path | filter: arg }}, {% if %}/{% elsif %}/{% else %}/{% endif %}
@@ -63,25 +69,22 @@ const FILTERS: Record<string, (value: unknown, arg?: unknown) => unknown> = {
   plus: (value, arg) => Number(asText(value) || 0) + Number(asText(arg) || 0),
   minus: (value, arg) => Number(asText(value) || 0) - Number(asText(arg) || 0),
   times: (value, arg) => Number(asText(value) || 0) * Number(asText(arg) || 0),
-  downcase: (value) => asText(value).toLowerCase(),
-  upcase: (value) => asText(value).toUpperCase(),
-  strip: (value) => asText(value).trim(),
+  downcase: value => asText(value).toLowerCase(),
+  upcase: value => asText(value).toUpperCase(),
+  strip: value => asText(value).trim(),
   default: (value, arg) => (value === undefined || value === null || value === '' ? arg : value),
-  size: (value) => (Array.isArray(value) ? value.length : asText(value).length),
-  to_json: (value) => JSON.stringify(value ?? null),
+  size: value => (Array.isArray(value) ? value.length : asText(value).length),
+  to_json: value => JSON.stringify(value ?? null),
 };
 
 // An output's value: a path or literal, then its filters
 const evaluate = (expression: string, lookup: Lookup): unknown => {
   const [first, ...filters] = expression.split('|');
-  return filters.reduce(
-    (value, filter) => {
-      const [name, arg] = filter.split(':');
-      const apply = FILTERS[name.trim()];
-      return apply ? apply(value, arg === undefined ? undefined : valueOf(arg, lookup)) : value;
-    },
-    valueOf(first, lookup),
-  );
+  return filters.reduce((value, filter) => {
+    const [name, arg] = filter.split(':');
+    const apply = FILTERS[name.trim()];
+    return apply ? apply(value, arg === undefined ? undefined : valueOf(arg, lookup)) : value;
+  }, valueOf(first, lookup));
 };
 
 const truthy = (value: unknown) => value !== undefined && value !== null && value !== false;
@@ -112,9 +115,9 @@ const compare = (left: unknown, operator: string, right: unknown): boolean => {
 // A tag's condition: comparisons joined by and / or (evaluated right to left, as Liquid does)
 const condition = (text: string, lookup: Lookup): boolean => {
   const or = text.split(/\s+or\s+/);
-  if (or.length > 1) return or.some((part) => condition(part, lookup));
+  if (or.length > 1) return or.some(part => condition(part, lookup));
   const and = text.split(/\s+and\s+/);
-  if (and.length > 1) return and.every((part) => condition(part, lookup));
+  if (and.length > 1) return and.every(part => condition(part, lookup));
   const comparison = text.match(/^(.+?)\s*(==|!=|>=|<=|>|<|\scontains\s)\s*(.+)$/);
   if (!comparison) return truthy(evaluate(text, lookup));
   return compare(evaluate(comparison[1], lookup), comparison[2].trim(), evaluate(comparison[3], lookup));
@@ -125,9 +128,9 @@ export const renderLiquid = (template: string, lookup: Lookup): string => {
   const parts = template.split(/({%[\s\S]*?%}|{{[\s\S]*?}})/);
   // Whether each open {% if %} is showing its text, and whether one of its branches already has
   const stack: { showing: boolean; done: boolean; outer: boolean }[] = [];
-  const showing = () => stack.every((level) => level.showing);
+  const showing = () => stack.every(level => level.showing);
   let out = '';
-  parts.forEach((part) => {
+  parts.forEach(part => {
     const tag = part.match(/^{%-?\s*(\w+)\s*([\s\S]*?)\s*-?%}$/);
     if (tag) {
       const [, name, rest] = tag;
@@ -266,8 +269,8 @@ const flowWrittenAttributes = (content: Pick<BoardContent, 'objects'>) =>
   new Set([
     'flowMemory',
     ...content.objects
-      .filter((object) => object.type === 'chatbot')
-      .flatMap((object) => [object.settings?.memoryAttribute?.trim() || 'memory', object.settings?.releaseFlag?.trim()])
+      .filter(object => object.type === 'chatbot')
+      .flatMap(object => [object.settings?.memoryAttribute?.trim() || 'memory', object.settings?.releaseFlag?.trim()])
       .filter((name): name is string => Boolean(name)),
   ]);
 
@@ -279,7 +282,7 @@ const flowWrittenAttributes = (content: Pick<BoardContent, 'objects'>) =>
  */
 const lookupIn =
   (run: SimRun, content: Pick<BoardContent, 'objects'>): Lookup =>
-  (path) => {
+  path => {
     const parts = path.split('.');
     if (parts[0] === 'flow' && parts[1] === 'variables') return run.variables[parts[2]];
     if (CHANNEL_ATTRIBUTES.every((part, index) => parts[index] === part)) {
@@ -290,7 +293,7 @@ const lookupIn =
     if (parts[0] === 'widgets') {
       const name = parts[1];
       if (run.widgets[name]) return at(run.widgets[name], parts.slice(2));
-      const object = content.objects.find((candidate) => widgetNameOf(candidate) === name);
+      const object = content.objects.find(candidate => widgetNameOf(candidate) === name);
       const answers =
         object &&
         (['questionMessaging', 'menuVoice'].includes(object.type) ||
@@ -310,7 +313,7 @@ const splitMatchesOf = (object: FlowObject, input: string) => {
     const liveInput = object.studio.properties?.input;
     return object.studio.transitions.flatMap((transition, index) => {
       if (transition.event !== 'match' || !Array.isArray(transition.conditions)) return [];
-      const conditions = (transition.conditions as Record<string, unknown>[]).map((candidate) => {
+      const conditions = (transition.conditions as Record<string, unknown>[]).map(candidate => {
         const argument = Array.isArray(candidate.arguments) ? String(candidate.arguments[0] ?? '') : input;
         return {
           // A split whose input was changed on the board reads the new one
@@ -329,8 +332,8 @@ const splitMatchesOf = (object: FlowObject, input: string) => {
     });
   }
   return exits
-    .filter((exit) => exit && exit !== 'noMatch')
-    .map((exit) => ({
+    .filter(exit => exit && exit !== 'noMatch')
+    .map(exit => ({
       exit,
       conditions: [{ argument: input, type: exitConditionOf(object, exit, input)?.type ?? 'equal_to', value: exit }],
     }));
@@ -339,7 +342,7 @@ const splitMatchesOf = (object: FlowObject, input: string) => {
 // Studio's split conditions (text compared without minding case)
 const conditionMet = (type: string, value: string, condition: string): boolean | undefined => {
   const [a, b] = [value.trim().toLowerCase(), condition.trim().toLowerCase()];
-  const list = b.split(',').map((item) => item.trim());
+  const list = b.split(',').map(item => item.trim());
   const numbers = a !== '' && !Number.isNaN(Number(a)) && !Number.isNaN(Number(b));
   switch (type) {
     case 'equal_to':
@@ -383,7 +386,7 @@ const splitInputOf = (object: FlowObject, content: Pick<BoardContent, 'objects' 
   (typeof object.studio?.properties?.input === 'string' ? object.studio.properties.input : undefined) ||
   defaultSplitInputOf(content, object.id);
 
-const firstOf = (exits: string[], candidates: string[]) => exits.find((exit) => candidates.includes(exit));
+const firstOf = (exits: string[], candidates: string[]) => exits.find(exit => candidates.includes(exit));
 
 const nextRun = (run: SimRun, changes: Partial<SimRun>): SimRun => ({ ...run, ...changes });
 
@@ -408,9 +411,9 @@ const goOn = (content: BoardContent, run: SimRun, exit: string, note?: string): 
 
 // Leaving the current object by a way out: on to what it's connected to, or the run ends
 const leave = (content: BoardContent, run: SimRun, exit: string, note?: string): SimRun => {
-  const object = content.objects.find((candidate) => candidate.id === run.current)!;
+  const object = content.objects.find(candidate => candidate.id === run.current)!;
   const connection = content.connections.find(
-    (candidate) => candidate.from === object.id && (candidate.exit ?? '') === exit,
+    candidate => candidate.from === object.id && (candidate.exit ?? '') === exit,
   );
   const steps = [...run.steps];
   steps[steps.length - 1] = {
@@ -419,7 +422,7 @@ const leave = (content: BoardContent, run: SimRun, exit: string, note?: string):
     ...(connection ? { connectionId: connection.id } : {}),
     ...(note !== undefined ? { note } : {}),
   };
-  const target = connection && content.objects.find((candidate) => candidate.id === connection.to);
+  const target = connection && content.objects.find(candidate => candidate.id === connection.to);
   if (target) {
     return nextRun(run, {
       steps: [...steps, { execution: run.execution, objectId: target.id }],
@@ -461,7 +464,7 @@ const assumedBy = (
   if (read !== unknownPath || !CHANNEL_ATTRIBUTES.every((part, index) => parts[index] === part)) return {};
   const values = Object.fromEntries(
     matches.flatMap(({ exit, conditions }) => {
-      const equal = conditions.find((condition) => condition.argument === input && condition.type === 'equal_to');
+      const equal = conditions.find(condition => condition.argument === input && condition.type === 'equal_to');
       return equal && conditions.length === 1 ? [[exit, equal.value]] : [];
     }),
   );
@@ -473,7 +476,7 @@ const advance = (content: BoardContent, start: SimRun): SimRun => {
   let run = start;
   for (let count = 0; count < MAX_STEPS; count += 1) {
     if (run.ended || run.prompt || !run.current) return run;
-    const object = content.objects.find((candidate) => candidate.id === run.current);
+    const object = content.objects.find(candidate => candidate.id === run.current);
     if (!object) return nextRun(run, { ended: { kind: 'deadEnd', message: 'The next object is gone.' } });
     const exits = exitsOf(object);
     const named = exits.filter(Boolean);
@@ -483,8 +486,8 @@ const advance = (content: BoardContent, start: SimRun): SimRun => {
     switch (object.type) {
       case 'incoming': {
         // The trigger's event: the one that's connected (asked when there are several)
-        const connected = exits.filter((exit) =>
-          content.connections.some((connection) => connection.from === object.id && (connection.exit ?? '') === exit),
+        const connected = exits.filter(exit =>
+          content.connections.some(connection => connection.from === object.id && (connection.exit ?? '') === exit),
         );
         if (connected.length === 1) run = leave(content, run, connected[0]);
         else if (connected.length === 0) run = leave(content, run, exits[0] ?? '');
@@ -551,7 +554,7 @@ const advance = (content: BoardContent, start: SimRun): SimRun => {
           if (!input || input === 'TODO') throw new Unknown('what it splits on (not set)');
           const value = renderLiquid(input, lookup);
           const found = matches.find(({ conditions }) =>
-            conditions.every((candidate) => {
+            conditions.every(candidate => {
               const read = candidate.argument === input ? value : renderLiquid(candidate.argument, lookup);
               const met = conditionMet(candidate.type, read, candidate.value);
               if (met === undefined) throw new Unknown(`a “${candidate.type}” condition`);
@@ -581,7 +584,9 @@ const advance = (content: BoardContent, start: SimRun): SimRun => {
           kind: 'choose',
           objectId: object.id,
           exits: named,
-          why: `Did the chatbot${object.settings?.botSuffix ? ` ${object.settings.botSuffix}` : ''} start? (channelCapture/captureChannelWithBot)`,
+          why: `Did the chatbot${
+            object.settings?.botSuffix ? ` ${object.settings.botSuffix}` : ''
+          } start? (channelCapture/captureChannelWithBot)`,
         });
       default: {
         if (named.length <= 1 || GOES_ON.has(object.type)) {
@@ -633,7 +638,7 @@ export const answer = (content: BoardContent, run: SimRun, given: SimAnswer): Si
   if (prompt.kind === 'continue') {
     return given.kind === 'continue' ? advance(content, leave(content, run, prompt.exit, prompt.note)) : run;
   }
-  const object = content.objects.find((candidate) => candidate.id === prompt.objectId)!;
+  const object = content.objects.find(candidate => candidate.id === prompt.objectId)!;
   const name = widgetNameOf(object);
   const exits = exitsOf(object);
 
@@ -765,7 +770,7 @@ const logicOf = (object: FlowObject) =>
     object.variables,
     object.studio?.type,
     object.studio?.properties?.input,
-    object.studio?.transitions?.map((transition) => transition.conditions ?? null),
+    object.studio?.transitions?.map(transition => transition.conditions ?? null),
   ]);
 
 /** A fingerprint of everything on a path: when any of it changes, the path has to be tested again. */
@@ -775,10 +780,10 @@ export const pathFingerprint = (
 ) =>
   hashOf(
     JSON.stringify(
-      steps.map((step) => {
-        const object = content.objects.find((candidate) => candidate.id === step.objectId);
+      steps.map(step => {
+        const object = content.objects.find(candidate => candidate.id === step.objectId);
         const connection = step.connectionId
-          ? content.connections.find((candidate) => candidate.id === step.connectionId)
+          ? content.connections.find(candidate => candidate.id === step.connectionId)
           : undefined;
         return [
           object ? logicOf(object) : null,
@@ -813,7 +818,7 @@ export const testedPathOf = (
 
 /** The tested paths still as they were tested (nothing on them changed since). */
 export const validTestedPaths = (content: Pick<BoardContent, 'objects' | 'connections'>, paths: TestedPath[]) =>
-  paths.filter((path) => pathFingerprint(content, path.steps) === path.fingerprint);
+  paths.filter(path => pathFingerprint(content, path.steps) === path.fingerprint);
 
 /**
  * What's been tested: the objects and connections on tested paths, and the ways out of the board's
@@ -823,23 +828,23 @@ export const coverageOf = (content: BoardContent, paths: TestedPath[]) => {
   const objects = new Set<string>();
   const connections = new Set<string>();
   const taken = new Set<string>();
-  paths.forEach((path) =>
-    path.steps.forEach((step) => {
+  paths.forEach(path =>
+    path.steps.forEach(step => {
       objects.add(step.objectId);
       if (step.connectionId) connections.add(step.connectionId);
       if (step.exit !== undefined) taken.add(`${step.objectId}|${step.exit}`);
     }),
   );
-  const waysOut = content.objects.flatMap((object) => {
+  const waysOut = content.objects.flatMap(object => {
     if (['text', 'end', 'goToFrame'].includes(object.type)) return [];
     const exits = exitsOf(object);
     return exits
       .filter(
-        (exit) =>
-          content.connections.some((connection) => connection.from === object.id && (connection.exit ?? '') === exit) ||
+        exit =>
+          content.connections.some(connection => connection.from === object.id && (connection.exit ?? '') === exit) ||
           (object.endedExits ?? []).includes(exit),
       )
-      .map((exit) => ({ objectId: object.id, exit, tested: taken.has(`${object.id}|${exit}`) }));
+      .map(exit => ({ objectId: object.id, exit, tested: taken.has(`${object.id}|${exit}`) }));
   });
   return { objects, connections, waysOut };
 };

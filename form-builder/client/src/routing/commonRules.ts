@@ -41,7 +41,7 @@ export const COMMON_RULES: CommonRule[] = [
     name: 'Direct Transfers',
     description: 'A contact transferred to one counselor goes only to them.',
     at: 'start',
-    filter: (queue) => ({
+    filter: queue => ({
       filter_friendly_name: 'Direct Transfers',
       expression: "transferTargetType =='worker' AND isContactlessTask != true",
       targets: [
@@ -58,7 +58,7 @@ export const COMMON_RULES: CommonRule[] = [
     name: 'Offline Contacts',
     description: 'An offline contact goes back to the counselor recording it.',
     at: 'start',
-    filter: (queue) => ({
+    filter: queue => ({
       filter_friendly_name: 'Offline Contacts',
       expression: 'isContactlessTask == true',
       targets: [{ expression: OFFLINE_CONTACT_OWNER, queue: queue() }],
@@ -68,7 +68,7 @@ export const COMMON_RULES: CommonRule[] = [
     name: 'E2E Test',
     description: "The automated end-to-end tests' webchats, to their own queue.",
     at: 'start',
-    filter: (queue) => ({
+    filter: queue => ({
       filter_friendly_name: 'E2E Test',
       expression: "channelType=='web' AND e2eTestMode=='true'",
       targets: [
@@ -83,7 +83,7 @@ export const COMMON_RULES: CommonRule[] = [
     name: 'Everyone else',
     description: 'Every other task, to the main queue (the last rule, when nothing before took it).',
     at: 'end',
-    filter: (queue) => ({
+    filter: queue => ({
       filter_friendly_name: 'Everyone else',
       expression: '1==1',
       targets: [{ expression: STANDARD_WHO, queue: queue() }],
@@ -96,7 +96,7 @@ const queueReference = (key: string) =>
 
 // The helpline's queue for it: the one asked for if the helpline has it, otherwise its main queue
 const queueFor = (design: RoutingDesign) => (preferred?: string) => {
-  const keys = design.queues.map((queue) => queue.key);
+  const keys = design.queues.map(queue => queue.key);
   const key = (preferred && keys.includes(preferred) && preferred) || (keys.includes('master') ? 'master' : keys[0]);
   return queueReference(key ?? 'master');
 };
@@ -108,7 +108,7 @@ export const commonRule = (design: RoutingDesign, common: CommonRule): Rule =>
 export const hasCommonRule = (workflow: Workflow, design: RoutingDesign, common: CommonRule) => {
   const when = JSON.stringify(commonRule(design, common).when);
   return workflow.rules.some(
-    (rule) => rule.name.trim().toLowerCase() === common.name.toLowerCase() || JSON.stringify(rule.when) === when,
+    rule => rule.name.trim().toLowerCase() === common.name.toLowerCase() || JSON.stringify(rule.when) === when,
   );
 };
 
@@ -116,13 +116,13 @@ export const addCommonRule = (workflow: Workflow, design: RoutingDesign, common:
   const rule = commonRule(design, common);
   if (common.at === 'end') return { ...workflow, rules: [...workflow.rules, rule] };
   // Before the helpline's own rules, after the common ones already at the start, in the usual order
-  const commonAtStart = COMMON_RULES.filter((candidate) => candidate.at === 'start');
+  const commonAtStart = COMMON_RULES.filter(candidate => candidate.at === 'start');
   const order = commonAtStart.indexOf(common);
   let index = 0;
   while (
     index < workflow.rules.length &&
     commonAtStart.some(
-      (candidate) =>
+      candidate =>
         commonAtStart.indexOf(candidate) < order &&
         workflow.rules[index].name.trim().toLowerCase() === candidate.name.toLowerCase(),
     )

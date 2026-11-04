@@ -49,31 +49,28 @@ export const newStatusValue = (label: string, taken: string[]) => {
 
 // What the plugin offers in the status dropdown for a case with this status
 export const availableTransitions = (statuses: StatusInfo[], current: string): StatusInfo[] => {
-  const currentStatus = statuses.find((status) => status.value === current);
+  const currentStatus = statuses.find(status => status.value === current);
   if (!currentStatus) return [];
   const allowed = [...(currentStatus.transitions ?? []), currentStatus.value];
-  return statuses.filter((status) => allowed.includes(status.value));
+  return statuses.filter(status => allowed.includes(status.value));
 };
 
 const checkStatuses = (files: DefinitionFileMap): ValidationIssue[] => {
   if (!(CASE_STATUS_FILE in files)) return [];
   const statuses = Object.values(getCaseStatusMap(files));
-  const values = statuses.map((status) => status.value);
+  const values = statuses.map(status => status.value);
   const issues: ValidationIssue[] = [];
   const add = (message: string, severity: ValidationIssue['severity'] = 'error') =>
     issues.push({ severity, message: `Case statuses: ${message}` });
-  REQUIRED_STATUSES.filter((value) => !values.includes(value)).forEach((value) =>
+  REQUIRED_STATUSES.filter(value => !values.includes(value)).forEach(value =>
     add(`Aselo needs a status saved as “${value}”.`),
   );
-  statuses.forEach((status) => {
+  statuses.forEach(status => {
     if (!String(status.label ?? '').trim()) add(`the status saved as “${status.value}” has no name.`);
     (status.transitions ?? [])
-      .filter((target) => !values.includes(target))
-      .forEach((target) =>
-        add(
-          `“${status.label}” can move to “${target}”, which isn’t a status, so that option never shows.`,
-          'warning',
-        ),
+      .filter(target => !values.includes(target))
+      .forEach(target =>
+        add(`“${status.label}” can move to “${target}”, which isn’t a status, so that option never shows.`, 'warning'),
       );
   });
   return issues;
@@ -84,8 +81,8 @@ export const validateCaseStatuses = (
   draftFiles: DefinitionFileMap,
   originalFiles: DefinitionFileMap,
 ): ValidationIssue[] => {
-  const before = new Set(checkStatuses(originalFiles).map((found) => found.message));
-  return checkStatuses(draftFiles).map((found) =>
+  const before = new Set(checkStatuses(originalFiles).map(found => found.message));
+  return checkStatuses(draftFiles).map(found =>
     found.severity === 'error' && before.has(found.message)
       ? {
           ...found,
@@ -104,12 +101,12 @@ export const summarizeCaseStatusChanges = (
   const after = Object.values(getCaseStatusMap(draftFiles));
   if (isSameJson(before, after)) return [];
   const labelOf = (value: string) =>
-    after.find((status) => status.value === value)?.label ??
-    before.find((status) => status.value === value)?.label ??
+    after.find(status => status.value === value)?.label ??
+    before.find(status => status.value === value)?.label ??
     value;
   const lines: string[] = [];
-  after.forEach((status) => {
-    const previous = before.find((old) => old.value === status.value);
+  after.forEach(status => {
+    const previous = before.find(old => old.value === status.value);
     if (!previous) {
       lines.push(`Added “${status.label}”`);
       return;
@@ -123,10 +120,10 @@ export const summarizeCaseStatusChanges = (
     }
   });
   before
-    .filter((status) => !after.some((other) => other.value === status.value))
-    .forEach((status) => lines.push(`Removed “${status.label}”`));
+    .filter(status => !after.some(other => other.value === status.value))
+    .forEach(status => lines.push(`Removed “${status.label}”`));
   const kept = (list: StatusInfo[], others: StatusInfo[]) =>
-    list.map((status) => status.value).filter((value) => others.some((other) => other.value === value));
+    list.map(status => status.value).filter(value => others.some(other => other.value === value));
   if (!isSameJson(kept(before, after), kept(after, before))) lines.push('Reordered');
   return [{ title: 'Case statuses', lines }];
 };

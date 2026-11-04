@@ -69,7 +69,7 @@ export const studioNameProblems = (
   if (!name || prefixes.length === 0) return [];
   const problems: string[] = [];
   const rest = name.startsWith(POSTQUEUE) ? name.slice(POSTQUEUE.length) : name;
-  const prefix = prefixes.find((candidate) => rest.startsWith(candidate) || rest === candidate.replace(/_$/, ''));
+  const prefix = prefixes.find(candidate => rest.startsWith(candidate) || rest === candidate.replace(/_$/, ''));
 
   if (!/^[A-Za-z0-9_]+$/.test(name)) {
     problems.push('Use only letters, numbers and underscores (no spaces or other characters).');
@@ -99,7 +99,7 @@ export const studioNameProblems = (
  * frames, are each their own.
  */
 export const flowScopeOf = (object: Pick<FlowObject, 'frameId'>, frames: Pick<Frame, 'id' | 'channel'>[]) => {
-  const frame = object.frameId ? frames.find((candidate) => candidate.id === object.frameId) : undefined;
+  const frame = object.frameId ? frames.find(candidate => candidate.id === object.frameId) : undefined;
   if (frame?.channel) return `channel:${frame.channel}`;
   return frame ? `frame:${frame.id}` : 'board';
 };
@@ -114,9 +114,9 @@ const labelOf = (object: FlowObject) => `“${object.text.trim() || OBJECT_TYPES
  */
 export const nameClashes = (content: Pick<BoardContent, 'objects' | 'frames'>): Map<string, string[]> => {
   const seen = new Map<string, { object: FlowObject; generated: boolean }[]>();
-  content.objects.forEach((object) => {
+  content.objects.forEach(object => {
     const own = object.studioName ?? object.studio?.name;
-    widgetNamesOf(object).forEach((widget) => {
+    widgetNamesOf(object).forEach(widget => {
       const key = `${flowScopeOf(object, content.frames)}|${widget}`;
       seen.set(key, [...(seen.get(key) ?? []), { object, generated: widget !== own }]);
     });
@@ -125,13 +125,15 @@ export const nameClashes = (content: Pick<BoardContent, 'objects' | 'frames'>): 
   seen.forEach((users, key) => {
     if (users.length < 2) return;
     const widget = key.slice(key.indexOf('|') + 1);
-    users.forEach((user) =>
+    users.forEach(user =>
       users
-        .filter((other) => other !== user)
-        .forEach((other) => {
+        .filter(other => other !== user)
+        .forEach(other => {
           const message =
             user.generated || other.generated
-              ? `${labelOf(user.object)} ${user.generated ? 'becomes' : 'is named'} ${widget}, which ${labelOf(other.object)} ${other.generated ? 'also becomes' : 'is also named'}.`
+              ? `${labelOf(user.object)} ${user.generated ? 'becomes' : 'is named'} ${widget}, which ${labelOf(
+                  other.object,
+                )} ${other.generated ? 'also becomes' : 'is also named'}.`
               : `Another object in this flow is also named ${widget}.`;
           const messages = clashes.get(user.object.id) ?? [];
           if (!messages.includes(message)) clashes.set(user.object.id, [...messages, message]);
@@ -151,12 +153,12 @@ export const uniqueName = (
   const scope = flowScopeOf(object, content.frames);
   const taken = new Set(
     content.objects
-      .filter((other) => other.id !== object.id && flowScopeOf(other, content.frames) === scope)
-      .flatMap((other) => widgetNamesOf(other)),
+      .filter(other => other.id !== object.id && flowScopeOf(other, content.frames) === scope)
+      .flatMap(other => widgetNamesOf(other)),
   );
   const free = (candidate: string) =>
     (object.type ? widgetNamesOf({ ...object, type: object.type }, candidate) : [candidate]).every(
-      (widget) => !taken.has(widget),
+      widget => !taken.has(widget),
     );
   if (free(name)) return name;
   let count = 2;
@@ -196,24 +198,24 @@ export const boardChecks = (
   const issues: Issue[] = [];
   const add = (issue: Omit<Issue, 'key'>, kind: string) =>
     issues.push({ ...issue, key: `${issue.objectId ?? issue.frameId}|${kind}|${issue.openExit ?? ''}` });
-  const byId = new Map(content.objects.map((object) => [object.id, object]));
+  const byId = new Map(content.objects.map(object => [object.id, object]));
   // The object's frame, or the board's own flow for objects outside frames
   const frameOf = (object: FlowObject) => flowDetailsOf(content, object.frameId);
   const nameOf = labelOf;
-  const outgoing = (id: string) => content.connections.filter((connection) => connection.from === id);
-  const targets = new Set(content.connections.map((connection) => connection.to));
+  const outgoing = (id: string) => content.connections.filter(connection => connection.from === id);
+  const targets = new Set(content.connections.map(connection => connection.to));
   const clashes = nameClashes(content);
   // Each flow's names' parts (FlowNaming), by frame (undefined: the board's own flow)
   const choices = new Map<string | undefined, NamingChoices>();
   const choicesOf = (frameId?: string) => {
     if (!choices.has(frameId)) {
-      const flowObjects = content.objects.filter((candidate) => candidate.frameId === frameId);
+      const flowObjects = content.objects.filter(candidate => candidate.frameId === frameId);
       choices.set(frameId, namingChoicesOf(flowDetailsOf(content, frameId), flowObjects));
     }
     return choices.get(frameId)!;
   };
 
-  content.objects.forEach((object) => {
+  content.objects.forEach(object => {
     const info = OBJECT_TYPES[object.type];
     const frame = frameOf(object);
     const objectId = object.id;
@@ -281,8 +283,8 @@ export const boardChecks = (
         add({ severity: 'warning', message: `Nothing comes after ${name}.`, objectId, openExit: '' }, 'open');
       }
     } else {
-      named.forEach((exit) => {
-        const leaving = out.filter((connection) => connection.exit === exit);
+      named.forEach(exit => {
+        const leaving = out.filter(connection => connection.exit === exit);
         if (leaving.length > 1) {
           add(
             {
@@ -303,8 +305,8 @@ export const boardChecks = (
         }
       });
       out
-        .filter((connection) => !named.includes(connection.exit ?? ''))
-        .forEach((connection) =>
+        .filter(connection => !named.includes(connection.exit ?? ''))
+        .forEach(connection =>
           add(
             {
               severity: 'error',
@@ -320,8 +322,8 @@ export const boardChecks = (
 
     // Call settings: valid addresses and JSON
     (info.fields ?? [])
-      .filter((field) => fieldShown(field, object.settings))
-      .forEach((field) => {
+      .filter(field => fieldShown(field, object.settings))
+      .forEach(field => {
         const problem = fieldProblem(field, object.settings?.[field.key] ?? '');
         if (problem)
           add({ severity: 'error', message: `${name}: ${field.label}: ${problem}`, objectId }, `field-${field.key}`);
@@ -329,15 +331,15 @@ export const boardChecks = (
     // What has to be set (a new widget's: imported ones have Studio's)
     if (!object.studio) {
       (info.fields ?? [])
-        .filter((field) => field.required && fieldShown(field, object.settings))
-        .filter((field) =>
+        .filter(field => field.required && fieldShown(field, object.settings))
+        .filter(field =>
           field.key === 'taskChannel'
             ? !taskChannelOf(object, flowChannelOf(frame))
             : field.key === 'targetChannel'
-              ? !workerChannelOf(object, flowChannelOf(frame))
-              : !object.settings?.[field.key]?.trim(),
+            ? !workerChannelOf(object, flowChannelOf(frame))
+            : !object.settings?.[field.key]?.trim(),
         )
-        .forEach((field) =>
+        .forEach(field =>
           add(
             { severity: 'error', message: `${name}: set its ${field.label.toLowerCase()}.`, objectId },
             `required-${field.key}`,
@@ -350,7 +352,9 @@ export const boardChecks = (
       add(
         {
           severity: 'warning',
-          message: `${name} sends its task to the “${taskChannel}” task channel: helplines use ${TASK_CHANNELS.join(', ')}.`,
+          message: `${name} sends its task to the “${taskChannel}” task channel: helplines use ${TASK_CHANNELS.join(
+            ', ',
+          )}.`,
           objectId,
         },
         'taskChannel',
@@ -363,7 +367,7 @@ export const boardChecks = (
     if (
       (object.type === 'setVariable' || object.type === 'setFlowMemory') &&
       !object.studio &&
-      !object.variables?.some((variable) => variable.key)
+      !object.variables?.some(variable => variable.key)
     ) {
       const what = object.type === 'setFlowMemory' ? 'the values it keeps' : 'the variables it sets';
       add({ severity: 'warning', message: `${name}: add ${what}.`, objectId }, 'noVariables');
@@ -381,13 +385,17 @@ export const boardChecks = (
     if (isSplitObject(object)) {
       const input = splitInputOf(object) ?? defaultSplitInputOf(content, object.id);
       const equalTo = isProfileFlagsInput(input)
-        ? exitsOf(object).filter((exit) => exitConditionOf(object, exit, input)?.type === 'equal_to')
+        ? exitsOf(object).filter(exit => exitConditionOf(object, exit, input)?.type === 'equal_to')
         : [];
       if (equalTo.length > 0) {
         add(
           {
             severity: 'warning',
-            message: `${name}: ${equalTo.map((exit) => `“${exit}”`).join(', ')} uses “equal to” on the profile's flags, a list: it misses contacts with more than one flag (e.g. blocked and abusive). Use “contains”.`,
+            message: `${name}: ${equalTo
+              .map(exit => `“${exit}”`)
+              .join(
+                ', ',
+              )} uses “equal to” on the profile's flags, a list: it misses contacts with more than one flag (e.g. blocked and abusive). Use “contains”.`,
             objectId,
           },
           'flagsEqualTo',
@@ -481,7 +489,7 @@ export const boardChecks = (
     }
     // Flows sharing the template: each other one's script, where the message is its own
     if (info.hasMessage && !object.frameId && variesByVariant(object)) {
-      (content.flow?.variants ?? []).slice(1).forEach((variant) => {
+      (content.flow?.variants ?? []).slice(1).forEach(variant => {
         if (!object.variantMessages?.[variant.key]?.script?.trim()) {
           add(
             { severity: 'warning', message: `${variant.label}: ${name} has no script yet.`, objectId },
@@ -509,7 +517,7 @@ export const boardChecks = (
     // can't go round for ever
     if (object.type === 'menuVoice' || object.type === 'questionMessaging') {
       const seen = new Set<string>();
-      const queue = out.map((connection) => connection.to);
+      const queue = out.map(connection => connection.to);
       let loops = false;
       while (queue.length > 0 && !loops) {
         const id = queue.shift()!;
@@ -517,7 +525,7 @@ export const boardChecks = (
         const next = byId.get(id);
         if (seen.has(id) || !next || next.type === 'setVariable' || next.type === 'repeat') continue;
         seen.add(id);
-        queue.push(...outgoing(id).map((connection) => connection.to));
+        queue.push(...outgoing(id).map(connection => connection.to));
       }
       if (loops) {
         add(
@@ -533,8 +541,8 @@ export const boardChecks = (
   });
 
   content.frames
-    .filter((frame) => !frame.channel && content.objects.some((object) => object.frameId === frame.id))
-    .forEach((frame) =>
+    .filter(frame => !frame.channel && content.objects.some(object => object.frameId === frame.id))
+    .forEach(frame =>
       add(
         {
           severity: 'warning',
@@ -549,17 +557,17 @@ export const boardChecks = (
   // worth saying; a warning that can be ignored when one doesn't apply
   const flows: { frameId?: string; details?: FlowDetails; where: string }[] = [
     { details: content.flow, where: 'The board' },
-    ...content.frames.map((frame) => ({ frameId: frame.id, details: frame, where: `Frame “${frame.title}”` })),
+    ...content.frames.map(frame => ({ frameId: frame.id, details: frame, where: `Frame “${frame.title}”` })),
   ];
   flows
-    .filter(({ frameId }) => content.objects.some((object) => object.frameId === frameId))
+    .filter(({ frameId }) => content.objects.some(object => object.frameId === frameId))
     .forEach(({ frameId, details, where }) => {
       const unset = [
         ...(details?.naming?.channels?.length || details?.channel ? [] : ['channels']),
         ...(details?.naming?.languages?.length || details?.variants?.length ? [] : ['languages']),
         ...(details?.naming?.services?.length ? [] : ['services']),
       ];
-      unset.forEach((part) =>
+      unset.forEach(part =>
         add(
           {
             severity: 'warning',
@@ -572,8 +580,8 @@ export const boardChecks = (
     });
 
   return [
-    ...issues.filter((issue) => issue.severity === 'error'),
-    ...issues.filter((issue) => issue.severity === 'warning'),
+    ...issues.filter(issue => issue.severity === 'error'),
+    ...issues.filter(issue => issue.severity === 'warning'),
   ];
 };
 
@@ -585,7 +593,7 @@ export const boardChecks = (
 export const splitIgnored = (issues: Issue[], ignoredKeys: string[] = []) => {
   const ignored = new Set(ignoredKeys);
   const isIgnored = (issue: Issue) => issue.severity === 'warning' && ignored.has(issue.key);
-  return { active: issues.filter((issue) => !isIgnored(issue)), ignored: issues.filter(isIgnored) };
+  return { active: issues.filter(issue => !isIgnored(issue)), ignored: issues.filter(isIgnored) };
 };
 
 // What a sketch (Sketch mode) leaves for later: scripts, recordings, languages, the names' standard
@@ -594,11 +602,11 @@ const DETAIL_CHECKS =
   /^(nameStandard|noFrom|noScript|recording|scriptApproval|language|oldRecordingName|taskAttributes|noUrl|noVariables|noInput|noChatbot|field-.*|required-.*|taskChannel|naming-.*|variable-.*)$/;
 
 /** The issues that matter in a sketch: the flow's shape (ways out, names, what's unreachable...). */
-export const sketchIssues = (issues: Issue[]) => issues.filter((issue) => !DETAIL_CHECKS.test(issue.key.split('|')[1]));
+export const sketchIssues = (issues: Issue[]) => issues.filter(issue => !DETAIL_CHECKS.test(issue.key.split('|')[1]));
 
 export const issuesByObject = (issues: Issue[]): Map<string, Issue[]> => {
   const result = new Map<string, Issue[]>();
-  issues.forEach((issue) => {
+  issues.forEach(issue => {
     if (issue.objectId) result.set(issue.objectId, [...(result.get(issue.objectId) ?? []), issue]);
   });
   return result;
@@ -611,7 +619,7 @@ export const issuesByObject = (issues: Issue[]): Map<string, Issue[]> => {
 export const objectProblems = (content: Pick<BoardContent, 'objects' | 'frames' | 'flow'>): Map<string, string[]> => {
   const clashes = nameClashes(content);
   const problems = new Map<string, string[]>();
-  content.objects.forEach((object) => {
+  content.objects.forEach(object => {
     const frame = flowDetailsOf(content, object.frameId);
     const found = studioNameProblems(object, frame);
     // Everything that becomes a Studio widget needs a name (its recording's too, for voice)

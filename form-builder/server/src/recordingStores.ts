@@ -138,7 +138,7 @@ export class LocalRecordingFiles implements RecordingFiles {
     for (const environment of ENVIRONMENTS) {
       const dir = path.join(this.rootDir, folderOf(code, environment));
       const names = await fs.readdir(dir).catch(() => [] as string[]);
-      for (const fileName of names.filter((name) => RECORDING_FILE_PATTERN.test(name))) {
+      for (const fileName of names.filter(name => RECORDING_FILE_PATTERN.test(name))) {
         const full = path.join(dir, fileName);
         const [content, stats] = await Promise.all([fs.readFile(full), fs.stat(full)]);
         files[environment].set(fileName, {
@@ -236,7 +236,7 @@ export class MemoryRecordingFiles implements RecordingFiles {
   async list(code: string) {
     const files = emptyFiles();
     this.files.forEach(({ content, at }, key) => {
-      const environment = ENVIRONMENTS.find((candidate) => key.startsWith(`${folderOf(code, candidate)}/`));
+      const environment = ENVIRONMENTS.find(candidate => key.startsWith(`${folderOf(code, candidate)}/`));
       const fileName = environment && key.slice(folderOf(code, environment).length + 1);
       if (!environment || !fileName || fileName.includes('/')) return;
       files[environment as RecordingEnvironment].set(fileName, {
@@ -318,7 +318,7 @@ export class S3RecordingFiles implements RecordingFiles {
     private readonly s3: Pick<S3Client, 'send'> = new S3Client({}),
     private readonly cloudFront: Pick<CloudFrontClient, 'send'> = new CloudFrontClient({}),
     // Makes the browser's upload link (replaced in tests)
-    private readonly sign: (command: PutObjectCommand) => Promise<string> = (command) =>
+    private readonly sign: (command: PutObjectCommand) => Promise<string> = command =>
       getSignedUrl(s3 as S3Client, command, { expiresIn: 600 }),
   ) {}
 
@@ -338,10 +338,10 @@ export class S3RecordingFiles implements RecordingFiles {
       const page: ListObjectsV2CommandOutput = await this.s3.send(
         new ListObjectsV2Command({ Bucket: this.bucket, Prefix: `${code.split('/')[0]}/`, ContinuationToken: token }),
       );
-      (page.Contents ?? []).forEach((object) => {
+      (page.Contents ?? []).forEach(object => {
         // Only this library's files: not its sub-folders' (other flows'), nor the helpline's
         const key = object.Key ?? '';
-        const environment = ENVIRONMENTS.find((candidate) => key.startsWith(`${folderOf(code, candidate)}/`));
+        const environment = ENVIRONMENTS.find(candidate => key.startsWith(`${folderOf(code, candidate)}/`));
         const fileName = environment ? key.slice(folderOf(code, environment).length + 1) : '';
         if (!environment || !RECORDING_FILE_PATTERN.test(fileName)) {
           return;

@@ -32,9 +32,9 @@ export const HelplineFilter = ({ codes, value, onChange }: Props) => {
   return (
     <label className="area-home-helpline">
       Helpline{' '}
-      <select value={value} aria-label="Show helpline" onChange={(e) => onChange(e.target.value)}>
+      <select value={value} aria-label="Show helpline" onChange={e => onChange(e.target.value)}>
         <option value="">All helplines</option>
-        {choices.map((code) => (
+        {choices.map(code => (
           <option key={code} value={code}>
             {code.toUpperCase()}
           </option>

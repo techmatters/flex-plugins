@@ -44,7 +44,7 @@ const draftsListSlice = createSlice({
       state.drafts = action.payload;
     },
     draftRemoved: (state, action: PayloadAction<Pick<DraftSummary, 'code' | 'version'>>) => {
-      state.drafts = state.drafts?.filter((draft) => keyOf(draft) !== keyOf(action.payload));
+      state.drafts = state.drafts?.filter(draft => keyOf(draft) !== keyOf(action.payload));
     },
     helplineFilterChanged: (state, action: PayloadAction<string>) => {
       state.helpline = action.payload;
@@ -60,20 +60,22 @@ const submittedFirst = (a: DraftSummary, b: DraftSummary) =>
   a.meta.status === b.meta.status
     ? b.meta.updatedAt.localeCompare(a.meta.updatedAt)
     : a.meta.status === 'submitted'
-      ? -1
-      : 1;
+    ? -1
+    : 1;
 
 export const selectDrafts = (state: RootState) => state.draftsList.drafts;
 export const selectHelplineFilter = (state: RootState) => state.draftsList.helpline;
 
-export const loadDrafts = (): AppThunk<Promise<void>> => async (dispatch, _getState, { draftClient }) => {
-  dispatch(draftsRequested());
-  try {
-    dispatch(draftsListed([...(await draftClient.list())].sort(submittedFirst)));
-  } catch {
-    dispatch(draftsListed([]));
-  }
-};
+export const loadDrafts =
+  (): AppThunk<Promise<void>> =>
+  async (dispatch, _getState, { draftClient }) => {
+    dispatch(draftsRequested());
+    try {
+      dispatch(draftsListed([...(await draftClient.list())].sort(submittedFirst)));
+    } catch {
+      dispatch(draftsListed([]));
+    }
+  };
 
 // Aselo staff: off the list (with its changes, if any)
 export const removeDraft =

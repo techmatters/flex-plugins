@@ -54,7 +54,7 @@ const AREAS: HelpArea[] = ['forms', 'flows', 'routing', 'chatbots', 'general'];
 const parseHeader = (header: string) => {
   const values: Record<string, string | string[]> = {};
   let listKey: string | undefined;
-  header.split(/\r?\n/).forEach((line) => {
+  header.split(/\r?\n/).forEach(line => {
     const item = line.match(/^\s+-\s+(.*)$/);
     if (item && listKey) {
       (values[listKey] as string[]).push(item[1].trim());
@@ -73,11 +73,11 @@ const listOf = (value: string | string[] | undefined) =>
     ? value
     : (value ?? '')
         .split(',')
-        .map((item) => item.trim())
+        .map(item => item.trim())
         .filter(Boolean);
 
 const tourStepOf = (line: string): TourStep => {
-  const [target, text, missing] = line.split(' | ').map((part) => part.trim());
+  const [target, text, missing] = line.split(' | ').map(part => part.trim());
   return { target, text: text ?? '', ...(missing ? { missing } : {}) };
 };
 
@@ -104,7 +104,7 @@ export const parseArticle = (path: string, source: string): HelpArticle => {
     order: Number(header.order ?? 100),
     ...(Array.isArray(header.tour) && header.tour.length > 0 ? { tour: header.tour.map(tourStepOf) } : {}),
     body,
-    summary: body.split(/\r?\n\s*\r?\n/).find((paragraph) => !paragraph.startsWith('#')) ?? '',
+    summary: body.split(/\r?\n\s*\r?\n/).find(paragraph => !paragraph.startsWith('#')) ?? '',
   };
 };
 
@@ -117,10 +117,10 @@ const textOf = (key: string) => {
 
 export const HELP_ARTICLES: HelpArticle[] = files
   .keys()
-  .map((key) => parseArticle(`./content/${key.slice(2)}`, textOf(key)))
+  .map(key => parseArticle(`./content/${key.slice(2)}`, textOf(key)))
   .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
 
-export const articleBySlug = (slug: string) => HELP_ARTICLES.find((article) => article.slug === slug);
+export const articleBySlug = (slug: string) => HELP_ARTICLES.find(article => article.slug === slug);
 
 // What someone sees: helpline staff, what's written for them; Aselo staff, everything
 export const visibleTo = (article: HelpArticle, isAseloStaff: boolean) => isAseloStaff || article.audience !== 'aselo';

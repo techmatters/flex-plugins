@@ -72,20 +72,20 @@ export const CommentThread = ({
   const [text, setText] = useState('');
   const [showResolved, setShowResolved] = useState(false);
   const all = comments ?? [];
-  const resolved = all.filter((comment) => comment.resolved);
-  const shown = all.filter((comment) => !comment.resolved || showResolved);
+  const resolved = all.filter(comment => comment.resolved);
+  const shown = all.filter(comment => !comment.resolved || showResolved);
   const set = (next: DesignComment[]) => onChange(next.length > 0 ? next : undefined);
   const update = (id: string, change: (comment: DesignComment) => DesignComment | undefined) =>
     set(
       all
-        .map((comment) => (comment.id === id ? change(comment) : comment))
+        .map(comment => (comment.id === id ? change(comment) : comment))
         .filter((comment): comment is DesignComment => comment !== undefined),
     );
   return (
     <div className="chatbot-thread">
       {shown.length > 0 && (
         <ul>
-          {shown.map((comment) => (
+          {shown.map(comment => (
             <li key={comment.id} className={comment.resolved ? 'resolved' : ''}>
               <div className="chatbot-thread-head">
                 <strong>{comment.author}</strong>
@@ -98,7 +98,7 @@ export const CommentThread = ({
                       className="icon-button"
                       aria-label={comment.resolved ? 'Reopen' : 'Resolve'}
                       title={comment.resolved ? 'Reopen' : 'Resolve'}
-                      onClick={() => update(comment.id, (old) => ({ ...old, resolved: !old.resolved || undefined }))}
+                      onClick={() => update(comment.id, old => ({ ...old, resolved: !old.resolved || undefined }))}
                     >
                       {comment.resolved ? <Undo2 size={13} /> : <Check size={13} />}
                     </button>
@@ -131,7 +131,7 @@ export const CommentThread = ({
       {canEdit && (
         <form
           className="chatbot-thread-add"
-          onSubmit={(e) => {
+          onSubmit={e => {
             e.preventDefault();
             if (!text.trim()) return;
             set([...all, newComment(text.trim(), author)]);
@@ -142,8 +142,8 @@ export const CommentThread = ({
             value={text}
             placeholder={placeholder}
             aria-label="New comment"
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => {
+            onChange={e => setText(e.target.value)}
+            onKeyDown={e => {
               if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) e.currentTarget.form?.requestSubmit();
             }}
           />

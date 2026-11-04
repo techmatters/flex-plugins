@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 import { useState } from 'react';
 import { afterEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
@@ -41,7 +40,7 @@ const Harness = ({ readOnly = false }: { readOnly?: boolean }) => {
       onShow={() => {}}
       onEndHere={() => {}}
       onIgnore={(key, ignore) =>
-        setIgnoredKeys((current) => (ignore ? [...current, key] : current.filter((other) => other !== key)))
+        setIgnoredKeys(current => (ignore ? [...current, key] : current.filter(other => other !== key)))
       }
     />
   );

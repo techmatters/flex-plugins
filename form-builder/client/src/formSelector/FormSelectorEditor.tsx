@@ -107,14 +107,14 @@ export const FormSelectorEditor = () => {
           value={current.callType ?? ''}
           aria-label="callType"
           disabled={readOnly}
-          onChange={(e) => {
+          onChange={e => {
             const { callType, ...rest } = current;
             write(e.target.value ? { ...rest, callType: e.target.value } : rest);
           }}
         >
           <option value="">(not set)</option>
           {[...new Set([...PRESELECTABLE_CALL_TYPES, ...(current.callType ? [current.callType] : [])])].map(
-            (callType) => (
+            callType => (
               <option key={callType} value={callType}>
                 {callType}
               </option>
@@ -126,16 +126,16 @@ export const FormSelectorEditor = () => {
         <code className="form-selector-key">parameter.availableTabs</code>
         <InfoTip text={HELP.availableTabs} />
         <span className="form-selector-checks">
-          {SELECTABLE_TABS.map((tab) => (
+          {SELECTABLE_TABS.map(tab => (
             <label key={tab} className="field-checkbox">
               <input
                 type="checkbox"
                 checked={current.tabs.includes(tab)}
                 disabled={readOnly}
-                onChange={(e) =>
+                onChange={e =>
                   write({
                     ...current,
-                    tabs: e.target.checked ? [...current.tabs, tab] : current.tabs.filter((other) => other !== tab),
+                    tabs: e.target.checked ? [...current.tabs, tab] : current.tabs.filter(other => other !== tab),
                   })
                 }
               />
@@ -166,7 +166,7 @@ export const FormSelectorEditor = () => {
           <InfoTip text={HELP.parameter} />
         </span>
         <datalist id="form-selector-survey-names">
-          {surveyNames.map((name) => (
+          {surveyNames.map(name => (
             <option key={name} value={name} />
           ))}
         </datalist>
@@ -188,7 +188,7 @@ export const FormSelectorEditor = () => {
           </thead>
           <tbody>
             {current.choices.map((choice, index) => {
-              const question = webchatQuestions.find((candidate) => candidate.name === choice.input);
+              const question = webchatQuestions.find(candidate => candidate.name === choice.input);
               return (
                 <tr key={index}>
                   <td>{index}</td>
@@ -197,7 +197,7 @@ export const FormSelectorEditor = () => {
                       value={choice.form}
                       aria-label={`form ${index}`}
                       disabled={readOnly}
-                      onChange={(e) => update(index, { form: e.target.value as ChoiceSource })}
+                      onChange={e => update(index, { form: e.target.value as ChoiceSource })}
                     >
                       <option value="survey">survey</option>
                       <option value="preEngagement">preEngagement</option>
@@ -209,10 +209,10 @@ export const FormSelectorEditor = () => {
                         value={choice.input}
                         aria-label={`input ${index}`}
                         disabled={readOnly}
-                        onChange={(e) => update(index, { input: e.target.value })}
+                        onChange={e => update(index, { input: e.target.value })}
                       >
                         {!question && <option value={choice.input}>{choice.input || '(choose)'}</option>}
-                        {webchatQuestions.map((candidate) => (
+                        {webchatQuestions.map(candidate => (
                           <option key={candidate.name} value={candidate.name}>
                             {candidate.name}
                           </option>
@@ -225,7 +225,7 @@ export const FormSelectorEditor = () => {
                         value={choice.input}
                         aria-label={`input ${index}`}
                         disabled={readOnly}
-                        onChange={(e) => update(index, { input: e.target.value.trim() })}
+                        onChange={e => update(index, { input: e.target.value.trim() })}
                       />
                     )}
                   </td>
@@ -235,10 +235,10 @@ export const FormSelectorEditor = () => {
                         value={choice.aboutSelfValue ?? ''}
                         aria-label={`aboutSelfValue ${index}`}
                         disabled={readOnly}
-                        onChange={(e) => update(index, { aboutSelfValue: e.target.value || undefined })}
+                        onChange={e => update(index, { aboutSelfValue: e.target.value || undefined })}
                       >
                         <option value="">(not set: “{DEFAULT_ABOUT_SELF_VALUE}”)</option>
-                        {question.values.map((value) => (
+                        {question.values.map(value => (
                           <option key={value} value={value}>
                             {value}
                           </option>
@@ -251,7 +251,7 @@ export const FormSelectorEditor = () => {
                         value={choice.aboutSelfValue ?? ''}
                         aria-label={`aboutSelfValue ${index}`}
                         disabled={readOnly}
-                        onChange={(e) => update(index, { aboutSelfValue: e.target.value || undefined })}
+                        onChange={e => update(index, { aboutSelfValue: e.target.value || undefined })}
                       />
                     )}
                   </td>
@@ -320,7 +320,7 @@ export const FormSelectorEditor = () => {
           )}
           {issues.length > 0 && (
             <ul className="issue-list">
-              {issues.map((found) => (
+              {issues.map(found => (
                 <li key={found.message} className={`issue issue-${found.severity}`}>
                   {found.message}
                 </li>
@@ -335,7 +335,7 @@ export const FormSelectorEditor = () => {
               value={selectorType}
               aria-label="selectorType"
               disabled={readOnly}
-              onChange={(e) => switchType(e.target.value as SelectorType)}
+              onChange={e => switchType(e.target.value as SelectorType)}
             >
               <option value="">(not set: default)</option>
               <option value="staticSelector">staticSelector</option>
@@ -346,8 +346,8 @@ export const FormSelectorEditor = () => {
                 selectorType === ''
                   ? HELP.notSet
                   : selectorType === 'staticSelector'
-                    ? HELP.staticSelector
-                    : HELP.serviceUserChoiceSelector
+                  ? HELP.staticSelector
+                  : HELP.serviceUserChoiceSelector
               }
             />
             {info.unknownType && (
@@ -375,7 +375,7 @@ export const FormSelectorEditor = () => {
               </tr>
             </thead>
             <tbody>
-              {formSelectorOutcomes(selector).map((outcome) => (
+              {formSelectorOutcomes(selector).map(outcome => (
                 <tr key={outcome.when}>
                   <td>
                     {outcome.when}
@@ -383,7 +383,7 @@ export const FormSelectorEditor = () => {
                   </td>
                   <td>
                     {outcome.tabs.length > 0
-                      ? outcome.tabs.map((tab) => (
+                      ? outcome.tabs.map(tab => (
                           <code key={tab} className="form-selector-tab-key">
                             {tab}
                           </code>

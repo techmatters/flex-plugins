@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, jest } from '@jest/globals';
@@ -82,7 +81,7 @@ const renderAs = (user: ApiUser, helplineCodes: string[]) => {
   appStore.dispatch(
     sessionLoaded({
       user: { ...user, applyInBuilder: false },
-      helplines: helplineCodes.map((code) => ({ code, versions: ['v1'] })),
+      helplines: helplineCodes.map(code => ({ code, versions: ['v1'] })),
     }),
   );
   return render(
@@ -123,14 +122,14 @@ describe('routing designer', () => {
     fireEvent.click(within(card as HTMLElement).getByRole('button', { name: 'Expand ES TYA Call' }));
     const [firstStep] = within(card as HTMLElement)
       .getAllByRole('listitem')
-      .filter((item) => item.className === 'routing-target-row');
+      .filter(item => item.className === 'routing-target-row');
     fireEvent.change(within(firstStep).getByRole('combobox', { name: 'Add a skill' }), {
       target: { value: 'FCG' },
     });
     await waitFor(() => expect(screen.getByText('All changes saved')).toBeTruthy(), {
       timeout: 4000,
     });
-    const saved = (await store.get('usnm'))!.design.workflows[0].rules.find((rule) => rule.name === 'ES TYA Call')!;
+    const saved = (await store.get('usnm'))!.design.workflows[0].rules.find(rule => rule.name === 'ES TYA Call')!;
     expect(saved.targets[0].who).toContainEqual({
       kind: 'skills',
       skills: ['Calls', 'Spanish', 'TYA', 'FCG'],
@@ -170,7 +169,7 @@ describe('routing designer', () => {
     // A value no rule uses yet (a new service) is typed after choosing "Another value…"
     const service = within(esTya as HTMLElement)
       .getAllByRole('combobox', { name: 'Value' })
-      .find((select) => (select as HTMLSelectElement).value === 'tya')!;
+      .find(select => (select as HTMLSelectElement).value === 'tya')!;
     fireEvent.change(service, { target: { value: '__another value__' } });
     const newValue = within(esTya as HTMLElement).getByRole('combobox', { name: 'Add a value' });
     fireEvent.change(newValue, { target: { value: 'Advocates' } });

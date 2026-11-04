@@ -77,10 +77,10 @@ export const SimulatorPanel = () => {
   const onForget = readOnly ? undefined : (pathId?: string) => dispatch(testedPathForgotten(pathId));
   const onEndHere = readOnly ? undefined : (objectId: string, exit: string) => dispatch(endRunHere(objectId, exit));
 
-  const byId = new Map(content.objects.map((object) => [object.id, object]));
+  const byId = new Map(content.objects.map(object => [object.id, object]));
   // Where a run can start: each trigger, named after its frame
   const starts = startsOf(content);
-  const start = starts.find((candidate) => candidate.id === startId)?.id ?? starts[0]?.id;
+  const start = starts.find(candidate => candidate.id === startId)?.id ?? starts[0]?.id;
 
   const transcript = useRef<HTMLOListElement>(null);
   useEffect(() => {
@@ -96,9 +96,9 @@ export const SimulatorPanel = () => {
   // What the widget says or plays, to check it
   const message = asked && OBJECT_TYPES[asked.type].hasMessage ? messageFor(asked, variant, mainVariant) : undefined;
   const recording = asked && message ? recordingOf({ ...asked, message }, recordings) : undefined;
-  const otherExits = prompt && 'exits' in prompt ? prompt.exits.filter((exit) => exit && !ANSWERED.has(exit)) : [];
+  const otherExits = prompt && 'exits' in prompt ? prompt.exits.filter(exit => exit && !ANSWERED.has(exit)) : [];
   const coverage = coverageOf(content, testedPaths);
-  const untested = coverage.waysOut.filter((way) => !way.tested);
+  const untested = coverage.waysOut.filter(way => !way.tested);
   const flowMemory = run?.attributes.flowMemory;
 
   return (
@@ -111,8 +111,8 @@ export const SimulatorPanel = () => {
             {starts.length > 1 && (
               <label className="field">
                 <span className="field-label">Start from</span>
-                <select value={start} onChange={(e) => dispatch(startChosen(e.target.value))}>
-                  {starts.map((candidate) => (
+                <select value={start} onChange={e => dispatch(startChosen(e.target.value))}>
+                  {starts.map(candidate => (
                     <option key={candidate.id} value={candidate.id}>
                       {candidate.label}
                     </option>
@@ -147,11 +147,7 @@ export const SimulatorPanel = () => {
               )}
             </span>
             <label className="field-checkbox">
-              <input
-                type="checkbox"
-                checked={pauseEach}
-                onChange={(e) => dispatch(pauseEachChanged(e.target.checked))}
-              />
+              <input type="checkbox" checked={pauseEach} onChange={e => dispatch(pauseEachChanged(e.target.checked))} />
               <span>Pause at every widget (to check its script or recording)</span>
             </label>
           </>
@@ -215,7 +211,7 @@ export const SimulatorPanel = () => {
           {prompt.kind === 'reply' && (
             <form
               className="flow-sim-chat"
-              onSubmit={(e) => {
+              onSubmit={e => {
                 e.preventDefault();
                 reply({ kind: 'reply', text });
               }}
@@ -225,7 +221,7 @@ export const SimulatorPanel = () => {
                 value={text}
                 placeholder="Their reply"
                 aria-label="Their reply"
-                onChange={(e) => setText(e.target.value)}
+                onChange={e => setText(e.target.value)}
               />
               <button type="submit" className="primary-button">
                 Send
@@ -235,7 +231,7 @@ export const SimulatorPanel = () => {
           {prompt.kind === 'dialpad' && (
             <>
               <div className="flow-sim-dialpad" role="group" aria-label="Dialpad">
-                {DIALPAD.map((key) => (
+                {DIALPAD.map(key => (
                   <button
                     key={key}
                     type="button"
@@ -254,7 +250,7 @@ export const SimulatorPanel = () => {
               {digits && <p className="field-hint">Pressed {digits}… (# to finish)</p>}
               <form
                 className="flow-sim-chat"
-                onSubmit={(e) => {
+                onSubmit={e => {
                   e.preventDefault();
                   if (text.trim()) reply({ kind: 'speech', text });
                 }}
@@ -263,7 +259,7 @@ export const SimulatorPanel = () => {
                   value={text}
                   placeholder="Or what they say"
                   aria-label="What they say"
-                  onChange={(e) => setText(e.target.value)}
+                  onChange={e => setText(e.target.value)}
                 />
                 <button type="submit" className="secondary-button">
                   Say
@@ -284,7 +280,7 @@ export const SimulatorPanel = () => {
                     value={row.key}
                     placeholder="age"
                     aria-label="Memory key"
-                    onChange={(e) =>
+                    onChange={e =>
                       dispatch(
                         memoryChanged(
                           memory.map((other, i) => (i === index ? { ...other, key: e.target.value } : other)),
@@ -296,7 +292,7 @@ export const SimulatorPanel = () => {
                     value={row.value}
                     placeholder="15"
                     aria-label="Memory value"
-                    onChange={(e) =>
+                    onChange={e =>
                       dispatch(
                         memoryChanged(
                           memory.map((other, i) => (i === index ? { ...other, value: e.target.value } : other)),
@@ -333,7 +329,7 @@ export const SimulatorPanel = () => {
           )}
           {(prompt.kind === 'choose' ? prompt.exits : otherExits).length > 0 && (
             <span className="flow-sim-choices">
-              {(prompt.kind === 'choose' ? prompt.exits : otherExits).map((exit) => (
+              {(prompt.kind === 'choose' ? prompt.exits : otherExits).map(exit => (
                 <button
                   key={exit}
                   type="button"
@@ -399,7 +395,7 @@ export const SimulatorPanel = () => {
       <section className="flow-sim-coverage">
         <h3>Tested</h3>
         <label className="field-checkbox">
-          <input type="checkbox" checked={showTested} onChange={(e) => dispatch(showTestedChanged(e.target.checked))} />
+          <input type="checkbox" checked={showTested} onChange={e => dispatch(showTestedChanged(e.target.checked))} />
           <span>Show tested paths (green)</span>
         </label>
         <p className="field-hint">
@@ -411,7 +407,7 @@ export const SimulatorPanel = () => {
           <details>
             <summary>Not tested yet ({untested.length})</summary>
             <ul className="flow-sim-untested">
-              {untested.map((way) => (
+              {untested.map(way => (
                 <li key={`${way.objectId}|${way.exit}`}>
                   <button type="button" className="link-button" onClick={() => onShow(way.objectId)}>
                     {labelOf(byId.get(way.objectId))}
@@ -424,7 +420,7 @@ export const SimulatorPanel = () => {
         )}
         {testedPaths.length > 0 && (
           <ul className="flow-sim-paths">
-            {testedPaths.map((path) => (
+            {testedPaths.map(path => (
               <li key={path.id}>
                 <span>
                   {path.steps.length} steps, by {path.testedBy}, {new Date(path.testedAt).toLocaleString()}

@@ -46,13 +46,7 @@
  */
 import { randomUUID } from 'crypto';
 import { DefinitionsApiError, listHelplines, loadDefinitionFiles } from './definitionsApi';
-import {
-  Draft,
-  DraftStore,
-  isValidDraftFilePath,
-  isValidDraftKey,
-  DraftMeta,
-} from './drafts';
+import { Draft, DraftStore, isValidDraftFilePath, isValidDraftKey, DraftMeta } from './drafts';
 import { applyApproval, applyThreadChange, DraftReview, sideOf } from '@tech-matters/form-builder-shared';
 import type { BoardStore } from './boards';
 import type { PeopleStore } from './people';
@@ -218,12 +212,12 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
 
     if (route === 'GET /api/helplines') {
       const helplines = await listHelplines(context.formDefinitionsDir);
-      return ok(helplines.filter((helpline) => canOpenHelpline(user, helpline.code)));
+      return ok(helplines.filter(helpline => canOpenHelpline(user, helpline.code)));
     }
 
     if (route === 'GET /api/drafts') {
       const drafts = await context.drafts.list();
-      return ok(drafts.filter((draft) => canOpenHelpline(user, draft.code)));
+      return ok(drafts.filter(draft => canOpenHelpline(user, draft.code)));
     }
 
     if (route === 'GET /api/branches') {
@@ -284,12 +278,8 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
     }
 
     if (boardsPath === '/api/help/questions') {
-      return await handleHelpRequest(
-        context.helpQuestions,
-        request.method.toUpperCase(),
-        request.body,
-        user,
-        () => (context.now ?? (() => new Date()))(),
+      return await handleHelpRequest(context.helpQuestions, request.method.toUpperCase(), request.body, user, () =>
+        (context.now ?? (() => new Date()))(),
       );
     }
 
@@ -348,7 +338,9 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       return ok({ ...definitions, files: pickFiles(definitions.files, false), serviceConfigDefaults: undefined });
     }
 
-    const draftMatch = route.match(/^(GET|PUT|DELETE|POST) \/api\/drafts\/([^/]+)\/([^/]+)(\/submit|\/apply|\/approve|\/threads|\/import)?$/);
+    const draftMatch = route.match(
+      /^(GET|PUT|DELETE|POST) \/api\/drafts\/([^/]+)\/([^/]+)(\/submit|\/apply|\/approve|\/threads|\/import)?$/,
+    );
     if (!draftMatch) return fail(404, `Unknown API route ${route}`);
 
     const [, method, code, version, action] = draftMatch;
@@ -368,12 +360,16 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       if (source && !isStaff(user)) return fail(403, 'Only Aselo staff read other branches.');
       // One draft per helpline version: changes started from one branch can't be mixed with another's
       if (existing && holdsWork(existing) && branchOf(existing.meta) !== (source?.branch ?? '')) {
-        return fail(409, `There's already a draft of ${code} ${version} started from ${branchOf(existing.meta) || 'master'}.`, {
-          updatedBy: existing.meta.updatedBy,
-          updatedAt: existing.meta.updatedAt,
-          revision: existing.meta.revision,
-          branch: branchOf(existing.meta) || 'master',
-        });
+        return fail(
+          409,
+          `There's already a draft of ${code} ${version} started from ${branchOf(existing.meta) || 'master'}.`,
+          {
+            updatedBy: existing.meta.updatedBy,
+            updatedAt: existing.meta.updatedAt,
+            revision: existing.meta.revision,
+            branch: branchOf(existing.meta) || 'master',
+          },
+        );
       }
       let { files } = request.body;
       if (!isStaff(user)) {
@@ -383,7 +379,7 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
         // Keep the service configuration changes Aselo staff made in this draft
         files = { ...files, ...pickFiles(existing?.files ?? {}, true) };
       }
-      const invalidPath = Object.keys(files).find((filePath) => !isValidDraftFilePath(filePath));
+      const invalidPath = Object.keys(files).find(filePath => !isValidDraftFilePath(filePath));
       if (invalidPath) return fail(400, `Invalid file path ${invalidPath}`);
 
       // Someone else saved since this person loaded the draft
@@ -398,7 +394,12 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
 
       // Nothing left that differs from the current files: no draft, unless it holds a review
       // (e.g. a question asked before anything changed)
-      if (Object.keys(files).length === 0 && !hasReview(existing?.meta) && !existing?.meta.imported && !existing?.meta.source) {
+      if (
+        Object.keys(files).length === 0 &&
+        !hasReview(existing?.meta) &&
+        !existing?.meta.imported &&
+        !existing?.meta.source
+      ) {
         if (existing) await context.drafts.remove(code, version);
         return ok({ revision: 0, status: 'editing' });
       }
@@ -457,7 +458,7 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       };
       await context.drafts.put(submitted);
       // The draft is submitted either way; a failed notification is only logged
-      await context.notifier.draftSubmitted(submitted, user).catch((err) => {
+      await context.notifier.draftSubmitted(submitted, user).catch(err => {
         // eslint-disable-next-line no-console
         console.error(`[form-builder] Could not notify about ${code}/${version}:`, err);
       });
@@ -503,7 +504,7 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
         }
       }
       const found = (await listHelplines(snapshot?.formDefinitionsDir ?? context.formDefinitionsDir)).find(
-        (helpline) => helpline.code === code,
+        helpline => helpline.code === code,
       );
       if (!found?.versions.includes(version)) return fail(404, `${branch || 'master'} has no ${code}/${version}.`);
       if (existing && branchOf(existing.meta) === branch) {
@@ -514,9 +515,13 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
         return ok(listed.meta);
       }
       if (existing && (holdsWork(existing) || hasReview(existing.meta))) {
-        return fail(409, `There's already a draft of ${code} ${version} started from ${branchOf(existing.meta) || 'master'}.`, {
-          branch: branchOf(existing.meta) || 'master',
-        });
+        return fail(
+          409,
+          `There's already a draft of ${code} ${version} started from ${branchOf(existing.meta) || 'master'}.`,
+          {
+            branch: branchOf(existing.meta) || 'master',
+          },
+        );
       }
       const imported: Draft = {
         code,
@@ -540,7 +545,10 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       if (user.role !== 'aselo-staff') return fail(403, 'Only Aselo staff can apply changes.');
       if (!existing) return fail(404, 'There are no changes to apply.');
       if (existing.meta.source) {
-        return fail(400, `These changes were made to ${existing.meta.source.branch}: download them and commit them to that branch.`);
+        return fail(
+          400,
+          `These changes were made to ${existing.meta.source.branch}: download them and commit them to that branch.`,
+        );
       }
       if (!context.applier) {
         return fail(501, "Applying from the builder isn't set up. Download the changes and open a PR instead.");

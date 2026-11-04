@@ -33,7 +33,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RoutingClient, httpRoutingClient } from '../routing/routingClient';
 import { ChatbotClient, httpChatbotClient } from '../chatbots/chatbotClient';
 import { HelpClient, httpHelpClient } from '../help/helpClient';
-import type { BranchChoice, DefinitionFiles, HelplineSummary, PostFlowChoices } from '@tech-matters/form-builder-shared';
+import type {
+  BranchChoice,
+  DefinitionFiles,
+  HelplineSummary,
+  PostFlowChoices,
+} from '@tech-matters/form-builder-shared';
 import type { Person } from '@tech-matters/form-builder-shared/flows/model';
 import { DraftClient, httpDraftClient } from '../drafts/draftClient';
 import { draftReducer, startDraftAutosave } from '../drafts/draftSlice';
@@ -91,7 +96,7 @@ export const createAppStore = (services: Partial<Omit<Services, 'saveQueue'>> = 
     fetchDefinitionFiles,
     fetchBranches,
     fetchPostFlowChoices,
-    loadPeople: (code) => httpBoardClient.people(code),
+    loadPeople: code => httpBoardClient.people(code),
     boardClient: httpBoardClient,
     routingClient: httpRoutingClient,
     chatbotClient: httpChatbotClient,
@@ -103,7 +108,7 @@ export const createAppStore = (services: Partial<Omit<Services, 'saveQueue'>> = 
   const listener = createListenerMiddleware({ extra });
   const store = configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) =>
+    middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
         thunk: { extraArgument: extra },
         // Definition files are big plain JSON: checking them on every action slows editing down
@@ -125,4 +130,3 @@ export type AppListenerStartListening = TypedStartListening<RootState, AppDispat
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export const useAppSelector = useSelector.withTypes<RootState>();
 export { addListener };
-

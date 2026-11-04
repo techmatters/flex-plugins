@@ -20,7 +20,13 @@
  */
 import { apiFetch } from '../app/auth';
 import type { Send } from '../drafts/draftClient';
-import type { Board, BoardContent, BoardMeta, BoardSummary, Person } from '@tech-matters/form-builder-shared/flows/model';
+import type {
+  Board,
+  BoardContent,
+  BoardMeta,
+  BoardSummary,
+  Person,
+} from '@tech-matters/form-builder-shared/flows/model';
 import type { RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
 import type { RoutingDesign } from '@tech-matters/form-builder-shared/routing/model';
 import type { HelplineImport, ImportedRecording } from '@tech-matters/form-builder-shared';
@@ -38,7 +44,8 @@ export const sendFileWithFetch: SendFile = async (target, file) => {
 };
 
 export type BoardSaveOutcome =
-  { ok: true; meta: BoardMeta } | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
+  | { ok: true; meta: BoardMeta }
+  | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
 
 export type BoardClient = {
   list(): Promise<BoardSummary[]>;
@@ -104,9 +111,9 @@ export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetc
     remove: async (code, id) => {
       await expectOk('DELETE', `/api/boards/${code}/${id}`);
     },
-    people: (code) => expectOk('GET', `/api/people/${code}`),
+    people: code => expectOk('GET', `/api/people/${code}`),
     savePeople: (code, people) => expectOk('PUT', `/api/people/${code}`, { people }),
-    recordings: (code) => expectOk('GET', `/api/recordings/${code}`),
+    recordings: code => expectOk('GET', `/api/recordings/${code}`),
     async uploadRecording(code, fileName, file) {
       const target: UploadTarget = await expectOk('POST', `/api/recordings/${code}/uploads`, {
         fileName,
@@ -128,8 +135,8 @@ export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetc
         send('GET', `/api/chatbots/${code}`),
         send('GET', `/api/routing/${code}`),
       ]);
-      const bots: ChatbotChoice[] = chatbots.status < 400 ? (chatbots.body?.design?.bots ?? []) : [];
-      const design: Partial<RoutingDesign> = routing.status < 400 ? (routing.body?.design ?? {}) : {};
+      const bots: ChatbotChoice[] = chatbots.status < 400 ? chatbots.body?.design?.bots ?? [] : [];
+      const design: Partial<RoutingDesign> = routing.status < 400 ? routing.body?.design ?? {} : {};
       return {
         chatbots: bots.map(({ name, language }) => ({ name, language })),
         queues: (design.queues ?? []).map(({ key, name }) => ({ key, name })),

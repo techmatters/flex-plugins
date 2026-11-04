@@ -42,7 +42,12 @@ import type {
   Side,
   TaskAttributes,
 } from '@tech-matters/form-builder-shared/flows/model';
-import { conditionExitName, emptyBoard, OBJECT_TYPES, variesByVariant } from '@tech-matters/form-builder-shared/flows/model';
+import {
+  conditionExitName,
+  emptyBoard,
+  OBJECT_TYPES,
+  variesByVariant,
+} from '@tech-matters/form-builder-shared/flows/model';
 import { importedRecordingKey, RECORDING_FILE_PATTERN } from '@tech-matters/form-builder-shared/flows/recordings';
 import { janitorValuesOf } from '@tech-matters/form-builder-shared/flows/janitor';
 import { studioNameProblems } from '@tech-matters/form-builder-shared/flows/checks';
@@ -52,8 +57,21 @@ import {
   isChannelAttributesReference,
 } from '@tech-matters/form-builder-shared/flows/taskAttributes';
 import { HclObject, HclValue, isObject, localsOf, parseHcl, parseTemplate } from './hcl';
-import type { ImportedRecording, ImportReport, ImportedBoard, HelplineImport, Environment } from '@tech-matters/form-builder-shared';
-export type { ImportedRecording, ImportedFlow, ImportReport, ImportedBoard, HelplineImport, Environment } from '@tech-matters/form-builder-shared';
+import type {
+  ImportedRecording,
+  ImportReport,
+  ImportedBoard,
+  HelplineImport,
+  Environment,
+} from '@tech-matters/form-builder-shared';
+export type {
+  ImportedRecording,
+  ImportedFlow,
+  ImportReport,
+  ImportedBoard,
+  HelplineImport,
+  Environment,
+} from '@tech-matters/form-builder-shared';
 
 const ENVIRONMENTS = ['production', 'staging'] as const;
 
@@ -142,7 +160,7 @@ export const readHelplineConfigs = async (helplinesDir: string, code: string) =>
     const locals = await readLocals(path.join(dir, `${environment}.hcl`));
     if (locals) configs[environment] = { ...common, ...configOf(locals) };
   }
-  const environments = ENVIRONMENTS.filter((environment) => configs[environment]);
+  const environments = ENVIRONMENTS.filter(environment => configs[environment]);
   if (environments.length === 0) throw new Error(`No staging.hcl or production.hcl for ${code}.`);
   return { configs, environments };
 };
@@ -165,20 +183,20 @@ const resolve = (text: string, vars?: Vars) =>
 
 const humanize = (name: string) => {
   let rest = name.replace(/^postqueue_/, '');
-  const prefix = PREFIXES.find((candidate) => rest.startsWith(candidate));
+  const prefix = PREFIXES.find(candidate => rest.startsWith(candidate));
   if (prefix) rest = rest.slice(prefix.length);
   const words = rest
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .split(/[_\s]+/)
     .filter(Boolean)
-    .map((word) => word.toLowerCase());
+    .map(word => word.toLowerCase());
   while (words.length > 1 && ['voice', 'sms', 'chat'].includes(words[0])) words.shift();
   const text = words.join(' ');
   return text ? text[0].toUpperCase() + text.slice(1) : name;
 };
 
 const languageOf = (name: string, properties: HclObject, vars?: Vars) => {
-  const fromName = name.split('_').find((word) => LANGUAGES.includes(word));
+  const fromName = name.split('_').find(word => LANGUAGES.includes(word));
   if (fromName) return fromName;
   const written = textOf(properties.language) ?? textOf(properties.say_language);
   // e.g. ${flow_vars.gather_language}: what the flow sets it to
@@ -200,7 +218,9 @@ const variantLabelOf = (source: FlowSource) => {
 const typeOf = (widget: HclObject): FlowObjectType | undefined => {
   const name = textOf(widget.name) ?? '';
   const properties = objectOf(widget.properties);
-  const target = `${name} ${textOf(properties.url) ?? ''} ${textOf(properties.function_sid) ?? ''} ${textOf(properties.flow_sid) ?? ''}`;
+  const target = `${name} ${textOf(properties.url) ?? ''} ${textOf(properties.function_sid) ?? ''} ${
+    textOf(properties.flow_sid) ?? ''
+  }`;
   switch (widget.type) {
     case 'trigger':
       return 'incoming';
@@ -271,7 +291,7 @@ export const separate = (boxes: Box[]) => {
   const placed: Box[] = [];
   [...boxes]
     .sort((a, b) => a.y - b.y || a.x - b.x)
-    .forEach((box) => {
+    .forEach(box => {
       let moved = true;
       while (moved) {
         moved = false;
@@ -323,8 +343,8 @@ const helplinesUsing = async (helplinesDir: string, code: string) => {
     const files = await fs.readdir(path.join(helplinesDir, folder.name)).catch(() => [] as string[]);
     const hcl = await Promise.all(
       files
-        .filter((file) => file.endsWith('.hcl'))
-        .map((file) => fs.readFile(path.join(helplinesDir, folder.name, file), 'utf8').catch(() => '')),
+        .filter(file => file.endsWith('.hcl'))
+        .map(file => fs.readFile(path.join(helplinesDir, folder.name, file), 'utf8').catch(() => '')),
     );
     texts.set(folder.name, hcl.join('\n'));
   }
@@ -378,7 +398,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
   };
   // channel_attributes: the helpline's (it replaces the whole map), or defaults.hcl's
   const defaults = await readLocals(path.join(helplinesDir, 'defaults.hcl'));
-  environments.forEach((environment) => {
+  environments.forEach(environment => {
     const config = configs[environment]!;
     const flowVars = objectOf(config.flow_vars);
     const attributesMap: HclObject = isObject(config.channel_attributes)
@@ -434,7 +454,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
   byTemplate.forEach((shared, templatefile) => {
     if (shared.length < 2) return;
     const [first, ...others] = shared;
-    others.forEach((other) => sources.delete(`studioFlow:${other.flowName}`));
+    others.forEach(other => sources.delete(`studioFlow:${other.flowName}`));
     sources.set(`studioFlow:${first.flowName}`, {
       ...first,
       title: path.basename(templatefile, '.tftpl'),
@@ -468,9 +488,9 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
     const idOf = new Map(
       states.map((state, index) => [textOf(state.name) ?? `#${index}`, `o-${flowIndex + 1}-${index + 1}`]),
     );
-    const offsets = states.map((state) => offsetOf(objectOf(state.properties)));
-    const minX = Math.min(...offsets.map((offset) => offset.x));
-    const minY = Math.min(...offsets.map((offset) => offset.y));
+    const offsets = states.map(state => offsetOf(objectOf(state.properties)));
+    const minX = Math.min(...offsets.map(offset => offset.x));
+    const minY = Math.min(...offsets.map(offset => offset.y));
     const flowRecordingFiles = new Set<string>();
     const primary = source.vars.production ?? source.vars.staging;
 
@@ -492,7 +512,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         return { json: attributes, source: { kind: 'inline' }, imported: attributes };
       }
       if (!isChannelAttributesReference(attributes)) return undefined;
-      const [template, ...others] = attributesTemplates.filter((candidate) => attributesTexts.has(candidate));
+      const [template, ...others] = attributesTemplates.filter(candidate => attributesTexts.has(candidate));
       if (!template) {
         notes.push(
           `${source.title}: “${name}” uses ${CHANNEL_ATTRIBUTES_REFERENCE}, but no channel uses this flow, so its task attributes can't be told.`,
@@ -500,7 +520,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         return undefined;
       }
       const channelsOf = (candidate: string) =>
-        Object.keys(source.channelAttributes).filter((channel) => source.channelAttributes[channel] === candidate);
+        Object.keys(source.channelAttributes).filter(channel => source.channelAttributes[channel] === candidate);
       const json = attributesTexts.get(template)!;
       return {
         json,
@@ -508,7 +528,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         imported: json,
         ...(others.length > 0
           ? {
-              otherChannels: others.map((other) => ({
+              otherChannels: others.map(other => ({
                 template: other,
                 channels: channelsOf(other),
                 json: attributesTexts.get(other)!,
@@ -524,7 +544,9 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
       let type = typeOf(state);
       if (!type) {
         notes.push(
-          `${source.title}: “${name}” is a ${String(state.type)} widget, which the designer has no kind for; kept as “Other”.`,
+          `${source.title}: “${name}” is a ${String(
+            state.type,
+          )} widget, which the designer has no kind for; kept as “Other”.`,
         );
         type = 'other';
       }
@@ -562,11 +584,11 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         const raw =
           type === 'sendMessageAndClose'
             ? janitorValuesOf(properties).message
-            : (textOf(properties.say) ?? textOf(properties.body));
+            : textOf(properties.say) ?? textOf(properties.body);
         const isVoice = ['say-play', 'gather-input-on-call'].includes(String(state.type));
         const channel = isVoice ? 'voice' : source.channel;
         const scripts = Object.fromEntries(
-          ENVIRONMENTS.filter((environment) => source.vars[environment]).map((environment) => [
+          ENVIRONMENTS.filter(environment => source.vars[environment]).map(environment => [
             environment,
             raw ? resolve(raw, source.vars[environment]) : undefined,
           ]),
@@ -588,7 +610,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
           playing.forEach((variant, variantIndex) => {
             const folder = source.variants ? variant.flowName : undefined;
             const flowTitle = folder ?? source.title;
-            ENVIRONMENTS.forEach((environment) => {
+            ENVIRONMENTS.forEach(environment => {
               const vars = variant.vars[environment];
               if (!vars) return;
               const url = sourceUrlOf(resolve(play, vars));
@@ -640,7 +662,11 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
           if (!recordingFile && RECORDING_FILE_PATTERN.test(written)) recordingFile = written;
           if (recordingFile && recordingFile.replace(/\.(mp3|wav)$/, '') !== name) {
             notes.push(
-              `${source.title}: “${name}” plays ${recordingFile}, which isn't named after the widget; kept as it is (it can be given its standard name, ${name}.${recordingFile.split('.').pop()}).`,
+              `${
+                source.title
+              }: “${name}” plays ${recordingFile}, which isn't named after the widget; kept as it is (it can be given its standard name, ${name}.${recordingFile
+                .split('.')
+                .pop()}).`,
             );
           }
         }
@@ -656,7 +682,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
 
         // The other variants' texts (from their flow_vars) and languages, where the message varies
         if (source.variants && variesByVariant(object)) {
-          source.variants.slice(1).forEach((variant) => {
+          source.variants.slice(1).forEach(variant => {
             const vars = variant.vars.production ?? variant.vars.staging;
             const variantScript = raw ? resolve(raw, vars) : undefined;
             const language = languageOf(name, properties, vars);
@@ -690,7 +716,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
 
       // Set variable: what it sets
       if (type === 'setVariable' && Array.isArray(properties.variables)) {
-        object.variables = properties.variables.filter(isObject).map((variable) => ({
+        object.variables = properties.variables.filter(isObject).map(variable => ({
           key: textOf(variable.key) ?? '',
           value: textOf(variable.value) ?? '',
         }));
@@ -724,8 +750,8 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         if (state.type === 'make-http-request') {
           const settings = Object.fromEntries(
             (['method', 'url', 'body'] as const)
-              .filter((key) => typeof properties[key] === 'string')
-              .map((key) => [key, String(properties[key])]),
+              .filter(key => typeof properties[key] === 'string')
+              .map(key => [key, String(properties[key])]),
           );
           if (Object.keys(settings).length > 0) object.settings = settings;
         }
@@ -754,9 +780,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         try {
           const body = parse(textOf(properties.body) ?? '{}');
           const settings = Object.fromEntries(
-            info.fields
-              .filter((field) => typeof body[field.key] === 'string')
-              .map((field) => [field.key, body[field.key]]),
+            info.fields.filter(field => typeof body[field.key] === 'string').map(field => [field.key, body[field.key]]),
           );
           if (Object.keys(settings).length > 0) object.settings = settings;
         } catch {
@@ -768,7 +792,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
 
     separate(objects);
 
-    const byName = new Map(objects.map((object) => [object.studio!.name, object]));
+    const byName = new Map(objects.map(object => [object.studio!.name, object]));
     const connections: Connection[] = states.flatMap((state, index) => {
       const from = objects[index];
       const transitions = Array.isArray(state.transitions) ? state.transitions.filter(isObject) : [];
@@ -810,19 +834,21 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
       ...(source.channel ? { channel: source.channel } : {}),
       ...(source.variants
         ? {
-            variants: source.variants.map((variant): FlowVariant => ({
-              key: variant.flowName!,
-              label: variantLabelOf(variant),
-              recordingsFolder: variant.flowName!,
-              flowVars: Object.fromEntries(
-                Object.entries(variant.ownVars ?? {}).map(([environment, vars]) => [
-                  environment,
-                  Object.fromEntries(
-                    Object.entries(vars ?? {}).filter(([, value]) => typeof value === 'string'),
-                  ) as Record<string, string>,
-                ]),
-              ),
-            })),
+            variants: source.variants.map(
+              (variant): FlowVariant => ({
+                key: variant.flowName!,
+                label: variantLabelOf(variant),
+                recordingsFolder: variant.flowName!,
+                flowVars: Object.fromEntries(
+                  Object.entries(variant.ownVars ?? {}).map(([environment, vars]) => [
+                    environment,
+                    Object.fromEntries(
+                      Object.entries(vars ?? {}).filter(([, value]) => typeof value === 'string'),
+                    ) as Record<string, string>,
+                  ]),
+                ),
+              }),
+            ),
           }
         : {}),
       studio: {
@@ -849,14 +875,14 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
       channels: source.channels,
       widgets: objects.length,
       // Staging first, as it's read in the builder
-      environments: (['staging', 'production'] as const).filter((environment) => source.vars[environment]),
+      environments: (['staging', 'production'] as const).filter(environment => source.vars[environment]),
       channelEnvironments: Object.fromEntries(
         Object.entries(source.channelEnvironments).map(([name, found]) => [
           name,
-          (['staging', 'production'] as const).filter((environment) => found.includes(environment)),
+          (['staging', 'production'] as const).filter(environment => found.includes(environment)),
         ]),
       ),
-      ...(source.variants ? { variants: source.variants.map((variant) => variant.flowName!) } : {}),
+      ...(source.variants ? { variants: source.variants.map(variant => variant.flowName!) } : {}),
     });
   }
 
@@ -867,16 +893,21 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         ? '1 recording not copied, as its address'
         : `${names.size} recordings not copied, as their address`;
     notes.push(
-      `${title}: ${what} isn't a URL yet in ${[...where].sort().reverse().join(' and ')}: ${written}${shown}. Upload them in the builder once recorded.`,
+      `${title}: ${what} isn't a URL yet in ${[...where]
+        .sort()
+        .reverse()
+        .join(' and ')}: ${written}${shown}. Upload them in the builder once recorded.`,
     );
   });
 
   if (legacyNames > 0) {
     notes.push(
-      `${legacyNames} widget name${legacyNames === 1 ? " doesn't" : "s don't"} follow the Studio flow standards. They're kept as they are, since they're live; renaming one later means changing the widget, its recording and the template together.`,
+      `${legacyNames} widget name${
+        legacyNames === 1 ? " doesn't" : "s don't"
+      } follow the Studio flow standards. They're kept as they are, since they're live; renaming one later means changing the widget, its recording and the template together.`,
     );
   }
-  const singleEnvironment = ENVIRONMENTS.filter((environment) => !configs[environment]);
+  const singleEnvironment = ENVIRONMENTS.filter(environment => !configs[environment]);
   if (singleEnvironment.length > 0)
     notes.push(`There's no ${singleEnvironment.join(' or ')}.hcl, so only ${environments.join(' and ')} was read.`);
 

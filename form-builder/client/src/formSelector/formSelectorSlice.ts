@@ -60,7 +60,7 @@ const formSelectorSlice = createSlice({
     },
   },
   selectors: {
-    selectFormSelectorEditor: (state) => state,
+    selectFormSelectorEditor: state => state,
   },
 });
 
@@ -72,8 +72,8 @@ export const { selectFormSelectorEditor } = injected.selectors;
 const { selectorRemembered } = formSelectorSlice.actions;
 export const { formSelectorOpened } = formSelectorSlice.actions;
 
-export const selectFormSelectorIssues = createSelector([selectSectionIssues], (issues) =>
-  issues.filter((issue) => issue.message.startsWith(FORM_SELECTOR_PREFIX)),
+export const selectFormSelectorIssues = createSelector([selectSectionIssues], issues =>
+  issues.filter(issue => issue.message.startsWith(FORM_SELECTOR_PREFIX)),
 );
 
 export const selectorTypeOf = (implicit: boolean, selector: FormSelector): SelectorType =>
@@ -81,8 +81,8 @@ export const selectorTypeOf = (implicit: boolean, selector: FormSelector): Selec
 
 export const writeFormSelector =
   (next: FormSelector): AppThunk =>
-  (dispatch) =>
-    dispatch(editDraftFiles((files) => setFormSelector(files, next)));
+  dispatch =>
+    dispatch(editDraftFiles(files => setFormSelector(files, next)));
 
 // Another selectorType (or none: the default), with what it held before if it was chosen before
 export const switchSelectorType =

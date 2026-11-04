@@ -223,7 +223,7 @@ const Editor = () => {
     if (!pointer) return;
     const at = flow.screenToFlowPosition({ x: pointer.clientX, y: pointer.clientY });
     const fromId = state.fromNode.id;
-    const target = [...nodes].reverse().find((node) => {
+    const target = [...nodes].reverse().find(node => {
       const rect = node.type === 'object' && node.id !== fromId ? rectOf(node.id) : undefined;
       return rect && at.x >= rect.x && at.x <= rect.x + rect.width && at.y >= rect.y && at.y <= rect.y + rect.height;
     });
@@ -241,7 +241,7 @@ const Editor = () => {
   // ----- Variants
   // A variant made its own Studio flow: a new board, and it leaves this one
   const split = (key: string) => {
-    const leaving = variants.find((candidate) => candidate.key === key);
+    const leaving = variants.find(candidate => candidate.key === key);
     if (!leaving || !boardFlow?.studio) return;
     // eslint-disable-next-line no-alert
     if (
@@ -267,7 +267,7 @@ const Editor = () => {
     event.preventDefault();
   };
 
-  const errorCount = issues.filter((issue) => issue.severity === 'error').length;
+  const errorCount = issues.filter(issue => issue.severity === 'error').length;
   const endHere = (objectId: string, exit: string, ends?: boolean) => dispatch(exitEnded({ objectId, exit, ends }));
 
   // The board as it is now, for the exports
@@ -297,7 +297,7 @@ const Editor = () => {
             status={status}
             isNew={!isImportedBoard(content)}
             editable={!readOnly}
-            onChange={(next) => dispatch(statusChanged(next))}
+            onChange={next => dispatch(statusChanged(next))}
             label="Board status"
           />
         )}
@@ -328,7 +328,9 @@ const Editor = () => {
         {boardFlow?.studio && (
           <span
             className="flow-board-source"
-            title={`Studio flow template${boardFlow.studio.channels.length > 0 ? `, used by ${boardFlow.studio.channels.join(', ')}` : ''}`}
+            title={`Studio flow template${
+              boardFlow.studio.channels.length > 0 ? `, used by ${boardFlow.studio.channels.join(', ')}` : ''
+            }`}
           >
             {boardFlow.channel && <span className="flow-board-channel">{boardFlow.channel}</span>}
             <code>{boardFlow.studio.template}</code>
@@ -433,7 +435,7 @@ const Editor = () => {
               className="icon-button"
               aria-label="Delete"
               title="Delete (Delete)"
-              disabled={!hasSelection && !edges.some((edge) => edge.selected)}
+              disabled={!hasSelection && !edges.some(edge => edge.selected)}
               onClick={deleteSelected}
             >
               <Trash2 size={16} />
@@ -447,14 +449,14 @@ const Editor = () => {
         <div className={`flow-shared-bar ${boardFlow.studio.changeShared ? 'everyone' : ''}`}>
           <span
             className="flow-shared-label"
-            title={boardFlow.studio.sharedWith!.map((code) => code.toUpperCase()).join(', ')}
+            title={boardFlow.studio.sharedWith!.map(code => code.toUpperCase()).join(', ')}
           >
             <Users size={15} aria-hidden /> Shared template, also used by{' '}
             {boardFlow.studio.sharedWith!.length <= 5
-              ? boardFlow.studio.sharedWith!.map((code) => code.toUpperCase()).join(', ')
+              ? boardFlow.studio.sharedWith!.map(code => code.toUpperCase()).join(', ')
               : `${boardFlow.studio
                   .sharedWith!.slice(0, 4)
-                  .map((code) => code.toUpperCase())
+                  .map(code => code.toUpperCase())
                   .join(', ')} and ${boardFlow.studio.sharedWith!.length - 4} more`}
           </span>
           <span className="field-hint">
@@ -467,7 +469,7 @@ const Editor = () => {
               <input
                 type="checkbox"
                 checked={Boolean(boardFlow.studio.changeShared)}
-                onChange={(e) =>
+                onChange={e =>
                   dispatch(
                     flowChanged({
                       ...boardFlow,
@@ -489,7 +491,7 @@ const Editor = () => {
             <Languages size={15} aria-hidden /> Flows sharing this template
           </span>
           <span className="flow-variants" role="tablist" aria-label="Flows sharing this template">
-            {variants.map((candidate) => (
+            {variants.map(candidate => (
               <button
                 key={candidate.key}
                 type="button"
@@ -507,12 +509,12 @@ const Editor = () => {
               className="flow-variant-add"
               aria-label="Add a language"
               value=""
-              onChange={(e) => dispatch(languageAdded({ locale: e.target.value }))}
+              onChange={e => dispatch(languageAdded({ locale: e.target.value }))}
             >
               <option value="">+ Add a language</option>
               {VARIANT_LANGUAGES.filter(
                 ({ locale }) =>
-                  !variants.some((candidate) => candidate.key === variantInLanguage(variants[0], locale, '').key),
+                  !variants.some(candidate => candidate.key === variantInLanguage(variants[0], locale, '').key),
               ).map(({ locale, label }) => (
                 <option key={locale} value={locale}>
                   {label} ({locale})
@@ -546,11 +548,11 @@ const Editor = () => {
       {saveState === 'error' && saveError && <div className="alert alert-error">{saveError}</div>}
 
       <div className="flow-workspace">
-        {!locked && <Palette onAdd={(item) => add(item)} />}
+        {!locked && <Palette onAdd={item => add(item)} />}
         <div
           className={connecting ? 'flow-canvas connecting' : 'flow-canvas'}
           ref={wrapper}
-          onDragOver={(event) => {
+          onDragOver={event => {
             if (event.dataTransfer.types.includes(PALETTE_MIME)) {
               event.preventDefault();
               event.dataTransfer.dropEffect = 'copy';
@@ -563,18 +565,18 @@ const Editor = () => {
             edges={edges}
             nodeTypes={NODE_TYPES}
             edgeTypes={EDGE_TYPES}
-            onNodesChange={(changes) => dispatch(nodesChanged(changes))}
-            onEdgesChange={(changes) => dispatch(edgesChanged(changes))}
+            onNodesChange={changes => dispatch(nodesChanged(changes))}
+            onEdgesChange={changes => dispatch(edgesChanged(changes))}
             onConnect={connect}
             onConnectStart={() => setConnecting(true)}
             onConnectEnd={onConnectEnd}
             connectionRadius={36}
-            isValidConnection={(params) => isValidConnection(nodes, params)}
+            isValidConnection={params => isValidConnection(nodes, params)}
             onNodeClick={() => mode === 'design' && dispatch(sideTabShown('settings'))}
             onEdgeClick={() => mode === 'design' && dispatch(sideTabShown('settings'))}
             onNodeDragStop={(_, __, dragged) => {
               if (locked) return;
-              dispatch(nodesReparented(dragged.filter((node) => node.type !== 'frame').map((node) => node.id)));
+              dispatch(nodesReparented(dragged.filter(node => node.type !== 'frame').map(node => node.id)));
             }}
             connectionMode={ConnectionMode.Loose}
             connectionLineType={ConnectionLineType.SmoothStep}
@@ -598,7 +600,7 @@ const Editor = () => {
             <MiniMap
               pannable
               zoomable
-              nodeColor={(node) => {
+              nodeColor={node => {
                 const canvasNode = node as CanvasNode;
                 if (canvasNode.type === 'object') return objectColor(canvasNode.data.object);
                 if (canvasNode.type === 'sticky') return STICKY_COLORS[canvasNode.data.sticky.color];

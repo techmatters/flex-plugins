@@ -26,7 +26,7 @@ const root = createRoot(document.getElementById('root')!);
 
 // Deployed, sign in with Okta first (see auth.ts); locally this renders straight away
 initAuth().then(
-  (ready) => {
+  ready => {
     if (ready) {
       root.render(
         <StrictMode>
@@ -37,7 +37,7 @@ initAuth().then(
       );
     }
   },
-  (err) => {
+  err => {
     root.render(
       <p className="sign-in-error">
         {(err as Error).message} <a href="/">Try again</a>

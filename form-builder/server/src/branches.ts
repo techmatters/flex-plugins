@@ -65,8 +65,8 @@ export class GitHubBranches implements BranchSource {
       const names = [...(await readBranchHeads(this.ownerAndRepo, this.fetchImpl)).keys()].filter(isValidBranch);
       this.heads = { at: this.now(), names: names.sort((a, b) => a.localeCompare(b)) };
     }
-    const others = this.heads.names.filter((name) => this.defaultLabel !== 'master' || name !== 'master');
-    return [{ value: '', label: this.defaultLabel }, ...others.map((name) => ({ value: name, label: name }))];
+    const others = this.heads.names.filter(name => this.defaultLabel !== 'master' || name !== 'master');
+    return [{ value: '', label: this.defaultLabel }, ...others.map(name => ({ value: name, label: name }))];
   }
 
   async snapshot(branch: string): Promise<Snapshot> {

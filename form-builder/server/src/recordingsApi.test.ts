@@ -98,7 +98,7 @@ describe('recordings', () => {
     // Helpline staff listen to their own helpline's recordings, but don't upload them
     const listed = await call(usnmStaff, 'GET', '/api/recordings/usnm');
     expect(listed.status).toBe(200);
-    expect((listed.body as RecordingsList).recordings.map((recording) => recording.fileName)).toEqual([FILE]);
+    expect((listed.body as RecordingsList).recordings.map(recording => recording.fileName)).toEqual([FILE]);
     expect((await call(usnmStaff, 'POST', '/api/recordings/usnm/uploads', { fileName: FILE })).status).toBe(403);
     expect(
       (await call(usnmStaff, 'POST', `/api/recordings/usnm/files/${FILE}/approve`, { approved: true })).status,
@@ -125,9 +125,9 @@ describe('recordings', () => {
     expect(
       (await call(usnmStaff, 'DELETE', '/api/recordings/usnm/files/play_message_voice_en_welcom.mp3')).status,
     ).toBe(403);
-    expect(
-      (await call(staff, 'DELETE', '/api/recordings/usnm/files/play_message_voice_en_welcom.mp3')).status,
-    ).toBe(200);
+    expect((await call(staff, 'DELETE', '/api/recordings/usnm/files/play_message_voice_en_welcom.mp3')).status).toBe(
+      200,
+    );
     expect((await list()).recordings).toEqual([]);
 
     await upload(staff, 'take');
@@ -198,7 +198,7 @@ describe('recordings in S3', () => {
     });
 
     await store.publish('usnm', FILE);
-    expect(sent.find((command) => command instanceof CopyObjectCommand)!.input).toEqual({
+    expect(sent.find(command => command instanceof CopyObjectCommand)!.input).toEqual({
       Bucket: 'tl-aselo-recordings',
       CopySource: `tl-aselo-recordings/usnm/staging/${FILE}`,
       Key: `usnm/production/${FILE}`,
@@ -212,7 +212,7 @@ describe('recordings in S3', () => {
     });
 
     await store.remove('usnm', 'staging', FILE);
-    expect(sent.find((command) => command instanceof DeleteObjectCommand)!.input.Key).toBe(`usnm/staging/${FILE}`);
+    expect(sent.find(command => command instanceof DeleteObjectCommand)!.input.Key).toBe(`usnm/staging/${FILE}`);
     await expect(store.uploadTarget('usnm', '../x.mp3', 'audio/mpeg')).rejects.toThrow();
   });
 

@@ -153,7 +153,9 @@ export const ShapeOutline = ({ shape, width: w, height: h, fill, stroke, dashed 
       const wave = Math.min(14, h * 0.18);
       body = (
         <path
-          d={`M${S},${S} H${right} V${bottom - wave} Q${w * 0.75},${bottom - 2 * wave} ${w / 2},${bottom - wave} T${S},${bottom - wave} Z`}
+          d={`M${S},${S} H${right} V${bottom - wave} Q${w * 0.75},${bottom - 2 * wave} ${w / 2},${
+            bottom - wave
+          } T${S},${bottom - wave} Z`}
           {...common}
         />
       );
@@ -165,7 +167,9 @@ export const ShapeOutline = ({ shape, width: w, height: h, fill, stroke, dashed 
       body = (
         <>
           <path
-            d={`M${S},${S + ry} A${rx},${ry} 0 0 1 ${right},${S + ry} V${bottom - ry} A${rx},${ry} 0 0 1 ${S},${bottom - ry} Z`}
+            d={`M${S},${S + ry} A${rx},${ry} 0 0 1 ${right},${S + ry} V${bottom - ry} A${rx},${ry} 0 0 1 ${S},${
+              bottom - ry
+            } Z`}
             {...common}
           />
           <path

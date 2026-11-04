@@ -16,11 +16,17 @@
 
 import { describe, expect, test } from '@jest/globals';
 import type { FlowObject, Frame } from '@tech-matters/form-builder-shared/flows/model';
-import { boardChecks as allChecks, objectProblems, splitIgnored, studioNameProblems, uniqueName } from '@tech-matters/form-builder-shared/flows/checks';
+import {
+  boardChecks as allChecks,
+  objectProblems,
+  splitIgnored,
+  studioNameProblems,
+  uniqueName,
+} from '@tech-matters/form-builder-shared/flows/checks';
 
 // The checks but the flows' unset channels, languages and services (tested on their own)
 const boardChecks = (...args: Parameters<typeof allChecks>) =>
-  allChecks(...args).filter((issue) => !issue.key.includes('|naming-'));
+  allChecks(...args).filter(issue => !issue.key.includes('|naming-'));
 import { standardTaskAttributes } from '@tech-matters/form-builder-shared/flows/taskAttributes';
 import type { Connection } from '@tech-matters/form-builder-shared/flows/model';
 
@@ -154,8 +160,8 @@ describe('Studio names', () => {
         '“Service choice” is named split_service_options, which “Repeat (counter)” also becomes.',
       );
       // In the board's checks (and so the export's), as errors
-      const errors = boardChecks(usch()).filter((issue) => issue.severity === 'error' && /becomes/.test(issue.message));
-      expect(errors.map((issue) => issue.objectId).sort()).toEqual(['d', 'r']);
+      const errors = boardChecks(usch()).filter(issue => issue.severity === 'error' && /becomes/.test(issue.message));
+      expect(errors.map(issue => issue.objectId).sort()).toEqual(['d', 'r']);
     });
 
     test('in different flows, the same names are fine', () => {
@@ -225,7 +231,7 @@ const connect = (from: string, to: string, exit?: string): Connection => {
   return { id: `c${connectionCount}`, from, to, ...(exit ? { exit } : {}) };
 };
 
-const messagesOf = (content: Parameters<typeof boardChecks>[0]) => boardChecks(content).map((issue) => issue.message);
+const messagesOf = (content: Parameters<typeof boardChecks>[0]) => boardChecks(content).map(issue => issue.message);
 
 describe('the board check', () => {
   test('finds ways out that lead nowhere, unless the flow ends there on purpose', () => {
@@ -252,7 +258,7 @@ describe('the board check', () => {
 
     const ended = {
       ...content,
-      objects: content.objects.map((item) =>
+      objects: content.objects.map(item =>
         item.id === 'lang' ? { ...item, endedExits: ['No'] } : item.id === 'bye' ? { ...item, endedExits: [''] } : item,
       ),
     };
@@ -276,13 +282,13 @@ describe('the board check', () => {
     };
     // Only the system-down warning: the unconnected "speech" isn't one
     const issues = boardChecks(content);
-    expect(issues.map((issue) => issue.message)).toEqual([
+    expect(issues.map(issue => issue.message)).toEqual([
       '“Call” should go to the system-down subflow before anything else.',
     ]);
 
     const { active, ignored } = splitIgnored(issues, [issues[0].key]);
     expect(active).toEqual([]);
-    expect(ignored.map((issue) => issue.message)).toEqual([issues[0].message]);
+    expect(ignored.map(issue => issue.message)).toEqual([issues[0].message]);
     const error = { key: 'x', severity: 'error' as const, message: 'A mistake' };
     expect(splitIgnored([error], ['x']).active).toEqual([error]);
   });
@@ -304,7 +310,7 @@ describe('the board check', () => {
       connections: [connect('a', 'b', 'Yes'), connect('a', 'c', 'Yes'), connect('a', 'b', 'Maybe'), connect('b', 'c')],
     };
     const issues = boardChecks(content);
-    expect(issues.filter((issue) => issue.severity === 'error').map((issue) => issue.message)).toEqual([
+    expect(issues.filter(issue => issue.severity === 'error').map(issue => issue.message)).toEqual([
       '“A”: “Yes” leads to 2 places; it can only lead to one.',
       "“A”: a connection leaves by “Maybe”, which it doesn't have any more.",
       '“B” ends the flow, but a connection leaves it.',
@@ -332,7 +338,7 @@ describe('the board check', () => {
       ],
       connections: [],
     };
-    const messages = boardChecks(content).map((issue) => issue.message);
+    const messages = boardChecks(content).map(issue => issue.message);
     expect(messages).toContain('“noWorkflow”: set its workflow.');
     // In an SMS flow it's chat without choosing it; outside a flow, it has to be chosen
     expect(messages).not.toContain('“automatic”: set its task channel.');
@@ -429,7 +435,7 @@ test("a message's Studio name says its language", () => {
       endedExits: [''],
     });
   const check = (studioName: string) =>
-    messagesOf({ frames: [], objects: [message(studioName)], connections: [] }).filter((text) => text.includes('“es”'));
+    messagesOf({ frames: [], objects: [message(studioName)], connections: [] }).filter(text => text.includes('“es”'));
   expect(check('play_message_voice_es_closed')).toEqual([]);
   expect(check('play_message_voice_en_closed')).toEqual(["“Closed” is in “es”, but its Studio name doesn't say so."]);
 });

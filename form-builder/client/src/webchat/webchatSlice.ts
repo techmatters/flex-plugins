@@ -97,17 +97,17 @@ const webchatSlice = createSlice({
     addingSet: (state, action: PayloadAction<boolean>) => {
       state.adding = action.payload;
     },
-    wizardOpened: (state) => {
+    wizardOpened: state => {
       state.adding = false;
       state.wizardOpen = true;
     },
-    wizardClosed: (state) => {
+    wizardClosed: state => {
       state.wizardOpen = false;
     },
     chainOpened: (state, action: PayloadAction<EditingChain>) => {
       state.editingChain = action.payload;
     },
-    chainClosed: (state) => {
+    chainClosed: state => {
       state.editingChain = undefined;
     },
     previewAnswersChanged: (
@@ -122,7 +122,7 @@ const webchatSlice = createSlice({
     },
   },
   selectors: {
-    selectWebchat: (state) => state,
+    selectWebchat: state => state,
   },
 });
 
@@ -190,18 +190,18 @@ const write =
   (
     next: Row<WebchatField>[],
     translations: [string, string][] = [],
-    alsoChange: (files: DefinitionFileMap) => DefinitionFileMap = (files) => files,
+    alsoChange: (files: DefinitionFileMap) => DefinitionFileMap = files => files,
   ): AppThunk =>
   (dispatch, getState) => {
     const { locale } = selectWebchatTextContext(getState());
     dispatch(rowsChanged(next));
     dispatch(
-      editDraftFiles((files) =>
+      editDraftFiles(files =>
         alsoChange(
           withTranslations(
             {
               ...files,
-              [PRE_ENGAGEMENT_FILE]: { ...getPreEngagementForm(files), fields: next.map((row) => row.value) },
+              [PRE_ENGAGEMENT_FILE]: { ...getPreEngagementForm(files), fields: next.map(row => row.value) },
             },
             locale,
             translations,
@@ -220,21 +220,21 @@ const saveLocalized =
     const context = selectWebchatTextContext(getState());
     const { rows } = selectWebchat(getState());
     const translations: [string, string][] = [];
-    const storedByName = new Map(rows.map((row) => [row.value.name, row.value]));
+    const storedByName = new Map(rows.map(row => [row.value.name, row.value]));
     const unlocalize = (field: WebchatField, stored = storedByName.get(field.name)) => {
       const result = unlocalizeField(field, stored, context);
       translations.push(...result.translations);
       return result.field;
     };
-    const editedByName = new Map(edited.map((field) => [field.name, field]));
-    let next = rows.map((row) => {
+    const editedByName = new Map(edited.map(field => [field.name, field]));
+    let next = rows.map(row => {
       const field = editedByName.get(row.value.name);
       return field ? { ...row, value: unlocalize(field) } : row;
     });
-    const added = edited.filter((field) => !storedByName.has(field.name));
+    const added = edited.filter(field => !storedByName.has(field.name));
     if (added.length > 0) {
-      const newRows = toRows(added.map((field) => unlocalize(field, undefined)));
-      const index = insertAfter ? next.findIndex((row) => row.value.name === insertAfter) : -1;
+      const newRows = toRows(added.map(field => unlocalize(field, undefined)));
+      const index = insertAfter ? next.findIndex(row => row.value.name === insertAfter) : -1;
       next = index >= 0 ? [...next.slice(0, index + 1), ...newRows, ...next.slice(index + 1)] : [...next, ...newRows];
       dispatch(questionSelected(newRows[0].id));
     }
@@ -245,15 +245,15 @@ export const updateQuestion =
   (id: string, edited: WebchatField): AppThunk =>
   (dispatch, getState) => {
     const { rows } = selectWebchat(getState());
-    const row = rows.find((candidate) => candidate.id === id);
+    const row = rows.find(candidate => candidate.id === id);
     if (!row) return;
     const { field, translations } = unlocalizeField(edited, row.value, selectWebchatTextContext(getState()));
     dispatch(
       write(
-        rows.map((candidate) => (candidate.id === id ? { ...candidate, value: field } : candidate)),
+        rows.map(candidate => (candidate.id === id ? { ...candidate, value: field } : candidate)),
         translations,
         // A new question's name follows its text; what it fills in follows the name
-        (files) => renamePrepopulateTargets(files, row.value.name, field.name),
+        files => renamePrepopulateTargets(files, row.value.name, field.name),
       ),
     );
   };
@@ -269,7 +269,7 @@ export const addQuestion =
     const [row] = toRows([
       createWebchatField(
         type,
-        rows.map((candidate) => candidate.value.name),
+        rows.map(candidate => candidate.value.name),
       ),
     ]);
     dispatch(write([...rows, row]));
@@ -281,13 +281,13 @@ export const removeQuestion =
   (id: string): AppThunk =>
   (dispatch, getState) => {
     const { rows } = selectWebchat(getState());
-    const row = rows.find((candidate) => candidate.id === id);
+    const row = rows.find(candidate => candidate.id === id);
     if (!row) return;
     dispatch(
       write(
-        rows.filter((candidate) => candidate.id !== id),
+        rows.filter(candidate => candidate.id !== id),
         [],
-        (files) => setPrepopulateTargets(files, row.value.name, []),
+        files => setPrepopulateTargets(files, row.value.name, []),
       ),
     );
     dispatch(questionSelected(undefined));
@@ -295,8 +295,8 @@ export const removeQuestion =
 
 export const setQuestionTargets =
   (name: string, targets: string[]): AppThunk =>
-  (dispatch) =>
-    dispatch(editDraftFiles((files) => setPrepopulateTargets(files, name, targets)));
+  dispatch =>
+    dispatch(editDraftFiles(files => setPrepopulateTargets(files, name, targets)));
 
 // One of the texts around the form, in the language being edited
 export const setText =
@@ -304,7 +304,7 @@ export const setText =
   (dispatch, getState) => {
     const { locale } = selectWebchatTextContext(getState());
     const originalFiles = getState().draft.original;
-    dispatch(editDraftFiles((files) => setWebchatText(files, originalFiles, locale, key, text)));
+    dispatch(editDraftFiles(files => setWebchatText(files, originalFiles, locale, key, text)));
   };
 
 /**
@@ -330,14 +330,14 @@ const buildChain = (
 // The questions with their texts in the language being edited
 const localizedFields = (state: RootState) => {
   const { strings } = selectWebchatTextContext(state);
-  return selectWebchat(state).rows.map((row) => localizeField(row.value, strings));
+  return selectWebchat(state).rows.map(row => localizeField(row.value, strings));
 };
 
 export const openChainEditor =
   (names: string[]): AppThunk =>
   (dispatch, getState) => {
-    const localizedByName = new Map(localizedFields(getState()).map((field) => [field.name, field]));
-    const chainFields = names.map((name) => localizedByName.get(name)!);
+    const localizedByName = new Map(localizedFields(getState()).map(field => [field.name, field]));
+    const chainFields = names.map(name => localizedByName.get(name)!);
     const tree = chainToTree(asFormItems(chainFields), {});
     const notes: string[] = [];
     if (tree.sharedValues.length > 0) {
@@ -367,7 +367,7 @@ export const createChain =
   (dispatch, getState) => {
     const created = createChainFields(
       levelLabels,
-      selectWebchat(getState()).rows.map((row) => row.value.name),
+      selectWebchat(getState()).rows.map(row => row.value.name),
       existingTop,
       '',
     ).map((item, level) =>
@@ -385,8 +385,8 @@ export const answerPreview =
     const next = { ...selectWebchat(getState()).preview.values, [name]: value };
     // Like DependentSelect: when the answer above changes, the one below resets to its first answer
     fields
-      .filter((field) => field.type === 'dependent-select' && field.dependsOn === name)
-      .forEach((field) => {
+      .filter(field => field.type === 'dependent-select' && field.dependsOn === name)
+      .forEach(field => {
         const list = (field.options as Record<string, SelectOption[]> | undefined)?.[String(value)];
         next[field.name] = list?.[0] ? String(list[0].value) : '';
       });
