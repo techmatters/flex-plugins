@@ -17,54 +17,45 @@
 /**
  * Edits CannedResponses.json: ready-made messages counselors pick from a dropdown above the
  * chat message box. The dropdown only shows when the helpline's enable_canned_responses
- * feature flag is on.
+ * feature flag is on. What's edited and how lives in cannedResponsesSlice.ts.
  */
-import { useState } from 'react';
-import type { DefinitionFileMap } from '../common/definitions';
-import { CANNED_RESPONSES_FILE, getCannedResponses } from './sections';
-import { parseDelimitedText } from '../linkedDropdowns/spreadsheet';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectDraftFiles } from '../drafts/draftSlice';
+import { selectDefinitions, selectWorkspace, tryItOutOpened } from '../workspace/workspaceSlice';
+import { getFeatures } from '../serviceConfig/helplineFeatures';
+import {
+  addPastedResponses,
+  addResponse,
+  openCannedResponses,
+  pasteTextChanged,
+  previewMessageChanged,
+  removeResponse,
+  reorderResponses,
+  selectCannedResponses,
+  updateResponse,
+} from './cannedResponsesSlice';
 import { translate, useStrings } from '../aseloPreview/translations';
-import { SortableRows, toRows, useRows } from '../common/SortableRows';
+import { SortableRows } from '../common/SortableRows';
 import '../aseloPreview/aselo.css';
 import '../aseloPreview/flexDesktop.css';
 
-type Response = { label: string; text: string };
+export const CannedResponsesEditor = () => {
+  const dispatch = useAppDispatch();
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const definitions = useAppSelector(selectDefinitions);
+  const { editorRevision } = useAppSelector(selectWorkspace);
+  const { rows, pasteText, previewMessage } = useAppSelector(selectCannedResponses);
+  const strings = useStrings(definitions?.helplineLanguage ?? 'en-US', draftFiles);
+  // The feature as the draft sets it, or the helpline's flag
+  const enabled =
+    getFeatures(draftFiles, definitions?.serviceConfigDefaults)?.enableCannedResponses ??
+    definitions?.featureFlags?.enable_canned_responses !== false;
 
-type Props = {
-  draftFiles: DefinitionFileMap;
-  helplineLanguage?: string;
-  enabled: boolean;
-  onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
-  onTryItOut: () => void;
-};
-
-export const CannedResponsesEditor = ({
-  draftFiles,
-  helplineLanguage,
-  enabled,
-  onChangeFiles,
-  onTryItOut,
-}: Props) => {
-  const strings = useStrings(helplineLanguage ?? 'en-US', draftFiles);
-  const responses = useRows<Response>(getCannedResponses(draftFiles), (values) =>
-    onChangeFiles((files) => ({ ...files, [CANNED_RESPONSES_FILE]: values })),
-  );
-  const [pasteText, setPasteText] = useState<string>();
-  const [previewMessage, setPreviewMessage] = useState('');
-
-  const update = (id: string, changes: Partial<Response>) =>
-    responses.commit(
-      responses.rows.map((row) => (row.id === id ? { ...row, value: { ...row.value, ...changes } } : row)),
-    );
-
-  // Two columns pasted from a spreadsheet: name, then text
-  const addPasted = () => {
-    const added = parseDelimitedText(pasteText ?? '')
-      .map(([label = '', text = '']) => ({ label: label.trim(), text: text.trim() }))
-      .filter((response) => response.label || response.text);
-    responses.commit([...responses.rows, ...toRows(added)]);
-    setPasteText(undefined);
-  };
+  // Starts from the draft when it opens, and when the draft's files are replaced (discarded, reloaded)
+  useEffect(() => {
+    dispatch(openCannedResponses());
+  }, [dispatch, editorRevision]);
 
   return (
     <div className="section-editor">
@@ -82,9 +73,9 @@ export const CannedResponsesEditor = ({
           )}
 
           <SortableRows
-            rows={responses.rows}
+            rows={rows}
             labelOf={(response) => response.label}
-            onReorder={responses.commit}
+            onReorder={(next) => dispatch(reorderResponses(next))}
             renderRow={(row) => (
               <div className="canned-response-row">
                 <div className="row-inline">
@@ -93,13 +84,13 @@ export const CannedResponsesEditor = ({
                     value={row.value.label}
                     placeholder="Name shown in the list"
                     aria-label="Name"
-                    onChange={(e) => update(row.id, { label: e.target.value })}
+                    onChange={(e) => dispatch(updateResponse(row.id, { label: e.target.value }))}
                   />
                   <button
                     type="button"
                     className="icon-button"
                     aria-label={`Remove ${row.value.label}`}
-                    onClick={() => responses.commit(responses.rows.filter((other) => other.id !== row.id))}
+                    onClick={() => dispatch(removeResponse(row.id))}
                   >
                     ×
                   </button>
@@ -109,7 +100,7 @@ export const CannedResponsesEditor = ({
                   value={row.value.text}
                   placeholder="The message counselors will send"
                   aria-label="Message"
-                  onChange={(e) => update(row.id, { text: e.target.value })}
+                  onChange={(e) => dispatch(updateResponse(row.id, { text: e.target.value }))}
                 />
               </div>
             )}
@@ -117,14 +108,10 @@ export const CannedResponsesEditor = ({
 
           {pasteText === undefined ? (
             <div className="option-actions">
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={() => responses.commit([...responses.rows, ...toRows([{ label: '', text: '' }])])}
-              >
+              <button type="button" className="secondary-button" onClick={() => dispatch(addResponse())}>
                 + Add a response
               </button>
-              <button type="button" className="link-button" onClick={() => setPasteText('')}>
+              <button type="button" className="link-button" onClick={() => dispatch(pasteTextChanged(''))}>
                 Paste from a spreadsheet
               </button>
             </div>
@@ -139,15 +126,15 @@ export const CannedResponsesEditor = ({
                   rows={6}
                   value={pasteText}
                   autoFocus
-                  onChange={(e) => setPasteText(e.target.value)}
+                  onChange={(e) => dispatch(pasteTextChanged(e.target.value))}
                   placeholder={'Greeting\tHi, thanks for reaching out.'}
                 />
               </label>
               <div className="option-actions">
-                <button type="button" className="secondary-button" onClick={addPasted}>
+                <button type="button" className="secondary-button" onClick={() => dispatch(addPastedResponses())}>
                   Add these responses
                 </button>
-                <button type="button" className="link-button" onClick={() => setPasteText(undefined)}>
+                <button type="button" className="link-button" onClick={() => dispatch(pasteTextChanged(undefined))}>
                   Cancel
                 </button>
               </div>
@@ -159,7 +146,11 @@ export const CannedResponsesEditor = ({
       <aside className="section-preview">
         <div className="section-preview-header">
           <span className="field-label">How it looks in Aselo</span>
-          <button type="button" className="secondary-button" onClick={onTryItOut}>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => dispatch(tryItOutOpened({ focus: 'cannedResponses' }))}
+          >
             Try it out in Aselo
           </button>
         </div>
@@ -170,12 +161,12 @@ export const CannedResponsesEditor = ({
                 className="aselo-select aselo-select-full"
                 aria-label={translate(strings, 'CannedResponses')}
                 value=""
-                onChange={(e) => setPreviewMessage(e.target.value)}
+                onChange={(e) => dispatch(previewMessageChanged(e.target.value))}
               >
                 <option value="" disabled>
                   {translate(strings, 'CannedResponses')}
                 </option>
-                {responses.rows.map((row) => (
+                {rows.map((row) => (
                   <option key={row.id} value={row.value.text}>
                     {row.value.label}
                   </option>

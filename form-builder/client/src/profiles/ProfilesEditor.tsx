@@ -16,54 +16,49 @@
 
 /**
  * Client profiles: their sections, the options for flagging (blocking) a profile, and which
- * profile details are personal data, next to a sketch of the profile page. See profiles.ts.
+ * profile details are personal data, next to a sketch of the profile page. What's edited and
+ * how lives in profilesSlice.ts; see profiles.ts for the files.
  */
-import { useMemo, useState } from 'react';
-import type {
-  ProfileFlagDurationDefinition,
-  ProfileSectionDefinition,
-} from '@hrm-form-definitions/formDefinition/types';
-import type { DefinitionFileMap } from '../common/definitions';
-import { toFieldName, uniqueFieldName } from '../forms/formEditing';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import { selectDraftFiles } from '../drafts/draftSlice';
+import { selectSectionIssues, selectWorkspace } from '../workspace/workspaceSlice';
+import { approximateDuration, DURATION_UNITS, DurationUnit, getProfileOverview } from './profiles';
 import {
-  approximateDuration,
-  DURATION_UNITS,
-  DurationUnit,
-  FLAG_DURATIONS_FILE,
-  getFlagDurations,
-  getProfileOverview,
-  getProfileSections,
-  newProfileSection,
-  PROFILE_OVERVIEW_FILE,
-  PROFILE_SECTIONS_FILE,
-  splitDuration,
-  toHours,
-} from './profiles';
-import type { ValidationIssue } from '../forms/validation';
-import { SortableRows, toRows, useRows } from '../common/SortableRows';
-
-type Props = {
-  draftFiles: DefinitionFileMap;
-  originalFiles: DefinitionFileMap;
-  staffMode: boolean;
-  // From the Features page: profiles may be switched off for this helpline
-  profilesEnabled: boolean;
-  issues: ValidationIssue[];
-  onChangeFiles: (updater: (current: DefinitionFileMap) => DefinitionFileMap) => void;
-};
+  addDuration,
+  addSection,
+  durationAmount,
+  openProfiles,
+  removeDuration,
+  removeSection,
+  selectOriginalSectionNames,
+  selectProfiles,
+  selectProfilesEnabled,
+  setDurationAmount,
+  setDurationUnit,
+  setOverviewIsPII,
+  updateDuration,
+  updateSection,
+  writeDurations,
+  writeSections,
+} from './profilesSlice';
+import { SortableRows } from '../common/SortableRows';
 
 const DurationInput = ({
   hours,
+  unit,
   label,
-  onChange,
+  onChangeAmount,
+  onChangeUnit,
 }: {
   hours: number;
+  unit: DurationUnit;
   label: string;
-  onChange: (hours: number) => void;
+  onChangeAmount: (amount: number) => void;
+  onChangeUnit: (unit: DurationUnit) => void;
 }) => {
-  const [unit, setUnit] = useState<DurationUnit>(() => splitDuration(hours).unit);
-  const unitHours = DURATION_UNITS.find((candidate) => candidate.unit === unit)!.hours;
-  const amount = hours / unitHours;
+  const amount = durationAmount(hours, unit);
   const approximation = approximateDuration(hours);
   return (
     <span className="duration-input">
@@ -72,17 +67,12 @@ const DurationInput = ({
         min={1}
         aria-label={`How long “${label}” lasts`}
         value={Number.isInteger(amount) ? amount : Math.round(amount * 100) / 100}
-        onChange={(e) => onChange(Math.round(toHours(Number(e.target.value), unit)))}
+        onChange={(e) => onChangeAmount(Number(e.target.value))}
       />
       <select
         aria-label={`Unit for “${label}”`}
         value={unit}
-        onChange={(e) => {
-          const next = e.target.value as DurationUnit;
-          setUnit(next);
-          // Keep the amount, change what it counts
-          onChange(Math.round(toHours(Number.isInteger(amount) ? amount : 1, next)));
-        }}
+        onChange={(e) => onChangeUnit(e.target.value as DurationUnit)}
       >
         {DURATION_UNITS.map((candidate) => (
           <option key={candidate.unit} value={candidate.unit}>
@@ -95,70 +85,21 @@ const DurationInput = ({
   );
 };
 
-export const ProfilesEditor = ({
-  draftFiles,
-  originalFiles,
-  staffMode,
-  profilesEnabled,
-  issues,
-  onChangeFiles,
-}: Props) => {
-  const originalNames = useMemo(
-    () => new Set(getProfileSections(originalFiles).map((section) => section.name)),
-    [originalFiles],
-  );
-
-  const sections = useRows(getProfileSections(draftFiles), (values) =>
-    onChangeFiles((files) => ({ ...files, [PROFILE_SECTIONS_FILE]: values })),
-  );
-  const durations = useRows(getFlagDurations(draftFiles), (values) =>
-    onChangeFiles((files) => ({ ...files, [FLAG_DURATIONS_FILE]: values })),
-  );
+export const ProfilesEditor = () => {
+  const dispatch = useAppDispatch();
+  const draftFiles = useAppSelector(selectDraftFiles);
+  const staffMode = useAppSelector(selectActingAsStaff);
+  const profilesEnabled = useAppSelector(selectProfilesEnabled);
+  const originalNames = useAppSelector(selectOriginalSectionNames);
+  const { editorRevision } = useAppSelector(selectWorkspace);
+  const issues = useAppSelector(selectSectionIssues).filter((issue) => issue.message.startsWith('Client profiles'));
+  const { sections, durations, durationUnits } = useAppSelector(selectProfiles);
   const overview = getProfileOverview(draftFiles);
 
-  const updateSection = (id: string, change: Partial<ProfileSectionDefinition>) =>
-    sections.commit(
-      sections.rows.map((row) => {
-        if (row.id !== id) return row;
-        const next = { ...row.value, ...change };
-        // A new section's saved name follows its title
-        if (change.label !== undefined && !originalNames.has(row.value.name)) {
-          next.name = uniqueFieldName(
-            toFieldName(change.label) || 'section',
-            sections.rows.filter((other) => other.id !== id).map((other) => other.value.name),
-          );
-        }
-        return { ...row, value: next };
-      }),
-    );
-
-  const addSection = () => {
-    const name = uniqueFieldName('newSection', sections.rows.map((row) => row.value.name));
-    sections.commit([...sections.rows, ...toRows([newProfileSection('New section', name)])]);
-  };
-
-  const removeSection = (id: string, section: ProfileSectionDefinition) => {
-    if (
-      originalNames.has(section.name) &&
-      !window.confirm(`Remove “${section.label}”? Counselors will no longer see what was written in it on profiles.`)
-    ) {
-      return;
-    }
-    sections.commit(sections.rows.filter((row) => row.id !== id));
-  };
-
-  const updateDuration = (id: string, change: Partial<ProfileFlagDurationDefinition>) =>
-    durations.commit(durations.rows.map((row) => (row.id === id ? { ...row, value: { ...row.value, ...change } } : row)));
-
-  const addDuration = () => {
-    const taken = new Set(durations.rows.map((row) => Number(row.value.durationInHours)));
-    let hours = 24;
-    while (taken.has(hours)) hours += 24;
-    durations.commit([
-      ...durations.rows,
-      ...toRows([{ flag: 'blocked', label: `Block (${hours / 24} days)`, durationInHours: String(hours) }]),
-    ]);
-  };
+  // Starts from the draft when it opens, and when the draft's files are replaced (discarded, reloaded)
+  useEffect(() => {
+    dispatch(openProfiles());
+  }, [dispatch, editorRevision]);
 
   return (
     <div className="section-editor">
@@ -188,9 +129,9 @@ export const ProfilesEditor = ({
           <h3 className="section-heading">Profile sections</h3>
           <p className="field-hint">Notes counselors keep on a profile, each in its own box.</p>
           <SortableRows
-            rows={sections.rows}
+            rows={sections}
             labelOf={(section) => section.label}
-            onReorder={sections.commit}
+            onReorder={(next) => dispatch(writeSections(next))}
             renderRow={(row) => {
               const section = row.value;
               const isNew = !originalNames.has(section.name);
@@ -201,14 +142,23 @@ export const ProfilesEditor = ({
                       type="text"
                       aria-label="Section title"
                       value={section.label}
-                      onChange={(e) => updateSection(row.id, { label: e.target.value })}
+                      onChange={(e) => dispatch(updateSection(row.id, { label: e.target.value }))}
                     />
                     {(isNew || staffMode) && (
                       <button
                         type="button"
                         className="icon-button"
                         aria-label={`Remove ${section.label}`}
-                        onClick={() => removeSection(row.id, section)}
+                        onClick={() => {
+                          if (
+                            !originalNames.has(section.name) ||
+                            window.confirm(
+                              `Remove “${section.label}”? Counselors will no longer see what was written in it on profiles.`,
+                            )
+                          ) {
+                            dispatch(removeSection(row.id));
+                          }
+                        }}
                       >
                         ×
                       </button>
@@ -220,7 +170,7 @@ export const ProfilesEditor = ({
                       <input
                         type="text"
                         value={section.editLabel ?? ''}
-                        onChange={(e) => updateSection(row.id, { editLabel: e.target.value })}
+                        onChange={(e) => dispatch(updateSection(row.id, { editLabel: e.target.value }))}
                       />
                     </label>
                     <label className="field">
@@ -228,7 +178,7 @@ export const ProfilesEditor = ({
                       <input
                         type="text"
                         value={section.placeholder ?? ''}
-                        onChange={(e) => updateSection(row.id, { placeholder: e.target.value })}
+                        onChange={(e) => dispatch(updateSection(row.id, { placeholder: e.target.value }))}
                       />
                     </label>
                     {section.type === 'textarea' && (
@@ -239,7 +189,7 @@ export const ProfilesEditor = ({
                           min={2}
                           max={40}
                           value={section.rows ?? 20}
-                          onChange={(e) => updateSection(row.id, { rows: Number(e.target.value) })}
+                          onChange={(e) => dispatch(updateSection(row.id, { rows: Number(e.target.value) }))}
                         />
                       </label>
                     )}
@@ -249,7 +199,7 @@ export const ProfilesEditor = ({
                       type="checkbox"
                       checked={Boolean(section.isPII)}
                       disabled={!isNew && !staffMode}
-                      onChange={(e) => updateSection(row.id, { isPII: e.target.checked })}
+                      onChange={(e) => dispatch(updateSection(row.id, { isPII: e.target.checked }))}
                     />
                     <span>Could it identify someone? (protects what's written in it)</span>
                   </label>
@@ -264,7 +214,7 @@ export const ProfilesEditor = ({
             }}
           />
           <div className="option-actions">
-            <button type="button" className="secondary-button" onClick={addSection}>
+            <button type="button" className="secondary-button" onClick={() => dispatch(addSection())}>
               + Add a section
             </button>
           </div>
@@ -281,9 +231,9 @@ export const ProfilesEditor = ({
             length.
           </p>
           <SortableRows
-            rows={durations.rows}
+            rows={durations}
             labelOf={(duration) => duration.label}
-            onReorder={durations.commit}
+            onReorder={(next) => dispatch(writeDurations(next))}
             renderRow={(row) => (
               <div className="row-inline flag-duration-row">
                 {row.value.flag !== 'blocked' && <span className="badge">{row.value.flag}</span>}
@@ -291,18 +241,20 @@ export const ProfilesEditor = ({
                   type="text"
                   aria-label="Option name"
                   value={row.value.label}
-                  onChange={(e) => updateDuration(row.id, { label: e.target.value })}
+                  onChange={(e) => dispatch(updateDuration(row.id, { label: e.target.value }))}
                 />
                 <DurationInput
                   hours={Number(row.value.durationInHours)}
+                  unit={durationUnits[row.id] ?? 'hours'}
                   label={row.value.label}
-                  onChange={(hours) => updateDuration(row.id, { durationInHours: String(hours) })}
+                  onChangeAmount={(amount) => dispatch(setDurationAmount(row.id, amount))}
+                  onChangeUnit={(unit) => dispatch(setDurationUnit(row.id, unit))}
                 />
                 <button
                   type="button"
                   className="icon-button"
                   aria-label={`Remove ${row.value.label}`}
-                  onClick={() => durations.commit(durations.rows.filter((candidate) => candidate.id !== row.id))}
+                  onClick={() => dispatch(removeDuration(row.id))}
                 >
                   ×
                 </button>
@@ -310,7 +262,7 @@ export const ProfilesEditor = ({
             )}
           />
           <div className="option-actions">
-            <button type="button" className="secondary-button" onClick={addDuration}>
+            <button type="button" className="secondary-button" onClick={() => dispatch(addDuration())}>
               + Add a blocking option
             </button>
           </div>
@@ -323,15 +275,7 @@ export const ProfilesEditor = ({
                   <input
                     type="checkbox"
                     checked={Boolean(settings?.isPII)}
-                    onChange={(e) =>
-                      onChangeFiles((files) => ({
-                        ...files,
-                        [PROFILE_OVERVIEW_FILE]: {
-                          ...getProfileOverview(files),
-                          [key]: { ...getProfileOverview(files)?.[key], isPII: e.target.checked },
-                        },
-                      }))
-                    }
+onChange={(e) => dispatch(setOverviewIsPII(key, e.target.checked))}
                   />
                   <span>
                     The profile's <code>{key}</code> is personal data
@@ -351,12 +295,12 @@ export const ProfilesEditor = ({
           <div className="profile-preview-flags">
             <span className="field-label">Edit statuses</span>
             <ul aria-label="Status options">
-              {durations.rows.map((row) => (
+              {durations.map((row) => (
                 <li key={row.id}>{row.value.label}</li>
               ))}
             </ul>
           </div>
-          {sections.rows.map((row) => (
+          {sections.map((row) => (
             <div key={row.id} className="profile-preview-section">
               <div className="profile-preview-section-header">
                 <strong>{row.value.label}</strong>

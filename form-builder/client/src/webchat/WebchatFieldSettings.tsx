@@ -21,7 +21,6 @@
  */
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
 import {
-  changeWebchatFieldType,
   isRequired,
   WEBCHAT_FIELD_TYPE_INFO,
   WebchatField,
@@ -58,6 +57,8 @@ type Props = {
   };
   onChangeTargets: (targets: string[]) => void;
   onChange: (field: WebchatField) => void;
+  // Another kind of answer (worked out by the webchat slice)
+  onChangeType: (type: WebchatFieldType) => void;
   onEditLinked: (chain: string[]) => void;
   onRemove: () => void;
 };
@@ -74,6 +75,7 @@ export const WebchatFieldSettings = ({
   textIsShared,
   prepopulate,
   onChangeTargets,
+  onChangeType,
   onChange,
   onEditLinked,
   onRemove,
@@ -151,7 +153,7 @@ export const WebchatFieldSettings = ({
         {allowedTypes.length > 1 ? (
           <select
             value={field.type}
-            onChange={(e) => onChange(changeWebchatFieldType(field, e.target.value as WebchatFieldType))}
+            onChange={(e) => onChangeType(e.target.value as WebchatFieldType)}
           >
             {allowedTypes.map((type) => (
               <option key={type} value={type}>

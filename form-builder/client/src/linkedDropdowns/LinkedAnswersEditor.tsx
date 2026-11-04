@@ -18,15 +18,14 @@
  * Edits all the answers of a set of linked dropdowns, one column per level, like a file
  * browser: pick an answer on the left to see and edit the answers under it on the right.
  * Answers can also be replaced from a spreadsheet, or downloaded to edit in Excel.
+ *
+ * The answers being edited live in linkedDropdownsSlice.ts until they're saved: the editor that
+ * opened this one gets them in onSave.
  */
-import { useState } from 'react';
-import {
-  AnswerNode,
-  countByLevel,
-  getChildrenAtPath,
-  treeToRows,
-  updateChildrenAtPath,
-} from './linkedDropdowns';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { AnswerNode, countByLevel, treeToRows } from './linkedDropdowns';
+import { answersEditorClosed, answersEditorOpened, answersImported, importToggled, selectAnswersEditor } from './linkedDropdownsSlice';
 import { downloadExcel } from './spreadsheet';
 import { AnswerColumn } from '../forms/AnswerColumn';
 import { SpreadsheetImport } from './SpreadsheetImport';
@@ -56,21 +55,21 @@ export const LinkedAnswersEditor = ({
   onBack,
   onCancel,
 }: Props) => {
-  const [roots, setRoots] = useState(initialRoots);
-  // The selected answer's id in each column
-  const [selected, setSelected] = useState<string[]>([]);
-  const [importing, setImporting] = useState(false);
-  const [replacedByImport, setReplacedByImport] = useState(false);
-  const [changed, setChanged] = useState(false);
+  const dispatch = useAppDispatch();
+  const answers = useAppSelector(selectAnswersEditor);
+
+  // Starts with the answers it's given, and is closed when it goes away
+  useEffect(() => {
+    dispatch(answersEditorOpened(initialRoots));
+    return () => {
+      dispatch(answersEditorClosed());
+    };
+  }, [dispatch]);
+
+  if (!answers) return null;
+  const { roots, selected, importing, replacedByImport, changed } = answers;
   const depth = levelLabels.length;
   const counts = countByLevel(roots, depth);
-
-  const updateLevel = (level: number, answers: AnswerNode[]) => {
-    setRoots(updateChildrenAtPath(roots, selected.slice(0, level), () => answers));
-    setChanged(true);
-  };
-
-  const select = (level: number, id: string) => setSelected([...selected.slice(0, level), id]);
 
   const cancel = () => {
     if (!changed || window.confirm('Close without saving your changes to these answers?')) {
@@ -97,14 +96,8 @@ export const LinkedAnswersEditor = ({
           <SpreadsheetImport
             levelLabels={levelLabels}
             currentRoots={roots}
-            onImport={(imported) => {
-              setRoots(imported);
-              setSelected([]);
-              setReplacedByImport(true);
-              setChanged(true);
-              setImporting(false);
-            }}
-            onCancel={() => setImporting(false)}
+            onImport={(imported) => dispatch(answersImported(imported))}
+            onCancel={() => dispatch(importToggled(false))}
           />
         ) : (
           <>
@@ -113,7 +106,7 @@ export const LinkedAnswersEditor = ({
                 Pick an answer to see the answers under it. Changes here are saved to your draft
                 when you click “{saveLabel}”.
               </p>
-              <button type="button" className="secondary-button" onClick={() => setImporting(true)}>
+              <button type="button" className="secondary-button" onClick={() => dispatch(importToggled(true))}>
                 Import from a spreadsheet
               </button>
               <button
@@ -142,19 +135,12 @@ export const LinkedAnswersEditor = ({
             >
               {levelLabels.map((label, level) => (
                 <AnswerColumn
-                  // Fresh column state (search, inputs) when the parent selection changes
+                  // A column of answers under another answer starts afresh (as its typed text does)
                   key={`${level}-${selected[level - 1] ?? 'top'}`}
+                  level={level}
                   label={label}
                   previousLabel={levelLabels[level - 1]}
-                  answers={
-                    level === 0 || selected[level - 1]
-                      ? getChildrenAtPath(roots, selected.slice(0, level))
-                      : undefined
-                  }
-                  selectedId={selected[level]}
                   hasLevelBelow={level < depth - 1}
-                  onSelect={(id) => select(level, id)}
-                  onChange={(answers) => updateLevel(level, answers)}
                 />
               ))}
             </div>

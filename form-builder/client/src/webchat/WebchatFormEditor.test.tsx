@@ -23,6 +23,8 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
+import { Provider } from 'react-redux';
+import { createAppStore } from '../app/store';
 import {
   createHarness,
   formDefinitionsDir,
@@ -136,20 +138,23 @@ describe('filling in the contact form', () => {
 
 describe('webchat preview', () => {
   test('starts the chat only once required questions are answered, like the webchat', () => {
+    // What's filled in lives in the store
     render(
-      <WebchatPreview
-        strings={baseWebchatStrings('en-US')}
-        form={{
-          fields: [
-            {
-              type: 'checkbox',
-              name: 'terms',
-              label: 'I accept the <a href="https://example.org">terms</a>',
-              required: { value: true, message: 'You need to accept the terms.' },
-            },
-          ],
-        }}
-      />,
+      <Provider store={createAppStore()}>
+        <WebchatPreview
+          strings={baseWebchatStrings('en-US')}
+          form={{
+            fields: [
+              {
+                type: 'checkbox',
+                name: 'terms',
+                label: 'I accept the <a href="https://example.org">terms</a>',
+                required: { value: true, message: 'You need to accept the terms.' },
+              },
+            ],
+          }}
+        />
+      </Provider>,
     );
     const start = screen.getByRole('button', { name: 'Start chat' }) as HTMLButtonElement;
     expect(start.disabled).toBe(true);

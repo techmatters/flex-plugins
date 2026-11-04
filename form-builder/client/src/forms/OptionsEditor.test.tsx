@@ -19,7 +19,9 @@
 import { useState } from 'react';
 import { afterEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
+import { createAppStore } from '../app/store';
 import { OptionsEditor, parsePastedAnswers } from './OptionsEditor';
 
 afterEach(cleanup);
@@ -44,10 +46,12 @@ describe('pasting answers', () => {
   });
 });
 
+// The editor's own state lives in the store; the answers are the field's, kept here
 const Harness = ({ initial, staffMode = false }: { initial: SelectOption[]; staffMode?: boolean }) => {
+  const [store] = useState(() => createAppStore());
   const [options, setOptions] = useState(initial);
   return (
-    <>
+    <Provider store={store}>
       <OptionsEditor
         options={options}
         originalValues={new Set(initial.map((option) => String(option.value)))}
@@ -55,7 +59,7 @@ const Harness = ({ initial, staffMode = false }: { initial: SelectOption[]; staf
         onChange={setOptions}
       />
       <output data-testid="options">{JSON.stringify(options)}</output>
-    </>
+    </Provider>
   );
 };
 const currentOptions = () => JSON.parse(screen.getByTestId('options').textContent!) as SelectOption[];

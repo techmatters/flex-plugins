@@ -18,8 +18,9 @@
  * One level of a linked dropdown in the column browser: the answers under whatever is
  * selected in the column to its left. Long lists are searchable and only the first few
  * hundred matches are drawn, so huge lists (tens of thousands of answers) stay fast.
+ *
+ * The answers and what's typed in the column live in linkedDropdownsSlice.ts.
  */
-import { useState } from 'react';
 import {
   closestCenter,
   DndContext,
@@ -30,27 +31,38 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import {
-  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { AnswerNode, countDescendants, newAnswerNode } from '../linkedDropdowns/linkedDropdowns';
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { AnswerNode, countDescendants } from '../linkedDropdowns/linkedDropdowns';
+import {
+  addPastedAnswers,
+  addTypedAnswer,
+  answerSelected,
+  answersAtLevel,
+  ColumnInputs,
+  columnInputsChanged,
+  finishRenaming,
+  moveAnswer,
+  removeAnswer,
+  renamingChanged,
+  selectAnswersEditor,
+  sortAnswers,
+} from '../linkedDropdowns/linkedDropdownsSlice';
 
 const MAX_ROWS_SHOWN = 300;
 
 type Props = {
+  // 0 for the top level
+  level: number;
   label: string;
   // Label of the level to the left, used when nothing is selected there yet
   previousLabel?: string;
-  // undefined when nothing is selected in the column to the left
-  answers?: AnswerNode[];
-  selectedId?: string;
   hasLevelBelow: boolean;
-  onSelect: (id: string) => void;
-  onChange: (answers: AnswerNode[]) => void;
 };
 
 const AnswerRow = ({
@@ -58,28 +70,31 @@ const AnswerRow = ({
   selected,
   hasLevelBelow,
   draggable,
+  editing,
   onSelect,
-  onRename,
+  onStartRename,
+  onEdit,
+  onFinishEditing,
+  onCancelEditing,
   onRemove,
 }: {
   answer: AnswerNode;
   selected: boolean;
   hasLevelBelow: boolean;
   draggable: boolean;
+  // The new name being typed, while it's being renamed
+  editing?: string;
   onSelect: () => void;
-  onRename: (label: string) => void;
+  onStartRename: () => void;
+  onEdit: (text: string) => void;
+  onFinishEditing: () => void;
+  onCancelEditing: () => void;
   onRemove: () => void;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: answer.id,
     disabled: !draggable,
   });
-  const [editing, setEditing] = useState<string>();
-
-  const finishEditing = () => {
-    if (editing !== undefined && editing.trim() && editing !== answer.label) onRename(editing);
-    setEditing(undefined);
-  };
 
   return (
     <li
@@ -122,11 +137,11 @@ const AnswerRow = ({
           value={editing}
           autoFocus
           aria-label="Answer"
-          onChange={(e) => setEditing(e.target.value)}
-          onBlur={finishEditing}
+          onChange={(e) => onEdit(e.target.value)}
+          onBlur={onFinishEditing}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') finishEditing();
-            if (e.key === 'Escape') setEditing(undefined);
+            if (e.key === 'Enter') onFinishEditing();
+            if (e.key === 'Escape') onCancelEditing();
           }}
         />
       )}
@@ -134,7 +149,7 @@ const AnswerRow = ({
         type="button"
         className="icon-button"
         aria-label={`Rename ${answer.label}`}
-        onClick={() => setEditing(answer.label)}
+        onClick={onStartRename}
       >
         ✎
       </button>
@@ -150,19 +165,15 @@ const AnswerRow = ({
   );
 };
 
-export const AnswerColumn = ({
-  label,
-  previousLabel,
-  answers,
-  selectedId,
-  hasLevelBelow,
-  onSelect,
-  onChange,
-}: Props) => {
-  const [search, setSearch] = useState('');
-  const [newLabel, setNewLabel] = useState('');
-  const [bulkText, setBulkText] = useState<string>();
-  const [message, setMessage] = useState<string>();
+export const AnswerColumn = ({ level, label, previousLabel, hasLevelBelow }: Props) => {
+  const dispatch = useAppDispatch();
+  const editor = useAppSelector(selectAnswersEditor);
+  // undefined when nothing is selected in the column to the left
+  const answers = editor && answersAtLevel(editor, level);
+  const selectedId = editor?.selected[level];
+  const renaming = editor?.renaming;
+  const { search, newLabel, bulkText, message } = editor?.columns[level] ?? { search: '', newLabel: '' };
+  const setInputs = (inputs: Partial<ColumnInputs>) => dispatch(columnInputsChanged({ level, inputs }));
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -191,35 +202,6 @@ export const AnswerColumn = ({
   // Reordering a filtered or cut-down list would be confusing, so drag only on the full list
   const draggable = !query && answers.length <= MAX_ROWS_SHOWN;
 
-  const addLabels = (labels: string[]) => {
-    const existing = new Set(answers.map((answer) => answer.label.trim().toLowerCase()));
-    const toAdd: string[] = [];
-    const skipped: string[] = [];
-    labels
-      .map((text) => text.trim())
-      .filter(Boolean)
-      .forEach((text) => {
-        if (existing.has(text.toLowerCase())) skipped.push(text);
-        else {
-          existing.add(text.toLowerCase());
-          toAdd.push(text);
-        }
-      });
-    if (toAdd.length) onChange([...answers, ...toAdd.map((text) => newAnswerNode(text))]);
-    setMessage(skipped.length ? `Already in the list: ${skipped.slice(0, 3).join(', ')}` : undefined);
-  };
-
-  const rename = (id: string, text: string) =>
-    onChange(
-      answers.map((answer) => {
-        if (answer.id !== id) return answer;
-        // Answers that already existed keep their saved value, so past contacts still match
-        return answer.existing
-          ? { ...answer, label: text }
-          : { ...answer, label: text, value: text.trim() };
-      }),
-    );
-
   const remove = (answer: AnswerNode) => {
     const below = countDescendants(answer);
     if (
@@ -228,19 +210,12 @@ export const AnswerColumn = ({
     ) {
       return;
     }
-    onChange(answers.filter((other) => other.id !== answer.id));
+    dispatch(removeAnswer(level, answer.id));
   };
-
-  const sortAlphabetically = () =>
-    onChange(
-      [...answers].sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true })),
-    );
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
     if (!over || active.id === over.id) return;
-    const oldIndex = answers.findIndex((answer) => answer.id === active.id);
-    const newIndex = answers.findIndex((answer) => answer.id === over.id);
-    onChange(arrayMove(answers, oldIndex, newIndex));
+    dispatch(moveAnswer(level, String(active.id), String(over.id)));
   };
 
   return (
@@ -249,7 +224,7 @@ export const AnswerColumn = ({
         <strong>{label}</strong>
         <span className="muted">{answers.length.toLocaleString()}</span>
         {answers.length > 1 && (
-          <button type="button" className="link-button" onClick={sortAlphabetically}>
+          <button type="button" className="link-button" onClick={() => dispatch(sortAnswers(level))}>
             Sort A–Z
           </button>
         )}
@@ -262,7 +237,7 @@ export const AnswerColumn = ({
           placeholder={`Search ${label.toLowerCase()}`}
           aria-label={`Search ${label}`}
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => setInputs({ search: e.target.value })}
         />
       )}
 
@@ -276,8 +251,12 @@ export const AnswerColumn = ({
                 selected={answer.id === selectedId}
                 hasLevelBelow={hasLevelBelow}
                 draggable={draggable}
-                onSelect={() => onSelect(answer.id)}
-                onRename={(text) => rename(answer.id, text)}
+                editing={renaming?.id === answer.id ? renaming.text : undefined}
+                onSelect={() => dispatch(answerSelected({ level, id: answer.id }))}
+                onStartRename={() => dispatch(renamingChanged({ id: answer.id, text: answer.label }))}
+                onEdit={(text) => dispatch(renamingChanged({ id: answer.id, text }))}
+                onFinishEditing={() => dispatch(finishRenaming(level))}
+                onCancelEditing={() => dispatch(renamingChanged(undefined))}
                 onRemove={() => remove(answer)}
               />
             ))}
@@ -297,8 +276,7 @@ export const AnswerColumn = ({
           className="answer-add"
           onSubmit={(e) => {
             e.preventDefault();
-            addLabels([newLabel]);
-            setNewLabel('');
+            dispatch(addTypedAnswer(level));
           }}
         >
           <input
@@ -306,7 +284,7 @@ export const AnswerColumn = ({
             value={newLabel}
             placeholder={`Add a ${label.toLowerCase()}`}
             aria-label={`Add a ${label}`}
-            onChange={(e) => setNewLabel(e.target.value)}
+            onChange={(e) => setInputs({ newLabel: e.target.value })}
           />
           <button type="submit" className="secondary-button" disabled={!newLabel.trim()}>
             Add
@@ -320,27 +298,24 @@ export const AnswerColumn = ({
             autoFocus
             aria-label={`${label} answers, one per line`}
             placeholder="One answer per line"
-            onChange={(e) => setBulkText(e.target.value)}
+            onChange={(e) => setInputs({ bulkText: e.target.value })}
           />
           <div className="option-actions">
             <button
               type="button"
               className="secondary-button"
-              onClick={() => {
-                addLabels(bulkText.split('\n'));
-                setBulkText(undefined);
-              }}
+              onClick={() => dispatch(addPastedAnswers(level))}
             >
               Add these
             </button>
-            <button type="button" className="link-button" onClick={() => setBulkText(undefined)}>
+            <button type="button" className="link-button" onClick={() => setInputs({ bulkText: undefined })}>
               Cancel
             </button>
           </div>
         </div>
       )}
       {bulkText === undefined && (
-        <button type="button" className="link-button answer-paste" onClick={() => setBulkText('')}>
+        <button type="button" className="link-button answer-paste" onClick={() => setInputs({ bulkText: '' })}>
           Paste several at once
         </button>
       )}

@@ -16,16 +16,26 @@
 
 /**
  * Replaces all the answers of a linked dropdown with rows from a spreadsheet: pasted cells,
- * a CSV file or an Excel file. Shows a preview and a summary before anything changes.
+ * a CSV file or an Excel file. Shows a preview and a summary before anything changes. What's
+ * pasted or read is kept in linkedDropdownsSlice.ts while it's open.
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
+import { useAppDispatch, useAppSelector } from '../app/store';
 import {
   AnswerNode,
   countByLevel,
   makeKeyValuesUnique,
   rowsToTree,
 } from './linkedDropdowns';
-import { parseDelimitedText, readSpreadsheetFile, SPREADSHEET_FILE_TYPES } from './spreadsheet';
+import { parseDelimitedText, SPREADSHEET_FILE_TYPES } from './spreadsheet';
+import {
+  acceptSpreadsheetRows,
+  readSpreadsheet,
+  selectSpreadsheetImport,
+  spreadsheetImportChanged,
+  spreadsheetImportClosed,
+  spreadsheetImportOpened,
+} from './linkedDropdownsSlice';
 
 type Props = {
   levelLabels: string[];
@@ -36,40 +46,19 @@ type Props = {
 
 const PREVIEW_ROWS = 6;
 
-// A first row that repeats the level names is treated as column headings
-const looksLikeHeader = (row: string[] | undefined, levelLabels: string[]) =>
-  Boolean(
-    row &&
-      levelLabels.some((label, index) =>
-        String(row[index] ?? '')
-          .trim()
-          .toLowerCase()
-          .includes(label.trim().toLowerCase().split(' ')[0]),
-      ),
-  );
-
 export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCancel }: Props) => {
-  const [pastedText, setPastedText] = useState('');
-  const [rows, setRows] = useState<string[][]>();
-  const [source, setSource] = useState<string>();
-  const [firstRowIsHeader, setFirstRowIsHeader] = useState(true);
-  const [error, setError] = useState<string>();
+  const dispatch = useAppDispatch();
+  const state = useAppSelector(selectSpreadsheetImport);
+  const { pastedText, rows, source, firstRowIsHeader, error } = state ?? { pastedText: '', firstRowIsHeader: true };
   const depth = levelLabels.length;
 
-  const acceptRows = (newRows: string[][], from: string) => {
-    setRows(newRows);
-    setSource(from);
-    setFirstRowIsHeader(looksLikeHeader(newRows[0], levelLabels));
-    setError(undefined);
-  };
-
-  const readFile = async (file: File) => {
-    try {
-      acceptRows(await readSpreadsheetFile(file), file.name);
-    } catch (err) {
-      setError(`Couldn't read ${file.name}: ${(err as Error).message}`);
-    }
-  };
+  // Starts empty, and is forgotten when it goes away
+  useEffect(() => {
+    dispatch(spreadsheetImportOpened());
+    return () => {
+      dispatch(spreadsheetImportClosed());
+    };
+  }, [dispatch]);
 
   const dataRows = useMemo(
     () => (rows ? (firstRowIsHeader ? rows.slice(1) : rows) : []),
@@ -84,6 +73,8 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
   }, [dataRows, depth, currentRoots]);
 
   const columnCount = Math.max(0, ...dataRows.map((row) => row.length));
+
+  if (!state) return null;
 
   const confirmImport = () => {
     if (!result) return;
@@ -129,7 +120,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
             <textarea
               rows={8}
               value={pastedText}
-              onChange={(e) => setPastedText(e.target.value)}
+              onChange={(e) => dispatch(spreadsheetImportChanged({ pastedText: e.target.value }))}
               placeholder={levelLabels.join('\t')}
             />
           </label>
@@ -138,7 +129,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
               type="button"
               className="secondary-button"
               disabled={!pastedText.trim()}
-              onClick={() => acceptRows(parseDelimitedText(pastedText), 'the pasted cells')}
+              onClick={() => dispatch(acceptSpreadsheetRows(parseDelimitedText(pastedText), 'the pasted cells', levelLabels))}
             >
               Use pasted cells
             </button>
@@ -150,7 +141,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
                 accept={SPREADSHEET_FILE_TYPES}
                 onChange={(e) => {
                   const file = e.target.files?.[0];
-                  if (file) readFile(file);
+                  if (file) dispatch(readSpreadsheet(file, levelLabels));
                 }}
               />
             </label>
@@ -160,7 +151,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
         <>
           <p>
             Read <strong>{rows.length.toLocaleString()}</strong> rows from {source}.{' '}
-            <button type="button" className="link-button" onClick={() => setRows(undefined)}>
+            <button type="button" className="link-button" onClick={() => dispatch(spreadsheetImportChanged({ rows: undefined }))}>
               Use something else
             </button>
           </p>
@@ -168,7 +159,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
             <input
               type="checkbox"
               checked={firstRowIsHeader}
-              onChange={(e) => setFirstRowIsHeader(e.target.checked)}
+              onChange={(e) => dispatch(spreadsheetImportChanged({ firstRowIsHeader: e.target.checked }))}
             />
             <span>The first row has column names (don't import it)</span>
           </label>

@@ -18,35 +18,13 @@
  * Everything for one loaded helpline: navigation, the draft, editing, previews and export.
  * Rendered with a code/version key so switching helpline starts fresh.
  */
-import {
-  CATEGORIES_FILE,
-  caseSectionTarget,
-  CONTACT_TABS,
-  isContactTab,
-  getCaseSections,
-  getCaseSectionSplitFormAt,
-  getContactSplitFormAt,
-  getForm,
-  getHelplineName,
-  getReferenceData,
-} from '../common/definitions';
-import { validateSections } from '../chatsAndCalls/sections';
+import { CATEGORIES_FILE, CONTACT_TABS, getCaseSections, getCaseSectionSplitFormAt, getForm } from '../common/definitions';
 import { useAppDispatch, useAppSelector } from '../app/store';
-import { selectActingAsStaff, selectUser } from '../app/sessionSlice';
-import type { DefinitionFileMap } from '../common/definitions';
-import {
-  applyDraft,
-  editDraftFiles,
-  noticeDismissed,
-  SaveState,
-  selectChangedPaths,
-  selectDraft,
-  submitDraft,
-} from '../drafts/draftSlice';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import { noticeDismissed, SaveState, selectChangedPaths, selectDraft } from '../drafts/draftSlice';
 import {
   discardWorkspaceDraft,
   reloadHelpline,
-  reviewClosed,
   reviewOpened,
   sameView,
   sectionPreviewClosed,
@@ -54,15 +32,12 @@ import {
   selectCaseTargets,
   selectDefinitions,
   selectIssuesByTab,
-  selectReviewIssues,
   selectSectionIssues,
   selectWorkspace,
-  tryItOutClosed,
   tryItOutOpened,
   View,
   viewSelected,
 } from './workspaceSlice';
-import { validateContactTab, ValidationIssue } from '../forms/validation';
 import { FlexDesktopPreview, PreviewFocus } from '../aseloPreview/FlexDesktopPreview';
 import { AseloSectionPreview } from '../aseloPreview/AseloSectionPreview';
 import { ContactFormEditor } from '../forms/ContactFormEditor';
@@ -75,12 +50,10 @@ import { FeaturesEditor } from '../serviceConfig/FeaturesEditor';
 import { ServiceConfigEditor } from '../serviceConfig/ServiceConfigEditor';
 import { ProfilesEditor } from '../profiles/ProfilesEditor';
 import { hasProfiles } from '../profiles/profiles';
-import { getFeatures } from '../serviceConfig/helplineFeatures';
 import { CannedResponsesEditor } from '../chatsAndCalls/CannedResponsesEditor';
 import { MessagesEditor } from '../chatsAndCalls/MessagesEditor';
 import { WebchatFormEditor } from '../webchat/WebchatFormEditor';
 import { PRE_ENGAGEMENT_FILE } from '../webchat/webchat';
-
 
 // Defined outside the workspace so its buttons survive re-renders (e.g. when the draft loads)
 const NavItem = ({
@@ -125,21 +98,14 @@ export const HelplineWorkspace = () => {
   const { view, tryItOut, reviewing, previewingSection, editorRevision } = useAppSelector(selectWorkspace);
   const issuesByTab = useAppSelector(selectIssuesByTab);
   const sectionIssues = useAppSelector(selectSectionIssues);
-  const reviewIssues = useAppSelector(selectReviewIssues);
   const caseTargets = useAppSelector(selectCaseTargets);
   // Show the settings only Aselo staff may change; Aselo staff apply, helpline staff submit
   const staffMode = useAppSelector(selectActingAsStaff);
   const canApply = staffMode;
-  // False when deployed without the GitHub App: Aselo staff download the changes and open the PR
-  const applyInBuilder = useAppSelector(selectUser)?.applyInBuilder !== false;
 
-  const { code, version } = definitions;
   const { files, original: originalFiles } = draft;
   const setView = (target: View) => dispatch(viewSelected(target));
   const setTryItOut = (preview: { focus: PreviewFocus; tab?: string }) => dispatch(tryItOutOpened(preview));
-  // Until each editor dispatches its own actions, its changes go through the draft
-  const onChangeFiles = (updater: (current: DefinitionFileMap) => DefinitionFileMap) =>
-    dispatch(editDraftFiles(updater));
 
   const sectionErrorCount = (prefix: string) =>
     sectionIssues.filter((issue) => issue.severity === 'error' && issue.message.startsWith(prefix))
@@ -147,7 +113,6 @@ export const HelplineWorkspace = () => {
   const errorCount = (tabKey: string) =>
     issuesByTab[tabKey]?.filter((issue) => issue.severity === 'error').length ?? 0;
 
-  const referenceData = getReferenceData(files);
   const caseSections = getCaseSections(files);
   const changeCount = changedPaths.length;
 
@@ -173,16 +138,7 @@ export const HelplineWorkspace = () => {
           </button>
           <span className="muted">See the draft form in the counselor's screen and fill it in.</span>
         </div>
-        <ContactFormEditor
-          key={`${tab.key}-${editorRevision}`}
-          tab={tab}
-          draftFiles={files}
-          originalFiles={originalFiles}
-          staffMode={staffMode}
-          helplineLanguage={definitions.helplineLanguage}
-          issues={issuesByTab[tab.key] ?? []}
-          onChangeFiles={onChangeFiles}
-        />
+        <ContactFormEditor key={`${tab.key}-${editorRevision}`} tab={tab} />
       </>
     );
   };
@@ -194,54 +150,22 @@ export const HelplineWorkspace = () => {
     const editorKey = `${view.kind}-${editorRevision}`;
     if (view.kind === 'callTypes') {
       return (
-        <CallTypesEditor
-          key={editorKey}
-          draftFiles={files}
-          originalFiles={originalFiles}
-          staffMode={staffMode}
-          helplineLanguage={definitions.helplineLanguage}
-          onChangeFiles={onChangeFiles}
-          onTryItOut={() => setTryItOut({ focus: 'callTypes' })}
-        />
+        <CallTypesEditor key={editorKey} />
       );
     }
     if (view.kind === 'cannedResponses') {
       return (
-        <CannedResponsesEditor
-          key={editorKey}
-          draftFiles={files}
-          helplineLanguage={definitions.helplineLanguage}
-          enabled={getFeatures(files, definitions.serviceConfigDefaults)?.enableCannedResponses ?? definitions.featureFlags?.enable_canned_responses !== false}
-          onChangeFiles={onChangeFiles}
-          onTryItOut={() => setTryItOut({ focus: 'cannedResponses' })}
-        />
+        <CannedResponsesEditor key={editorKey} />
       );
     }
     if (view.kind === 'messages') {
       return (
-        <MessagesEditor
-          key={editorKey}
-          draftFiles={files}
-          helplineName={getHelplineName(files, code)}
-          onChangeFiles={onChangeFiles}
-        />
+        <MessagesEditor key={editorKey} />
       );
     }
     if (view.kind === 'webchat') {
       return (
-        <WebchatFormEditor
-          key={editorKey}
-          draftFiles={files}
-          originalFiles={originalFiles}
-          staffMode={staffMode}
-          settings={definitions.webchat}
-          featureFlags={{
-            ...definitions.featureFlags,
-            ...(getFeatures(files, definitions.serviceConfigDefaults) ? { use_prepopulate_mappings: getFeatures(files, definitions.serviceConfigDefaults)!.usePrepopulateMappings } : {}),
-          }}
-          issues={sectionIssues.filter((issue) => issue.message.startsWith('Webchat form'))}
-          onChangeFiles={onChangeFiles}
-        />
+        <WebchatFormEditor key={editorKey} />
       );
     }
     if (view.kind === 'categories') {
@@ -251,65 +175,27 @@ export const HelplineWorkspace = () => {
     }
     if (view.kind === 'profiles') {
       return (
-        <ProfilesEditor
-          key={editorKey}
-          draftFiles={files}
-          originalFiles={originalFiles}
-          staffMode={staffMode}
-          profilesEnabled={getFeatures(files, definitions.serviceConfigDefaults)?.enableClientProfiles !== false}
-          issues={sectionIssues.filter((issue) => issue.message.startsWith('Client profiles'))}
-          onChangeFiles={onChangeFiles}
-        />
+        <ProfilesEditor key={editorKey} />
       );
     }
     if (view.kind === 'features' && canApply) {
       return (
-        <FeaturesEditor
-          key={editorKey}
-          draftFiles={files}
-          originalFiles={originalFiles}
-          canChange={canApply}
-          defaults={definitions.serviceConfigDefaults}
-          onChangeFiles={onChangeFiles}
-        />
+        <FeaturesEditor key={editorKey} />
       );
     }
     if (view.kind === 'serviceConfig' && canApply) {
       return (
-        <ServiceConfigEditor
-          key={editorKey}
-          code={definitions.code}
-          draftFiles={files}
-          originalFiles={originalFiles}
-          defaults={definitions.serviceConfigDefaults}
-          onChangeFiles={onChangeFiles}
-        />
+        <ServiceConfigEditor key={editorKey} />
       );
     }
     if (view.kind === 'caseSections') {
       return (
-        <CaseSectionsEditor
-          key={editorKey}
-          draftFiles={files}
-          originalFiles={originalFiles}
-          staffMode={staffMode}
-          helplineLanguage={definitions.helplineLanguage}
-          issues={sectionIssues.filter((issue) => issue.message.startsWith('Case sections'))}
-          onChangeFiles={onChangeFiles}
-          onOpenForm={(sectionKey) => setView({ kind: 'caseSection', sectionKey })}
-        />
+        <CaseSectionsEditor key={editorKey} />
       );
     }
     if (view.kind === 'caseStatus') {
       return (
-        <CaseStatusEditor
-          key={editorKey}
-          draftFiles={files}
-          originalFiles={originalFiles}
-          staffMode={staffMode}
-          issues={sectionIssues.filter((issue) => issue.message.startsWith('Case statuses'))}
-          onChangeFiles={onChangeFiles}
-        />
+        <CaseStatusEditor key={editorKey} />
       );
     }
     // e.g. Features after switching to "View as helpline staff"
@@ -325,16 +211,7 @@ export const HelplineWorkspace = () => {
           </button>
           <span className="muted">See the draft form as counselors see it when they add a {target.title} to a case.</span>
         </div>
-        <ContactFormEditor
-          key={`case-${target.key}-${editorRevision}`}
-          tab={target}
-          draftFiles={files}
-          originalFiles={originalFiles}
-          staffMode={staffMode}
-          helplineLanguage={definitions.helplineLanguage}
-          issues={issuesByTab[`case:${target.key}`] ?? []}
-          onChangeFiles={onChangeFiles}
-        />
+        <ContactFormEditor key={`case-${target.key}-${editorRevision}`} tab={target} />
         {previewingSection === target.key && (
           <div className="modal-backdrop" role="presentation" onClick={() => dispatch(sectionPreviewClosed())}>
             <div
@@ -530,31 +407,11 @@ export const HelplineWorkspace = () => {
       </div>
 
       {tryItOut && (
-        <FlexDesktopPreview
-          definitions={definitions}
-          files={files}
-          focus={tryItOut.focus}
-          initialTab={tryItOut.tab as never}
-          onClose={() => dispatch(tryItOutClosed())}
-        />
+        <FlexDesktopPreview />
       )}
 
       {reviewing && (
-        <ReviewChanges
-          code={code}
-          version={version}
-          originalFiles={originalFiles}
-          draftFiles={files}
-          changedPaths={changedPaths}
-          mode={canApply ? 'apply' : 'submit'}
-          applyInBuilder={applyInBuilder}
-          alreadySubmitted={draft.meta?.status === 'submitted'}
-          onSubmit={() => dispatch(submitDraft())}
-          onApply={(description) => dispatch(applyDraft(description))}
-          issues={reviewIssues}
-          webchatDefaultLocale={definitions.webchat?.defaultLocale}
-          onClose={() => dispatch(reviewClosed())}
-        />
+        <ReviewChanges />
       )}
     </>
   );
