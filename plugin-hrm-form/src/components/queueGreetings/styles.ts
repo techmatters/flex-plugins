@@ -47,10 +47,6 @@ export const GuidancePill = styled('span')`
 GuidancePill.displayName = 'GuidancePill';
 
 export const GuidancePopoverContainer = styled('section')`
-  position: absolute;
-  right: 24px;
-  bottom: 116px;
-  z-index: 10;
   box-sizing: border-box;
   width: 315px;
   padding: 24px 24px 24px 28px;

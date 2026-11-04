@@ -70,13 +70,8 @@ describe('QueueGreetingPill', () => {
 });
 
 describe('QueueGreetingPopover', () => {
-  const tasks = new Map([
-    ['WT1', taskFromQueue('WT1', 'greetedQueue')],
-    ['WT2', taskFromQueue('WT2', 'otherQueue')],
-  ]);
-
-  test('shows the greeting for the selected task until it is dismissed', () => {
-    renderWithStore(<QueueGreetingPopover tasks={tasks} selectedTaskSid="WT1" />);
+  test('shows the greeting for the task until it is dismissed', () => {
+    renderWithStore(<QueueGreetingPopover task={taskFromQueue('WT1', 'greetedQueue')} />);
 
     expect(screen.getByText('Greeted queue title')).toBeInTheDocument();
     expect(screen.getByText('Hello, greeted queue.')).toBeInTheDocument();
@@ -86,8 +81,8 @@ describe('QueueGreetingPopover', () => {
     expect(screen.queryByText('Greeted queue title')).not.toBeInTheDocument();
   });
 
-  test('renders nothing when the selected task comes from a queue without a greeting', () => {
-    renderWithStore(<QueueGreetingPopover tasks={tasks} selectedTaskSid="WT2" />);
+  test('renders nothing when the task comes from a queue without a greeting', () => {
+    renderWithStore(<QueueGreetingPopover task={taskFromQueue('WT2', 'otherQueue')} />);
 
     expect(screen.queryByText('Greeted queue title')).not.toBeInTheDocument();
   });
