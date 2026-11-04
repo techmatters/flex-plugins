@@ -44,8 +44,9 @@ export const GuidancePillContainer = styled('div')<GuidancePillContainerProps>`
 `;
 GuidancePillContainer.displayName = 'GuidancePillContainer';
 
-export const GuidancePill = styled('span')`
+export const GuidancePill = styled('button')`
   display: inline-block;
+  cursor: pointer;
   margin: 0 0 12px 16px;
   padding: 4px 8px;
   background-color: ${guidanceBackground};
@@ -60,6 +61,12 @@ export const GuidancePill = styled('span')`
   white-space: nowrap;
 `;
 GuidancePill.displayName = 'GuidancePill';
+
+export const GuidancePopoverAnchor = styled('div')`
+  width: 100%;
+  height: 0;
+`;
+GuidancePopoverAnchor.displayName = 'GuidancePopoverAnchor';
 
 export const GuidancePopoverContainer = styled('section')`
   box-sizing: border-box;

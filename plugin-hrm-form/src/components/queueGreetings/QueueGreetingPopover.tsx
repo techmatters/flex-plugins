@@ -15,16 +15,19 @@
  */
 
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ITask, Template } from '@twilio/flex-ui';
 import Close from '@material-ui/icons/Close';
 import Popper from '@material-ui/core/Popper';
 
 import { RootState } from '../../states';
 import { selectQueueGreeting } from '../../states/configuration/selectDefinitions';
+import { selectIsQueueGreetingOpen } from '../../states/routing/getRoute';
+import { newSetQueueGreetingDismissedAction } from '../../states/routing/actions';
 import { HeaderCloseButton } from '../../styles/buttons';
 import { HiddenText } from '../../styles';
 import {
+  GuidancePopoverAnchor,
   GuidancePopoverContainer,
   GuidancePopoverContent,
   GuidancePopoverHeader,
@@ -33,33 +36,35 @@ import {
 
 const MAX_TITLE_LENGTH = 60;
 const MAX_CONTENT_LENGTH = 300;
-const GAP_ABOVE_CALL_ACTIONS = 8;
+// Keeps the popover clear of the call actions at the bottom of the task canvas
+const DISTANCE_FROM_CANVAS_BOTTOM = 116;
 
 type Props = {
   task?: ITask;
 };
 
 /**
- * Shows the greeting configured for the task's queue above the call actions, until the counsellor dismisses it for that task.
- * The popover is rendered in a portal and positioned against an anchor placed at the start of the call actions.
+ * Shows the greeting configured for the task's queue near the bottom of the task canvas.
+ * The popover is rendered in a portal, positioned against an anchor placed at the bottom of the task canvas.
  */
 const QueueGreetingPopover: React.FC<Props> = ({ task }) => {
-  const [dismissedTaskSids, setDismissedTaskSids] = useState<string[]>([]);
-  const [anchorElement, setAnchorElement] = useState<HTMLSpanElement | null>(null);
+  const dispatch = useDispatch();
+  const [anchorElement, setAnchorElement] = useState<HTMLDivElement | null>(null);
   const queueGreeting = useSelector((state: RootState) => selectQueueGreeting(state, task?.queueName));
+  const isOpen = useSelector((state: RootState) => Boolean(task) && selectIsQueueGreetingOpen(state, task));
 
-  if (!queueGreeting || dismissedTaskSids.includes(task.sid)) return null;
+  if (!queueGreeting) return null;
 
-  const dismiss = () => setDismissedTaskSids(sids => [...sids, task.sid]);
+  const dismiss = () => dispatch(newSetQueueGreetingDismissedAction(task.taskSid, true));
 
   return (
     <>
-      <span ref={setAnchorElement} />
+      <GuidancePopoverAnchor ref={setAnchorElement} />
       <Popper
-        open={Boolean(anchorElement)}
+        open={isOpen && Boolean(anchorElement)}
         anchorEl={anchorElement}
-        placement="top-start"
-        modifiers={{ offset: { offset: `0, ${GAP_ABOVE_CALL_ACTIONS}` } }}
+        placement="top"
+        modifiers={{ offset: { offset: `0, ${DISTANCE_FROM_CANVAS_BOTTOM}` } }}
         style={{ zIndex: 10 }}
       >
         <GuidancePopoverContainer aria-labelledby="queue-greeting-title">
