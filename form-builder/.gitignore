@@ -1,10 +1,10 @@
 node_modules/
 dist/
-drafts/
+/drafts/
 dist-lambda/
-boards/
-people/
-recordings/
+/boards/
+/people/
+/recordings/
 /routing/
 /chatbots-designs/
 /help-questions/
