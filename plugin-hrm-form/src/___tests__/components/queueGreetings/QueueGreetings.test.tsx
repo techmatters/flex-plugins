@@ -74,13 +74,14 @@ describe('QueueGreetingPill', () => {
     expect(screen.getByText('A pill text longer t')).toBeInTheDocument();
   });
 
-  test('has a white background only when its task is selected', () => {
+  // jsdom applies :hover rules to computed styles, so the background can't be asserted here; the outline is checked instead
+  test('continues the task outline only when its task is selected', () => {
     renderWithStore(<QueueGreetingPill task={taskFromQueue('WR1', 'greetedQueue')} selectedTaskSid="WR1" />);
     renderWithStore(<QueueGreetingPill task={taskFromQueue('WR2', 'greetedQueue')} selectedTaskSid="WR1" />);
 
     const [selectedPill, unselectedPill] = screen.getAllByText('A pill text longer t');
-    expect(selectedPill.parentElement).toHaveStyle('background-color: rgb(255, 255, 255)');
-    expect(unselectedPill.parentElement).toHaveStyle('background-color: inherit');
+    expect(selectedPill.parentElement).toHaveStyle('margin-top: -2px');
+    expect(unselectedPill.parentElement).not.toHaveStyle('margin-top: -2px');
   });
 
   test('clicking it reopens the greeting and selects its task', () => {
