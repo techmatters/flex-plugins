@@ -137,8 +137,8 @@ function createState(
       },
       routing: {
         tasks: {
-          'standalone-task-sid': [route],
-          [taskId]: [route],
+          'standalone-task-sid': { routeStack: [route] },
+          [taskId]: { routeStack: [route] },
         },
       },
       searchContacts: {

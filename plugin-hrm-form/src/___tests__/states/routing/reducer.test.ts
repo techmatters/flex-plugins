@@ -61,7 +61,7 @@ beforeEach(() => {
 describe('test reducer (specific actions)', () => {
   const stateWithTask: RoutingState = {
     tasks: {
-      'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+      'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
       [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
     },
     dismissedQueueGreetings: {},
@@ -77,7 +77,7 @@ describe('test reducer (specific actions)', () => {
   test('should handle CREATE_CONTACT_ACTION_FULFILLED', async () => {
     const expected = {
       tasks: {
-        'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+        'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
       dismissedQueueGreetings: {},
@@ -110,7 +110,7 @@ describe('test reducer (specific actions)', () => {
 
   const stateWithRouteStack = (baseRoutes: AppRoutes[]): RoutingState => ({
     tasks: {
-      'WT-task1': baseRoutes,
+      'WT-task1': { routeStack: baseRoutes },
       [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
     },
   });
@@ -156,13 +156,15 @@ describe('test reducer (specific actions)', () => {
     describe('When modal is open', () => {
       const stateWithModal = (modalRoutes: AppRoutes[]): RoutingState => ({
         tasks: {
-          'WT-task1': [
-            {
-              route: 'tabbed-forms',
-              subroute: 'childInformation',
-              activeModal: modalRoutes,
-            },
-          ],
+          'WT-task1': {
+            routeStack: [
+              {
+                route: 'tabbed-forms',
+                subroute: 'childInformation',
+                activeModal: modalRoutes,
+              },
+            ],
+          },
           [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
         },
       });
@@ -581,7 +583,7 @@ describe('test reducer (specific actions)', () => {
   test('should handle LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED and recreate the state as loaded', async () => {
     const expected = {
       tasks: {
-        'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+        'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
       dismissedQueueGreetings: {},
@@ -600,7 +602,7 @@ describe('test reducer (specific actions)', () => {
   test('should handle LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED and do nothing', async () => {
     const expected = {
       tasks: {
-        'WT-task1': [{ route: 'case', subroute: 'home', caseId: '' }],
+        'WT-task1': { routeStack: [{ route: 'case', subroute: 'home', caseId: '' }] },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
       dismissedQueueGreetings: {},
@@ -624,9 +626,11 @@ describe('test reducer (specific actions)', () => {
   test('should handle LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED and change isAddingOfflineContact to true', async () => {
     const expected = {
       tasks: {
-        'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+        'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
-        [offlineContactTaskSid]: [{ ...newTaskEntry, route: 'tabbed-forms', subroute: 'childInformation' }],
+        [offlineContactTaskSid]: {
+          routeStack: [{ ...newTaskEntry, route: 'tabbed-forms', subroute: 'childInformation' }],
+        },
       },
       dismissedQueueGreetings: {},
     };
@@ -654,7 +658,7 @@ describe('test reducer (specific actions)', () => {
   test('should handle REMOVE_CONTACT_STATE', async () => {
     const expected = {
       tasks: {
-        'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+        'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
       dismissedQueueGreetings: {},
@@ -664,7 +668,7 @@ describe('test reducer (specific actions)', () => {
       {
         tasks: {
           ...stateWithTask.tasks,
-          [offlineContactTaskSid]: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
+          [offlineContactTaskSid]: { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
         },
         dismissedQueueGreetings: {},
       },

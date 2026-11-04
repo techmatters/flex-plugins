@@ -163,7 +163,9 @@ const hrmState: Partial<RootState[typeof namespace]> = {
   connectedCase: addingNewHouseholdCaseState,
   routing: {
     tasks: {
-      [TASK_SID]: [{ route: 'case', subroute: 'household', caseId: 'case1', action: CaseItemAction.Add }],
+      [TASK_SID]: {
+        routeStack: [{ route: 'case', subroute: 'household', caseId: 'case1', action: CaseItemAction.Add }],
+      },
     },
   },
 };
@@ -182,10 +184,12 @@ const state2: RecursivePartial<RootState> = {
     connectedCase: addingNewHouseholdCaseState,
     routing: {
       tasks: {
-        [TASK_SID]: [
-          { route: 'case', caseId: 'case1', subroute: 'household', action: CaseItemAction.View },
-          { route: 'case', caseId: 'case1', subroute: 'household', action: CaseItemAction.Add },
-        ],
+        [TASK_SID]: {
+          routeStack: [
+            { route: 'case', caseId: 'case1', subroute: 'household', action: CaseItemAction.View },
+            { route: 'case', caseId: 'case1', subroute: 'household', action: CaseItemAction.Add },
+          ],
+        },
       },
     },
   },
@@ -195,7 +199,7 @@ store2.dispatch = jest.fn();
 
 const routing3: RootState[typeof namespace]['routing'] = {
   tasks: {
-    [TASK_SID]: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }],
+    [TASK_SID]: { routeStack: [{ route: 'case', subroute: 'household', action: CaseItemAction.Add }] },
   },
 };
 
