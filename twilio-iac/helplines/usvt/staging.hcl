@@ -52,6 +52,6 @@ locals {
       forward_number                   = "+123"
       recording_url                    = "https://<place_holder>.mp3"
     }
-    get_profile_flags_for_identifier_base_url = "https://hrm-staging-us.tl.techmatters.org/lambda/twilio/account-scoped"
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

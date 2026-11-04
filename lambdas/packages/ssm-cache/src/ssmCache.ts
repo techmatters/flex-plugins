@@ -61,11 +61,17 @@ export type SsmCacheParameter = {
 export type SsmCache = {
   values: Record<string, SsmCacheParameter | undefined>;
   expiryDate?: Date;
+  // When each loadSsmCacheByName config needs loading again, keyed by config
+  byNameExpiryDates: Record<string, Date | undefined>;
+  // When each loadSsmCacheByName config can be retried after a failed load, keyed by config
+  byNameRetryDates: Record<string, Date | undefined>;
   cacheDurationMilliseconds: number;
 };
 
 export const ssmCache: SsmCache = {
   values: {},
+  byNameExpiryDates: {},
+  byNameRetryDates: {},
   cacheDurationMilliseconds: 3600000,
 };
 
@@ -79,18 +85,28 @@ export class SsmParameterNotFound extends Error {
   }
 }
 
+export class SsmLoadBackingOff extends Error {
+  constructor(message: string) {
+    super(message);
+
+    // see: https://github.com/microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
+    Object.setPrototypeOf(this, SsmLoadBackingOff.prototype);
+    this.name = 'SsmLoadBackingOff';
+  }
+}
+
 const hasParameterExpired = (parameter: SsmCacheParameter | undefined) => {
   return !!(parameter?.expiryDate && new Date() > parameter.expiryDate);
 };
 
-const setCacheDurationMilliseconds = (cacheDurationMilliseconds: number) => {
+export const setCacheDurationMilliseconds = (cacheDurationMilliseconds: number) => {
   ssmCache.cacheDurationMilliseconds = cacheDurationMilliseconds;
 };
 
 // If the value is falsy, we take that to means that the parameter doesn't exist in addition to just a missing name
 const parameterExistsInCache = (name: string): boolean => !!ssmCache.values[name]?.value;
 
-const getSsmClient = () => {
+export const getSsmClient = () => {
   if (!ssm) {
     ssm = new SSMClient(getSsmConfig());
   }
@@ -98,7 +114,7 @@ const getSsmClient = () => {
   return ssm;
 };
 
-const addToCache = (regex: RegExp | undefined, { Name, Value }: SsmParameter) => {
+export const addToCache = (regex: RegExp | undefined, { Name, Value }: SsmParameter) => {
   if (!Name) return;
   if (regex && !regex.test(Name)) return;
 
@@ -148,4 +164,17 @@ export const getSsmParameter = async (
   }
 
   return ssmCache.values[name]?.value || '';
+};
+
+export const getCachedParameters = (filterRegex: RegExp): Record<string, string> => {
+  const validCacheEntries = Object.entries(ssmCache.values).filter(
+    ([key, value]) =>
+      filterRegex.test(key) &&
+      typeof value?.value === 'string' &&
+      !hasParameterExpired(value),
+  );
+  return Object.fromEntries(validCacheEntries.map(([k, v]) => [k, v?.value])) as Record<
+    string,
+    string
+  >;
 };
