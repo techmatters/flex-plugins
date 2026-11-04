@@ -7,7 +7,7 @@
     // Off because hrm-form-definitions re-exports types (export { LayoutVersion }), which
     // isolatedModules rejects. The bundler drops those re-exports at build time anyway.
     "isolatedModules": false,
-    "types": ["node", "vite/client"],
+    "types": ["node", "webpack-env"],
     "baseUrl": ".",
     "paths": {
       "@hrm-form-definitions/*": ["../../lambdas/packages/hrm-form-definitions/src/*"],
@@ -15,5 +15,5 @@
       "lodash/*": ["../node_modules/@types/lodash/*"]
     }
   },
-  "include": ["src", "build-tools", "vite.config.ts"]
+  "include": ["src"]
 }

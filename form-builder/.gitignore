@@ -1,4 +1,5 @@
 node_modules/
 dist/
-drafts/
+/drafts/
 dist-lambda/
+dist-dev/

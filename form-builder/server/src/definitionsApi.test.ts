@@ -16,7 +16,7 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import {
   listHelplines,
   loadDefinitionFiles,
@@ -40,8 +40,8 @@ describe('definitionsApi', () => {
     for (const { code, versions } of helplines) {
       for (const version of versions) {
         const { files, errors } = await loadDefinitionFiles(formDefinitionsDir, code, version);
-        expect(errors, `${code}/${version}`).toEqual([]);
-        expect(Object.keys(files).length, `${code}/${version}`).toBeGreaterThan(0);
+        expect({ at: `${code}/${version}`, value: errors }).toEqual({ at: `${code}/${version}`, value: [] });
+        expect({ at: `${code}/${version}`, hasFiles: Object.keys(files).length > 0 }).toEqual({ at: `${code}/${version}`, hasFiles: true });
       }
     }
   });

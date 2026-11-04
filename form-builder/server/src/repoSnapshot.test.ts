@@ -19,7 +19,7 @@ import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, test, jest } from '@jest/globals';
 import { loadDefinitionFiles } from './definitionsApi';
 import { RepoSnapshots } from './repoSnapshot';
 
@@ -52,7 +52,7 @@ const TIMEOUT = 30_000;
 
 describe('snapshots of master', () => {
   test('unpack only what the builder reads, and are read like a checkout', async () => {
-    const source = { headSha: vi.fn(async () => 'sha1'), tarball: vi.fn(async () => tarball) };
+    const source = { headSha: jest.fn(async () => 'sha1'), tarball: jest.fn(async () => tarball) };
     const snapshot = await new RepoSnapshots(source, tempDir).latest();
 
     const definitions = await loadDefinitionFiles(snapshot.formDefinitionsDir, 'usnm', 'v1', snapshot.helplinesConfigDir);
@@ -66,7 +66,7 @@ describe('snapshots of master', () => {
   test('download once, check master again after a while, and move on when it changes', async () => {
     let time = 0;
     let sha = 'sha1';
-    const source = { headSha: vi.fn(async () => sha), tarball: vi.fn(async () => tarball) };
+    const source = { headSha: jest.fn(async () => sha), tarball: jest.fn(async () => tarball) };
     const snapshots = new RepoSnapshots(source, path.join(tempDir, 'cache'), 30_000, () => time);
 
     const [first, second] = await Promise.all([snapshots.latest(), snapshots.latest()]);

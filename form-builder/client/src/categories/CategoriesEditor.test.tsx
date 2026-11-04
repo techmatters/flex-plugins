@@ -1,3 +1,4 @@
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 /**
  * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,12 +15,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// @vitest-environment jsdom
 
 /**
  * Issue categories, edited through the workspace with USNM's real definitions.
  */
-import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, test, jest } from '@jest/globals';
 import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { DefinitionFiles, listHelplines, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { aseloStaff, createHarness, formDefinitionsDir, helplinesConfigDir } from '../testing/workspaceHarness';
@@ -37,7 +37,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   cleanup();
-  vi.restoreAllMocks();
+  jest.restoreAllMocks();
 });
 
 const categories = (files: Record<string, unknown>) =>
@@ -110,7 +110,7 @@ describe('category checks', () => {
     const helplines = await listHelplines(formDefinitionsDir);
     for (const { code, versions } of helplines) {
       const { files } = await loadDefinitionFiles(formDefinitionsDir, code, versions[0]);
-      validateCategories(files, files).forEach((issue) => expect(issue.severity, `${code}: ${issue.message}`).toBe('warning'));
+      validateCategories(files, files).forEach((issue) => expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({ at: `${code}: ${issue.message}`, value: 'warning' }));
       expect(summarizeCategoryChanges(files, files)).toEqual([]);
     }
   });

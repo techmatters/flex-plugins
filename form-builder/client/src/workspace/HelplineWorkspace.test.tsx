@@ -1,3 +1,4 @@
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 /**
  * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// @vitest-environment jsdom
 
 /**
  * Renders the editor with real helpline definitions and drives it like a user would, with
@@ -22,7 +22,7 @@
  * Drag and drop isn't simulated here (jsdom has no layout); the column logic it relies on is
  * covered by applyColumnSplit's unit tests.
  */
-import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, test, jest } from '@jest/globals';
 import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import {
@@ -43,7 +43,7 @@ beforeAll(async () => {
 
 afterEach(() => {
   cleanup();
-  vi.restoreAllMocks();
+  jest.restoreAllMocks();
 });
 
 const fieldCard = (label: string) =>
@@ -167,7 +167,7 @@ describe('HelplineWorkspace', () => {
 
   test('stops saving, and asks to reload, when someone else changed the draft', async () => {
     const { renderWorkspace } = createHarness();
-    const onReload = vi.fn();
+    const onReload = jest.fn();
     renderWorkspace(usnm, { onReload });
     await screen.findByText('No changes yet');
 
@@ -189,7 +189,7 @@ describe('HelplineWorkspace', () => {
   });
 
   test('discarding brings back the original form and deletes the draft', async () => {
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
     const { renderWorkspace, store } = createHarness();
     renderWorkspace(usnm);
     await renameRelationship('Relationship');
@@ -214,7 +214,7 @@ describe('HelplineWorkspace', () => {
   });
 
   test('removing an existing field asks for confirmation first', async () => {
-    const confirm = vi.spyOn(window, 'confirm').mockReturnValue(false);
+    const confirm = jest.spyOn(window, 'confirm').mockReturnValue(false);
     const { renderWorkspace } = createHarness();
     renderWorkspace(usnm);
     fireEvent.click(await findFieldCard('Relationship to Help Seeker'));

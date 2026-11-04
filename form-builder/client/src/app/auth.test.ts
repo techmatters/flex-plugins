@@ -1,3 +1,4 @@
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 /**
  * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,9 +15,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// @vitest-environment jsdom
 
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, jest } from '@jest/globals';
 import { apiFetch, initAuth, setAuthConfigForTests } from './auth';
 
 const CONFIG = { issuer: 'https://techmatters.okta.com/oauth2/abc', clientId: 'client-1' };
@@ -26,7 +26,7 @@ const json = (body: unknown, status = 200) =>
 
 // jsdom can't navigate, so location.assign is recorded instead
 const recordNavigation = () => {
-  const assign = vi.fn();
+  const assign = jest.fn<(url: string) => void>();
   Object.defineProperty(window, 'location', {
     configurable: true,
     value: { ...window.location, assign, origin: 'https://form-builder.tl.techmatters.org', pathname: '/', search: '' },
@@ -37,10 +37,12 @@ const at = (pathname: string, search = '') => {
   Object.assign(window.location, { pathname, search });
 };
 
+const originalFetch = global.fetch;
+
 afterEach(() => {
   sessionStorage.clear();
   setAuthConfigForTests(undefined);
-  vi.unstubAllGlobals();
+  global.fetch = originalFetch;
 });
 
 describe('signing in', () => {
@@ -61,8 +63,8 @@ describe('signing in', () => {
 
     // Back from Okta
     at('/login/callback', `?code=the-code&state=${state}`);
-    const replaceState = vi.spyOn(window.history, 'replaceState').mockImplementation(() => {});
-    const fetchImpl = vi.fn(async (url: string | URL | Request, _init?: RequestInit) =>
+    const replaceState = jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
+    const fetchImpl = jest.fn(async (url: string | URL | Request, _init?: RequestInit) =>
       String(url).endsWith('/config.json')
         ? json(CONFIG)
         : json({ access_token: 'access-1', id_token: 'id-1', expires_in: 28800 }),
@@ -73,8 +75,8 @@ describe('signing in', () => {
     expect(tokenBody.get('code_verifier')).toBeTruthy();
     expect(replaceState).toHaveBeenCalledWith(null, '', '/?helpline=usnm');
 
-    const apiCall = vi.fn(async (_url: string, _init?: RequestInit) => json({}));
-    vi.stubGlobal('fetch', apiCall);
+    const apiCall = jest.fn(async (_url: string, _init?: RequestInit) => json({}));
+    global.fetch = apiCall as unknown as typeof fetch;
     await apiFetch('/api/me');
     expect((apiCall.mock.calls[0][1]!.headers as Record<string, string>).Authorization).toBe('Bearer access-1');
   });

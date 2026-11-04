@@ -1,3 +1,4 @@
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 /**
  * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,10 +15,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// @vitest-environment jsdom
 
 import { useState } from 'react';
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
 import { OptionsEditor, parsePastedAnswers } from './OptionsEditor';

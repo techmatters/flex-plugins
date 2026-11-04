@@ -16,7 +16,7 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { beforeAll, describe, expect, test } from 'vitest';
+import { beforeAll, describe, expect, test } from '@jest/globals';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
 import { listHelplines, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { DefinitionFileMap, getForm, getReferenceData } from '../common/definitions';
@@ -279,11 +279,12 @@ describe('every linked dropdown in the repo', () => {
                 );
                 const result = applyChainOptions(fields, options, files);
                 const where = `${code}/${version}/${filePath} ${chain.join(' > ')}`;
-                expect(JSON.stringify(result.fields), where).toBe(JSON.stringify(fields));
+                expect({ at: where, value: JSON.stringify(result.fields) }).toEqual({ at: where, value: JSON.stringify(fields) });
                 if (result.referenceData) {
-                  expect(JSON.stringify(result.referenceData), where).toBe(
-                    JSON.stringify(getReferenceData(files)),
-                  );
+                  expect({ at: where, value: JSON.stringify(result.referenceData) }).toEqual({
+                    at: where,
+                    value: JSON.stringify(getReferenceData(files)),
+                  });
                 }
                 chainsChecked += 1;
               });

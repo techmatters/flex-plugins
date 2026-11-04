@@ -28,18 +28,19 @@ import type { DefinitionFileMap } from '../common/definitions';
 export type Strings = Record<string, string>;
 
 // The plugin's translation files, each loaded only when that language is needed
-const translationFiles = import.meta.glob<Strings>('../../../../plugin-hrm-form/src/translations/*.json', {
-  import: 'default',
-});
+const translationFiles = require.context('../../../../plugin-hrm-form/src/translations', false, /\.json$/, 'lazy');
 
 // Languages the plugin has text for, e.g. ['en', 'en-US', 'es', 'es-CL', ...]
-export const AVAILABLE_LANGUAGES = Object.keys(translationFiles)
-  .map((filePath) => filePath.split('/').pop()!.replace('.json', ''))
+export const AVAILABLE_LANGUAGES = translationFiles
+  .keys()
+  .map((key) => key.replace(/^\.\//, '').replace('.json', ''))
   .sort();
 
 const loadFile = async (name: string): Promise<Strings> => {
-  const loader = translationFiles[`../../../../plugin-hrm-form/src/translations/${name}.json`];
-  return loader ? loader() : {};
+  if (!translationFiles.keys().includes(`./${name}.json`)) return {};
+  // Loaded later, a JSON file comes as a module (its content is its default export)
+  const loaded = (await translationFiles(`./${name}.json`)) as Strings & { default?: Strings };
+  return loaded.default ?? loaded;
 };
 
 const SUBSTITUTIONS_FILE = 'customStrings/Substitutions.json';

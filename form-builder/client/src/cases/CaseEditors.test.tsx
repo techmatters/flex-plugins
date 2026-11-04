@@ -1,3 +1,4 @@
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 /**
  * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,13 +15,12 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// @vitest-environment jsdom
 
 /**
  * Case section forms, case statuses and case sections, edited through the workspace with
  * USNM's real definitions.
  */
-import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, test, jest } from '@jest/globals';
 import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { DefinitionFiles, listHelplines, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { createHarness, formDefinitionsDir, helplinesConfigDir } from '../testing/workspaceHarness';
@@ -38,7 +38,7 @@ beforeEach(() => {
 });
 afterEach(() => {
   cleanup();
-  vi.restoreAllMocks();
+  jest.restoreAllMocks();
 });
 
 const open = async (navLabel: string) => {
@@ -149,10 +149,10 @@ describe('case sections', () => {
     for (const { code, versions } of await listHelplines(formDefinitionsDir)) {
       const { files } = await loadDefinitionFiles(formDefinitionsDir, code, versions[0]);
       validateCaseSections(files, files).forEach((issue) =>
-        expect(issue.severity, `${code}: ${issue.message}`).toBe('warning'),
+        expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({ at: `${code}: ${issue.message}`, value: 'warning' }),
       );
       validateCaseStatuses(files, files).forEach((issue) =>
-        expect(issue.severity, `${code}: ${issue.message}`).toBe('warning'),
+        expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({ at: `${code}: ${issue.message}`, value: 'warning' }),
       );
     }
   });

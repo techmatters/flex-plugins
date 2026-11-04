@@ -184,7 +184,8 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5180.
+Open http://localhost:5180. `npm run dev` starts two things: the web app (webpack's dev server,
+port 5180) and the API (`server/`, port 5181); the web app passes it the requests to `/api`.
 
 In development the app reads form definitions straight from this repo checkout. To
 point it at a different checkout, set `FORM_DEFINITIONS_DIR` (and `WEBCHAT_CONFIG_DIR` for
@@ -200,8 +201,8 @@ FORM_BUILDER_ROLE=helpline-staff FORM_BUILDER_HELPLINES=usnm npm run dev
 
 ```bash
 npm run typecheck   # TypeScript, including the shared form-definition types
-npm test            # unit tests, plus every helpline loaded and validated, plus UI tests in jsdom
-npm run build
+npm test            # Jest: unit tests, every helpline loaded and validated, and UI tests in jsdom
+npm run build       # webpack: the web app, into client/dist
 ```
 
 ## How it fits together
@@ -210,8 +211,8 @@ Three packages (npm workspaces: `npm install` here installs them all), plus the 
 
 | Folder | What it is |
 |---|---|
-| `client/` | The web app. `src/` is by feature: `forms/`, `linkedDropdowns/`, `categories/`, `chatsAndCalls/` (call types, canned responses, messages), `cases/`, `profiles/`, `webchat/`, `serviceConfig/`, `aseloPreview/` ("Try it out"), `drafts/` (drafts, review and export), `workspace/` (a helpline's forms), `app/` (the shell, sign-in, API calls) and `common/` |
-| `server/` | The API: the Lambda when deployed, and the local dev API |
+| `client/` | The web app, built with webpack and tested with Jest (`webpack.config.cjs`, `jest.config.cjs`). `src/` is by feature: `forms/`, `linkedDropdowns/`, `categories/`, `chatsAndCalls/` (call types, canned responses, messages), `cases/`, `profiles/`, `webchat/`, `serviceConfig/`, `aseloPreview/` ("Try it out"), `drafts/` (drafts, review and export), `workspace/` (a helpline's forms), `app/` (the shell, sign-in, API calls) and `common/` |
+| `server/` | The API: the Lambda when deployed, and the local dev API (both bundled with esbuild; tested with Jest) |
 | `shared/` | What both use: the draft, definition and API types, and where files live in the repo |
 | `terraform/` | The AWS and Okta infrastructure (see its README) |
 
@@ -219,8 +220,8 @@ The client's tests run the real API in process, so `client/` depends on `server/
 only.
 
 - `server/src/definitionsApi.ts` reads raw definition files for a helpline, and `server/src/api.ts`
-  holds the routes. In development they're served by the Vite dev server
-  (`server/src/devApiPlugin.ts`, with `server/src/localServices.ts`). Deployed, the same routes run in a
+  holds the routes. In development they're served by a small local server
+  (`server/src/devServer.ts`, with `server/src/localServices.ts`). Deployed, the same routes run in a
   Lambda (`server/src/lambda.ts`, built with `npm run build:lambda`), with:
   - the current files from flex-plugins master, which is public, so it's downloaded without
     credentials and kept until master moves on (`server/src/repoSnapshot.ts`, `server/src/publicRepo.ts`);
@@ -235,7 +236,7 @@ only.
   Who's signed in comes from the Okta token's `groups` claim (see `terraform/README.md`).
 - Form types, the Aselo specification (`aseloForms.ts`) and its validator come from
   `lambdas/packages/hrm-form-definitions/src`, so the builder stays in step with what the
-  plugin expects. `client/build-tools/hrmFormDefinitionsResolver.ts` lets the browser bundle use them
+  plugin expects. `client/build-tools/hrmFormDefinitions.cjs` lets the browser bundle (and the tests) use them
   without the package's Node-only loader; the package itself is unchanged.
 - Exported JSON uses 2-space indentation, which matches most existing definition files.
 - The preview splits forms into two columns using `splitFormAt` from

@@ -10,7 +10,7 @@
     "client"
   ],
   "scripts": {
-    "dev": "npm run dev -w client",
+    "dev": "concurrently --names api,web --prefix-colors blue,green \"npm run dev -w server\" \"npm run dev -w client\"",
     "build": "npm run build -w client",
     "build:lambda": "npm run build:lambda -w server",
     "test": "npm test -w server -w client",
@@ -23,5 +23,8 @@
     "trailingComma": "all",
     "tabWidth": 2,
     "endOfLine": "auto"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
   }
 }
