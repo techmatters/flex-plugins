@@ -65,9 +65,9 @@ jobs:
 
       - name: Build
         run: |
-          npx vite build
+          npm run build
           npm run build:lambda
-          (cd dist-lambda && zip -q ../lambda.zip index.mjs)
+          (cd server/dist-lambda && zip -q ../../lambda.zip index.mjs)
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v6
@@ -98,8 +98,8 @@ jobs:
       - name: Deploy the page
         if: steps.resources.outputs.ready == 'true'
         run: |
-          aws s3 sync dist/assets "s3://$SITE_BUCKET/assets" --delete --cache-control "public, max-age=31536000, immutable"
-          aws s3 sync dist "s3://$SITE_BUCKET" --delete --exclude "assets/*" --exclude "config.json" --cache-control "no-cache"
+          aws s3 sync client/dist/assets "s3://$SITE_BUCKET/assets" --delete --cache-control "public, max-age=31536000, immutable"
+          aws s3 sync client/dist "s3://$SITE_BUCKET" --delete --exclude "assets/*" --exclude "config.json" --cache-control "no-cache"
 
       - name: Refresh CloudFront
         if: steps.resources.outputs.ready == 'true'

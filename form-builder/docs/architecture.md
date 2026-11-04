@@ -60,10 +60,10 @@ flowchart LR
 |---|---|---|---|
 | **The page** | The whole editor runs in the browser (React). Previews ("Try it out in Aselo") are drawn in the page; nothing is sent to Flex. | `form-builder/src` | Built and uploaded by the deploy workflow |
 | **Route 53 record + certificate** | `form-builder.tl.techmatters.org`, HTTPS certificate validated through DNS | `terraform/modules/aws/main.tf` | Terraform, `aws` stage |
-| **CloudFront** | One address for everything: the page from S3, `/api/*` to API Gateway. A small function sends paths like `/login/callback` to `index.html`. Adds standard security headers. | `terraform/modules/aws/site.tf` | Terraform, `aws` stage |
+| **CloudFront** | One address for everything: the page from S3, `/api/*` to API Gateway. A small function sends paths like `/login/callback` to `client/index.html`. Adds standard security headers. | `terraform/modules/aws/site.tf` | Terraform, `aws` stage |
 | **S3 site bucket** (`tl-form-builder-site`) | The built page, plus `config.json` (the Okta issuer and client id; not secret). Private: only CloudFront can read it. | `site.tf` | Bucket: Terraform. Files: the deploy workflow (`config.json`: Terraform) |
 | **API Gateway** (HTTP API) | Refuses any `/api/*` request without a valid access token from the builder's Okta authorization server. Light throttling (20 requests/s). | `terraform/modules/aws/api.tf` | Terraform, `aws` stage |
-| **Lambda** (`form-builder-api`) | The API: who you are, the helpline's current files, drafts, submit. Same code as the local dev server (`server/api.ts`), started from `server/lambda.ts`. | `form-builder/server` | Function: Terraform (placeholder code). Code: the deploy workflow |
+| **Lambda** (`form-builder-api`) | The API: who you are, the helpline's current files, drafts, submit. Same code as the local dev server (`server/src/api.ts`), started from `server/src/lambda.ts`. | `form-builder/server` | Function: Terraform (placeholder code). Code: the deploy workflow |
 | **S3 drafts bucket** (`tl-form-builder-drafts`) | One file per draft: `drafts/<code>/<version>/draft.json`. Private, versioned; old versions kept 90 days. | `api.tf` | Terraform, `aws` stage |
 | **SSM** (`/form-builder/slack_webhook_url`) | The Slack webhook (secret). Optional: without it, submissions are only logged. | Parameter Store | By hand, in the AWS console |
 | **CloudWatch logs** | The Lambda's logs (errors, failed Slack messages), kept 30 days | `api.tf` | Terraform, `aws` stage |
@@ -132,11 +132,11 @@ sequenceDiagram
 
 | Rule | Where |
 |---|---|
-| Only people in a `form-builder-*` group get in | API Gateway (token) + `server/lambda.ts` |
-| Helpline staff only open their own helplines | `server/api.ts` |
-| Only Aselo staff see or change the service configuration; helpline staff never see it, and can't overwrite or discard Aselo staff's service configuration changes in a shared draft | `server/api.ts` |
-| Two people can't overwrite each other's draft: each save carries the revision it started from; a stale save is refused and the person reloads | `server/api.ts` |
-| File paths in a draft can't leave the helpline's folders | `server/drafts.ts` |
+| Only people in a `form-builder-*` group get in | API Gateway (token) + `server/src/lambda.ts` |
+| Helpline staff only open their own helplines | `server/src/api.ts` |
+| Only Aselo staff see or change the service configuration; helpline staff never see it, and can't overwrite or discard Aselo staff's service configuration changes in a shared draft | `server/src/api.ts` |
+| Two people can't overwrite each other's draft: each save carries the revision it started from; a stale save is refused and the person reloads | `server/src/api.ts` |
+| File paths in a draft can't leave the helpline's folders | `server/src/drafts.ts` |
 | Other Aselo-staff-only edits (renaming saved field names, PII on existing fields, removing sections, ...) | **The page only, by decision**: users are staff, misuse would only affect their own helpline's forms, and every draft is reviewed by Aselo staff before it's applied |
 
 ## Permissions used
@@ -169,7 +169,7 @@ from the `okta` stage's state).
 1. **Apply from the builder** (after the proof of concept is approved): a GitHub App owned by the
    `techmatters` organization (needs an org owner), with *Contents* and *Pull requests* write on
    `flex-plugins` only. Then **Apply** opens the branch and PR itself, with the change log as its
-   description. The code is ready (`server/githubApplier.ts`); steps in
+   description. The code is ready (`server/src/githubApplier.ts`); steps in
    [../terraform/README.md](../terraform/README.md).
 2. **Merge to master.** Then switch the deploy workflow from "every push to the branch" to manual
    (or pushes to master).

@@ -1,0 +1,11 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // No Node or DOM: the server and the browser both use it
+    "lib": ["ES2020"],
+    "types": [],
+    // index.ts names its files with .ts, so Node (e.g. loading the dev server's config) can read it
+    "allowImportingTsExtensions": true
+  },
+  "include": ["src"]
+}
