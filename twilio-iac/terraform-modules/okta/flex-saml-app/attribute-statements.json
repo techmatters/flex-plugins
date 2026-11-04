@@ -1,0 +1,67 @@
+{
+  "description": "Standard SAML attribute statements sent by Okta to Twilio Flex. Single source of truth for the flex-saml-app Terraform module and for twilio-iac/scripts/okta. 'legacy' = legacy profile attribute statements (okta_app_saml.attribute_statements, Okta Expression Language v1). 'federated' = new attribute statements / federated claims (okta_app_federated_claim, Expression Language for Identity Engine). Order matters for legacy statements: it is the order Okta stores them in.",
+  "attributes": [
+    {
+      "name": "full_name",
+      "namespace": "basic",
+      "legacy": "String.join(\" \", user.firstName, user.lastName)",
+      "federated": "user.profile.firstName + \" \" + user.profile.lastName"
+    },
+    {
+      "name": "email",
+      "namespace": "basic",
+      "legacy": "user.email",
+      "federated": "user.profile.email"
+    },
+    {
+      "name": "image_url",
+      "namespace": "uri",
+      "legacy": "user.profileUrl",
+      "federated": "user.profile.profileUrl"
+    },
+    {
+      "name": "helpline",
+      "namespace": "basic",
+      "legacy": "user.helpline",
+      "federated": "user.profile.helpline"
+    },
+    {
+      "name": "roles",
+      "namespace": "basic",
+      "legacy": "user.userType",
+      "federated": "user.profile.userType"
+    },
+    {
+      "name": "maxMessageCapacity",
+      "namespace": "basic",
+      "legacy": "user.maxMessageCapacity",
+      "federated": "user.profile.maxMessageCapacity"
+    },
+    {
+      "name": "waitingOfflineContact.boolean",
+      "namespace": "basic",
+      "legacy": "user.waitingOfflineContact",
+      "federated": "user.profile.waitingOfflineContact"
+    },
+    {
+      "name": "channel.default.capacity",
+      "namespace": "basic",
+      "legacy": "user.maxMessageCapacity",
+      "federated": "user.profile.maxMessageCapacity"
+    },
+    {
+      "name": "labels.stringarray",
+      "optional_set": "labels",
+      "namespace": "basic",
+      "legacy": "user.labels",
+      "federated": "user.profile.labels"
+    },
+    {
+      "name": "team",
+      "optional_set": "team",
+      "namespace": "basic",
+      "legacy": "user.labels",
+      "federated": "user.profile.labels"
+    }
+  ]
+}

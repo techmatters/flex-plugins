@@ -1,0 +1,129 @@
+---
+name: new-helpline
+description: Provision a new Aselo helpline environment end to end (Twilio Flex account config in twilio-iac, Okta SSO, deployments) from the baseline, working together with a person who does the console and apply steps. Use when asked to set up, onboard or provision a new helpline or a new environment (staging/production) of an existing one, to continue an onboarding in progress, or to report its status.
+---
+
+# New helpline provisioning
+
+Runs [twilio-iac/docs/new-account-provisioning.md](../../../twilio-iac/docs/new-account-provisioning.md)
+step by step with a person. That guide is the source of truth: read it first, and follow its step
+numbers (0, 1.1 … 3). Configuration conventions: [twilio-iac/AGENTS.md](../../../twilio-iac/AGENTS.md).
+
+## Hard rules
+
+- **Never** run `apply`, `destroy`, `import` or state commands, trigger deploy workflows, or open the
+  Twilio/Okta/AWS consoles. Those are the person's steps: stop, say exactly what to do, and wait.
+- Read-only Terraform/Terragrunt `plan` can be run freely; any other command on the devops node needs
+  the person's OK first.
+- Never ask for, print or commit secrets (auth tokens, keys). The repo is public: no account SIDs,
+  Okta ids or internal URLs in committed files.
+- One helpline + environment at a time. Staging first; production only when the person says the
+  helpline is close to launch.
+- Don't guess missing information: ask.
+
+## Workflow
+
+### 1. Find out where things stand
+
+Ask for the helpline short code and environment, then run:
+
+```bash
+node twilio-iac/scripts/onboarding/onboardingStatus.mjs --hl <code> --env <env> [--accounts-file <file>] [--hrm-repo <path>]
+```
+
+It marks each guide step ✅ done / ❌ missing / 🧑 confirm with the person / ❔ not checked. Resume
+from the first step that is not done; confirm the 🧑 items with the person before skipping them.
+
+### 2. Tracking (Asana)
+
+If the Asana tools are available: look for this helpline's onboarding project
+(`<Name> (<CODE>) <environment>` onboarding). If there is none, offer to create it from the
+**"New helpline onboarding"** project template (search `project_template`). After each step, tick the
+matching task (task names are `<icon> <step number> …`: 🤖 agent, 🧑 person, 🤝 both) and add a short comment with what was
+done. Never assign or reassign tasks without asking. If a template task disagrees with the guide
+(e.g. it predates a step), follow the guide and mention it in the task comment.
+
+### 3. Intake (step 0)
+
+Collect, asking only for what is missing:
+
+- helpline display name, short code (lower case), environment
+- Twilio account name follows `STG_<Name> (<CODE>)` / `<Name> (<CODE>)` (the person creates the account)
+- helpline region (`us-east-1` / `eu-west-1`)
+- channels and phone numbers (baseline: chat (webchat over Conversations) + voice)
+- Okta group name (`<Name> (<CODE>)`), group rule (organization / email domain with `@` / none),
+  optional SAML attributes (`labels`, `team`)
+- webchat needed? pre-queue messages for chat and voice? blocked-contact messages? system-down
+  (outage) messages, and for calls whether to say a message, play a recording or forward to a number?
+- forms: who contacts the helpline (wording instead of "help seeker"), service area (states/counties),
+  categories, anything to add or remove from the baseline forms (`as/v3`)
+
+Later on this information may come from a tool that collects it from meetings; use it if provided.
+
+### 4. Configuration (step 1.1)
+
+- Branch from master (person's naming convention, e.g. `<prefix>/<code>/<task>`).
+- Copy `twilio-iac/helplines/baseline/` to `twilio-iac/helplines/<code>/` and fill in the
+  placeholders: `common.hcl` (helpline, region, queue name, channels, `okta`), `staging.hcl`
+  (`flow_vars`, `okta_app`), service configuration JSON. Keep the baseline shape (1 queue, chat +
+  voice) unless the intake asks for more; follow AGENTS.md for anything extra. Never add a
+  `channel_type = "web"` channel: its Flex Flow API is deprecated (404 on apply).
+- Studio flows: keep the baseline's shared templates, `messaging-blocking-conv-lambda-sd.tftpl` (chat)
+  and `voice-blocking-no-op-hours-sd.tftpl` (voice), with system-down enabled. Fill their messages
+  from the intake (`send_message_prequeue`, `play_message_voice_prequeue`,
+  `play_message_voice_blocked`, `flow_vars.chat_blocked_message`, `system_down_flow_vars`). Don't
+  use the older templates (`voice-basic*`, `messaging-blocking-lambda`, `messaging-blocking-conv-lambda`
+  without `-sd`); see AGENTS.md "Studio flow templates for new helplines". If the helpline needs
+  something they don't do (operating hours, chatbot, voicemail), pick or fork a template that follows
+  the AGENTS.md Studio standards and widget names, and validate it as described there.
+- Show the diff, commit, and ask the person to push / open the PR.
+
+### 5. Twilio infrastructure (steps 1.2–1.4)
+
+- 1.2 🧑 SSM secrets: give the person the `make manage-ssm-secrets` command; the Datadog answers can
+  be dummy values (see the guide).
+- 1.3 Run `make plan HL=<code> HL_ENV=<env>` in `stages/provision`, then `stages/lex` (only if the
+  helpline uses Lex chatbots or a post-survey bot; skip it otherwise), then
+  `stages/system-down`, then `stages/configure` (first time: the person runs `setup-new-environment`
+  in provision). configure reads the system-down state, so it can't be planned before system-down is
+  applied. Summarize each plan (what gets created) and wait for the person's apply before the next stage.
+- 1.3 🧑 Phone number → voice Studio flow (Terraform doesn't manage numbers).
+- 1.4 Edit `lambdas/TwilioErrorReporter/index.ts` (alphabetical order) when the person gives the
+  account SID; 🧑 errors webhook in the console.
+
+### 6. Okta SSO (step 1.5)
+
+Follow the **okta-flex-sso** skill ("New helpline"). Remind the person about the manual group rule
+when `okta.group_rule` is set. Finish with `verifySso.mjs` all ✅ and the person's SSO login test.
+
+### 7. Deployment (Phase 2)
+
+- 2.1 Create the forms from the baseline with
+  `node twilio-iac/scripts/onboarding/newHelplineForms.mjs --hl <code> --helpline "<helpline from common.hcl>"`,
+  set `definitionVersion` to `<code>-v1`, fill the manager details, replace the example
+  states/counties, adapt fields and categories to the intake (rules in `as/v3/README.md`), then run
+  `npm test -- validateDefinitions` in `lambdas/packages/hrm-form-definitions`. 🧑 The person runs
+  the "Deploy form-definitions to S3" workflow, with **Use workflow from** set to the helpline's
+  branch until the forms are merged (on master the folder doesn't exist and the sync fails).
+- 2.4 Webchat config in `aselo-webchat-react-app/configSrc/<code>/` (copy `usvt`: common, staging,
+  translations; no Twilio values needed).
+- 2.5 HRM permissions in the hrm repo, if the person has it checked out. A test helpline can reuse
+  existing rules instead (`permission_config` / `permissionConfig` = e.g. `demo`).
+- 🧑 2.2 Twilio lambdas (*Deploy All Twilio Lambdas*, from master only, after the TwilioErrorReporter
+  PR is merged: it deploys to every helpline of the environment), 2.3 Flex, 2.4 webchat (*Deploy Aselo Webchat React
+  App - single helpline*, on a branch CI has built that contains `configSrc/<code>/`; not *Deploy
+  webchat configuration to S3*), 2.6 FullStory, 2.7 CloudTrail: tell the person
+  what to run or ask for, and wait.
+
+### 8. Verification (Phase 3)
+
+Re-run `onboardingStatus.mjs` (no ❌), re-plan every stage (No changes, apart from the known
+"whitespace changes" drift on workflows and Studio flows), and ask the person for the
+end-to-end test. Report what is done, what the person still has to confirm, and anything that
+deviates from the baseline.
+
+## Talking to the person
+
+Each time you stop, say in plain terms: what was done, what they need to do next (exact console
+path or command), and what they will see. Explain user-facing consequences, e.g. "after this,
+counsellors in the helpline group can log in to staging Flex".
