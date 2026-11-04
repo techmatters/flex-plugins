@@ -219,6 +219,16 @@ Three packages (npm workspaces: `npm install` here installs them all), plus the 
 The client's tests run the real API in process, so `client/` depends on `server/` for its tests
 only.
 
+**State** is in Redux (Redux Toolkit), as in the team's other React apps: `client/src/app/store.ts`
+holds the store; each feature keeps its slice next to its components (`<feature>/<name>Slice.ts`:
+its state, selectors and the thunks with its logic), and components only read the store
+(`useAppSelector`) and dispatch actions. The core slices are `session` (who's signed in),
+`workspace` (the open helpline, its screen and its validation), `draft` (the draft of its files:
+loading, saving a moment after each edit, conflicts, submit and apply) and `draftsList`; each
+editor adds its own (e.g. `categories/categoriesSlice.ts`) with `rootReducer.inject`, and
+changes the files through the draft's `editDraftFiles`. The pure rules they use (e.g.
+`forms/formEditing.ts`) don't depend on React or Redux.
+
 - `server/src/definitionsApi.ts` reads raw definition files for a helpline, and `server/src/api.ts`
   holds the routes. In development they're served by a small local server
   (`server/src/devServer.ts`, with `server/src/localServices.ts`). Deployed, the same routes run in a
