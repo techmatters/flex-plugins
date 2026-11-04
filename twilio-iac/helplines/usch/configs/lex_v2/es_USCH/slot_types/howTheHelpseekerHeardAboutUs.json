@@ -1,0 +1,124 @@
+{
+    "slotTypeName": "howTheHelpseekerHeardAboutUs",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Internet/Website"
+            },
+            "synonyms": [
+                {
+                    "value": "1"
+                },
+                {
+                    "value": "Internet"
+                },
+                {
+                    "value": "internet"
+                },
+                {
+                    "value": "Sitio web"
+                },
+                {
+                    "value": "sitio web"
+                },
+                {
+                    "value": "Página web"
+                },
+                {
+                    "value": "página web"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Google"
+            },
+            "synonyms": [
+                {
+                    "value": "2"
+                },
+                {
+                    "value": "Google"
+                },
+                {
+                    "value": "google"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Chat GPT/AI"
+            },
+            "synonyms": [
+                {
+                    "value": "3"
+                },
+                {
+                    "value": "ChatGPT"
+                },
+                {
+                    "value": "chatgpt"
+                },
+                {
+                    "value": "Chat GPT"
+                },
+                {
+                    "value": "IA"
+                },
+                {
+                    "value": "ia"
+                },
+                {
+                    "value": "Inteligencia artificial"
+                },
+                {
+                    "value": "inteligencia artificial"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Other"
+            },
+            "synonyms": [
+                {
+                    "value": "4"
+                },
+                {
+                    "value": "Otro"
+                },
+                {
+                    "value": "otro"
+                },
+                {
+                    "value": "Otra"
+                },
+                {
+                    "value": "otra"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Unknown / Prefer Not to Answer"
+            },
+            "synonyms": [
+                {
+                    "value": "X"
+                },
+                {
+                    "value": "x"
+                },
+                {
+                    "value": "Prefiero no responder"
+                },
+                {
+                    "value": "Prefiero no decir"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

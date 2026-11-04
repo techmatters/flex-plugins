@@ -1,0 +1,968 @@
+${
+  jsonencode({
+    "description": "${flow_description}",
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    },
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "event": "incomingCall"
+          },
+          {
+            "event": "incomingConversationMessage",
+            "next": "run_subflow_system_down"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 190,
+            "y": -570
+          }
+        }
+      },
+      {
+        "name": "send_to_queue_childhelp",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.chat}",
+          "attributes": "${channel_attributes.default}",
+          "offset": {
+            "x": 90,
+            "y": 2960
+          }
+        }
+      },
+      {
+        "name": "http_post_webhook_notify_failed_to_enqueue",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "url": "${webhook_url_studio_errors}",
+          "offset": {
+            "x": 320,
+            "y": 3190
+          }
+        }
+      },
+      {
+        "name": "split_service",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "set_var_childhelp"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value starts with courageFirst url",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.location}}"
+                ],
+                "type": "starts_with",
+                "value": "${channel_flow_vars.courage_first_url}"
+              }
+            ],
+            "next": "set_var_courage_first"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value starts with childhelp url",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.location}}"
+                ],
+                "type": "starts_with",
+                "value": "${channel_flow_vars.childhelp_url}"
+              }
+            ],
+            "next": "set_var_childhelp"
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.location}}",
+          "offset": {
+            "x": 0,
+            "y": 280
+          }
+        }
+      },
+      {
+        "name": "set_var_courage_first",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "event": "next",
+            "next": "split_couragefirst_language"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "type": "string",
+              "value": "CourageFirst",
+              "key": "service"
+            },
+            {
+              "type": "string",
+              "value": "cf",
+              "key": "language"
+            }
+          ],
+          "offset": {
+            "x": 10,
+            "y": 630
+          }
+        }
+      },
+      {
+        "name": "set_var_childhelp",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "event": "next",
+            "next": "split_childhelp_language"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "type": "string",
+              "value": "ChildHelp",
+              "key": "service"
+            },
+            {
+              "type": "string",
+              "value": "ch",
+              "key": "language"
+            }
+          ],
+          "offset": {
+            "x": 480,
+            "y": 630
+          }
+        }
+      },
+      {
+        "name": "f_sendMessageAndRunJanitor_childhelp_webchat_other_language",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 760,
+            "y": 1180
+          },
+          "method": "POST",
+          "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+          "add_twilio_auth": false,
+          "parameters": [
+            {
+              "value": "{{flow.channel.address}}",
+              "key": "conversationSid"
+            },
+            {
+              "value": "${flow_vars.send_message_childhelp_webchat_other_language}",
+              "key": "message"
+            },
+            {
+              "value": "${helpline}",
+              "key": "from"
+            }
+          ],
+          "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
+        }
+      },
+      {
+        "name": "f_getProfileFlagsForIdentifier",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_contact_routing"
+          },
+          {
+            "event": "failed",
+            "next": "split_contact_routing"
+          }
+        ],
+        "properties": {
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"}",
+          "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier",
+          "offset": {
+            "x": 180,
+            "y": -150
+          }
+        }
+      },
+      {
+        "name": "f_sendMessageAndRunJanitor_webchat_blocked_client",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 990,
+            "y": 270
+          },
+          "method": "POST",
+          "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+          "add_twilio_auth": false,
+          "parameters": [
+            {
+              "value": "{{flow.channel.address}}",
+              "key": "conversationSid"
+            },
+            {
+              "value": "${flow_vars.send_message_webchat_blocked_client}",
+              "key": "message"
+            },
+            {
+              "value": "${helpline}",
+              "key": "from"
+            }
+          ],
+          "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
+        }
+      },
+      {
+        "name": "split_contact_routing",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "split_service"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to blocked",
+                "arguments": [
+                  "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+                ],
+                "type": "equal_to",
+                "value": "blocked"
+              }
+            ],
+            "next": "f_sendMessageAndRunJanitor_webchat_blocked_client"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
+          "offset": {
+            "x": 600,
+            "y": -20
+          }
+        }
+      },
+      {
+        "name": "send_message_webchat_en_childhelp_prequeue",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent",
+            "next": "send_to_queue_childhelp"
+          },
+          {
+            "event": "failed",
+            "next": "send_to_queue_childhelp"
+          }
+        ],
+        "properties": {
+          "service": "{{trigger.conversation.InstanceSid}}",
+          "channel": "{{trigger.conversation.ChannelSid}}",
+          "from": "${helpline}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "${flow_vars.childhelp_webchat_welcome_message}",
+          "offset": {
+            "x": 320,
+            "y": 2590
+          }
+        }
+      },
+      {
+        "name": "split_welcome_message",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_message_webchat_en_childhelp_prequeue"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to CourageFirst",
+                "arguments": [
+                  "{{flow.variables.service}}"
+                ],
+                "type": "equal_to",
+                "value": "CourageFirst"
+              }
+            ],
+            "next": "send_message_webchat_en_couragefirst_prequeue"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to ChildHelp",
+                "arguments": [
+                  "{{flow.variables.service}}"
+                ],
+                "type": "equal_to",
+                "value": "ChildHelp"
+              }
+            ],
+            "next": "send_message_webchat_en_childhelp_prequeue"
+          }
+        ],
+        "properties": {
+          "input": "{{flow.variables.service}}",
+          "offset": {
+            "x": 160,
+            "y": 2080
+          }
+        }
+      },
+      {
+        "name": "send_message_webchat_en_couragefirst_prequeue",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent",
+            "next": "send_to_queue_childhelp"
+          },
+          {
+            "event": "failed",
+            "next": "send_to_queue_childhelp"
+          }
+        ],
+        "properties": {
+          "service": "{{trigger.conversation.InstanceSid}}",
+          "channel": "{{trigger.conversation.ChannelSid}}",
+          "from": "${helpline}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "${flow_vars.courage_first_webchat_welcome_message}",
+          "offset": {
+            "x": -20,
+            "y": 2590
+          }
+        }
+      },
+      {
+        "name": "run_subflow_system_down",
+        "type": "run-subflow",
+        "transitions": [
+          {
+            "event": "completed",
+            "next": "f_getProfileFlagsForIdentifier"
+          },
+          {
+            "event": "failed",
+            "next": "f_getProfileFlagsForIdentifier"
+          }
+        ],
+        "properties": {
+          "flow_sid": "${system_down_studio_subflow_sid}",
+          "flow_revision": "LatestPublished",
+          "parameters": [
+            {
+              "type": "string",
+              "value": "true",
+              "key": "system_down"
+            }
+          ],
+          "offset": {
+            "x": -50,
+            "y": -370
+          }
+        }
+      },
+      {
+        "name": "f_isSkilledWorkerAvailable_chattext_spanish",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_is_skilled_worker_available_chattext_spanish"
+          },
+          {
+            "event": "failed",
+            "next": "send_wait_webchat_es_childhelp_wait_or_leave"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1060,
+            "y": 2200
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"targetSkills\": \"ChatText,Spanish\",\n  \"targetChannel\": \"chat\"\n}",
+          "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerAvailable"
+        }
+      },
+      {
+        "name": "split_is_skilled_worker_available_chattext_spanish",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_wait_webchat_es_childhelp_wait_or_leave"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "available",
+                "arguments": [
+                  "{{widgets.f_isSkilledWorkerAvailable_chattext_spanish.parsed.totalAvailableWorkers}}"
+                ],
+                "type": "greater_than",
+                "value": "0"
+              }
+            ],
+            "next": "send_message_webchat_es_childhelp_prequeue"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_isSkilledWorkerAvailable_chattext_spanish.parsed.totalAvailableWorkers}}",
+          "offset": {
+            "x": 1060,
+            "y": 2440
+          }
+        }
+      },
+      {
+        "name": "send_to_queue_childhelp_spanish",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1640,
+            "y": 2620
+          },
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.chat}",
+          "timeout": "3600",
+          "attributes": "{\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\",\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"ip\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"firstName\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\",\n  \"customChannelType\": \"{{trigger.conversation.ChannelAttributes.channelType}}\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}\",\n  \"counselingLanguage\": \"Spanish\",\n  \"language\": \"es-USCH\",\n  \"service\": \"{{flow.variables.service}}\",\n  \"transferTargetType\": \"\",\n  \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}"
+        }
+      },
+      {
+        "name": "send_message_webchat_es_childhelp_prequeue",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent",
+            "next": "send_to_queue_childhelp_spanish"
+          },
+          {
+            "event": "failed",
+            "next": "send_to_queue_childhelp_spanish"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1360,
+            "y": 2400
+          },
+          "service": "{{trigger.conversation.InstanceSid}}",
+          "channel": "{{trigger.conversation.ChannelSid}}",
+          "from": "${helpline}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "${flow_vars.send_message_webchat_es_childhelp_prequeue}"
+        }
+      },
+      {
+        "name": "send_wait_webchat_es_childhelp_wait_or_leave",
+        "type": "send-and-wait-for-reply",
+        "transitions": [
+          {
+            "event": "incomingMessage",
+            "next": "split_wait_leave"
+          },
+          {
+            "event": "timeout",
+            "next": "f_sendMessageAndRunJanitor_please_call"
+          },
+          {
+            "event": "deliveryFailure",
+            "next": "f_sendMessageAndRunJanitor_please_call"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1100,
+            "y": 2740
+          },
+          "service": "{{trigger.conversation.InstanceSid}}",
+          "channel": "{{trigger.conversation.ChannelSid}}",
+          "from": "${helpline}",
+          "message_type": "custom",
+          "body": "${flow_vars.send_wait_webchat_es_childhelp_wait_or_leave}",
+          "timeout": "3600"
+        }
+      },
+      {
+        "name": "split_wait_leave",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "f_sendMessageAndRunJanitor_please_call"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value matches_any_of Si,si,Sí,sí,ok",
+                "arguments": [
+                  "{{widgets.send_wait_webchat_es_childhelp_wait_or_leave.inbound.Body}}"
+                ],
+                "type": "matches_any_of",
+                "value": "Si,si,Sí,sí,ok"
+              }
+            ],
+            "next": "send_to_queue_childhelp_spanish"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value matches_any_of No,nop,no",
+                "arguments": [
+                  "{{widgets.send_wait_webchat_es_childhelp_wait_or_leave.inbound.Body}}"
+                ],
+                "type": "matches_any_of",
+                "value": "No,nop,no"
+              }
+            ],
+            "next": "f_sendMessageAndRunJanitor_please_call"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.send_wait_webchat_es_childhelp_wait_or_leave.inbound.Body}}",
+          "offset": {
+            "x": 1380,
+            "y": 2940
+          }
+        }
+      },
+      {
+        "name": "f_sendMessageAndRunJanitor_please_call",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 1035,
+            "y": 3168
+          },
+          "method": "POST",
+          "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+          "add_twilio_auth": false,
+          "parameters": [
+            {
+              "value": "{{flow.channel.address}}",
+              "key": "conversationSid"
+            },
+            {
+              "value": "${flow_vars.send_message_please_call}",
+              "key": "message"
+            },
+            {
+              "value": "${helpline}",
+              "key": "from"
+            }
+          ],
+          "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
+        }
+      },
+      {
+        "name": "f_sendMessageAndRunJanitor_en_couragefirst_other_language",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 380,
+            "y": 1920
+          },
+          "method": "POST",
+          "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+          "add_twilio_auth": false,
+          "parameters": [
+            {
+              "value": "{{flow.channel.address}}",
+              "key": "conversationSid"
+            },
+            {
+              "value": "${flow_vars.send_message_en_couragefirst_other_language}",
+              "key": "message"
+            },
+            {
+              "value": "${helpline}",
+              "key": "from"
+            }
+          ],
+          "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
+        }
+      },
+      {
+        "name": "split_advocate_service",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_message_webchat_en_childhelp_prequeue"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to Yes",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.advocateService}}"
+                ],
+                "type": "equal_to",
+                "value": "Yes"
+              }
+            ],
+            "next": "f_isSkilledWorkerLoggedIn_chattext_advocate"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to No",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.advocateService}}"
+                ],
+                "type": "equal_to",
+                "value": "No"
+              }
+            ],
+            "next": "send_message_webchat_en_childhelp_prequeue"
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.advocateService}}",
+          "offset": {
+            "x": 640,
+            "y": 2380
+          }
+        }
+      },
+      {
+        "name": "f_isSkilledWorkerLoggedIn_chattext_advocate",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_is_skilled_worker_logged_in_chattext_advocate"
+          },
+          {
+            "event": "failed",
+            "next": "send_message_webchat_en_childhelp_prequeue"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 740,
+            "y": 2760
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"targetSkills\": \"ChatText,Advocate\"\n}",
+          "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerLoggedIn"
+        }
+      },
+      {
+        "name": "split_is_skilled_worker_logged_in_chattext_advocate",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_message_webchat_en_childhelp_prequeue"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "logged in",
+                "arguments": [
+                  "{{widgets.f_isSkilledWorkerLoggedIn_chattext_advocate.parsed.totalLoggedInWorkers}}"
+                ],
+                "type": "greater_than",
+                "value": "0"
+              }
+            ],
+            "next": "send_message_webchat_en_advocate_prequeue"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_isSkilledWorkerLoggedIn_chattext_advocate.parsed.totalLoggedInWorkers}}",
+          "offset": {
+            "x": 740,
+            "y": 3000
+          }
+        }
+      },
+      {
+        "name": "send_to_queue_advocate_line",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 740,
+            "y": 3480
+          },
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.chat}",
+          "timeout": "3600",
+          "attributes": "{\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\",\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"ip\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"firstName\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\",\n  \"customChannelType\": \"{{trigger.conversation.ChannelAttributes.channelType}}\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"helpline\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}\",\n  \"language\": \"en-USCH\",\n  \"service\": \"AdvocateLine\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}"
+        }
+      },
+      {
+        "name": "send_message_webchat_en_advocate_prequeue",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent",
+            "next": "send_to_queue_advocate_line"
+          },
+          {
+            "event": "failed",
+            "next": "send_to_queue_advocate_line"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 740,
+            "y": 3240
+          },
+          "service": "{{trigger.conversation.InstanceSid}}",
+          "channel": "{{trigger.conversation.ChannelSid}}",
+          "from": "${helpline}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "${flow_vars.send_message_webchat_en_advocate_prequeue}"
+        }
+      },
+      {
+        "name": "split_couragefirst_language",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "split_welcome_message"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to English",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.preferredLanguage}}"
+                ],
+                "type": "equal_to",
+                "value": "English"
+              }
+            ],
+            "next": "split_welcome_message"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to Spanish",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.preferredLanguage}}"
+                ],
+                "type": "equal_to",
+                "value": "Spanish"
+              }
+            ],
+            "next": "f_sendMessageAndRunJanitor_en_couragefirst_other_language"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to Other",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.preferredLanguage}}"
+                ],
+                "type": "equal_to",
+                "value": "Other"
+              }
+            ],
+            "next": "f_sendMessageAndRunJanitor_en_couragefirst_other_language"
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.preferredLanguage}}",
+          "offset": {
+            "x": 40,
+            "y": 1680
+          }
+        }
+      },
+      {
+        "name": "split_childhelp_language",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "split_advocate_service"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to English",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.preferredLanguage}}"
+                ],
+                "type": "equal_to",
+                "value": "English"
+              }
+            ],
+            "next": "split_advocate_service"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to Spanish",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.preferredLanguage}}"
+                ],
+                "type": "equal_to",
+                "value": "Spanish"
+              }
+            ],
+            "next": "f_isSkilledWorkerAvailable_chattext_spanish"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to Other",
+                "arguments": [
+                  "{{trigger.conversation.ChannelAttributes.pre_engagement_data.preferredLanguage}}"
+                ],
+                "type": "equal_to",
+                "value": "Other"
+              }
+            ],
+            "next": "f_sendMessageAndRunJanitor_childhelp_webchat_other_language"
+          }
+        ],
+        "properties": {
+          "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.preferredLanguage}}",
+          "offset": {
+            "x": 750,
+            "y": 1700
+          }
+        }
+      }
+    ]
+  })
+}

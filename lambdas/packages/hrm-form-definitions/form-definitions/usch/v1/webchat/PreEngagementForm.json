@@ -297,6 +297,35 @@
       ]
     },
     {
+      "name": "preferredLanguage",
+      "label": "What is your preferred language?",
+      "type": "dependent-select",
+      "dependsOn": "advocateService",
+      "options": {
+        "Yes": [
+          {
+            "value": "English",
+            "label": "English"
+          }
+        ],
+        "No": [
+          {
+            "value": "English",
+            "label": "English"
+          },
+          {
+            "value": "Spanish",
+            "label": "Spanish"
+          },
+          {
+            "value": "Other",
+            "label": "Other"
+          }
+        ]
+      },
+      "required": false
+    },
+    {
       "label": "Are you reaching out on behalf of yourself or another person?",
       "type": "select",
       "defaultValue": "Yes",
@@ -309,26 +338,6 @@
         {
           "value": "No",
           "label": "Someone else"
-        }
-      ]
-    },
-    {
-      "label": "What is your preferred language?",
-      "type": "select",
-      "defaultValue": "en-US",
-      "name": "language",
-      "options": [
-        {
-          "value": "en-US",
-          "label": "English"
-        },
-        {
-          "value": "es-US",
-          "label": "Spanish"
-        },
-        {
-          "value": "en",
-          "label": "Other"
         }
       ]
     },
