@@ -274,7 +274,7 @@ describe('flow designer', { timeout: 20_000 }, () => {
   const settings = () => within(screen.getByRole('region', { name: 'Settings' }));
 
   test('Studio names that break the standards, or repeat, are pointed out', async () => {
-    await openNewBoard('Names');
+    await openNewBoard('Naming');
     // The kind's start is fixed: only the rest is typed, in lower case with underscores
     fireEvent.click(palette().getByRole('button', { name: /^Decision/ }));
     expect(settings().getByTitle('Set by the kind of widget').textContent).toBe('split_');
@@ -360,21 +360,43 @@ describe('flow designer', { timeout: 20_000 }, () => {
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
     cleanup();
 
-    // Opened again, nothing selected: the board's names (two languages to choose from, a service)
+    // Opened again, nothing selected: the board's names (channels and two languages chosen from a list,
+    // one typed, a service)
     render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName={staff.name} />);
     await screen.findByRole('heading', { name: 'Parts' });
-    const languages = settings().getByRole('textbox', { name: /^Languages/ });
-    fireEvent.change(languages, { target: { value: 'en, es' } });
-    fireEvent.blur(languages);
+    fireEvent.change(settings().getByRole('combobox', { name: 'Add channels' }), { target: { value: 'voice' } });
+    const addLanguage = () => settings().getByRole('combobox', { name: 'Add languages' });
+    fireEvent.change(addLanguage(), { target: { value: 'en' } });
+    fireEvent.change(addLanguage(), { target: { value: 'es' } });
+    expect(settings().getByRole('button', { name: 'Remove Spanish (es)' })).toBeTruthy();
+    // Several languages: one flow named per language, unless chosen otherwise
+    expect(
+      (settings().getByRole('radio', { name: /^One flow, with messages in each language/ }) as HTMLInputElement)
+        .checked,
+    ).toBe(true);
     const services = settings().getByRole('textbox', { name: /^Services/ });
     fireEvent.change(services, { target: { value: 'Childhelp' } });
     fireEvent.blur(services);
 
     await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
     expect((await boards.get('usnm', board.id))?.content.flow?.naming).toEqual({
+      channels: ['voice'],
       languages: ['en', 'es'],
       services: ['childhelp'],
     });
+
+    // One flow per language sharing the board: a flow each, named after the board, the first its own;
+    // widgets' names lose their language, and a flow's key can be changed
+    fireEvent.click(settings().getByRole('radio', { name: /^One flow per language/ }));
+    expect(screen.getByRole('tablist', { name: 'Flows sharing this template' })).toBeTruthy();
+    const spanishKey = settings().getByRole('textbox', { name: 'Spanish studio_flows key' });
+    fireEvent.change(spanishKey, { target: { value: 'parts_spanish' } });
+    fireEvent.blur(spanishKey);
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    expect((await boards.get('usnm', board.id))?.content.flow?.variants).toEqual([
+      { key: 'parts_en', label: 'English', recordingsFolder: 'parts_en', added: true },
+      { key: 'parts_spanish', label: 'Spanish', recordingsFolder: 'parts_spanish', added: true },
+    ]);
   });
 
   test('the skilled worker checks hold their route settings and are named after the route', async () => {
@@ -403,13 +425,15 @@ describe('flow designer', { timeout: 20_000 }, () => {
 
     fireEvent.click(screen.getByRole('tab', { name: /^Check/ }));
     const check = within(screen.getByRole('region', { name: 'Check' }));
-    // A play message is voice: it has no recording yet
-    expect(check.getByText('0 errors, 5 warnings')).toBeTruthy();
+    // A play message is voice: it has no recording yet; and the board doesn't say its channels,
+    // languages or services (warnings that can be ignored)
+    expect(check.getByText('0 errors, 8 warnings')).toBeTruthy();
+    expect(check.getByText(/^The board doesn't say its services/)).toBeTruthy();
     expect(check.getByRole('button', { name: 'Nothing comes after “Play message (voice)”.' })).toBeTruthy();
 
     fireEvent.click(check.getByRole('button', { name: 'The flow ends here on purpose' }));
     expect(check.queryByText(/Nothing comes after/)).toBeNull();
-    expect(check.getByText('0 errors, 4 warnings')).toBeTruthy();
+    expect(check.getByText('0 errors, 7 warnings')).toBeTruthy();
 
     // The warnings can be hidden, leaving only errors
     fireEvent.click(check.getByRole('checkbox', { name: 'Show warnings' }));

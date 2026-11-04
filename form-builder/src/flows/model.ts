@@ -135,6 +135,32 @@ export const variantInLanguage = (main: FlowVariant, locale: string, label: stri
   };
 };
 
+// Languages a flow's names and flows can be in (FlowNaming.languages), by the code names use (_en);
+// any other code can be typed. locale: its Studio language, for flows sharing a template
+export const NAMING_LANGUAGES = [
+  { code: 'en', label: 'English', locale: 'en-US' },
+  { code: 'es', label: 'Spanish', locale: 'es-US' },
+  { code: 'fr', label: 'French', locale: 'fr-CA' },
+  { code: 'pt', label: 'Portuguese', locale: 'pt-BR' },
+  { code: 'vi', label: 'Vietnamese', locale: 'vi-VN' },
+] as const;
+
+export const namingLanguageOf = (code: string) =>
+  NAMING_LANGUAGES.find((language) => language.code === code) ?? { code, label: code, locale: code };
+
+/**
+ * A new board's flows, one per language, sharing its template (FlowDetails.variants): each a
+ * studio_flows entry to add, keyed and with its recordings folder after the board's title and its
+ * language (post_call_survey_en, post_call_survey_es).
+ */
+export const sharedLanguageVariants = (title: string, languages: string[]): FlowVariant[] => {
+  const base = toSnake(title) || 'flow';
+  return languages.map((code) => {
+    const key = `${base}_${code}`;
+    return { key, label: namingLanguageOf(code).label, recordingsFolder: key, added: true };
+  });
+};
+
 export type StudioFlowSource = {
   // Its template, under twilio-iac/helplines, e.g. usnm/templates/studio-flows/voice.tftpl
   template: string;
@@ -365,6 +391,8 @@ export const isImportedBoard = (content: Pick<BoardContent, 'frames' | 'flow'>) 
  */
 export const variesByVariant = (object: Pick<FlowObject, 'type' | 'message' | 'studio'>) => {
   if (object.message?.channel === 'voice' || VOICE_ONLY.has(object.type)) return true;
+  // A new message's text is written in flow_vars (studioTemplate.ts), so each variant has its own
+  if (!object.studio && OBJECT_TYPES[object.type]?.hasMessage) return true;
   const written = object.studio?.properties?.say ?? object.studio?.properties?.body;
   return typeof written === 'string' && /^\$\{\s*[a-z_]*flow_vars\./.test(written.trim());
 };
@@ -558,6 +586,22 @@ export const TASK_CHANNELS = ['voice', 'chat', 'voicemail'];
 export const taskChannelOf = (object: Pick<FlowObject, 'settings'>, channel?: Channel) =>
   object.settings?.taskChannel || (channel ? (channel === 'voice' ? 'voice' : 'chat') : undefined);
 
+// A Skilled worker available? check's channel: the one chosen, otherwise the flow's (voice for
+// calls, chat for messaging); the route needs one (STUDIO_ROUTES.md)
+export const workerChannelOf = (object: Pick<FlowObject, 'settings'>, channel?: Channel) =>
+  object.settings?.targetChannel || (channel ? (channel === 'voice' ? 'voice' : 'chat') : undefined);
+
+/**
+ * What a flow is for: its channel when set, otherwise its names' channels (FlowNaming.channels),
+ * voice when they're all voice and the first messaging one otherwise.
+ */
+export const flowChannelOf = (details?: Pick<Frame, 'channel' | 'naming'>): Channel | undefined => {
+  if (details?.channel) return details.channel;
+  const channels = details?.naming?.channels ?? [];
+  if (channels.length === 0) return undefined;
+  return (channels.find((channel) => channel !== 'voice') ?? 'voice') as Channel;
+};
+
 // Who a message is from, as the person sees it: the helpline's name (${helpline}, from its
 // common.hcl), Bot, or anything typed (Custom). Always set: new messages are from Bot, imported
 // ones from whoever their live widget says (checks.ts flags one left empty)
@@ -720,7 +764,8 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
         key: 'targetChannel',
         label: 'Channel',
         options: ['voice', 'chat'],
-        hint: 'Free for a call: no call and no chat. Free for a chat: no call, and room under their maxMessageCapacity.',
+        hint: 'Free for a call: no call and no chat. Free for a chat: no call, and room under their maxMessageCapacity. Not chosen: voice in a voice flow, chat otherwise.',
+        required: true,
       },
     ],
     exits: ['available', 'not available', 'failed'],
@@ -1455,7 +1500,7 @@ export type NamingChoices = { channels: string[]; languages: string[]; services:
  * channels) and the languages its messages are in. No services unless set.
  */
 export const namingChoicesOf = (
-  details: Pick<Frame, 'channel' | 'naming'> | undefined,
+  details: (Pick<Frame, 'channel' | 'naming'> & Pick<FlowDetails, 'variants'>) | undefined,
   objects: Pick<FlowObject, 'type' | 'message'>[],
 ): NamingChoices => {
   const used = (valueOf: (object: Pick<FlowObject, 'type' | 'message'>) => string | undefined) =>
@@ -1470,7 +1515,11 @@ export const namingChoicesOf = (
         : [...new Set(messages.map((object) => messageChannelOf(object)))]
             .filter((value): value is string => Boolean(value))
             .sort()),
-    languages: details?.naming?.languages ?? used((object) => object.message?.language),
+    // A flow per language sharing the template (variants): the same widgets run in each, so their
+    // names have no language
+    languages: details?.variants?.length
+      ? []
+      : (details?.naming?.languages ?? used((object) => object.message?.language)),
     services: details?.naming?.services ?? [],
   };
 };

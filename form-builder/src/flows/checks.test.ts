@@ -16,7 +16,11 @@
 
 import { describe, expect, test } from 'vitest';
 import type { FlowObject, Frame } from './model';
-import { boardChecks, objectProblems, splitIgnored, studioNameProblems, uniqueName } from './checks';
+import { boardChecks as allChecks, objectProblems, splitIgnored, studioNameProblems, uniqueName } from './checks';
+
+// The checks but the flows' unset channels, languages and services (tested on their own)
+const boardChecks = (...args: Parameters<typeof allChecks>) =>
+  allChecks(...args).filter((issue) => !issue.key.includes('|naming-'));
 import { standardTaskAttributes } from './taskAttributes';
 import type { Connection } from './model';
 

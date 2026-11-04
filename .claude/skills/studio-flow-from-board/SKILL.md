@@ -183,6 +183,7 @@ are none.
 | `“<widget>” had <value> written in it: it reads ${flow_vars.<name>} now` | Already done in `text`: the value differs between staging and production (a SID, a staging or Twilio Functions address), so it's a variable (`environmentSpecific` in `variables`). Set it in step 4; ask for the production value |
 | Set variables | Set on the board (`variables`: key and value) when given; otherwise what the design's text says the counter or variable is for |
 | A Repeat's times to repeat | The board leaves it at 2: ask the person if the design doesn't say |
+| Skilled worker available?: channel | Already in `text`: the board's, otherwise `voice` in a voice flow and `chat` in any other (the route needs `targetChannel`). Skilled worker logged in? has no channel |
 | A chatbot's settings (language, message, release type...) | `STUDIO_ROUTES.md` (`channelCapture/captureChannelWithBot`) and the helpline's other templates calling it; the bot's name is in `lex_v2_bot_languages` |
 
 Kinds that become more than one widget, as the board writes them:
@@ -351,6 +352,11 @@ post-call survey in English and Spanish). The board shows them as one, with a ta
   its language and recordings folder changed). Its texts come from `variables` with its `flow`; any
   text left out is still in the first flow's language: say so in the hand-off. Its recordings have
   to be uploaded (and published, for production) before callers can hear it.
+- **A new board shared by several languages** (no `template`, every flow `added`): write the
+  template once (step 2, "Without `template`"), then a `studio_flows` entry per flow in the
+  environment being done, keyed `key`, all with that `templatefile` and each with its own
+  `flow_vars` (its texts: `variables` with its `flow`). Ask which channel or flow starts each one
+  if the board doesn't say (a post-call survey is started by the voice flow, not a channel).
 - **`ownTemplate`**: this flow was split off a shared template on purpose. Write a new template
   (`ownTemplate.suggested`, e.g. `post-call-survey-es.tftpl`), a copy of `ownTemplate.from` with
   the board's changes; point `studio_flows.<ownTemplate.studioFlow>.templatefile` at it. Leave the

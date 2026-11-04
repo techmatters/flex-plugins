@@ -19,7 +19,7 @@
  * standards"). Problems are shown on the objects, in their settings and in the Check panel; they
  * never stop saving, since a board is a design in progress.
  */
-import type { BoardContent, FlowObject, Frame, NamingChoices } from './model';
+import type { BoardContent, FlowDetails, FlowObject, Frame, NamingChoices } from './model';
 import {
   defaultSplitInputOf,
   exitsOf,
@@ -32,6 +32,8 @@ import {
   standardStudioName,
   TASK_CHANNELS,
   taskChannelOf,
+  workerChannelOf,
+  flowChannelOf,
   variableKeyProblem,
   variesByVariant,
   widgetNamesOf,
@@ -325,7 +327,11 @@ export const boardChecks = (
       (info.fields ?? [])
         .filter((field) => field.required && fieldShown(field, object.settings))
         .filter((field) =>
-          field.key === 'taskChannel' ? !taskChannelOf(object, frame?.channel) : !object.settings?.[field.key]?.trim(),
+          field.key === 'taskChannel'
+            ? !taskChannelOf(object, flowChannelOf(frame))
+            : field.key === 'targetChannel'
+              ? !workerChannelOf(object, flowChannelOf(frame))
+              : !object.settings?.[field.key]?.trim(),
         )
         .forEach((field) =>
           add(
@@ -518,6 +524,32 @@ export const boardChecks = (
       ),
     );
 
+  // Each flow's channels, languages and services (what its names are built from): not required, but
+  // worth saying; a warning that can be ignored when one doesn't apply
+  const flows: { frameId?: string; details?: FlowDetails; where: string }[] = [
+    { details: content.flow, where: 'The board' },
+    ...content.frames.map((frame) => ({ frameId: frame.id, details: frame, where: `Frame “${frame.title}”` })),
+  ];
+  flows
+    .filter(({ frameId }) => content.objects.some((object) => object.frameId === frameId))
+    .forEach(({ frameId, details, where }) => {
+      const unset = [
+        ...(details?.naming?.channels?.length || details?.channel ? [] : ['channels']),
+        ...(details?.naming?.languages?.length || details?.variants?.length ? [] : ['languages']),
+        ...(details?.naming?.services?.length ? [] : ['services']),
+      ];
+      unset.forEach((part) =>
+        add(
+          {
+            severity: 'warning',
+            message: `${where} doesn't say its ${part} (Names in its settings). Ignore this if it doesn't apply.`,
+            ...(frameId ? { frameId } : {}),
+          },
+          `naming-${part}`,
+        ),
+      );
+    });
+
   return [
     ...issues.filter((issue) => issue.severity === 'error'),
     ...issues.filter((issue) => issue.severity === 'warning'),
@@ -538,7 +570,7 @@ export const splitIgnored = (issues: Issue[], ignoredKeys: string[] = []) => {
 // What a sketch (Sketch mode) leaves for later: scripts, recordings, languages, the names' standard
 // parts, call settings, variables and task attributes
 const DETAIL_CHECKS =
-  /^(nameStandard|noFrom|noScript|recording|scriptApproval|language|oldRecordingName|taskAttributes|noUrl|noVariables|noInput|noChatbot|field-.*|required-.*|taskChannel|variable-.*)$/;
+  /^(nameStandard|noFrom|noScript|recording|scriptApproval|language|oldRecordingName|taskAttributes|noUrl|noVariables|noInput|noChatbot|field-.*|required-.*|taskChannel|naming-.*|variable-.*)$/;
 
 /** The issues that matter in a sketch: the flow's shape (ways out, names, what's unreachable...). */
 export const sketchIssues = (issues: Issue[]) => issues.filter((issue) => !DETAIL_CHECKS.test(issue.key.split('|')[1]));

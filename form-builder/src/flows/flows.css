@@ -1907,3 +1907,60 @@ body.flow-resizing {
   border-color: #cfd8dc;
   color: #546e7a;
 }
+
+/* Names: channels and languages chosen from a list (MultiSelect) */
+.flow-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.flow-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  font-size: 13px;
+}
+
+.flow-chip .link-button {
+  padding: 0 2px;
+  line-height: 1;
+}
+
+/* A flow per language sharing the board: each with its studio_flows key */
+.flow-language-flows {
+  list-style: none;
+  margin: 0 0 4px;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.flow-language-flows li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.flow-language-flows input {
+  flex: 1;
+  min-width: 0;
+}
+
+.flow-language-mode {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 6px 8px;
+  display: grid;
+  gap: 4px;
+}
+
+.flow-language-mode label {
+  font-size: 13px;
+}

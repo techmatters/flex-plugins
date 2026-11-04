@@ -69,7 +69,9 @@ import {
   OBJECT_TYPES,
   statusOf,
   STICKY_COLORS,
+  sharedLanguageVariants,
   TEMPLATES_CODE,
+  toSnake,
   VARIANT_LANGUAGES,
   variantInLanguage,
   variesByVariant,
@@ -186,7 +188,7 @@ const Editor = ({
   // Studio flows sharing this template (FlowDetails.variants): which one is shown (texts, recordings)
   const variants = boardFlow?.variants ?? [];
   const mainVariant = variants[0]?.key;
-  const [variantKey, setVariantKey] = useState(mainVariant);
+  const [variantKey, setVariantKey] = useState<string | undefined>(mainVariant);
   const variant = variants.find((candidate) => candidate.key === variantKey) ?? variants[0];
   const content = useMemo(
     () => ({
@@ -355,8 +357,9 @@ const Editor = ({
 
   // Another language for the flows sharing this template: a new studio_flows entry (the export asks
   // for it), with its own scripts and recordings folder, empty until written and recorded
-  const addLanguage = (locale: string) => {
-    const language = VARIANT_LANGUAGES.find((candidate) => candidate.locale === locale);
+  const addLanguage = (locale: string, label?: string) => {
+    const language =
+      VARIANT_LANGUAGES.find((candidate) => candidate.locale === locale) ?? (label ? { locale, label } : undefined);
     if (!language || !boardFlow || variants.length === 0) return;
     const added = variantInLanguage(variants[0], language.locale, language.label);
     if (variants.some((candidate) => candidate.key === added.key)) {
@@ -378,6 +381,112 @@ const Editor = ({
       }),
     );
     setVariantKey(added.key);
+  };
+
+  // Each object's other languages' messages (variantMessages), changed for every object that has them
+  const updateVariantMessages = (
+    change: (messages: NonNullable<FlowObject['variantMessages']>) => FlowObject['variantMessages'],
+  ) =>
+    setNodes((current) =>
+      current.map((node) => {
+        if (node.type !== 'object' || !variesByVariant(node.data.object)) return node;
+        const variantMessages = change(node.data.object.variantMessages ?? {});
+        const { variantMessages: _old, ...object } = node.data.object;
+        return {
+          ...node,
+          data: {
+            object:
+              variantMessages && Object.keys(variantMessages).length > 0 ? { ...object, variantMessages } : object,
+          },
+        };
+      }),
+    );
+
+  // One flow per language sharing this board's template (a new board's, from its languages): each a
+  // studio_flows entry to add, named after the board's title; the first language is the board's own
+  const shareLanguages = (languages: string[]) => {
+    if (languages.length === 0) return;
+    const shared = sharedLanguageVariants(title, languages);
+    setBoardFlow({ ...boardFlow, variants: shared });
+    setNodes((current) =>
+      current.map((node) => {
+        if (node.type !== 'object' || node.parentId || !variesByVariant(node.data.object)) return node;
+        const { object } = node.data;
+        return {
+          ...node,
+          data: {
+            object: {
+              ...object,
+              ...(object.message ? { message: { ...object.message, language: languages[0] } } : {}),
+              variantMessages: Object.fromEntries(
+                shared
+                  .slice(1)
+                  .map((variant, index) => [
+                    variant.key,
+                    { ...object.variantMessages?.[variant.key], language: languages[index + 1] },
+                  ]),
+              ),
+            },
+          },
+        };
+      }),
+    );
+    setVariantKey(shared[0].key);
+  };
+
+  // Back to one flow, its messages named per language: only for flows added on the board (imported
+  // ones are studio_flows entries in the helpline's config); the other languages' texts go
+  const unshareLanguages = () => {
+    if (!boardFlow || variants.some((candidate) => !candidate.added)) return;
+    const written = nodes.some(
+      (node) =>
+        node.type === 'object' &&
+        Object.values(node.data.object.variantMessages ?? {}).some((message) => message.script),
+    );
+    // eslint-disable-next-line no-alert
+    if (written && !window.confirm('The texts written in the other languages will be removed. Go on?')) return;
+    const languages = variants.map((candidate) => candidate.key.split('_').pop() ?? candidate.key);
+    const { variants: _removed, ...rest } = boardFlow;
+    setBoardFlow({ ...rest, naming: { ...rest.naming, languages } });
+    updateVariantMessages(() => undefined);
+    setVariantKey(undefined);
+  };
+
+  // A language added on the board taken out again (its texts with it)
+  const removeLanguage = (key: string) => {
+    const leaving = variants.find((candidate) => candidate.key === key);
+    if (!boardFlow || !leaving?.added || key === mainVariant) return;
+    // eslint-disable-next-line no-alert
+    if (!window.confirm(`Remove ${leaving.label} (${key}) and its texts?`)) return;
+    setBoardFlow({ ...boardFlow, variants: variants.filter((candidate) => candidate.key !== key) });
+    updateVariantMessages(({ [key]: _removed, ...others }) => others);
+    if (variantKey === key) setVariantKey(mainVariant);
+  };
+
+  // A flow added on the board given another studio_flows key (its recordings folder follows when it
+  // was the same)
+  const renameVariant = (key: string, renamed: string) => {
+    const next = toSnake(renamed);
+    const variant = variants.find((candidate) => candidate.key === key);
+    if (!boardFlow || !variant?.added || !next || next === key) return;
+    if (variants.some((candidate) => candidate.key === next)) {
+      setNotice(`There is already a flow called ${next}.`);
+      return;
+    }
+    setBoardFlow({
+      ...boardFlow,
+      variants: variants.map((candidate) =>
+        candidate.key === key
+          ? {
+              ...candidate,
+              key: next,
+              recordingsFolder: candidate.recordingsFolder === key ? next : candidate.recordingsFolder,
+            }
+          : candidate,
+      ),
+    });
+    updateVariantMessages(({ [key]: moved, ...others }) => (moved ? { ...others, [next]: moved } : others));
+    if (variantKey === key) setVariantKey(next);
   };
 
   // A variant made its own Studio flow: a new board where its texts are the board's own (its recordings
@@ -1348,6 +1457,13 @@ const Editor = ({
                 helplineChoices={helplineChoices}
                 onRefreshChoices={refreshChoices}
                 onBoardFlow={setBoardFlow}
+                languages={{
+                  onShare: shareLanguages,
+                  onUnshare: unshareLanguages,
+                  onAdd: addLanguage,
+                  onRemove: removeLanguage,
+                  onRename: renameVariant,
+                }}
                 sketch={mode === 'sketch'}
               />
             )}

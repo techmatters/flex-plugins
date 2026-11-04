@@ -42,6 +42,8 @@ import {
   repeatWidgetNames,
   studioConditionName,
   taskChannelOf,
+  workerChannelOf,
+  flowChannelOf,
   toSnake,
   widgetNamesOf,
 } from './model';
@@ -672,8 +674,24 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       recordingsVariable && object.studioName
         ? { play: `\${flow_vars.${recordingsVariable}}/${voiceRecording}` }
         : { say: message || TODO };
+    // Its text in flow_vars: for flows sharing the template, each flow's own (its studio_flows entry's)
+    const pushText = (variable: string) => {
+      flowVars.push({
+        scope: 'flow_vars',
+        name: variable,
+        value: message,
+        widget: name,
+        ...(mainVariant ? { flow: mainVariant } : {}),
+      });
+      if (!mainVariant) return;
+      variants.slice(1).forEach(({ key, label: language }) => {
+        const own = object.variantMessages?.[key]?.script;
+        if (!own) todo.push(`${label(object)} has no ${language} text yet: ${key} gets the ${variants[0].label} one.`);
+        flowVars.push({ scope: 'flow_vars', name: variable, value: own || message, widget: name, flow: key });
+      });
+    };
     const fromFlowVars = () => {
-      flowVars.push({ scope: 'flow_vars', name, value: message, widget: name });
+      pushText(name);
       return `\${flow_vars.${name}}`;
     };
     // A split on a value, one match per way out (and "no match")
@@ -966,6 +984,13 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       case 'checkWorkerLoggedIn': {
         const result =
           object.type === 'checkQueueAvailability' ? ['available', 'not available'] : ['logged in', 'not logged in'];
+        // Its settings; an availability check's channel follows the flow's when not chosen (the route needs one)
+        const settings: Record<string, string> = { ...object.settings };
+        if (object.type === 'checkQueueAvailability') {
+          const targetChannel = workerChannelOf(object, flowChannelOf(details));
+          if (!targetChannel) todo.push(`${label(object)}: set its channel (voice or chat).`);
+          settings.targetChannel = targetChannel ?? TODO;
+        }
         // What each route answers (STUDIO_ROUTES.md): how many could take it now, or are logged in
         const field = object.type === 'checkQueueAvailability' ? 'totalAvailableWorkers' : 'totalLoggedInWorkers';
         const input = `{{widgets.${name}.parsed.${field}}}`;
@@ -976,7 +1001,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
             transitions: [{ event: 'success', next: splitName }, withNext({ event: 'failed' }, next('failed'))],
             properties: {
               offset,
-              ...httpRequest(`${ACCOUNT_SCOPED}/${info.studioRoute}`, JSON.stringify(object.settings ?? {}, null, 2)),
+              ...httpRequest(`${ACCOUNT_SCOPED}/${info.studioRoute}`, JSON.stringify(settings, null, 2)),
             },
           },
           split(splitName, input, [{ exit: result[0], type: 'greater_than', value: '0' }], result[1]),
@@ -1015,7 +1040,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       case 'sendMessageAndClose': {
         // Its message from flow_vars, named as the helplines' are (send_message_<what>)
         const variable = `send_message_${name.replace(/^(postqueue_)?f_sendMessageAndRunJanitor_?/, '') || 'janitor'}`;
-        flowVars.push({ scope: 'flow_vars', name: variable, value: message, widget: name });
+        pushText(variable);
         return [
           {
             name,
@@ -1071,7 +1096,7 @@ export const toStudioFlow = (content: BoardContent, frame?: Frame): GeneratedStu
       }
       case 'sendToQueue': {
         const { queue, workflow } = object.settings ?? {};
-        const taskChannel = taskChannelOf(object, details?.channel);
+        const taskChannel = taskChannelOf(object, flowChannelOf(details));
         if (!workflow || !taskChannel) todo.push(`${label(object)}: set its workflow and task channel.`);
         if (queue) {
           todo.push(

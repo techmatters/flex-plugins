@@ -28,6 +28,10 @@ import {
   isSplitObject,
   SPLIT_OPERATORS,
   taskChannelOf,
+  workerChannelOf,
+  flowChannelOf,
+  NAMING_LANGUAGES,
+  namingLanguageOf,
   FlowObjectType,
   fieldProblem,
   fieldShown,
@@ -123,8 +127,21 @@ export type InspectorProps = {
   onRefreshChoices?: () => void;
   // The board's own flow's settings changed (its objects outside frames)
   onBoardFlow?: (flow: FlowDetails) => void;
+  // Its languages as flows sharing its template (FlowDetails.variants), when the board can have them
+  languages?: SharedLanguageActions;
   // Sketch mode: only what a high-level design needs (kind, text, name, ways out, Repeat's times)
   sketch?: boolean;
+};
+
+// One flow per language sharing the board's template: making it so, and its languages (BoardEditor)
+export type SharedLanguageActions = {
+  // From these languages (the first is the board's own), or back to one flow named per language
+  onShare: (languages: string[]) => void;
+  onUnshare: () => void;
+  // A language's flow added, taken out, or given another studio_flows key
+  onAdd: (locale: string, label: string) => void;
+  onRemove: (key: string) => void;
+  onRename: (key: string, renamed: string) => void;
 };
 
 // Where each kind of suggestion comes from, for when there are none yet
@@ -458,28 +475,131 @@ const ListInput = ({
 };
 
 /**
+ * Values chosen from a list, one or more, each shown with a way to take it out; "Other" lets one
+ * not in the list be typed (when allowed).
+ */
+const MultiSelect = ({
+  label,
+  values,
+  options,
+  other,
+  hint,
+  readOnly,
+  onChange,
+}: {
+  label: string;
+  values: string[];
+  options: { value: string; label: string }[];
+  // Typing one not listed (its placeholder)
+  other?: string;
+  hint: string;
+  readOnly: boolean;
+  onChange: (values: string[]) => void;
+}) => {
+  const [typing, setTyping] = useState<string>();
+  const labelOf = (value: string) => options.find((option) => option.value === value)?.label ?? value;
+  const add = (value: string) => {
+    const added = toSnake(value);
+    if (added && !values.includes(added)) onChange([...values, added]);
+  };
+  const stopTyping = () => {
+    add(typing ?? '');
+    setTyping(undefined);
+  };
+  return (
+    <div className="field">
+      <span className="field-label">{label}</span>
+      <span className="flow-chips">
+        {values.map((value) => (
+          <span key={value} className="flow-chip">
+            {labelOf(value)}
+            {!readOnly && (
+              <button
+                type="button"
+                className="link-button"
+                aria-label={`Remove ${labelOf(value)}`}
+                onClick={() => onChange(values.filter((candidate) => candidate !== value))}
+              >
+                ×
+              </button>
+            )}
+          </span>
+        ))}
+      </span>
+      {!readOnly &&
+        (typing !== undefined ? (
+          <input
+            type="text"
+            autoFocus
+            aria-label={`Other ${label.toLowerCase()}`}
+            value={typing}
+            placeholder={other}
+            onChange={(e) => setTyping(e.target.value)}
+            onBlur={stopTyping}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') stopTyping();
+              else if (e.key === 'Escape') setTyping(undefined);
+            }}
+          />
+        ) : (
+          <select
+            aria-label={`Add ${label.toLowerCase()}`}
+            value=""
+            onChange={(e) => (e.target.value === OTHER ? setTyping('') : add(e.target.value))}
+          >
+            <option value="">+ Add</option>
+            {options
+              .filter((option) => !values.includes(option.value))
+              .map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            {other && <option value={OTHER}>Other…</option>}
+          </select>
+        ))}
+      <span className="field-hint">{hint}</span>
+    </div>
+  );
+};
+// The "Other" choice (never a value)
+const OTHER = ' other';
+
+const LANGUAGE_OPTIONS = NAMING_LANGUAGES.map(({ code, label }) => ({ value: code, label: `${label} (${code})` }));
+
+/**
  * The flow's channels, languages and services: the parts its messages' names are built from
- * (gather_input_voice_en_childhelp_service_menu).
+ * (gather_input_voice_en_childhelp_service_menu). With several languages, the board's own flow can
+ * instead be one flow per language sharing its template (as the post-call surveys): its widgets'
+ * names then have no language, and each language has its own texts, recordings and studio_flows entry.
  */
 const NamingSection = ({
   details,
   objects,
   readOnly,
   onChange,
+  languages: sharing,
 }: {
-  details?: Pick<Frame, 'channel' | 'naming'>;
+  details?: Pick<Frame, 'channel' | 'naming'> & Pick<FlowDetails, 'variants'>;
   objects: FlowObject[];
   readOnly: boolean;
   onChange: (naming: FlowNaming | undefined) => void;
+  // The board's own flow: its languages can be flows sharing its template
+  languages?: SharedLanguageActions;
 }) => {
   const naming = details?.naming ?? {};
   // What's used when nothing is set: the flow's channel, its messages' languages
-  const found = namingChoicesOf(details ? { ...details, naming: undefined } : undefined, objects);
+  const found = namingChoicesOf(details ? { ...details, naming: undefined, variants: undefined } : undefined, objects);
   const set = (key: keyof FlowNaming, values: string[] | undefined) => {
     const { [key]: _removed, ...others } = naming;
-    const next = values ? { ...others, [key]: values } : others;
+    const next = values && values.length > 0 ? { ...others, [key]: values } : others;
     onChange(Object.keys(next).length > 0 ? next : undefined);
   };
+  const variants = details?.variants ?? [];
+  const shared = variants.length > 0;
+  // Flows from the helpline's config (studio_flows entries) can't be made one again here
+  const imported = variants.some((variant) => !variant.added);
+  const chosenLanguages = naming.languages ?? [];
   return (
     <section className="flow-inspector-section">
       <h3>Names</h3>
@@ -487,29 +607,118 @@ const NamingSection = ({
         Messages, menus and questions are named{' '}
         <code>&lt;prefix&gt;&lt;channel&gt;_&lt;language&gt;_&lt;service&gt;_…</code>, e.g.{' '}
         <code>gather_input_voice_en_childhelp_service_menu</code>. One value is filled in by itself; several are chosen
-        from.
+        from. None has to be set: the Check panel warns, and the warning can be ignored when it doesn&apos;t apply.
       </p>
-      <ListInput
+      <MultiSelect
         label="Channels"
-        values={naming.channels}
-        placeholder={found.channels.join(', ') || 'voice'}
-        hint="Comma-separated. Empty: the flow's channel."
+        values={naming.channels ?? []}
+        options={CHANNELS}
+        hint={`Not set: ${found.channels.join(', ') || 'none'} (the flow's channel).`}
         readOnly={readOnly}
         onChange={(values) => set('channels', values)}
       />
-      <ListInput
-        label="Languages"
-        values={naming.languages}
-        placeholder={found.languages.join(', ') || 'en, es'}
-        hint="Empty: the languages its messages are in."
-        readOnly={readOnly}
-        onChange={(values) => set('languages', values)}
-      />
+      {shared ? (
+        <div className="field">
+          <span className="field-label">Languages (a flow each)</span>
+          <ul className="flow-language-flows">
+            {variants.map((variant, index) => (
+              <li key={variant.key}>
+                <span>
+                  {variant.label}
+                  {index === 0 ? ' (the board’s own)' : ''}
+                </span>{' '}
+                {variant.added && !readOnly && sharing ? (
+                  <input
+                    type="text"
+                    aria-label={`${variant.label} studio_flows key`}
+                    defaultValue={variant.key}
+                    onBlur={(e) => sharing.onRename(variant.key, e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && e.currentTarget.blur()}
+                  />
+                ) : (
+                  <code>{variant.key}</code>
+                )}
+                {variant.added && index > 0 && !readOnly && sharing && (
+                  <button type="button" className="link-button" onClick={() => sharing.onRemove(variant.key)}>
+                    Remove
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+          {!readOnly && sharing && (
+            <select
+              aria-label="Add a language's flow"
+              value=""
+              onChange={(e) => {
+                if (!e.target.value) return;
+                const language = namingLanguageOf(e.target.value);
+                sharing.onAdd(language.locale, language.label);
+              }}
+            >
+              <option value="">+ Add a language</option>
+              {NAMING_LANGUAGES.filter(({ label }) => !variants.some((variant) => variant.label === label)).map(
+                ({ code, label }) => (
+                  <option key={code} value={code}>
+                    {label} ({code})
+                  </option>
+                ),
+              )}
+            </select>
+          )}
+          <span className="field-hint">
+            Each is a Studio flow (its studio_flows key) built from this one board: the same widgets, with its own
+            texts, recordings folder and flow_vars. Widgets&apos; names have no language.
+          </span>
+        </div>
+      ) : (
+        <MultiSelect
+          label="Languages"
+          values={chosenLanguages}
+          options={LANGUAGE_OPTIONS}
+          other="e.g. ar"
+          hint={`Not set: ${found.languages.join(', ') || 'none'} (its messages' languages).`}
+          readOnly={readOnly}
+          onChange={(values) => set('languages', values)}
+        />
+      )}
+      {sharing && (shared || chosenLanguages.length > 1) && (
+        <fieldset className="field flow-language-mode">
+          <legend className="field-label">Several languages</legend>
+          <label>
+            <input
+              type="radio"
+              name="language-mode"
+              checked={!shared}
+              disabled={readOnly || imported}
+              onChange={() => sharing.onUnshare()}
+            />{' '}
+            One flow, with messages in each language (names include <code>_{chosenLanguages[0] ?? 'en'}</code>,{' '}
+            <code>_{chosenLanguages[1] ?? 'es'}</code>)
+          </label>
+          <label>
+            <input
+              type="radio"
+              name="language-mode"
+              checked={shared}
+              disabled={readOnly}
+              onChange={() => sharing.onShare(chosenLanguages)}
+            />{' '}
+            One flow per language, sharing this board (like the post-call surveys)
+          </label>
+          {imported && (
+            <span className="field-hint">
+              Its flows are studio_flows entries in the helpline&apos;s config: to make one its own flow, use the bar
+              above the board.
+            </span>
+          )}
+        </fieldset>
+      )}
       <ListInput
         label="Services"
         values={naming.services}
         placeholder="childhelp, tya"
-        hint="e.g. the lines or programs the flow serves. Optional."
+        hint="Comma-separated: e.g. the lines or programs the flow serves."
         readOnly={readOnly}
         onChange={(values) => set('services', values)}
       />
@@ -1018,7 +1227,13 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
           {fields.map((field) => {
             const value = object.settings?.[field.key] ?? '';
             // Not chosen: a Send to queue's task channel follows the flow's channel
-            const automatic = field.key === 'taskChannel' ? taskChannelOf({}, details?.channel) : undefined;
+            const flowChannel = flowChannelOf(details);
+            const automatic =
+              field.key === 'taskChannel'
+                ? taskChannelOf({}, flowChannel)
+                : field.key === 'targetChannel'
+                  ? workerChannelOf({}, flowChannel)
+                  : undefined;
             const emptyChoiceLabel = (choice: typeof field) =>
               automatic
                 ? `Automatic: ${automatic} (from the flow’s channel)`
@@ -1453,12 +1668,13 @@ const BoardSettings = ({ props }: { props: InspectorProps }) => {
           />
         </label>
       </section>
-      {props.onBoardFlow && (props.content.flow || unframed.length > 0) && (
+      {props.onBoardFlow && (props.content.flow || unframed.length > 0 || frames.length === 0) && (
         <NamingSection
           details={props.content.flow}
           objects={unframed}
           readOnly={props.readOnly}
           onChange={(naming) => props.onBoardFlow?.({ ...props.content.flow, naming })}
+          languages={props.languages}
         />
       )}
       <section className="flow-inspector-section">

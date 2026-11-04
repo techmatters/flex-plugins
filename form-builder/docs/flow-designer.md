@@ -49,7 +49,7 @@ reads the same way as Studio.
 | Other subflow | double-sided box | layers | as defined | Run Subflow (`run_subflow_...`) |
 | Check operating hours | double-sided box (function) | clock | open / closed / holiday | `operatingHours` (`f_operatingHours`) + Split on `parsed.status`; its request body is the flow's channel, en-US and who it's from unless one is set |
 | Check client profile | double-sided box | user search | blocked / not blocked | `f_getProfileFlagsForIdentifier` + Split, written as the helplines' are: the trigger and channel type sent, blocked when `parsed.flags` contains `blocked` |
-| Skilled worker available? | double-sided box | users | available / not available / failed | `worker/isSkilledWorkerAvailable` (`f_isSkilledWorkerAvailable_<skills>`) + Split; settings: skills (typed, or added from the helpline's routing design), channel |
+| Skilled worker available? | double-sided box | users | available / not available / failed | `worker/isSkilledWorkerAvailable` (`f_isSkilledWorkerAvailable_<skills>`) + Split; settings: skills (typed, or added from the helpline's routing design), channel (not chosen: `voice` in a voice flow, `chat` in any other) |
 | Skilled worker logged in? | double-sided box | user check | logged in / not logged in / failed | `worker/isSkilledWorkerLoggedIn` (`f_isSkilledWorkerLoggedIn_<skills>`) + Split; settings: skills, activities not counted |
 | Check country / phone code | diamond | globe | one per country, other | Split (`split_country...`) |
 | Other function / HTTP request | double-sided box | braces / webhook | success / failed | Run Function or HTTP Request (`f_...`, `http_post_...`). Its settings: method, address (https://... or `${variable}/...`) and JSON body (Studio's `{{...}}` allowed), sent as `application/json` without Twilio auth; both checked. Imported from the live widget, and only written back when changed |
@@ -100,8 +100,17 @@ are named by parts: `<prefix><channel>_<language>_<service>_<what it is>`, e.g.
 `gather_input_voice_en_childhelp_service_menu`. Every part but the prefix is optional.
 
 - The flow's **channels, languages and services** are set in its settings (a frame's, or the
-  board's with nothing selected, under **Names**). Left empty, the channels are the flow's channel
-  (or its messages'), and the languages those its messages are in; there are no services.
+  board's with nothing selected, under **Names**). Channels and languages are chosen from a list,
+  one or more (a language not listed can be typed with **Other**); services are typed. Left empty,
+  the channels are the flow's channel (or its messages'), and the languages those its messages are
+  in; there are no services. None is required: the Check panel warns when one isn't set, and the
+  warning can be ignored when it doesn't apply.
+- **Several languages** (the board's own flow): either **one flow with messages in each language**
+  (names include the language, `_en` / `_es`), or **one flow per language sharing this board**, as
+  the post-call surveys (see "Flows sharing a template"). Chosen on a new board, each language gets
+  a flow named after the board's title (`post_call_survey_en`, `post_call_survey_es`; editable),
+  widgets' names have no language, and each flow has its own texts. Flows imported from the
+  helpline's `studio_flows` can't be made one flow again here.
 - In a message's settings the prefix is fixed (it comes from the kind of widget, plus
   `postqueue_` after the queue); a part with one value is filled in by itself, one with several is
   chosen from; then what it is is typed.
@@ -344,6 +353,11 @@ tab per flow (English / Spanish) in the board's header:
   becomes a board of its own (its texts, the same recordings folder), flagged so the export asks for
   a template of its own (e.g. `post-call-survey-es.tftpl`) and to point its `studio_flows` entry at
   it; the other flows keep the shared template.
+
+**From scratch:** on a new board, choose its languages under **Names** and then **One flow per
+language, sharing this board**: each language becomes a flow (its `studio_flows` key after the
+board's title, editable there), and the tabs work as above. A new widget's text is each flow's
+own (its `flow_vars`); a flow without one yet gets the first flow's, and the export says so.
 
 Checks: each flow's scripts are checked on its own ("Spanish: “Thanks” has no script yet"); the
 "language in the Studio name" rule doesn't apply, as one widget plays each flow's language.
