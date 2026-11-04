@@ -88,14 +88,14 @@ export const bulkTextChanged = (editorId: string, bulkText: string | undefined) 
 export const parsePastedAnswers = (text: string): SelectOption[] =>
   text
     .split(/\r?\n/)
-    .filter((line) => line.trim())
-    .map((line) => {
+    .filter(line => line.trim())
+    .map(line => {
       const separator = line.includes('\t') ? '\t' : ';';
       const [first, ...rest] = line.split(separator);
       const label = rest.join(separator).trim();
       return label ? { value: first.trim(), label } : { value: first.trim(), label: first.trim() };
     })
-    .filter((option) => option.label);
+    .filter(option => option.label);
 
 // A blank first answer ("nothing chosen yet") isn't edited here, but is kept first
 export const splitBlankOption = (options: SelectOption[]) => {
@@ -120,7 +120,7 @@ const newOptionId = () => {
 // Opens an answers editor on a field's answers
 export const openOptionsEditor =
   (editorId: string, options: SelectOption[], originalValues: Set<string>): AppThunk =>
-  (dispatch) => {
+  dispatch => {
     const { editableOptions } = splitBlankOption(options);
     const ids = editableOptions.map(newOptionId);
     dispatch(
@@ -131,7 +131,7 @@ export const openOptionsEditor =
           existingIds: ids.filter((_, index) => originalValues.has(String(editableOptions[index].value))),
           customValueIds: [],
           // Shown from the start when any answer is saved under something other than its text
-          showValues: editableOptions.some((option) => String(option.value) !== String(option.label).trim()),
+          showValues: editableOptions.some(option => String(option.value) !== String(option.label).trim()),
         },
       }),
     );

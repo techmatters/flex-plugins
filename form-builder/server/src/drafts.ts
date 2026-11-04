@@ -70,10 +70,8 @@ const readJson = async <T>(filePath: string): Promise<T | undefined> => {
 const listFiles = async (dir: string): Promise<string[]> => {
   const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => []);
   const nested = await Promise.all(
-    entries.map((entry) =>
-      entry.isDirectory()
-        ? listFiles(path.join(dir, entry.name))
-        : Promise.resolve([path.join(dir, entry.name)]),
+    entries.map(entry =>
+      entry.isDirectory() ? listFiles(path.join(dir, entry.name)) : Promise.resolve([path.join(dir, entry.name)]),
     ),
   );
   return nested.flat();
@@ -102,7 +100,7 @@ export class LocalDraftStore implements DraftStore {
 
   async put({ code, version, meta, files }: Draft): Promise<void> {
     const dir = this.draftDir(code, version);
-    Object.keys(files).forEach((filePath) => {
+    Object.keys(files).forEach(filePath => {
       if (!isValidDraftFilePath(filePath)) throw new Error(`Invalid file path ${filePath}`);
     });
     // Replace the whole draft, so files that went back to unchanged disappear
@@ -123,11 +121,11 @@ export class LocalDraftStore implements DraftStore {
   async list(): Promise<DraftSummary[]> {
     const summaries: DraftSummary[] = [];
     const codes = await fs.readdir(this.rootDir, { withFileTypes: true }).catch(() => []);
-    for (const codeEntry of codes.filter((entry) => entry.isDirectory())) {
+    for (const codeEntry of codes.filter(entry => entry.isDirectory())) {
       const versions = await fs
         .readdir(path.join(this.rootDir, codeEntry.name), { withFileTypes: true })
         .catch(() => []);
-      for (const versionEntry of versions.filter((entry) => entry.isDirectory())) {
+      for (const versionEntry of versions.filter(entry => entry.isDirectory())) {
         if (!isValidDraftKey(codeEntry.name, versionEntry.name)) continue;
         const draft = await this.get(codeEntry.name, versionEntry.name);
         if (draft) {

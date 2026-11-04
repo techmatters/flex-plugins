@@ -74,14 +74,14 @@ export const SPREADSHEET_FILE_TYPES = ['.csv', '.tsv', '.txt', ...EXCEL_EXTENSIO
 // Reads the first sheet of an Excel file, or the text of a CSV/TSV file
 export const readSpreadsheetFile = async (file: File): Promise<string[][]> => {
   const lowerName = file.name.toLowerCase();
-  if (!EXCEL_EXTENSIONS.some((extension) => lowerName.endsWith(extension))) {
+  if (!EXCEL_EXTENSIONS.some(extension => lowerName.endsWith(extension))) {
     return parseDelimitedText(await file.text());
   }
   const XLSX = await import('xlsx');
   const workbook = XLSX.read(await file.arrayBuffer(), { type: 'array' });
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
   const rows = XLSX.utils.sheet_to_json<unknown[]>(sheet, { header: 1, raw: false, defval: '' });
-  return rows.map((row) => row.map((cell) => String(cell ?? '')));
+  return rows.map(row => row.map(cell => String(cell ?? '')));
 };
 
 export const downloadExcel = async (header: string[], rows: string[][], fileName: string) => {

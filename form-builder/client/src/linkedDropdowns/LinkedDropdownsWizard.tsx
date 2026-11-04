@@ -40,7 +40,7 @@ const ordinal = (index: number) => ['First', 'Second', 'Third', 'Fourth', 'Fifth
 
 export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCancel }: Props) => {
   // Dropdowns already on the form that can start a chain (their answers are edited here too)
-  const startCandidates = formItems.filter((item) => item.type === 'select');
+  const startCandidates = formItems.filter(item => item.type === 'select');
   const dispatch = useAppDispatch();
   const wizard = useAppSelector(selectWizard);
 
@@ -56,13 +56,11 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
   const { startFrom, rootName, labels, step, roots } = wizard;
   const setLabels = (next: string[]) => dispatch(wizardChanged({ labels: next }));
 
-  const existingRoot =
-    startFrom === 'existing' ? startCandidates.find((item) => item.name === rootName) : undefined;
+  const existingRoot = startFrom === 'existing' ? startCandidates.find(item => item.name === rootName) : undefined;
   const levelLabels = existingRoot ? [existingRoot.label || existingRoot.name, ...labels.slice(1)] : labels;
-  const canContinue = levelLabels.every((label) => label.trim());
+  const canContinue = levelLabels.every(label => label.trim());
 
-  const setLabel = (index: number, value: string) =>
-    setLabels(labels.map((label, i) => (i === index ? value : label)));
+  const setLabel = (index: number, value: string) => setLabels(labels.map((label, i) => (i === index ? value : label)));
 
   if (step === 'answers') {
     return (
@@ -72,7 +70,7 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
         initialRoots={roots}
         saveLabel="Add these dropdowns"
         downloadName="linked-dropdowns.xlsx"
-        onSave={(savedRoots) => onCreate(levelLabels, savedRoots, existingRoot)}
+        onSave={savedRoots => onCreate(levelLabels, savedRoots, existingRoot)}
         onBack={(enteredRoots: AnswerNode[]) => dispatch(wizardChanged({ roots: enteredRoots, step: 'levels' }))}
         onCancel={onCancel}
       />
@@ -89,9 +87,9 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
           </button>
         </div>
         <p className="muted">
-          Linked dropdowns show different answers depending on what was picked in the one above.
-          For example <em>Province</em>, then <em>Municipality</em>, then <em>District</em>; or a
-          follow-up like <em>Experiencing abuse?</em> then <em>Risk assessment</em>.
+          Linked dropdowns show different answers depending on what was picked in the one above. For example{' '}
+          <em>Province</em>, then <em>Municipality</em>, then <em>District</em>; or a follow-up like{' '}
+          <em>Experiencing abuse?</em> then <em>Risk assessment</em>.
         </p>
 
         <fieldset className="field wizard-start">
@@ -125,9 +123,9 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
                 {index === 0 && startFrom === 'existing' ? (
                   <select
                     value={rootName}
-                    onChange={(e) => dispatch(wizardChanged({ rootName: e.target.value, roots: [] }))}
+                    onChange={e => dispatch(wizardChanged({ rootName: e.target.value, roots: [] }))}
                   >
-                    {startCandidates.map((item) => (
+                    {startCandidates.map(item => (
                       <option key={item.name} value={item.name}>
                         {item.label || item.name}
                       </option>
@@ -138,16 +136,12 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
                     type="text"
                     value={label}
                     placeholder={['e.g. Province', 'e.g. Municipality', 'e.g. District'][index] ?? ''}
-                    onChange={(e) => setLabel(index, e.target.value)}
+                    onChange={e => setLabel(index, e.target.value)}
                   />
                 )}
               </label>
               {labels.length > MIN_LEVELS && index === labels.length - 1 && (
-                <button
-                  type="button"
-                  className="link-button"
-                  onClick={() => setLabels(labels.slice(0, -1))}
-                >
+                <button type="button" className="link-button" onClick={() => setLabels(labels.slice(0, -1))}>
                   Remove this level
                 </button>
               )}
@@ -155,11 +149,7 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
           ))}
         </ol>
         {labels.length < MAX_LEVELS && (
-          <button
-            type="button"
-            className="secondary-button"
-            onClick={() => setLabels([...labels, ''])}
-          >
+          <button type="button" className="secondary-button" onClick={() => setLabels([...labels, ''])}>
             + Add another level
           </button>
         )}

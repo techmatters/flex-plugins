@@ -20,13 +20,7 @@
  * contact form and reports by name.
  */
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
-import {
-  isRequired,
-  WEBCHAT_FIELD_TYPE_INFO,
-  WebchatField,
-  WebchatFieldType,
-  webchatFieldName,
-} from './webchat';
+import { isRequired, WEBCHAT_FIELD_TYPE_INFO, WebchatField, WebchatFieldType, webchatFieldName } from './webchat';
 import type { ContactTab } from '../common/definitions';
 import type { ValidationIssue } from '../forms/validation';
 import { OptionsEditor } from '../forms/OptionsEditor';
@@ -98,13 +92,11 @@ export const WebchatFieldSettings = ({
     });
 
   // What the question fills in is shown in its own setting
-  const otherReferences = references.filter((reference) => !reference.startsWith('Fills in the contact form'));
-  const requiredMessage = typeof field.required === 'object' ? (field.required.message ?? '') : '';
+  const otherReferences = references.filter(reference => !reference.startsWith('Fills in the contact form'));
+  const requiredMessage = typeof field.required === 'object' ? field.required.message ?? '' : '';
   const setCheckboxRequired = (mustTick: boolean, message = requiredMessage) => {
     const { required, ...rest } = field;
-    onChange(
-      mustTick ? { ...rest, required: { value: true, ...(message ? { message } : {}) } } : rest,
-    );
+    onChange(mustTick ? { ...rest, required: { value: true, ...(message ? { message } : {}) } } : rest);
   };
 
   const confirmRemove = () => {
@@ -113,7 +105,7 @@ export const WebchatFieldSettings = ({
       return;
     }
     const lines = [`Remove “${field.label.replace(/<[^>]*>/g, '')}” from the webchat form?`];
-    if (references.length > 0) lines.push('', 'Also note:', ...references.map((ref) => `• ${ref}`));
+    if (references.length > 0) lines.push('', 'Also note:', ...references.map(ref => `• ${ref}`));
     if (window.confirm(lines.join('\n'))) onRemove();
   };
 
@@ -121,7 +113,7 @@ export const WebchatFieldSettings = ({
     <div className="field-settings webchat-field-settings">
       {issues.length > 0 && (
         <ul className="issue-list">
-          {issues.map((issue) => (
+          {issues.map(issue => (
             <li key={issue.message} className={`issue issue-${issue.severity}`}>
               {issue.message}
             </li>
@@ -135,27 +127,21 @@ export const WebchatFieldSettings = ({
           type="text"
           value={field.label}
           placeholder="What visitors will see"
-          onChange={(e) => changeLabel(e.target.value)}
+          onChange={e => changeLabel(e.target.value)}
         />
         {field.type === 'checkbox' && (
           <span className="field-hint">
-            To link to a page, write for example{' '}
-            <code>{'I accept the <a href="https://…">terms</a>'}</code>
+            To link to a page, write for example <code>{'I accept the <a href="https://…">terms</a>'}</code>
           </span>
         )}
-        {textIsShared && (
-          <span className="field-hint">This text isn't translated: it shows in every language.</span>
-        )}
+        {textIsShared && <span className="field-hint">This text isn't translated: it shows in every language.</span>}
       </label>
 
       <label className="field">
         <span className="field-label">Kind of answer</span>
         {allowedTypes.length > 1 ? (
-          <select
-            value={field.type}
-            onChange={(e) => onChangeType(e.target.value as WebchatFieldType)}
-          >
-            {allowedTypes.map((type) => (
+          <select value={field.type} onChange={e => onChangeType(e.target.value as WebchatFieldType)}>
+            {allowedTypes.map(type => (
               <option key={type} value={type}>
                 {WEBCHAT_FIELD_TYPE_INFO[type].label}
               </option>
@@ -172,7 +158,7 @@ export const WebchatFieldSettings = ({
           <input
             type="text"
             value={field.placeholder ?? ''}
-            onChange={(e) => {
+            onChange={e => {
               const { placeholder, ...rest } = field;
               onChange(e.target.value ? { ...rest, placeholder: e.target.value } : rest);
             }}
@@ -183,21 +169,13 @@ export const WebchatFieldSettings = ({
       {field.type === 'checkbox' ? (
         <>
           <label className="field field-checkbox">
-            <input
-              type="checkbox"
-              checked={isRequired(field)}
-              onChange={(e) => setCheckboxRequired(e.target.checked)}
-            />
+            <input type="checkbox" checked={isRequired(field)} onChange={e => setCheckboxRequired(e.target.checked)} />
             <span>Must be ticked to start the chat</span>
           </label>
           {isRequired(field) && (
             <label className="field">
               <span className="field-label">Message if it isn't ticked (optional)</span>
-              <input
-                type="text"
-                value={requiredMessage}
-                onChange={(e) => setCheckboxRequired(true, e.target.value)}
-              />
+              <input type="text" value={requiredMessage} onChange={e => setCheckboxRequired(true, e.target.value)} />
             </label>
           )}
         </>
@@ -206,7 +184,7 @@ export const WebchatFieldSettings = ({
           <input
             type="checkbox"
             checked={isRequired(field)}
-            onChange={(e) => onChange({ ...field, required: e.target.checked })}
+            onChange={e => onChange({ ...field, required: e.target.checked })}
           />
           <span>Visitors must answer this</span>
         </label>
@@ -215,7 +193,7 @@ export const WebchatFieldSettings = ({
       {isLinked && (
         <div className="linked-section">
           <span className="field-label">Linked dropdowns</span>
-          {linkedChains.map((chain) => (
+          {linkedChains.map(chain => (
             <div key={chain.join('>')} className="linked-chain">
               <span>{chain.map(labelOf).join(' → ')}</span>
               <button type="button" className="secondary-button" onClick={() => onEditLinked(chain)}>
@@ -233,13 +211,13 @@ export const WebchatFieldSettings = ({
             options={field.options as SelectOption[]}
             originalValues={
               new Set(
-                (Array.isArray(originalField?.options) ? (originalField.options as SelectOption[]) : []).map(
-                  (option) => String(option.value),
+                (Array.isArray(originalField?.options) ? (originalField.options as SelectOption[]) : []).map(option =>
+                  String(option.value),
                 ),
               )
             }
             staffMode={staffMode}
-            onChange={(options) => onChange({ ...field, options })}
+            onChange={options => onChange({ ...field, options })}
           />
         </div>
       )}
@@ -250,10 +228,10 @@ export const WebchatFieldSettings = ({
           <span className="field-hint">Nothing: counselors don't get this answer filled in.</span>
         )}
         <ul className="prepopulate-targets">
-          {prepopulate.targets.map((target) => {
+          {prepopulate.targets.map(target => {
             const [tabKey, targetName] = target.split('.');
-            const group = prepopulate.candidates.find((candidate) => candidate.tab.key === tabKey);
-            const targetLabel = group?.fields.find((item) => item.name === targetName)?.label;
+            const group = prepopulate.candidates.find(candidate => candidate.tab.key === tabKey);
+            const targetLabel = group?.fields.find(item => item.name === targetName)?.label;
             const unmatched = prepopulate.unmatchedAnswers(target);
             return (
               <li key={target}>
@@ -266,15 +244,15 @@ export const WebchatFieldSettings = ({
                     type="button"
                     className="icon-button"
                     aria-label={`Stop filling in ${targetLabel || targetName}`}
-                    onClick={() => onChangeTargets(prepopulate.targets.filter((other) => other !== target))}
+                    onClick={() => onChangeTargets(prepopulate.targets.filter(other => other !== target))}
                   >
                     ×
                   </button>
                 )}
                 {unmatched.length > 0 && (
                   <span className="field-hint prepopulate-warning">
-                    That field has no answer for {unmatched.map((value) => `“${value}”`).join(', ')}, so
-                    it's left empty when visitors choose {unmatched.length === 1 ? 'it' : 'them'}.
+                    That field has no answer for {unmatched.map(value => `“${value}”`).join(', ')}, so it's left empty
+                    when visitors choose {unmatched.length === 1 ? 'it' : 'them'}.
                   </span>
                 )}
               </li>
@@ -285,14 +263,14 @@ export const WebchatFieldSettings = ({
           <select
             aria-label="Fill in another contact form field"
             value=""
-            onChange={(e) => e.target.value && onChangeTargets([...prepopulate.targets, e.target.value])}
+            onChange={e => e.target.value && onChangeTargets([...prepopulate.targets, e.target.value])}
           >
             <option value="">+ Fill in a contact form field…</option>
             {prepopulate.candidates.map(({ tab, fields }) => (
               <optgroup key={tab.key} label={tab.title}>
                 {fields
-                  .filter((item) => !prepopulate.targets.includes(`${tab.key}.${item.name}`))
-                  .map((item) => (
+                  .filter(item => !prepopulate.targets.includes(`${tab.key}.${item.name}`))
+                  .map(item => (
                     <option key={item.name} value={`${tab.key}.${item.name}`}>
                       {item.label || item.name}
                     </option>
@@ -305,8 +283,8 @@ export const WebchatFieldSettings = ({
         )}
         {!prepopulate.inUse && (
           <span className="field-hint">
-            This helpline still fills in contacts the old way (PrepopulateKeys.json), so this takes
-            effect once Aselo staff turn on “use_prepopulate_mappings”.
+            This helpline still fills in contacts the old way (PrepopulateKeys.json), so this takes effect once Aselo
+            staff turn on “use_prepopulate_mappings”.
           </span>
         )}
       </div>
@@ -320,7 +298,7 @@ export const WebchatFieldSettings = ({
               <input
                 type="text"
                 value={field.name}
-                onChange={(e) => onChange({ ...field, name: e.target.value.trim() })}
+                onChange={e => onChange({ ...field, name: e.target.value.trim() })}
               />
             ) : (
               <span className="read-only-value">
@@ -340,7 +318,7 @@ export const WebchatFieldSettings = ({
         <div className="references">
           <span className="field-label">Good to know</span>
           <ul>
-            {otherReferences.map((reference) => (
+            {otherReferences.map(reference => (
               <li key={reference}>{reference}</li>
             ))}
           </ul>

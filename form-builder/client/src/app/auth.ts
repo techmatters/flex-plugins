@@ -70,10 +70,16 @@ export const loadAuthConfig = async (fetchImpl: typeof fetch = fetch): Promise<A
   }
 };
 
-export const startSignIn = async (authConfig: AuthConfig, returnTo = window.location.pathname + window.location.search) => {
+export const startSignIn = async (
+  authConfig: AuthConfig,
+  returnTo = window.location.pathname + window.location.search,
+) => {
   const state = randomString();
   const verifier = randomString();
-  sessionStorage.setItem(PENDING_KEY, JSON.stringify({ state, verifier, returnTo: returnTo === '/login' ? '/' : returnTo }));
+  sessionStorage.setItem(
+    PENDING_KEY,
+    JSON.stringify({ state, verifier, returnTo: returnTo === '/login' ? '/' : returnTo }),
+  );
   const params = new URLSearchParams({
     client_id: authConfig.clientId,
     response_type: 'code',
@@ -89,9 +95,11 @@ export const startSignIn = async (authConfig: AuthConfig, returnTo = window.loca
 // Back from Okta: swap the code for tokens; returns where to go next
 export const completeSignIn = async (authConfig: AuthConfig, fetchImpl: typeof fetch = fetch): Promise<string> => {
   const query = new URLSearchParams(window.location.search);
-  const pending = JSON.parse(sessionStorage.getItem(PENDING_KEY) ?? 'null') as
-    | { state: string; verifier: string; returnTo: string }
-    | null;
+  const pending = JSON.parse(sessionStorage.getItem(PENDING_KEY) ?? 'null') as {
+    state: string;
+    verifier: string;
+    returnTo: string;
+  } | null;
   sessionStorage.removeItem(PENDING_KEY);
   if (query.get('error')) throw new Error(query.get('error_description') ?? query.get('error')!);
   if (!pending || query.get('state') !== pending.state || !query.get('code')) {

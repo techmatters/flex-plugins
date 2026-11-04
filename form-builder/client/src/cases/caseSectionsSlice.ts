@@ -58,7 +58,7 @@ const caseSectionsSlice = createSlice({
     },
   },
   selectors: {
-    selectCaseSections: (state) => state,
+    selectCaseSections: state => state,
   },
 });
 
@@ -78,19 +78,19 @@ const languageOf = (state: RootState) => baseLanguageOf(state.workspace.definiti
 
 // Starts editing from the draft
 export const openCaseSections = (): AppThunk => (dispatch, getState) => {
-  dispatch(caseSectionsOpened(toRows(getCaseSections(getState().draft.files).map((section) => section.key))));
+  dispatch(caseSectionsOpened(toRows(getCaseSections(getState().draft.files).map(section => section.key))));
 };
 
 export const reorderSections =
   (rows: Row<string>[]): AppThunk =>
-  (dispatch) => {
+  dispatch => {
     dispatch(rowsChanged(rows));
     dispatch(
-      editDraftFiles((files) => {
+      editDraftFiles(files => {
         const current = sectionsFile(files);
         let updated: DefinitionFileMap = {
           ...files,
-          [CASE_SECTIONS_FILE]: Object.fromEntries(rows.map((row) => [row.value, current[row.value]])),
+          [CASE_SECTIONS_FILE]: Object.fromEntries(rows.map(row => [row.value, current[row.value]])),
         };
         // The case page sorts by caseHomeOrder, so number them in the new order
         rows.forEach((row, index) => {
@@ -118,12 +118,12 @@ export const addSection = (): AppThunk => (dispatch, getState) => {
 export const removeSection =
   (key: string): AppThunk =>
   (dispatch, getState) => {
-    dispatch(editDraftFiles((files) => removeCaseSection(files, key)));
-    dispatch(rowsChanged(selectCaseSections(getState()).rows.filter((row) => row.value !== key)));
+    dispatch(editDraftFiles(files => removeCaseSection(files, key)));
+    dispatch(rowsChanged(selectCaseSections(getState()).rows.filter(row => row.value !== key)));
   };
 
 export const renameSection = (key: string, label: string): AppThunk =>
-  editDraftFiles((files) => ({
+  editDraftFiles(files => ({
     ...files,
     [CASE_SECTIONS_FILE]: { ...sectionsFile(files), [key]: { ...sectionsFile(files)[key], label } },
   }));
@@ -133,26 +133,26 @@ export const setSectionText =
   (textKey: string, text: string): AppThunk =>
   (dispatch, getState) => {
     const language = languageOf(getState());
-    dispatch(editDraftFiles((files) => setSubstitution(files, language, textKey, text)));
+    dispatch(editDraftFiles(files => setSubstitution(files, language, textKey, text)));
   };
 
 const updateLayout = (key: string, change: (layout: SectionLayout) => SectionLayout): AppThunk =>
-  editDraftFiles((files) => setSectionLayout(files, key, change(getSectionLayout(files, key))));
+  editDraftFiles(files => setSectionLayout(files, key, change(getSectionLayout(files, key))));
 
 export const setSectionLocation = (key: string, caseHomeLocation: 'list' | 'timeline'): AppThunk =>
-  updateLayout(key, (layout) => ({ ...layout, caseHomeLocation }));
+  updateLayout(key, layout => ({ ...layout, caseHomeLocation }));
 
 // Shows or hides a field in the section's list, keeping the form's order
 export const togglePreviewField = (key: string, name: string): AppThunk =>
-  editDraftFiles((files) => {
+  editDraftFiles(files => {
     const layout = getSectionLayout(files, key);
     const current = layout.previewFields ?? [];
     const formPath = sectionsFile(files)[key]?.formPath;
-    const formFieldNames = ((formPath && getForm(files, formPath)) || []).map((item) => item.name);
+    const formFieldNames = ((formPath && getForm(files, formPath)) || []).map(item => item.name);
     return setSectionLayout(files, key, {
       ...layout,
       previewFields: current.includes(name)
-        ? current.filter((other) => other !== name)
-        : formFieldNames.filter((other) => other === name || current.includes(other)),
+        ? current.filter(other => other !== name)
+        : formFieldNames.filter(other => other === name || current.includes(other)),
     });
   });

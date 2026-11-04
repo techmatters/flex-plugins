@@ -67,14 +67,14 @@ const DurationInput = ({
         min={1}
         aria-label={`How long “${label}” lasts`}
         value={Number.isInteger(amount) ? amount : Math.round(amount * 100) / 100}
-        onChange={(e) => onChangeAmount(Number(e.target.value))}
+        onChange={e => onChangeAmount(Number(e.target.value))}
       />
       <select
         aria-label={`Unit for “${label}”`}
         value={unit}
-        onChange={(e) => onChangeUnit(e.target.value as DurationUnit)}
+        onChange={e => onChangeUnit(e.target.value as DurationUnit)}
       >
-        {DURATION_UNITS.map((candidate) => (
+        {DURATION_UNITS.map(candidate => (
           <option key={candidate.unit} value={candidate.unit}>
             {candidate.unit}
           </option>
@@ -92,7 +92,7 @@ export const ProfilesEditor = () => {
   const profilesEnabled = useAppSelector(selectProfilesEnabled);
   const originalNames = useAppSelector(selectOriginalSectionNames);
   const { editorRevision } = useAppSelector(selectWorkspace);
-  const issues = useAppSelector(selectSectionIssues).filter((issue) => issue.message.startsWith('Client profiles'));
+  const issues = useAppSelector(selectSectionIssues).filter(issue => issue.message.startsWith('Client profiles'));
   const { sections, durations, durationUnits } = useAppSelector(selectProfiles);
   const overview = getProfileOverview(draftFiles);
 
@@ -107,18 +107,17 @@ export const ProfilesEditor = () => {
         <section className="panel">
           <h2>Client profiles</h2>
           <p className="muted">
-            A profile brings together everything about one person who gets in touch: their
-            contacts, cases, and notes counselors keep about them.
+            A profile brings together everything about one person who gets in touch: their contacts, cases, and notes
+            counselors keep about them.
           </p>
           {!profilesEnabled && (
             <p className="issue issue-warning">
-              Client profiles are switched off for this helpline (see Features), so counselors
-              don't see these yet.
+              Client profiles are switched off for this helpline (see Features), so counselors don't see these yet.
             </p>
           )}
           {issues.length > 0 && (
             <ul className="issue-list">
-              {issues.map((issue) => (
+              {issues.map(issue => (
                 <li key={issue.message} className={`issue issue-${issue.severity}`}>
                   {issue.message}
                 </li>
@@ -130,9 +129,9 @@ export const ProfilesEditor = () => {
           <p className="field-hint">Notes counselors keep on a profile, each in its own box.</p>
           <SortableRows
             rows={sections}
-            labelOf={(section) => section.label}
-            onReorder={(next) => dispatch(writeSections(next))}
-            renderRow={(row) => {
+            labelOf={section => section.label}
+            onReorder={next => dispatch(writeSections(next))}
+            renderRow={row => {
               const section = row.value;
               const isNew = !originalNames.has(section.name);
               return (
@@ -142,7 +141,7 @@ export const ProfilesEditor = () => {
                       type="text"
                       aria-label="Section title"
                       value={section.label}
-                      onChange={(e) => dispatch(updateSection(row.id, { label: e.target.value }))}
+                      onChange={e => dispatch(updateSection(row.id, { label: e.target.value }))}
                     />
                     {(isNew || staffMode) && (
                       <button
@@ -170,7 +169,7 @@ export const ProfilesEditor = () => {
                       <input
                         type="text"
                         value={section.editLabel ?? ''}
-                        onChange={(e) => dispatch(updateSection(row.id, { editLabel: e.target.value }))}
+                        onChange={e => dispatch(updateSection(row.id, { editLabel: e.target.value }))}
                       />
                     </label>
                     <label className="field">
@@ -178,7 +177,7 @@ export const ProfilesEditor = () => {
                       <input
                         type="text"
                         value={section.placeholder ?? ''}
-                        onChange={(e) => dispatch(updateSection(row.id, { placeholder: e.target.value }))}
+                        onChange={e => dispatch(updateSection(row.id, { placeholder: e.target.value }))}
                       />
                     </label>
                     {section.type === 'textarea' && (
@@ -189,7 +188,7 @@ export const ProfilesEditor = () => {
                           min={2}
                           max={40}
                           value={section.rows ?? 20}
-                          onChange={(e) => dispatch(updateSection(row.id, { rows: Number(e.target.value) }))}
+                          onChange={e => dispatch(updateSection(row.id, { rows: Number(e.target.value) }))}
                         />
                       </label>
                     )}
@@ -199,7 +198,7 @@ export const ProfilesEditor = () => {
                       type="checkbox"
                       checked={Boolean(section.isPII)}
                       disabled={!isNew && !staffMode}
-                      onChange={(e) => dispatch(updateSection(row.id, { isPII: e.target.checked }))}
+                      onChange={e => dispatch(updateSection(row.id, { isPII: e.target.checked }))}
                     />
                     <span>Could it identify someone? (protects what's written in it)</span>
                   </label>
@@ -220,35 +219,34 @@ export const ProfilesEditor = () => {
           </div>
           {!staffMode && (
             <p className="field-hint">
-              Sections that already exist can only be removed by Aselo staff, because counselors
-              would stop seeing what was written in them.
+              Sections that already exist can only be removed by Aselo staff, because counselors would stop seeing what
+              was written in them.
             </p>
           )}
 
           <h3 className="section-heading">Blocking options</h3>
           <p className="field-hint">
-            What counselors can choose when they block someone. Each option needs a different
-            length.
+            What counselors can choose when they block someone. Each option needs a different length.
           </p>
           <SortableRows
             rows={durations}
-            labelOf={(duration) => duration.label}
-            onReorder={(next) => dispatch(writeDurations(next))}
-            renderRow={(row) => (
+            labelOf={duration => duration.label}
+            onReorder={next => dispatch(writeDurations(next))}
+            renderRow={row => (
               <div className="row-inline flag-duration-row">
                 {row.value.flag !== 'blocked' && <span className="badge">{row.value.flag}</span>}
                 <input
                   type="text"
                   aria-label="Option name"
                   value={row.value.label}
-                  onChange={(e) => dispatch(updateDuration(row.id, { label: e.target.value }))}
+                  onChange={e => dispatch(updateDuration(row.id, { label: e.target.value }))}
                 />
                 <DurationInput
                   hours={Number(row.value.durationInHours)}
                   unit={durationUnits[row.id] ?? 'hours'}
                   label={row.value.label}
-                  onChangeAmount={(amount) => dispatch(setDurationAmount(row.id, amount))}
-                  onChangeUnit={(unit) => dispatch(setDurationUnit(row.id, unit))}
+                  onChangeAmount={amount => dispatch(setDurationAmount(row.id, amount))}
+                  onChangeUnit={unit => dispatch(setDurationUnit(row.id, unit))}
                 />
                 <button
                   type="button"
@@ -275,7 +273,7 @@ export const ProfilesEditor = () => {
                   <input
                     type="checkbox"
                     checked={Boolean(settings?.isPII)}
-onChange={(e) => dispatch(setOverviewIsPII(key, e.target.checked))}
+                    onChange={e => dispatch(setOverviewIsPII(key, e.target.checked))}
                   />
                   <span>
                     The profile's <code>{key}</code> is personal data
@@ -295,12 +293,12 @@ onChange={(e) => dispatch(setOverviewIsPII(key, e.target.checked))}
           <div className="profile-preview-flags">
             <span className="field-label">Edit statuses</span>
             <ul aria-label="Status options">
-              {durations.map((row) => (
+              {durations.map(row => (
                 <li key={row.id}>{row.value.label}</li>
               ))}
             </ul>
           </div>
-          {sections.map((row) => (
+          {sections.map(row => (
             <div key={row.id} className="profile-preview-section">
               <div className="profile-preview-section-header">
                 <strong>{row.value.label}</strong>

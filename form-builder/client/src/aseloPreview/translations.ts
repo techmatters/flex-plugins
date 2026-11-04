@@ -33,7 +33,7 @@ const translationFiles = require.context('../../../../plugin-hrm-form/src/transl
 // Languages the plugin has text for, e.g. ['en', 'en-US', 'es', 'es-CL', ...]
 export const AVAILABLE_LANGUAGES = translationFiles
   .keys()
-  .map((key) => key.replace(/^\.\//, '').replace('.json', ''))
+  .map(key => key.replace(/^\.\//, '').replace('.json', ''))
   .sort();
 
 const loadFile = async (name: string): Promise<Strings> => {
@@ -45,10 +45,7 @@ const loadFile = async (name: string): Promise<Strings> => {
 
 const SUBSTITUTIONS_FILE = 'customStrings/Substitutions.json';
 
-export const loadStrings = async (
-  language: string,
-  files: DefinitionFileMap,
-): Promise<Strings> => {
+export const loadStrings = async (language: string, files: DefinitionFileMap): Promise<Strings> => {
   const [baseLanguage] = language.split('-');
   const substitutions = (files[SUBSTITUTIONS_FILE] ?? {}) as Record<string, Strings>;
   return {
@@ -63,7 +60,7 @@ export const useStrings = (language: string, files: DefinitionFileMap): Strings 
   const [strings, setStrings] = useState<Strings>({});
   useEffect(() => {
     let current = true;
-    loadStrings(language, files).then((loaded) => {
+    loadStrings(language, files).then(loaded => {
       if (current) setStrings(loaded);
     });
     return () => {

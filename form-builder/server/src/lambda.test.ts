@@ -21,7 +21,11 @@ import { SlackNotifier } from './slackNotifier';
 describe('who is signed in, from the Okta token', () => {
   test('Aselo staff', () => {
     expect(
-      userFromClaims({ groups: ['form-builder-aselo-staff', 'form-builder-usnm'], name: 'Ana', email: 'ana@aselo.org' }),
+      userFromClaims({
+        groups: ['form-builder-aselo-staff', 'form-builder-usnm'],
+        name: 'Ana',
+        email: 'ana@aselo.org',
+      }),
     ).toEqual({ name: 'Ana', email: 'ana@aselo.org', role: 'aselo-staff', helplines: 'all' });
   });
 
@@ -43,7 +47,11 @@ describe('who is signed in, from the Okta token', () => {
 describe('Slack', () => {
   test('is told about a submitted draft', async () => {
     const fetchImpl = jest.fn(async () => new Response('ok'));
-    await new SlackNotifier('https://hooks.slack.com/x', 'https://form-builder.tl.techmatters.org', fetchImpl).draftSubmitted(
+    await new SlackNotifier(
+      'https://hooks.slack.com/x',
+      'https://form-builder.tl.techmatters.org',
+      fetchImpl,
+    ).draftSubmitted(
       {
         code: 'usnm',
         version: 'v1',
@@ -54,6 +62,8 @@ describe('Slack', () => {
     );
     const [url, init] = fetchImpl.mock.calls[0] as unknown as [string, RequestInit];
     expect(url).toBe('https://hooks.slack.com/x');
-    expect(JSON.parse(init.body as string).text).toMatch(/\*USNM\* form changes \(v1\) were submitted for review by Ana\.\n1 file changed/);
+    expect(JSON.parse(init.body as string).text).toMatch(
+      /\*USNM\* form changes \(v1\) were submitted for review by Ana\.\n1 file changed/,
+    );
   });
 });

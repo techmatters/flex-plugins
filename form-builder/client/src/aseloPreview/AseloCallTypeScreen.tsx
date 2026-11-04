@@ -50,31 +50,23 @@ const PeopleIcon = () => (
   </svg>
 );
 
-export const AseloCallTypeScreen = ({
-  buttons,
-  strings,
-  taskType,
-  onDataCallType,
-  onNonDataCallType,
-}: Props) => {
+export const AseloCallTypeScreen = ({ buttons, strings, taskType, onDataCallType, onNonDataCallType }: Props) => {
   const [confirming, setConfirming] = useState<CallTypeButtonsEntry>();
-  const dataButtons = buttons.filter((button) => button.category === 'data');
-  const nonDataButtons = buttons.filter((button) => button.category === 'non-data');
+  const dataButtons = buttons.filter(button => button.category === 'data');
+  const nonDataButtons = buttons.filter(button => button.category === 'non-data');
 
   return (
     <div className="aselo-call-types">
       <div className="aselo-call-types-group">
         <p className="aselo-call-types-label">{translate(strings, 'CallTypeButtons-Categorize')}</p>
-        {dataButtons.map((button) => (
+        {dataButtons.map(button => (
           <button
             key={button.name}
             type="button"
             className="aselo-data-call-type"
             onClick={() => onDataCallType(button.name)}
           >
-            <span className="aselo-call-type-icon">
-              {button.name === 'caller' ? <PeopleIcon /> : <PersonIcon />}
-            </span>
+            <span className="aselo-call-type-icon">{button.name === 'caller' ? <PeopleIcon /> : <PersonIcon />}</span>
             {translate(strings, button.label)}
           </button>
         ))}
@@ -97,7 +89,11 @@ export const AseloCallTypeScreen = ({
 
       {confirming && (
         <div className="aselo-dialog-backdrop" role="presentation">
-          <div className="aselo-dialog" role="dialog" aria-label={translate(strings, 'NonDataCallTypeDialog-CloseConfirm')}>
+          <div
+            className="aselo-dialog"
+            role="dialog"
+            aria-label={translate(strings, 'NonDataCallTypeDialog-CloseConfirm')}
+          >
             <p>{translate(strings, 'NonDataCallTypeDialog-CloseConfirm')}</p>
             <p className="aselo-dialog-detail">{translate(strings, confirming.label)}</p>
             <button

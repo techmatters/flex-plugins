@@ -51,42 +51,55 @@ afterAll(() => fs.rm(tempDir, { recursive: true, force: true, maxRetries: 5 }));
 const TIMEOUT = 30_000;
 
 describe('snapshots of master', () => {
-  test('unpack only what the builder reads, and are read like a checkout', async () => {
-    const source = { headSha: jest.fn(async () => 'sha1'), tarball: jest.fn(async () => tarball) };
-    const snapshot = await new RepoSnapshots(source, tempDir).latest();
+  test(
+    'unpack only what the builder reads, and are read like a checkout',
+    async () => {
+      const source = { headSha: jest.fn(async () => 'sha1'), tarball: jest.fn(async () => tarball) };
+      const snapshot = await new RepoSnapshots(source, tempDir).latest();
 
-    const definitions = await loadDefinitionFiles(snapshot.formDefinitionsDir, 'usnm', 'v1', snapshot.helplinesConfigDir);
-    expect(definitions.errors).toEqual([]);
-    expect('tabbedForms/CallerInformationTab.json' in definitions.files).toBe(true);
-    expect('service-configuration/common.json' in definitions.files).toBe(true);
-    expect(definitions.serviceConfigDefaults).toBeDefined();
-    await expect(fs.stat(path.join(snapshot.repoRoot, 'twilio-iac/stages'))).rejects.toThrow();
-  }, TIMEOUT);
+      const definitions = await loadDefinitionFiles(
+        snapshot.formDefinitionsDir,
+        'usnm',
+        'v1',
+        snapshot.helplinesConfigDir,
+      );
+      expect(definitions.errors).toEqual([]);
+      expect('tabbedForms/CallerInformationTab.json' in definitions.files).toBe(true);
+      expect('service-configuration/common.json' in definitions.files).toBe(true);
+      expect(definitions.serviceConfigDefaults).toBeDefined();
+      await expect(fs.stat(path.join(snapshot.repoRoot, 'twilio-iac/stages'))).rejects.toThrow();
+    },
+    TIMEOUT,
+  );
 
-  test('download once, check master again after a while, and move on when it changes', async () => {
-    let time = 0;
-    let sha = 'sha1';
-    const source = { headSha: jest.fn(async () => sha), tarball: jest.fn(async () => tarball) };
-    const snapshots = new RepoSnapshots(source, path.join(tempDir, 'cache'), 30_000, () => time);
+  test(
+    'download once, check master again after a while, and move on when it changes',
+    async () => {
+      let time = 0;
+      let sha = 'sha1';
+      const source = { headSha: jest.fn(async () => sha), tarball: jest.fn(async () => tarball) };
+      const snapshots = new RepoSnapshots(source, path.join(tempDir, 'cache'), 30_000, () => time);
 
-    const [first, second] = await Promise.all([snapshots.latest(), snapshots.latest()]);
-    expect(second).toBe(first);
-    expect(source.tarball).toHaveBeenCalledTimes(1);
+      const [first, second] = await Promise.all([snapshots.latest(), snapshots.latest()]);
+      expect(second).toBe(first);
+      expect(source.tarball).toHaveBeenCalledTimes(1);
 
-    time = 10_000;
-    await snapshots.latest();
-    expect(source.headSha).toHaveBeenCalledTimes(1);
+      time = 10_000;
+      await snapshots.latest();
+      expect(source.headSha).toHaveBeenCalledTimes(1);
 
-    time = 40_000;
-    expect((await snapshots.latest()).sha).toBe('sha1');
-    expect(source.headSha).toHaveBeenCalledTimes(2);
-    expect(source.tarball).toHaveBeenCalledTimes(1);
+      time = 40_000;
+      expect((await snapshots.latest()).sha).toBe('sha1');
+      expect(source.headSha).toHaveBeenCalledTimes(2);
+      expect(source.tarball).toHaveBeenCalledTimes(1);
 
-    sha = 'sha2';
-    time = 80_000;
-    const moved = await snapshots.latest();
-    expect(moved.sha).toBe('sha2');
-    expect(source.tarball).toHaveBeenCalledTimes(2);
-    await expect(fs.stat(first.repoRoot)).rejects.toThrow();
-  }, TIMEOUT);
+      sha = 'sha2';
+      time = 80_000;
+      const moved = await snapshots.latest();
+      expect(moved.sha).toBe('sha2');
+      expect(source.tarball).toHaveBeenCalledTimes(2);
+      await expect(fs.stat(first.repoRoot)).rejects.toThrow();
+    },
+    TIMEOUT,
+  );
 });

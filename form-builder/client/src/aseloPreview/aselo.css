@@ -504,8 +504,7 @@
   flex-shrink: 0;
   padding: 5px 20px;
   /* A divider line inset from the panel edges, as in Aselo */
-  background: linear-gradient(#e1e3ea, #e1e3ea) 20px 0 / calc(100% - 40px) 1px no-repeat,
-    #ffffff;
+  background: linear-gradient(#e1e3ea, #e1e3ea) 20px 0 / calc(100% - 40px) 1px no-repeat, #ffffff;
 }
 
 .aselo-button {

@@ -24,7 +24,15 @@
  *   reports stay consistent. Only Aselo staff can change it.
  */
 import { useEffect, useId } from 'react';
-import { closestCenter, DndContext, DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  closestCenter,
+  DndContext,
+  DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import {
   SortableContext,
   sortableKeyboardCoordinates,
@@ -82,18 +90,8 @@ const OptionRow = ({
   // Saved values of existing answers are what past contacts hold: only Aselo staff change them
   const canEditValue = !isExisting || staffMode;
   return (
-    <li
-      ref={setNodeRef}
-      style={{ transform: CSS.Transform.toString(transform), transition }}
-      className="option-row"
-    >
-      <button
-        type="button"
-        className="drag-handle"
-        aria-label="Drag to reorder"
-        {...attributes}
-        {...listeners}
-      >
+    <li ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} className="option-row">
+      <button type="button" className="drag-handle" aria-label="Drag to reorder" {...attributes} {...listeners}>
         ⋮⋮
       </button>
       <div className="option-inputs">
@@ -102,7 +100,7 @@ const OptionRow = ({
           value={option.label}
           aria-label="Answer"
           placeholder="Type an answer"
-          onChange={(e) => onLabelChange(e.target.value)}
+          onChange={e => onLabelChange(e.target.value)}
         />
         {showValues && (
           <label className="option-value">
@@ -112,7 +110,7 @@ const OptionRow = ({
                 type="text"
                 value={String(option.value)}
                 aria-label="Saved value"
-                onChange={(e) => onValueChange(e.target.value)}
+                onChange={e => onValueChange(e.target.value)}
               />
             ) : (
               <span className="option-value-locked">“{String(option.value)}”</span>
@@ -131,7 +129,7 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
   const dispatch = useAppDispatch();
   // Each answers editor on screen has its own state in the store (see optionsEditorSlice.ts)
   const editorId = useId();
-  const editor = useAppSelector((state) => selectOptionsEditor(state, editorId));
+  const editor = useAppSelector(state => selectOptionsEditor(state, editorId));
   const { blankOption, editableOptions } = splitBlankOption(options);
 
   // Starts from the answers it opens with, and is forgotten when it goes away
@@ -193,8 +191,8 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
                 isExisting={existingIds.includes(ids[index])}
                 staffMode={staffMode}
                 showValues={showValues}
-                onLabelChange={(label) => emit(dispatch(changeOptionLabel(editorId, options, index, label)))}
-                onValueChange={(value) => emit(dispatch(changeOptionValue(editorId, options, index, value)))}
+                onLabelChange={label => emit(dispatch(changeOptionLabel(editorId, options, index, label)))}
+                onValueChange={value => emit(dispatch(changeOptionValue(editorId, options, index, value)))}
                 onRemove={() => emit(dispatch(removeOption(editorId, options, index)))}
               />
             ))}
@@ -204,7 +202,11 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
 
       {bulkText === undefined ? (
         <div className="option-actions">
-          <button type="button" className="secondary-button" onClick={() => emit(dispatch(addOptions(editorId, options, [{ value: '', label: '' }])))}>
+          <button
+            type="button"
+            className="secondary-button"
+            onClick={() => emit(dispatch(addOptions(editorId, options, [{ value: '', label: '' }])))}
+          >
             + Add an answer
           </button>
           <button type="button" className="link-button" onClick={() => dispatch(bulkTextChanged(editorId, ''))}>
@@ -216,23 +218,31 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
           <label className="field">
             <span className="field-label">Answers to add</span>
             <span className="field-hint">
-              One answer per line. When the saved value differs from the text, write the saved value
-              first, then a semicolon, then the text: <code>00;0</code>. You can also paste two
-              columns from a spreadsheet: saved value, then text.
+              One answer per line. When the saved value differs from the text, write the saved value first, then a
+              semicolon, then the text: <code>00;0</code>. You can also paste two columns from a spreadsheet: saved
+              value, then text.
             </span>
             <textarea
               rows={6}
               value={bulkText}
               autoFocus
-              onChange={(e) => dispatch(bulkTextChanged(editorId, e.target.value))}
+              onChange={e => dispatch(bulkTextChanged(editorId, e.target.value))}
               placeholder={'Spanish\nFrench\n00;0'}
             />
           </label>
           <div className="option-actions">
-            <button type="button" className="secondary-button" onClick={() => emit(dispatch(addPastedOptions(editorId, options)))}>
+            <button
+              type="button"
+              className="secondary-button"
+              onClick={() => emit(dispatch(addPastedOptions(editorId, options)))}
+            >
               Add these answers
             </button>
-            <button type="button" className="link-button" onClick={() => dispatch(bulkTextChanged(editorId, undefined))}>
+            <button
+              type="button"
+              className="link-button"
+              onClick={() => dispatch(bulkTextChanged(editorId, undefined))}
+            >
               Cancel
             </button>
           </div>

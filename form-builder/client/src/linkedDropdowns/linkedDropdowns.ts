@@ -66,17 +66,14 @@ export const newAnswerNode = (
  */
 
 const dependentsOf = (form: FormItemJsonDefinition[], name: string) =>
-  form.filter((item) => item.type === 'dependent-select' && item.dependsOn === name);
+  form.filter(item => item.type === 'dependent-select' && item.dependsOn === name);
 
 /**
  * All chains (as field names, top level first) that go through the given field.
  * A field can be in several chains when two dropdowns depend on the same question.
  */
-export const findChainsThroughField = (
-  form: FormItemJsonDefinition[],
-  fieldName: string,
-): string[][] => {
-  const byName = new Map(form.map((item) => [item.name, item]));
+export const findChainsThroughField = (form: FormItemJsonDefinition[], fieldName: string): string[][] => {
+  const byName = new Map(form.map(item => [item.name, item]));
   if (!byName.has(fieldName)) return [];
 
   const ancestors: string[] = [fieldName];
@@ -94,14 +91,12 @@ export const findChainsThroughField = (
   const downwardChains = (name: string, depth: number): string[][] => {
     const dependents = dependentsOf(form, name);
     if (dependents.length === 0 || depth >= MAX_CHAIN_DEPTH) return [[name]];
-    return dependents.flatMap((dependent) =>
-      downwardChains(dependent.name, depth + 1).map((chain) => [name, ...chain]),
-    );
+    return dependents.flatMap(dependent => downwardChains(dependent.name, depth + 1).map(chain => [name, ...chain]));
   };
 
   return downwardChains(fieldName, ancestors.length)
-    .map((down) => [...ancestors.slice(0, -1), ...down])
-    .filter((chain) => chain.length >= 2);
+    .map(down => [...ancestors.slice(0, -1), ...down])
+    .filter(chain => chain.length >= 2);
 };
 
 /**
@@ -121,28 +116,18 @@ export type ChainTree = {
 
 export type UnusedList = { level: number; key: string; options: SelectOption[] };
 
-const toNodes = (
-  options: SelectOption[],
-  level: number,
-  levelOptions: unknown[],
-  depth: number,
-): AnswerNode[] =>
-  options.map((option) => {
+const toNodes = (options: SelectOption[], level: number, levelOptions: unknown[], depth: number): AnswerNode[] =>
+  options.map(option => {
     const value = String(option.value);
     const listsBelow = levelOptions[level + 1] as DependentOptions | undefined;
-    const children =
-      level + 1 < depth ? toNodes(listsBelow?.[value] ?? [], level + 1, levelOptions, depth) : [];
+    const children = level + 1 < depth ? toNodes(listsBelow?.[value] ?? [], level + 1, levelOptions, depth) : [];
     return newAnswerNode(String(option.label ?? ''), value, true, children);
   });
 
-export const chainToTree = (
-  fields: FormItemJsonDefinition[],
-  referenceData: Record<string, unknown>,
-): ChainTree => {
-  const levelOptions = fields.map((field) => resolveOptions<unknown>(field, referenceData));
+export const chainToTree = (fields: FormItemJsonDefinition[], referenceData: Record<string, unknown>): ChainTree => {
+  const levelOptions = fields.map(field => resolveOptions<unknown>(field, referenceData));
   let rootOptions = (levelOptions[0] as SelectOption[] | undefined) ?? [];
-  const rootBlankOption =
-    rootOptions.length > 0 && isBlankOption(rootOptions[0], 0) ? rootOptions[0] : undefined;
+  const rootBlankOption = rootOptions.length > 0 && isBlankOption(rootOptions[0], 0) ? rootOptions[0] : undefined;
   if (rootBlankOption) rootOptions = rootOptions.slice(1);
 
   const roots = toNodes(rootOptions, 0, levelOptions, fields.length);
@@ -152,13 +137,13 @@ export const chainToTree = (
   let levelNodes = roots;
   for (let level = 0; level < fields.length - 1; level += 1) {
     const counts = new Map<string, number>();
-    levelNodes.forEach((node) => counts.set(node.value, (counts.get(node.value) ?? 0) + 1));
+    levelNodes.forEach(node => counts.set(node.value, (counts.get(node.value) ?? 0) + 1));
     const listsBelow = (levelOptions[level + 1] ?? {}) as DependentOptions;
     Object.entries(listsBelow).forEach(([key, options]) => {
       if ((counts.get(key) ?? 0) > 1) sharedValues.push(key);
       if (!counts.has(key)) unusedLists.push({ level: level + 1, key, options });
     });
-    levelNodes = levelNodes.flatMap((node) => node.children);
+    levelNodes = levelNodes.flatMap(node => node.children);
   }
 
   return { roots, rootBlankOption, sharedValues, unusedLists };
@@ -182,25 +167,25 @@ export const treeToChainOptions = (
   let levelNodes = roots;
   for (let level = 1; level < depth; level += 1) {
     const lists: DependentOptions = {};
-    levelNodes.forEach((node) => {
+    levelNodes.forEach(node => {
       if (node.children.length === 0) return;
       const existing = lists[node.value];
       if (!existing) {
         lists[node.value] = node.children.map(toOption);
         return;
       }
-      const seen = new Set(existing.map((option) => String(option.value)));
-      node.children.forEach((child) => {
+      const seen = new Set(existing.map(option => String(option.value)));
+      node.children.forEach(child => {
         if (!seen.has(child.value)) existing.push(toOption(child));
       });
     });
     unusedLists
-      .filter((unused) => unused.level === level && !(unused.key in lists))
-      .forEach((unused) => {
+      .filter(unused => unused.level === level && !(unused.key in lists))
+      .forEach(unused => {
         lists[unused.key] = unused.options;
       });
     dependentLevels.push(lists);
-    levelNodes = levelNodes.flatMap((node) => node.children);
+    levelNodes = levelNodes.flatMap(node => node.children);
   }
   return [top, ...dependentLevels];
 };
@@ -234,18 +219,18 @@ export const makeKeyValuesUnique = (
   let stillShared = 0;
 
   type Placed = { node: AnswerNode; parent?: AnswerNode; grandparent?: AnswerNode };
-  let level: Placed[] = cloned.map((node) => ({ node }));
+  let level: Placed[] = cloned.map(node => ({ node }));
 
   for (let levelIndex = 0; levelIndex < depth - 1; levelIndex += 1) {
     const used = new Set(level.map(({ node }) => node.value));
     const groups = new Map<string, Placed[]>();
-    level.forEach((placed) => {
+    level.forEach(placed => {
       const group = groups.get(placed.node.value) ?? [];
       group.push(placed);
       groups.set(placed.node.value, group);
     });
 
-    groups.forEach((group) => {
+    groups.forEach(group => {
       if (group.length < 2 || !group.some(({ node }) => node.children.length > 0)) return;
       const toRename = group.filter(({ node }) => fixExisting || !node.existing);
       toRename.forEach(({ node, parent, grandparent }) => {
@@ -253,7 +238,7 @@ export const makeKeyValuesUnique = (
           parent ? `${node.label} (${parent.label})` : undefined,
           parent && grandparent ? `${node.label} (${parent.label}, ${grandparent.label})` : undefined,
         ].filter((candidate): candidate is string => Boolean(candidate));
-        let value = candidates.find((candidate) => !used.has(candidate));
+        let value = candidates.find(candidate => !used.has(candidate));
         if (!value) {
           const base = candidates[0] ?? node.label;
           let suffix = 2;
@@ -269,7 +254,7 @@ export const makeKeyValuesUnique = (
     });
 
     level = level.flatMap(({ node, parent }) =>
-      node.children.map((child) => ({ node: child, parent: node, grandparent: parent })),
+      node.children.map(child => ({ node: child, parent: node, grandparent: parent })),
     );
   }
 
@@ -302,7 +287,7 @@ export const rowsToTree = (
 ): { roots: AnswerNode[]; stats: ImportStats } => {
   const previousByPath = new Map<string, AnswerNode>();
   const indexPrevious = (nodes: AnswerNode[], labels: string[]) =>
-    nodes.forEach((node) => {
+    nodes.forEach(node => {
       const path = [...labels, node.label.trim()];
       previousByPath.set(pathKey(path), node);
       indexPrevious(node.children, path);
@@ -319,9 +304,9 @@ export const rowsToTree = (
     extraColumns: false,
   };
 
-  rows.forEach((row) => {
-    if (row.slice(depth).some((cell) => String(cell ?? '').trim())) stats.extraColumns = true;
-    const cells = row.slice(0, depth).map((cell) => String(cell ?? '').trim());
+  rows.forEach(row => {
+    if (row.slice(depth).some(cell => String(cell ?? '').trim())) stats.extraColumns = true;
+    const cells = row.slice(0, depth).map(cell => String(cell ?? '').trim());
     let last = cells.length - 1;
     while (last >= 0 && !cells[last]) last -= 1;
     if (last < 0) {
@@ -329,7 +314,7 @@ export const rowsToTree = (
       return;
     }
     const labels = cells.slice(0, last + 1);
-    if (labels.some((label) => !label)) {
+    if (labels.some(label => !label)) {
       stats.rowsWithGaps += 1;
       return;
     }
@@ -344,9 +329,7 @@ export const rowsToTree = (
       let node = created.get(key);
       if (!node) {
         const before = previousByPath.get(key);
-        node = before
-          ? newAnswerNode(label, before.value, before.existing)
-          : newAnswerNode(label);
+        node = before ? newAnswerNode(label, before.value, before.existing) : newAnswerNode(label);
         created.set(key, node);
         siblings.push(node);
       }
@@ -361,7 +344,7 @@ export const rowsToTree = (
 export const treeToRows = (roots: AnswerNode[]): string[][] => {
   const rows: string[][] = [];
   const walk = (nodes: AnswerNode[], labels: string[]) =>
-    nodes.forEach((node) => {
+    nodes.forEach(node => {
       const path = [...labels, node.label];
       if (node.children.length === 0) rows.push(path);
       else walk(node.children, path);
@@ -375,7 +358,7 @@ export const countByLevel = (roots: AnswerNode[], depth: number): number[] => {
   let level = roots;
   for (let index = 0; index < depth; index += 1) {
     counts.push(level.length);
-    level = level.flatMap((node) => node.children);
+    level = level.flatMap(node => node.children);
   }
   return counts;
 };
@@ -385,13 +368,10 @@ export const countByLevel = (roots: AnswerNode[], depth: number): number[] => {
  * (an empty path means the top level).
  */
 
-export const getChildrenAtPath = (
-  roots: AnswerNode[],
-  path: string[],
-): AnswerNode[] | undefined => {
+export const getChildrenAtPath = (roots: AnswerNode[], path: string[]): AnswerNode[] | undefined => {
   let nodes: AnswerNode[] | undefined = roots;
   for (const id of path) {
-    nodes = nodes?.find((node) => node.id === id)?.children;
+    nodes = nodes?.find(node => node.id === id)?.children;
     if (!nodes) return undefined;
   }
   return nodes;
@@ -404,7 +384,7 @@ export const updateChildrenAtPath = (
 ): AnswerNode[] => {
   if (path.length === 0) return update(roots);
   const [id, ...rest] = path;
-  return roots.map((node) =>
+  return roots.map(node =>
     node.id === id ? { ...node, children: updateChildrenAtPath(node.children, rest, update) } : node,
   );
 };
@@ -419,20 +399,17 @@ export const countDescendants = (node: AnswerNode): number =>
 const countOptions = (options: unknown) =>
   Array.isArray(options)
     ? options.length
-    : Object.values((options ?? {}) as DependentOptions).reduce(
-        (total, list) => total + list.length,
-        0,
-      );
+    : Object.values((options ?? {}) as DependentOptions).reduce((total, list) => total + list.length, 0);
 
 // Lists keep the order they had in the file, so saving doesn't reshuffle the JSON for review
 const keepKeyOrder = <T>(options: T, previous: unknown): T => {
   if (Array.isArray(options) || !previous || Array.isArray(previous)) return options;
   const lists = options as DependentOptions;
   const ordered: DependentOptions = {};
-  Object.keys(previous as DependentOptions).forEach((key) => {
+  Object.keys(previous as DependentOptions).forEach(key => {
     if (key in lists) ordered[key] = lists[key];
   });
-  Object.keys(lists).forEach((key) => {
+  Object.keys(lists).forEach(key => {
     if (!(key in ordered)) ordered[key] = lists[key];
   });
   return ordered as T;
@@ -526,8 +503,8 @@ export const findReferenceKeyUsers = (
   Object.entries(files).flatMap(([filePath, content]) =>
     Array.isArray(content)
       ? (content as FormItemJsonDefinition[])
-          .filter((item) => (item as { optionsReferenceKey?: string }).optionsReferenceKey === key)
-          .map((item) => ({
+          .filter(item => (item as { optionsReferenceKey?: string }).optionsReferenceKey === key)
+          .map(item => ({
             filePath,
             fieldName: item.name,
             description: `${describeFile(filePath)}: ${item.label || item.name}`,

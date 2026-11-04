@@ -72,7 +72,7 @@ export const hashJson = (value: unknown) => {
 };
 
 const changedFiles = (original: DefinitionFileMap, files: DefinitionFileMap) =>
-  Object.fromEntries(getChangedFilePaths(original, files).map((filePath) => [filePath, files[filePath]]));
+  Object.fromEntries(getChangedFilePaths(original, files).map(filePath => [filePath, files[filePath]]));
 
 const changedJsonOf = (state: DraftState) => JSON.stringify(changedFiles(state.original, state.files));
 
@@ -123,7 +123,7 @@ const draftSlice = createSlice({
       state.saveState = 'error';
       state.notice = `Couldn't save the draft: ${action.payload}`;
     },
-    noticeDismissed: (state) => {
+    noticeDismissed: state => {
       state.notice = undefined;
     },
     draftDiscarded: (state, action: PayloadAction<{ revision: number }>) => {
@@ -141,8 +141,16 @@ const draftSlice = createSlice({
 });
 
 export const { draftStarted, filesUpdated, noticeDismissed } = draftSlice.actions;
-const { draftLoaded, draftLoadFailed, saveStateChanged, draftSaved, saveConflicted, saveFailed, draftDiscarded, draftSubmitted } =
-  draftSlice.actions;
+const {
+  draftLoaded,
+  draftLoadFailed,
+  saveStateChanged,
+  draftSaved,
+  saveConflicted,
+  saveFailed,
+  draftDiscarded,
+  draftSubmitted,
+} = draftSlice.actions;
 export const draftReducer = draftSlice.reducer;
 
 export const selectDraft = (state: RootState) => state.draft;
@@ -151,36 +159,40 @@ export const selectOriginalFiles = (state: RootState) => state.draft.original;
 export const selectChangedPaths = createSelector([selectOriginalFiles, selectDraftFiles], getChangedFilePaths);
 
 // Loads the saved draft, if there is one, keeping only changes whose file is still as it was
-export const loadDraft = (): AppThunk<Promise<void>> => async (dispatch, getState, { draftClient }) => {
-  const { code, version, original } = getState().draft;
-  try {
-    const saved = await draftClient.load(code, version);
-    if (!saved) {
-      dispatch(draftLoaded({ files: original, revision: 0 }));
-      return;
+export const loadDraft =
+  (): AppThunk<Promise<void>> =>
+  async (dispatch, getState, { draftClient }) => {
+    const { code, version, original } = getState().draft;
+    try {
+      const saved = await draftClient.load(code, version);
+      if (!saved) {
+        dispatch(draftLoaded({ files: original, revision: 0 }));
+        return;
+      }
+      const files = { ...original };
+      const outdated: string[] = [];
+      Object.entries(saved.files).forEach(([filePath, value]) => {
+        const baseHash = saved.meta.baseHashes[filePath];
+        if (!baseHash || baseHash === hashJson(original[filePath])) files[filePath] = value;
+        else outdated.push(filePath);
+      });
+      dispatch(
+        draftLoaded({
+          files,
+          meta: saved.meta,
+          revision: saved.meta.revision,
+          notice:
+            outdated.length > 0
+              ? `Some saved changes were dropped because these files changed since the draft was started: ${outdated.join(
+                  ', ',
+                )}.`
+              : undefined,
+        }),
+      );
+    } catch (err) {
+      dispatch(draftLoadFailed((err as Error).message));
     }
-    const files = { ...original };
-    const outdated: string[] = [];
-    Object.entries(saved.files).forEach(([filePath, value]) => {
-      const baseHash = saved.meta.baseHashes[filePath];
-      if (!baseHash || baseHash === hashJson(original[filePath])) files[filePath] = value;
-      else outdated.push(filePath);
-    });
-    dispatch(
-      draftLoaded({
-        files,
-        meta: saved.meta,
-        revision: saved.meta.revision,
-        notice:
-          outdated.length > 0
-            ? `Some saved changes were dropped because these files changed since the draft was started: ${outdated.join(', ')}.`
-            : undefined,
-      }),
-    );
-  } catch (err) {
-    dispatch(draftLoadFailed((err as Error).message));
-  }
-};
+  };
 
 // Changes the draft's files: the updater gets them as they are and returns them changed
 export const editDraftFiles =
@@ -189,27 +201,31 @@ export const editDraftFiles =
     dispatch(filesUpdated(updater(getState().draft.files)));
   };
 
-const saveNow = (): AppThunk<Promise<void>> => async (dispatch, getState, { draftClient }) => {
-  const state = getState().draft;
-  const changed = changedFiles(state.original, state.files);
-  const json = JSON.stringify(changed);
-  if (json === state.lastSavedJson) {
-    dispatch(saveStateChanged('saved'));
-    return;
-  }
-  dispatch(saveStateChanged('saving'));
-  try {
-    const outcome = await draftClient.save(state.code, state.version, {
-      expectedRevision: state.revision,
-      files: changed,
-      baseHashes: Object.fromEntries(Object.keys(changed).map((filePath) => [filePath, hashJson(state.original[filePath])])),
-    });
-    if (!outcome.ok) dispatch(saveConflicted(outcome.conflict));
-    else dispatch(draftSaved({ meta: outcome.meta, json }));
-  } catch (err) {
-    dispatch(saveFailed((err as Error).message));
-  }
-};
+const saveNow =
+  (): AppThunk<Promise<void>> =>
+  async (dispatch, getState, { draftClient }) => {
+    const state = getState().draft;
+    const changed = changedFiles(state.original, state.files);
+    const json = JSON.stringify(changed);
+    if (json === state.lastSavedJson) {
+      dispatch(saveStateChanged('saved'));
+      return;
+    }
+    dispatch(saveStateChanged('saving'));
+    try {
+      const outcome = await draftClient.save(state.code, state.version, {
+        expectedRevision: state.revision,
+        files: changed,
+        baseHashes: Object.fromEntries(
+          Object.keys(changed).map(filePath => [filePath, hashJson(state.original[filePath])]),
+        ),
+      });
+      if (!outcome.ok) dispatch(saveConflicted(outcome.conflict));
+      else dispatch(draftSaved({ meta: outcome.meta, json }));
+    } catch (err) {
+      dispatch(saveFailed((err as Error).message));
+    }
+  };
 
 // Saves now, after any save already under way (each uses the revision the previous one returned)
 export const flushDraft = (): AppThunk<Promise<void>> => (dispatch, _getState, services) => {
@@ -223,11 +239,13 @@ export const discardDraft = (): AppThunk<Promise<void>> => async (dispatch, getS
   dispatch(draftDiscarded({ revision: await services.draftClient.discard(code, version) }));
 };
 
-export const submitDraft = (): AppThunk<Promise<void>> => async (dispatch, getState, { draftClient }) => {
-  await dispatch(flushDraft());
-  const { code, version } = getState().draft;
-  dispatch(draftSubmitted(await draftClient.submit(code, version)));
-};
+export const submitDraft =
+  (): AppThunk<Promise<void>> =>
+  async (dispatch, getState, { draftClient }) => {
+    await dispatch(flushDraft());
+    const { code, version } = getState().draft;
+    dispatch(draftSubmitted(await draftClient.submit(code, version)));
+  };
 
 export const applyDraft =
   (description?: string): AppThunk<Promise<ApplyResult>> =>

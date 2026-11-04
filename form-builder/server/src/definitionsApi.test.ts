@@ -17,12 +17,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { describe, expect, test } from '@jest/globals';
-import {
-  listHelplines,
-  loadDefinitionFiles,
-  readFeatureFlags,
-  readHelplineLanguage,
-} from './definitionsApi';
+import { listHelplines, loadDefinitionFiles, readFeatureFlags, readHelplineLanguage } from './definitionsApi';
 
 const formDefinitionsDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -32,7 +27,7 @@ const formDefinitionsDir = path.resolve(
 describe('definitionsApi', () => {
   test('lists helplines with their versions', async () => {
     const helplines = await listHelplines(formDefinitionsDir);
-    expect(helplines.find((helpline) => helpline.code === 'usnm')?.versions).toContain('v1');
+    expect(helplines.find(helpline => helpline.code === 'usnm')?.versions).toContain('v1');
   });
 
   test('loads every helpline version from the repo without parse errors', async () => {
@@ -41,7 +36,10 @@ describe('definitionsApi', () => {
       for (const version of versions) {
         const { files, errors } = await loadDefinitionFiles(formDefinitionsDir, code, version);
         expect({ at: `${code}/${version}`, value: errors }).toEqual({ at: `${code}/${version}`, value: [] });
-        expect({ at: `${code}/${version}`, hasFiles: Object.keys(files).length > 0 }).toEqual({ at: `${code}/${version}`, hasFiles: true });
+        expect({ at: `${code}/${version}`, hasFiles: Object.keys(files).length > 0 }).toEqual({
+          at: `${code}/${version}`,
+          hasFiles: true,
+        });
       }
     }
   });
@@ -67,12 +65,7 @@ describe('definitionsApi', () => {
     expect(await readHelplineLanguage(helplinesConfigDir, 'ca')).toBe('en-CA');
     expect(await readHelplineLanguage(helplinesConfigDir, 'cl')).toMatch(/^es/);
     expect(await readHelplineLanguage(helplinesConfigDir, 'nosuchhelpline')).toBeUndefined();
-    const { helplineLanguage } = await loadDefinitionFiles(
-      formDefinitionsDir,
-      'ca',
-      'v1',
-      helplinesConfigDir,
-    );
+    const { helplineLanguage } = await loadDefinitionFiles(formDefinitionsDir, 'ca', 'v1', helplinesConfigDir);
     expect(helplineLanguage).toBe('en-CA');
   });
 
@@ -84,8 +77,8 @@ describe('definitionsApi', () => {
   });
 
   test('returns 404 for an unknown helpline', async () => {
-    await expect(loadDefinitionFiles(formDefinitionsDir, 'nosuchhelpline', 'v1')).rejects.toMatchObject(
-      { statusCode: 404 },
-    );
+    await expect(loadDefinitionFiles(formDefinitionsDir, 'nosuchhelpline', 'v1')).rejects.toMatchObject({
+      statusCode: 404,
+    });
   });
 });

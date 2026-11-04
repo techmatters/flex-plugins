@@ -66,9 +66,9 @@ const checkCategories = (files: DefinitionFileMap): ValidationIssue[] => {
     }
     categories.forEach(([name, entry]) => {
       if (!name.trim()) add('a category has no name.');
-      const labels = (entry.subcategories ?? []).map((sub) => String(sub.label ?? '').trim());
+      const labels = (entry.subcategories ?? []).map(sub => String(sub.label ?? '').trim());
       if (labels.length === 0) add(`“${name}” has no subcategories.`);
-      if (labels.some((label) => !label)) add(`a subcategory of “${name}” has no name.`);
+      if (labels.some(label => !label)) add(`a subcategory of “${name}” has no name.`);
       const repeated = labels.filter((label, index) => label && labels.indexOf(label) !== index);
       if (repeated.length > 0) add(`“${name}” has “${repeated[0]}” more than once.`);
     });
@@ -81,8 +81,8 @@ export const validateCategories = (
   draftFiles: DefinitionFileMap,
   originalFiles: DefinitionFileMap,
 ): ValidationIssue[] => {
-  const before = new Set(checkCategories(originalFiles).map((found) => found.message));
-  return checkCategories(draftFiles).map((found) =>
+  const before = new Set(checkCategories(originalFiles).map(found => found.message));
+  return checkCategories(draftFiles).map(found =>
     before.has(found.message)
       ? {
           ...found,
@@ -105,7 +105,7 @@ export const summarizeCategoryChanges = (
   if (isSameJson(before, after)) return [];
   const helplines = [...new Set([...Object.keys(before), ...Object.keys(after)])];
   const several = helplines.length > 1;
-  const lines = helplines.flatMap((helpline) => {
+  const lines = helplines.flatMap(helpline => {
     const prefix = several ? `${helpline}: ` : '';
     const was = before[helpline];
     const now = after[helpline];
@@ -118,33 +118,39 @@ export const summarizeCategoryChanges = (
     Object.entries(nowCategories).forEach(([name, entry]) => {
       const previous = wasCategories[name];
       if (!previous) {
-        result.push(`${prefix}Added category “${name}” (${entry.subcategories.map((sub) => sub.label).join(', ')})`);
+        result.push(`${prefix}Added category “${name}” (${entry.subcategories.map(sub => sub.label).join(', ')})`);
         return;
       }
-      const wasLabels = previous.subcategories.map((sub) => sub.label);
-      const nowLabels = entry.subcategories.map((sub) => sub.label);
+      const wasLabels = previous.subcategories.map(sub => sub.label);
+      const nowLabels = entry.subcategories.map(sub => sub.label);
       nowLabels
-        .filter((label) => !wasLabels.includes(label))
-        .forEach((label) => result.push(`${prefix}Added “${label}” to “${name}”`));
+        .filter(label => !wasLabels.includes(label))
+        .forEach(label => result.push(`${prefix}Added “${label}” to “${name}”`));
       wasLabels
-        .filter((label) => !nowLabels.includes(label))
-        .forEach((label) => result.push(`${prefix}Removed “${label}” from “${name}”`));
+        .filter(label => !nowLabels.includes(label))
+        .forEach(label => result.push(`${prefix}Removed “${label}” from “${name}”`));
       if (previous.color !== entry.color) result.push(`${prefix}New colour for “${name}”`);
       const linksChanged = entry.subcategories.some(
-        (sub) => previous.subcategories.find((old) => old.label === sub.label)?.toolkitUrl !== sub.toolkitUrl &&
+        sub =>
+          previous.subcategories.find(old => old.label === sub.label)?.toolkitUrl !== sub.toolkitUrl &&
           wasLabels.includes(sub.label),
       );
       if (linksChanged) result.push(`${prefix}Help links changed in “${name}”`);
-      const kept = (labels: string[], others: string[]) => labels.filter((label) => others.includes(label));
+      const kept = (labels: string[], others: string[]) => labels.filter(label => others.includes(label));
       if (!isSameJson(kept(wasLabels, nowLabels), kept(nowLabels, wasLabels))) {
         result.push(`${prefix}Reordered the subcategories of “${name}”`);
       }
     });
     Object.keys(wasCategories)
-      .filter((name) => !(name in nowCategories))
-      .forEach((name) => result.push(`${prefix}Removed category “${name}”`));
-    const keptNames = (names: string[], others: object) => names.filter((name) => name in others);
-    if (!isSameJson(keptNames(Object.keys(wasCategories), nowCategories), keptNames(Object.keys(nowCategories), wasCategories))) {
+      .filter(name => !(name in nowCategories))
+      .forEach(name => result.push(`${prefix}Removed category “${name}”`));
+    const keptNames = (names: string[], others: object) => names.filter(name => name in others);
+    if (
+      !isSameJson(
+        keptNames(Object.keys(wasCategories), nowCategories),
+        keptNames(Object.keys(nowCategories), wasCategories),
+      )
+    ) {
       result.push(`${prefix}Reordered the categories`);
     }
     return result;

@@ -32,8 +32,16 @@ export { validateFormDefinition };
  */
 export const getFormSpecification = (target: FormTarget) => {
   if (isContactTab(target)) return aseloFormTemplates.tabbedForms[target.key];
-  const formName = target.filePath.split('/').pop()!.replace(/\.json$/, '');
-  return (aseloFormTemplates.caseForms as Record<string, (typeof aseloFormTemplates.caseForms)[keyof typeof aseloFormTemplates.caseForms]>)[formName];
+  const formName = target.filePath
+    .split('/')
+    .pop()!
+    .replace(/\.json$/, '');
+  return (
+    aseloFormTemplates.caseForms as Record<
+      string,
+      (typeof aseloFormTemplates.caseForms)[keyof typeof aseloFormTemplates.caseForms]
+    >
+  )[formName];
 };
 
 // Fields the specification requires - the plugin relies on them, so they can't be removed

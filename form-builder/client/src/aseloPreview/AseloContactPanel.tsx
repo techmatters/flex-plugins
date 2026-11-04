@@ -60,9 +60,7 @@ export const AseloContactPanel = ({ strings }: { strings: Strings }) => {
   const { referenceData, forms, categories, tabs, currentTab, isLastTab, errorsByTab, categoriesInvalid } =
     useAppSelector(selectContactPanel);
   const tabHasError = (tab: TabId) =>
-    tab === 'categories'
-      ? categoriesInvalid
-      : tab !== 'search' && Object.values(errorsByTab[tab] ?? {}).some(Boolean);
+    tab === 'categories' ? categoriesInvalid : tab !== 'search' && Object.values(errorsByTab[tab] ?? {}).some(Boolean);
 
   if (screen === 'callTypes') {
     return (
@@ -75,7 +73,7 @@ export const AseloContactPanel = ({ strings }: { strings: Strings }) => {
             buttons={getCallTypeButtons(files)}
             strings={strings}
             taskType={taskType}
-            onDataCallType={(name) => dispatch(chooseDataCallType(name))}
+            onDataCallType={name => dispatch(chooseDataCallType(name))}
             onNonDataCallType={() => dispatch(nonDataCallTypeChosen())}
           />
         </div>
@@ -86,9 +84,7 @@ export const AseloContactPanel = ({ strings }: { strings: Strings }) => {
   const renderTabContent = () => {
     if (currentTab === 'search') {
       return (
-        <p className="aselo-search-placeholder">
-          Counselors search previous contacts here. It isn't part of the form.
-        </p>
+        <p className="aselo-search-placeholder">Counselors search previous contacts here. It isn't part of the form.</p>
       );
     }
     if (currentTab === 'categories') {
@@ -98,11 +94,11 @@ export const AseloContactPanel = ({ strings }: { strings: Strings }) => {
           selected={selectedCategories}
           hasError={categoriesInvalid}
           strings={strings}
-          onChange={(selected) => dispatch(categoriesChanged(selected))}
+          onChange={selected => dispatch(categoriesChanged(selected))}
         />
       );
     }
-    const tab = CONTACT_TABS.find((contactTab) => contactTab.key === currentTab)!;
+    const tab = CONTACT_TABS.find(contactTab => contactTab.key === currentTab)!;
     return (
       <AseloFormBody
         key={currentTab}

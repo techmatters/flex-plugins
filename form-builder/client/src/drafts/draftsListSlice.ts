@@ -41,15 +41,17 @@ const submittedFirst = (a: DraftSummary, b: DraftSummary) =>
   a.meta.status === b.meta.status
     ? b.meta.updatedAt.localeCompare(a.meta.updatedAt)
     : a.meta.status === 'submitted'
-      ? -1
-      : 1;
+    ? -1
+    : 1;
 
 export const selectDrafts = (state: RootState) => state.draftsList.drafts;
 
-export const loadDrafts = (): AppThunk<Promise<void>> => async (dispatch, _getState, { draftClient }) => {
-  try {
-    dispatch(draftsListed([...(await draftClient.list())].sort(submittedFirst)));
-  } catch {
-    dispatch(draftsListed([]));
-  }
-};
+export const loadDrafts =
+  (): AppThunk<Promise<void>> =>
+  async (dispatch, _getState, { draftClient }) => {
+    try {
+      dispatch(draftsListed([...(await draftClient.list())].sort(submittedFirst)));
+    } catch {
+      dispatch(draftsListed([]));
+    }
+  };

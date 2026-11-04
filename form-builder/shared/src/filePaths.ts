@@ -28,8 +28,7 @@ export const REPO_WEBCHAT_CONFIG_DIR = 'aselo-webchat-react-app/configSrc';
 
 export const WEBCHAT_TRANSLATIONS_PREFIX = 'webchat-app/translations/';
 
-export const isWebchatTranslationsPath = (filePath: string) =>
-  filePath.startsWith(WEBCHAT_TRANSLATIONS_PREFIX);
+export const isWebchatTranslationsPath = (filePath: string) => filePath.startsWith(WEBCHAT_TRANSLATIONS_PREFIX);
 
 // e.g. 'webchat-app/translations/en-US.json' -> 'en-US'
 export const webchatLocaleOf = (filePath: string) =>

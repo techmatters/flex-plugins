@@ -18,10 +18,7 @@
  * The definition files outside the contact forms that staff can edit: call type buttons,
  * canned responses and the automatic chat messages. Reading, checking and describing changes.
  */
-import type {
-  CallTypeButtonsEntry,
-  CannedResponsesDefinitions,
-} from '@hrm-form-definitions/formDefinition/types';
+import type { CallTypeButtonsEntry, CannedResponsesDefinitions } from '@hrm-form-definitions/formDefinition/types';
 import type { DefinitionFileMap } from '../common/definitions';
 import { isSameJson } from '../drafts/changes';
 import type { ValidationIssue } from '../forms/validation';
@@ -61,7 +58,7 @@ export const isFlatMessages = (value: unknown): value is Record<string, string> 
   Boolean(value) &&
   typeof value === 'object' &&
   Object.values(value as object).length > 0 &&
-  Object.values(value as object).every((entry) => typeof entry === 'string');
+  Object.values(value as object).every(entry => typeof entry === 'string');
 
 type MessageInfo = { key: string; title: string; when: string };
 
@@ -116,30 +113,29 @@ export const POST_SURVEY_MESSAGES: MessageInfo[] = [
  * Checks
  */
 
-const issue = (
-  severity: ValidationIssue['severity'],
-  message: string,
-): ValidationIssue => ({ severity, message });
+const issue = (severity: ValidationIssue['severity'], message: string): ValidationIssue => ({ severity, message });
 
 const checkCallTypes = (files: DefinitionFileMap): ValidationIssue[] => {
   if (files[CALL_TYPE_BUTTONS_FILE] === undefined) return [];
   const buttons = getCallTypeButtons(files);
   const issues: ValidationIssue[] = [];
-  if (!buttons.some((button) => button.category === 'data')) {
+  if (!buttons.some(button => button.category === 'data')) {
     issues.push(issue('error', 'Call types: there must be at least one button that opens the contact form.'));
   }
-  if (buttons.some((button) => !String(button.label ?? '').trim())) {
+  if (buttons.some(button => !String(button.label ?? '').trim())) {
     issues.push(issue('error', 'Call types: every button needs a label.'));
   }
   // Non-data contacts are saved with the button label, so labels must be unique
   const labels = buttons
-    .filter((button) => button.category === 'non-data')
-    .map((button) => String(button.label ?? '').trim().toLowerCase());
+    .filter(button => button.category === 'non-data')
+    .map(button =>
+      String(button.label ?? '')
+        .trim()
+        .toLowerCase(),
+    );
   const repeated = labels.filter((label, index) => label && labels.indexOf(label) !== index);
   if (repeated.length > 0) {
-    issues.push(
-      issue('error', `Call types: more than one button is labelled “${repeated[0]}”.`),
-    );
+    issues.push(issue('error', `Call types: more than one button is labelled “${repeated[0]}”.`));
   }
   return issues;
 };
@@ -147,14 +143,18 @@ const checkCallTypes = (files: DefinitionFileMap): ValidationIssue[] => {
 const checkCannedResponses = (files: DefinitionFileMap): ValidationIssue[] => {
   const responses = getCannedResponses(files);
   const issues: ValidationIssue[] = [];
-  if (responses.some((response) => !String(response.label ?? '').trim())) {
+  if (responses.some(response => !String(response.label ?? '').trim())) {
     issues.push(issue('error', 'Canned responses: every response needs a name.'));
   }
-  if (responses.some((response) => !String(response.text ?? '').trim())) {
+  if (responses.some(response => !String(response.text ?? '').trim())) {
     issues.push(issue('error', 'Canned responses: every response needs text.'));
   }
   // Labels can be numbers in the JSON (USNM has "label": 211)
-  const labels = responses.map((response) => String(response.label ?? '').trim().toLowerCase());
+  const labels = responses.map(response =>
+    String(response.label ?? '')
+      .trim()
+      .toLowerCase(),
+  );
   const repeated = labels.find((label, index) => label && labels.indexOf(label) !== index);
   if (repeated) {
     issues.push(
@@ -167,10 +167,7 @@ const checkCannedResponses = (files: DefinitionFileMap): ValidationIssue[] => {
   return issues;
 };
 
-const checkSections = (files: DefinitionFileMap) => [
-  ...checkCallTypes(files),
-  ...checkCannedResponses(files),
-];
+const checkSections = (files: DefinitionFileMap) => [...checkCallTypes(files), ...checkCannedResponses(files)];
 
 // Problems that were already there before the user's changes are only warnings
 export const validateSections = (
@@ -178,15 +175,16 @@ export const validateSections = (
   originalFiles: DefinitionFileMap,
   code = '<code>',
 ): ValidationIssue[] => {
-  const before = new Set(checkSections(originalFiles).map((found) => found.message));
-  const sectionIssues = checkSections(draftFiles).map((found): ValidationIssue =>
-    found.severity === 'error' && before.has(found.message)
-      ? {
-          ...found,
-          severity: 'warning',
-          message: `${found.message} (This was already the case before your changes.)`,
-        }
-      : found,
+  const before = new Set(checkSections(originalFiles).map(found => found.message));
+  const sectionIssues = checkSections(draftFiles).map(
+    (found): ValidationIssue =>
+      found.severity === 'error' && before.has(found.message)
+        ? {
+            ...found,
+            severity: 'warning',
+            message: `${found.message} (This was already the case before your changes.)`,
+          }
+        : found,
   );
   return [
     ...sectionIssues,
@@ -211,19 +209,17 @@ const describeList = <T>(
   keyOf: (item: T) => string,
   describe: (item: T) => string,
 ): string[] => {
-  const beforeKeys = new Map(before.map((item) => [keyOf(item), item]));
-  const afterKeys = new Map(after.map((item) => [keyOf(item), item]));
+  const beforeKeys = new Map(before.map(item => [keyOf(item), item]));
+  const afterKeys = new Map(after.map(item => [keyOf(item), item]));
   const lines: string[] = [];
-  after.forEach((item) => {
+  after.forEach(item => {
     const previous = beforeKeys.get(keyOf(item));
     if (!previous) lines.push(`Added: ${describe(item)}`);
     else if (!isSameJson(previous, item)) lines.push(`Changed: ${describe(previous)} → ${describe(item)}`);
   });
-  before
-    .filter((item) => !afterKeys.has(keyOf(item)))
-    .forEach((item) => lines.push(`Removed: ${describe(item)}`));
-  const keptBefore = before.map(keyOf).filter((key) => afterKeys.has(key));
-  const keptAfter = after.map(keyOf).filter((key) => beforeKeys.has(key));
+  before.filter(item => !afterKeys.has(keyOf(item))).forEach(item => lines.push(`Removed: ${describe(item)}`));
+  const keptBefore = before.map(keyOf).filter(key => afterKeys.has(key));
+  const keptAfter = after.map(keyOf).filter(key => beforeKeys.has(key));
   if (!isSameJson(keptBefore, keptAfter)) lines.push('Reordered');
   return lines;
 };
@@ -234,18 +230,14 @@ const describeMessages = (before: unknown, after: unknown): string[] => {
   const beforeMessages = asLocalized(before);
   const afterMessages = asLocalized(after);
   const languages = [...new Set([...Object.keys(beforeMessages), ...Object.keys(afterMessages)])];
-  return languages.flatMap((language) => {
+  return languages.flatMap(language => {
     const keys = [
-      ...new Set([
-        ...Object.keys(beforeMessages[language] ?? {}),
-        ...Object.keys(afterMessages[language] ?? {}),
-      ]),
+      ...new Set([...Object.keys(beforeMessages[language] ?? {}), ...Object.keys(afterMessages[language] ?? {})]),
     ];
     return keys
-      .filter((key) => beforeMessages[language]?.[key] !== afterMessages[language]?.[key])
-      .map((key) => {
-        const title =
-          [...CHAT_MESSAGES, ...POST_SURVEY_MESSAGES].find((info) => info.key === key)?.title ?? key;
+      .filter(key => beforeMessages[language]?.[key] !== afterMessages[language]?.[key])
+      .map(key => {
+        const title = [...CHAT_MESSAGES, ...POST_SURVEY_MESSAGES].find(info => info.key === key)?.title ?? key;
         if (afterMessages[language]?.[key] === undefined) return `Removed: ${title} (${language})`;
         if (beforeMessages[language]?.[key] === undefined) return `Added: ${title} (${language})`;
         return `Changed: ${title} (${language})`;
@@ -274,8 +266,8 @@ export const summarizeSectionChanges = (
       lines: describeList(
         getCallTypeButtons(originalFiles),
         getCallTypeButtons(draftFiles),
-        (button) => button.name,
-        (button) => `“${button.label}”`,
+        button => button.name,
+        button => `“${button.label}”`,
       ),
     });
   }
@@ -285,8 +277,8 @@ export const summarizeSectionChanges = (
       lines: describeList(
         getCannedResponses(originalFiles),
         getCannedResponses(draftFiles),
-        (response) => String(response.label),
-        (response) => `“${response.label}”`,
+        response => String(response.label),
+        response => `“${response.label}”`,
       ),
     });
   }
@@ -299,10 +291,7 @@ export const summarizeSectionChanges = (
   if (changed(POST_SURVEY_MESSAGES_FILE)) {
     summaries.push({
       title: 'Post-chat survey messages',
-      lines: describeMessages(
-        originalFiles[POST_SURVEY_MESSAGES_FILE],
-        draftFiles[POST_SURVEY_MESSAGES_FILE],
-      ),
+      lines: describeMessages(originalFiles[POST_SURVEY_MESSAGES_FILE], draftFiles[POST_SURVEY_MESSAGES_FILE]),
     });
   }
   summaries.push(...summarizeWebchatChanges(originalFiles, draftFiles, webchatDefaultLocale));

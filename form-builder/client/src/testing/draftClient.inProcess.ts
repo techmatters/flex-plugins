@@ -23,6 +23,4 @@ import { handleApiRequest } from '@tech-matters/form-builder-server/api';
 import { clientFor, DraftClient } from '../drafts/draftClient';
 
 export const inProcessDraftClient = (context: ApiContext, user: ApiUser): DraftClient =>
-  clientFor((method, path, body) =>
-    handleApiRequest(context, { method, path, body: structuredClone(body), user }),
-  );
+  clientFor((method, path, body) => handleApiRequest(context, { method, path, body: structuredClone(body), user }));

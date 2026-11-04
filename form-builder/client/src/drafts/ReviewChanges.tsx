@@ -45,8 +45,8 @@ export const ReviewChanges = () => {
   const applyInBuilder = useAppSelector(selectUser)?.applyInBuilder !== false;
   const { exported, busy, submitted, applied, failure } = useAppSelector(selectReview);
   const alreadySubmitted = meta?.status === 'submitted';
-  const errors = issues.filter((issue) => issue.severity === 'error');
-  const warnings = issues.filter((issue) => issue.severity === 'warning');
+  const errors = issues.filter(issue => issue.severity === 'error');
+  const warnings = issues.filter(issue => issue.severity === 'warning');
   const onClose = () => dispatch(reviewClosed());
 
   if (applied) {
@@ -58,7 +58,7 @@ export const ReviewChanges = () => {
           </div>
           <p>{applied.description}</p>
           <ul>
-            {applied.written.map((filePath) => (
+            {applied.written.map(filePath => (
               <li key={filePath}>
                 <code>{filePath}</code>
               </li>
@@ -89,7 +89,7 @@ export const ReviewChanges = () => {
         role="dialog"
         aria-modal="true"
         aria-labelledby="review-title"
-        onClick={(e) => e.stopPropagation()}
+        onClick={e => e.stopPropagation()}
       >
         <div className="modal-header">
           <h2 id="review-title">Review your changes</h2>
@@ -102,23 +102,21 @@ export const ReviewChanges = () => {
           <p className="muted">You haven't changed anything yet.</p>
         ) : (
           <>
-            {summaries.map((summary) => (
+            {summaries.map(summary => (
               <section key={summary.tab.filePath} className="review-section">
-                <h3>
-                  {summary.tab.kind === 'case' ? `Case section: ${summary.tab.title}` : summary.tab.title}
-                </h3>
+                <h3>{summary.tab.kind === 'case' ? `Case section: ${summary.tab.title}` : summary.tab.title}</h3>
                 <ul>
-                  {summary.added.map((field) => (
+                  {summary.added.map(field => (
                     <li key={`added-${field}`}>
                       <span className="badge badge-new">Added</span> {field}
                     </li>
                   ))}
-                  {summary.removed.map((field) => (
+                  {summary.removed.map(field => (
                     <li key={`removed-${field}`}>
                       <span className="badge badge-error">Removed</span> {field}
                     </li>
                   ))}
-                  {summary.edited.map((field) => (
+                  {summary.edited.map(field => (
                     <li key={`edited-${field}`}>
                       <span className="badge badge-edited">Edited</span> {field}
                     </li>
@@ -128,11 +126,11 @@ export const ReviewChanges = () => {
               </section>
             ))}
 
-            {sectionSummaries.map((summary) => (
+            {sectionSummaries.map(summary => (
               <section key={summary.title} className="review-section">
                 <h3>{summary.title}</h3>
                 <ul>
-                  {summary.lines.map((line) => (
+                  {summary.lines.map(line => (
                     <li key={line}>{line}</li>
                   ))}
                 </ul>
@@ -143,7 +141,7 @@ export const ReviewChanges = () => {
               <section className="review-section">
                 <h3>Fix these first</h3>
                 <ul className="issue-list">
-                  {errors.map((issue) => (
+                  {errors.map(issue => (
                     <li key={issue.message} className="issue issue-error">
                       {issue.message}
                     </li>
@@ -155,10 +153,9 @@ export const ReviewChanges = () => {
             {warnings.length > 0 && (
               <section className="review-section">
                 <h3>Notes for the Aselo team</h3>
-                <p className="muted">These don't stop the changes going ahead; they're passed on
-                  to the reviewer.</p>
+                <p className="muted">These don't stop the changes going ahead; they're passed on to the reviewer.</p>
                 <ul className="issue-list">
-                  {warnings.map((issue) => (
+                  {warnings.map(issue => (
                     <li key={issue.message} className="issue issue-warning">
                       {issue.message}
                     </li>
@@ -170,7 +167,7 @@ export const ReviewChanges = () => {
             <details className="review-section">
               <summary>Files that will change ({changedPaths.length})</summary>
               <ul>
-                {changedPaths.map((filePath) => (
+                {changedPaths.map(filePath => (
                   <li key={filePath}>
                     <code>{repoPathOf(code, version, filePath)}</code>
                   </li>
@@ -184,13 +181,13 @@ export const ReviewChanges = () => {
               <div className="modal-footer">
                 {submitted || alreadySubmitted ? (
                   <p className="success-text">
-                    Submitted. The Aselo team has been told and will review and apply your
-                    changes. If you change anything else, submit again.
+                    Submitted. The Aselo team has been told and will review and apply your changes. If you change
+                    anything else, submit again.
                   </p>
                 ) : (
                   <p className="muted">
-                    Submitting sends your changes to the Aselo team to review. Nothing changes in
-                    Aselo until they apply them.
+                    Submitting sends your changes to the Aselo team to review. Nothing changes in Aselo until they apply
+                    them.
                   </p>
                 )}
                 <button

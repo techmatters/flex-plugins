@@ -108,7 +108,7 @@ const kindOf = (value: unknown): ValueKind => {
   return 'json';
 };
 
-const emptyValueOf = (kind: ValueKind): unknown => ({ boolean: false, number: 0, string: '', json: {} })[kind];
+const emptyValueOf = (kind: ValueKind): unknown => ({ boolean: false, number: 0, string: '', json: {} }[kind]);
 
 /** The value one file sets for a setting: typed control, "not set", or JSON for anything else. */
 const FileValueInput = ({
@@ -135,7 +135,7 @@ const FileValueInput = ({
       <select
         aria-label={label}
         value={value === undefined ? '' : String(value)}
-        onChange={(e) => onChange(e.target.value === '' ? undefined : e.target.value === 'true')}
+        onChange={e => onChange(e.target.value === '' ? undefined : e.target.value === 'true')}
       >
         <option value="">Not set</option>
         <option value="true">On</option>
@@ -166,7 +166,7 @@ const FileValueInput = ({
   if (kind === 'string' && typeof value === 'string') {
     return (
       <span className="config-input-row">
-        <input type="text" aria-label={label} value={value} onChange={(e) => onChange(e.target.value)} />
+        <input type="text" aria-label={label} value={value} onChange={e => onChange(e.target.value)} />
         {remove}
       </span>
     );
@@ -179,7 +179,7 @@ const FileValueInput = ({
           aria-label={label}
           className="narrow-input"
           value={value}
-          onChange={(e) => e.target.value !== '' && onChange(Number(e.target.value))}
+          onChange={e => e.target.value !== '' && onChange(Number(e.target.value))}
         />
         {remove}
       </span>
@@ -193,7 +193,7 @@ const FileValueInput = ({
         rows={Math.min(12, Math.max(2, jsonText.split('\n').length))}
         value={jsonText}
         spellCheck={false}
-        onChange={(e) => onJsonChange(e.target.value)}
+        onChange={e => onJsonChange(e.target.value)}
       />
       {json?.error && <span className="issue-error-text">Not valid JSON, not saved: {json.error}</span>}
       {remove}
@@ -204,16 +204,21 @@ const FileValueInput = ({
 const SettingEditor = ({ row, fileNames }: { row: SettingRow; fileNames: ServiceConfigFileName[] }) => {
   const dispatch = useAppDispatch();
   const { settingJson } = useAppSelector(selectServiceConfig);
-  const hint = [...fileNames].reverse().map((name) => row.byLayer[name]).find((value) => value !== undefined) ?? row.byLayer.defaults;
+  const hint =
+    [...fileNames]
+      .reverse()
+      .map(name => row.byLayer[name])
+      .find(value => value !== undefined) ?? row.byLayer.defaults;
   const note = applyNoteFor(row.keys);
-  const set = (name: ServiceConfigFileName, value: unknown) => dispatch(setSettingValue(row.path, row.keys, name, value));
+  const set = (name: ServiceConfigFileName, value: unknown) =>
+    dispatch(setSettingValue(row.path, row.keys, name, value));
   return (
     <div className="config-setting-editor">
       {note && <p className="issue issue-warning">{note}</p>}
       {Object.values(row.byLayer).some(hasPlaceholder) && (
         <p className="field-hint">
-          ${'{task_queues.…}'}, ${'{workflow_sids.…}'} and ${'{studio_flow_sids.…}'} placeholders are replaced
-          with the environment’s SIDs when applied.
+          ${'{task_queues.…}'}, ${'{workflow_sids.…}'} and ${'{studio_flow_sids.…}'} placeholders are replaced with the
+          environment’s SIDs when applied.
         </p>
       )}
       <table className="config-files-table">
@@ -227,7 +232,7 @@ const SettingEditor = ({ row, fileNames }: { row: SettingRow; fileNames: Service
               <ValueText value={row.byLayer.defaults} />
             </td>
           </tr>
-          {fileNames.map((name) => (
+          {fileNames.map(name => (
             <tr key={name}>
               <th scope="row">
                 {name}.json
@@ -247,8 +252,8 @@ const SettingEditor = ({ row, fileNames }: { row: SettingRow; fileNames: Service
                     value={row.byLayer[name]}
                     hint={hint}
                     json={settingJson[settingJsonKey(row.path, name)]}
-                    onChange={(value) => set(name, value)}
-                    onJsonChange={(text) => dispatch(typeSettingJson(row.path, row.keys, name, text))}
+                    onChange={value => set(name, value)}
+                    onJsonChange={text => dispatch(typeSettingJson(row.path, row.keys, name, text))}
                   />
                 )}
               </td>
@@ -264,8 +269,8 @@ const AddSetting = ({ rows, fileNames }: { rows: SettingRow[]; fileNames: Servic
   const dispatch = useAppDispatch();
   const { pathText, fileName, valueText, error } = useAppSelector(selectServiceConfig).add;
   const suggestions = useMemo(() => {
-    const present = new Set(rows.map((row) => row.path));
-    return knownSettingPaths().filter((path) => !present.has(path));
+    const present = new Set(rows.map(row => row.path));
+    return knownSettingPaths().filter(path => !present.has(path));
   }, [rows]);
 
   return (
@@ -279,10 +284,10 @@ const AddSetting = ({ rows, fileNames }: { rows: SettingRow[]; fileNames: Servic
             list="service-config-suggestions"
             placeholder="attributes.feature_flags.enable_lex"
             value={pathText}
-            onChange={(e) => dispatch(addChanged({ pathText: e.target.value }))}
+            onChange={e => dispatch(addChanged({ pathText: e.target.value }))}
           />
           <datalist id="service-config-suggestions">
-            {suggestions.map((path) => (
+            {suggestions.map(path => (
               <option key={path} value={path} />
             ))}
           </datalist>
@@ -291,9 +296,9 @@ const AddSetting = ({ rows, fileNames }: { rows: SettingRow[]; fileNames: Servic
           <span className="field-label">File</span>
           <select
             value={fileName}
-            onChange={(e) => dispatch(addChanged({ fileName: e.target.value as ServiceConfigFileName }))}
+            onChange={e => dispatch(addChanged({ fileName: e.target.value as ServiceConfigFileName }))}
           >
-            {fileNames.map((name) => (
+            {fileNames.map(name => (
               <option key={name} value={name}>
                 {name}.json ({FILE_DESCRIPTIONS[name].toLowerCase()})
               </option>
@@ -306,7 +311,7 @@ const AddSetting = ({ rows, fileNames }: { rows: SettingRow[]; fileNames: Servic
             type="text"
             placeholder="true"
             value={valueText}
-            onChange={(e) => dispatch(addChanged({ valueText: e.target.value }))}
+            onChange={e => dispatch(addChanged({ valueText: e.target.value }))}
           />
         </label>
         <button type="button" className="secondary-button" onClick={() => dispatch(addSetting())}>
@@ -346,7 +351,7 @@ const FileJsonEditor = ({
         readOnly={readOnly}
         spellCheck={false}
         rows={Math.min(40, Math.max(8, text.split('\n').length + 1))}
-        onChange={(e) => onChange?.(e.target.value)}
+        onChange={e => onChange?.(e.target.value)}
       />
       {json?.error && <p className="issue-error-text">Not valid, not saved: {json.error}</p>}
     </div>
@@ -377,16 +382,24 @@ export const ServiceConfigEditor = () => {
     <section className="panel service-config-panel">
       <h2>Service configuration</h2>
       <p className="muted">
-        How Flex is set up for {code.toUpperCase()}, as written in the repo ({repoServiceConfigDir(code)}). The repo is the
-        source of truth: each environment gets Aselo’s defaults, then common.json, then its own file. After the PR is
-        merged, Aselo staff apply it with make service-config-plan and make service-config-apply.
+        How Flex is set up for {code.toUpperCase()}, as written in the repo ({repoServiceConfigDir(code)}). The repo is
+        the source of truth: each environment gets Aselo’s defaults, then common.json, then its own file. After the PR
+        is merged, Aselo staff apply it with make service-config-plan and make service-config-apply.
       </p>
 
       <div className="mode-switch" role="group" aria-label="Show">
-        <button type="button" className={mode === 'settings' ? 'active' : ''} onClick={() => dispatch(modeChanged('settings'))}>
+        <button
+          type="button"
+          className={mode === 'settings' ? 'active' : ''}
+          onClick={() => dispatch(modeChanged('settings'))}
+        >
           Settings
         </button>
-        <button type="button" className={mode === 'files' ? 'active' : ''} onClick={() => dispatch(modeChanged('files'))}>
+        <button
+          type="button"
+          className={mode === 'files' ? 'active' : ''}
+          onClick={() => dispatch(modeChanged('files'))}
+        >
           Files (JSON)
         </button>
       </div>
@@ -399,14 +412,14 @@ export const ServiceConfigEditor = () => {
               aria-label="Search settings"
               placeholder="Search settings"
               value={search}
-              onChange={(e) => dispatch(searchChanged(e.target.value))}
+              onChange={e => dispatch(searchChanged(e.target.value))}
             />
             <select
               aria-label="Which settings"
               value={filter}
-              onChange={(e) => dispatch(filterChanged(e.target.value as SettingsFilter))}
+              onChange={e => dispatch(filterChanged(e.target.value as SettingsFilter))}
             >
-              {FILTERS.map((item) => (
+              {FILTERS.map(item => (
                 <option key={item.key} value={item.key}>
                   {item.label}
                 </option>
@@ -417,8 +430,8 @@ export const ServiceConfigEditor = () => {
             </span>
           </div>
 
-          {SETTING_GROUPS.map((group) => {
-            const groupRows = visible.filter((row) => row.group === group.key);
+          {SETTING_GROUPS.map(group => {
+            const groupRows = visible.filter(row => row.group === group.key);
             if (groupRows.length === 0) return null;
             return (
               <div key={group.key} className="config-group">
@@ -430,13 +443,13 @@ export const ServiceConfigEditor = () => {
                   <thead>
                     <tr>
                       <th>Setting</th>
-                      {environments.map((env) => (
+                      {environments.map(env => (
                         <th key={env}>{env.charAt(0).toUpperCase() + env.slice(1)}</th>
                       ))}
                     </tr>
                   </thead>
                   <tbody>
-                    {groupRows.map((row) => {
+                    {groupRows.map(row => {
                       const description = describeSetting(row);
                       const isOpen = openPath === row.path;
                       return (
@@ -458,14 +471,14 @@ export const ServiceConfigEditor = () => {
                               )}
                               {description && <span className="field-hint">{description}</span>}
                             </td>
-                            {environments.map((env) => {
+                            {environments.map(env => {
                               const effective = row.effective[env];
                               return (
                                 <td key={env}>
                                   <ValueText value={effective?.value} />
                                   {effective && effective.from.length > 0 && (
                                     <span className="config-source">
-                                      {effective.from.map((layer) => LAYER_LABELS[layer]).join(' + ')}
+                                      {effective.from.map(layer => LAYER_LABELS[layer]).join(' + ')}
                                     </span>
                                   )}
                                 </td>
@@ -495,8 +508,8 @@ export const ServiceConfigEditor = () => {
         <>
           <div className="language-tabs" role="tablist" aria-label="File">
             {(['common', 'staging', 'production', 'development', 'defaults'] as const)
-              .filter((name) => name === 'defaults' || fileNames.includes(name))
-              .map((name) => (
+              .filter(name => name === 'defaults' || fileNames.includes(name))
+              .map(name => (
                 <button
                   key={name}
                   type="button"
@@ -522,7 +535,7 @@ export const ServiceConfigEditor = () => {
               name={`${fileTab}.json`}
               config={getServiceConfigFile(draftFiles, fileTab)}
               json={fileJson}
-              onChange={(text) => dispatch(typeFileJson(text))}
+              onChange={text => dispatch(typeFileJson(text))}
             />
           )}
         </>

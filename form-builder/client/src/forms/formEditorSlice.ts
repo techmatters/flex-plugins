@@ -98,7 +98,7 @@ const initialState: FormEditorState = { hadExplicitSplit: false, columns: { left
 
 const findColumn = (columns: Columns, id: string): ColumnKey | undefined => {
   if (id === 'left' || id === 'right') return id;
-  return COLUMN_KEYS.find((key) => columns[key].some((entry) => entry.id === id));
+  return COLUMN_KEYS.find(key => columns[key].some(entry => entry.id === id));
 };
 
 const formEditorSlice = createSlice({
@@ -124,18 +124,18 @@ const formEditorSlice = createSlice({
       const from = findColumn(state.columns, activeId);
       const to = findColumn(state.columns, overId);
       if (!from || !to || from === to) return;
-      const moving = state.columns[from].find((entry) => entry.id === activeId);
+      const moving = state.columns[from].find(entry => entry.id === activeId);
       if (!moving) return;
-      const overIndex = state.columns[to].findIndex((entry) => entry.id === overId);
+      const overIndex = state.columns[to].findIndex(entry => entry.id === overId);
       const insertAt = overIndex >= 0 ? overIndex : state.columns[to].length;
-      state.columns[from] = state.columns[from].filter((entry) => entry.id !== activeId);
+      state.columns[from] = state.columns[from].filter(entry => entry.id !== activeId);
       state.columns[to].splice(insertAt, 0, moving);
     },
-    dragCancelled: (state) => {
+    dragCancelled: state => {
       if (state.drag) state.columns = state.drag.columnsBefore;
       state.drag = undefined;
     },
-    dragEnded: (state) => {
+    dragEnded: state => {
       state.drag = undefined;
     },
     addFieldMenuToggled: (state, action: PayloadAction<ColumnKey | undefined>) => {
@@ -150,7 +150,7 @@ const formEditorSlice = createSlice({
     },
   },
   selectors: {
-    selectFormEditor: (state) => state,
+    selectFormEditor: state => state,
   },
 });
 
@@ -171,20 +171,20 @@ export const {
 } = formEditorSlice.actions;
 
 // Every field in the form, left column first
-export const selectFormItems = createSelector([(state: RootState) => selectFormEditor(state).columns], (columns) =>
-  [...columns.left, ...columns.right].map((entry) => entry.item),
+export const selectFormItems = createSelector([(state: RootState) => selectFormEditor(state).columns], columns =>
+  [...columns.left, ...columns.right].map(entry => entry.item),
 );
 
 export const selectSelectedEntry = (state: RootState) => {
   const { columns, selectedId } = selectFormEditor(state);
-  return [...columns.left, ...columns.right].find((entry) => entry.id === selectedId);
+  return [...columns.left, ...columns.right].find(entry => entry.id === selectedId);
 };
 
 // The open form's fields as they were before this draft, by name
 export const selectOriginalFieldsByName = createSelector(
   [selectOriginalFiles, (state: RootState) => selectFormEditor(state).target?.filePath],
   (originalFiles, filePath) =>
-    new Map((filePath ? (getForm(originalFiles, filePath) ?? []) : []).map((item) => [item.name, item])),
+    new Map((filePath ? getForm(originalFiles, filePath) ?? [] : []).map(item => [item.name, item])),
 );
 
 // Where a form's problems are in selectIssuesByTab
@@ -219,9 +219,9 @@ const commit =
     dispatch(columnsChanged(next));
     const { target, hadExplicitSplit } = selectFormEditor(getState());
     if (!target) return;
-    const items = [...next.left, ...next.right].map((entry) => entry.item);
+    const items = [...next.left, ...next.right].map(entry => entry.item);
     dispatch(
-      editDraftFiles((current) => {
+      editDraftFiles(current => {
         const files = { ...current, ...otherFiles };
         const currentLayout = (files[LAYOUT_FILE] ?? {}) as Record<string, unknown>;
         const layout = applyColumnSplit(
@@ -250,8 +250,8 @@ export const finishDrag =
     const column = findColumn(columns, activeId);
     let next = columns;
     if (overId !== undefined && column && findColumn(columns, overId) === column) {
-      const oldIndex = columns[column].findIndex((entry) => entry.id === activeId);
-      const overIndex = columns[column].findIndex((entry) => entry.id === overId);
+      const oldIndex = columns[column].findIndex(entry => entry.id === activeId);
+      const overIndex = columns[column].findIndex(entry => entry.id === overId);
       const newIndex = overIndex >= 0 ? overIndex : columns[column].length - 1;
       if (oldIndex !== newIndex) {
         const moved = [...columns[column]];
@@ -263,8 +263,8 @@ export const finishDrag =
   };
 
 const mapEntry = (columns: Columns, id: string, update: (entry: Entry) => Entry | undefined): Columns => ({
-  left: columns.left.flatMap((entry) => (entry.id === id ? (update(entry) ?? []) : [entry])),
-  right: columns.right.flatMap((entry) => (entry.id === id ? (update(entry) ?? []) : [entry])),
+  left: columns.left.flatMap(entry => (entry.id === id ? update(entry) ?? [] : [entry])),
+  right: columns.right.flatMap(entry => (entry.id === id ? update(entry) ?? [] : [entry])),
 });
 
 export const addField =
@@ -274,7 +274,7 @@ export const addField =
     const entry = toEntry(
       createField(
         type,
-        selectFormItems(getState()).map((item) => item.name),
+        selectFormItems(getState()).map(item => item.name),
       ),
     );
     dispatch(commit({ ...columns, [column]: [...columns[column], entry] }));
@@ -287,7 +287,7 @@ export const changeSelectedField =
   (dispatch, getState) => {
     const { columns, selectedId } = selectFormEditor(getState());
     if (!selectedId) return;
-    dispatch(commit(mapEntry(columns, selectedId, (entry) => ({ ...entry, item }))));
+    dispatch(commit(mapEntry(columns, selectedId, entry => ({ ...entry, item }))));
   };
 
 // The selected field changed with the editing rules of formEditing.ts
@@ -301,7 +301,9 @@ const updateSelectedField =
 // A new field's saved name follows its label, until someone sets the name by hand
 export const autoFieldNameOf = (state: RootState, label: string) => {
   const { columns, selectedId } = selectFormEditor(state);
-  const otherNames = [...columns.left, ...columns.right].filter((entry) => entry.id !== selectedId).map((entry) => entry.item.name);
+  const otherNames = [...columns.left, ...columns.right]
+    .filter(entry => entry.id !== selectedId)
+    .map(entry => entry.item.name);
   return uniqueFieldName(toFieldName(label), otherNames);
 };
 
@@ -312,7 +314,8 @@ export const changeFieldLabel = (label: string): AppThunk =>
     return updateField(item, nameFollowsLabel ? { label, name: autoFieldNameOf(state, label) } : { label });
   });
 
-export const changeFieldName = (name: string): AppThunk => updateSelectedField((item) => updateField(item, { name: name.trim() }));
+export const changeFieldName = (name: string): AppThunk =>
+  updateSelectedField(item => updateField(item, { name: name.trim() }));
 
 /**
  * The help box (description) shows under the field. Its parts can be translation keys (as in AS);
@@ -332,22 +335,23 @@ export const changeFieldDescription =
     }
     const next = { title: description?.title ?? '', content: description?.content ?? '', [part]: text };
     dispatch(
-      updateSelectedField((current) =>
+      updateSelectedField(current =>
         updateField(current, { description: next.title.trim() || next.content.trim() ? next : undefined }),
       ),
     );
   };
 
 export const changeSelectedFieldType = (type: FieldType): AppThunk =>
-  updateSelectedField((item) => changeFieldType(item, type));
+  updateSelectedField(item => changeFieldType(item, type));
 
 export const setSelectedFieldRequired = (required: boolean): AppThunk =>
-  updateSelectedField((item) => setFieldRequired(item, required));
+  updateSelectedField(item => setFieldRequired(item, required));
 
 export const setSelectedFieldOptions = (options: SelectOption[]): AppThunk =>
-  updateSelectedField((item) => updateField(item, { options }));
+  updateSelectedField(item => updateField(item, { options }));
 
-export const setSelectedFieldPII = (isPII: boolean): AppThunk => updateSelectedField((item) => updateField(item, { isPII }));
+export const setSelectedFieldPII = (isPII: boolean): AppThunk =>
+  updateSelectedField(item => updateField(item, { isPII }));
 
 export const removeSelectedField = (): AppThunk => (dispatch, getState) => {
   const { columns, selectedId } = selectFormEditor(getState());
@@ -361,7 +365,7 @@ export const setTranslation =
   (key: string, text: string): AppThunk =>
   (dispatch, getState) => {
     const helplineLanguage = getState().workspace.definitions?.helplineLanguage;
-    dispatch(editDraftFiles((files) => setSubstitution(files, baseLanguageOf(helplineLanguage), key, text)));
+    dispatch(editDraftFiles(files => setSubstitution(files, baseLanguageOf(helplineLanguage), key, text)));
   };
 
 /**
@@ -398,19 +402,19 @@ export const openChainEditor =
     const { target } = selectFormEditor(getState());
     const draftFiles = getState().draft.files;
     const formItems = selectFormItems(getState());
-    const fields = names.map((name) => formItems.find((item) => item.name === name)!);
+    const fields = names.map(name => formItems.find(item => item.name === name)!);
     const tree = chainToTree(fields, getReferenceData(draftFiles));
     const notes: string[] = [];
-    fields.forEach((field) => {
+    fields.forEach(field => {
       const key = (field as { optionsReferenceKey?: string }).optionsReferenceKey;
       if (!key) return;
-      const others = findReferenceKeyUsers(draftFiles, key, (filePath) =>
+      const others = findReferenceKeyUsers(draftFiles, key, filePath =>
         describeDefinitionFile(draftFiles, filePath),
-      ).filter((user) => !(user.filePath === target?.filePath && user.fieldName === field.name));
+      ).filter(user => !(user.filePath === target?.filePath && user.fieldName === field.name));
       if (others.length > 0) {
         notes.push(
           `The “${field.label}” answers are shared with ${others
-            .map((other) => other.description)
+            .map(other => other.description)
             .join(', ')}. Changes here change them there too.`,
         );
       }
@@ -440,9 +444,9 @@ export const saveChainAnswers =
       editingChain.tree,
       replacedByImport,
     );
-    const byName = new Map(fields.map((field) => [field.name, field]));
+    const byName = new Map(fields.map(field => [field.name, field]));
     const updateEntries = (entries: Entry[]) =>
-      entries.map((entry) => {
+      entries.map(entry => {
         const updated = byName.get(entry.item.name);
         return updated ? { ...entry, item: updated } : entry;
       });
@@ -459,7 +463,7 @@ export const createChain =
     const draftFiles = getState().draft.files;
     const newFields = createChainFields(
       levelLabels,
-      selectFormItems(getState()).map((item) => item.name),
+      selectFormItems(getState()).map(item => item.name),
       existingTop,
     );
     const rootBlankOption = existingTop
@@ -478,8 +482,8 @@ export const createChain =
     let selectedId: string | undefined;
     if (existingTop) {
       // Follow-up dropdowns go straight under the question they depend on
-      const topColumn = COLUMN_KEYS.find((key) => columns[key].some((entry) => entry.item.name === existingTop.name))!;
-      const index = columns[topColumn].findIndex((entry) => entry.item.name === existingTop.name);
+      const topColumn = COLUMN_KEYS.find(key => columns[key].some(entry => entry.item.name === existingTop.name))!;
+      const index = columns[topColumn].findIndex(entry => entry.item.name === existingTop.name);
       const updated = [...columns[topColumn]];
       updated.splice(index, 1, { ...updated[index], item: top.item }, ...dependents);
       next = { ...columns, [topColumn]: updated };

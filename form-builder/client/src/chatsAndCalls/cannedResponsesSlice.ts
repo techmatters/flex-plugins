@@ -57,7 +57,7 @@ const cannedResponsesSlice = createSlice({
     },
   },
   selectors: {
-    selectCannedResponses: (state) => state,
+    selectCannedResponses: state => state,
   },
 });
 
@@ -77,9 +77,9 @@ export const openCannedResponses = (): AppThunk => (dispatch, getState) => {
 // The rows as they are now, written to the draft
 const write =
   (rows: Row<CannedResponse>[]): AppThunk =>
-  (dispatch) => {
+  dispatch => {
     dispatch(rowsChanged(rows));
-    dispatch(editDraftFiles((files) => ({ ...files, [CANNED_RESPONSES_FILE]: rows.map((row) => row.value) })));
+    dispatch(editDraftFiles(files => ({ ...files, [CANNED_RESPONSES_FILE]: rows.map(row => row.value) })));
   };
 
 export const reorderResponses = (rows: Row<CannedResponse>[]): AppThunk => write(rows);
@@ -89,7 +89,7 @@ export const updateResponse =
   (dispatch, getState) =>
     dispatch(
       write(
-        selectCannedResponses(getState()).rows.map((row) =>
+        selectCannedResponses(getState()).rows.map(row =>
           row.id === id ? { ...row, value: { ...row.value, ...changes } } : row,
         ),
       ),
@@ -101,14 +101,14 @@ export const addResponse = (): AppThunk => (dispatch, getState) =>
 export const removeResponse =
   (id: string): AppThunk =>
   (dispatch, getState) =>
-    dispatch(write(selectCannedResponses(getState()).rows.filter((row) => row.id !== id)));
+    dispatch(write(selectCannedResponses(getState()).rows.filter(row => row.id !== id)));
 
 // Two columns pasted from a spreadsheet: name, then text. Then the box closes
 export const addPastedResponses = (): AppThunk => (dispatch, getState) => {
   const { rows, pasteText } = selectCannedResponses(getState());
   const added = parseDelimitedText(pasteText ?? '')
     .map(([label = '', text = '']) => ({ label: label.trim(), text: text.trim() }))
-    .filter((response) => response.label || response.text);
+    .filter(response => response.label || response.text);
   dispatch(write([...rows, ...toRows(added)]));
   dispatch(pasteTextChanged(undefined));
 };

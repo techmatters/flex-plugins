@@ -43,7 +43,10 @@ const HELPLINE_GROUP_PATTERN = /^form-builder-([a-z0-9]+)$/;
 const groupsOf = (claim: unknown): string[] => {
   if (Array.isArray(claim)) return claim.map(String);
   if (typeof claim !== 'string') return [];
-  return claim.replace(/^\[|\]$/g, '').split(/[\s,]+/).filter(Boolean);
+  return claim
+    .replace(/^\[|\]$/g, '')
+    .split(/[\s,]+/)
+    .filter(Boolean);
 };
 
 export const userFromClaims = (claims: Record<string, unknown>): ApiUser | undefined => {
@@ -51,7 +54,7 @@ export const userFromClaims = (claims: Record<string, unknown>): ApiUser | undef
   const email = typeof claims.email === 'string' ? claims.email : undefined;
   const name = (typeof claims.name === 'string' && claims.name.trim()) || email || String(claims.sub ?? 'Someone');
   if (groups.includes(ASELO_STAFF_GROUP)) return { name, email, role: 'aselo-staff', helplines: 'all' };
-  const helplines = groups.flatMap((group) => group.match(HELPLINE_GROUP_PATTERN)?.[1] ?? []);
+  const helplines = groups.flatMap(group => group.match(HELPLINE_GROUP_PATTERN)?.[1] ?? []);
   return helplines.length > 0 ? { name, email, role: 'helpline-staff', helplines } : undefined;
 };
 
@@ -66,7 +69,7 @@ const loadServices = async (): Promise<Services> => {
   const { Parameters = [] } = await new SSMClient({}).send(
     new GetParametersCommand({ Names: [`${prefix}/slack_webhook_url`], WithDecryption: true }),
   );
-  const slackWebhookUrl = Parameters.find((parameter) => parameter.Name === `${prefix}/slack_webhook_url`)?.Value;
+  const slackWebhookUrl = Parameters.find(parameter => parameter.Name === `${prefix}/slack_webhook_url`)?.Value;
 
   return {
     snapshots: new RepoSnapshots(new PublicRepoSource(), '/tmp/flex-plugins'),
@@ -98,7 +101,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithJWTAuthorizer): P
   }
 
   try {
-    services ??= loadServices().catch((err) => {
+    services ??= loadServices().catch(err => {
       services = undefined; // try again on the next request
       throw err;
     });

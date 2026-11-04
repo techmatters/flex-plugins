@@ -40,8 +40,8 @@ const redirectOf = (request, fromDir) => {
 };
 
 // For webpack: a NormalModuleReplacementPlugin doing the redirect
-const hrmFormDefinitionsReplacement = (webpack) =>
-  new webpack.NormalModuleReplacementPlugin(/formDefinition$/, (resource) => {
+const hrmFormDefinitionsReplacement = webpack =>
+  new webpack.NormalModuleReplacementPlugin(/formDefinition$/, resource => {
     const redirect = redirectOf(resource.request, resource.context);
     if (redirect) resource.request = redirect;
   });

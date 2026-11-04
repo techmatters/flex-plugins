@@ -26,7 +26,7 @@ export const App = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);
   const isAseloStaff = useAppSelector(selectIsAseloStaff);
-  const { helplines, viewAsHelplineStaff, error: sessionError } = useAppSelector((state) => state.session);
+  const { helplines, viewAsHelplineStaff, error: sessionError } = useAppSelector(state => state.session);
   const { code, version, definitions, loading, error: helplineError } = useAppSelector(selectWorkspace);
   const error = sessionError ?? helplineError;
 
@@ -35,10 +35,10 @@ export const App = () => {
   }, [dispatch]);
 
   const selectHelpline = (newCode: string, newVersion?: string) => {
-    const versions = helplines.find((helpline) => helpline.code === newCode)?.versions ?? [];
+    const versions = helplines.find(helpline => helpline.code === newCode)?.versions ?? [];
     dispatch(openHelpline(newCode, newVersion ?? versions[0] ?? ''));
   };
-  const versions = helplines.find((helpline) => helpline.code === code)?.versions ?? [];
+  const versions = helplines.find(helpline => helpline.code === code)?.versions ?? [];
 
   return (
     <div className="app">
@@ -46,9 +46,9 @@ export const App = () => {
         <h1>Aselo Form Builder</h1>
         <label>
           Helpline
-          <select value={code} onChange={(e) => selectHelpline(e.target.value)}>
+          <select value={code} onChange={e => selectHelpline(e.target.value)}>
             <option value="">Choose a helpline…</option>
-            {helplines.map((helpline) => (
+            {helplines.map(helpline => (
               <option key={helpline.code} value={helpline.code}>
                 {helpline.code.toUpperCase()}
               </option>
@@ -58,8 +58,8 @@ export const App = () => {
         {versions.length > 1 && (
           <label>
             Version
-            <select value={version} onChange={(e) => selectHelpline(code, e.target.value)}>
-              {versions.map((v) => (
+            <select value={version} onChange={e => selectHelpline(code, e.target.value)}>
+              {versions.map(v => (
                 <option key={v} value={v}>
                   {v}
                 </option>
@@ -87,7 +87,7 @@ export const App = () => {
             <input
               type="checkbox"
               checked={viewAsHelplineStaff}
-              onChange={(e) => dispatch(viewAsHelplineStaffSet(e.target.checked))}
+              onChange={e => dispatch(viewAsHelplineStaffSet(e.target.checked))}
             />
             View as helpline staff
           </label>
@@ -99,9 +99,7 @@ export const App = () => {
       {!code && !error && (
         <main className="empty-state">
           <p>Choose a helpline to see and edit its forms.</p>
-          {user && (
-            <DraftsList />
-          )}
+          {user && <DraftsList />}
         </main>
       )}
 

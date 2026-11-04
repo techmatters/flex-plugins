@@ -74,7 +74,7 @@ export const createAppStore = (services: Partial<Omit<Services, 'saveQueue'>> = 
   const listener = createListenerMiddleware({ extra });
   const store = configureStore({
     reducer: rootReducer,
-    middleware: (getDefaultMiddleware) =>
+    middleware: getDefaultMiddleware =>
       getDefaultMiddleware({
         thunk: { extraArgument: extra },
         // Definition files are big plain JSON: checking them on every action slows editing down

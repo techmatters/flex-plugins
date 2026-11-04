@@ -109,10 +109,7 @@ const isSaveDraftBody = (body: unknown): body is SaveDraftBody => {
   );
 };
 
-export const handleApiRequest = async (
-  context: ApiContext,
-  request: ApiRequest,
-): Promise<ApiResponse> => {
+export const handleApiRequest = async (context: ApiContext, request: ApiRequest): Promise<ApiResponse> => {
   const { user } = request;
   const now = (context.now ?? (() => new Date()))().toISOString();
   const route = `${request.method.toUpperCase()} ${request.path.replace(/\/+$/, '')}`;
@@ -125,12 +122,12 @@ export const handleApiRequest = async (
 
     if (route === 'GET /api/helplines') {
       const helplines = await listHelplines(context.formDefinitionsDir);
-      return ok(helplines.filter((helpline) => canOpenHelpline(user, helpline.code)));
+      return ok(helplines.filter(helpline => canOpenHelpline(user, helpline.code)));
     }
 
     if (route === 'GET /api/drafts') {
       const drafts = await context.drafts.list();
-      return ok(drafts.filter((draft) => canOpenHelpline(user, draft.code)));
+      return ok(drafts.filter(draft => canOpenHelpline(user, draft.code)));
     }
 
     const definitionsMatch = route.match(/^GET \/api\/definitions\/([^/]+)\/([^/]+)$/);
@@ -171,7 +168,7 @@ export const handleApiRequest = async (
         // Keep the service configuration changes Aselo staff made in this draft
         files = { ...files, ...pickFiles(existing?.files ?? {}, true) };
       }
-      const invalidPath = Object.keys(files).find((filePath) => !isValidDraftFilePath(filePath));
+      const invalidPath = Object.keys(files).find(filePath => !isValidDraftFilePath(filePath));
       if (invalidPath) return fail(400, `Invalid file path ${invalidPath}`);
 
       // Someone else saved since this person loaded the draft
@@ -238,7 +235,7 @@ export const handleApiRequest = async (
       };
       await context.drafts.put(submitted);
       // The draft is submitted either way; a failed notification is only logged
-      await context.notifier.draftSubmitted(submitted, user).catch((err) => {
+      await context.notifier.draftSubmitted(submitted, user).catch(err => {
         // eslint-disable-next-line no-console
         console.error(`[form-builder] Could not notify about ${code}/${version}:`, err);
       });

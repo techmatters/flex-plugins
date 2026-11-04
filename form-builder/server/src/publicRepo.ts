@@ -35,8 +35,8 @@ export class PublicRepoSource implements SnapshotSource {
     const branchRef = `refs/heads/${this.branch}`;
     const match = (await response.text())
       .split('\n')
-      .map((line) => line.match(/([0-9a-f]{40}) (\S+?)(\0|$)/))
-      .find((found) => found?.[2] === branchRef);
+      .map(line => line.match(/([0-9a-f]{40}) (\S+?)(\0|$)/))
+      .find(found => found?.[2] === branchRef);
     if (!match) throw new Error(`${this.ownerAndRepo} has no ${this.branch} branch`);
     return match[1];
   }

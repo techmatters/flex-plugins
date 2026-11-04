@@ -71,7 +71,7 @@ describe('the service configuration', () => {
     expect(COMMON in asStaff.files).toBe(true);
     expect(asStaff.serviceConfigDefaults).toBeDefined();
     const asHelpline = await load(helplineStaff);
-    expect(Object.keys(asHelpline.files).some((key) => key.startsWith('service-configuration/'))).toBe(false);
+    expect(Object.keys(asHelpline.files).some(key => key.startsWith('service-configuration/'))).toBe(false);
     expect(asHelpline.serviceConfigDefaults).toBeUndefined();
   });
 
@@ -81,11 +81,15 @@ describe('the service configuration', () => {
       call(context, user, 'PUT', '/api/drafts/usnm/v1', { expectedRevision, files, baseHashes: {} });
 
     expect((await save(helplineStaff, 0, { [COMMON]: { attributes: {} } })).status).toBe(403);
-    expect((await call(context, helplineStaff, 'PUT', '/api/drafts/usnm/v1', {
-      expectedRevision: 0,
-      files: { 'service-configuration/../x.json': {} },
-      baseHashes: {},
-    })).status).toBe(403);
+    expect(
+      (
+        await call(context, helplineStaff, 'PUT', '/api/drafts/usnm/v1', {
+          expectedRevision: 0,
+          files: { 'service-configuration/../x.json': {} },
+          baseHashes: {},
+        })
+      ).status,
+    ).toBe(403);
 
     expect((await save(staff, 0, { [COMMON]: { attributes: { system_down: true } } })).status).toBe(200);
 
@@ -130,7 +134,9 @@ describe('the service configuration', () => {
     expect(await fs.readFile(path.join(dir, 'common.json'), 'utf8')).toBe(
       '﻿{\r\n    "attributes": {\r\n        "a": 2\r\n    }\r\n}\r\n',
     );
-    expect(JSON.parse(await fs.readFile(path.join(dir, 'production.json'), 'utf8'))).toEqual({ attributes: { b: true } });
+    expect(JSON.parse(await fs.readFile(path.join(dir, 'production.json'), 'utf8'))).toEqual({
+      attributes: { b: true },
+    });
     await fs.rm(tempDir, { recursive: true, force: true });
   });
 });

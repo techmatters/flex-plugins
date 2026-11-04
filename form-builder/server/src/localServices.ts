@@ -44,7 +44,7 @@ export const localUser = (env: Record<string, string | undefined> = process.env)
       ? 'all'
       : (env.FORM_BUILDER_HELPLINES ?? '')
           .split(',')
-          .map((code) => code.trim())
+          .map(code => code.trim())
           .filter(Boolean);
   return {
     name: env.FORM_BUILDER_USER ?? os.userInfo().username,
@@ -97,7 +97,9 @@ export const localNotifier: Notifier = {
   async draftSubmitted(draft, user) {
     // eslint-disable-next-line no-console
     console.info(
-      `[form-builder] ${user.name} submitted ${draft.code}/${draft.version} for review (${Object.keys(draft.files).length} files). Deployed, this posts to Slack.`,
+      `[form-builder] ${user.name} submitted ${draft.code}/${draft.version} for review (${
+        Object.keys(draft.files).length
+      } files). Deployed, this posts to Slack.`,
     );
   },
 };

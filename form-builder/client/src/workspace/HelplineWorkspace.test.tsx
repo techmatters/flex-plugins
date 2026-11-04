@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 /**
  * Renders the editor with real helpline definitions and drives it like a user would, with
  * drafts saved through the real API code (kept in memory).
@@ -25,12 +24,7 @@
 import { afterEach, beforeAll, describe, expect, test, jest } from '@jest/globals';
 import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
-import {
-  aseloStaff,
-  createHarness,
-  formDefinitionsDir,
-  helplinesConfigDir,
-} from '../testing/workspaceHarness';
+import { aseloStaff, createHarness, formDefinitionsDir, helplinesConfigDir } from '../testing/workspaceHarness';
 
 let usnm: DefinitionFiles;
 let demo: DefinitionFiles;
@@ -46,8 +40,7 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-const fieldCard = (label: string) =>
-  screen.getByRole('button', { name: `${label}. Click to edit, or drag to move.` });
+const fieldCard = (label: string) => screen.getByRole('button', { name: `${label}. Click to edit, or drag to move.` });
 
 const findFieldCard = (label: string) =>
   screen.findByRole('button', { name: `${label}. Click to edit, or drag to move.` });
@@ -89,9 +82,7 @@ describe('HelplineWorkspace', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Review & submit' }));
     const dialog = screen.getByRole('dialog', { name: 'Review your changes' });
     expect(within(dialog).getByText('Preferred language (preferredLanguage)')).toBeTruthy();
-    expect(
-      within(dialog).getByText('Relationship to the person seeking help (relationshipToHelpSeeker)'),
-    ).toBeTruthy();
+    expect(within(dialog).getByText('Relationship to the person seeking help (relationshipToHelpSeeker)')).toBeTruthy();
   });
 
   test('a field with no question blocks submitting until it is fixed', async () => {
@@ -103,10 +94,9 @@ describe('HelplineWorkspace', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Review & submit' }));
     const dialog = screen.getByRole('dialog', { name: 'Review your changes' });
     expect(within(dialog).getByText('Fix these first')).toBeTruthy();
-    expect(
-      (within(dialog).getByRole('button', { name: 'Submit for review' }) as HTMLButtonElement)
-        .disabled,
-    ).toBe(true);
+    expect((within(dialog).getByRole('button', { name: 'Submit for review' }) as HTMLButtonElement).disabled).toBe(
+      true,
+    );
   });
 
   test('helpline staff submit for review, and Aselo is notified', async () => {
@@ -135,7 +125,9 @@ describe('HelplineWorkspace', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
 
     const result = await screen.findByRole('dialog', { name: 'Changes applied' });
-    expect(within(result).getByText(`lambdas/packages/hrm-form-definitions/form-definitions/usnm/v1/${CALLER_TAB}`)).toBeTruthy();
+    expect(
+      within(result).getByText(`lambdas/packages/hrm-form-definitions/form-definitions/usnm/v1/${CALLER_TAB}`),
+    ).toBeTruthy();
     expect(context.applier!.apply).toHaveBeenCalledTimes(1);
     expect(await store.get('usnm', 'v1')).toBeUndefined();
   });
@@ -205,12 +197,11 @@ describe('HelplineWorkspace', () => {
     const { renderWorkspace } = createHarness();
     renderWorkspace(demo);
     fireEvent.click(await screen.findByRole('button', { name: 'Case information' }));
-    const summaryLabel = (demo.files['tabbedForms/CaseInformationTab.json'] as { name: string; label: string }[])
-      .find((item) => item.name === 'callSummary')!.label;
+    const summaryLabel = (demo.files['tabbedForms/CaseInformationTab.json'] as { name: string; label: string }[]).find(
+      item => item.name === 'callSummary',
+    )!.label;
     fireEvent.click(await findFieldCard(summaryLabel));
-    expect(
-      (screen.getByRole('button', { name: 'Remove this field' }) as HTMLButtonElement).disabled,
-    ).toBe(true);
+    expect((screen.getByRole('button', { name: 'Remove this field' }) as HTMLButtonElement).disabled).toBe(true);
   });
 
   test('removing an existing field asks for confirmation first', async () => {
@@ -271,9 +262,9 @@ describe('help boxes (field descriptions)', () => {
       target: { value: 'About first names' },
     });
     await screen.findByText(/All changes saved/);
-    expect((await savedFile(demo, 'customStrings/Substitutions.json')).en['AsV1-ChildInformationTab-FirstName-Title']).toBe(
-      'About first names',
-    );
+    expect(
+      (await savedFile(demo, 'customStrings/Substitutions.json')).en['AsV1-ChildInformationTab-FirstName-Title'],
+    ).toBe('About first names');
     // The form keeps its key
     expect(await savedFile(demo, childTab)).toBeUndefined();
   });

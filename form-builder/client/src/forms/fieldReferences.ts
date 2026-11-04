@@ -37,46 +37,35 @@ const flattenStrings = (value: unknown): string[] => {
   return Array.isArray(value) ? value.flatMap(flattenStrings) : [];
 };
 
-export const findFieldReferences = (
-  files: DefinitionFileMap,
-  tab: FormTarget,
-  fieldName: string,
-): string[] => {
+export const findFieldReferences = (files: DefinitionFileMap, tab: FormTarget, fieldName: string): string[] => {
   const references: string[] = [];
 
   const oneToOne = files[ONE_TO_ONE_FILE] as OneToOneConfigSpec | undefined;
-  ((oneToOne?.[tab.insights.group] as Record<string, { name: string; insights: string[] }[]> | undefined)?.[
-    tab.insights.key
-  ] ?? [])
-    .filter((spec) => spec.name === fieldName)
-    .forEach((spec) =>
-      references.push(`Reporting: saved to the Insights column “${spec.insights[1]}”`),
-    );
+  (
+    (oneToOne?.[tab.insights.group] as Record<string, { name: string; insights: string[] }[]> | undefined)?.[
+      tab.insights.key
+    ] ?? []
+  )
+    .filter(spec => spec.name === fieldName)
+    .forEach(spec => references.push(`Reporting: saved to the Insights column “${spec.insights[1]}”`));
 
   const oneToMany = files[ONE_TO_MANY_FILE] as OneToManyConfigSpecs | undefined;
   (Array.isArray(oneToMany) ? oneToMany : [])
-    .filter((spec) => spec.paths?.some((p) => p.endsWith(`${tab.insights.key}.${fieldName}`)))
-    .forEach((spec) =>
-      references.push(`Reporting: part of the Insights column “${spec.attributeName}”`),
-    );
+    .filter(spec => spec.paths?.some(p => p.endsWith(`${tab.insights.key}.${fieldName}`)))
+    .forEach(spec => references.push(`Reporting: part of the Insights column “${spec.attributeName}”`));
 
   // Only contact forms are filled in from surveys and the webchat
-  const mappings = (isContactTab(tab) ? (files[PREPOPULATE_MAPPINGS_FILE] ?? {}) : {}) as Record<string, unknown>;
+  const mappings = (isContactTab(tab) ? files[PREPOPULATE_MAPPINGS_FILE] ?? {} : {}) as Record<string, unknown>;
   const target = `${tab.key}.${fieldName}`;
   Object.entries(PREPOPULATE_SOURCE_NAMES).forEach(([sourceSet, sourceName]) => {
     const sourceFields = (mappings[sourceSet] ?? {}) as Record<string, unknown>;
     Object.entries(sourceFields)
       .filter(([, targets]) => flattenStrings(targets).includes(target))
-      .forEach(([sourceField]) =>
-        references.push(`Filled in automatically from “${sourceField}” in ${sourceName}`),
-      );
+      .forEach(([sourceField]) => references.push(`Filled in automatically from “${sourceField}” in ${sourceName}`));
   });
 
   // Legacy prepopulation config, still used by some helplines
-  const legacyKeys = (files[PREPOPULATE_KEYS_FILE] ?? {}) as Record<
-    string,
-    Record<string, string[]>
-  >;
+  const legacyKeys = (files[PREPOPULATE_KEYS_FILE] ?? {}) as Record<string, Record<string, string[]>>;
   Object.entries(PREPOPULATE_SOURCE_NAMES).forEach(([sourceSet, sourceName]) => {
     if (isContactTab(tab) && legacyKeys[sourceSet]?.[tab.key]?.includes(fieldName)) {
       references.push(`Filled in automatically from ${sourceName}`);
@@ -84,10 +73,8 @@ export const findFieldReferences = (
   });
 
   (getForm(files, tab.filePath) ?? [])
-    .filter((item) => item.type === 'dependent-select' && item.dependsOn === fieldName)
-    .forEach((item) =>
-      references.push(`The “${item.label || item.name}” dropdown depends on this field`),
-    );
+    .filter(item => item.type === 'dependent-select' && item.dependsOn === fieldName)
+    .forEach(item => references.push(`The “${item.label || item.name}” dropdown depends on this field`));
 
   return references;
 };

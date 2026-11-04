@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 /**
  * The "Try it out" agent desktop, with real helpline definitions and the plugin's translations.
  */
@@ -112,11 +111,11 @@ describe('FlexDesktopPreview', () => {
   test('starts on the call type screen; its buttons decide whether there is a Caller tab', async () => {
     await renderDesktop(demo, undefined, 'callTypes');
     const buttons = demo.files['CallTypeButtons.json'] as { name: string; label: string; category: string }[];
-    const caller = buttons.find((button) => button.name === 'caller')!;
-    const child = buttons.find((button) => button.name === 'child')!;
+    const caller = buttons.find(button => button.name === 'caller')!;
+    const child = buttons.find(button => button.name === 'child')!;
 
     fireEvent.click(await screen.findByRole('button', { name: new RegExp(caller.label) }));
-    const tabNames = screen.getAllByRole('tab').map((tab) => tab.textContent);
+    const tabNames = screen.getAllByRole('tab').map(tab => tab.textContent);
     expect(tabNames.length).toBe(5); // search, caller, child, categories, summary
 
     // The back button returns to the call type screen
@@ -129,7 +128,7 @@ describe('FlexDesktopPreview', () => {
   test('a button that closes the contact asks for confirmation first', async () => {
     await renderDesktop(demo, undefined, 'callTypes');
     const buttons = demo.files['CallTypeButtons.json'] as { name: string; label: string; category: string }[];
-    const nonData = buttons.find((button) => button.category === 'non-data')!;
+    const nonData = buttons.find(button => button.category === 'non-data')!;
     // Wait for the translations, which the dialog's wording comes from
     await screen.findByText(/categorize/i);
     fireEvent.click(await screen.findByRole('button', { name: nonData.label }));
@@ -156,12 +155,10 @@ describe('FlexDesktopPreview', () => {
 
     expect(screen.getByText(/Aselo wouldn't save it yet/)).toBeTruthy();
     // Nothing was ticked on the categories tab, so it's marked
-    expect(
-      within(screen.getByRole('tab', { name: /Need\/Problem/ })).getByLabelText('Needs attention'),
-    ).toBeTruthy();
+    expect(within(screen.getByRole('tab', { name: /Need\/Problem/ })).getByLabelText('Needs attention')).toBeTruthy();
 
     const requiredSummaryFields = formOf(usnm, 'CaseInformationTab').filter(
-      (item) => typeof item.required === 'object' && item.required?.value,
+      item => typeof item.required === 'object' && item.required?.value,
     );
     if (requiredSummaryFields.length > 0) {
       expect(screen.getAllByText('This field is required.').length).toBeGreaterThan(0);
@@ -171,16 +168,14 @@ describe('FlexDesktopPreview', () => {
   test('a linked dropdown stays faded until the one above is answered', async () => {
     await renderDesktop(demo, 'ChildInformationTab');
     const child = formOf(demo, 'ChildInformationTab');
-    const province = child.find((item) => item.name === 'province')!;
-    const district = child.find((item) => item.name === 'district')!;
+    const province = child.find(item => item.name === 'province')!;
+    const district = child.find(item => item.name === 'district')!;
 
-    const districtSelect = (await screen.findByLabelText(
-      labelled(district.label),
-    )) as HTMLSelectElement;
+    const districtSelect = (await screen.findByLabelText(labelled(district.label))) as HTMLSelectElement;
     expect(districtSelect.disabled).toBe(true);
 
     const provinceSelect = screen.getByLabelText(labelled(province.label)) as HTMLSelectElement;
-    const firstProvince = [...provinceSelect.options].find((option) => option.value)!.value;
+    const firstProvince = [...provinceSelect.options].find(option => option.value)!.value;
     fireEvent.change(provinceSelect, { target: { value: firstProvince } });
     expect(districtSelect.disabled).toBe(false);
     expect(districtSelect.options.length).toBeGreaterThan(1);
@@ -190,7 +185,7 @@ describe('FlexDesktopPreview', () => {
     await renderDesktop(demo, 'CaseInformationTab');
     // One without initialChecked, so it starts unanswered
     const mixed = formOf(demo, 'CaseInformationTab').find(
-      (item) => item.type === 'mixed-checkbox' && item.initialChecked === undefined,
+      item => item.type === 'mixed-checkbox' && item.initialChecked === undefined,
     )!;
     const box = await screen.findByRole('checkbox', { name: mixed.label });
     expect(box.getAttribute('aria-checked')).toBe('mixed');
@@ -205,7 +200,7 @@ describe('FlexDesktopPreview', () => {
   test('a checkbox set to start ticked starts ticked, as in Aselo', async () => {
     await renderDesktop(demo, 'CaseInformationTab');
     const preTicked = formOf(demo, 'CaseInformationTab').find(
-      (item) => item.type === 'mixed-checkbox' && item.initialChecked === true,
+      item => item.type === 'mixed-checkbox' && item.initialChecked === true,
     )!;
     const box = await screen.findByRole('checkbox', { name: preTicked.label });
     expect(box.getAttribute('aria-checked')).toBe('true');

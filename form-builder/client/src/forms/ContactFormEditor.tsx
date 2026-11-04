@@ -36,7 +36,12 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import type { FormTarget } from '../common/definitions';
@@ -169,12 +174,10 @@ export const ContactFormEditor = ({ tab }: { tab: FormTarget }) => {
   if (target?.filePath !== tab.filePath || revision !== editorRevision) return null;
 
   const allEntries = [...columns.left, ...columns.right];
-  const selectedEntry = allEntries.find((entry) => entry.id === selectedId);
-  const activeEntry = allEntries.find((entry) => entry.id === drag?.activeId);
-  const fieldsWithErrors = new Set(
-    issues.filter((issue) => issue.severity === 'error').map((issue) => issue.fieldName),
-  );
-  const formItems = allEntries.map((entry) => entry.item);
+  const selectedEntry = allEntries.find(entry => entry.id === selectedId);
+  const activeEntry = allEntries.find(entry => entry.id === drag?.activeId);
+  const fieldsWithErrors = new Set(issues.filter(issue => issue.severity === 'error').map(issue => issue.fieldName));
+  const formItems = allEntries.map(entry => entry.item);
 
   const statusOf = (entry: Entry): 'new' | 'edited' | undefined => {
     const original = originalByName.get(entry.item.name);
@@ -200,13 +203,11 @@ export const ContactFormEditor = ({ tab }: { tab: FormTarget }) => {
           {tab.title} <span className="muted count">{allEntries.length} fields</span>
         </h2>
         <p className="muted editor-hint">
-          Click a field to change it. Drag fields to reorder them or move them to the other
-          column.
+          Click a field to change it. Drag fields to reorder them or move them to the other column.
         </p>
         {formIsEmpty && (
           <p className="muted">
-            This form has no fields, so counselors don't see this tab. Add a field to start using
-            it.
+            This form has no fields, so counselors don't see this tab. Add a field to start using it.
           </p>
         )}
         <DndContext
@@ -218,15 +219,15 @@ export const ContactFormEditor = ({ tab }: { tab: FormTarget }) => {
           onDragCancel={() => dispatch(dragCancelled())}
         >
           <div className="two-columns">
-            {COLUMN_KEYS.map((columnKey) => (
+            {COLUMN_KEYS.map(columnKey => (
               <SortableContext
                 key={columnKey}
                 id={columnKey}
-                items={columns[columnKey].map((entry) => entry.id)}
+                items={columns[columnKey].map(entry => entry.id)}
                 strategy={verticalListSortingStrategy}
               >
                 <Column id={columnKey}>
-                  {columns[columnKey].map((entry) => (
+                  {columns[columnKey].map(entry => (
                     <SortableFieldCard
                       key={entry.id}
                       entry={entry}
@@ -239,7 +240,7 @@ export const ContactFormEditor = ({ tab }: { tab: FormTarget }) => {
                   ))}
                   {addingTo === columnKey ? (
                     <AddFieldMenu
-                      onAdd={(type) => dispatch(addField(columnKey, type))}
+                      onAdd={type => dispatch(addField(columnKey, type))}
                       onAddLinked={() => dispatch(linkedWizardToggled(columnKey))}
                       onCancel={() => dispatch(addFieldMenuToggled(undefined))}
                     />
@@ -280,11 +281,12 @@ export const ContactFormEditor = ({ tab }: { tab: FormTarget }) => {
         ) : (
           <div className="settings-empty">
             <h3>Field settings</h3>
-            <p className="muted">Click any field on the left to change its question, answers or
-              whether it's required.</p>
             <p className="muted">
-              Changes are saved as a draft automatically. Nothing reaches Aselo until the Aselo
-              team reviews and applies it.
+              Click any field on the left to change its question, answers or whether it's required.
+            </p>
+            <p className="muted">
+              Changes are saved as a draft automatically. Nothing reaches Aselo until the Aselo team reviews and applies
+              it.
             </p>
           </div>
         )}
@@ -301,8 +303,8 @@ export const ContactFormEditor = ({ tab }: { tab: FormTarget }) => {
 
       {editingChain && (
         <LinkedAnswersEditor
-          title={`Answers for ${editingChain.fields.map((field) => field.label || field.name).join(' → ')}`}
-          levelLabels={editingChain.fields.map((field) => field.label || field.name)}
+          title={`Answers for ${editingChain.fields.map(field => field.label || field.name).join(' → ')}`}
+          levelLabels={editingChain.fields.map(field => field.label || field.name)}
           initialRoots={editingChain.tree.roots}
           notes={editingChain.notes}
           saveLabel="Save answers"

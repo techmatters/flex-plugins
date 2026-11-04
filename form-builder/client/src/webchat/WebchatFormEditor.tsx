@@ -80,7 +80,7 @@ export const WebchatFormEditor = () => {
   const settings = useAppSelector(selectDefinitions)?.webchat;
   const usesPrepopulateMappings = useAppSelector(selectUsesPrepopulateMappings);
   const { editorRevision } = useAppSelector(selectWorkspace);
-  const issues = useAppSelector(selectSectionIssues).filter((issue) => issue.message.startsWith('Webchat form'));
+  const issues = useAppSelector(selectSectionIssues).filter(issue => issue.message.startsWith('Webchat form'));
   const locales = useAppSelector(selectWebchatLocales);
   const context = useAppSelector(selectWebchatTextContext);
   const { locale } = context;
@@ -92,16 +92,16 @@ export const WebchatFormEditor = () => {
   }, [dispatch, editorRevision]);
 
   const originalByName = useMemo(
-    () => new Map((getPreEngagementForm(originalFiles)?.fields ?? []).map((field) => [field.name, field])),
+    () => new Map((getPreEngagementForm(originalFiles)?.fields ?? []).map(field => [field.name, field])),
     [originalFiles],
   );
 
-  const fields = rows.map((row) => row.value);
-  const localized = fields.map((field) => localizeField(field, context.strings));
-  const localizedByName = new Map(localized.map((field) => [field.name, field]));
+  const fields = rows.map(row => row.value);
+  const localized = fields.map(field => localizeField(field, context.strings));
+  const localizedByName = new Map(localized.map(field => [field.name, field]));
 
   const prepopulateCandidates = useMemo(() => getPrepopulateCandidates(draftFiles), [draftFiles]);
-  const fieldIssues = (name: string) => issues.filter((issue) => issue.fieldName === name);
+  const fieldIssues = (name: string) => issues.filter(issue => issue.fieldName === name);
   const preview = {
     ...getPreEngagementForm(draftFiles),
     fields,
@@ -113,13 +113,13 @@ export const WebchatFormEditor = () => {
         <section className="panel">
           <h2>Webchat form</h2>
           <p className="muted">
-            The questions visitors answer on your website before a chat starts. Their answers can
-            fill in the contact form for the counselor.
+            The questions visitors answer on your website before a chat starts. Their answers can fill in the contact
+            form for the counselor.
           </p>
 
           {locales.length > 1 && (
             <div className="language-tabs" role="tablist" aria-label="Language">
-              {locales.map((code) => (
+              {locales.map(code => (
                 <button
                   key={code}
                   type="button"
@@ -137,11 +137,10 @@ export const WebchatFormEditor = () => {
           <h3 className="section-heading">Texts</h3>
           {!context.canTranslate && (
             <p className="field-hint">
-              This helpline's webchat has no texts of its own for {locale} yet. Ask Aselo staff to
-              add them.
+              This helpline's webchat has no texts of its own for {locale} yet. Ask Aselo staff to add them.
             </p>
           )}
-          {WEBCHAT_TEXTS.map((info) => {
+          {WEBCHAT_TEXTS.map(info => {
             const value = context.strings[info.key] ?? '';
             const onChange = (text: string) => dispatch(setText(info.key, text));
             return (
@@ -152,14 +151,14 @@ export const WebchatFormEditor = () => {
                     rows={3}
                     value={value}
                     disabled={!context.canTranslate}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={e => onChange(e.target.value)}
                   />
                 ) : (
                   <input
                     type="text"
                     value={value}
                     disabled={!context.canTranslate}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={e => onChange(e.target.value)}
                   />
                 )}
                 <span className="field-hint">{info.hint}</span>
@@ -173,14 +172,14 @@ export const WebchatFormEditor = () => {
           )}
           <SortableRows
             rows={rows}
-            labelOf={(field) => plainText(localizeField(field, context.strings).label) || field.name}
-            onReorder={(next) => dispatch(reorderQuestions(next))}
-            renderRow={(row) => {
+            labelOf={field => plainText(localizeField(field, context.strings).label) || field.name}
+            onReorder={next => dispatch(reorderQuestions(next))}
+            renderRow={row => {
               const field = localizeField(row.value, context.strings);
               const original = originalByName.get(row.value.name);
               const status = !original ? 'new' : isSameJson(original, row.value) ? undefined : 'edited';
               const selected = row.id === selectedId;
-              const hasError = fieldIssues(row.value.name).some((issue) => issue.severity === 'error');
+              const hasError = fieldIssues(row.value.name).some(issue => issue.severity === 'error');
               return (
                 <div className={`webchat-question${selected ? ' selected' : ''}`}>
                   <button
@@ -203,10 +202,10 @@ export const WebchatFormEditor = () => {
                       key={`${row.id}-${field.type}-${locale}`}
                       field={field}
                       originalField={original && localizeField(original, context.strings)}
-                      otherNames={fields.filter((other) => other !== row.value).map((other) => other.name)}
+                      otherNames={fields.filter(other => other !== row.value).map(other => other.name)}
                       staffMode={staffMode}
                       linkedChains={findChainsThroughField(asFormItems(localized), field.name)}
-                      labelOf={(name) => plainText(localizedByName.get(name)?.label) || name}
+                      labelOf={name => plainText(localizedByName.get(name)?.label) || name}
                       references={
                         original
                           ? findWebchatFieldReferences(draftFiles, field.name, settings?.contactIdentifierField)
@@ -214,19 +213,18 @@ export const WebchatFormEditor = () => {
                       }
                       issues={fieldIssues(row.value.name)}
                       textIsShared={
-                        locales.length > 1 &&
-                        (!context.canTranslate || !context.knownKeys.has(String(row.value.label)))
+                        locales.length > 1 && (!context.canTranslate || !context.knownKeys.has(String(row.value.label)))
                       }
                       prepopulate={{
                         ...getPrepopulateTargets(draftFiles, row.value.name),
                         candidates: prepopulateCandidates,
                         inUse: usesPrepopulateMappings,
-                        unmatchedAnswers: (target) => findUnmatchedAnswers(draftFiles, row.value, target),
+                        unmatchedAnswers: target => findUnmatchedAnswers(draftFiles, row.value, target),
                       }}
-                      onChangeTargets={(targets) => dispatch(setQuestionTargets(row.value.name, targets))}
-                      onChange={(edited) => dispatch(updateQuestion(row.id, edited))}
-                      onChangeType={(type) => dispatch(changeQuestionType(row.id, field, type))}
-                      onEditLinked={(names) => dispatch(openChainEditor(names))}
+                      onChangeTargets={targets => dispatch(setQuestionTargets(row.value.name, targets))}
+                      onChange={edited => dispatch(updateQuestion(row.id, edited))}
+                      onChangeType={type => dispatch(changeQuestionType(row.id, field, type))}
+                      onEditLinked={names => dispatch(openChainEditor(names))}
                       onRemove={() => dispatch(removeQuestion(row.id))}
                     />
                   )}
@@ -244,7 +242,7 @@ export const WebchatFormEditor = () => {
                 </button>
               </div>
               <ul>
-                {ADDABLE_WEBCHAT_FIELD_TYPES.map((type) => (
+                {ADDABLE_WEBCHAT_FIELD_TYPES.map(type => (
                   <li key={type}>
                     <button type="button" className="field-type-option" onClick={() => dispatch(addQuestion(type))}>
                       <span className="field-type-name">{WEBCHAT_FIELD_TYPE_INFO[type].label}</span>
@@ -253,15 +251,10 @@ export const WebchatFormEditor = () => {
                   </li>
                 ))}
                 <li className="field-type-wide">
-                  <button
-                    type="button"
-                    className="field-type-option"
-                    onClick={() => dispatch(wizardOpened())}
-                  >
+                  <button type="button" className="field-type-option" onClick={() => dispatch(wizardOpened())}>
                     <span className="field-type-name">Linked dropdowns</span>
                     <span className="muted">
-                      Two or more dropdowns where each one's answers depend on the one above, like
-                      province → district
+                      Two or more dropdowns where each one's answers depend on the one above, like province → district
                     </span>
                   </button>
                 </li>
@@ -282,7 +275,9 @@ export const WebchatFormEditor = () => {
         <div className="section-preview-frame webchat-preview-frame">
           <WebchatPreview form={preview} strings={context.strings} />
         </div>
-        <p className="field-hint">Fill it in to try it: required questions and answers work as they will for visitors.</p>
+        <p className="field-hint">
+          Fill it in to try it: required questions and answers work as they will for visitors.
+        </p>
       </aside>
 
       {wizardOpen && (
@@ -296,12 +291,12 @@ export const WebchatFormEditor = () => {
 
       {editingChain && (
         <LinkedAnswersEditor
-          title={`Answers for ${editingChain.fields.map((field) => plainText(field.label) || field.name).join(' → ')}`}
-          levelLabels={editingChain.fields.map((field) => plainText(field.label) || field.name)}
+          title={`Answers for ${editingChain.fields.map(field => plainText(field.label) || field.name).join(' → ')}`}
+          levelLabels={editingChain.fields.map(field => plainText(field.label) || field.name)}
           initialRoots={editingChain.tree.roots}
           notes={editingChain.notes}
           saveLabel="Save answers"
-          downloadName={`webchat-${editingChain.fields.map((field) => field.name).join('-')}.xlsx`}
+          downloadName={`webchat-${editingChain.fields.map(field => field.name).join('-')}.xlsx`}
           onSave={(roots, options) => dispatch(saveChainAnswers(roots, options))}
           onCancel={() => dispatch(chainClosed())}
         />

@@ -35,10 +35,7 @@ import { createAppStore, useAppSelector } from '../app/store';
 import { sessionLoaded } from '../app/sessionSlice';
 
 export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
-export const formDefinitionsDir = path.join(
-  repoRoot,
-  'lambdas/packages/hrm-form-definitions/form-definitions',
-);
+export const formDefinitionsDir = path.join(repoRoot, 'lambdas/packages/hrm-form-definitions/form-definitions');
 export const helplinesConfigDir = path.join(repoRoot, 'twilio-iac/helplines');
 export const webchatConfigDir = path.join(repoRoot, 'aselo-webchat-react-app/configSrc');
 
@@ -58,7 +55,7 @@ export const createHarness = () => {
     applier: {
       apply: jest.fn(async (draft: Draft) => ({
         description: 'Written to your checkout.',
-        written: Object.keys(draft.files).map((filePath) => repoPathOf(draft.code, draft.version, filePath)),
+        written: Object.keys(draft.files).map(filePath => repoPathOf(draft.code, draft.version, filePath)),
       })),
     },
     notifier: { draftSubmitted: jest.fn(async () => {}) },

@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { beforeAll, describe, expect, test } from '@jest/globals';
@@ -97,7 +96,7 @@ describe('editing text in a language', () => {
   });
 
   test('answers keep their saved value; new answers are text in the form', () => {
-    const age = getPreEngagementForm(ca.files)!.fields!.find((field) => field.name === 'age')!;
+    const age = getPreEngagementForm(ca.files)!.fields!.find(field => field.name === 'age')!;
     const context = buildTextContext(ca.files, 'en-CA', ['en-CA', 'fr-CA']);
     const shown = localizeField(age, context.strings);
     const options = [...(shown.options as { value: string; label: string }[]), { value: '99', label: '99' }];
@@ -121,9 +120,12 @@ describe('editing text in a language', () => {
       const locales = getWebchatLocales(files, webchat?.defaultLocale);
       for (const locale of locales.length > 0 ? locales : ['en-US']) {
         const context = buildTextContext(files, locale, locales);
-        fields.forEach((field) => {
+        fields.forEach(field => {
           const saved = unlocalizeField(localizeField(field, context.strings), field, context);
-          expect({ at: `${code} ${locale} ${field.name}`, value: saved.field }).toEqual({ at: `${code} ${locale} ${field.name}`, value: field });
+          expect({ at: `${code} ${locale} ${field.name}`, value: saved.field }).toEqual({
+            at: `${code} ${locale} ${field.name}`,
+            value: field,
+          });
           expect(saved.translations).toEqual([]);
         });
         checked += 1;
@@ -133,11 +135,19 @@ describe('editing text in a language', () => {
   });
 
   test('texts around the form: the webchat default is not written, other text is', () => {
-    const unchanged = setWebchatText(as.files, as.files, 'en-US', 'PreEngagementPhase-Form-SubmitButtonLabel', 'Start chat');
+    const unchanged = setWebchatText(
+      as.files,
+      as.files,
+      'en-US',
+      'PreEngagementPhase-Form-SubmitButtonLabel',
+      'Start chat',
+    );
     expect(unchanged['webchat-app/translations/en-US.json']).toEqual(as.files['webchat-app/translations/en-US.json']);
 
     const changed = setWebchatText(as.files, as.files, 'es-ES', 'PreEngagementPhase-Form-Description', '¡Hola!');
-    expect((changed['webchat-app/translations/es-ES.json'] as Record<string, string>)['PreEngagementPhase-Form-Description']).toBe('¡Hola!');
+    expect(
+      (changed['webchat-app/translations/es-ES.json'] as Record<string, string>)['PreEngagementPhase-Form-Description'],
+    ).toBe('¡Hola!');
     expect(summarizeWebchatChanges(as.files, changed)).toEqual([
       { title: 'Webchat texts', lines: ['“Introduction” (es-ES): ¡Hola!'] },
     ]);
@@ -147,14 +157,28 @@ describe('editing text in a language', () => {
 describe('questions', () => {
   test('switching kind adjusts what goes with it', () => {
     const select = changeWebchatFieldType({ type: 'input', name: 'q', label: 'Q', required: true }, 'select');
-    expect(select).toEqual({ type: 'select', name: 'q', label: 'Q', required: true, defaultValue: '', options: [{ value: '', label: '' }] });
-    expect(changeWebchatFieldType(select, 'checkbox')).toEqual({ type: 'checkbox', name: 'q', label: 'Q', required: { value: true } });
+    expect(select).toEqual({
+      type: 'select',
+      name: 'q',
+      label: 'Q',
+      required: true,
+      defaultValue: '',
+      options: [{ value: '', label: '' }],
+    });
+    expect(changeWebchatFieldType(select, 'checkbox')).toEqual({
+      type: 'checkbox',
+      name: 'q',
+      label: 'Q',
+      required: { value: true },
+    });
   });
 
   test('says what a question fills in and what depends on it', () => {
     const references = findWebchatFieldReferences(as.files, 'province');
     expect(references).toContain('The “District” dropdown depends on it');
-    expect(references.some((reference) => reference.startsWith('Fills in the contact form (Caller information'))).toBe(true);
+    expect(references.some(reference => reference.startsWith('Fills in the contact form (Caller information'))).toBe(
+      true,
+    );
     expect(findWebchatFieldReferences(as.files, 'friendlyName')[0]).toMatch(/name counselors see/);
   });
 
@@ -162,7 +186,12 @@ describe('questions', () => {
     const helplines = await listHelplines(formDefinitionsDir);
     for (const { code, versions } of helplines) {
       const { files } = await loadDefinitionFiles(formDefinitionsDir, code, versions[0]);
-      validateWebchat(files, files).forEach((issue) => expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({ at: `${code}: ${issue.message}`, value: 'warning' }));
+      validateWebchat(files, files).forEach(issue =>
+        expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({
+          at: `${code}: ${issue.message}`,
+          value: 'warning',
+        }),
+      );
     }
   });
 
@@ -175,7 +204,7 @@ describe('questions', () => {
         fields: [...form.fields!, { type: 'select', name: 'empty', label: '', options: [{ value: '', label: '' }] }],
       },
     };
-    expect(validateWebchat(draft, as.files).map((issue) => issue.message)).toEqual([
+    expect(validateWebchat(draft, as.files).map(issue => issue.message)).toEqual([
       'Webchat form: question 10 has no text.',
       'Webchat form: Question 10 has no answers to choose from.',
     ]);
@@ -188,7 +217,9 @@ describe('sanitizeLabelHtml', () => {
       'I accept the <a href="https://example.org" target="_blank" rel="noreferrer">terms</a>',
     );
     expect(
-      sanitizeLabelHtml('<b>Hi</b><script>alert(1)</script><img src=x onerror="alert(1)"><a href="javascript:alert(1)" onclick="x()">x</a>'),
+      sanitizeLabelHtml(
+        '<b>Hi</b><script>alert(1)</script><img src=x onerror="alert(1)"><a href="javascript:alert(1)" onclick="x()">x</a>',
+      ),
     ).toBe('<b>Hi</b>alert(1)<a target="_blank" rel="noreferrer">x</a>');
   });
 });
@@ -209,7 +240,7 @@ describe('filling in the contact form (PrepopulateMappings.json)', () => {
   });
 
   test('warns about dropdown answers the contact form field does not have', () => {
-    const age = getPreEngagementForm(as.files)!.fields!.find((field) => field.name === 'age')!;
+    const age = getPreEngagementForm(as.files)!.fields!.find(field => field.name === 'age')!;
     const withExtra = { ...age, options: [...(age.options as any[]), { value: 'Ninety', label: 'Ninety' }] };
     expect(findUnmatchedAnswers(as.files, withExtra, 'ChildInformationTab.age')).toEqual(['Ninety']);
   });

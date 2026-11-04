@@ -66,16 +66,16 @@ const HelplineCategories = ({ strings }: { strings: Record<string, string> }) =>
           min={1}
           max={20}
           value={maxSelections}
-          onChange={(e) => dispatch(setMaxSelections(Number(e.target.value)))}
+          onChange={e => dispatch(setMaxSelections(Number(e.target.value)))}
           className="narrow-input"
         />
       </label>
 
       <SortableRows
         rows={rows}
-        labelOf={(value) => value.name}
-        onReorder={(next) => dispatch(reorderCategories(next))}
-        renderRow={(row) => {
+        labelOf={value => value.name}
+        onReorder={next => dispatch(reorderCategories(next))}
+        renderRow={row => {
           const { value } = row;
           const nameLocked = !staffMode && value.originalName !== undefined;
           const shownAs = translate(strings, value.name);
@@ -87,15 +87,17 @@ const HelplineCategories = ({ strings }: { strings: Record<string, string> }) =>
                   type="color"
                   aria-label={`Colour of ${value.name}`}
                   value={/^#[0-9a-f]{6}$/i.test(String(value.entry.color)) ? String(value.entry.color) : '#bbe3ff'}
-                  onChange={(e) => dispatch(setCategoryColor(row.id, e.target.value))}
+                  onChange={e => dispatch(setCategoryColor(row.id, e.target.value))}
                 />
                 <input
                   type="text"
                   aria-label="Category name"
                   value={value.name}
                   disabled={nameLocked}
-                  title={nameLocked ? 'Contacts and reports use this name, so only Aselo staff can rename it.' : undefined}
-                  onChange={(e) => dispatch(renameCategory(row.id, e.target.value))}
+                  title={
+                    nameLocked ? 'Contacts and reports use this name, so only Aselo staff can rename it.' : undefined
+                  }
+                  onChange={e => dispatch(renameCategory(row.id, e.target.value))}
                 />
                 <button
                   type="button"
@@ -123,10 +125,10 @@ const HelplineCategories = ({ strings }: { strings: Record<string, string> }) =>
                   ×
                 </button>
               </div>
-              {rows.some((other) => other.id !== row.id && other.value.name === value.name) && (
+              {rows.some(other => other.id !== row.id && other.value.name === value.name) && (
                 <span className="field-hint issue-error-text">
-                  Another category is already called “{value.name}”. Choose a different name; changes
-                  aren't saved until then.
+                  Another category is already called “{value.name}”. Choose a different name; changes aren't saved until
+                  then.
                 </span>
               )}
               {shownAs !== value.name && (
@@ -136,9 +138,9 @@ const HelplineCategories = ({ strings }: { strings: Record<string, string> }) =>
                 <div className="subcategories-editor">
                   <SortableRows
                     rows={value.subcategories}
-                    labelOf={(sub) => sub.label}
-                    onReorder={(subcategories) => dispatch(reorderSubcategories(row.id, subcategories))}
-                    renderRow={(subRow) => {
+                    labelOf={sub => sub.label}
+                    onReorder={subcategories => dispatch(reorderSubcategories(row.id, subcategories))}
+                    renderRow={subRow => {
                       const subExists = existingSubIds.includes(subRow.id);
                       const subLocked = !staffMode && subExists;
                       return (
@@ -149,8 +151,12 @@ const HelplineCategories = ({ strings }: { strings: Record<string, string> }) =>
                               aria-label="Subcategory name"
                               value={subRow.value.label}
                               disabled={subLocked}
-                              title={subLocked ? 'Contacts and reports use this name, so only Aselo staff can rename it.' : undefined}
-                              onChange={(e) =>
+                              title={
+                                subLocked
+                                  ? 'Contacts and reports use this name, so only Aselo staff can rename it.'
+                                  : undefined
+                              }
+                              onChange={e =>
                                 dispatch(setSubcategory(row.id, subRow.id, { ...subRow.value, label: e.target.value }))
                               }
                             />
@@ -178,10 +184,14 @@ const HelplineCategories = ({ strings }: { strings: Record<string, string> }) =>
                             aria-label={`Help link for ${subRow.value.label}`}
                             placeholder="Help link for counselors (optional)"
                             value={subRow.value.toolkitUrl ?? ''}
-                            onChange={(e) => {
+                            onChange={e => {
                               const { toolkitUrl, ...rest } = subRow.value;
                               dispatch(
-                                setSubcategory(row.id, subRow.id, e.target.value ? { ...rest, toolkitUrl: e.target.value } : rest),
+                                setSubcategory(
+                                  row.id,
+                                  subRow.id,
+                                  e.target.value ? { ...rest, toolkitUrl: e.target.value } : rest,
+                                ),
                               );
                             }}
                           />
@@ -197,7 +207,7 @@ const HelplineCategories = ({ strings }: { strings: Record<string, string> }) =>
                         value={bulk.text}
                         aria-label="Subcategories, one per line"
                         placeholder="One subcategory per line"
-                        onChange={(e) => dispatch(bulkChanged({ id: row.id, text: e.target.value }))}
+                        onChange={e => dispatch(bulkChanged({ id: row.id, text: e.target.value }))}
                       />
                       <div className="option-actions">
                         <button
@@ -214,7 +224,11 @@ const HelplineCategories = ({ strings }: { strings: Record<string, string> }) =>
                     </div>
                   ) : (
                     <div className="option-actions">
-                      <button type="button" className="secondary-button" onClick={() => dispatch(addSubcategory(row.id))}>
+                      <button
+                        type="button"
+                        className="secondary-button"
+                        onClick={() => dispatch(addSubcategory(row.id))}
+                      >
                         + Add a subcategory
                       </button>
                       <button
@@ -251,7 +265,7 @@ export const CategoriesEditor = () => {
   const { helpline, previewSelected } = useAppSelector(selectCategories);
   const strings = useStrings(helplineLanguage ?? 'en-US', draftFiles);
   const helplines = useMemo(() => Object.keys(getCategoriesByHelpline(originalFiles)), [originalFiles]);
-  const issues = sectionIssues.filter((issue) => issue.message.startsWith('Issue categories'));
+  const issues = sectionIssues.filter(issue => issue.message.startsWith('Issue categories'));
 
   // Starts from the draft when it opens, and when the draft's files are replaced (discarded, reloaded)
   useEffect(() => {
@@ -264,16 +278,15 @@ export const CategoriesEditor = () => {
         <section className="panel">
           <h2>Issue categories</h2>
           <p className="muted">
-            What the contact was about. Counselors tick these on the Categories tab, and reports
-            count them.
+            What the contact was about. Counselors tick these on the Categories tab, and reports count them.
           </p>
           <p className="field-hint">
-            Contacts are saved with the category and subcategory names, so existing names can only
-            be changed by Aselo staff. Order, colours and help links can change any time.
+            Contacts are saved with the category and subcategory names, so existing names can only be changed by Aselo
+            staff. Order, colours and help links can change any time.
           </p>
           {helplines.length > 1 && (
             <div className="language-tabs" role="tablist" aria-label="Helpline">
-              {helplines.map((name) => (
+              {helplines.map(name => (
                 <button
                   key={name}
                   type="button"
@@ -289,7 +302,7 @@ export const CategoriesEditor = () => {
           )}
           {issues.length > 0 && (
             <ul className="issue-list">
-              {issues.map((issue) => (
+              {issues.map(issue => (
                 <li key={issue.message} className={`issue issue-${issue.severity}`}>
                   {issue.message}
                 </li>
@@ -322,7 +335,7 @@ export const CategoriesEditor = () => {
               selected={previewSelected}
               hasError={false}
               strings={strings}
-              onChange={(selected) => dispatch(previewSelectedChanged(selected))}
+              onChange={selected => dispatch(previewSelectedChanged(selected))}
             />
           </div>
         </div>

@@ -48,7 +48,7 @@ export const DraftsList = () => {
           </tr>
         </thead>
         <tbody>
-          {drafts.map((draft) => (
+          {drafts.map(draft => (
             <tr key={`${draft.code}/${draft.version}`}>
               <td>
                 {draft.code.toUpperCase()} {draft.version}
@@ -67,11 +67,7 @@ export const DraftsList = () => {
               </td>
               <td>{draft.changedFiles.length}</td>
               <td>
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={() => onOpen(draft.code, draft.version)}
-                >
+                <button type="button" className="secondary-button" onClick={() => onOpen(draft.code, draft.version)}>
                   {isAseloStaff && draft.meta.status === 'submitted' ? 'Review' : 'Open'}
                 </button>
               </td>

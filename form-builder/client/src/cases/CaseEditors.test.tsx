@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 /**
  * Case section forms, case statuses and case sections, edited through the workspace with
  * USNM's real definitions.
@@ -79,7 +78,7 @@ describe('case statuses', () => {
     fireEvent.click(screen.getByRole('button', { name: '+ Add a status' }));
     fireEvent.change(screen.getByDisplayValue('New status'), { target: { value: 'Waiting for callback' } });
     const openRow = (screen.getAllByRole('textbox', { name: 'Status name' }) as HTMLInputElement[])
-      .find((input) => input.value === 'Open')!
+      .find(input => input.value === 'Open')!
       .closest('.status-row') as HTMLElement;
     fireEvent.click(within(openRow).getByRole('checkbox', { name: 'Waiting for callback' }));
 
@@ -92,7 +91,9 @@ describe('case statuses', () => {
     });
     expect(statuses.open.transitions).toEqual(['closed', 'waitingForCallback']);
     // The preview: an open case can move to the new status
-    expect(within(screen.getByRole('list', { name: 'Statuses offered' })).getByText('Waiting for callback')).toBeTruthy();
+    expect(
+      within(screen.getByRole('list', { name: 'Statuses offered' })).getByText('Waiting for callback'),
+    ).toBeTruthy();
   });
 
   test('open and closed cannot be removed', async () => {
@@ -104,7 +105,10 @@ describe('case statuses', () => {
   test('flags transitions to statuses that do not exist (CA, MT and TZ today)', async () => {
     const ca = await loadDefinitionFiles(formDefinitionsDir, 'ca', 'v1');
     expect(validateCaseStatuses(ca.files, ca.files)).toContainEqual(
-      expect.objectContaining({ severity: 'warning', message: expect.stringContaining('“ongoing”, which isn’t a status') }),
+      expect.objectContaining({
+        severity: 'warning',
+        message: expect.stringContaining('“ongoing”, which isn’t a status'),
+      }),
     );
   });
 });
@@ -130,7 +134,7 @@ describe('case sections', () => {
     // Its form is in the menu, and the heading can be changed
     expect(screen.getByRole('button', { name: 'Safety plan' })).toBeTruthy();
     const row = (screen.getAllByRole('textbox', { name: 'Section name' }) as HTMLInputElement[])
-      .find((input) => input.value === 'Safety plan')!
+      .find(input => input.value === 'Safety plan')!
       .closest('.case-section-row') as HTMLElement;
     fireEvent.change(within(row).getByRole('textbox', { name: 'Heading on the case' }), {
       target: { value: 'Safety plans' },
@@ -148,11 +152,17 @@ describe('case sections', () => {
   test('sections and statuses in the repo today only produce warnings', async () => {
     for (const { code, versions } of await listHelplines(formDefinitionsDir)) {
       const { files } = await loadDefinitionFiles(formDefinitionsDir, code, versions[0]);
-      validateCaseSections(files, files).forEach((issue) =>
-        expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({ at: `${code}: ${issue.message}`, value: 'warning' }),
+      validateCaseSections(files, files).forEach(issue =>
+        expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({
+          at: `${code}: ${issue.message}`,
+          value: 'warning',
+        }),
       );
-      validateCaseStatuses(files, files).forEach((issue) =>
-        expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({ at: `${code}: ${issue.message}`, value: 'warning' }),
+      validateCaseStatuses(files, files).forEach(issue =>
+        expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({
+          at: `${code}: ${issue.message}`,
+          value: 'warning',
+        }),
       );
     }
   });

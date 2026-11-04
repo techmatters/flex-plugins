@@ -66,7 +66,7 @@ export const loadSession = (): AppThunk<Promise<void>> => async (dispatch, _getS
     const [user, helplines] = await Promise.all([services.draftClient.me(), services.fetchHelplines()]);
     dispatch(sessionLoaded({ user, helplines }));
     const linkedCode = new URLSearchParams(window.location.search).get('helpline');
-    const linked = helplines.find((helpline) => helpline.code === linkedCode);
+    const linked = helplines.find(helpline => helpline.code === linkedCode);
     if (linked) await dispatch(openHelpline(linked.code, linked.versions[0]));
   } catch (err) {
     dispatch(sessionFailed((err as Error).message));

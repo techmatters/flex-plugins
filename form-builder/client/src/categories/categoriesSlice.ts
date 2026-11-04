@@ -75,7 +75,7 @@ const categoriesSlice = createSlice({
     },
   },
   selectors: {
-    selectCategories: (state) => state,
+    selectCategories: state => state,
   },
 });
 
@@ -102,7 +102,7 @@ const toCategoryRows = (
 
 // Names are keys in the file, so nothing is saved while two categories share one
 export const hasDuplicateNames = (rows: Row<CategoryValue>[]) =>
-  new Set(rows.map((row) => row.value.name)).size < rows.length;
+  new Set(rows.map(row => row.value.name)).size < rows.length;
 
 const uniqueName = (base: string, taken: string[]) => {
   let name = base;
@@ -123,10 +123,10 @@ export const openCategories =
     const rows = toCategoryRows(getHelplineCategories(files, helpline), original);
     const existingSubIds = rows.flatMap(({ value }) =>
       value.subcategories
-        .filter((sub) =>
-          original?.categories[value.originalName ?? '']?.subcategories.some((old) => old.label === sub.value.label),
+        .filter(sub =>
+          original?.categories[value.originalName ?? '']?.subcategories.some(old => old.label === sub.value.label),
         )
-        .map((sub) => sub.id),
+        .map(sub => sub.id),
     );
     dispatch(categoriesOpened({ helpline, rows, existingSubIds }));
   };
@@ -139,12 +139,15 @@ const write =
     const { helpline } = selectCategories(getState());
     if (!helpline || hasDuplicateNames(rows)) return;
     dispatch(
-      editDraftFiles((files) =>
+      editDraftFiles(files =>
         setHelplineCategories(files, helpline, {
           ...getHelplineCategories(files, helpline),
           ...changes,
           categories: Object.fromEntries(
-            rows.map(({ value }) => [value.name, { ...value.entry, subcategories: value.subcategories.map((sub) => sub.value) }]),
+            rows.map(({ value }) => [
+              value.name,
+              { ...value.entry, subcategories: value.subcategories.map(sub => sub.value) },
+            ]),
           ) as CategoriesDefinition['categories'],
         }),
       ),
@@ -154,7 +157,9 @@ const write =
 const updateCategory =
   (id: string, update: (value: CategoryValue) => CategoryValue): AppThunk =>
   (dispatch, getState) =>
-    dispatch(write(selectCategories(getState()).rows.map((row) => (row.id === id ? { ...row, value: update(row.value) } : row))));
+    dispatch(
+      write(selectCategories(getState()).rows.map(row => (row.id === id ? { ...row, value: update(row.value) } : row))),
+    );
 
 export const setMaxSelections =
   (maxSelections: number): AppThunk =>
@@ -163,10 +168,10 @@ export const setMaxSelections =
 
 export const reorderCategories = (rows: Row<CategoryValue>[]): AppThunk => write(rows);
 
-export const renameCategory = (id: string, name: string): AppThunk => updateCategory(id, (value) => ({ ...value, name }));
+export const renameCategory = (id: string, name: string): AppThunk => updateCategory(id, value => ({ ...value, name }));
 
 export const setCategoryColor = (id: string, color: string): AppThunk =>
-  updateCategory(id, (value) => ({ ...value, entry: { ...value.entry, color } }));
+  updateCategory(id, value => ({ ...value, entry: { ...value.entry, color } }));
 
 export const addCategory = (): AppThunk => (dispatch, getState) => {
   const { rows } = selectCategories(getState());
@@ -174,7 +179,7 @@ export const addCategory = (): AppThunk => (dispatch, getState) => {
     {
       name: uniqueName(
         'New category',
-        rows.map((candidate) => candidate.value.name),
+        rows.map(candidate => candidate.value.name),
       ),
       entry: { color: CATEGORY_COLORS[rows.length % CATEGORY_COLORS.length] },
       subcategories: toRows([{ label: 'Other' }]),
@@ -187,24 +192,24 @@ export const addCategory = (): AppThunk => (dispatch, getState) => {
 export const removeCategory =
   (id: string): AppThunk =>
   (dispatch, getState) =>
-    dispatch(write(selectCategories(getState()).rows.filter((row) => row.id !== id)));
+    dispatch(write(selectCategories(getState()).rows.filter(row => row.id !== id)));
 
 export const addSubcategories = (id: string, labels: string[]): AppThunk =>
-  updateCategory(id, (value) => {
-    const taken = value.subcategories.map((sub) => sub.value.label);
+  updateCategory(id, value => {
+    const taken = value.subcategories.map(sub => sub.value.label);
     const added = labels
-      .map((label) => label.trim())
-      .filter((label) => label && !taken.includes(label))
+      .map(label => label.trim())
+      .filter(label => label && !taken.includes(label))
       .filter((label, index, all) => all.indexOf(label) === index);
-    return { ...value, subcategories: [...value.subcategories, ...toRows(added.map((label) => ({ label })))] };
+    return { ...value, subcategories: [...value.subcategories, ...toRows(added.map(label => ({ label })))] };
   });
 
 // A new subcategory, named so it doesn't repeat one
 export const addSubcategory =
   (id: string): AppThunk =>
   (dispatch, getState) => {
-    const category = selectCategories(getState()).rows.find((row) => row.id === id);
-    const taken = category?.value.subcategories.map((sub) => sub.value.label) ?? [];
+    const category = selectCategories(getState()).rows.find(row => row.id === id);
+    const taken = category?.value.subcategories.map(sub => sub.value.label) ?? [];
     dispatch(addSubcategories(id, [uniqueName('New subcategory', taken)]));
   };
 
@@ -217,16 +222,18 @@ export const addPastedSubcategories = (): AppThunk => (dispatch, getState) => {
 };
 
 export const reorderSubcategories = (id: string, subcategories: Row<Subcategory>[]): AppThunk =>
-  updateCategory(id, (value) => ({ ...value, subcategories }));
+  updateCategory(id, value => ({ ...value, subcategories }));
 
 export const setSubcategory = (id: string, subId: string, sub: Subcategory): AppThunk =>
-  updateCategory(id, (value) => ({
+  updateCategory(id, value => ({
     ...value,
-    subcategories: value.subcategories.map((candidate) => (candidate.id === subId ? { ...candidate, value: sub } : candidate)),
+    subcategories: value.subcategories.map(candidate =>
+      candidate.id === subId ? { ...candidate, value: sub } : candidate,
+    ),
   }));
 
 export const removeSubcategory = (id: string, subId: string): AppThunk =>
-  updateCategory(id, (value) => ({
+  updateCategory(id, value => ({
     ...value,
-    subcategories: value.subcategories.filter((candidate) => candidate.id !== subId),
+    subcategories: value.subcategories.filter(candidate => candidate.id !== subId),
   }));

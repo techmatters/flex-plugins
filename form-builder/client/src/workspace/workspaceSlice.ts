@@ -102,22 +102,22 @@ const workspaceSlice = createSlice({
     tryItOutOpened: (state, action: PayloadAction<{ focus: PreviewFocus; tab?: string }>) => {
       state.tryItOut = action.payload;
     },
-    tryItOutClosed: (state) => {
+    tryItOutClosed: state => {
       state.tryItOut = undefined;
     },
-    reviewOpened: (state) => {
+    reviewOpened: state => {
       state.reviewing = true;
     },
-    reviewClosed: (state) => {
+    reviewClosed: state => {
       state.reviewing = false;
     },
     sectionPreviewOpened: (state, action: PayloadAction<string>) => {
       state.previewingSection = action.payload;
     },
-    sectionPreviewClosed: (state) => {
+    sectionPreviewClosed: state => {
       state.previewingSection = undefined;
     },
-    editorsRestarted: (state) => {
+    editorsRestarted: state => {
       state.editorRevision += 1;
     },
   },
@@ -159,13 +159,13 @@ export const reloadHelpline = (): AppThunk<Promise<void>> => (dispatch, getState
   return dispatch(openHelpline(code, version));
 };
 
-export const discardWorkspaceDraft = (): AppThunk<Promise<void>> => async (dispatch) => {
+export const discardWorkspaceDraft = (): AppThunk<Promise<void>> => async dispatch => {
   await dispatch(discardDraft());
   dispatch(editorsRestarted());
 };
 
 // The forms the draft has: the contact tabs, and each case section's form
-export const selectCaseTargets = createSelector([selectDraftFiles], (files) =>
+export const selectCaseTargets = createSelector([selectDraftFiles], files =>
   getCaseSections(files).map(caseSectionTarget),
 );
 
@@ -174,8 +174,8 @@ export const selectIssuesByTab = createSelector(
   [selectDraftFiles, selectOriginalFiles, selectCaseTargets],
   (files, originalFiles, caseTargets) =>
     Object.fromEntries([
-      ...CONTACT_TABS.map((tab) => [tab.key, validateContactTab(files, originalFiles, tab)]),
-      ...caseTargets.map((target) => [`case:${target.key}`, validateContactTab(files, originalFiles, target)]),
+      ...CONTACT_TABS.map(tab => [tab.key, validateContactTab(files, originalFiles, tab)]),
+      ...caseTargets.map(target => [`case:${target.key}`, validateContactTab(files, originalFiles, target)]),
     ]) as Record<string, ValidationIssue[]>,
 );
 
@@ -191,9 +191,9 @@ export const selectReviewIssues = createSelector(
   (issuesByTab, sectionIssues, caseTargets, changedPaths) => {
     const changed = new Set(changedPaths);
     return [
-      ...[...CONTACT_TABS, ...caseTargets].flatMap((target) => {
+      ...[...CONTACT_TABS, ...caseTargets].flatMap(target => {
         const issues = issuesByTab[isContactTab(target) ? target.key : `case:${target.key}`] ?? [];
-        return changed.has(target.filePath) ? issues : issues.filter((issue) => issue.severity === 'error');
+        return changed.has(target.filePath) ? issues : issues.filter(issue => issue.severity === 'error');
       }),
       ...sectionIssues,
     ];

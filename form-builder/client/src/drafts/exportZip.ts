@@ -60,28 +60,28 @@ export const buildChangeLog = ({
     '',
   ];
 
-  summarizeContactFormChanges(originalFiles, draftFiles).forEach((summary) => {
+  summarizeContactFormChanges(originalFiles, draftFiles).forEach(summary => {
     lines.push(`## ${summary.tab.kind === 'case' ? `Case section: ${summary.tab.title}` : summary.tab.title}`, '');
-    summary.added.forEach((field) => lines.push(`- Added: ${field}`));
-    summary.removed.forEach((field) => lines.push(`- Removed: ${field}`));
-    summary.edited.forEach((field) => lines.push(`- Edited: ${field}`));
+    summary.added.forEach(field => lines.push(`- Added: ${field}`));
+    summary.removed.forEach(field => lines.push(`- Removed: ${field}`));
+    summary.edited.forEach(field => lines.push(`- Edited: ${field}`));
     if (summary.reordered) lines.push('- Fields were reordered');
     lines.push('');
   });
 
-  summarizeSectionChanges(originalFiles, draftFiles, webchatDefaultLocale).forEach((summary) => {
+  summarizeSectionChanges(originalFiles, draftFiles, webchatDefaultLocale).forEach(summary => {
     lines.push(`## ${summary.title}`, '');
-    summary.lines.forEach((line) => lines.push(`- ${line}`));
+    summary.lines.forEach(line => lines.push(`- ${line}`));
     lines.push('');
   });
 
   lines.push('## Files changed', '');
-  changedPaths.forEach((filePath) => lines.push(`- \`${repoPathOf(code, version, filePath)}\``));
+  changedPaths.forEach(filePath => lines.push(`- \`${repoPathOf(code, version, filePath)}\``));
   lines.push('');
 
   if (warnings.length > 0) {
     lines.push('## Warnings for the reviewer', '');
-    warnings.forEach((warning) => lines.push(`- ${warning.message}`));
+    warnings.forEach(warning => lines.push(`- ${warning.message}`));
     lines.push('');
   }
 
@@ -112,9 +112,9 @@ export const buildChangeLog = ({
 export const buildExportZip = (input: ExportInput): JSZip => {
   const { code, version, originalFiles, draftFiles } = input;
   const zip = new JSZip();
-  getChangedFilePaths(originalFiles, draftFiles).forEach((filePath) => {
-      zip.file(repoPathOf(code, version, filePath), serializeDefinitionFile(draftFiles[filePath]));
-    });
+  getChangedFilePaths(originalFiles, draftFiles).forEach(filePath => {
+    zip.file(repoPathOf(code, version, filePath), serializeDefinitionFile(draftFiles[filePath]));
+  });
   zip.file('CHANGES.md', buildChangeLog(input));
   return zip;
 };

@@ -15,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-
 /**
  * Linked dropdowns, driven through the UI with real helpline definitions.
  */
@@ -42,7 +41,6 @@ beforeAll(async () => {
   ph = await loadDefinitionFiles(formDefinitionsDir, 'ph', 'v1');
 });
 
-
 let harness: ReturnType<typeof createHarness>;
 beforeEach(() => {
   harness = createHarness();
@@ -64,16 +62,14 @@ afterEach(() => {
   jest.restoreAllMocks();
 });
 
-const fieldCard = (label: string) =>
-  screen.getByRole('button', { name: `${label}. Click to edit, or drag to move.` });
+const fieldCard = (label: string) => screen.getByRole('button', { name: `${label}. Click to edit, or drag to move.` });
 
 // The draft as saved on the server, for checking what will be applied
 const savedDraftForm = async (definitions: DefinitionFiles, filePath: string) =>
   (await savedDraftFile(definitions, filePath)) as (FormItemJsonDefinition & Record<string, unknown>)[];
 
 const labelOf = (definitions: DefinitionFiles, filePath: string, name: string) =>
-  (definitions.files[filePath] as FormItemJsonDefinition[]).find((item) => item.name === name)!
-    .label;
+  (definitions.files[filePath] as FormItemJsonDefinition[]).find(item => item.name === name)!.label;
 
 const startWizard = (levelLabels: string[]) => {
   fireEvent.click(screen.getAllByRole('button', { name: '+ Add a field' })[0]);
@@ -120,10 +116,10 @@ describe('linked dropdowns', () => {
     expect(fieldCard('District')).toBeTruthy();
 
     const form = await savedDraftForm(usnm, 'tabbedForms/CallerInformationTab.json');
-    const province = form.find((item) => item.name === 'province')!;
-    const district = form.find((item) => item.name === 'district')!;
+    const province = form.find(item => item.name === 'province')!;
+    const district = form.find(item => item.name === 'district')!;
     expect(province).toMatchObject({ type: 'select' });
-    expect((province.options as { value: string }[]).map((o) => o.value)).toEqual([
+    expect((province.options as { value: string }[]).map(o => o.value)).toEqual([
       expect.any(String), // the helpline's blank first answer
       'Abra',
       'Cebu',
@@ -165,7 +161,7 @@ describe('linked dropdowns', () => {
     fireEvent.click(within(editor).getByRole('button', { name: 'Add these dropdowns' }));
 
     const form = await savedDraftForm(usnm, 'tabbedForms/CallerInformationTab.json');
-    expect(form.find((item) => item.name === 'riskLevel')).toMatchObject({
+    expect(form.find(item => item.name === 'riskLevel')).toMatchObject({
       dependsOn: 'experiencingAbuse',
       options: {
         Yes: [
@@ -195,10 +191,10 @@ describe('linked dropdowns', () => {
     fireEvent.click(within(editor).getByRole('button', { name: 'Save answers' }));
 
     expect(within(fieldCard(districtLabel)).getByText('Edited')).toBeTruthy();
-    const district = (await savedDraftForm(demo, childTab)).find((item) => item.name === 'district')!;
+    const district = (await savedDraftForm(demo, childTab)).find(item => item.name === 'district')!;
     const lists = district.options as Record<string, { value: string }[]>;
     // In this data each province's saved value is its name
-    expect(lists[provinceName].map((option) => option.value)).toContain('New District');
+    expect(lists[provinceName].map(option => option.value)).toContain('New District');
   });
 
   test('PH’s tens of thousands of barangays open, with a note about names shared between provinces', async () => {
@@ -212,9 +208,7 @@ describe('linked dropdowns', () => {
     expect(within(editor).getByText(/share a name with another answer/)).toBeTruthy();
     const lastLevelLabel = labelOf(ph, childTab, 'district');
     const footer = editor.querySelector('.modal-footer p')!.textContent!;
-    const lastLevelCount = Number(
-      footer.match(new RegExp(`([\\d,]+) ${lastLevelLabel}`))![1].replace(/,/g, ''),
-    );
+    const lastLevelCount = Number(footer.match(new RegExp(`([\\d,]+) ${lastLevelLabel}`))![1].replace(/,/g, ''));
     expect(lastLevelCount).toBeGreaterThan(30000);
     // The shared list in ReferenceData.json is also used by the case forms
     expect(within(editor).getAllByText(/shared with .*\(case\)/).length).toBeGreaterThan(0);

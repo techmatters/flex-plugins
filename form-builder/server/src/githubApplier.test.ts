@@ -52,8 +52,11 @@ describe('applying through GitHub', () => {
       return {};
     });
     const snapshots = { latest: async () => ({ sha: 'master-sha', repoRoot }) } as unknown as RepoSnapshots;
-    const applier = new GitHubApplier({ request } as unknown as GitHubClient, snapshots, 'master', () =>
-      new Date('2026-10-27T09:05:00Z'),
+    const applier = new GitHubApplier(
+      { request } as unknown as GitHubClient,
+      snapshots,
+      'master',
+      () => new Date('2026-10-27T09:05:00Z'),
     );
 
     const result = await applier.apply(
@@ -62,7 +65,7 @@ describe('applying through GitHub', () => {
       { description: '# Form changes for USNM (v1)' },
     );
 
-    const bodyOf = (repoPath: string) => request.mock.calls.find((call) => call[1] === repoPath)![2];
+    const bodyOf = (repoPath: string) => request.mock.calls.find(call => call[1] === repoPath)![2];
     const tree = bodyOf('/git/trees');
     expect(tree.base_tree).toBe('base-tree');
     expect(tree.tree).toContainEqual({

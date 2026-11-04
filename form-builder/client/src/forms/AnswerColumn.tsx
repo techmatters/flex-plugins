@@ -117,9 +117,7 @@ const AnswerRow = ({
         <button
           type="button"
           className="answer-label"
-          aria-label={
-            hasLevelBelow ? `${answer.label}, ${answer.children.length} below` : answer.label
-          }
+          aria-label={hasLevelBelow ? `${answer.label}, ${answer.children.length} below` : answer.label}
           aria-pressed={selected}
           onClick={onSelect}
         >
@@ -137,28 +135,18 @@ const AnswerRow = ({
           value={editing}
           autoFocus
           aria-label="Answer"
-          onChange={(e) => onEdit(e.target.value)}
+          onChange={e => onEdit(e.target.value)}
           onBlur={onFinishEditing}
-          onKeyDown={(e) => {
+          onKeyDown={e => {
             if (e.key === 'Enter') onFinishEditing();
             if (e.key === 'Escape') onCancelEditing();
           }}
         />
       )}
-      <button
-        type="button"
-        className="icon-button"
-        aria-label={`Rename ${answer.label}`}
-        onClick={onStartRename}
-      >
+      <button type="button" className="icon-button" aria-label={`Rename ${answer.label}`} onClick={onStartRename}>
         ✎
       </button>
-      <button
-        type="button"
-        className="icon-button"
-        aria-label={`Remove ${answer.label}`}
-        onClick={onRemove}
-      >
+      <button type="button" className="icon-button" aria-label={`Remove ${answer.label}`} onClick={onRemove}>
         ×
       </button>
     </li>
@@ -187,27 +175,21 @@ export const AnswerColumn = ({ level, label, previousLabel, hasLevelBelow }: Pro
           <strong>{label}</strong>
         </header>
         <p className="muted answer-column-empty">
-          Choose a {previousLabel?.toLowerCase()} on the left to see its {label.toLowerCase()}{' '}
-          answers.
+          Choose a {previousLabel?.toLowerCase()} on the left to see its {label.toLowerCase()} answers.
         </p>
       </section>
     );
   }
 
   const query = search.trim().toLowerCase();
-  const matching = query
-    ? answers.filter((answer) => answer.label.toLowerCase().includes(query))
-    : answers;
+  const matching = query ? answers.filter(answer => answer.label.toLowerCase().includes(query)) : answers;
   const shown = matching.slice(0, MAX_ROWS_SHOWN);
   // Reordering a filtered or cut-down list would be confusing, so drag only on the full list
   const draggable = !query && answers.length <= MAX_ROWS_SHOWN;
 
   const remove = (answer: AnswerNode) => {
     const below = countDescendants(answer);
-    if (
-      below > 0 &&
-      !window.confirm(`Remove “${answer.label}” and the ${below} answer(s) under it?`)
-    ) {
+    if (below > 0 && !window.confirm(`Remove “${answer.label}” and the ${below} answer(s) under it?`)) {
       return;
     }
     dispatch(removeAnswer(level, answer.id));
@@ -237,14 +219,14 @@ export const AnswerColumn = ({ level, label, previousLabel, hasLevelBelow }: Pro
           placeholder={`Search ${label.toLowerCase()}`}
           aria-label={`Search ${label}`}
           value={search}
-          onChange={(e) => setInputs({ search: e.target.value })}
+          onChange={e => setInputs({ search: e.target.value })}
         />
       )}
 
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={shown.map((answer) => answer.id)} strategy={verticalListSortingStrategy}>
+        <SortableContext items={shown.map(answer => answer.id)} strategy={verticalListSortingStrategy}>
           <ul className="answer-list">
-            {shown.map((answer) => (
+            {shown.map(answer => (
               <AnswerRow
                 key={answer.id}
                 answer={answer}
@@ -254,7 +236,7 @@ export const AnswerColumn = ({ level, label, previousLabel, hasLevelBelow }: Pro
                 editing={renaming?.id === answer.id ? renaming.text : undefined}
                 onSelect={() => dispatch(answerSelected({ level, id: answer.id }))}
                 onStartRename={() => dispatch(renamingChanged({ id: answer.id, text: answer.label }))}
-                onEdit={(text) => dispatch(renamingChanged({ id: answer.id, text }))}
+                onEdit={text => dispatch(renamingChanged({ id: answer.id, text }))}
                 onFinishEditing={() => dispatch(finishRenaming(level))}
                 onCancelEditing={() => dispatch(renamingChanged(undefined))}
                 onRemove={() => remove(answer)}
@@ -274,7 +256,7 @@ export const AnswerColumn = ({ level, label, previousLabel, hasLevelBelow }: Pro
       {bulkText === undefined ? (
         <form
           className="answer-add"
-          onSubmit={(e) => {
+          onSubmit={e => {
             e.preventDefault();
             dispatch(addTypedAnswer(level));
           }}
@@ -284,7 +266,7 @@ export const AnswerColumn = ({ level, label, previousLabel, hasLevelBelow }: Pro
             value={newLabel}
             placeholder={`Add a ${label.toLowerCase()}`}
             aria-label={`Add a ${label}`}
-            onChange={(e) => setInputs({ newLabel: e.target.value })}
+            onChange={e => setInputs({ newLabel: e.target.value })}
           />
           <button type="submit" className="secondary-button" disabled={!newLabel.trim()}>
             Add
@@ -298,14 +280,10 @@ export const AnswerColumn = ({ level, label, previousLabel, hasLevelBelow }: Pro
             autoFocus
             aria-label={`${label} answers, one per line`}
             placeholder="One answer per line"
-            onChange={(e) => setInputs({ bulkText: e.target.value })}
+            onChange={e => setInputs({ bulkText: e.target.value })}
           />
           <div className="option-actions">
-            <button
-              type="button"
-              className="secondary-button"
-              onClick={() => dispatch(addPastedAnswers(level))}
-            >
+            <button type="button" className="secondary-button" onClick={() => dispatch(addPastedAnswers(level))}>
               Add these
             </button>
             <button type="button" className="link-button" onClick={() => setInputs({ bulkText: undefined })}>

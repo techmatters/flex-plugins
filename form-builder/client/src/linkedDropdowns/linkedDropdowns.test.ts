@@ -44,7 +44,7 @@ const formDefinitionsDir = path.resolve(
 );
 
 const field = (json: Record<string, unknown>) => json as unknown as FormItemJsonDefinition;
-const labelsOf = (nodes: AnswerNode[]) => nodes.map((node) => node.label);
+const labelsOf = (nodes: AnswerNode[]) => nodes.map(node => node.label);
 
 describe('parseDelimitedText', () => {
   test('reads cells pasted from a spreadsheet (tab separated)', () => {
@@ -122,7 +122,7 @@ describe('rowsToTree', () => {
   test('keeps the saved value of answers that already existed', () => {
     const previous = [newAnswerNode('Girl', 'F', true)];
     const { roots } = rowsToTree([['Girl'], ['Boy']], 1, previous);
-    expect(roots.map((node) => [node.value, node.existing])).toEqual([
+    expect(roots.map(node => [node.value, node.existing])).toEqual([
       ['F', true],
       ['Boy', false],
     ]);
@@ -159,7 +159,7 @@ describe('makeKeyValuesUnique', () => {
 
   test('leaves existing shared values alone unless fixing them', () => {
     const existing = structuredClone(twoSanJose());
-    existing.forEach((root) => root.children.forEach((child) => (child.existing = true)));
+    existing.forEach(root => root.children.forEach(child => (child.existing = true)));
     const kept = makeKeyValuesUnique(existing, 3, { fixExisting: false });
     expect(kept.renamed).toBe(0);
     expect(kept.stillShared).toBe(1);
@@ -191,10 +191,7 @@ describe('editing the tree by path', () => {
     expect(labelsOf(getChildrenAtPath(roots, [abra.id])!)).toEqual(['Bangued']);
     expect(getChildrenAtPath(roots, ['missing'])).toBeUndefined();
 
-    const updated = updateChildrenAtPath(roots, [abra.id], (children) => [
-      ...children,
-      newAnswerNode('Boliney'),
-    ]);
+    const updated = updateChildrenAtPath(roots, [abra.id], children => [...children, newAnswerNode('Boliney')]);
     expect(labelsOf(updated[0].children)).toEqual(['Bangued', 'Boliney']);
     expect(updated[1]).toBe(roots[1]);
     expect(labelsOf(roots[0].children)).toEqual(['Bangued']);
@@ -205,7 +202,7 @@ describe('editing the tree by path', () => {
 describe('creating and saving a chain', () => {
   test('creates linked fields and writes their options', () => {
     const fields = createChainFields(['Province', 'District'], ['province']);
-    expect(fields.map((f) => [f.name, f.type])).toEqual([
+    expect(fields.map(f => [f.name, f.type])).toEqual([
       ['province2', 'select'],
       ['district', 'dependent-select'],
     ]);
@@ -266,20 +263,18 @@ describe('every linked dropdown in the repo', () => {
           .forEach(([filePath, content]) => {
             const form = content as FormItemJsonDefinition[];
             form
-              .filter((item) => item.type === 'dependent-select')
-              .flatMap((item) => findChainsThroughField(form, item.name))
-              .forEach((chain) => {
-                const fields = chain.map((name) => form.find((item) => item.name === name)!);
+              .filter(item => item.type === 'dependent-select')
+              .flatMap(item => findChainsThroughField(form, item.name))
+              .forEach(chain => {
+                const fields = chain.map(name => form.find(item => item.name === name)!);
                 const tree = chainToTree(fields, getReferenceData(files));
-                const options = treeToChainOptions(
-                  tree.roots,
-                  fields.length,
-                  tree.rootBlankOption,
-                  tree.unusedLists,
-                );
+                const options = treeToChainOptions(tree.roots, fields.length, tree.rootBlankOption, tree.unusedLists);
                 const result = applyChainOptions(fields, options, files);
                 const where = `${code}/${version}/${filePath} ${chain.join(' > ')}`;
-                expect({ at: where, value: JSON.stringify(result.fields) }).toEqual({ at: where, value: JSON.stringify(fields) });
+                expect({ at: where, value: JSON.stringify(result.fields) }).toEqual({
+                  at: where,
+                  value: JSON.stringify(fields),
+                });
                 if (result.referenceData) {
                   expect({ at: where, value: JSON.stringify(result.referenceData) }).toEqual({
                     at: where,
@@ -307,16 +302,16 @@ describe('real helpline data', () => {
   const chainFields = (files: DefinitionFileMap, filePath: string, fieldName: string) => {
     const form = getForm(files, filePath)!;
     const [chain] = findChainsThroughField(form, fieldName);
-    return chain.map((name) => form.find((item) => item.name === name)!);
+    return chain.map(name => form.find(item => item.name === name)!);
   };
 
   test('MW region -> district -> traditional authority converts to a tree and back unchanged', () => {
     const fields = chainFields(mw, 'tabbedForms/ChildInformationTab.json', 'district');
-    expect(fields.map((f) => f.name)).toEqual(['regionalArea', 'district', 'tradiotionalAuthority']);
+    expect(fields.map(f => f.name)).toEqual(['regionalArea', 'district', 'tradiotionalAuthority']);
     const tree = chainToTree(fields, getReferenceData(mw));
     expect(tree.sharedValues).toEqual([]);
     // MW has a list filed under "Ntholowa", which isn't a district; it's kept as it is
-    expect(tree.unusedLists.map((unused) => unused.key)).toContain('Ntholowa');
+    expect(tree.unusedLists.map(unused => unused.key)).toContain('Ntholowa');
     const options = treeToChainOptions(tree.roots, 3, tree.rootBlankOption, tree.unusedLists);
     const result = applyChainOptions(fields, options, mw);
     expect(JSON.stringify(result.fields)).toBe(JSON.stringify(fields));
@@ -324,7 +319,7 @@ describe('real helpline data', () => {
 
   test('PH: 37,000 districts load, and the shared municipality names are detected', () => {
     const fields = chainFields(ph, 'tabbedForms/ChildInformationTab.json', 'district');
-    expect(fields.map((f) => f.name)).toEqual(['province', 'municipality', 'district']);
+    expect(fields.map(f => f.name)).toEqual(['province', 'municipality', 'district']);
     const tree = chainToTree(fields, getReferenceData(ph));
     const [provinces, municipalities] = countByLevel(tree.roots, 3);
     expect(provinces).toBeGreaterThan(80);

@@ -18,7 +18,13 @@
  * Everything for one loaded helpline: navigation, the draft, editing, previews and export.
  * Rendered with a code/version key so switching helpline starts fresh.
  */
-import { CATEGORIES_FILE, CONTACT_TABS, getCaseSections, getCaseSectionSplitFormAt, getForm } from '../common/definitions';
+import {
+  CATEGORIES_FILE,
+  CONTACT_TABS,
+  getCaseSections,
+  getCaseSectionSplitFormAt,
+  getForm,
+} from '../common/definitions';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { noticeDismissed, SaveState, selectChangedPaths, selectDraft } from '../drafts/draftSlice';
@@ -108,10 +114,8 @@ export const HelplineWorkspace = () => {
   const setTryItOut = (preview: { focus: PreviewFocus; tab?: string }) => dispatch(tryItOutOpened(preview));
 
   const sectionErrorCount = (prefix: string) =>
-    sectionIssues.filter((issue) => issue.severity === 'error' && issue.message.startsWith(prefix))
-      .length;
-  const errorCount = (tabKey: string) =>
-    issuesByTab[tabKey]?.filter((issue) => issue.severity === 'error').length ?? 0;
+    sectionIssues.filter(issue => issue.severity === 'error' && issue.message.startsWith(prefix)).length;
+  const errorCount = (tabKey: string) => issuesByTab[tabKey]?.filter(issue => issue.severity === 'error').length ?? 0;
 
   const caseSections = getCaseSections(files);
   const changeCount = changedPaths.length;
@@ -123,7 +127,7 @@ export const HelplineWorkspace = () => {
   };
 
   const renderContactTab = (tabKey: string) => {
-    const tab = CONTACT_TABS.find((contactTab) => contactTab.key === tabKey)!;
+    const tab = CONTACT_TABS.find(contactTab => contactTab.key === tabKey)!;
     const form = getForm(files, tab.filePath);
     if (!form) return <p className="muted">This helpline has no {tab.title} form.</p>;
     return (
@@ -149,58 +153,38 @@ export const HelplineWorkspace = () => {
     if (view.kind === 'contactTab') return renderContactTab(view.tabKey);
     const editorKey = `${view.kind}-${editorRevision}`;
     if (view.kind === 'callTypes') {
-      return (
-        <CallTypesEditor key={editorKey} />
-      );
+      return <CallTypesEditor key={editorKey} />;
     }
     if (view.kind === 'cannedResponses') {
-      return (
-        <CannedResponsesEditor key={editorKey} />
-      );
+      return <CannedResponsesEditor key={editorKey} />;
     }
     if (view.kind === 'messages') {
-      return (
-        <MessagesEditor key={editorKey} />
-      );
+      return <MessagesEditor key={editorKey} />;
     }
     if (view.kind === 'webchat') {
-      return (
-        <WebchatFormEditor key={editorKey} />
-      );
+      return <WebchatFormEditor key={editorKey} />;
     }
     if (view.kind === 'categories') {
-      return (
-        <CategoriesEditor key={editorKey} />
-      );
+      return <CategoriesEditor key={editorKey} />;
     }
     if (view.kind === 'profiles') {
-      return (
-        <ProfilesEditor key={editorKey} />
-      );
+      return <ProfilesEditor key={editorKey} />;
     }
     if (view.kind === 'features' && canApply) {
-      return (
-        <FeaturesEditor key={editorKey} />
-      );
+      return <FeaturesEditor key={editorKey} />;
     }
     if (view.kind === 'serviceConfig' && canApply) {
-      return (
-        <ServiceConfigEditor key={editorKey} />
-      );
+      return <ServiceConfigEditor key={editorKey} />;
     }
     if (view.kind === 'caseSections') {
-      return (
-        <CaseSectionsEditor key={editorKey} />
-      );
+      return <CaseSectionsEditor key={editorKey} />;
     }
     if (view.kind === 'caseStatus') {
-      return (
-        <CaseStatusEditor key={editorKey} />
-      );
+      return <CaseStatusEditor key={editorKey} />;
     }
     // e.g. Features after switching to "View as helpline staff"
     if (view.kind !== 'caseSection') return renderContactTab(CONTACT_TABS[0].key);
-    const target = caseTargets.find((caseTarget) => caseTarget.key === view.sectionKey);
+    const target = caseTargets.find(caseTarget => caseTarget.key === view.sectionKey);
     const form = target && getForm(files, target.filePath);
     if (!target || !form) return <p className="muted">This case section has no form.</p>;
     return (
@@ -209,7 +193,9 @@ export const HelplineWorkspace = () => {
           <button type="button" className="secondary-button" onClick={() => dispatch(sectionPreviewOpened(target.key))}>
             Preview in Aselo
           </button>
-          <span className="muted">See the draft form as counselors see it when they add a {target.title} to a case.</span>
+          <span className="muted">
+            See the draft form as counselors see it when they add a {target.title} to a case.
+          </span>
         </div>
         <ContactFormEditor key={`case-${target.key}-${editorRevision}`} tab={target} />
         {previewingSection === target.key && (
@@ -219,7 +205,7 @@ export const HelplineWorkspace = () => {
               role="dialog"
               aria-modal="true"
               aria-label={`${target.title} in Aselo`}
-              onClick={(e) => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
             >
               <div className="modal-header">
                 <h2>{target.title} in Aselo</h2>
@@ -248,8 +234,8 @@ export const HelplineWorkspace = () => {
           {changeCount
             ? `Draft: ${changeCount} file${changeCount === 1 ? '' : 's'} changed · ${SAVE_STATE_TEXT[draft.saveState]}`
             : draft.saveState === 'loading'
-              ? SAVE_STATE_TEXT.loading
-              : 'No changes yet'}
+            ? SAVE_STATE_TEXT.loading
+            : 'No changes yet'}
         </span>
         {draft.meta?.status === 'submitted' && changeCount > 0 && (
           <span className="badge badge-new draft-status">
@@ -281,9 +267,8 @@ export const HelplineWorkspace = () => {
       {draft.conflict && (
         <div className="alert alert-error">
           {draft.conflict.updatedBy ?? 'Someone else'} changed this draft
-          {draft.conflict.updatedAt ? ` at ${new Date(draft.conflict.updatedAt).toLocaleString()}` : ''}{' '}
-          while you were editing, so your latest changes weren't saved. Reload to see their
-          version, then make your changes again.
+          {draft.conflict.updatedAt ? ` at ${new Date(draft.conflict.updatedAt).toLocaleString()}` : ''} while you were
+          editing, so your latest changes weren't saved. Reload to see their version, then make your changes again.
           <button type="button" className="link-button" onClick={() => dispatch(reloadHelpline())}>
             Reload
           </button>
@@ -318,8 +303,10 @@ export const HelplineWorkspace = () => {
           )}
           <h3>Contact forms</h3>
           <ul>
-            {CONTACT_TABS.filter((tab) => files[tab.filePath]).map((tab) => (
-              <NavItem current={view} onSelect={setView}
+            {CONTACT_TABS.filter(tab => files[tab.filePath]).map(tab => (
+              <NavItem
+                current={view}
+                onSelect={setView}
                 key={tab.key}
                 target={{ kind: 'contactTab', tabKey: tab.key }}
                 label={tab.title}
@@ -327,7 +314,9 @@ export const HelplineWorkspace = () => {
               />
             ))}
             {files[CATEGORIES_FILE] !== undefined && (
-              <NavItem current={view} onSelect={setView}
+              <NavItem
+                current={view}
+                onSelect={setView}
                 target={{ kind: 'categories' }}
                 label="Issue categories"
                 errors={sectionErrorCount('Issue categories')}
@@ -336,19 +325,25 @@ export const HelplineWorkspace = () => {
           </ul>
           <h3>Chats and calls</h3>
           <ul>
-            <NavItem current={view} onSelect={setView}
+            <NavItem
+              current={view}
+              onSelect={setView}
               target={{ kind: 'callTypes' }}
               label="Call types"
               errors={sectionErrorCount('Call types')}
             />
-            <NavItem current={view} onSelect={setView}
+            <NavItem
+              current={view}
+              onSelect={setView}
               target={{ kind: 'cannedResponses' }}
               label="Canned responses"
               errors={sectionErrorCount('Canned responses')}
             />
             <NavItem current={view} onSelect={setView} target={{ kind: 'messages' }} label="Automatic messages" />
             {originalFiles[PRE_ENGAGEMENT_FILE] !== undefined && (
-              <NavItem current={view} onSelect={setView}
+              <NavItem
+                current={view}
+                onSelect={setView}
                 target={{ kind: 'webchat' }}
                 label="Webchat form"
                 errors={sectionErrorCount('Webchat form')}
@@ -357,22 +352,28 @@ export const HelplineWorkspace = () => {
           </ul>
           <h3>Cases</h3>
           <ul>
-            <NavItem current={view} onSelect={setView}
+            <NavItem
+              current={view}
+              onSelect={setView}
               target={{ kind: 'caseSections' }}
               label="Sections"
               errors={sectionErrorCount('Case sections')}
             />
-            <NavItem current={view} onSelect={setView}
+            <NavItem
+              current={view}
+              onSelect={setView}
               target={{ kind: 'caseStatus' }}
               label="Case statuses"
               errors={sectionErrorCount('Case statuses')}
             />
-            {caseSections.map((section) => (
-              <NavItem current={view} onSelect={setView}
+            {caseSections.map(section => (
+              <NavItem
+                current={view}
+                onSelect={setView}
                 key={section.key}
                 target={{ kind: 'caseSection', sectionKey: section.key }}
                 label={section.label}
-                errors={issuesByTab[`case:${section.key}`]?.filter((issue) => issue.severity === 'error').length}
+                errors={issuesByTab[`case:${section.key}`]?.filter(issue => issue.severity === 'error').length}
               />
             ))}
           </ul>
@@ -380,7 +381,9 @@ export const HelplineWorkspace = () => {
             <>
               <h3>Client profiles</h3>
               <ul>
-                <NavItem current={view} onSelect={setView}
+                <NavItem
+                  current={view}
+                  onSelect={setView}
                   target={{ kind: 'profiles' }}
                   label="Profiles"
                   errors={sectionErrorCount('Client profiles')}
@@ -394,7 +397,7 @@ export const HelplineWorkspace = () => {
             <div className="alert alert-error">
               Some files could not be read:
               <ul>
-                {definitions.errors.map((fileError) => (
+                {definitions.errors.map(fileError => (
                   <li key={fileError.path}>
                     <code>{fileError.path}</code>: {fileError.message}
                   </li>
@@ -406,13 +409,9 @@ export const HelplineWorkspace = () => {
         </main>
       </div>
 
-      {tryItOut && (
-        <FlexDesktopPreview />
-      )}
+      {tryItOut && <FlexDesktopPreview />}
 
-      {reviewing && (
-        <ReviewChanges />
-      )}
+      {reviewing && <ReviewChanges />}
     </>
   );
 };

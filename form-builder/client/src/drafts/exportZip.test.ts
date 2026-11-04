@@ -59,16 +59,14 @@ describe('buildExportZip', () => {
       draftFiles,
       warnings: [{ severity: 'warning', message: 'Check the Insights mapping' }],
     });
-    const paths = Object.keys(zip.files).filter((p) => !zip.files[p].dir);
+    const paths = Object.keys(zip.files).filter(p => !zip.files[p].dir);
     expect(paths.sort()).toEqual([
       'CHANGES.md',
       'lambdas/packages/hrm-form-definitions/form-definitions/usnm/v1/tabbedForms/CallerInformationTab.json',
     ]);
 
     const exported = await zip
-      .file(
-        'lambdas/packages/hrm-form-definitions/form-definitions/usnm/v1/tabbedForms/CallerInformationTab.json',
-      )!
+      .file('lambdas/packages/hrm-form-definitions/form-definitions/usnm/v1/tabbedForms/CallerInformationTab.json')!
       .async('string');
     expect(exported).toBe(serializeDefinitionFile(draftFiles['tabbedForms/CallerInformationTab.json']));
     expect(exported.endsWith('}\n]\n')).toBe(true);

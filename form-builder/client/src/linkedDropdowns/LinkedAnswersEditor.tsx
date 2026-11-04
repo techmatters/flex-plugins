@@ -25,7 +25,13 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { AnswerNode, countByLevel, treeToRows } from './linkedDropdowns';
-import { answersEditorClosed, answersEditorOpened, answersImported, importToggled, selectAnswersEditor } from './linkedDropdownsSlice';
+import {
+  answersEditorClosed,
+  answersEditorOpened,
+  answersImported,
+  importToggled,
+  selectAnswersEditor,
+} from './linkedDropdownsSlice';
 import { downloadExcel } from './spreadsheet';
 import { AnswerColumn } from '../forms/AnswerColumn';
 import { SpreadsheetImport } from './SpreadsheetImport';
@@ -79,12 +85,7 @@ export const LinkedAnswersEditor = ({
 
   return (
     <div className="modal-backdrop" role="presentation">
-      <div
-        className="modal modal-wide"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="linked-editor-title"
-      >
+      <div className="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="linked-editor-title">
         <div className="modal-header">
           <h2 id="linked-editor-title">{title}</h2>
           <button type="button" className="link-button" onClick={cancel}>
@@ -96,15 +97,15 @@ export const LinkedAnswersEditor = ({
           <SpreadsheetImport
             levelLabels={levelLabels}
             currentRoots={roots}
-            onImport={(imported) => dispatch(answersImported(imported))}
+            onImport={imported => dispatch(answersImported(imported))}
             onCancel={() => dispatch(importToggled(false))}
           />
         ) : (
           <>
             <div className="linked-toolbar">
               <p className="muted">
-                Pick an answer to see the answers under it. Changes here are saved to your draft
-                when you click “{saveLabel}”.
+                Pick an answer to see the answers under it. Changes here are saved to your draft when you click “
+                {saveLabel}”.
               </p>
               <button type="button" className="secondary-button" onClick={() => dispatch(importToggled(true))}>
                 Import from a spreadsheet
@@ -121,7 +122,7 @@ export const LinkedAnswersEditor = ({
 
             {notes.length > 0 && (
               <ul className="issue-list">
-                {notes.map((note) => (
+                {notes.map(note => (
                   <li key={note} className="issue issue-warning">
                     {note}
                   </li>
@@ -129,10 +130,7 @@ export const LinkedAnswersEditor = ({
               </ul>
             )}
 
-            <div
-              className="answer-columns"
-              style={{ gridTemplateColumns: `repeat(${depth}, minmax(220px, 1fr))` }}
-            >
+            <div className="answer-columns" style={{ gridTemplateColumns: `repeat(${depth}, minmax(220px, 1fr))` }}>
               {levelLabels.map((label, level) => (
                 <AnswerColumn
                   // A column of answers under another answer starts afresh (as its typed text does)
@@ -149,9 +147,7 @@ export const LinkedAnswersEditor = ({
 
         <div className="modal-footer">
           <p className="muted">
-            {levelLabels
-              .map((label, level) => `${counts[level].toLocaleString()} ${label}`)
-              .join(' · ')}
+            {levelLabels.map((label, level) => `${counts[level].toLocaleString()} ${label}`).join(' · ')}
           </p>
           {onBack && (
             <button type="button" className="link-button" onClick={() => onBack(roots)}>

@@ -77,10 +77,7 @@ export const ADDABLE_WEBCHAT_FIELD_TYPES: WebchatFieldType[] = ['input', 'email'
 /**
  * Pre-engagement fields that mean something to the webchat or Aselo beyond the form
  */
-export const describeSpecialField = (
-  name: string,
-  contactIdentifierField?: string,
-): string | undefined => {
+export const describeSpecialField = (name: string, contactIdentifierField?: string): string | undefined => {
   if (name === 'friendlyName') return 'Its answer is the name counselors see for the chat.';
   if (name === 'language' || name === 'locale') return 'Its answer switches the webchat’s language.';
   if (name === contactIdentifierField) return 'Its answer identifies the contact (for blocking and profiles).';
@@ -90,19 +87,18 @@ export const describeSpecialField = (
 export const getPreEngagementForm = (files: DefinitionFileMap): PreEngagementForm | undefined =>
   files[PRE_ENGAGEMENT_FILE] as PreEngagementForm | undefined;
 
-export const webchatTranslationsPath = (locale: string) =>
-  `${WEBCHAT_TRANSLATIONS_PREFIX}${locale}.json`;
+export const webchatTranslationsPath = (locale: string) => `${WEBCHAT_TRANSLATIONS_PREFIX}${locale}.json`;
 
 /**
  * The webchat's languages: one per translation file the helpline has, the default first
  */
 export const getWebchatLocales = (files: DefinitionFileMap, defaultLocale = 'en-US'): string[] => {
   const locales = Object.keys(files)
-    .filter((filePath) => filePath.startsWith(WEBCHAT_TRANSLATIONS_PREFIX))
+    .filter(filePath => filePath.startsWith(WEBCHAT_TRANSLATIONS_PREFIX))
     .map(webchatLocaleOf)
     .sort();
   return locales.includes(defaultLocale)
-    ? [defaultLocale, ...locales.filter((locale) => locale !== defaultLocale)]
+    ? [defaultLocale, ...locales.filter(locale => locale !== defaultLocale)]
     : locales;
 };
 
@@ -181,7 +177,7 @@ export const buildTextContext = (files: DefinitionFileMap, locale: string, local
   locale,
   strings: webchatStrings(files, locale),
   knownKeys: new Set(
-    (locales.length > 0 ? locales : [locale]).flatMap((other) => Object.keys(webchatStrings(files, other))),
+    (locales.length > 0 ? locales : [locale]).flatMap(other => Object.keys(webchatStrings(files, other))),
   ),
   canTranslate: getHelplineWebchatStrings(files, locale) !== undefined,
 });
@@ -206,7 +202,7 @@ export const localizeField = (field: WebchatField, strings: Strings): WebchatFie
     localized.required = { ...field.required, message: localizeText(strings, field.required.message) };
   }
   const localizeOptions = (options: SelectOption[]) =>
-    options.map((option) => ({ ...option, label: localizeText(strings, option.label) }));
+    options.map(option => ({ ...option, label: localizeText(strings, option.label) }));
   if (Array.isArray(field.options)) localized.options = localizeOptions(field.options);
   else if (field.options) {
     localized.options = Object.fromEntries(
@@ -241,12 +237,12 @@ export const unlocalizeField = (
   }
   const unlocalizeOptions = (options: SelectOption[], storedOptions: unknown) => {
     const byValue = new Map(
-      (Array.isArray(storedOptions) ? (storedOptions as SelectOption[]) : []).map((option) => [
+      (Array.isArray(storedOptions) ? (storedOptions as SelectOption[]) : []).map(option => [
         String(option.value),
         option,
       ]),
     );
-    return options.map((option) => ({
+    return options.map(option => ({
       ...option,
       label: text(byValue.get(String(option.value))?.label, String(option.label)),
     }));
@@ -259,10 +255,7 @@ export const unlocalizeField = (
       SelectOption[]
     >;
     field.options = Object.fromEntries(
-      Object.entries(edited.options).map(([key, options]) => [
-        key,
-        unlocalizeOptions(options, storedGroups[key]),
-      ]),
+      Object.entries(edited.options).map(([key, options]) => [key, unlocalizeOptions(options, storedGroups[key])]),
     );
   }
   return { field, translations };
@@ -306,26 +299,24 @@ export const isRequired = (field: WebchatField) =>
 
 // The options of a dropdown, without the empty "nothing chosen yet" one
 export const visibleOptions = (options: unknown): SelectOption[] =>
-  (Array.isArray(options) ? (options as SelectOption[]) : []).filter(
-    (option) => !(option.value === '' && !option.label),
-  );
+  (Array.isArray(options) ? (options as SelectOption[]) : []).filter(option => !(option.value === '' && !option.label));
 
 /**
  * Editing fields
  */
 
 // Labels can hold HTML (checkbox links); names and summaries use the plain text
-export const plainText = (text: unknown) => String(text ?? '').replace(/<[^>]*>/g, '').trim();
+export const plainText = (text: unknown) =>
+  String(text ?? '')
+    .replace(/<[^>]*>/g, '')
+    .trim();
 
 export const webchatFieldName = (label: string, otherNames: Iterable<string>) =>
   uniqueFieldName(toFieldName(plainText(label)) || 'question', [...otherNames]);
 
 const BLANK_OPTION: SelectOption = { value: '', label: '' };
 
-export const createWebchatField = (
-  type: WebchatFieldType,
-  otherNames: Iterable<string>,
-): WebchatField => {
+export const createWebchatField = (type: WebchatFieldType, otherNames: Iterable<string>): WebchatField => {
   const label = 'New question';
   const base: WebchatField = { type, name: webchatFieldName(label, otherNames), label };
   if (type === 'select') return { ...base, required: false, defaultValue: '', options: [BLANK_OPTION] };
@@ -370,11 +361,11 @@ export const findWebchatFieldReferences = (
 
   const describeTarget = (target: string) => {
     const [tabKey, targetName] = target.split('.');
-    const tab = CONTACT_TABS.find((contactTab) => contactTab.key === tabKey);
-    const targetField = tab && getForm(files, tab.filePath)?.find((item) => item.name === targetName);
+    const tab = CONTACT_TABS.find(contactTab => contactTab.key === tabKey);
+    const targetField = tab && getForm(files, tab.filePath)?.find(item => item.name === targetName);
     return tab ? `${tab.title}: ${targetField?.label || targetName}` : target;
   };
-  getPrepopulateTargets(files, fieldName).targets.forEach((target) =>
+  getPrepopulateTargets(files, fieldName).targets.forEach(target =>
     references.push(`Fills in the contact form (${describeTarget(target)})`),
   );
 
@@ -386,8 +377,8 @@ export const findWebchatFieldReferences = (
     .forEach(([tabKey]) => references.push(`Fills in the contact form (${describeTarget(`${tabKey}.${fieldName}`)})`));
 
   (getPreEngagementForm(files)?.fields ?? [])
-    .filter((field) => field.type === 'dependent-select' && field.dependsOn === fieldName)
-    .forEach((field) => references.push(`The “${plainText(field.label)}” dropdown depends on it`));
+    .filter(field => field.type === 'dependent-select' && field.dependsOn === fieldName)
+    .forEach(field => references.push(`The “${plainText(field.label)}” dropdown depends on it`));
   // Some helplines have the same mapping in both prepopulation files
   return [...new Set(references)];
 };
@@ -410,7 +401,7 @@ export const getPrepopulateTargets = (
   if (value === undefined) return { targets: [], editable: true };
   const entries = Array.isArray(value) ? value : [value];
   // Nested lists mean "whichever of these the form has"; that's left to Aselo staff
-  const editable = entries.every((entry) => typeof entry === 'string');
+  const editable = entries.every(entry => typeof entry === 'string');
   return { targets: entries.flat().filter((entry): entry is string => typeof entry === 'string'), editable };
 };
 
@@ -423,7 +414,9 @@ export const setPrepopulateTargets = (
   if (targets.length === 0 && mappings.preEngagement?.[fieldName] === undefined) return files;
   const { [fieldName]: removed, ...others } = mappings.preEngagement ?? {};
   const preEngagement =
-    targets.length === 0 ? others : { ...mappings.preEngagement, [fieldName]: targets.length === 1 ? targets[0] : targets };
+    targets.length === 0
+      ? others
+      : { ...mappings.preEngagement, [fieldName]: targets.length === 1 ? targets[0] : targets };
   return {
     ...files,
     [PREPOPULATE_MAPPINGS_FILE]: {
@@ -442,33 +435,29 @@ export const renamePrepopulateTargets = (files: DefinitionFileMap, from: string,
 
 // Contact form fields a question can fill in, by tab
 export const getPrepopulateCandidates = (files: DefinitionFileMap) =>
-  CONTACT_TABS.filter((tab) => ['ChildInformationTab', 'CallerInformationTab', 'CaseInformationTab'].includes(tab.key))
-    .map((tab) => ({
+  CONTACT_TABS.filter(tab => ['ChildInformationTab', 'CallerInformationTab', 'CaseInformationTab'].includes(tab.key))
+    .map(tab => ({
       tab,
       fields: (getForm(files, tab.filePath) ?? []).filter(
-        (item) => !['button', 'copy-to', 'custom-contact-component', 'file-upload'].includes(item.type),
+        item => !['button', 'copy-to', 'custom-contact-component', 'file-upload'].includes(item.type),
       ),
     }))
-    .filter((group) => group.fields.length > 0);
+    .filter(group => group.fields.length > 0);
 
 /**
  * Answers of a dropdown question that the contact form field it fills in doesn't have, so
  * they'd be left blank there
  */
-export const findUnmatchedAnswers = (
-  files: DefinitionFileMap,
-  field: WebchatField,
-  target: string,
-): string[] => {
+export const findUnmatchedAnswers = (files: DefinitionFileMap, field: WebchatField, target: string): string[] => {
   if (field.type !== 'select' || !Array.isArray(field.options)) return [];
   const [tabKey, targetName] = target.split('.');
-  const tab = CONTACT_TABS.find((contactTab) => contactTab.key === tabKey);
-  const targetField = tab && getForm(files, tab.filePath)?.find((item) => item.name === targetName);
+  const tab = CONTACT_TABS.find(contactTab => contactTab.key === tabKey);
+  const targetField = tab && getForm(files, tab.filePath)?.find(item => item.name === targetName);
   if (!targetField || !('options' in targetField) || !Array.isArray(targetField.options)) return [];
-  const targetValues = new Set(targetField.options.map((option) => String(option.value)));
+  const targetValues = new Set(targetField.options.map(option => String(option.value)));
   return visibleOptions(field.options)
-    .map((option) => String(option.value))
-    .filter((value) => !targetValues.has(value));
+    .map(option => String(option.value))
+    .filter(value => !targetValues.has(value));
 };
 
 /**
@@ -490,7 +479,7 @@ const checkWebchatForm = (files: DefinitionFileMap): ValidationIssue[] => {
       add(`${name} has no answers to choose from.`);
     }
     if (field.type === 'dependent-select') {
-      const parentIndex = fields.findIndex((other) => other.name === field.dependsOn);
+      const parentIndex = fields.findIndex(other => other.name === field.dependsOn);
       if (parentIndex < 0) add(`${name} depends on a question that isn't in the form.`);
       else if (parentIndex > index) add(`${name} must come after the question it depends on.`);
     }
@@ -499,12 +488,9 @@ const checkWebchatForm = (files: DefinitionFileMap): ValidationIssue[] => {
 };
 
 // Problems that were already there before the user's changes are only warnings
-export const validateWebchat = (
-  draftFiles: DefinitionFileMap,
-  originalFiles: DefinitionFileMap,
-): ValidationIssue[] => {
-  const before = new Set(checkWebchatForm(originalFiles).map((found) => found.message));
-  const issues = checkWebchatForm(draftFiles).map((found) =>
+export const validateWebchat = (draftFiles: DefinitionFileMap, originalFiles: DefinitionFileMap): ValidationIssue[] => {
+  const before = new Set(checkWebchatForm(originalFiles).map(found => found.message));
+  const issues = checkWebchatForm(draftFiles).map(found =>
     found.severity === 'error' && before.has(found.message)
       ? {
           ...found,
@@ -523,14 +509,10 @@ export const validateWebchat = (
   return issues;
 };
 
-export const changedWebchatTranslationFiles = (
-  originalFiles: DefinitionFileMap,
-  draftFiles: DefinitionFileMap,
-) =>
+export const changedWebchatTranslationFiles = (originalFiles: DefinitionFileMap, draftFiles: DefinitionFileMap) =>
   Object.keys(draftFiles).filter(
-    (filePath) =>
-      filePath.startsWith(WEBCHAT_TRANSLATIONS_PREFIX) &&
-      !isSameJson(originalFiles[filePath], draftFiles[filePath]),
+    filePath =>
+      filePath.startsWith(WEBCHAT_TRANSLATIONS_PREFIX) && !isSameJson(originalFiles[filePath], draftFiles[filePath]),
   );
 
 /**
@@ -547,30 +529,29 @@ export const summarizeWebchatChanges = (
   if (!isSameJson(before, after)) {
     const strings = webchatStrings(draftFiles, defaultLocale);
     const describe = (field: WebchatField) => `“${plainText(localizeText(strings, field.label))}”`;
-    const beforeByName = new Map(before.map((field) => [field.name, field]));
-    const afterNames = new Set(after.map((field) => field.name));
+    const beforeByName = new Map(before.map(field => [field.name, field]));
+    const afterNames = new Set(after.map(field => field.name));
     const lines: string[] = [];
-    after.forEach((field) => {
+    after.forEach(field => {
       const previous = beforeByName.get(field.name);
       if (!previous) lines.push(`Added: ${describe(field)}`);
       else if (!isSameJson(previous, field)) lines.push(`Changed: ${describe(field)}`);
     });
-    before
-      .filter((field) => !afterNames.has(field.name))
-      .forEach((field) => lines.push(`Removed: ${describe(field)}`));
+    before.filter(field => !afterNames.has(field.name)).forEach(field => lines.push(`Removed: ${describe(field)}`));
     const kept = (fields: WebchatField[], others: Set<string>) =>
-      fields.map((field) => field.name).filter((name) => others.has(name));
+      fields.map(field => field.name).filter(name => others.has(name));
     if (!isSameJson(kept(before, afterNames), kept(after, new Set(beforeByName.keys())))) {
       lines.push('Questions were reordered');
     }
     summaries.push({ title: 'Webchat form', lines });
   }
 
-  const mappingsBefore = (originalFiles[PREPOPULATE_MAPPINGS_FILE] as PrepopulateMappings | undefined)?.preEngagement ?? {};
+  const mappingsBefore =
+    (originalFiles[PREPOPULATE_MAPPINGS_FILE] as PrepopulateMappings | undefined)?.preEngagement ?? {};
   const mappingsAfter = (draftFiles[PREPOPULATE_MAPPINGS_FILE] as PrepopulateMappings | undefined)?.preEngagement ?? {};
   const mappingLines = [...new Set([...Object.keys(mappingsBefore), ...Object.keys(mappingsAfter)])]
-    .filter((name) => !isSameJson(mappingsBefore[name], mappingsAfter[name]))
-    .map((name) => {
+    .filter(name => !isSameJson(mappingsBefore[name], mappingsAfter[name]))
+    .map(name => {
       const { targets } = getPrepopulateTargets(draftFiles, name);
       return targets.length > 0
         ? `“${name}” fills in ${targets.join(', ')}`
@@ -580,20 +561,18 @@ export const summarizeWebchatChanges = (
     summaries.push({ title: 'Webchat answers filled into the contact form', lines: mappingLines });
   }
 
-  const translationLines = changedWebchatTranslationFiles(originalFiles, draftFiles).flatMap(
-    (filePath) => {
-      const locale = webchatLocaleOf(filePath);
-      const beforeStrings = (originalFiles[filePath] ?? {}) as Strings;
-      const afterStrings = (draftFiles[filePath] ?? {}) as Strings;
-      return [...new Set([...Object.keys(beforeStrings), ...Object.keys(afterStrings)])]
-        .filter((key) => beforeStrings[key] !== afterStrings[key])
-        .map((key) => {
-          const title = WEBCHAT_TEXTS.find((info) => info.key === key)?.title ?? key;
-          if (afterStrings[key] === undefined) return `Back to the default: ${title} (${locale})`;
-          return `“${title}” (${locale}): ${afterStrings[key]}`;
-        });
-    },
-  );
+  const translationLines = changedWebchatTranslationFiles(originalFiles, draftFiles).flatMap(filePath => {
+    const locale = webchatLocaleOf(filePath);
+    const beforeStrings = (originalFiles[filePath] ?? {}) as Strings;
+    const afterStrings = (draftFiles[filePath] ?? {}) as Strings;
+    return [...new Set([...Object.keys(beforeStrings), ...Object.keys(afterStrings)])]
+      .filter(key => beforeStrings[key] !== afterStrings[key])
+      .map(key => {
+        const title = WEBCHAT_TEXTS.find(info => info.key === key)?.title ?? key;
+        if (afterStrings[key] === undefined) return `Back to the default: ${title} (${locale})`;
+        return `“${title}” (${locale}): ${afterStrings[key]}`;
+      });
+  });
   if (translationLines.length > 0) {
     summaries.push({ title: 'Webchat texts', lines: translationLines });
   }

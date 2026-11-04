@@ -18,11 +18,7 @@
  * Pure functions for editing form fields. They never mutate their inputs and only add or
  * remove the properties they own, so anything else on a field is preserved on export.
  */
-import type {
-  FormInputType,
-  FormItemJsonDefinition,
-  SelectOption,
-} from '@hrm-form-definitions/formDefinition/types';
+import type { FormInputType, FormItemJsonDefinition, SelectOption } from '@hrm-form-definitions/formDefinition/types';
 
 export type FieldType = `${FormInputType}`;
 
@@ -110,7 +106,7 @@ export const getAllowedTypeSwitches = (
   { isNew, staffMode }: { isNew: boolean; staffMode: boolean },
 ): FieldType[] => {
   const type = item.type as FieldType;
-  const group = TYPE_GROUPS.find((types) => types.includes(type));
+  const group = TYPE_GROUPS.find(types => types.includes(type));
   if (!group || 'optionsReferenceKey' in item) return [type];
   if (isNew || staffMode) return group;
   return SAFE_EXISTING_TYPE_SWITCHES.includes(type) ? SAFE_EXISTING_TYPE_SWITCHES : [type];
@@ -127,9 +123,7 @@ export const toFieldName = (label: string): string => {
     .split(/[^a-zA-Z0-9]+/)
     .filter(Boolean);
   const name = words
-    .map((word, index) =>
-      index === 0 ? word.toLowerCase() : word[0].toUpperCase() + word.slice(1).toLowerCase(),
-    )
+    .map((word, index) => (index === 0 ? word.toLowerCase() : word[0].toUpperCase() + word.slice(1).toLowerCase()))
     .join('');
   if (!name) return 'newField';
   return /^[0-9]/.test(name) ? `field${name}` : name;
@@ -146,10 +140,7 @@ export const uniqueFieldName = (baseName: string, existingNames: Iterable<string
 export const isFieldRequired = (item: FormItemJsonDefinition) =>
   typeof item.required === 'boolean' ? item.required : Boolean(item.required?.value);
 
-export const setFieldRequired = (
-  item: FormItemJsonDefinition,
-  required: boolean,
-): FormItemJsonDefinition => {
+export const setFieldRequired = (item: FormItemJsonDefinition, required: boolean): FormItemJsonDefinition => {
   const { required: _previous, ...rest } = item as unknown as FieldJson;
   const field: FieldJson = required ? { ...rest, required: { value: true, message: REQUIRED_FIELD_MESSAGE } } : rest;
   // The blank first answer follows the convention for required / not required dropdowns
@@ -165,13 +156,10 @@ export const setFieldRequired = (
   return asField(field);
 };
 
-export const updateField = (
-  item: FormItemJsonDefinition,
-  changes: FieldJson,
-): FormItemJsonDefinition => {
+export const updateField = (item: FormItemJsonDefinition, changes: FieldJson): FormItemJsonDefinition => {
   const updated: FieldJson = { ...(item as unknown as FieldJson), ...changes };
   // Setting a property to undefined removes it, rather than exporting an empty value
-  Object.keys(changes).forEach((key) => {
+  Object.keys(changes).forEach(key => {
     if (changes[key] === undefined) delete updated[key];
   });
   return asField(updated);
@@ -220,10 +208,7 @@ export const createField = (type: FieldType, existingNames: Iterable<string>): F
  * Switches a field's type, dropping properties that only made sense for the old type.
  * The blank first option is added or removed when switching between dropdown and list.
  */
-export const changeFieldType = (
-  item: FormItemJsonDefinition,
-  newType: FieldType,
-): FormItemJsonDefinition => {
+export const changeFieldType = (item: FormItemJsonDefinition, newType: FieldType): FormItemJsonDefinition => {
   const field: FieldJson = { ...(item as unknown as FieldJson), type: newType };
   if (newType !== 'textarea') {
     delete field.rows;

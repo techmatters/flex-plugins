@@ -31,7 +31,7 @@ export const AddFieldMenu = ({ onAdd, onAddLinked, onCancel }: Props) => (
       </button>
     </div>
     <ul>
-      {ADDABLE_FIELD_TYPES.map((type) => (
+      {ADDABLE_FIELD_TYPES.map(type => (
         <li key={type}>
           <button type="button" className="field-type-option" onClick={() => onAdd(type)}>
             <span className="field-type-name">{FIELD_TYPE_INFO[type].label}</span>
@@ -43,8 +43,7 @@ export const AddFieldMenu = ({ onAdd, onAddLinked, onCancel }: Props) => (
         <button type="button" className="field-type-option" onClick={onAddLinked}>
           <span className="field-type-name">Linked dropdowns</span>
           <span className="muted">
-            Two or more dropdowns where each one's answers depend on the one above, like
-            province → district
+            Two or more dropdowns where each one's answers depend on the one above, like province → district
           </span>
         </button>
       </li>
