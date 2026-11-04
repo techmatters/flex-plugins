@@ -1,3 +1,4 @@
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 /**
  * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,11 +15,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// @vitest-environment jsdom
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, test, jest } from '@jest/globals';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
 import { handleApiRequest } from '@tech-matters/form-builder-server/api';
@@ -56,8 +56,8 @@ beforeAll(() => {
       this.m22 = scale !== undefined ? Number(scale) : 1;
     }
   }
-  vi.stubGlobal('ResizeObserver', ResizeObserver);
-  vi.stubGlobal('DOMMatrixReadOnly', DOMMatrixReadOnly);
+  Object.assign(globalThis, { ResizeObserver });
+  Object.assign(globalThis, { DOMMatrixReadOnly });
   Object.defineProperties(HTMLElement.prototype, {
     offsetHeight: {
       get() {
@@ -126,7 +126,7 @@ beforeEach(() => {
 afterEach(cleanup);
 
 // Autosave waits a second after the last change, so these take a few seconds each
-describe('flow designer', { timeout: 20_000 }, () => {
+describe('flow designer', () => {
   test('a new board opens, objects are added from the palette, and it saves by itself', async () => {
     render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
 
@@ -526,7 +526,7 @@ describe('flow designer', { timeout: 20_000 }, () => {
     expect(script().value).toBe('Thank you for your answers.');
 
     // Spanish becomes its own flow: a new board, with its texts and a template of its own to make
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
     fireEvent.click(screen.getByRole('tab', { name: 'Spanish' }));
     fireEvent.click(screen.getByRole('button', { name: 'Make Spanish its own flow' }));
     await waitFor(() => expect(screen.queryByRole('tab', { name: 'Spanish' })).toBeNull());
@@ -621,7 +621,7 @@ describe('flow designer', { timeout: 20_000 }, () => {
     cleanup();
 
     // Then approve and publish it
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
+    jest.spyOn(window, 'confirm').mockReturnValue(true);
     window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
     render(<FlowsArea client={clientAs(staff)} helplineCodes={['usnm']} staffMode userName="Aselo person" />);
     await screen.findByRole('heading', { name: 'Recordings' });
@@ -803,7 +803,7 @@ describe('flow designer', { timeout: 20_000 }, () => {
   });
 });
 
-describe('people lists', { timeout: 20_000 }, () => {
+describe('people lists', () => {
   test('Aselo staff are added to a helpline from the Aselo team, and only then offered on its boards', async () => {
     await people.put('usnm', [{ name: 'Ale', email: 'ale@example.org' }]);
     await people.put('_aselo', [
@@ -827,7 +827,7 @@ describe('people lists', { timeout: 20_000 }, () => {
   });
 });
 
-describe('testing a flow (Test mode)', { timeout: 20_000 }, () => {
+describe('testing a flow (Test mode)', () => {
   test('a run asks for the reply, follows the split on it, and a finished path is saved as tested', async () => {
     const object = (id: string, type: FlowObject['type'], extra: Partial<FlowObject> = {}): FlowObject => ({
       id,

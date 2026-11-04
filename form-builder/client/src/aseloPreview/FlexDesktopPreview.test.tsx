@@ -1,3 +1,4 @@
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 /**
  * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,14 +15,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// @vitest-environment jsdom
 
 /**
  * The "Try it out" agent desktop, with real helpline definitions and the plugin's translations.
  */
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, test, jest } from '@jest/globals';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
@@ -131,7 +131,8 @@ describe('FlexDesktopPreview', () => {
     renderDesktop(usnm, undefined, () => {}, 'cannedResponses');
     expect(await screen.findByText(/Canned responses are switched off for this helpline/)).toBeTruthy();
     const responses = usnm.files['CannedResponses.json'] as { label: string; text: string }[];
-    fireEvent.change(screen.getByRole('combobox', { name: 'Canned Responses' }), {
+    // Its name is translated, once the plugin's text has loaded
+    fireEvent.change(await screen.findByRole('combobox', { name: 'Canned Responses' }), {
       target: { value: responses[0].text },
     });
     expect(screen.getByText(responses[0].text)).toBeTruthy();
@@ -200,7 +201,7 @@ describe('FlexDesktopPreview', () => {
   });
 
   test('“Back to editing” closes the preview', async () => {
-    const onClose = vi.fn();
+    const onClose = jest.fn();
     renderDesktop(usnm, undefined, onClose);
     fireEvent.click(await screen.findByRole('button', { name: 'Back to editing' }));
     expect(onClose).toHaveBeenCalled();

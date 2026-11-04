@@ -108,10 +108,16 @@ export const parseArticle = (path: string, source: string): HelpArticle => {
   };
 };
 
-const files = import.meta.glob<string>('./content/*/*.md', { query: '?raw', import: 'default', eager: true });
+// Every content/<area>/<article>.md, as text (webpack.config.cjs reads Markdown as text)
+const files = require.context('./content', true, /^\.\/[a-z]+\/[^/]+\.md$/);
+const textOf = (key: string) => {
+  const loaded = files(key) as string | { default: string };
+  return typeof loaded === 'string' ? loaded : loaded.default;
+};
 
-export const HELP_ARTICLES: HelpArticle[] = Object.entries(files)
-  .map(([path, source]) => parseArticle(path, source))
+export const HELP_ARTICLES: HelpArticle[] = files
+  .keys()
+  .map((key) => parseArticle(`./content/${key.slice(2)}`, textOf(key)))
   .sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
 
 export const articleBySlug = (slug: string) => HELP_ARTICLES.find((article) => article.slug === slug);

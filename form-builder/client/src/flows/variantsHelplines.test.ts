@@ -21,7 +21,7 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import type { Board } from '@tech-matters/form-builder-shared/flows/model';
 import { messageFor, withVariantMessage } from '@tech-matters/form-builder-shared/flows/model';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';

@@ -16,7 +16,7 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, jest } from '@jest/globals';
 import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { MemoryDraftStore } from './drafts';
 import { MemoryBoardStore } from './boards';
@@ -36,7 +36,7 @@ describe('what postStudioFlows can point at', () => {
       formDefinitionsDir: '/nowhere',
       helplinesConfigDir,
       drafts: new MemoryDraftStore(),
-      notifier: { draftSubmitted: vi.fn() },
+      notifier: { draftSubmitted: jest.fn(async () => {}) },
       boards: new MemoryBoardStore(),
       routing,
     };

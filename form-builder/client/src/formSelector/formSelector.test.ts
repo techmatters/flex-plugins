@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { beforeAll, describe, expect, test } from 'vitest';
+import { beforeAll, describe, expect, test } from '@jest/globals';
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { formDefinitionsDir, helplinesConfigDir, webchatConfigDir } from '../testing/workspaceHarness';
 import type { DefinitionFileMap } from '../common/definitions';

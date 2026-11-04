@@ -20,7 +20,7 @@
  * sharing their template.
  */
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import type { BoardContent, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
 import { emptyBoard, flowChannelOf, namingChoicesOf, sharedLanguageVariants } from '@tech-matters/form-builder-shared/flows/model';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';

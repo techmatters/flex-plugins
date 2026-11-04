@@ -17,7 +17,7 @@
 import { readdirSync, readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
 import { emptyBoard } from '@tech-matters/form-builder-shared/flows/model';
 import type { BoardContent, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
@@ -30,13 +30,14 @@ import {
   taskAttributesProblem,
 } from '@tech-matters/form-builder-shared/flows/taskAttributes';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
+import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
 
 describe('task attributes of "Send to queue" widgets', () => {
   test('the standard ones are the same as the templates in twilio-iac', () => {
     Object.entries(STANDARD_TASK_ATTRIBUTES).forEach(([template, json]) => {
-      expect(json, template).toBe(
+      expectAt(template, json).toBe(
         readFileSync(path.join(helplinesDir, template), 'utf8').replace(/\r\n/g, '\n').trimEnd(),
       );
     });
@@ -49,7 +50,7 @@ describe('task attributes of "Send to queue" widgets', () => {
     expect(templates.length).toBeGreaterThan(10);
     templates.forEach((file) => {
       const json = readFileSync(path.join(helplinesDir, file), 'utf8');
-      expect(taskAttributesProblem(json), file).toBeUndefined();
+      expectAt(file, taskAttributesProblem(json)).toBeUndefined();
     });
     expect(taskAttributeNames(STANDARD_TASK_ATTRIBUTES['templates/channel-attributes/voice.tftpl'])).toEqual([
       'type',

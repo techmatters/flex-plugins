@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 
 /**
  * Copyright (C) 2021-2026 Technology Matters
@@ -17,7 +17,7 @@
  */
 
 import { useState } from 'react';
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';

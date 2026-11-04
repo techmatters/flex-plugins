@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 
 /**
  * Copyright (C) 2021-2026 Technology Matters
@@ -16,7 +16,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { afterEach, describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { SIDEBAR_MIN_WIDTH, SidebarResizer, useSidebarWidth } from './SidebarResizer';
 

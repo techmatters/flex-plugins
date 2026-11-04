@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import type { BoardContent, Connection, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
 import { emptyBoard } from '@tech-matters/form-builder-shared/flows/model';
 import {

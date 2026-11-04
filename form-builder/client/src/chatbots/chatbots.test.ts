@@ -17,7 +17,7 @@
 import { existsSync, readdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import { chatbotChanges } from './changes';
 import { chatbotChecks } from './chatbotChecks';
 import {
@@ -40,6 +40,7 @@ import { handleApiRequest } from '@tech-matters/form-builder-server/api';
 import { MemoryChatbotStore } from '@tech-matters/form-builder-server/chatbotApi';
 import { importChatbots } from '@tech-matters/form-builder-server/chatbotImport';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
 const formsDir = path.resolve(
@@ -100,13 +101,13 @@ describe('chatbots from a live helpline', () => {
     for (const code of codes) {
       const { design } = await importChatbots(helplinesDir, code);
       bots += design.bots.length;
-      expect(() => chatbotChecks(design), code).not.toThrow();
-      expect(chatbotChanges(design), code).toEqual([]);
+      expectAt(code, () => chatbotChecks(design)).not.toThrow();
+      expectAt(code, chatbotChanges(design)).toEqual([]);
       // Every question takes answers the design knows
       design.bots.forEach((bot) =>
         bot.intents.forEach((intent) =>
           intent.questions.forEach((question) =>
-            expect(design.answerTypes[bot.language]?.[question.answerType], `${code} ${question.slot}`).toBeDefined(),
+            expectAt(`${code} ${question.slot}`, design.answerTypes[bot.language]?.[question.answerType]).toBeDefined(),
           ),
         ),
       );

@@ -1,3 +1,4 @@
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 /**
  * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,14 +15,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// @vitest-environment jsdom
 
 /**
  * Linked dropdowns, driven through the UI with real helpline definitions.
  */
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, test, jest } from '@jest/globals';
 import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
@@ -61,7 +61,7 @@ const savedDraftFile = async (definitions: DefinitionFiles, filePath: string) =>
 };
 afterEach(() => {
   cleanup();
-  vi.restoreAllMocks();
+  jest.restoreAllMocks();
 });
 
 const fieldCard = (label: string) =>

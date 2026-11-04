@@ -110,12 +110,9 @@ export const getHelplineWebchatStrings = (files: DefinitionFileMap, locale: stri
   files[webchatTranslationsPath(locale)] as Strings | undefined;
 
 // The webchat app's own translation files (small, so bundled up front)
-const baseFiles = import.meta.glob<Strings>(
-  '../../../../aselo-webchat-react-app/translationsSrc/*.json',
-  { import: 'default', eager: true },
-);
+const baseFiles = require.context('../../../../aselo-webchat-react-app/translationsSrc', false, /\.json$/);
 const baseFile = (name: string): Strings =>
-  baseFiles[`../../../../aselo-webchat-react-app/translationsSrc/${name}.json`] ?? {};
+  baseFiles.keys().includes(`./${name}.json`) ? (baseFiles(`./${name}.json`) as Strings) : {};
 
 // e.g. 'es-CL' -> en.json, es.json, es-CL.json
 export const baseWebchatStrings = (locale: string): Strings => {

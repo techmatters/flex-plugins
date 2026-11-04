@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import { variantInLanguage } from '@tech-matters/form-builder-shared/flows/model';
 import { approvalOf } from '@tech-matters/form-builder-shared/flows/recordings';
 

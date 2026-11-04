@@ -16,7 +16,7 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { beforeAll, describe, expect, test } from 'vitest';
+import { beforeAll, describe, expect, test } from '@jest/globals';
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import {
   ConfigObject,

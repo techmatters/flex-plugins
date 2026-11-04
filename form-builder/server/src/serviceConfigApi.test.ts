@@ -18,7 +18,7 @@ import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, jest } from '@jest/globals';
 import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { Draft, MemoryDraftStore } from './drafts';
 import { LocalApplier } from './localServices';
@@ -35,8 +35,8 @@ const createContext = (): ApiContext & { drafts: MemoryDraftStore } => ({
   formDefinitionsDir: path.join(repoRoot, 'lambdas/packages/hrm-form-definitions/form-definitions'),
   helplinesConfigDir,
   drafts: new MemoryDraftStore(),
-  applier: { apply: vi.fn() },
-  notifier: { draftSubmitted: vi.fn() },
+  applier: { apply: jest.fn(async () => ({ description: '', written: [] })) },
+  notifier: { draftSubmitted: jest.fn(async () => {}) },
 });
 
 type Context = ApiContext;

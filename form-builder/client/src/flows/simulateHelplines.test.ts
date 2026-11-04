@@ -19,7 +19,7 @@
  */
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import { answer, startRun } from './simulate';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
 

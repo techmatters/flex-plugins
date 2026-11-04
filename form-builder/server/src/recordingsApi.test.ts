@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, jest } from '@jest/globals';
 import {
   CopyObjectCommand,
   DeleteObjectCommand,
@@ -57,7 +57,7 @@ beforeEach(() => {
     formDefinitionsDir: '/nowhere',
     drafts: new MemoryDraftStore(),
     recordings: { files, log: new MemoryRecordingLogStore() },
-    notifier: { draftSubmitted: vi.fn(async () => {}) },
+    notifier: { draftSubmitted: jest.fn(async () => {}) },
     now: () => new Date('2026-10-28T12:00:00Z'),
   };
 });
@@ -165,8 +165,8 @@ describe('recordings in S3', () => {
         return {};
       },
     };
-    const cloudFront = { send: vi.fn(async () => ({})) };
-    const sign = vi.fn(async () => 'https://signed.example/upload');
+    const cloudFront = { send: jest.fn(async () => ({})) };
+    const sign = jest.fn(async () => 'https://signed.example/upload');
     const store = new S3RecordingFiles(
       'tl-aselo-recordings',
       'https://recordings.tl.techmatters.org',

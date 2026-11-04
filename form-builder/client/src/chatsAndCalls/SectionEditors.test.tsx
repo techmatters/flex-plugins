@@ -1,3 +1,4 @@
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 /**
  * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,7 +15,6 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// @vitest-environment jsdom
 
 /**
  * Call types, canned responses and automatic messages, edited through the workspace with
@@ -22,7 +22,7 @@
  */
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { afterEach, beforeAll, beforeEach, describe, expect, test } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { createHarness } from '../testing/workspaceHarness';
@@ -100,7 +100,7 @@ describe('call types', () => {
 
 describe('canned responses', () => {
   // Slow (reads a spreadsheet), so it can pass 5 seconds when the whole suite runs at once
-  test('says they are switched off, and adds responses pasted from a spreadsheet', { timeout: 15_000 }, async () => {
+  test('says they are switched off, and adds responses pasted from a spreadsheet', async () => {
     await open('Canned responses');
     expect(screen.getAllByText(/switched off for this helpline/).length).toBeGreaterThan(0);
 

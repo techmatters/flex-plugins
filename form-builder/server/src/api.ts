@@ -15,8 +15,8 @@
  */
 
 /**
- * The form builder's API, independent of where it runs: the Vite dev server calls it locally
- * (devApiPlugin.ts) and the deployed Lambda will call it behind API Gateway.
+ * The form builder's API, independent of where it runs: a small local server runs it locally
+ * (devServer.ts) and the deployed Lambda will call it behind API Gateway.
  *
  *   GET    /api/me                                  who's signed in and what they can do
  *   GET    /api/helplines                           helplines this person can open

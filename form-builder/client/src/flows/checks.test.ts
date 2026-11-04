@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import type { FlowObject, Frame } from '@tech-matters/form-builder-shared/flows/model';
 import { boardChecks as allChecks, objectProblems, splitIgnored, studioNameProblems, uniqueName } from '@tech-matters/form-builder-shared/flows/checks';
 

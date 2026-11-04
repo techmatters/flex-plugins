@@ -22,7 +22,7 @@
 import { existsSync, readdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import type { BoardContent, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
 import {
   composePrefixed,
@@ -43,6 +43,7 @@ import { janitorValuesOf } from '@tech-matters/form-builder-shared/flows/janitor
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
 import { toStudioFlow } from './studioTemplate';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
+import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
 
@@ -792,7 +793,7 @@ describe('who a message is from', () => {
         .filter((candidate) => hasFromField(candidate.type) && candidate.studio)
         .forEach((message) => {
           const live = liveFromOf(message);
-          expect(message.settings?.from, `${code} ${message.studioName}`).toBe(live);
+          expectAt(`${code} ${message.studioName}`, message.settings?.from).toBe(live);
           if (live === undefined) return;
           seen.add(live === '${helpline}' || live === 'Bot' ? live : 'custom');
           if (message.type === 'sendMessageAndClose') {

@@ -18,7 +18,7 @@ import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, test, jest } from '@jest/globals';
 import { DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command, PutObjectCommand } from '@aws-sdk/client-s3';
 import type { Board, BoardContent, BoardSummary } from '@tech-matters/form-builder-shared/flows/model';
 import { emptyBoard } from '@tech-matters/form-builder-shared/flows/model';
@@ -57,7 +57,7 @@ beforeEach(() => {
     drafts: new MemoryDraftStore(),
     boards: new MemoryBoardStore(),
     people: new MemoryPeopleStore(),
-    notifier: { draftSubmitted: vi.fn(async () => {}) },
+    notifier: { draftSubmitted: jest.fn(async () => {}) },
     now: () => new Date('2026-10-28T12:00:00Z'),
   };
 });

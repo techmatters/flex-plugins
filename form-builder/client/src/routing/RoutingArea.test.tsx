@@ -1,3 +1,4 @@
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 /**
  * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,11 +15,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// @vitest-environment jsdom
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, test, jest } from '@jest/globals';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
 import { handleApiRequest } from '@tech-matters/form-builder-server/api';
@@ -45,8 +45,8 @@ beforeAll(() => {
   class DOMMatrixReadOnly {
     m22 = 1;
   }
-  vi.stubGlobal('ResizeObserver', ResizeObserver);
-  vi.stubGlobal('DOMMatrixReadOnly', DOMMatrixReadOnly);
+  Object.assign(globalThis, { ResizeObserver });
+  Object.assign(globalThis, { DOMMatrixReadOnly });
   Element.prototype.scrollIntoView = () => {};
 });
 
@@ -74,7 +74,10 @@ beforeEach(() => {
 afterEach(cleanup);
 
 // Imports read the repo's helplines, which takes a while when every test file runs at once
-describe('routing designer', { timeout: 30_000 }, () => {
+// Each test renders the whole designer: more time than the usual 20 seconds
+jest.setTimeout(30_000);
+
+describe('routing designer', () => {
   test('Aselo staff import a live helpline, change a step, and it saves by itself', async () => {
     render(<RoutingArea client={clientAs(staff)} helplineCodes={['usnm', 'usch']} staffMode />);
     expect(await screen.findByText('No routing designs yet.')).toBeTruthy();

@@ -16,7 +16,7 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import type { ApiContext, ApiUser } from './api';
 import { handleApiRequest } from './api';
 import type { BranchSource } from './branches';

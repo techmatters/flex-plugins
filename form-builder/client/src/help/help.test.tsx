@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 /**
  * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,13 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, jest } from '@jest/globals';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { HELP_ARTICLES, parseArticle } from './articles';
+import type { HelpArea } from './articles';
 import { blocksOf } from './HelpMarkdown';
 import { HelpPanel } from './HelpPanel';
 import type { HelpClient } from './helpClient';
 import { searchHelp } from './search';
+import { expectAt } from '../testing/expectAt';
 
 afterEach(cleanup);
 
@@ -29,13 +31,13 @@ describe('the help articles', () => {
     const slugs = new Set(HELP_ARTICLES.map((article) => article.slug));
     expect(HELP_ARTICLES.filter((article) => article.area === 'forms').length).toBeGreaterThanOrEqual(15);
     HELP_ARTICLES.forEach((article) => {
-      expect(article.title, article.slug).not.toBe('');
-      expect(article.questions.length, article.slug).toBeGreaterThanOrEqual(2);
-      expect(article.summary.length, article.slug).toBeGreaterThan(30);
-      expect(['helpline', 'aselo', 'everyone'], article.slug).toContain(article.audience);
-      expect(['guide', 'answer', 'section'], article.slug).toContain(article.kind);
+      expectAt(article.slug, article.title).not.toBe('');
+      expectAt(article.slug, article.questions.length).toBeGreaterThanOrEqual(2);
+      expectAt(article.slug, article.summary.length).toBeGreaterThan(30);
+      expectAt(article.slug, ['helpline', 'aselo', 'everyone']).toContain(article.audience);
+      expectAt(article.slug, ['guide', 'answer', 'section']).toContain(article.kind);
       [...article.body.matchAll(/\]\(help:([^)]+)\)/g)].forEach(([, slug]) =>
-        expect(slugs.has(slug), `${article.slug} links to ${slug}`).toBe(true),
+        expectAt(`${article.slug} links to ${slug}`, slugs.has(slug)).toBe(true),
       );
     });
   });
@@ -141,11 +143,11 @@ describe('the help panel', () => {
   };
   const ask = (text: string) => {
     fireEvent.change(screen.getByRole('searchbox', { name: 'Ask a question' }), { target: { value: text } });
-    act(() => vi.advanceTimersByTime(300));
+    act(() => jest.advanceTimersByTime(300));
   };
 
   test("opens on the area's guides, then answers a question and opens the guide", () => {
-    vi.useFakeTimers();
+    jest.useFakeTimers();
     try {
       render(<HelpPanel area="forms" isAseloStaff={false} onClose={() => undefined} client={client()} />);
       expect(screen.getByText('Guides, step by step')).toBeTruthy();
@@ -158,12 +160,12 @@ describe('the help panel', () => {
       expect(screen.getByRole('heading', { name: 'Send your changes for review' })).toBeTruthy();
       expect(screen.getByText('Did this help?')).toBeTruthy();
     } finally {
-      vi.useRealTimers();
+      jest.useRealTimers();
     }
   });
 
   test('a question without an answer can be sent to the Aselo team', async () => {
-    vi.useFakeTimers();
+    jest.useFakeTimers();
     const helpClient = client();
     try {
       render(<HelpPanel area="forms" isAseloStaff={false} onClose={() => undefined} client={helpClient} />);
@@ -175,7 +177,7 @@ describe('the help panel', () => {
       expect(helpClient.sent).toEqual([{ question: 'banana smoothie recipe', area: 'forms', reason: 'unanswered' }]);
       expect(screen.getByText(/it’s been sent/)).toBeTruthy();
     } finally {
-      vi.useRealTimers();
+      jest.useRealTimers();
     }
   });
 
@@ -189,7 +191,7 @@ describe('the help panel', () => {
     ['flows', /How designing your contact flows works/],
     ['chatbots', /Change what a chatbot says and asks/],
     ['routing', /Check where a contact would go/],
-  ] as const)('%s opens on its own help, with the general articles', (area, guide) => {
+  ] as [HelpArea, RegExp][])('%s opens on its own help, with the general articles', (area, guide) => {
     render(<HelpPanel area={area} isAseloStaff={false} onClose={() => undefined} client={client()} />);
     expect(screen.getByRole('button', { name: guide })).toBeTruthy();
     expect(screen.getByRole('button', { name: /What do Imported, In progress/ })).toBeTruthy();
@@ -251,8 +253,8 @@ describe('“Show me” tours', () => {
     );
     tours.forEach((article) =>
       article.tour!.forEach((step) => {
-        expect(step.target, article.slug).toMatch(/^(button|text|label|css):\S/);
-        expect(step.text.length, article.slug).toBeGreaterThan(10);
+        expectAt(article.slug, step.target).toMatch(/^(button|text|label|css):\S/);
+        expectAt(article.slug, step.text.length).toBeGreaterThan(10);
       }),
     );
   });
@@ -260,7 +262,7 @@ describe('“Show me” tours', () => {
   test('finds a button by its text, an element by its whole text, a label or a selector', async () => {
     const { findTarget } = await import('./Tour');
     // jsdom has no layout: everything counts as on screen for this test
-    const rects = vi
+    const rects = jest
       .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
       .mockReturnValue({ width: 10, height: 10, top: 0, left: 0, bottom: 10, right: 10, x: 0, y: 0 } as DOMRect);
     try {
@@ -289,8 +291,8 @@ describe('“Show me” tours', () => {
 
   test('goes step by step, says when something isn’t on screen, moves on when what’s highlighted is clicked', async () => {
     const { Tour } = await import('./Tour');
-    vi.useFakeTimers();
-    const rects = vi
+    jest.useFakeTimers();
+    const rects = jest
       .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
       .mockReturnValue({ width: 10, height: 10, top: 0, left: 0, bottom: 10, right: 10, x: 0, y: 0 } as DOMRect);
     let ended = false;
@@ -314,7 +316,7 @@ describe('“Show me” tours', () => {
       const card = () => screen.getByRole('dialog', { name: 'Show me: Send your changes' });
       expect(card().textContent).toContain('Step 1 of 3');
       fireEvent.click(screen.getByRole('button', { name: 'Review & submit' }));
-      act(() => vi.advanceTimersByTime(400));
+      act(() => jest.advanceTimersByTime(400));
       expect(card().textContent).toContain('Step 2 of 3');
       expect(card().textContent).toContain('Nothing needs fixing.');
       fireEvent.click(screen.getByRole('button', { name: /Back/ }));
@@ -323,7 +325,7 @@ describe('“Show me” tours', () => {
       expect(ended).toBe(true);
     } finally {
       rects.mockRestore();
-      vi.useRealTimers();
+      jest.useRealTimers();
     }
   });
 
@@ -387,7 +389,7 @@ describe('asking in the other areas', () => {
     ['chatbots', 'change the chatbot question', 'change-a-chatbot'],
     ['routing', 'which queue does a spanish chat go to', 'routing-test-a-contact'],
     ['routing', 'what are skills', 'what-routing-is'],
-  ] as const)('in %s, “%s” finds %s', (area, question, slug) => {
+  ] as [HelpArea, string, string][])('in %s, “%s” finds %s', (area, question, slug) => {
     const { results, confident } = searchHelp(question, { area, isAseloStaff: false });
     expect(confident ? results[0]?.article.slug : undefined).toBe(slug);
   });

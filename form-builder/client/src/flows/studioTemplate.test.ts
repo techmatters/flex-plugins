@@ -17,7 +17,7 @@
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import type { BoardContent, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
 import { emptyBoard, fieldProblem, fixedExitsOf } from '@tech-matters/form-builder-shared/flows/model';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
@@ -25,6 +25,7 @@ import { toStudioFlow, toStudioFlows } from './studioTemplate';
 import { standardTaskAttributes } from '@tech-matters/form-builder-shared/flows/taskAttributes';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
 import { parseTemplate } from '@tech-matters/form-builder-server/hcl';
+import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
 
@@ -61,17 +62,17 @@ describe('Studio templates from boards', () => {
       const { boards } = await importHelpline(helplinesDir, code);
       for (const { title, content } of boards) {
         const [generated] = toStudioFlows(content);
-        expect(generated.template, title).toBeDefined();
+        expectAt(title, generated.template).toBeDefined();
         const original = parseTemplate(readFileSync(path.join(helplinesDir, generated.template!), 'utf8'));
         // Except a blocked check on the profile's flags written with equal_to: contains now
         const expected = withBlockedContains(original);
-        expect(parseTemplate(generated.text), title).toEqual(expected);
+        expectAt(title, parseTemplate(generated.text)).toEqual(expected);
         if (JSON.stringify(expected) !== JSON.stringify(original)) {
           blockedFixed.push(generated.template!);
-          expect(generated.todo, title).toContainEqual(expect.stringMatching(/blocked check now uses contains/));
+          expectAt(title, generated.todo).toContainEqual(expect.stringMatching(/blocked check now uses contains/));
         }
         // Nothing changed on the board, so nothing to change in the .hcl files
-        expect(generated.flowVars, title).toEqual([]);
+        expectAt(title, generated.flowVars).toEqual([]);
         compared += 1;
       }
     }

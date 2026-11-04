@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import { buildExportZip, serializeDefinitionFile } from './exportZip';
 import { summarizeFormChanges } from './changes';
 import { CONTACT_TABS } from '../common/definitions';

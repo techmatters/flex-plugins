@@ -20,11 +20,12 @@
  */
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { vi } from 'vitest';
+import { jest } from '@jest/globals';
 import { render } from '@testing-library/react';
 import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
 import type { DefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import type { Draft } from '@tech-matters/form-builder-shared';
 import { repoPathOf } from '@tech-matters/form-builder-shared';
 import { inProcessDraftClient } from './draftClient.inProcess';
 import { HelplineWorkspace } from '../workspace/HelplineWorkspace';
@@ -49,12 +50,12 @@ export const createHarness = () => {
     webchatConfigDir,
     drafts: store,
     applier: {
-      apply: vi.fn(async (draft) => ({
+      apply: jest.fn(async (draft: Draft) => ({
         description: 'Written to your checkout.',
         written: Object.keys(draft.files).map((filePath) => repoPathOf(draft.code, draft.version, filePath)),
       })),
     },
-    notifier: { draftSubmitted: vi.fn(async () => {}) },
+    notifier: { draftSubmitted: jest.fn(async () => {}) },
   };
 
   const renderWorkspace = (

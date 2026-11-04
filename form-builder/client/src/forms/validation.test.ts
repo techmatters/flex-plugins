@@ -16,7 +16,7 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { beforeAll, describe, expect, test } from 'vitest';
+import { beforeAll, describe, expect, test } from '@jest/globals';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
 import { listHelplines, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { CONTACT_TABS, DefinitionFileMap, getForm } from '../common/definitions';
@@ -56,7 +56,7 @@ describe('validateContactTab', () => {
       for (const version of versions) {
         const { files } = await loadDefinitionFiles(formDefinitionsDir, code, version);
         for (const tab of CONTACT_TABS) {
-          expect(errorsOf(validateContactTab(files, files, tab)), `${code}/${version}`).toEqual([]);
+          expect({ at: `${code}/${version}`, value: errorsOf(validateContactTab(files, files, tab)) }).toEqual({ at: `${code}/${version}`, value: [] });
         }
       }
     }

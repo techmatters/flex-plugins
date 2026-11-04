@@ -17,7 +17,7 @@
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import {
   readConditions,
   readQueueWorkers,
@@ -35,6 +35,7 @@ import { routingChecks } from './routingChecks';
 import { readHelplineConfigs } from '@tech-matters/form-builder-server/flowImport';
 import { parseHcl, parseTemplate } from '@tech-matters/form-builder-server/hcl';
 import { importRouting } from '@tech-matters/form-builder-server/routingImport';
+import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
 const codes = readdirSync(helplinesDir).filter(
@@ -165,17 +166,17 @@ describe('a routing design from a live helpline', () => {
       for (const workflow of generated.workflows) {
         const originalText = readFileSync(path.join(helplinesDir, workflow.template!), 'utf8');
         // Built by template code (%{ for ... }): kept exactly as written
-        if (originalText.includes('%{')) expect(workflow.text, `${code} ${workflow.key}`).toBe(originalText);
-        else expect(parseTemplate(workflow.text), `${code} ${workflow.key}`).toEqual(parseTemplate(originalText));
+        if (originalText.includes('%{')) expectAt(`${code} ${workflow.key}`, workflow.text).toBe(originalText);
+        else expectAt(`${code} ${workflow.key}`, parseTemplate(workflow.text)).toEqual(parseTemplate(originalText));
         workflows += 1;
       }
       const { configs, environments } = await readHelplineConfigs(helplinesDir, code);
       const config = configs[environments[0]]!;
       if (design.queues.length > 0) {
-        expect(parseHcl(generated.queuesBlock).attributes.task_queues, code).toEqual(config.task_queues);
+        expectAt(code, parseHcl(generated.queuesBlock).attributes.task_queues).toEqual(config.task_queues);
       }
       if (design.workflows.length > 0 && design.workflows.length === Object.keys(config.workflows ?? {}).length) {
-        expect(parseHcl(generated.workflowsBlock).attributes.workflows, code).toEqual(config.workflows);
+        expectAt(code, parseHcl(generated.workflowsBlock).attributes.workflows).toEqual(config.workflows);
       }
     }
     expect(workflows).toBeGreaterThan(20);

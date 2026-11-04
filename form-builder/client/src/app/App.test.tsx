@@ -1,3 +1,4 @@
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 /**
  * Copyright (C) 2021-2026 Technology Matters
  * This program is free software: you can redistribute it and/or modify
@@ -14,11 +15,10 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-// @vitest-environment jsdom
 
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, test, jest } from '@jest/globals';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
 import { handleApiRequest } from '@tech-matters/form-builder-server/api';
@@ -42,15 +42,17 @@ beforeEach(() => {
     notifier: { draftSubmitted: async () => {} },
   };
   // The app's own GETs (helplines, definitions) go to the same in-process API
-  vi.stubGlobal('fetch', async (url: string) => {
+  global.fetch = (async (url: string) => {
     const response = await send('GET', new URL(url, 'http://localhost').pathname);
     return new Response(JSON.stringify(response.body), { status: response.status });
-  });
+  }) as typeof fetch;
 });
+
+const originalFetch = global.fetch;
 
 afterEach(() => {
   cleanup();
-  vi.unstubAllGlobals();
+  global.fetch = originalFetch;
   window.history.replaceState(null, '', '/');
 });
 

@@ -17,7 +17,7 @@
 import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
-import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterAll, beforeAll, describe, expect, test, jest } from '@jest/globals';
 import type { Draft } from './drafts';
 import type { GitHubClient } from './github';
 import { branchNameFor, GitHubApplier } from './githubApplier';
@@ -44,7 +44,7 @@ const draft: Draft = {
 
 describe('applying through GitHub', () => {
   test('commits the files in their own style on a new branch from master and opens a PR', async () => {
-    const request = vi.fn(async (method: string, repoPath: string, _body?: any): Promise<any> => {
+    const request = jest.fn(async (method: string, repoPath: string, _body?: any): Promise<any> => {
       if (repoPath === '/git/commits/master-sha') return { tree: { sha: 'base-tree' } };
       if (repoPath === '/git/trees') return { sha: 'new-tree' };
       if (repoPath === '/git/commits') return { sha: 'new-commit' };

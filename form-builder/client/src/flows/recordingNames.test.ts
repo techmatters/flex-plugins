@@ -21,7 +21,7 @@
  */
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { beforeAll, describe, expect, test } from 'vitest';
+import { beforeAll, describe, expect, test } from '@jest/globals';
 import type { BoardContent } from '@tech-matters/form-builder-shared/flows/model';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
 import type { RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';

@@ -18,7 +18,7 @@
  * Message widgets' names: <prefix><channel>_<language>_<service>_<what it is>, from the channels,
  * languages and services set for the flow (FlowNaming); renaming keeps the recording playing.
  */
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import type { BoardContent, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
 import {
   composeName,

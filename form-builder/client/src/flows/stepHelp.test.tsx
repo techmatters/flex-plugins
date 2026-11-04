@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+/** @jest-environment ./jest/jsdomEnvironment.cjs */
 
 /**
  * Copyright (C) 2021-2026 Technology Matters
@@ -16,7 +16,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { afterEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, describe, expect, test, jest } from '@jest/globals';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { OBJECT_TYPES } from '@tech-matters/form-builder-shared/flows/model';
 import type { FlowObjectType } from '@tech-matters/form-builder-shared/flows/model';
@@ -84,17 +84,17 @@ describe("steps' help for helpline staff", () => {
   });
 
   test('hovering a step in the left menu shows what it does', () => {
-    vi.useFakeTimers();
+    jest.useFakeTimers();
     try {
       render(<Palette onAdd={() => undefined} />);
       const item = screen.getByRole('button', { name: /Check client profile/ });
       fireEvent.mouseEnter(item);
-      act(() => vi.advanceTimersByTime(400));
+      act(() => jest.advanceTimersByTime(400));
       expect(screen.getByRole('tooltip').textContent).toContain('flags');
       fireEvent.mouseLeave(item);
       expect(screen.queryByRole('tooltip')).toBeNull();
     } finally {
-      vi.useRealTimers();
+      jest.useRealTimers();
     }
   });
 });

@@ -17,7 +17,7 @@
 import { existsSync, readdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { beforeAll, describe, expect, test } from 'vitest';
+import { beforeAll, describe, expect, test } from '@jest/globals';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
 import { exitsOf } from '@tech-matters/form-builder-shared/flows/model';
 import { toFlowExport } from './exports';
@@ -28,6 +28,7 @@ import { ApiContext, ApiUser, handleApiRequest } from '@tech-matters/form-builde
 import { MemoryBoardStore } from '@tech-matters/form-builder-server/boards';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { MemoryRecordingFiles, MemoryRecordingLogStore } from '@tech-matters/form-builder-server/recordingStores';
+import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
 
@@ -118,7 +119,7 @@ describe('importing a live helpline', () => {
           .filter((b) => a.x < b.x + b.width && b.x < a.x + a.width && a.y < b.y + b.height && b.y < a.y + a.height)
           .map((b) => `${a.studioName ?? a.text} / ${b.studioName ?? b.text}`),
       );
-      expect(overlapping, title).toEqual([]);
+      expectAt(title, overlapping).toEqual([]);
     });
     // The voice flow spans 4000px or so in Studio; on the board, much less
     // The voice flow is 5,600px tall in Studio; on the board, about half
@@ -243,11 +244,11 @@ describe('importing a live helpline', () => {
     for (const code of codes) {
       const result = await importHelpline(helplinesDir, code);
       // A frame per Studio flow, or a note saying there are none (e.g. eumc has no channels)
-      if (result.boards.length === 0) expect(result.report.notes.join(' '), code).toMatch(/No Studio flows found/);
+      if (result.boards.length === 0) expectAt(code, result.report.notes.join(' ')).toMatch(/No Studio flows found/);
       result.boards.forEach(({ title, content }) => {
-        expect(() => boardChecks(content), title).not.toThrow();
+        expectAt(title, () => boardChecks(content)).not.toThrow();
         // Small enough to save (the API takes boards up to 2 MB)
-        expect(JSON.stringify(content).length, title).toBeLessThan(2_000_000);
+        expectAt(title, JSON.stringify(content).length).toBeLessThan(2_000_000);
       });
     }
   }, 60_000);

@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { describe, expect, test, vi } from 'vitest';
+import { describe, expect, test, jest } from '@jest/globals';
 import { userFromClaims } from './lambda';
 import { SlackNotifier } from './slackNotifier';
 
@@ -42,7 +42,7 @@ describe('who is signed in, from the Okta token', () => {
 
 describe('Slack', () => {
   test('is told about a submitted draft', async () => {
-    const fetchImpl = vi.fn(async () => new Response('ok'));
+    const fetchImpl = jest.fn(async () => new Response('ok'));
     await new SlackNotifier('https://hooks.slack.com/x', 'https://form-builder.tl.techmatters.org', fetchImpl).draftSubmitted(
       {
         code: 'usnm',

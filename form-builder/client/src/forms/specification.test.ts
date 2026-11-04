@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test } from '@jest/globals';
 import { isProtectedField } from './specification';
 import { CONTACT_TABS, ContactTab } from '../common/definitions';
 
