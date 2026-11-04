@@ -388,7 +388,7 @@ variable from the `.hcl` files.
 ### 6. Check
 
 ```bash
-cd form-builder && npx vitest run server/hcl.test.ts   # reads every helpline's templates and .hcl files
+cd form-builder && npx vitest run server/src/hcl.test.ts   # reads every helpline's templates and .hcl files
 grep -rn "TODO" twilio-iac/helplines/<code>/templates/studio-flows/
 git diff --stat
 ```

@@ -134,7 +134,7 @@ it that way.
      and add it to `lex_v2_bot_languages` in the environment files it should be in (staging first).
 3. **Check** the JSON parses and the chain is right:
    ```bash
-   cd form-builder && npx vitest run server/chatbots.test.ts   # imports every helpline's chatbots
+   cd form-builder && npx vitest run client/src/chatbots/chatbots.test.ts   # imports every helpline's chatbots
    ```
    and re-read each changed file. Show `git diff` and explain it in plain words.
 4. **Plan (staging)**, only after the person has seen the diff and asked you to commit and push

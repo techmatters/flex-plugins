@@ -27,7 +27,7 @@ It reads and writes the same files the Flex plugin uses:
   answers, required, hint text and PII.
 - **Try it out** shows the edited contact form as counselors see it in Aselo: the same tabs
   (with the helpline's own tab names), two 217px columns, field styles, "Next" / "Save and
-  End", and the same checks when saving. See `src/aselo/` — its styles are copied from
+  End", and the same checks when saving. See `client/src/aseloPreview/` — its styles are copied from
   `plugin-hrm-form` and name the plugin file each one comes from, so they can be kept in step.
   Text comes from the plugin's translation files plus the helpline's
   `customStrings/Substitutions.json`, in the helpline's language (`helplineLanguage` in its
@@ -79,7 +79,7 @@ It reads and writes the same files the Flex plugin uses:
   have, no tabs, call types Aselo can't preselect, webchat answers that aren't webchat questions
   or whose value isn't one of the question's answers, and mapped answers that land on a tab that
   is never filled in. It only applies with `use_prepopulate_mappings` on: the panel says so, and
-  a change with the flag off adds a note for the reviewer. Logic in `src/formSelector.ts`.
+  a change with the flag off adds a note for the reviewer. Logic in `client/src/formSelector/formSelector.ts`.
 - **Issue categories** (`tabbedForms/IssueCategorizationTab.json`) next to the Aselo categories
   tab: add, reorder and colour categories and subcategories (one at a time or pasted one per
   line), help links for counselors, and how many can be chosen. Contacts and reports store the
@@ -133,7 +133,7 @@ It reads and writes the same files the Flex plugin uses:
   and commit; deployed, it will open a PR through a GitHub App. Staff can tick "View as
   helpline staff" to see what helpline staff see.
 - Roles come from Okta groups when deployed (`form-builder-<code>`, `form-builder-aselo-staff`).
-  The API (`server/api.ts`) checks which helplines a person can open, that only Aselo staff
+  The API (`server/src/api.ts`) checks which helplines a person can open, that only Aselo staff
   apply, and that only Aselo staff see or change the service configuration.
 - The other Aselo staff only edits (renaming existing fields, call types, categories, sections
   or statuses, PII on existing fields, switching an existing field's kind, removing required
@@ -168,7 +168,7 @@ It reads and writes the same files the Flex plugin uses:
 
 Each level is its own field: a `select`, then `dependent-select` fields whose options are
 grouped by the value chosen above (`options: { "<value above>": [...] }`).
-`src/linkedDropdowns.ts` converts between that and a tree of answers.
+`client/src/linkedDropdowns/linkedDropdowns.ts` converts between that and a tree of answers.
 
 - Lists are grouped by *value*, so two answers with the same value at a level with a level
   below would share one list (this happens in PH today: 112 municipality names repeat across
@@ -235,24 +235,36 @@ npm run build
 
 ## How it fits together
 
-- `server/definitionsApi.ts` reads raw definition files for a helpline, and `server/api.ts`
+Three packages (npm workspaces: `npm install` here installs them all), plus the Terraform:
+
+| Folder | What it is |
+|---|---|
+| `client/` | The web app. `src/` is by feature: `forms/`, `linkedDropdowns/`, `categories/`, `chatsAndCalls/` (call types, canned responses, messages), `cases/`, `profiles/`, `webchat/`, `serviceConfig/`, `formSelector/` (filling in the contact), `aseloPreview/` ("Try it out"), `reviews/` (approvals and flags), `drafts/` (drafts, imports, review and export), `workspace/` (a helpline's forms), `flows/` (Contact flows), `routing/`, `chatbots/`, `help/`, `app/` (the shell, sign-in, API calls) and `common/` |
+| `server/` | The API: the Lambda when deployed, and the local dev API |
+| `shared/` | What both use: the draft, definition, review and API types, where files live in the repo, and the Contact flows, Routing and Chatbots models and rules the server needs too (`flows/`, `routing/`, `chatbots/`) |
+| `terraform/` | The AWS and Okta infrastructure (see its README) |
+
+The client's tests run the real API in process, so `client/` depends on `server/` for its tests
+only.
+
+- `server/src/definitionsApi.ts` reads raw definition files for a helpline, and `server/src/api.ts`
   holds the routes. In development they're served by the Vite dev server
-  (`server/devApiPlugin.ts`, with `server/localServices.ts`). Deployed, the same routes run in a
-  Lambda (`server/lambda.ts`, built with `npm run build:lambda`), with:
+  (`server/src/devApiPlugin.ts`, with `server/src/localServices.ts`). Deployed, the same routes run in a
+  Lambda (`server/src/lambda.ts`, built with `npm run build:lambda`), with:
   - the current files from flex-plugins master, which is public, so it's downloaded without
-    credentials and kept until master moves on (`server/repoSnapshot.ts`, `server/publicRepo.ts`);
-  - drafts in S3 (`server/s3DraftStore.ts`);
+    credentials and kept until master moves on (`server/src/repoSnapshot.ts`, `server/src/publicRepo.ts`);
+  - drafts in S3 (`server/src/s3DraftStore.ts`);
   - no Apply for now: Aselo staff download the changes and open the PR themselves, then discard
     the draft (see `terraform/README.md`). Apply through a GitHub App, opening a branch and PR
     with the review's change log as its description, is ready for later
-    (`server/githubApplier.ts`, `server/github.ts`);
-  - "submitted for review" posted to Slack (`server/slackNotifier.ts`). A failed notification
+    (`server/src/githubApplier.ts`, `server/src/github.ts`);
+  - "submitted for review" posted to Slack (`server/src/slackNotifier.ts`). A failed notification
     doesn't stop the submission; it's logged.
 
   Who's signed in comes from the Okta token's `groups` claim (see `terraform/README.md`).
 - Form types, the Aselo specification (`aseloForms.ts`) and its validator come from
   `lambdas/packages/hrm-form-definitions/src`, so the builder stays in step with what the
-  plugin expects. `build-tools/hrmFormDefinitionsResolver.ts` lets the browser bundle use them
+  plugin expects. `client/build-tools/hrmFormDefinitionsResolver.ts` lets the browser bundle use them
   without the package's Node-only loader; the package itself is unchanged.
 - Exported JSON uses 2-space indentation, which matches most existing definition files.
 - The preview splits forms into two columns using `splitFormAt` from

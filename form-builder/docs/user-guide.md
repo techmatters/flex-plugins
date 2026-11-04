@@ -64,7 +64,7 @@ while you work:
   staff see them under **Questions sent to the Aselo team**, the same ones together and the most
   asked first, each with the closest article and **Copy this phrasing** to add it there.
 
-The articles are Markdown files in `src/help/content/` (how to write them:
+The articles are Markdown files in `client/src/help/content/` (how to write them:
 [its README](../src/help/content/README.md)).
 
 ## For helpline staff

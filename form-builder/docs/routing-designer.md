@@ -99,7 +99,7 @@ the "Ready to implement" idea from Contact flows (Claude reading the design from
 
 ## Status
 
-A routing design has a status, the same as boards and chatbots (src/designStatus.ts): **Imported**
+A routing design has a status, the same as boards and chatbots (shared/src/designStatus.ts): **Imported**
 (read from the live config, unchanged) → **In progress** (any change) → **Ready for Claude** →
 **Implemented**, plus **New** for a design started empty. Aselo staff set it in the toolbar; the
 start page lists every helpline's design with its status, and the routing-from-design skill only
@@ -123,5 +123,5 @@ Lower priority, in the live config (each on its own branch, with a staging plan)
 Imports read master (deployed; locally, this checkout) unless another flex-plugins branch is chosen
 next to the import button, e.g. the branch a helpline's changes are being made in. The branch's
 files are downloaded from GitHub (public) and kept as a snapshot until it moves on
-(server/branches.ts); the preview says which branch and commit it read, and chatbot and routing
+(server/src/branches.ts); the preview says which branch and commit it read, and chatbot and routing
 designs keep it as `importedFrom`.

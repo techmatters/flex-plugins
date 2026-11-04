@@ -161,7 +161,7 @@ are named by parts: `<prefix><channel>_<language>_<service>_<what it is>`, e.g.
 
 ### Status
 
-Each board has a status, the same as routing designs and chatbots (`src/designStatus.ts`):
+Each board has a status, the same as routing designs and chatbots (`shared/src/designStatus.ts`):
 **Imported** (as it is live, nothing changed), **In progress**, **Ready for Claude** (finished and
 agreed with the helpline: Claude can implement it) and **Implemented** (written into the config).
 Boards imported from a live helpline start *Imported*; new boards (empty or from a template) start
@@ -243,7 +243,7 @@ new board starts as a sketch):
 ### Test the flow
 
 In **Test** mode the board can't be changed (no palette, no moving or
-connecting); the **Test** panel runs a flow from its trigger (`src/flows/simulate.ts`), without
+connecting); the **Test** panel runs a flow from its trigger (`client/src/flows/simulate.ts`), without
 Twilio, to check its logic (not its texts or recordings):
 
 - **Asked for:** a chat reply (Question, messaging) or keys on a dialpad / words said (Menu,
@@ -497,7 +497,7 @@ An exit without `to` and without `endsFlow` is still open (and is in `checks`). 
 message has its `recordingFile`, its `status` and, once uploaded, its `recordingUrls`.
 
 The file also carries **`studioTemplates`**: each frame already written as a Studio flow template
-(`src/flows/studioTemplate.ts`), with the texts to set in the `.hcl` variables and what it couldn't
+(`client/src/flows/studioTemplate.ts`), with the texts to set in the `.hcl` variables and what it couldn't
 fill in:
 
 ```json
@@ -588,7 +588,7 @@ Nothing in Twilio or the repo changes.
 | Recordings | `play` URLs resolved from the same files (today Twilio Serverless, which is public) | copied into the recordings bucket: staging's files in `staging`, production's in `production`, under their current names |
 | Task attributes | a Send to Flex widget's `attributes`: `${channel_attributes.default}` resolved to the channel's channel-attributes template as Terraform does, or the JSON written in the widget | the Send to queue object's task attributes |
 
-The templates are read with a small HCL reader (`server/hcl.ts`) that keeps interpolations as
+The templates are read with a small HCL reader (`server/src/hcl.ts`) that keeps interpolations as
 written; its tests read every helpline's files in the repo, and import every helpline.
 
 The report lists what needs a person:
@@ -670,5 +670,5 @@ Not built yet:
 Imports read master (deployed; locally, this checkout) unless another flex-plugins branch is chosen
 next to the import button, e.g. the branch a helpline's changes are being made in. The branch's
 files are downloaded from GitHub (public) and kept as a snapshot until it moves on
-(server/branches.ts); the preview says which branch and commit it read, and chatbot and routing
+(server/src/branches.ts); the preview says which branch and commit it read, and chatbot and routing
 designs keep it as `importedFrom`.

@@ -38,7 +38,7 @@ design yet lets Aselo staff **import** its chatbots from the live config or **st
 
 ## Status
 
-Each chatbot has a status, the same as boards and routing designs (src/designStatus.ts):
+Each chatbot has a status, the same as boards and routing designs (shared/src/designStatus.ts):
 **Imported** (as live, unchanged) → **In progress** → **Ready for Claude** → **Implemented**, and a
 **New** tag when it isn't in the live config. Changing what a chatbot says or asks, the answers its
 questions take or the form fields they fill in sets it back to In progress; notes and comments
@@ -117,5 +117,5 @@ design, and the checks. The skill **chatbot-from-design** applies it and runs
 Imports read master (deployed; locally, this checkout) unless another flex-plugins branch is chosen
 next to the import button, e.g. the branch a helpline's changes are being made in. The branch's
 files are downloaded from GitHub (public) and kept as a snapshot until it moves on
-(server/branches.ts); the preview says which branch and commit it read, and chatbot and routing
+(server/src/branches.ts); the preview says which branch and commit it read, and chatbot and routing
 designs keep it as `importedFrom`.

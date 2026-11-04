@@ -28,9 +28,9 @@ service configuration...) aren't reviewed.
 
 ## Data
 
-Kept in the draft's metadata (`server/drafts.ts`), so it's shared by everyone who opens the
-draft and goes away when the draft is discarded or applied. The rules are in `server/reviews.ts`;
-the builder's side in `src/formReviews.ts`.
+Kept in the draft's metadata (`server/src/drafts.ts`), so it's shared by everyone who opens the
+draft and goes away when the draft is discarded or applied. The rules are in `shared/src/reviews.ts`;
+the builder's side in `client/src/reviews/formReviews.ts`.
 
 - **Targets**: a form (`contactTab:CallerInformationTab`, `caseSection:note`) or one of its fields
   (`contactTab:CallerInformationTab#firstName`, by the field's saved name).
@@ -47,7 +47,7 @@ nobody editing at the same time gets a conflict. It can start a draft (a questio
 anything changed), and a draft that holds a review isn't removed when its file changes are
 undone.
 
-API: `POST /api/drafts/:code/:version/approve` and `.../threads` (`server/api.ts`).
+API: `POST /api/drafts/:code/:version/approve` and `.../threads` (`server/src/api.ts`).
 
 ## Potential improvements
 

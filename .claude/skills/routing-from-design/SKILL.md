@@ -89,7 +89,7 @@ when they still apply. If the helpline sets `workflows` or `task_queues` in `sta
 ### 4. Check
 
 ```bash
-cd form-builder && npx vitest run server/hcl.test.ts server/routing.test.ts
+cd form-builder && npx vitest run server/src/hcl.test.ts client/src/routing/routing.test.ts
 git diff --stat
 ```
 
