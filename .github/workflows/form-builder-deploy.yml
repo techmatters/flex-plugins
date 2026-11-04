@@ -19,12 +19,14 @@
 name: 'Deploy form builder'
 
 # While it's a proof of concept, every push to its branch that touches form-builder/ deploys it.
-# (A manual-only workflow can't be started until it's on master.)
+# (A manual-only workflow can't be started until it's on master.) The flow designer's branch holds
+# everything in alejandro-c/form_builder_app as well, so it's the one deployed; fixes made there are
+# merged into it to go live.
 on:
   workflow_dispatch:
   push:
     branches:
-      - alejandro-c/form_builder_app
+      - alejandro-c/flow_designer
     paths:
       - 'form-builder/**'
       - '.github/workflows/form-builder-deploy.yml'
