@@ -235,3 +235,19 @@
   font-size: 12px;
   color: #4527a0;
 }
+
+.branch-link {
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  color: inherit;
+}
+
+/* In the workspace's bar, right before its main button */
+.branch-imported-from-inline {
+  display: inline-flex;
+  margin: 0 0 0 auto;
+  white-space: nowrap;
+}
+
+.action-bar .branch-imported-from-inline + .primary-button {
+  margin-left: 0;
+}

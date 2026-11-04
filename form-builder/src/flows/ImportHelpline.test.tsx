@@ -77,7 +77,9 @@ describe('importing a helpline from a branch', () => {
     });
     expect(screen.queryByRole('region', { name: 'Import preview' })).toBeNull();
     fireEvent.click(screen.getByRole('button', { name: 'Preview' }));
-    expect(await screen.findByText('alejandro-c/usvc/x', { selector: 'code' }, { timeout: 10_000 })).toBeTruthy();
+    // The branch read, linking to it on GitHub
+    const branchLink = await screen.findByRole('link', { name: 'alejandro-c/usvc/x' }, { timeout: 10_000 });
+    expect(branchLink.getAttribute('href')).toBe('https://github.com/techmatters/flex-plugins/tree/alejandro-c/usvc/x');
     expect(asked).toEqual(['alejandro-c/usvc/x']);
   }, 30_000);
 });

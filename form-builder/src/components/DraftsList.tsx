@@ -25,10 +25,11 @@ import type { FlagKind } from '../../server/reviews';
 import type { DraftClient } from '../draftClient';
 import { Loading } from './Loading';
 import { HelplineFilter } from './HelplineFilter';
+import { BranchLink } from './BranchPicker';
 import '../designStatus.css';
 
-// e.g. "2 open questions · 1 change needed": the flags still open on its forms (formReviews.ts)
-const changesNeededText = (draft: DraftSummary) => {
+// e.g. ["2 open questions", "1 change needed"]: the flags still open on its forms (formReviews.ts)
+const changesNeededOf = (draft: DraftSummary) => {
   const open = (draft.meta.threads ?? []).filter((thread) => !thread.resolvedAt);
   const count = (kind: FlagKind) => open.filter((thread) => thread.kind === kind).length;
   const parts = [
@@ -36,11 +37,7 @@ const changesNeededText = (draft: DraftSummary) => {
     [count('changes'), 'change needed', 'changes needed'],
     [count('attention'), 'needs attention', 'need attention'],
   ] as const;
-  const text = parts
-    .filter(([n]) => n > 0)
-    .map(([n, one, many]) => `${n} ${n === 1 ? one : many}`)
-    .join(' · ');
-  return text || undefined;
+  return parts.filter(([n]) => n > 0).map(([n, one, many]) => `${n} ${n === 1 ? one : many}`);
 };
 
 type Props = {
@@ -117,12 +114,7 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
               <tr key={keyOf(draft)}>
                 <td className="area-home-name">
                   {draft.code.toUpperCase()} {draft.version}
-                  {draft.meta.source && (
-                    <>
-                      {' '}
-                      (<code className="drafts-branch">{draft.meta.source.branch}</code>)
-                    </>
-                  )}
+                  {draft.meta.source && <BranchLink className="drafts-branch" branch={draft.meta.source.branch} />}
                 </td>
                 <td>
                   {/* Forms have their own review: submitted drafts are applied by Aselo staff in the builder */}
@@ -135,9 +127,11 @@ export const DraftsList = ({ draftClient, isAseloStaff, onOpen }: Props) => {
                   ) : (
                     <span className="design-status design-status-in-progress">In progress</span>
                   )}
-                  {changesNeededText(draft) && (
-                    <span className="drafts-changes-needed"> · {changesNeededText(draft)}</span>
-                  )}
+                  {changesNeededOf(draft).map((text) => (
+                    <div key={text} className="drafts-changes-needed">
+                      {text}
+                    </div>
+                  ))}
                 </td>
                 <td>
                   {draft.meta.updatedBy}, {new Date(draft.meta.updatedAt).toLocaleString()}

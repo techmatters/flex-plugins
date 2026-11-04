@@ -2243,9 +2243,28 @@ body {
   color: var(--color-pii-text);
 }
 
+/* One line each, the size of the status above them */
 .drafts-changes-needed {
+  margin-top: 4px;
   color: #ef6c00;
+  font-size: 11px;
   font-weight: 600;
+  line-height: 16px;
+}
+
+/* The branch a version was imported from, under its name, linking to it on GitHub */
+.drafts-branch {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Consolas, monospace);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--color-muted);
+  text-decoration: none;
+}
+
+.drafts-branch:hover {
+  text-decoration: underline;
 }
 
 /* Something is loading: a spinner and what it is */

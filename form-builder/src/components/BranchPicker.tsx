@@ -66,10 +66,34 @@ export const BranchPicker = ({ load, value, onChange }: Props) => {
   );
 };
 
-// "Read from alejandro-c/usvc/update_1029 (3f2a9c1)"
-export const ImportedFrom = ({ source }: { source?: ImportSource }) =>
-  source ? (
-    <p className="branch-imported-from">
-      <GitBranch size={13} aria-hidden /> Read from <code>{source.branch}</code> ({source.sha.slice(0, 7)})
-    </p>
-  ) : null;
+// Where a branch and a commit of flex-plugins are on GitHub
+const REPO_URL = 'https://github.com/techmatters/flex-plugins';
+export const branchUrl = (branch: string) => `${REPO_URL}/tree/${encodeURI(branch)}`;
+const commitUrl = (sha: string) => `${REPO_URL}/commit/${encodeURIComponent(sha)}`;
+
+// A branch's name, linking to it on GitHub
+export const BranchLink = ({ branch, className }: { branch: string; className?: string }) => (
+  <a className={className ?? 'branch-link'} href={branchUrl(branch)} target="_blank" rel="noreferrer">
+    {branch}
+  </a>
+);
+
+// "Read from alejandro-c/usvc/update_1029 (3f2a9c1)", each linking to GitHub; inline in a bar, or
+// a line of its own
+export const ImportedFrom = ({ source, inline }: { source?: ImportSource; inline?: boolean }) => {
+  if (!source) return null;
+  const content = (
+    <>
+      <GitBranch size={13} aria-hidden /> Read from <BranchLink branch={source.branch} /> (
+      <a className="branch-link" href={commitUrl(source.sha)} target="_blank" rel="noreferrer">
+        {source.sha.slice(0, 7)}
+      </a>
+      )
+    </>
+  );
+  return inline ? (
+    <span className="branch-imported-from branch-imported-from-inline">{content}</span>
+  ) : (
+    <p className="branch-imported-from">{content}</p>
+  );
+};

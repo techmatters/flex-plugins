@@ -585,6 +585,8 @@ export const HelplineWorkspace = ({
             Discard draft
           </button>
         )}
+        {/* Where the forms were read from, next to what's done with them */}
+        <ImportedFrom source={source} inline />
         <button
           type="button"
           className="primary-button"
@@ -594,8 +596,6 @@ export const HelplineWorkspace = ({
           {canApply ? 'Review & apply' : 'Review & submit'}
         </button>
       </div>
-
-      <ImportedFrom source={source} />
 
       {draft.conflict?.branch && (
         <div className="alert alert-error">
