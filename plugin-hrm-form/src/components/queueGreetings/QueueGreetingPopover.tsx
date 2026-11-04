@@ -16,7 +16,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ITask, Template } from '@twilio/flex-ui';
+import { TaskCanvasChildrenProps, Template } from '@twilio/flex-ui';
 import Close from '@material-ui/icons/Close';
 import Popper from '@material-ui/core/Popper';
 import type PopperJs from 'popper.js';
@@ -40,9 +40,7 @@ const MAX_CONTENT_LENGTH = 300;
 // Keeps the popover clear of the call actions at the bottom of the task canvas
 const DISTANCE_FROM_CANVAS_BOTTOM = 116;
 
-type Props = {
-  task?: ITask;
-};
+type Props = TaskCanvasChildrenProps;
 
 /**
  * Shows the greeting configured for the task's queue near the bottom of the task canvas.
