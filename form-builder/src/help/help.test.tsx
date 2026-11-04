@@ -185,8 +185,22 @@ describe('the help panel', () => {
     expect(await screen.findByText('how do I add a logo')).toBeTruthy();
   });
 
+  test.each([
+    ['flows', /How designing your contact flows works/],
+    ['chatbots', /Change what a chatbot says and asks/],
+    ['routing', /Check where a contact would go/],
+  ] as const)('%s opens on its own help, with the general articles', (area, guide) => {
+    render(<HelpPanel area={area} isAseloStaff={false} onClose={() => undefined} client={client()} />);
+    expect(screen.getByRole('button', { name: guide })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /What do Imported, In progress/ })).toBeTruthy();
+    expect(screen.queryByRole('button', { name: /Send your changes for review/ })).toBeNull();
+  });
+
   test('an area without help yet says so, and still offers the general articles', () => {
-    render(<HelpPanel area="routing" isAseloStaff={false} onClose={() => undefined} client={client()} />);
+    const general = HELP_ARTICLES.filter((article) => article.area === 'general');
+    render(
+      <HelpPanel area="routing" isAseloStaff={false} onClose={() => undefined} client={client()} articles={general} />,
+    );
     expect(screen.getByText(/Help for Routing is on its way/)).toBeTruthy();
     expect(screen.getByRole('button', { name: /Signing in and getting access/ })).toBeTruthy();
   });
@@ -226,5 +240,155 @@ describe('“Need help?” on a section', () => {
     const { NeedHelp } = await import('./HelpContext');
     render(<NeedHelp slug="section-service-user-information" what="service user information" />);
     expect(screen.queryByRole('button', { name: /Need help/ })).toBeNull();
+  });
+});
+
+describe('“Show me” tours', () => {
+  test('each tour step points at something, says something, and its kind is one Tour knows', () => {
+    const tours = HELP_ARTICLES.filter((article) => article.tour);
+    expect(tours.map((article) => article.slug).sort()).toEqual(
+      ['add-a-question', 'flag-or-comment', 'flows-add-and-connect-steps', 'submit-for-review'].sort(),
+    );
+    tours.forEach((article) =>
+      article.tour!.forEach((step) => {
+        expect(step.target, article.slug).toMatch(/^(button|text|label|css):\S/);
+        expect(step.text.length, article.slug).toBeGreaterThan(10);
+      }),
+    );
+  });
+
+  test('finds a button by its text, an element by its whole text, a label or a selector', async () => {
+    const { findTarget } = await import('./Tour');
+    // jsdom has no layout: everything counts as on screen for this test
+    const rects = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockReturnValue({ width: 10, height: 10, top: 0, left: 0, bottom: 10, right: 10, x: 0, y: 0 } as DOMRect);
+    try {
+      render(
+        <div>
+          <button type="button">Review &amp; submit</button>
+          <button type="button">+ Add a field here</button>
+          <label>
+            <span>Kind</span>
+            <select aria-label="Kind of flag" />
+          </label>
+          <textarea aria-label="New comment" />
+          <div className="flow-palette" />
+        </div>,
+      );
+      expect(findTarget('button:Review & submit')?.textContent).toBe('Review & submit');
+      expect(findTarget('button:+ Add a field')?.textContent).toBe('+ Add a field here');
+      expect(findTarget('text:Kind')?.tagName).toBe('SPAN');
+      expect(findTarget('label:New comment')?.tagName).toBe('TEXTAREA');
+      expect(findTarget('css:.flow-palette')).toBeTruthy();
+      expect(findTarget('button:Nothing like it')).toBeUndefined();
+    } finally {
+      rects.mockRestore();
+    }
+  });
+
+  test('goes step by step, says when something isn’t on screen, moves on when what’s highlighted is clicked', async () => {
+    const { Tour } = await import('./Tour');
+    vi.useFakeTimers();
+    const rects = vi
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockReturnValue({ width: 10, height: 10, top: 0, left: 0, bottom: 10, right: 10, x: 0, y: 0 } as DOMRect);
+    let ended = false;
+    try {
+      render(
+        <>
+          <button type="button">Review &amp; submit</button>
+          <Tour
+            title="Send your changes"
+            steps={[
+              { target: 'button:Review & submit', text: 'Click **Review & submit**.' },
+              { target: 'text:Fix these first', text: 'Fix these.', missing: 'Nothing needs fixing.' },
+              { target: 'button:Submit for review', text: 'Then submit.' },
+            ]}
+            onEnd={() => {
+              ended = true;
+            }}
+          />
+        </>,
+      );
+      const card = () => screen.getByRole('dialog', { name: 'Show me: Send your changes' });
+      expect(card().textContent).toContain('Step 1 of 3');
+      fireEvent.click(screen.getByRole('button', { name: 'Review & submit' }));
+      act(() => vi.advanceTimersByTime(400));
+      expect(card().textContent).toContain('Step 2 of 3');
+      expect(card().textContent).toContain('Nothing needs fixing.');
+      fireEvent.click(screen.getByRole('button', { name: /Back/ }));
+      expect(card().textContent).toContain('Step 1 of 3');
+      fireEvent.keyDown(window, { key: 'Escape' });
+      expect(ended).toBe(true);
+    } finally {
+      rects.mockRestore();
+      vi.useRealTimers();
+    }
+  });
+
+  test('a guide with a tour offers “Show me”; it never starts by itself', () => {
+    const started: string[] = [];
+    render(
+      <HelpPanel
+        area="forms"
+        isAseloStaff={false}
+        onClose={() => undefined}
+        request={{ slug: 'submit-for-review', at: 1 }}
+        onStartTour={(article) => started.push(article.slug)}
+      />,
+    );
+    expect(started).toEqual([]);
+    fireEvent.click(screen.getByRole('button', { name: /Show me on the page/ }));
+    expect(started).toEqual(['submit-for-review']);
+  });
+});
+
+describe('questions sent, for Aselo staff', () => {
+  test('the same question is counted once, asked most first, with who asked and what didn’t help', async () => {
+    const { groupQuestions } = await import('./SentQuestions');
+    const sent = (question: string, askedBy: string, at: string, article?: string) => ({
+      id: `${question}${at}`,
+      question,
+      area: 'forms',
+      reason: (article ? 'notHelpful' : 'unanswered') as 'notHelpful' | 'unanswered',
+      ...(article ? { article } : {}),
+      askedBy,
+      role: 'helpline-staff' as const,
+      at,
+    });
+    const groups = groupQuestions([
+      sent('How do I add a logo?', 'Ana', '2026-11-01T10:00:00Z'),
+      sent('Where is the export', 'Ana', '2026-11-04T10:00:00Z'),
+      sent('how do I add a logo', 'Bo', '2026-11-03T10:00:00Z', 'what-can-i-change'),
+    ]);
+    expect(groups).toEqual([
+      {
+        question: 'how do I add a logo',
+        count: 2,
+        people: 2,
+        areas: ['forms'],
+        notHelpful: ['what-can-i-change'],
+        latest: '2026-11-03T10:00:00Z',
+      },
+      expect.objectContaining({ question: 'Where is the export', count: 1 }),
+    ]);
+  });
+});
+
+describe('asking in the other areas', () => {
+  test.each([
+    ['flows', 'how do I upload a recording', 'flows-scripts-and-recordings'],
+    ['flows', 'how do I connect two steps', 'flows-add-and-connect-steps'],
+    ['flows', 'how do I assign a task to someone', 'flows-comments-and-tasks'],
+    ['flows', 'can I try the flow', 'flows-test-a-flow'],
+    ['flows', 'what does ready for claude mean', 'design-statuses'],
+    ['chatbots', 'the chatbot does not understand yes', 'chatbot-answers'],
+    ['chatbots', 'change the chatbot question', 'change-a-chatbot'],
+    ['routing', 'which queue does a spanish chat go to', 'routing-test-a-contact'],
+    ['routing', 'what are skills', 'what-routing-is'],
+  ] as const)('in %s, “%s” finds %s', (area, question, slug) => {
+    const { results, confident } = searchHelp(question, { area, isAseloStaff: false });
+    expect(confident ? results[0]?.article.slug : undefined).toBe(slug);
   });
 });

@@ -402,3 +402,191 @@
   background: var(--color-accent-soft);
   border-color: var(--color-accent);
 }
+
+/* A guide's "Show me": what to look at, ringed, the rest of the page a little dimmer (still usable) */
+.tour-spotlight {
+  position: fixed;
+  z-index: 2000;
+  border-radius: 10px;
+  outline: 3px solid var(--color-accent);
+  box-shadow: 0 0 0 9999px rgba(15, 25, 35, 0.35);
+  pointer-events: none;
+  transition:
+    left 200ms ease,
+    top 200ms ease,
+    width 200ms ease,
+    height 200ms ease;
+  animation: tour-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes tour-pulse {
+  0%,
+  100% {
+    outline-offset: 0;
+  }
+  50% {
+    outline-offset: 3px;
+  }
+}
+
+.tour-card {
+  position: fixed;
+  z-index: 2001;
+  width: 320px;
+  max-width: calc(100vw - 24px);
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow:
+    0 12px 32px rgba(25, 43, 51, 0.24),
+    0 2px 6px rgba(25, 43, 51, 0.1);
+  font-size: 14px;
+  line-height: 1.45;
+  opacity: 0;
+}
+
+.tour-card.shown {
+  opacity: 1;
+  animation: step-help-in 160ms ease-out;
+  transition:
+    left 200ms ease,
+    top 200ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-spotlight,
+  .tour-card.shown {
+    animation: none;
+    transition: none;
+  }
+}
+
+.tour-card-head {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.tour-progress {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+}
+
+.tour-close {
+  margin-left: auto;
+  display: flex;
+  padding: 4px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.tour-close:hover {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.tour-missing {
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fff8e1;
+  font-size: 13px;
+}
+
+.tour-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.tour-actions .link-button,
+.tour-next {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.help-best-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.help-show-me {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0 10px;
+  padding: 5px 12px;
+  border: 1px solid var(--color-accent);
+  border-radius: 999px;
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.help-best-actions .help-show-me {
+  margin: 0;
+}
+
+.help-show-me:hover {
+  background: var(--color-surface);
+}
+
+/* Aselo staff: the questions sent, grouped */
+.help-sent-questions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.help-sent-questions li {
+  display: grid;
+  gap: 3px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.help-sent-question {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.help-count {
+  margin-left: 6px;
+  padding: 0 7px;
+  border-radius: 10px;
+  background: #ef6c00;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.help-sent-question .help-count {
+  margin-left: auto;
+}
+
+.help-sent-closest {
+  font-size: 13px;
+}
+
+.help-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+}

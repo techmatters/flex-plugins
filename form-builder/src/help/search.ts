@@ -101,7 +101,7 @@ let defaultIndex: MiniSearch<Indexed> | undefined;
 export type HelpResult = { article: HelpArticle; score: number };
 
 /**
- * The articles answering a question, best first: those of the area the person is in count double,
+ * The articles answering a question, best first: those of the area the person is in count most,
  * and helpline staff only get what's written for them. Confident when the best has every word
  * asked (or a synonym), or most of them in a longer question; otherwise they're those sharing some
  * words, which may not answer it.
@@ -125,10 +125,10 @@ export const searchHelp = (
     index.search(
       { combineWith, queries: perWord },
       {
-        // The area the person is in counts double; sections (what a screen is for) a bit less than how-tos
+        // The area the person is in counts triple; sections (what a screen is for) a bit less than how-tos
         boostDocument: (slug) => {
           const article = bySlug.get(String(slug));
-          return (article?.area === area ? 2 : 1) * (article?.kind === 'section' ? 0.7 : 1);
+          return (article?.area === area ? 3 : 1) * (article?.kind === 'section' ? 0.7 : 1);
         },
         // The words asked count more than their synonyms
         boostTerm: (term) => (asked.has(term) ? 1 : 0.4),

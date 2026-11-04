@@ -26,6 +26,10 @@ export type HelpAudience = 'helpline' | 'aselo' | 'everyone';
 // explains one part of the builder (what it's for), and is what its "Need help?" opens
 export type HelpKind = 'guide' | 'answer' | 'section';
 
+// A "Show me" step: what to point at (button:<text>, text:<text>, label:<aria-label> or
+// css:<selector>, Tour.tsx), what to say, and what to say when it isn't on screen
+export type TourStep = { target: string; text: string; missing?: string };
+
 export type HelpArticle = {
   slug: string;
   title: string;
@@ -37,6 +41,8 @@ export type HelpArticle = {
   keywords: string[];
   // Shown first in its area's list (lower first)
   order: number;
+  // Its "Show me" tour, if it has one: "<target> | <text> | <when it isn't on screen>" lines
+  tour?: TourStep[];
   body: string;
   // Its first paragraph, shown as the answer in search results
   summary: string;
@@ -70,6 +76,11 @@ const listOf = (value: string | string[] | undefined) =>
         .map((item) => item.trim())
         .filter(Boolean);
 
+const tourStepOf = (line: string): TourStep => {
+  const [target, text, missing] = line.split(' | ').map((part) => part.trim());
+  return { target, text: text ?? '', ...(missing ? { missing } : {}) };
+};
+
 export const parseArticle = (path: string, source: string): HelpArticle => {
   const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
   if (!match) throw new Error(`${path}: the article needs a header between --- lines.`);
@@ -91,6 +102,7 @@ export const parseArticle = (path: string, source: string): HelpArticle => {
     questions: listOf(header.questions),
     keywords: listOf(header.keywords),
     order: Number(header.order ?? 100),
+    ...(Array.isArray(header.tour) && header.tour.length > 0 ? { tour: header.tour.map(tourStepOf) } : {}),
     body,
     summary: body.split(/\r?\n\s*\r?\n/).find((paragraph) => !paragraph.startsWith('#')) ?? '',
   };

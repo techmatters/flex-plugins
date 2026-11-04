@@ -16,6 +16,12 @@ questions:
   - what is the difference between question and needs changes
   - how do I mark something as done
 keywords: flag, comment, question, note, needs attention, needs changes, reply, resolve, assign, for, discuss, thread, difference, done, kinds
+tour:
+  - text:Contact forms | Open the form you want to comment on from the menu on the left, e.g. **Service user information**. | Open your helpline's forms first (Forms › Open).
+  - button:+ Flag or comment | Click **+ Flag or comment** to comment on the whole form. To comment on one field, click the field first: its own **+ Flag or comment** is above its settings. | Open a form first: it's in the Review box at its top.
+  - text:Kind | Choose what it is: a **Question**, **Needs attention**, **Needs changes** or a **Note**. | Click **+ Flag or comment** first.
+  - text:For | Choose who it's for: someone at your helpline, someone at Aselo, or no one in particular. | Click **+ Flag or comment** first.
+  - label:New comment | Write it here, then add it. Its icon shows on the field and in the left menu until someone resolves it. | Click **+ Flag or comment** first.
 ---
 You can leave a question or comment on a whole form or on one field. It stays there, with its replies, until someone marks it resolved, so your team and the Aselo team can discuss it right where it matters.
 

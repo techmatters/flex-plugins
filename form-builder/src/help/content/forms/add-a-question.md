@@ -15,6 +15,13 @@ questions:
   - add instructions for counselors
   - can I move a field up
 keywords: add, field, question, dropdown, text, checkbox, date, required, help box, kind of answer, wording, instructions, guidance, move, order
+tour:
+  - button:+ Add a field | Click **+ Add a field** where the new question should go. | Open a form first from the left menu, e.g. **Service user information**.
+  - label:Choose the kind of field to add | Choose what kind of answer it takes: short text, a dropdown, a date... | Click **+ Add a field** first.
+  - text:Field settings | The new question's settings are here. Write the **Question** as counselors should read it. | Select a field to see its settings.
+  - text:Counselors must answer this | Tick this to make the question required. | Select a field to see its settings.
+  - text:Help box under the field (optional) | Guidance for counselors, shown under the question, e.g. how to ask it. | Select a field to see its settings.
+  - button:Try it out in Aselo | Fill in the form as counselors would, to check it. | Open a form first.
 ---
 Each question counselors answer is a **field**. You can add one to any contact form tab or case form.
 

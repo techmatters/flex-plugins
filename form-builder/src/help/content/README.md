@@ -13,7 +13,7 @@ staff.
 ```markdown
 ---
 title: Send your changes for review     # as a task or a question
-kind: guide                            # guide (steps) or answer (one question)
+kind: guide                            # guide (steps), answer (one question) or section (what a screen is for)
 audience: helpline                     # helpline, aselo or everyone
 order: 22                              # its place in the area's list (lower first)
 questions:                             # how people ask for it: the more, the better it's found
@@ -39,5 +39,27 @@ its own. Then:
 - `> ` a tip
 - `## ` a heading
 - links: `[text](help:<article>)`, or `[text](https://...)`
+
+## Sections
+
+`kind: section` explains one part of the builder: what it's for, what counselors see, what can
+change. It's what that part's **Need help?** opens (the list of which article each Forms section
+opens is `SECTION_HELP` in `src/components/HelplineWorkspace.tsx`).
+
+## Show me (tours)
+
+A guide can have a tour: **Show me on the page** highlights the real buttons one at a time. It's
+optional for the person, and never starts by itself. Each step is a line of `tour:` in the header:
+
+```markdown
+tour:
+  - button:Review & submit | Click **Review & submit**. | Open your forms first: it's at the top right.
+  - text:Fix these first | Fix anything listed here. | Nothing needs fixing. Good!
+```
+
+`<what to point at> | <what to say> | <what to say when it isn't on screen>` (the last is
+optional). What to point at: `button:<its text>`, `text:<an element's whole text, e.g. a
+heading>`, `label:<its aria-label>` or `css:<a selector>`. Clicking what's highlighted moves on by
+itself, so a step can open the dialog the next one points at.
 
 `npm test` checks every article: its header, and that its links lead to an article.

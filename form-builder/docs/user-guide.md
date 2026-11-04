@@ -52,13 +52,17 @@ If the builder says *"You are not in a form builder group"*, ask the Aselo team
 **Help** (top bar) opens a panel beside whatever you're working on, so you can follow its steps
 while you work:
 
-- **Guides, step by step** and **Common questions** for the area you're in (Forms first; the other
-  areas follow), plus getting access and contacting the Aselo team.
+- **Guides, step by step**, **About each section** and **Common questions** for the area you're in
+  (Forms, Contact flows, Chatbots and Routing), plus getting access, design statuses and contacting
+  the Aselo team.
 - **Ask a question** in your own words ("how do I send my changes?"): it shows the best answer, and
   related ones. It runs in your browser, with no AI and no cost.
+- **Need help?** at the top right of each Forms section opens what that section is for.
+- Some guides have **Show me on the page**: an optional tour that highlights each button in turn.
 - When it can't answer, or an answer didn't help, you can **send the question to the Aselo team**
   (only the question and your name). They write answers for the questions that come up; Aselo
-  staff see them under **Questions sent to the Aselo team**.
+  staff see them under **Questions sent to the Aselo team**, the same ones together and the most
+  asked first, each with the closest article and **Copy this phrasing** to add it there.
 
 The articles are Markdown files in `src/help/content/` (how to write them:
 [its README](../src/help/content/README.md)).

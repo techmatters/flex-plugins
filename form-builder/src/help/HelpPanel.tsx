@@ -27,6 +27,7 @@ import {
   CircleHelp,
   Inbox,
   ListChecks,
+  MousePointerClick,
   Search,
   Send,
   ThumbsDown,
@@ -37,6 +38,7 @@ import type { HelpArea, HelpArticle } from './articles';
 import { articleBySlug, HELP_ARTICLES, visibleTo } from './articles';
 import { searchHelp } from './search';
 import { HelpMarkdown } from './HelpMarkdown';
+import { SentQuestions } from './SentQuestions';
 import type { HelpClient, HelpQuestion } from './helpClient';
 import { httpHelpClient } from './helpClient';
 import './help.css';
@@ -57,6 +59,8 @@ type Props = {
   articles?: HelpArticle[];
   // An article to show, e.g. from a section's "Need help?" (a new one each time it's asked for)
   request?: { slug: string; at: number };
+  // Starts a guide's "Show me" tour (optional: without it, tours aren't offered)
+  onStartTour?: (article: HelpArticle) => void;
 };
 
 const KIND_TITLES = {
@@ -84,6 +88,7 @@ export const HelpPanel = ({
   client = httpHelpClient,
   articles = HELP_ARTICLES,
   request,
+  onStartTour,
 }: Props) => {
   const [query, setQuery] = useState('');
   // What's searched: the query once typing pauses
@@ -145,13 +150,19 @@ export const HelpPanel = ({
       setSending(false);
     }
   };
-  const showQuestions = () => {
-    setView({ kind: 'questions' });
+  const loadQuestions = () =>
     client
       .list()
       .then(setQuestions)
       .catch((err: Error) => setError(err.message));
+  const showQuestions = () => {
+    setView({ kind: 'questions' });
+    loadQuestions();
   };
+  // Aselo staff: how many were sent, next to the link
+  useEffect(() => {
+    if (isAseloStaff) client.list().then(setQuestions, () => undefined);
+  }, [isAseloStaff, client]);
 
   const article = view.kind === 'article' ? articles.find((candidate) => candidate.slug === view.slug) : undefined;
   const back = (
@@ -202,6 +213,7 @@ export const HelpPanel = ({
             {back}
             <h3>{article.title}</h3>
             {article.audience === 'aselo' && <span className="help-badge">For Aselo staff</span>}
+            {article.tour && onStartTour && <ShowMe article={article} onStartTour={onStartTour} />}
             <HelpMarkdown source={article.body} onOpenArticle={open} steps={article.kind === 'guide'} />
             <div className="help-feedback">
               {feedback === 'yes' && <p>Glad it helped.</p>}
@@ -251,24 +263,12 @@ export const HelpPanel = ({
           <div className="help-questions">
             {back}
             <h3>Questions sent to the Aselo team</h3>
-            <p className="field-hint">The last three months’. Write an answer for those that keep coming up.</p>
+            <p className="field-hint">
+              The last three months’, those asked most first. Add each to its closest article as another way of asking,
+              or write a new article when nothing is close.
+            </p>
             {!questions && !error && <p className="field-hint">Loading…</p>}
-            {questions?.length === 0 && <p>None yet.</p>}
-            <ul>
-              {questions?.map((question) => (
-                <li key={question.id}>
-                  <q>{question.question}</q>
-                  <span className="field-hint">
-                    {question.reason === 'notHelpful'
-                      ? `“${articleBySlug(question.article ?? '')?.title ?? question.article}” didn’t help`
-                      : 'No answer found'}
-                    {' · '}
-                    {HELP_AREA_LABELS[question.area as HelpArea] ?? question.area} · {question.askedBy} ·{' '}
-                    {new Date(question.at).toLocaleDateString()}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {questions && <SentQuestions questions={questions} areaLabels={HELP_AREA_LABELS} onOpenArticle={open} />}
           </div>
         )}
 
@@ -280,9 +280,14 @@ export const HelpPanel = ({
                   <p className="help-section-title">Best answer</p>
                   <h3>{results[0].article.title}</h3>
                   <HelpMarkdown source={results[0].article.summary} onOpenArticle={open} />
-                  <button type="button" className="secondary-button" onClick={() => open(results[0].article.slug)}>
-                    {results[0].article.kind === 'guide' ? 'Open the guide' : 'Read all of it'}
-                  </button>
+                  <div className="help-best-actions">
+                    <button type="button" className="secondary-button" onClick={() => open(results[0].article.slug)}>
+                      {results[0].article.kind === 'guide' ? 'Open the guide' : 'Read all of it'}
+                    </button>
+                    {results[0].article.tour && onStartTour && (
+                      <ShowMe article={results[0].article} onStartTour={onStartTour} />
+                    )}
+                  </div>
                 </div>
                 {results.length > 1 && (
                   <>
@@ -359,6 +364,7 @@ export const HelpPanel = ({
             {isAseloStaff && (
               <button type="button" className="link-button help-staff-link" onClick={showQuestions}>
                 <Inbox size={14} aria-hidden /> Questions sent to the Aselo team
+                {questions && questions.length > 0 && <span className="help-count">{questions.length}</span>}
               </button>
             )}
           </>
@@ -367,6 +373,18 @@ export const HelpPanel = ({
     </aside>
   );
 };
+
+// A guide's tour, offered and never started by itself
+const ShowMe = ({ article, onStartTour }: { article: HelpArticle; onStartTour: (article: HelpArticle) => void }) => (
+  <button
+    type="button"
+    className="help-show-me"
+    title="Highlights each step on the page, one at a time. You can stop whenever you like."
+    onClick={() => onStartTour(article)}
+  >
+    <MousePointerClick size={14} aria-hidden /> Show me on the page
+  </button>
+);
 
 const PrivacyNote = () => (
   <p className="field-hint">

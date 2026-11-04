@@ -34,6 +34,8 @@ import type { ChatbotClient } from './chatbots/chatbotClient';
 import { BoardClient, httpBoardClient } from './flows/boardClient';
 import { HelpPanel } from './help/HelpPanel';
 import { HelpContext } from './help/HelpContext';
+import { Tour } from './help/Tour';
+import type { HelpArticle } from './help/articles';
 import type { HelpClient } from './help/helpClient';
 
 type Area = 'forms' | 'flows' | 'routing' | 'chatbots';
@@ -93,6 +95,9 @@ export const App = ({
   const closeHelp = useCallback(() => setHelpOpen(false), []);
   // An article asked for from the page (a section's "Need help?")
   const [helpRequest, setHelpRequest] = useState<{ slug: string; at: number }>();
+  // A guide's "Show me" tour, while it runs
+  const [tour, setTour] = useState<HelpArticle>();
+  const endTour = useCallback(() => setTour(undefined), []);
   const openHelp = useCallback((slug?: string) => {
     setHelpRequest(slug ? { slug, at: Date.now() } : undefined);
     setHelpOpen(true);
@@ -206,8 +211,10 @@ export const App = ({
             onClose={closeHelp}
             client={helpClient}
             request={helpRequest}
+            onStartTour={setTour}
           />
         )}
+        {tour?.tour && <Tour key={tour.slug} title={tour.title} steps={tour.tour} onEnd={endTour} />}
 
         {opened.has('chatbots') && user && (
           <div className="area-pane" hidden={area !== 'chatbots'}>
