@@ -32,6 +32,13 @@ jest.mock('@twilio/flex-ui', () => ({
   Actions: { invokeAction: jest.fn() },
 }));
 
+// jsdom does not implement ResizeObserver
+global.ResizeObserver = class {
+  observe = jest.fn();
+
+  disconnect = jest.fn();
+} as any;
+
 const queueGreetings = {
   greetedQueue: {
     pillText: 'A pill text longer than twenty characters',
