@@ -76,16 +76,18 @@ const state: RecursivePartial<RootState> = {
   [namespace]: {
     routing: {
       tasks: {
-        [TASK_SID]: [
-          { route: 'case', subroute: 'home', caseId: 'case1' },
-          {
-            route: 'case',
-            subroute: NewCaseSubroutes.Household,
-            caseId: 'case1',
-            action: CaseItemAction.View,
-            id: 'HOUSEHOLD_2',
-          },
-        ],
+        [TASK_SID]: {
+          routeStack: [
+            { route: 'case', subroute: 'home', caseId: 'case1' },
+            {
+              route: 'case',
+              subroute: NewCaseSubroutes.Household,
+              caseId: 'case1',
+              action: CaseItemAction.View,
+              id: 'HOUSEHOLD_2',
+            },
+          ],
+        },
       },
     },
     configuration: {

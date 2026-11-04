@@ -29,6 +29,7 @@ import {
   RoutingActionType,
   RoutingState,
   SET_QUEUE_GREETING_DISMISSED,
+  TaskRoutingState,
 } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { standaloneTaskSid } from '../../types/types';
@@ -49,11 +50,29 @@ export const getPathFromUrl = (url: Location) => {
 
 export const initialState: RoutingState = {
   tasks: {
-    [standaloneTaskSid]: [
-      { route: getPathFromUrl(window.location) as any, subroute: getPathFromUrl(window.location) as any },
-    ],
+    [standaloneTaskSid]: {
+      routeStack: [{ route: getPathFromUrl(window.location) as any, subroute: getPathFromUrl(window.location) as any }],
+    },
   },
   dismissedQueueGreetings: {},
+};
+
+/**
+ * Replaces the route stack of a task, keeping the rest of its routing state
+ */
+const updateTaskRouteStack = (
+  state: RoutingState,
+  taskId: string,
+  update: (routeStack: AppRoutes[] | undefined) => AppRoutes[],
+): RoutingState => {
+  const taskState: TaskRoutingState | undefined = state.tasks[taskId];
+  return {
+    ...state,
+    tasks: {
+      ...state.tasks,
+      [taskId]: { ...taskState, routeStack: update(taskState?.routeStack) },
+    },
+  };
 };
 
 const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
@@ -85,16 +104,9 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
       subroute: 'callerInformation',
     };
   }
-  return {
-    ...stateWithoutPreviousContact,
-    tasks: {
-      ...stateWithoutPreviousContact.tasks,
-      [taskId]:
-        recreated && stateWithoutPreviousContact.tasks[taskId]
-          ? stateWithoutPreviousContact.tasks[taskId]
-          : [initialEntry],
-    },
-  };
+  return updateTaskRouteStack(stateWithoutPreviousContact, taskId, routeStack =>
+    recreated && routeStack ? routeStack : [initialEntry],
+  );
 };
 
 const removeEmptyModalStack = (routeStack: AppRoutes[]): AppRoutes[] => {
@@ -229,42 +241,20 @@ export function reduce(
       };
     case CHANGE_ROUTE: {
       const { routing, mode, taskId } = action;
-      const updatedRoute =
-        mode === ChangeRouteMode.ResetRoute ? [routing] : updateTopmostRoute(state.tasks[action.taskId], routing, mode);
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [taskId]: updatedRoute,
-        },
-      };
+      return updateTaskRouteStack(state, taskId, routeStack =>
+        mode === ChangeRouteMode.ResetRoute ? [routing] : updateTopmostRoute(routeStack, routing, mode),
+      );
     }
     case GO_BACK: {
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: removeEmptyModalStack(popTopmostRoute(state.tasks[action.taskId])),
-        },
-      };
+      return updateTaskRouteStack(state, action.taskId, routeStack =>
+        removeEmptyModalStack(popTopmostRoute(routeStack)),
+      );
     }
     case OPEN_MODAL: {
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: openModalOnTop(state.tasks[action.taskId], action.routing),
-        },
-      };
+      return updateTaskRouteStack(state, action.taskId, routeStack => openModalOnTop(routeStack, action.routing));
     }
     case CLOSE_MODAL: {
-      return {
-        ...state,
-        tasks: {
-          ...state.tasks,
-          [action.taskId]: closeTopModal(state.tasks[action.taskId], action.topRoute),
-        },
-      };
+      return updateTaskRouteStack(state, action.taskId, routeStack => closeTopModal(routeStack, action.topRoute));
     }
     case SET_QUEUE_GREETING_DISMISSED: {
       return {

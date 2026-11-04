@@ -53,7 +53,10 @@ const createStore = ({ dismissedQueueGreetings = {} } = {}) =>
     flex: { view: { selectedTaskSid: 'WR1' } },
     [namespace]: {
       configuration: { currentDefinitionVersion: { queueGreetings } },
-      routing: { tasks: { [standaloneTaskSid]: [{ route: 'agent-desktop' }] }, dismissedQueueGreetings },
+      routing: {
+        tasks: { [standaloneTaskSid]: { routeStack: [{ route: 'agent-desktop' }] } },
+        dismissedQueueGreetings,
+      },
     },
   });
 

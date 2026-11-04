@@ -36,7 +36,7 @@ type TestCase<T extends AppRoutes | AppRoutes[]> = {
 
 const stateWithRouteStack = (baseRoutes: AppRoutes[]): RoutingState => ({
   tasks: {
-    1: baseRoutes,
+    1: { routeStack: baseRoutes },
     [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
   },
 });
@@ -323,7 +323,7 @@ describe('selectIsQueueGreetingOpen', () => {
       flex: { view: { selectedTaskSid } },
       [namespace]: {
         routing: {
-          tasks: { [standaloneTaskSid]: [{ route: standaloneRoute }] },
+          tasks: { [standaloneTaskSid]: { routeStack: [{ route: standaloneRoute }] } },
           dismissedQueueGreetings,
         },
       },
