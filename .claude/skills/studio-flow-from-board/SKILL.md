@@ -102,6 +102,43 @@ variable changes), every `forClaude` request (quoted, with the widget or frame i
 standards or repeat, a way out leading to two places), stop: they're fixed on the board, not here.
 Warnings (open ends, missing recordings) are for the person to decide on; list them.
 
+### 1b. Review the board
+
+The board's `checks` don't catch everything. Before writing anything, go through this list for
+every frame and report what you find with the step 1 summary, one line each: what, where (widget or
+file), and why it matters. The person decides whether to fix the board first. Something the builder
+should have flagged itself (like an open end it missed), say so too, so a check gets added.
+
+1. **Form fields the flow reads.** For each Decision on a form field
+   (`pre_engagement_data.<field>`, `memory.<field>`...), the field and each value its conditions
+   compare with exist in the form the environment will run:
+   `lambdas/packages/hrm-form-definitions/form-definitions/<code>/<version>/` on the branch, or the
+   builder's draft of it. Compare option **values**, not labels. If only the draft has it, the form
+   and the flow must be deployed together, per environment.
+2. **Fields and texts the board stops using.** Before removing a form field, a `flow_vars` /
+   `channel_flow_vars` entry or a widget, search what else reads it: the other environment's
+   templates (production often points at a different `.tftpl`), other channels' flows,
+   `PrepopulateMappings.json`, channel-attributes templates, the workflows and the lambdas. Remove it
+   only from the files whose templates no longer read it.
+3. **Who messages are from.** The flow's messages (live and new, Send message and close included)
+   say the same From unless the board says why not. A mix (live `Bot`, new `${helpline}`) shows the
+   contact two senders.
+4. **Task attributes across Send to queue widgets.** In one flow, every Send to queue sends the same
+   keys (`channelType` and its fallback, `customChannelType`, `twilioNumber`, `helpline`,
+   `language`...) unless the board says why. A key missing from one queue's attributes changes what
+   the workflow's filters and Flex see for those contacts.
+5. **Open ends.** Every way out of every widget leads somewhere or is marked "ends here". Look
+   hardest at the failure ones (`callFailure`, `failed`, `deliveryFailure`, `timeout`, a route's
+   `failed`): a contact on an open end is dropped without a word.
+6. **Renamed live widgets.** Each renamed one (old → new name) can break Datadog monitors,
+   dashboards and saved queries that use the old name: list them for the person to check.
+7. **Decisions.** Each condition compares with what the widget before it really gives (an option's
+   value, a key pressed, the chatbot's release flag), with the right case and operator, and
+   `noMatch` goes somewhere that makes sense for an unexpected answer.
+
+**Keep adding to this list**: when a review (yours or the team's) finds a kind of problem that isn't
+here, add it as a new item, one short paragraph: what to check, where, and why it matters.
+
 ### 2. Write each template
 
 For each `studioTemplates` entry:
@@ -375,8 +412,8 @@ a call or message in staging.
 
 ## Hand-off
 
-End with what was changed (files, uncommitted unless they asked), what the plan shows, the live
-widgets renamed, a staging copy made (question 1), anything done before provision or chatbots were
+End with what was changed (files, uncommitted unless they asked), what the plan shows, what the
+review (step 1b) found and what was done about each, the live widgets renamed, a staging copy made (question 1), anything done before provision or chatbots were
 ready, what was done for each `forClaude` request (or why not), what's left for the person
 (commit and push, apply, PR, publishing recordings, production),
 and any design warnings they chose to keep. Remind them to resolve the comments and remove the
