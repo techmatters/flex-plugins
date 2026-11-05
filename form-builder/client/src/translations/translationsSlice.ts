@@ -15,10 +15,11 @@
  */
 
 /**
- * The translations editor (Aselo staff only): the language shown, Aselo's own text in it (loaded
- * from the plugin's files), the search and filter, the string being edited, find & replace, and
- * what a spreadsheet import did. Every change is written to the draft's
- * customStrings/Substitutions.json (translations.ts).
+ * The translations editor (Aselo staff only): whose text (Aselo's or the webchat's), the language
+ * shown, the default text in it (loaded from the plugin's or the webchat app's files), the search
+ * and filter, the string being edited, find & replace, and what a spreadsheet import did. Every
+ * change is written to the draft: customStrings/Substitutions.json for Aselo's text, the
+ * webchat's translations file for the locale for the webchat's (translations.ts).
  */
 import { createSelector, createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 
@@ -28,24 +29,27 @@ import { editDraftFiles, selectDraftFiles } from '../drafts/draftSlice';
 import { selectDefinitions } from '../workspace/workspaceSlice';
 import { loadPluginStrings } from '../aseloPreview/translations';
 import { parseDelimitedText } from '../linkedDropdowns/spreadsheet';
+import { baseWebchatStrings, getWebchatLocales, translatedWebchatKeys } from '../webchat/webchat';
 import {
   filterTranslationRows,
   findReplacements,
   getTranslationRows,
   helplineLanguages,
   localeFor,
+  ownFileOf,
   setTranslation,
   setTranslations,
   Strings,
-  SUBSTITUTIONS_FILE,
   TranslationFilter,
   translationsFromSpreadsheet,
+  TranslationTarget,
 } from './translations';
 
 // Rows shown at first, and added by "Show more" (Aselo has about 700 strings)
 const PAGE_SIZE = 100;
 
 type TranslationsState = {
+  target: TranslationTarget;
   language: string;
   // Languages added here that have no text of their own yet
   addedLanguages: string[];
@@ -69,6 +73,7 @@ type TranslationsState = {
 const initialFindReplace = { open: false, find: '', replace: '', matchCase: false, wholeWord: true, skipped: [] };
 
 const initialState: TranslationsState = {
+  target: 'aselo',
   language: 'en',
   addedLanguages: [],
   search: '',
@@ -81,7 +86,10 @@ const translationsSlice = createSlice({
   name: 'translations',
   initialState,
   reducers: {
-    translationsOpened: (_state, action: PayloadAction<string>) => ({ ...initialState, language: action.payload }),
+    translationsOpened: (_state, action: PayloadAction<{ target: TranslationTarget; language: string }>) => ({
+      ...initialState,
+      ...action.payload,
+    }),
     languageChosen: (state, action: PayloadAction<string>) => {
       state.language = action.payload;
       state.aselo = undefined;
@@ -151,11 +159,37 @@ export const { searchChanged, filterChanged, moreShown, editingToggled, findRepl
   translationsSlice.actions;
 
 const selectHelplineLanguage = (state: RootState) => selectDefinitions(state)?.helplineLanguage;
+const selectWebchatDefaultLocale = (state: RootState) => selectDefinitions(state)?.webchat?.defaultLocale ?? 'en-US';
+
+// Whether the helpline has a webchat, so its text can be translated here too
+export const selectHasWebchat = (state: RootState) => Boolean(selectDefinitions(state)?.webchat);
+
+// The webchat's languages: a translations file per locale, the default first
+const webchatLanguages = (files: DefinitionFileMap, defaultLocale: string) => {
+  const locales = getWebchatLocales(files, defaultLocale);
+  return locales.includes(defaultLocale) ? locales : [defaultLocale, ...locales];
+};
+
+const languagesOf = (state: RootState, target: TranslationTarget) =>
+  target === 'aselo'
+    ? helplineLanguages(selectDraftFiles(state), selectHelplineLanguage(state))
+    : webchatLanguages(selectDraftFiles(state), selectWebchatDefaultLocale(state));
 
 // The helpline's languages, then the ones added here
 export const selectLanguages = createSelector(
-  [selectDraftFiles, selectHelplineLanguage, (state: RootState) => selectTranslations(state).addedLanguages],
-  (files, helplineLanguage, added) => [...new Set([...helplineLanguages(files, helplineLanguage), ...added])],
+  [
+    selectDraftFiles,
+    selectHelplineLanguage,
+    selectWebchatDefaultLocale,
+    (state: RootState) => selectTranslations(state).target,
+    (state: RootState) => selectTranslations(state).addedLanguages,
+  ],
+  (files, helplineLanguage, defaultLocale, target, added) => [
+    ...new Set([
+      ...(target === 'aselo' ? helplineLanguages(files, helplineLanguage) : webchatLanguages(files, defaultLocale)),
+      ...added,
+    ]),
+  ],
 );
 
 // Every string in the language shown (none until Aselo's text has loaded)
@@ -164,8 +198,9 @@ export const selectTranslationRows = createSelector(
     selectDraftFiles,
     (state: RootState) => selectTranslations(state).language,
     (state: RootState) => selectTranslations(state).aselo,
+    (state: RootState) => selectTranslations(state).target,
   ],
-  (files, language, aselo) => (aselo ? getTranslationRows(files, language, aselo) : []),
+  (files, language, aselo, target) => (aselo ? getTranslationRows(files, language, aselo, target) : []),
 );
 
 export const selectVisibleTranslationRows = createSelector(
@@ -183,35 +218,56 @@ export const selectReplacements = createSelector(
   (rows, { find, replace, matchCase, wholeWord }) => findReplacements(rows, find, replace, { matchCase, wholeWord }),
 );
 
-// Writes Substitutions.json; one the helpline didn't have, emptied again, isn't created
-const editSubstitutions =
+/**
+ * Writes the helpline's text for the language shown (Substitutions.json, or the webchat's file
+ * for the locale); a file the helpline didn't have, emptied again, isn't created
+ */
+const editOwnText =
   (updater: (files: DefinitionFileMap) => DefinitionFileMap): AppThunk =>
   (dispatch, getState) => {
-    const hadFile = SUBSTITUTIONS_FILE in getState().draft.original;
+    const { target, language } = selectTranslations(getState());
+    const filePath = ownFileOf(target, language);
+    const hadFile = filePath in getState().draft.original;
     dispatch(
       editDraftFiles(files => {
-        const { [SUBSTITUTIONS_FILE]: substitutions, ...rest } = updater(files);
-        const isEmpty = !substitutions || Object.keys(substitutions as object).length === 0;
-        return isEmpty && !hadFile ? rest : { ...rest, [SUBSTITUTIONS_FILE]: substitutions ?? {} };
+        const { [filePath]: own, ...rest } = updater(files);
+        const isEmpty = !own || Object.keys(own as object).length === 0;
+        return isEmpty && !hadFile ? rest : { ...rest, [filePath]: own ?? {} };
       }),
     );
   };
 
-// Aselo's own text in the language shown, in the helpline's locale when it's that language
+/**
+ * The default text in the language shown: Aselo's, in the helpline's locale when it's that
+ * language, or the webchat app's for the locale
+ */
 const loadAseloText = (): AppThunk<Promise<void>> => async (dispatch, getState) => {
-  const { language } = selectTranslations(getState());
+  const { target, language } = selectTranslations(getState());
+  if (target === 'webchat') {
+    dispatch(
+      aseloTextLoaded({
+        locale: language,
+        strings: baseWebchatStrings(language),
+        translated: translatedWebchatKeys(language),
+      }),
+    );
+    return;
+  }
   const locale = localeFor(language, selectHelplineLanguage(getState()));
   const loaded = await loadPluginStrings(locale);
-  // Only if the language hasn't changed in the meantime
-  if (selectTranslations(getState()).language === language) dispatch(aseloTextLoaded({ locale, ...loaded }));
+  // Only if what's shown hasn't changed in the meantime
+  const current = selectTranslations(getState());
+  if (current.target === target && current.language === language) dispatch(aseloTextLoaded({ locale, ...loaded }));
 };
 
-// Starts the editor again on the helpline's own language
-export const openTranslations = (): AppThunk => (dispatch, getState) => {
-  const [first] = helplineLanguages(selectDraftFiles(getState()), selectHelplineLanguage(getState()));
-  dispatch(translationsOpened(first));
-  dispatch(loadAseloText());
-};
+// Starts the editor again, on Aselo's text (or the webchat's) in the helpline's own language
+export const openTranslations =
+  (target: TranslationTarget = 'aselo'): AppThunk =>
+  (dispatch, getState) => {
+    const [first] = languagesOf(getState(), target);
+    dispatch(translationsOpened({ target, language: first }));
+    dispatch(loadAseloText());
+  };
 
 export const chooseLanguage =
   (language: string): AppThunk =>
@@ -220,13 +276,26 @@ export const chooseLanguage =
     dispatch(loadAseloText());
   };
 
-// A language the helpline doesn't have text for yet (e.g. a two-letter code like "pt")
+/**
+ * A language the helpline doesn't have text for yet: Aselo's text is by language ("pt"), the
+ * webchat's by locale ("es-CL", as its files are named)
+ */
 export const addLanguage =
   (code: string): AppThunk =>
-  dispatch => {
-    const language = code.trim().toLowerCase().split('-')[0];
-    if (!/^[a-z]{2,3}$/.test(language)) {
-      dispatch(noticeShown({ kind: 'error', text: 'Use the language’s two-letter code, e.g. es, fr or pt.' }));
+  (dispatch, getState) => {
+    const isWebchat = selectTranslations(getState()).target === 'webchat';
+    const typed = code.trim();
+    const language = isWebchat ? typed : typed.toLowerCase().split('-')[0];
+    const valid = isWebchat ? /^[a-z]{2,3}([-_][A-Za-z]{2,4})?$/.test(language) : /^[a-z]{2,3}$/.test(language);
+    if (!valid) {
+      dispatch(
+        noticeShown({
+          kind: 'error',
+          text: isWebchat
+            ? 'Use the locale’s code, e.g. es-CL or fr-CA.'
+            : 'Use the language’s two-letter code, e.g. es, fr or pt.',
+        }),
+      );
       return;
     }
     dispatch(languageAdded(language));
@@ -237,21 +306,22 @@ export const addLanguage =
 export const editTranslation =
   (key: string, text: string | undefined): AppThunk =>
   (dispatch, getState) => {
-    const { language } = selectTranslations(getState());
+    const { language, target } = selectTranslations(getState());
     const row = selectTranslationRows(getState()).find(candidate => candidate.key === key);
-    dispatch(editSubstitutions(files => setTranslation(files, language, key, text, row?.aseloText)));
+    dispatch(editOwnText(files => setTranslation(files, language, key, text, row?.aseloText, target)));
   };
 
 export const applyReplacements = (): AppThunk => (dispatch, getState) => {
-  const { language, findReplace } = selectTranslations(getState());
+  const { language, target, findReplace } = selectTranslations(getState());
   const chosen = selectReplacements(getState()).filter(replacement => !findReplace.skipped.includes(replacement.key));
   if (chosen.length === 0) return;
   dispatch(
-    editSubstitutions(files =>
+    editOwnText(files =>
       setTranslations(
         files,
         language,
         chosen.map(({ key, after, aseloText }) => ({ key, text: after, aseloText })),
+        target,
       ),
     ),
   );
@@ -262,13 +332,13 @@ export const applyReplacements = (): AppThunk => (dispatch, getState) => {
 export const importSpreadsheet =
   (text: string): AppThunk =>
   (dispatch, getState) => {
-    const { language } = selectTranslations(getState());
+    const { language, target } = selectTranslations(getState());
     const { changes, error } = translationsFromSpreadsheet(parseDelimitedText(text), selectTranslationRows(getState()));
     if (error) {
       dispatch(noticeShown({ kind: 'error', text: error }));
       return;
     }
-    if (changes.length > 0) dispatch(editSubstitutions(files => setTranslations(files, language, changes)));
+    if (changes.length > 0) dispatch(editOwnText(files => setTranslations(files, language, changes, target)));
     dispatch(
       noticeShown({
         kind: 'ok',

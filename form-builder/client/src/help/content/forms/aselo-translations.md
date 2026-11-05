@@ -12,10 +12,15 @@ questions:
   - send the strings to a translator
   - translate a field label
   - why isn't my change showing
-keywords: translations, translate, language, substitutions, strings, customStrings, find, replace, spreadsheet, csv, translator, locale, es, fr, override
+  - translate the webchat
+keywords: webchat, locale, translations, translate, language, substitutions, strings, customStrings, find, replace, spreadsheet, csv, translator, locale, es, fr, override
 ---
 
 **Translations** (under **Helpline**, Aselo staff only) lists every string counselors see in Aselo, per language, with the helpline's own versions of them. Helpline staff don't see it: they choose their words in **Helpline terms**, which writes the same file.
+
+For a helpline with a webchat, **Aselo (counselors)** / **Webchat (people contacting you)** switches between Aselo's text and the webchat's. The webchat's works the same way, from its own files (`aselo-webchat-react-app/translationsSrc`) and the helpline's file for each locale (`configSrc/<code>/translations/en-US.json`...), so its languages are locales (`es-CL`). A webchat change needs a webchat deploy.
+
+The automatic chat messages and the post-survey message aren't here: they're in **Automatic chat messages**, per language.
 
 **How Aselo picks a string:** its own text (`en.json`, then the language's file, then the locale's, e.g. `es-CL`), then the helpline's `customStrings/Substitutions.json` for the base language (`en`, `es`...). A helpline's string replaces Aselo's **whole string**, and stops following Aselo's when that changes.
 

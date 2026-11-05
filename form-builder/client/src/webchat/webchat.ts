@@ -116,6 +116,13 @@ export const baseWebchatStrings = (locale: string): Strings => {
   return { ...baseFile('en'), ...baseFile(language), ...baseFile(locale) };
 };
 
+// The keys the webchat app has its own text for in a locale's language (the rest is English)
+export const translatedWebchatKeys = (locale: string): string[] => {
+  const [language] = locale.split(/[-_]/);
+  if (language === 'en') return Object.keys(baseWebchatStrings(locale));
+  return [...new Set([...Object.keys(baseFile(language)), ...Object.keys(baseFile(locale))])];
+};
+
 export const webchatStrings = (files: DefinitionFileMap, locale: string): Strings => ({
   ...baseWebchatStrings(locale),
   ...getHelplineWebchatStrings(files, locale),

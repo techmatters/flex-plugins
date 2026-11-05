@@ -23,7 +23,13 @@
  * words inside a string: a changed string is the whole string, and it stops following Aselo's
  * own text when that changes. Field labels, answers and categories go through the same lookup,
  * keyed by their text, so a helpline can translate those here too.
+ *
+ * The webchat (what people contacting the helpline see) works the same way with its own text
+ * (aselo-webchat-react-app/translationsSrc) and the helpline's, a file per locale
+ * (configSrc/<code>/translations/<locale>.json, e.g. en-US.json).
  */
+import { WEBCHAT_TRANSLATIONS_PREFIX } from '@tech-matters/form-builder-shared';
+
 import type { DefinitionFileMap } from '../common/definitions';
 
 export const SUBSTITUTIONS_FILE = 'customStrings/Substitutions.json';
@@ -32,6 +38,15 @@ export const HELPLINE_TERMS_FILE = 'customStrings/HelplineTerms.json';
 
 export type Strings = Record<string, string>;
 type Substitutions = Record<string, Strings>;
+
+// Whose text: Aselo's (counselors see it) or the webchat's (people contacting the helpline see it)
+export type TranslationTarget = 'aselo' | 'webchat';
+
+export const webchatTranslationsFile = (locale: string) => `${WEBCHAT_TRANSLATIONS_PREFIX}${locale}.json`;
+
+// The file the helpline's text for a language is written to
+export const ownFileOf = (target: TranslationTarget, language: string) =>
+  target === 'aselo' ? SUBSTITUTIONS_FILE : webchatTranslationsFile(language);
 
 // Where the text counselors see comes from
 // Aselo's, made from the helpline's terms, written for the helpline, or a key only the helpline has
@@ -82,14 +97,21 @@ export const helplineLanguages = (files: DefinitionFileMap, helplineLanguage?: s
 export const localeFor = (language: string, helplineLanguage?: string) =>
   helplineLanguage && baseLanguageOf(helplineLanguage) === language ? helplineLanguage : language;
 
+// The helpline's own text in a language
+const ownStrings = (files: DefinitionFileMap, target: TranslationTarget, language: string): Strings =>
+  target === 'aselo'
+    ? getSubstitutions(files)[language] ?? {}
+    : (files[webchatTranslationsFile(language)] as Strings | undefined) ?? {};
+
 export const getTranslationRows = (
   files: DefinitionFileMap,
   language: string,
   aselo: { strings: Strings; translated: string[] },
+  target: TranslationTarget = 'aselo',
 ): TranslationRow[] => {
-  const own = getSubstitutions(files)[language] ?? {};
+  const own = ownStrings(files, target, language);
   const fromTerms =
-    language === 'en'
+    target === 'aselo' && language === 'en'
       ? (files[HELPLINE_TERMS_FILE] as { generated?: Strings } | undefined)?.generated ?? {}
       : ({} as Strings);
   const translated = new Set(aselo.translated);
@@ -105,7 +127,7 @@ export const getTranslationRows = (
       aseloText,
       text: hasOwn ? own[key] : aseloText,
       source,
-      inEnglish: language !== 'en' && !hasOwn && key in aselo.strings && !translated.has(key),
+      inEnglish: !language.startsWith('en') && !hasOwn && key in aselo.strings && !translated.has(key),
     };
   });
 };
@@ -130,10 +152,16 @@ export const setTranslation = (
   key: string,
   text: string | undefined,
   aseloText: string | undefined,
+  target: TranslationTarget = 'aselo',
 ): DefinitionFileMap => {
+  const keep = text !== undefined && text !== aseloText;
+  if (target === 'webchat') {
+    // A file per locale; an emptied one stays for the editor to drop if it's new
+    const { [key]: _old, ...others } = ownStrings(files, target, language);
+    return { ...files, [webchatTranslationsFile(language)]: keep ? { ...others, [key]: text } : others };
+  }
   const substitutions = getSubstitutions(files);
   const { [key]: _previous, ...rest } = substitutions[language] ?? {};
-  const keep = text !== undefined && text !== aseloText;
   const block = keep ? { ...rest, [key]: text } : rest;
   const { [language]: _block, ...otherLanguages } = substitutions;
   return {
@@ -147,9 +175,10 @@ export const setTranslations = (
   files: DefinitionFileMap,
   language: string,
   changes: { key: string; text: string | undefined; aseloText: string | undefined }[],
+  target: TranslationTarget = 'aselo',
 ) =>
   changes.reduce(
-    (current, change) => setTranslation(current, language, change.key, change.text, change.aseloText),
+    (current, change) => setTranslation(current, language, change.key, change.text, change.aseloText, target),
     files,
   );
 

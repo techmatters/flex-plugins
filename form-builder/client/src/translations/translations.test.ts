@@ -27,6 +27,7 @@ import {
   SUBSTITUTIONS_FILE,
   translationsFromSpreadsheet,
   translationsToCsv,
+  webchatTranslationsFile,
 } from './translations';
 
 const aselo = {
@@ -88,6 +89,29 @@ describe('changing a string', () => {
   test('a language left with nothing of its own is removed', () => {
     const changed = setTranslation(files, 'es', 'Case-Title', undefined, 'Case');
     expect(Object.keys(changed[SUBSTITUTIONS_FILE] as object)).toEqual(['en']);
+  });
+});
+
+describe('the webchat’s text', () => {
+  test('a file per locale, written and emptied like Aselo’s', () => {
+    const webchat = { strings: { 'EntryPoint-ClosedState-OpenWidgetButtonLabel': 'Chat with us' }, translated: [] };
+    const filePath = webchatTranslationsFile('en-US');
+    expect(filePath).toBe('webchat-app/translations/en-US.json');
+    const changed = setTranslation(
+      {},
+      'en-US',
+      'EntryPoint-ClosedState-OpenWidgetButtonLabel',
+      'Talk to us',
+      'Chat with us',
+      'webchat',
+    );
+    expect(changed[filePath]).toEqual({ 'EntryPoint-ClosedState-OpenWidgetButtonLabel': 'Talk to us' });
+    const [row] = getTranslationRows(changed, 'en-US', webchat, 'webchat');
+    expect(row).toMatchObject({ text: 'Talk to us', source: 'helpline', inEnglish: false });
+    // Back to the webchat's own text: nothing of the helpline's left
+    expect(setTranslation(changed, 'en-US', row.key, undefined, 'Chat with us', 'webchat')[filePath]).toEqual({});
+    // Substitutions.json isn't touched
+    expect(SUBSTITUTIONS_FILE in changed).toBe(false);
   });
 });
 

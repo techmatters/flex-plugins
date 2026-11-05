@@ -19,13 +19,19 @@ import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/re
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import type { ApiUser } from '@tech-matters/form-builder-shared';
 
-import { aseloStaff, createHarness, formDefinitionsDir, helplinesConfigDir } from '../testing/workspaceHarness';
+import {
+  aseloStaff,
+  createHarness,
+  formDefinitionsDir,
+  helplinesConfigDir,
+  webchatConfigDir,
+} from '../testing/workspaceHarness';
 
 const usnmStaff: ApiUser = { name: 'NAMI person', role: 'helpline-staff', helplines: ['usnm'] };
 
 let usnm: DefinitionFiles;
 beforeAll(async () => {
-  usnm = await loadDefinitionFiles(formDefinitionsDir, 'usnm', 'v1', helplinesConfigDir);
+  usnm = await loadDefinitionFiles(formDefinitionsDir, 'usnm', 'v1', helplinesConfigDir, webchatConfigDir);
 });
 afterEach(cleanup);
 
@@ -94,6 +100,27 @@ describe('translations', () => {
     const saved = (await harness.savedFile(usnm, 'customStrings/Substitutions.json')).en;
     expect(saved['CallType-child']).toBe('Help Seeker calling about self');
     expect(saved['CallType-caller']).toBe('Someone calling about a person');
+  });
+
+  test('the webchat’s text, in its own file per locale', async () => {
+    const harness = await openTranslations();
+    fireEvent.click(screen.getByRole('button', { name: 'Webchat (people contacting you)' }));
+    await waitFor(() => expect(screen.getByRole('columnheader', { name: 'Text people see (en-US)' })).toBeTruthy());
+    search('OpenWidgetButtonLabel');
+    fireEvent.click(screen.getByRole('button', { name: 'EntryPoint-ClosedState-OpenWidgetButtonLabel' }));
+    fireEvent.change(
+      screen.getByRole('textbox', { name: 'Text for EntryPoint-ClosedState-OpenWidgetButtonLabel (en-US)' }),
+      { target: { value: 'Talk to us' } },
+    );
+    await screen.findByText(/All changes saved/);
+    expect(
+      (await harness.savedFile(usnm, 'webchat-app/translations/en-US.json'))[
+        'EntryPoint-ClosedState-OpenWidgetButtonLabel'
+      ],
+    ).toBe('Talk to us');
+    // USNM's own webchat text is kept
+    expect((await harness.savedFile(usnm, 'webchat-app/translations/en-US.json')).Today).toBe('Today');
+    expect(await harness.savedFile(usnm, 'customStrings/Substitutions.json')).toBeUndefined();
   });
 
   test('adding a language', async () => {

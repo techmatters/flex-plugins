@@ -23,7 +23,7 @@
 import { useEffect, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../app/store';
-import { selectWorkspace } from '../workspace/workspaceSlice';
+import { selectWorkspace, viewSelected } from '../workspace/workspaceSlice';
 import { SectionTitle } from '../help/HelpContext';
 import { AVAILABLE_LANGUAGES } from '../aseloPreview/translations';
 import { TranslationFilter, TranslationRow, translationsToCsv } from './translations';
@@ -41,6 +41,7 @@ import {
   openTranslations,
   replacementSkipped,
   searchChanged,
+  selectHasWebchat,
   selectLanguages,
   selectReplacements,
   selectTranslationRows,
@@ -229,7 +230,10 @@ const FindReplace = () => {
 export const TranslationsEditor = () => {
   const dispatch = useAppDispatch();
   const { code, editorRevision } = useAppSelector(selectWorkspace);
-  const { language, aselo, search, filter, shown, findReplace, notice } = useAppSelector(selectTranslations);
+  const { target, language, aselo, search, filter, shown, findReplace, notice } = useAppSelector(selectTranslations);
+  const hasWebchat = useAppSelector(selectHasWebchat);
+  const isWebchat = target === 'webchat';
+  const whoSees = isWebchat ? 'people contacting the helpline see in the webchat' : 'counselors see in Aselo';
   const languages = useAppSelector(selectLanguages);
   const rows = useAppSelector(selectTranslationRows);
   const visible = useAppSelector(selectVisibleTranslationRows);
@@ -248,11 +252,36 @@ export const TranslationsEditor = () => {
   return (
     <section className="panel translations-panel">
       <SectionTitle>Translations</SectionTitle>
+      {hasWebchat && (
+        <div className="mode-switch translation-targets" role="group" aria-label="Whose text">
+          <button
+            type="button"
+            className={isWebchat ? '' : 'active'}
+            onClick={() => dispatch(openTranslations('aselo'))}
+          >
+            Aselo (counselors)
+          </button>
+          <button
+            type="button"
+            className={isWebchat ? 'active' : ''}
+            onClick={() => dispatch(openTranslations('webchat'))}
+          >
+            Webchat (people contacting you)
+          </button>
+        </div>
+      )}
       <p className="muted">
-        Every string counselors see in Aselo, and this helpline’s own versions of them
-        (customStrings/Substitutions.json). A changed string replaces Aselo’s whole string for this helpline, and stops
-        following Aselo’s text when that changes. Field labels, answers and categories are looked up by their own text,
-        so they can be translated here too with “Add a string”.
+        Every string {whoSees}, and this helpline’s own versions of them (
+        {isWebchat ? `the webchat's translations/${language}.json` : 'customStrings/Substitutions.json'}). A changed
+        string replaces the whole default string for this helpline, and stops following it when it changes. Field labels
+        and answers are looked up by their own text, so they can be translated here too with “Add a string”.
+      </p>
+      <p className="muted translation-elsewhere">
+        The automatic chat messages and the post-survey message are in{' '}
+        <button type="button" className="link-button" onClick={() => dispatch(viewSelected({ kind: 'messages' }))}>
+          Automatic chat messages
+        </button>
+        , per language.
       </p>
 
       <div className="translation-languages">
@@ -280,21 +309,23 @@ export const TranslationsEditor = () => {
             type="text"
             list="aselo-languages"
             aria-label="Add a language"
-            placeholder="Add a language (e.g. es)"
+            placeholder={isWebchat ? 'Add a locale (e.g. es-CL)' : 'Add a language (e.g. es)'}
             value={newLanguage}
             onChange={e => setNewLanguage(e.target.value)}
           />
           <datalist id="aselo-languages">
-            {ASELO_LANGUAGES.filter(candidate => !languages.includes(candidate)).map(candidate => (
-              <option key={candidate} value={candidate} />
-            ))}
+            {(isWebchat ? [] : ASELO_LANGUAGES)
+              .filter(candidate => !languages.includes(candidate))
+              .map(candidate => (
+                <option key={candidate} value={candidate} />
+              ))}
           </datalist>
           <button type="submit" className="secondary-button" disabled={!newLanguage.trim()}>
             Add
           </button>
         </form>
       </div>
-      {aselo && language !== 'en' && !ASELO_LANGUAGES.includes(language) && (
+      {aselo && !isWebchat && language !== 'en' && !ASELO_LANGUAGES.includes(language) && (
         <p className="alert alert-info">
           Aselo has no text of its own in “{language}”: counselors see English for every string not translated here.
         </p>
@@ -335,7 +366,12 @@ export const TranslationsEditor = () => {
             type="button"
             className="secondary-button"
             disabled={rows.length === 0}
-            onClick={() => download(translationsToCsv(rows), `${code}-translations-${language}.csv`)}
+            onClick={() =>
+              download(
+                translationsToCsv(rows),
+                `${code}-${isWebchat ? 'webchat' : 'aselo'}-translations-${language}.csv`,
+              )
+            }
           >
             Export spreadsheet
           </button>
@@ -371,7 +407,9 @@ export const TranslationsEditor = () => {
             <thead>
               <tr>
                 <th>Key</th>
-                <th>Text counselors see ({language})</th>
+                <th>
+                  Text {isWebchat ? 'people see' : 'counselors see'} ({language})
+                </th>
               </tr>
             </thead>
             <tbody>
