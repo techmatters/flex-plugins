@@ -24,16 +24,6 @@ variable "short_helpline" {
   type        = string
 }
 
-variable "datadog_app_id" {
-  description = "DataDog App ID for RUM"
-  type        = string
-}
-
-variable "datadog_access_token" {
-  description = "DataDog access token for RUM"
-  type        = string
-}
-
 variable "operating_info_key" {
   description = "Operating info key for this helpline"
   type        = string

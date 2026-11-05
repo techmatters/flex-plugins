@@ -42,8 +42,6 @@ Use this when you need to debug the UI in a browser.
     * along with this program.  If not, see https://www.gnu.org/licenses/.
     */
 
-   export const datadogAccessToken = 'x';
-   export const datadogApplicationID = 'x';
    export const fullStoryId = 'x';
    export const versionId = 'local';
    export const githubSha = null;
