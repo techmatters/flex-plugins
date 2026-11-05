@@ -126,6 +126,12 @@ describe('QueueGreetingPopover', () => {
     expect(screen.queryByText('Greeted queue title')).not.toBeInTheDocument();
   });
 
+  test('renders nothing when another task is selected', () => {
+    renderWithStore(<QueueGreetingPopover task={taskFromQueue('WR2', 'greetedQueue')} />);
+
+    expect(screen.queryByText('Greeted queue title')).not.toBeInTheDocument();
+  });
+
   test('renders nothing when the task comes from a queue without a greeting', () => {
     renderWithStore(<QueueGreetingPopover task={taskFromQueue('WR1', 'otherQueue')} />);
 

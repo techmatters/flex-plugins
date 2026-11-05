@@ -20,7 +20,7 @@ import { TaskCanvasChildrenProps } from '@twilio/flex-ui';
 
 import { RootState } from '../../states';
 import { selectQueueGreeting } from '../../states/configuration/selectDefinitions';
-import { selectIsQueueGreetingOpen } from '../../states/routing/getRoute';
+import { namespace } from '../../states/storeNamespaces';
 import { newSetQueueGreetingDismissedAction } from '../../states/routing/actions';
 import { Popover } from '../../design-system/popovers/Popover';
 import { GreetingPopoverAnchor } from './styles';
@@ -40,7 +40,11 @@ const QueueGreetingPopover: React.FC<Props> = ({ task }) => {
   const dispatch = useDispatch();
   const [anchorElement, setAnchorElement] = useState<HTMLDivElement | null>(null);
   const queueGreeting = useSelector((state: RootState) => selectQueueGreeting(state, task?.queueName));
-  const isOpen = useSelector((state: RootState) => Boolean(task) && selectIsQueueGreetingOpen(state, task));
+  // Flex identifies the selected task by its reservation SID
+  const isTaskSelected = useSelector((state: RootState) => state.flex.view.selectedTaskSid === task?.sid);
+  const isDismissed = useSelector((state: RootState) =>
+    Boolean(state[namespace].routing.tasks[task?.taskSid]?.isQueueGreetingDismissed),
+  );
 
   if (!queueGreeting) return null;
 
@@ -50,7 +54,7 @@ const QueueGreetingPopover: React.FC<Props> = ({ task }) => {
     <>
       <GreetingPopoverAnchor ref={setAnchorElement} />
       <Popover
-        open={isOpen}
+        open={isTaskSelected && !isDismissed}
         anchorElement={anchorElement}
         title={queueGreeting.popoverTitle.slice(0, MAX_TITLE_LENGTH)}
         onClose={dismiss}
