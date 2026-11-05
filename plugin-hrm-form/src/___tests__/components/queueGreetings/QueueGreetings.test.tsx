@@ -114,7 +114,7 @@ describe('QueueGreetingPopover', () => {
     expect(screen.getByText('Greeted queue title')).toBeInTheDocument();
     expect(screen.getByText('Hello, greeted queue.')).toBeInTheDocument();
 
-    screen.getByTestId('QueueGreeting-CloseButton').click();
+    screen.getByTestId('Popover-CloseButton').click();
 
     expect(store.getActions()).toStrictEqual([newSetQueueGreetingDismissedAction('task-WR1', true)]);
   });
