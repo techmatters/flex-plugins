@@ -14,12 +14,9 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { ITask } from '@twilio/flex-ui';
-
 import { AppRoutes, isRouteWithModalSupport, RoutingState } from './types';
 import { RootState } from '..';
 import { namespace } from '../storeNamespaces';
-import { standaloneTaskSid } from '../../types/types';
 
 const getCurrentTopmostRouteStack = (baseRouteStack: AppRoutes[]): AppRoutes[] | undefined => {
   if (baseRouteStack?.length) {
@@ -51,16 +48,3 @@ export const selectCurrentBaseRoute = (
   { [namespace]: { routing } }: RootState,
   taskSid: string,
 ): AppRoutes | undefined => getCurrentBaseRoute(routing, taskSid);
-
-/**
- * The queue greeting popover of a task is open while the counsellor is on the agent desktop with that task selected,
- * unless they have dismissed it
- */
-export const selectIsQueueGreetingOpen = (state: RootState, task: Pick<ITask, 'sid' | 'taskSid'>): boolean => {
-  const isOnAgentDesktop =
-    (selectCurrentTopmostRouteForTask(state, standaloneTaskSid)?.route as string) === 'agent-desktop';
-  // Flex identifies the selected task by its reservation SID
-  const isTaskSelected = state.flex.view.selectedTaskSid === task.sid;
-  const isDismissed = Boolean(state[namespace].routing.tasks[task.taskSid]?.isQueueGreetingDismissed);
-  return isOnAgentDesktop && isTaskSelected && !isDismissed;
-};
