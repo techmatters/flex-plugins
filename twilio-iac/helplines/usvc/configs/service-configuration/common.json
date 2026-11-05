@@ -18,6 +18,24 @@
             "enable_hang_up_by_hrm_saving": true,
             "enable_custom_links" : true
         },
+        "postStudioFlows": {
+            "${task_queues.vc}": {
+                "flowTrigger": "inProgressCall",
+                "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+            },
+            "${task_queues.dcvh}": {
+                "flowTrigger": "inProgressCall",
+                "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+            },
+            "${task_queues.vc_sp}": {
+                "flowTrigger": "inProgressCall",
+                "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+            },
+            "${task_queues.dcvh_sp}": {
+                "flowTrigger": "inProgressCall",
+                "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+            }
+        },
         "definitionVersion": "usvc-v1",
         "external_recordings_enabled": false,
         "helplineLanguage": "en-USVC",
