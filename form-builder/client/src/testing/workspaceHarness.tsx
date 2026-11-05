@@ -31,6 +31,7 @@ import { Provider } from 'react-redux';
 import type { Person } from '@tech-matters/form-builder-shared/flows/model';
 
 import { inProcessDraftClient } from './draftClient.inProcess';
+import type { DraftClient } from '../drafts/draftClient';
 import { HelplineWorkspace } from '../workspace/HelplineWorkspace';
 import { openHelpline, selectDefinitions } from '../workspace/workspaceSlice';
 import { createAppStore, useAppSelector } from '../app/store';
@@ -46,6 +47,20 @@ export const aseloStaff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', 
 
 // The workspace, once its helpline's files have loaded (as App shows it)
 const WhenLoaded = () => (useAppSelector(selectDefinitions) ? <HelplineWorkspace /> : null);
+
+const withFailingSaves = (client: DraftClient, failingSaves?: { remaining: number }): DraftClient =>
+  failingSaves
+    ? {
+        ...client,
+        save: async (...args) => {
+          if (failingSaves.remaining > 0) {
+            failingSaves.remaining -= 1;
+            throw new TypeError('Failed to fetch');
+          }
+          return client.save(...args);
+        },
+      }
+    : client;
 
 export const createHarness = () => {
   const store = new MemoryDraftStore();
@@ -70,18 +85,21 @@ export const createHarness = () => {
       onReload = () => undefined,
       applyInBuilder = true,
       loadPeople,
+      failingSaves,
     }: {
       user?: ApiUser;
       onReload?: () => void;
       applyInBuilder?: boolean;
       // A people list (a helpline's, or the Aselo team's), to say who a comment is for
       loadPeople?: (code: string) => Promise<Person[]>;
+      // Saves fail (as when the server can't be reached) while `remaining` is above 0
+      failingSaves?: { remaining: number };
     } = {},
   ) => {
     // The first load opens the helpline; any later one is a reload
     let loads = 0;
     const appStore = createAppStore({
-      draftClient: inProcessDraftClient(context, user),
+      draftClient: withFailingSaves(inProcessDraftClient(context, user), failingSaves),
       fetchHelplines: async () => [],
       fetchDefinitionFiles: async () => {
         loads += 1;
@@ -102,6 +120,7 @@ export const createHarness = () => {
         return response.body as WordUsage[];
       },
       saveDelayMs: 0,
+      saveRetryDelaysMs: [0, 0, 0],
     });
     appStore.dispatch(sessionLoaded({ user: { ...user, applyInBuilder }, helplines: [] }));
     appStore.dispatch(openHelpline(definitions.code, definitions.version));

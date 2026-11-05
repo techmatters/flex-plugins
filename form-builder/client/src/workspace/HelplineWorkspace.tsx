@@ -18,6 +18,7 @@
  * Everything for one loaded helpline: navigation, the draft, editing, previews and export.
  * Rendered with a code/version key so switching helpline starts fresh.
  */
+import { useEffect, useRef } from 'react';
 import type { FlagKind, ReviewSide } from '@tech-matters/form-builder-shared';
 
 import { SectionHelpContext } from '../help/HelpContext';
@@ -32,7 +33,7 @@ import {
 } from '../common/definitions';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
-import { noticeDismissed, SaveState, selectChangedPaths, selectDraft } from '../drafts/draftSlice';
+import { noticeDismissed, retrySave, SaveState, selectChangedPaths, selectDraft } from '../drafts/draftSlice';
 import {
   discardWorkspaceDraft,
   reloadHelpline,
@@ -162,6 +163,7 @@ const SAVE_STATE_TEXT: Record<SaveState, string> = {
   saved: 'All changes saved',
   pending: 'Unsaved changes…',
   saving: 'Saving…',
+  retrying: 'Couldn’t save, trying again…',
   conflict: 'Not saved',
   error: "Couldn't save",
 };
@@ -171,6 +173,16 @@ export const HelplineWorkspace = () => {
   const dispatch = useAppDispatch();
   const definitions = useAppSelector(selectDefinitions)!;
   const draft = useAppSelector(selectDraft);
+  // Closing or reloading the page with changes not saved yet asks first (e.g. while a save is failing)
+  const unsaved = useRef(false);
+  unsaved.current = ['pending', 'saving', 'retrying', 'error'].includes(draft.saveState) && !draft.conflict;
+  useEffect(() => {
+    const warn = (event: BeforeUnloadEvent) => {
+      if (unsaved.current) event.preventDefault();
+    };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, []);
   const changedPaths = useAppSelector(selectChangedPaths);
   const { view, tryItOut, reviewing, previewingSection, editorRevision } = useAppSelector(selectWorkspace);
   const issuesByTab = useAppSelector(selectIssuesByTab);
@@ -433,6 +445,19 @@ export const HelplineWorkspace = () => {
         </div>
       )}
 
+      {draft.saveState === 'error' && draft.saveError && (
+        <div className="alert alert-error" role="alert">
+          <strong>Your changes couldn’t be saved</strong> ({draft.saveError}). They’re still here in this page: don’t
+          close or reload it until they’re saved.{' '}
+          <button type="button" className="link-button" onClick={() => dispatch(retrySave())}>
+            Try again
+          </button>
+          <span className="muted">
+            {' '}
+            If it keeps happening, check your internet connection or contact the Aselo team.
+          </span>
+        </div>
+      )}
       {draft.notice && (
         <div className="alert alert-info">
           {draft.notice}

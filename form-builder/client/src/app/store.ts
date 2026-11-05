@@ -74,6 +74,8 @@ export type Services = {
   helpClient: HelpClient;
   // How long after the last edit the draft is saved
   saveDelayMs: number;
+  // How long to wait before each retry of a failed save; when they run out, the error shows
+  saveRetryDelaysMs: number[];
   // Saves run one after another (flushDraft)
   saveQueue: { current: Promise<void> };
 };
@@ -108,6 +110,7 @@ export const createAppStore = (services: Partial<Omit<Services, 'saveQueue'>> = 
     chatbotClient: httpChatbotClient,
     helpClient: httpHelpClient,
     saveDelayMs: 800,
+    saveRetryDelaysMs: [2000, 5000, 10000],
     ...services,
     saveQueue: { current: Promise.resolve() },
   };

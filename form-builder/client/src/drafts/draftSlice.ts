@@ -37,7 +37,7 @@ import type { AppListenerStartListening, AppThunk, RootState } from '../app/stor
 import { getChangedFilePaths } from './changes';
 import type { DraftConflict, ThreadChange } from './draftClient';
 
-export type SaveState = 'loading' | 'saved' | 'pending' | 'saving' | 'conflict' | 'error';
+export type SaveState = 'loading' | 'saved' | 'pending' | 'saving' | 'retrying' | 'conflict' | 'error';
 
 type DraftState = {
   code: string;
@@ -54,6 +54,10 @@ type DraftState = {
   conflict?: DraftConflict;
   // The server's revision of the draft, so two people can't overwrite each other unknowingly
   revision: number;
+  // Saves that failed in a row (a lost connection, the server down): retried a few times, then
+  // the error is shown until a save works
+  failedSaves: number;
+  saveError?: string;
   // What was last saved, so unchanged drafts aren't saved again
   lastSavedJson: string;
 };
@@ -65,6 +69,7 @@ const initialState: DraftState = {
   files: {},
   saveState: 'loading',
   revision: 0,
+  failedSaves: 0,
   lastSavedJson: '{}',
 };
 
@@ -125,17 +130,27 @@ const draftSlice = createSlice({
       const { meta, json } = action.payload;
       state.revision = meta.revision;
       state.lastSavedJson = json;
+      state.failedSaves = 0;
+      state.saveError = undefined;
       state.meta = meta.revision === 0 ? undefined : { ...state.meta, ...meta };
       // Edits made while it was saving still need saving
       state.saveState = changedJsonOf(state) === json ? 'saved' : 'pending';
     },
     saveConflicted: (state, action: PayloadAction<DraftConflict>) => {
+      state.failedSaves = 0;
+      state.saveError = undefined;
       state.conflict = action.payload;
       state.saveState = 'conflict';
     },
-    saveFailed: (state, action: PayloadAction<string>) => {
-      state.saveState = 'error';
-      state.notice = `Couldn't save the draft: ${action.payload}`;
+    // Retried while there are retries left (saveRetryDelaysMs), then shown as an error
+    saveFailed: (state, action: PayloadAction<{ message: string; retries: number }>) => {
+      state.failedSaves += 1;
+      state.saveError = action.payload.message;
+      state.saveState = state.failedSaves <= action.payload.retries ? 'retrying' : 'error';
+    },
+    // An edit, or "Try again": a fresh set of retries
+    saveRetriesReset: state => {
+      state.failedSaves = 0;
     },
     noticeDismissed: state => {
       state.notice = undefined;
@@ -159,7 +174,7 @@ const draftSlice = createSlice({
   },
 });
 
-const { filesUpdated } = draftSlice.actions;
+const { filesUpdated, saveRetriesReset } = draftSlice.actions;
 export const { draftStarted, noticeDismissed } = draftSlice.actions;
 const {
   draftLoaded,
@@ -241,7 +256,7 @@ export const editDraftFiles =
 
 const saveNow =
   (): AppThunk<Promise<void>> =>
-  async (dispatch, getState, { draftClient }) => {
+  async (dispatch, getState, { draftClient, saveRetryDelaysMs }) => {
     const state = getState().draft;
     const changed = changedFiles(state.original, state.files);
     const json = JSON.stringify(changed);
@@ -262,7 +277,7 @@ const saveNow =
       if (outcome.ok) dispatch(draftSaved({ meta: outcome.meta, json }));
       else dispatch(saveConflicted(outcome.conflict));
     } catch (err) {
-      dispatch(saveFailed((err as Error).message));
+      dispatch(saveFailed({ message: (err as Error).message, retries: saveRetryDelaysMs.length }));
     }
   };
 
@@ -321,9 +336,15 @@ export const applyDraft =
     return draftClient.apply(code, version, description);
   };
 
+// "Try again" after the retries ran out: the changes are still in the page
+export const retrySave = (): AppThunk<Promise<void>> => dispatch => {
+  dispatch(saveRetriesReset());
+  return dispatch(flushDraft());
+};
+
 // Saves a moment after the last edit (while the draft is loaded and not in conflict)
-export const startDraftAutosave = (startListening: AppListenerStartListening) =>
-  startListening({
+export const startDraftAutosave = (startListening: AppListenerStartListening) => {
+  const unsubscribeEdits = startListening({
     actionCreator: filesUpdated,
     effect: async (_action, listenerApi) => {
       const state = listenerApi.getState().draft;
@@ -333,6 +354,27 @@ export const startDraftAutosave = (startListening: AppListenerStartListening) =>
       // A newer edit restarts the wait
       listenerApi.cancelActiveListeners();
       await listenerApi.delay(listenerApi.extra.saveDelayMs);
+      // Someone's editing: a failed save gets its retries again
+      listenerApi.dispatch(saveRetriesReset());
       await listenerApi.dispatch(flushDraft());
     },
   });
+  // A failed save is tried again a little later, a few times (the server may be back by then)
+  const unsubscribeRetries = startListening({
+    actionCreator: saveFailed,
+    effect: async (_action, listenerApi) => {
+      const { saveState, failedSaves } = listenerApi.getState().draft;
+      if (saveState !== 'retrying') return;
+      listenerApi.cancelActiveListeners();
+      const delays = listenerApi.extra.saveRetryDelaysMs;
+      await listenerApi.delay(delays[Math.min(failedSaves, delays.length) - 1] ?? 0);
+      // Unless an edit's save already went through, or the helpline was left
+      if (listenerApi.getState().draft.saveState !== 'retrying') return;
+      await listenerApi.dispatch(flushDraft());
+    },
+  });
+  return () => {
+    unsubscribeEdits();
+    unsubscribeRetries();
+  };
+};
