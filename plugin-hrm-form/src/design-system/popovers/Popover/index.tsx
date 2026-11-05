@@ -73,7 +73,9 @@ export const Popover: React.FC<Props> = ({
     >
       <PopoverContainer variant={variant} aria-label={title}>
         <PopoverHeader>
-          <PopoverTitle>{title}</PopoverTitle>
+          <PopoverTitle>
+            <Template code={title} />
+          </PopoverTitle>
           <HeaderCloseButton onClick={onClose} data-testid="Popover-CloseButton">
             <HiddenText>
               <Template code="CloseButton" />
