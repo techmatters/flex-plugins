@@ -71,30 +71,47 @@
   box-sizing: border-box;
 }
 
-/* TabbedFormsTabs header: back button and contact number */
+/* TabbedFormsTabs header (HeaderControlButtons): back button, then the contact's number and queue */
 .aselo-contact-header {
-  padding: 14px 7% 10px;
+  margin: 10px 0 5px;
+  padding-left: 20px;
   flex-shrink: 0;
 }
 
+/* SearchResultsBackButton / BackText */
 .aselo-back-button {
   display: flex;
   align-items: center;
-  gap: 14px;
   padding: 0;
   border: none;
   background: none;
   font-family: inherit;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
   color: #192b33;
-  cursor: default;
+  cursor: pointer;
 }
 
+.aselo-back-button span {
+  margin-left: 15px;
+}
+
+.aselo-back-button:hover {
+  background-color: #f2f2f2;
+}
+
+/* FontOpenSans with Bold, then OpaqueText */
 .aselo-contact-id {
-  padding: 6px 0 0 6px;
-  font-size: 15px;
-  font-weight: 700;
+  margin: 0;
+  padding: 3px 0 0 9px;
+  color: #000000;
+  font-size: 14px;
+}
+
+.aselo-queue-name {
+  font-style: italic;
+  font-size: 12px;
+  opacity: 0.7;
 }
 
 /* StyledTabs / StyledTab / StyledSearchTab */
@@ -102,8 +119,40 @@
   display: flex;
   height: 35px;
   padding: 0 7%;
-  overflow-x: auto;
   flex-shrink: 0;
+}
+
+/* Tabs' scroller: scrolls without showing a scrollbar */
+.aselo-tabs-scroller {
+  display: flex;
+  flex: 1 1 auto;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.aselo-tabs-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+/* TabScrollButton */
+.aselo-tab-scroll {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  opacity: 0.8;
+  cursor: pointer;
+}
+
+.aselo-tab-scroll.disabled {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .aselo-tab {
@@ -118,7 +167,9 @@
   background-color: #ecedf1;
   font-family: inherit;
   font-size: 12px;
+  font-weight: 500;
   color: rgba(0, 0, 0, 0.87);
+  opacity: 0.7;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -134,6 +185,7 @@
 .aselo-tab.selected {
   background-color: #ffffff;
   font-weight: 600;
+  opacity: 1;
 }
 
 .aselo-search-tab {
@@ -164,6 +216,7 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding-bottom: 55px;
 }
 
 .aselo-columnar-block {
@@ -222,17 +275,30 @@
   padding: 0 8px;
 }
 
-.aselo-input:focus,
-.aselo-select:focus {
-  outline: none;
-  border: 1px solid rgba(0, 59, 129, 0.37);
-}
-
 .aselo-input.has-error,
 .aselo-select.has-error,
 .aselo-textarea.has-error {
   border: 1px solid #cb3232;
   box-shadow: 0px 0px 0px 2px rgba(234, 16, 16, 0.2);
+}
+
+.aselo-input:focus,
+.aselo-input.has-error:focus {
+  outline: none;
+  border: 1px solid rgba(0, 59, 129, 0.37);
+  box-shadow: none;
+}
+
+/* DateInput / TimeInput */
+.aselo-input[type='date'],
+.aselo-input[type='time'] {
+  display: block;
+}
+
+.aselo-input[type='date']::-webkit-calendar-picker-indicator,
+.aselo-input[type='time']::-webkit-calendar-picker-indicator {
+  font-size: 20px;
+  opacity: 0.8;
 }
 
 /* FormError */
@@ -298,7 +364,8 @@
   resize: vertical;
 }
 
-.aselo-textarea:focus {
+.aselo-textarea:focus,
+.aselo-textarea.has-error:focus {
   outline: none;
   background-color: rgba(236, 237, 241, 0.37);
   border: 1px solid rgba(0, 59, 129, 0.37);
@@ -544,14 +611,54 @@
   background-color: #b41c1c;
 }
 
+.aselo-add-case {
+  position: relative;
+  margin-right: 7px;
+}
+
+.aselo-add-case .aselo-button {
+  padding: 2px 8px;
+  height: 36px;
+}
+
+.aselo-add-case-label {
+  margin: 0 10px;
+}
+
+.aselo-add-case-menu {
+  position: absolute;
+  right: -12%;
+  bottom: 110%;
+  z-index: 10;
+  width: 164px;
+  margin: 0 20px 0 0;
+  padding: 10px 0;
+  list-style: none;
+  background: #ffffff;
+  border: 1px solid #e1e3ea;
+  border-radius: 8px;
+  box-shadow: 0px 4px 16px 0px rgba(18, 28, 45, 0.2);
+}
+
+.aselo-add-case-menu button {
+  display: flex;
+  width: 100%;
+  padding: 7px 0 7px 18px;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: 14px;
+  color: inherit;
+  cursor: pointer;
+}
+
+.aselo-add-case-menu button:hover {
+  background-color: #f2f2f2;
+}
+
 .aselo-file-button {
   align-self: flex-start;
   cursor: default;
-}
-
-.aselo-search-placeholder {
-  color: #606471;
-  font-size: 13px;
 }
 
 /* Issue categorization (IssueCategorizationSectionForm, Section, CategoryCheckboxes) */
@@ -573,12 +680,14 @@
 }
 
 .aselo-category-required {
+  flex-grow: 1;
   font-size: 12px;
-  margin-right: auto;
+  color: #222222;
   margin-left: 10px;
 }
 
-.aselo-category-required.has-error {
+.aselo-category-required::before {
+  content: '* ';
   color: #cb3232;
 }
 
@@ -658,7 +767,6 @@
 .aselo-category-chip.disabled {
   border-color: #a0a8bd14;
   background-color: #a0a8bd14;
-  color: #192b3333;
   cursor: initial;
 }
 
@@ -726,10 +834,23 @@
   margin-right: 5px;
 }
 
+.aselo-call-type-face-overlap {
+  display: inline-flex;
+  margin-right: -5px;
+}
+
+/* SilentText */
+.aselo-silent-text {
+  background-color: #f0f1f4;
+  color: #404c52;
+  padding: 2px 10px;
+  border-radius: 2px;
+}
+
 .aselo-non-data-call-type {
   width: 140px;
   min-height: 44px;
-  padding: 0 4px;
+  padding: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -762,33 +883,80 @@
   justify-content: center;
 }
 
+/* Material UI's Dialog paper, 360px wide (CloseTaskDialog), and NonDataCallTypeDialogContainer */
 .aselo-dialog {
   width: 360px;
-  padding: 24px;
+  padding: 5px;
   border-radius: 4px;
   background: #ffffff;
+  box-shadow: 0px 11px 15px -7px rgba(0, 0, 0, 0.2), 0px 24px 38px 3px rgba(0, 0, 0, 0.14),
+    0px 9px 46px 8px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
   font-family: 'Open Sans', sans-serif;
 }
 
-.aselo-dialog p {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 600;
+/* CloseButton: Material UI's IconButton with the clear icon */
+.aselo-dialog-close {
+  display: inline-flex;
+  margin-left: auto;
+  padding: 12px;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: rgba(0, 0, 0, 0.54);
+  cursor: pointer;
 }
 
-.aselo-dialog .aselo-dialog-detail {
-  font-size: 13px;
-  font-weight: 400;
-  color: #606471;
+.aselo-dialog-close:hover {
+  background-color: rgba(0, 0, 0, 0.08);
 }
 
-.aselo-dialog .aselo-button {
-  width: 200px;
-  justify-content: center;
+/* CloseTaskDialogText */
+.aselo-dialog-text {
+  margin: 14px 0 36px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.aselo-dialog-buttons {
+  display: flex;
+  margin-bottom: 32px;
+}
+
+/* CloseDialogButton, ConfirmButton and CancelButton */
+.aselo-dialog-button {
+  height: 28px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 100px;
+  font-family: inherit;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.aselo-dialog-confirm {
+  color: #ffffff;
+  background: #d32f2f;
+}
+
+.aselo-dialog-confirm:hover {
+  background: #d32f2fcc;
+}
+
+.aselo-dialog-cancel {
+  margin-left: 30px;
+  color: #000000;
+  background: #ffffff;
+}
+
+.aselo-dialog-cancel:hover {
+  background: rgba(0, 0, 0, 0.2);
 }
 
 /* FormSelectWrapper / FormSelect with fullWidth */

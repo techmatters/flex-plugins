@@ -19,7 +19,7 @@
  * categories tab. What's edited and how lives in categoriesSlice.ts; see categories.ts for what
  * can change freely and what needs Aselo staff.
  */
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
@@ -266,6 +266,8 @@ export const CategoriesEditor = () => {
   const { editorRevision } = useAppSelector(selectWorkspace);
   const sectionIssues = useAppSelector(selectSectionIssues);
   const { helpline, previewSelected } = useAppSelector(selectCategories);
+  // Which sections the small preview has open, and its view: only how it looks
+  const [previewView, setPreviewView] = useState({ expanded: {} as Record<string, boolean>, gridView: false });
   const strings = useStrings(helplineLanguage ?? 'en-US', draftFiles);
   const helplines = useMemo(() => Object.keys(getCategoriesByHelpline(originalFiles)), [originalFiles]);
   const issues = sectionIssues.filter(issue => issue.message.startsWith('Issue categories'));
@@ -336,9 +338,16 @@ export const CategoriesEditor = () => {
             <AseloCategories
               definition={helpline ? getHelplineCategories(draftFiles, helpline) : undefined}
               selected={previewSelected}
-              hasError={false}
+              view={previewView}
               strings={strings}
               onChange={selected => dispatch(previewSelectedChanged(selected))}
+              onToggleSection={category =>
+                setPreviewView(view => ({
+                  ...view,
+                  expanded: { ...view.expanded, [category]: !view.expanded[category] },
+                }))
+              }
+              onViewChange={gridView => setPreviewView(view => ({ ...view, gridView }))}
             />
           </div>
         </div>

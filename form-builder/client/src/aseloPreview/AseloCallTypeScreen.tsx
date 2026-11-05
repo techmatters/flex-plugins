@@ -22,6 +22,7 @@
 import { useState } from 'react';
 import type { CallTypeButtonsEntry } from '@hrm-form-definitions/formDefinition/types';
 
+import { ClearIcon, FaceIcon } from './flexIcons';
 import { Strings, translate } from './translations';
 
 type Props = {
@@ -32,24 +33,22 @@ type Props = {
   onNonDataCallType?: (label: string) => void;
 };
 
-// Simple stand-ins for the plugin's CallTypeIcon
-const PersonIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-    <path
-      fill="currentColor"
-      d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"
-    />
-  </svg>
-);
-
-const PeopleIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-    <path
-      fill="currentColor"
-      d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"
-    />
-  </svg>
-);
+// CallTypeIcon: one face for the child, two overlapping for a caller. Other names don't match one
+// of Aselo's call types, so it shows them as (empty) silent text
+const CallTypeIcon = ({ name }: { name: string }) => {
+  if (name === 'child') return <FaceIcon />;
+  if (name === 'caller') {
+    return (
+      <>
+        <span className="aselo-call-type-face-overlap">
+          <FaceIcon />
+        </span>
+        <FaceIcon />
+      </>
+    );
+  }
+  return <span className="aselo-silent-text" />;
+};
 
 export const AseloCallTypeScreen = ({ buttons, strings, taskType, onDataCallType, onNonDataCallType }: Props) => {
   const [confirming, setConfirming] = useState<CallTypeButtonsEntry>();
@@ -60,33 +59,37 @@ export const AseloCallTypeScreen = ({ buttons, strings, taskType, onDataCallType
     <div className="aselo-call-types">
       <div className="aselo-call-types-group">
         <p className="aselo-call-types-label">{translate(strings, 'CallTypeButtons-Categorize')}</p>
-        {dataButtons.map(button => (
+        {dataButtons.map((button, index) => (
           <button
             key={button.name}
             type="button"
             className="aselo-data-call-type"
+            // As in Aselo, the first one has focus when the screen opens
+            // eslint-disable-next-line jsx-a11y/no-autofocus -- Aselo focuses it too
+            autoFocus={index === 0}
             onClick={() => onDataCallType(button.name)}
           >
-            <span className="aselo-call-type-icon">{button.name === 'caller' ? <PeopleIcon /> : <PersonIcon />}</span>
+            <span className="aselo-call-type-icon">
+              <CallTypeIcon name={button.name} />
+            </span>
             {translate(strings, button.label)}
           </button>
         ))}
       </div>
-      {nonDataButtons.length > 0 && (
-        <div>
-          <p className="aselo-call-types-label">{translate(strings, 'CallTypeButtons-Or')}</p>
-          {nonDataButtons.map((button, index) => (
-            <button
-              key={button.name}
-              type="button"
-              className={`aselo-non-data-call-type ${index % 2 === 0 ? 'left' : ''}`}
-              onClick={() => setConfirming(button)}
-            >
-              {translate(strings, button.label)}
-            </button>
-          ))}
-        </div>
-      )}
+      {/* Aselo shows the heading even when there are no buttons under it */}
+      <div>
+        <p className="aselo-call-types-label">{translate(strings, 'CallTypeButtons-Or')}</p>
+        {nonDataButtons.map((button, index) => (
+          <button
+            key={button.name}
+            type="button"
+            className={`aselo-non-data-call-type ${index % 2 === 0 ? 'left' : ''}`}
+            onClick={() => setConfirming(button)}
+          >
+            {translate(strings, button.label)}
+          </button>
+        ))}
+      </div>
 
       {confirming && (
         <div className="aselo-dialog-backdrop" role="presentation">
@@ -95,25 +98,36 @@ export const AseloCallTypeScreen = ({ buttons, strings, taskType, onDataCallType
             role="dialog"
             aria-label={translate(strings, 'NonDataCallTypeDialog-CloseConfirm')}
           >
-            <p>{translate(strings, 'NonDataCallTypeDialog-CloseConfirm')}</p>
-            <p className="aselo-dialog-detail">{translate(strings, confirming.label)}</p>
             <button
               type="button"
-              className="aselo-button aselo-button-destructive"
-              onClick={() => {
-                onNonDataCallType?.(confirming.label);
-                setConfirming(undefined);
-              }}
-            >
-              {translate(strings, taskType === 'call' ? 'TaskHeaderEndCall' : 'TaskHeaderEndChat')}
-            </button>
-            <button
-              type="button"
-              className="aselo-button aselo-button-secondary"
+              className="aselo-dialog-close"
+              aria-label={translate(strings, 'CloseButton')}
               onClick={() => setConfirming(undefined)}
             >
-              {translate(strings, 'CancelButton')}
+              <ClearIcon />
             </button>
+            <p className="aselo-dialog-text">{translate(strings, 'NonDataCallTypeDialog-CloseConfirm')}</p>
+            <div className="aselo-dialog-buttons">
+              <button
+                type="button"
+                className="aselo-dialog-button aselo-dialog-confirm"
+                // eslint-disable-next-line jsx-a11y/no-autofocus -- Aselo focuses it too
+                autoFocus
+                onClick={() => {
+                  onNonDataCallType?.(confirming.label);
+                  setConfirming(undefined);
+                }}
+              >
+                {translate(strings, taskType === 'call' ? 'TaskHeaderEndCall' : 'TaskHeaderEndChat')}
+              </button>
+              <button
+                type="button"
+                className="aselo-dialog-button aselo-dialog-cancel"
+                onClick={() => setConfirming(undefined)}
+              >
+                {translate(strings, 'CancelButton')}
+              </button>
+            </div>
           </div>
         </div>
       )}
