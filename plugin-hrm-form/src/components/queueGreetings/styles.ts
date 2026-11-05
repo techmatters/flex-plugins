@@ -64,6 +64,9 @@ GuidancePillContainer.displayName = 'GuidancePillContainer';
 export const GreetingPill = styled(PillButton)`
   display: inline-block;
   margin: 0 0 12px 16px;
+  max-width: calc(100% - 32px);
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;
 GreetingPill.displayName = 'GreetingPill';
 
