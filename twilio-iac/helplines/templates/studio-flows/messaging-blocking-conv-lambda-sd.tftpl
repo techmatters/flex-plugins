@@ -13,7 +13,7 @@ ${
           "event": "incomingCall"
         },
         {
-          "next": "f_getProfileFlagsForIdentifier",
+          "next": "run_subflow_system_down",
           "event": "incomingConversationMessage"
         },
         {
@@ -50,6 +50,7 @@ ${
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
         "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"{% if trigger.conversation.ChannelAttributes.channel_type %}{{trigger.conversation.ChannelAttributes.channel_type}}{% else %}{{trigger.conversation.Source | downcase}}{% endif %}\"}",
         "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
       }
@@ -118,7 +119,7 @@ ${
           "event": "sent"
         },
         {
-          "next": "http_post_webhook_notify_error",
+          "next": "send_to_queue",
           "event": "failed"
         }
       ],
@@ -127,9 +128,9 @@ ${
           "x": -260,
           "y": 460
         },
-        "service": "{{trigger.message.InstanceSid}}",
-        "channel": "{{trigger.message.ChannelSid}}",
-        "from": "${channel_flow_vars.widget_from}",
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": "${flow_vars.widget_from}",
         "to": "{{contact.channel.address}}",
         "body": "${channel_flow_vars.send_message_prequeue}"
       }
@@ -180,6 +181,35 @@ ${
         "body": "{ \"text\": \"Issue detected on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
         "add_twilio_auth": false,
         "url": "${webhook_url_studio_errors}"
+      }
+    },
+    {
+      "name": "run_subflow_system_down",
+      "type": "run-subflow",
+      "transitions": [
+        {
+          "next": "f_getProfileFlagsForIdentifier",
+          "event": "completed"
+        },
+        {
+          "next": "f_getProfileFlagsForIdentifier",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "flow_sid": "${system_down_studio_subflow_sid}",
+        "flow_revision": "LatestPublished",
+        "offset": {
+          "x": -150,
+          "y": -420
+        },
+        "parameters": [
+          {
+            "type": "string",
+            "value": "true",
+            "key": "system_down"
+          }
+        ]
       }
     }
   ],
