@@ -41,7 +41,7 @@ global.ResizeObserver = class {
 
 const queueGreetings = {
   greetedQueue: {
-    pillText: 'A pill text longer than twenty characters',
+    pillText: 'Greeted queue pill',
     popoverTitle: 'Greeted queue title',
     popoverContent: 'Hello, greeted queue.',
   },
@@ -73,10 +73,10 @@ const taskFromQueue = (reservationSid: string, queueName: string) =>
   ({ sid: reservationSid, taskSid: `task-${reservationSid}`, queueName } as ITask);
 
 describe('QueueGreetingPill', () => {
-  test('shows the pill text, capped to 20 characters, for a queue with a greeting', () => {
+  test('shows the pill text for a queue with a greeting', () => {
     renderWithStore(<QueueGreetingPill task={taskFromQueue('WR1', 'greetedQueue')} />);
 
-    expect(screen.getByText('A pill text longer t')).toBeInTheDocument();
+    expect(screen.getByText('Greeted queue pill')).toBeInTheDocument();
   });
 
   // jsdom applies :hover rules to computed styles, so the background can't be asserted here; the outline is checked instead
@@ -84,7 +84,7 @@ describe('QueueGreetingPill', () => {
     renderWithStore(<QueueGreetingPill task={taskFromQueue('WR1', 'greetedQueue')} selectedTaskSid="WR1" />);
     renderWithStore(<QueueGreetingPill task={taskFromQueue('WR2', 'greetedQueue')} selectedTaskSid="WR1" />);
 
-    const [selectedPill, unselectedPill] = screen.getAllByText('A pill text longer t');
+    const [selectedPill, unselectedPill] = screen.getAllByRole('button', { name: 'Greeted queue pill' });
     expect(selectedPill.parentElement).toHaveStyle('margin-top: -2px');
     expect(unselectedPill.parentElement).not.toHaveStyle('margin-top: -2px');
   });
@@ -93,7 +93,7 @@ describe('QueueGreetingPill', () => {
     const store = createStore();
     renderWithStore(<QueueGreetingPill task={taskFromQueue('WR2', 'greetedQueue')} />, store);
 
-    screen.getByRole('button', { name: 'A pill text longer t' }).click();
+    screen.getByRole('button', { name: 'Greeted queue pill' }).click();
 
     expect(store.getActions()).toStrictEqual([newSetQueueGreetingDismissedAction('task-WR2', false)]);
     expect(Actions.invokeAction).toHaveBeenCalledWith('SelectTask', { sid: 'WR2' });
@@ -102,7 +102,7 @@ describe('QueueGreetingPill', () => {
   test('renders nothing for a queue without a greeting', () => {
     renderWithStore(<QueueGreetingPill task={taskFromQueue('WR1', 'otherQueue')} />);
 
-    expect(screen.queryByText('A pill text longer t')).not.toBeInTheDocument();
+    expect(screen.queryByText('Greeted queue pill')).not.toBeInTheDocument();
   });
 });
 
