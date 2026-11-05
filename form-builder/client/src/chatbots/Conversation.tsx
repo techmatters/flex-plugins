@@ -34,24 +34,26 @@ import {
   Play,
   Trash2,
 } from 'lucide-react';
-import type {
-  AnswerType,
-  Chatbot,
-  ChatbotIntent,
-  ChatbotQuestion,
-} from '@tech-matters/form-builder-shared/chatbots/model';
 import {
   answerKindOf,
+  type AnswerType,
   answerTypeOf,
   BUILTIN_TYPES,
   builtinInfo,
   builtinLabel,
+  type Chatbot,
+  type ChatbotIntent,
+  type ChatbotQuestion,
   fillsInContact,
 } from '@tech-matters/form-builder-shared/chatbots/model';
+import {
+  type ContactForms,
+  targetLabel,
+  unmatchedAnswers,
+} from '@tech-matters/form-builder-shared/chatbots/formMappings';
+
 import { openComments } from './edit';
 import { Loading } from '../common/Loading';
-import type { ContactForms } from '@tech-matters/form-builder-shared/chatbots/formMappings';
-import { targetLabel, unmatchedAnswers } from '@tech-matters/form-builder-shared/chatbots/formMappings';
 import { AutoTextarea } from '../common/AutoTextarea';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import {
@@ -200,7 +202,7 @@ const AnswerPicker = ({
         aria-label="Answers it takes"
         disabled={readOnly}
         onChange={e => {
-          const value = e.target.value;
+          const { value } = e.target;
           if (value === NEW_LIST || value === NEW_PATTERN) {
             dispatch(
               answerPickerChanged({
@@ -364,6 +366,7 @@ const FormFieldsRow = ({ question, type }: { question: ChatbotQuestion; type?: A
         </span>
       </span>
       <div className="chatbot-chips">
+        {/* eslint-disable-next-line sonarjs/cognitive-complexity */}
         {groups.map((group, index) => (
           <span key={group.join('|')} className="chatbot-form-target">
             <span className="chatbot-chip field">

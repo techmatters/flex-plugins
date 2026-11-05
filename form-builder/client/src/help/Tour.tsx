@@ -23,6 +23,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowLeft, ArrowRight, X } from 'lucide-react';
+
 import type { TourStep } from './articles';
 import { HelpMarkdown } from './HelpMarkdown';
 import { useAppDispatch, useAppSelector } from '../app/store';
@@ -79,6 +80,7 @@ export const findTarget = (target: string, root: ParentNode = document): HTMLEle
 const NO_STEPS: TourStep[] = [];
 
 // The tour started (app/appSlice.ts), on its step
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const Tour = () => {
   const dispatch = useAppDispatch();
   const { tour, tourStep: index } = useAppSelector(selectApp);

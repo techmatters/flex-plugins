@@ -18,6 +18,7 @@
 
 import { afterEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+
 import { SIDEBAR_MIN_WIDTH, SidebarResizer, useSidebarWidth } from './SidebarResizer';
 
 // jsdom has no PointerEvent: a mouse event carries the position the same way

@@ -17,7 +17,7 @@
 /**
  * A helpline's definition files as the API returns them (server/src/definitionsApi.ts reads them).
  */
-import type { ImportSource } from './branches.ts';
+import type { ImportSource } from './branches';
 
 export type HelplineSummary = {
   code: string;

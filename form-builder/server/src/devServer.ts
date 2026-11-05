@@ -26,6 +26,9 @@
  */
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import path from 'path';
+
+import { RECORDING_CONTENT_TYPES, type RecordingEnvironment } from '@tech-matters/form-builder-shared/flows/recordings';
+
 import { ApiContext, handleApiRequest } from './api';
 import { LocalDraftStore } from './drafts';
 import { LocalApplier, localNotifier, localUser } from './localServices';
@@ -36,8 +39,6 @@ import { LocalRoutingStore } from './routingStore';
 import { LocalChatbotStore } from './chatbotApi';
 import { LocalHelpQuestionStore } from './helpQuestions';
 import { GitHubBranches } from './branches';
-import type { RecordingEnvironment } from '@tech-matters/form-builder-shared/flows/recordings';
-import { RECORDING_CONTENT_TYPES } from '@tech-matters/form-builder-shared/flows/recordings';
 
 const builderDir = path.resolve(process.cwd(), '..');
 const repoDir = path.resolve(builderDir, '..');

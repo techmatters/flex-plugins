@@ -20,8 +20,8 @@
  */
 import { aseloFormTemplates } from '@hrm-form-definitions/aseloForms';
 import { validateFormDefinition } from '@hrm-form-definitions/specification/validate';
-import type { FormTarget } from '../common/definitions';
-import { isContactTab } from '../common/definitions';
+
+import { type FormTarget, isContactTab } from '../common/definitions';
 
 export { validateFormDefinition };
 

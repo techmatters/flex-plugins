@@ -24,13 +24,15 @@
  *
  * Also the tested paths: runs marked as tested, kept on the board while nothing on them changes.
  */
-import type { BoardContent, FlowObject, TestedPath } from '@tech-matters/form-builder-shared/flows/model';
 import {
+  type BoardContent,
   defaultSplitInputOf,
   exitConditionOf,
   exitsOf,
+  type FlowObject,
   OBJECT_TYPES,
   repeatWidgetNames,
+  type TestedPath,
 } from '@tech-matters/form-builder-shared/flows/model';
 
 // ---------------------------------------------------------------------------------------------
@@ -130,6 +132,7 @@ export const renderLiquid = (template: string, lookup: Lookup): string => {
   const stack: { showing: boolean; done: boolean; outer: boolean }[] = [];
   const showing = () => stack.every(level => level.showing);
   let out = '';
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   parts.forEach(part => {
     const tag = part.match(/^{%-?\s*(\w+)\s*([\s\S]*?)\s*-?%}$/);
     if (tag) {
@@ -161,7 +164,7 @@ export const renderLiquid = (template: string, lookup: Lookup): string => {
 // ---------------------------------------------------------------------------------------------
 // The run
 
-export type SimStep = {
+type SimStep = {
   // Which execution of the flow (a chatbot handing the conversation back starts the next one)
   execution: number;
   objectId: string;
@@ -172,7 +175,7 @@ export type SimStep = {
   note?: string;
 };
 
-export type SimPrompt =
+type SimPrompt =
   // A chat reply (Question, messaging), or one of its other ways out (timeout)
   | { kind: 'reply'; objectId: string; exits: string[] }
   // Keys pressed or words said (Menu, voice), or its other ways out
@@ -192,7 +195,7 @@ export type SimPrompt =
   // Paused on a widget that goes on by itself (a message, a split worked out), to check it first
   | { kind: 'continue'; objectId: string; exit: string; note?: string };
 
-export type SimEnd = {
+type SimEnd = {
   kind: 'end' | 'deadEnd' | 'loop';
   message: string;
   objectId?: string;
@@ -307,6 +310,7 @@ const lookupIn =
  * The ways out of a split, in Studio's order, each with what makes it match (imported ones: their
  * conditions as live; new ones: equal to the way out's name). The rest is noMatch.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const splitMatchesOf = (object: FlowObject, input: string) => {
   const exits = exitsOf(object);
   if (object.studio?.type === 'split-based-on' && Array.isArray(object.studio.transitions)) {
@@ -340,6 +344,7 @@ const splitMatchesOf = (object: FlowObject, input: string) => {
 };
 
 // Studio's split conditions (text compared without minding case)
+// eslint-disable-next-line complexity
 const conditionMet = (type: string, value: string, condition: string): boolean | undefined => {
   const [a, b] = [value.trim().toLowerCase(), condition.trim().toLowerCase()];
   const list = b.split(',').map(item => item.trim());
@@ -420,7 +425,7 @@ const leave = (content: BoardContent, run: SimRun, exit: string, note?: string):
     ...steps[steps.length - 1],
     exit,
     ...(connection ? { connectionId: connection.id } : {}),
-    ...(note !== undefined ? { note } : {}),
+    ...(note === undefined ? {} : { note }),
   };
   const target = connection && content.objects.find(candidate => candidate.id === connection.to);
   if (target) {
@@ -472,10 +477,12 @@ const assumedBy = (
 };
 
 /** On from the current object, as far as it goes without asking. */
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 const advance = (content: BoardContent, start: SimRun): SimRun => {
   let run = start;
   for (let count = 0; count < MAX_STEPS; count += 1) {
     if (run.ended || run.prompt || !run.current) return run;
+    // eslint-disable-next-line no-loop-func -- the callback runs before the loop moves on
     const object = content.objects.find(candidate => candidate.id === run.current);
     if (!object) return nextRun(run, { ended: { kind: 'deadEnd', message: 'The next object is gone.' } });
     const exits = exitsOf(object);
@@ -520,6 +527,7 @@ const advance = (content: BoardContent, start: SimRun): SimRun => {
         const variables = { ...run.variables };
         const notes = (object.variables ?? [])
           .filter(({ key }) => key)
+          // eslint-disable-next-line no-loop-func -- the callback runs before the loop moves on
           .map(({ key, value }) => {
             try {
               variables[key] = renderLiquid(value, lookupIn({ ...run, variables }, content));
@@ -629,6 +637,7 @@ const keptValues = (object: FlowObject, run: SimRun, content: BoardContent) => {
 };
 
 /** The run after what was asked is answered (a reply, digits, a way out chosen...). */
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 export const answer = (content: BoardContent, run: SimRun, given: SimAnswer): SimRun => {
   const { prompt } = run;
   if (!prompt || run.ended) return run;
@@ -774,7 +783,7 @@ const logicOf = (object: FlowObject) =>
   ]);
 
 /** A fingerprint of everything on a path: when any of it changes, the path has to be tested again. */
-export const pathFingerprint = (
+const pathFingerprint = (
   content: Pick<BoardContent, 'objects' | 'connections'>,
   steps: Pick<SimStep, 'objectId' | 'exit' | 'connectionId'>[],
 ) =>
@@ -803,7 +812,7 @@ export const testedPathOf = (
 ): TestedPath => {
   const steps = run.steps.map(({ objectId, exit, connectionId }) => ({
     objectId,
-    ...(exit !== undefined ? { exit } : {}),
+    ...(exit === undefined ? {} : { exit }),
     ...(connectionId ? { connectionId } : {}),
   }));
   return {

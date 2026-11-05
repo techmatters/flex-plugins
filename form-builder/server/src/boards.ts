@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Flow designer boards (see docs/flow-designer.md), one JSON file each:
@@ -25,8 +26,15 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
-import type { Board, BoardContent, BoardSummary } from '@tech-matters/form-builder-shared/flows/model';
-import { isImportedBoard, statusOf, TEMPLATES_CODE } from '@tech-matters/form-builder-shared/flows/model';
+
+import {
+  type Board,
+  type BoardContent,
+  type BoardSummary,
+  isImportedBoard,
+  statusOf,
+  TEMPLATES_CODE,
+} from '@tech-matters/form-builder-shared/flows/model';
 import { isDesignStatus } from '@tech-matters/form-builder-shared/designStatus';
 
 export interface BoardStore {

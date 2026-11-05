@@ -20,9 +20,10 @@
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { HelplineSummary, Me } from '@tech-matters/form-builder-shared';
+
 import type { AppThunk, RootState } from './store';
 
-export type SessionState = {
+type SessionState = {
   user?: Me;
   helplines: HelplineSummary[];
   error?: string;

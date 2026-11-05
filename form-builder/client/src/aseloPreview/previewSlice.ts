@@ -23,9 +23,16 @@
  */
 import { createSelector, createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { CategoriesDefinition, FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
+
 import { AppThunk, rootReducer } from '../app/store';
-import type { ContactTab, DefinitionFileMap } from '../common/definitions';
-import { CONTACT_TABS, getCategoriesByHelpline, getForm, getReferenceData } from '../common/definitions';
+import {
+  CONTACT_TABS,
+  type ContactTab,
+  type DefinitionFileMap,
+  getCategoriesByHelpline,
+  getForm,
+  getReferenceData,
+} from '../common/definitions';
 import { selectDraftFiles } from '../drafts/draftSlice';
 import { selectDefinitions, tryItOutClosed, tryItOutOpened } from '../workspace/workspaceSlice';
 import { countSelected, DEFAULT_MAXIMUM_SELECTIONS, SelectedCategories } from './AseloCategories';
@@ -35,12 +42,12 @@ export type Channel = 'chat' | 'call';
 // What the preview opens on, depending on what's being edited
 export type PreviewFocus = 'form' | 'callTypes' | 'cannedResponses' | 'messages';
 export type TabId = 'search' | ContactTab['key'] | 'categories';
-export type CallType = 'child' | 'caller';
-export type SaveResult = 'saved' | 'invalid';
+type CallType = 'child' | 'caller';
+type SaveResult = 'saved' | 'invalid';
 
 type ContactTabKey = ContactTab['key'];
 
-export type PreviewState = {
+type PreviewState = {
   // False until openPreview has set it up for the preview being shown
   opened: boolean;
   channel: Channel;
@@ -128,6 +135,7 @@ const previewSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof previewSlice> {}
 }
 const injected = previewSlice.injectInto(rootReducer);
@@ -205,7 +213,7 @@ export const selectContactPanel = createSelector([selectPreview, selectDraftFile
 export const openPreview = (): AppThunk => (dispatch, getState) => {
   const state = getState();
   const { tryItOut } = state.workspace;
-  const files = state.draft.files;
+  const { files } = state.draft;
   const referenceData = getReferenceData(files);
   const initialTab = tryItOut?.tab as ContactTabKey | 'categories' | undefined;
   const hasCallerForm = (getForm(files, CONTACT_TABS[0].filePath) ?? []).length > 0;

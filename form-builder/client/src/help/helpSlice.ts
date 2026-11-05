@@ -22,14 +22,15 @@
  * opened or closed, and shows the article asked for.
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
+
 import { AppThunk, rootReducer } from '../app/store';
 import { helpClosed, helpOpened, helpToggled } from '../app/appSlice';
 import { articleBySlug } from './articles';
 import type { HelpQuestion } from './helpClient';
 
-export type HelpView = { kind: 'home' } | { kind: 'article'; slug: string } | { kind: 'sent' } | { kind: 'questions' };
+type HelpView = { kind: 'home' } | { kind: 'article'; slug: string } | { kind: 'sent' } | { kind: 'questions' };
 
-export type HelpState = {
+type HelpState = {
   query: string;
   // What's searched: the query once typing pauses (or it's submitted)
   searched: string;
@@ -116,6 +117,7 @@ const helpSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof helpSlice> {}
 }
 const injected = helpSlice.injectInto(rootReducer);

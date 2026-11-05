@@ -122,6 +122,7 @@ export const addCommonRule = (workflow: Workflow, design: RoutingDesign, common:
   while (
     index < workflow.rules.length &&
     commonAtStart.some(
+      // eslint-disable-next-line no-loop-func -- the callback runs before the loop moves on
       candidate =>
         commonAtStart.indexOf(candidate) < order &&
         workflow.rules[index].name.trim().toLowerCase() === candidate.name.toLowerCase(),

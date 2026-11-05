@@ -20,6 +20,7 @@ import { useState } from 'react';
 import { afterEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import type { TaskAttributes } from '@tech-matters/form-builder-shared/flows/model';
+
 import { TaskAttributesSection } from './TaskAttributesSection';
 
 afterEach(cleanup);

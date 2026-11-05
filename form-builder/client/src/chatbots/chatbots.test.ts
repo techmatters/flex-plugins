@@ -17,9 +17,22 @@
 import { existsSync, readdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { describe, expect, test } from '@jest/globals';
-import { chatbotChanges } from './changes';
-import { chatbotChecks } from './chatbotChecks';
+import { contactFormsOf, setFormTargets } from '@tech-matters/form-builder-shared/chatbots/formMappings';
+import { matchesPattern, patternProblem } from '@tech-matters/form-builder-shared/chatbots/model';
+import {
+  botStatusOf,
+  isNewBot,
+  setBotStatus,
+  withStatusUpdates,
+} from '@tech-matters/form-builder-shared/chatbots/status';
+import { loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
+import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
+import { MemoryChatbotStore } from '@tech-matters/form-builder-server/chatbotApi';
+import { importChatbots } from '@tech-matters/form-builder-server/chatbotImport';
+import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+
 import {
   addAnswerType,
   addChatbot,
@@ -31,20 +44,8 @@ import {
   updateQuestion,
   moveQuestion,
 } from './edit';
-import { contactFormsOf, setFormTargets } from '@tech-matters/form-builder-shared/chatbots/formMappings';
-import { matchesPattern, patternProblem } from '@tech-matters/form-builder-shared/chatbots/model';
-import {
-  botStatusOf,
-  isNewBot,
-  setBotStatus,
-  withStatusUpdates,
-} from '@tech-matters/form-builder-shared/chatbots/status';
-import { loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
-import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
-import { handleApiRequest } from '@tech-matters/form-builder-server/api';
-import { MemoryChatbotStore } from '@tech-matters/form-builder-server/chatbotApi';
-import { importChatbots } from '@tech-matters/form-builder-server/chatbotImport';
-import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import { chatbotChecks } from './chatbotChecks';
+import { chatbotChanges } from './changes';
 import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
@@ -299,7 +300,7 @@ describe('the chatbot routes', () => {
     drafts: new MemoryDraftStore(),
     chatbots: new MemoryChatbotStore(),
     helplinesConfigDir: helplinesDir,
-    notifier: { draftSubmitted: async () => {} },
+    notifier: { draftSubmitted: async () => undefined },
   };
   const call = (user: ApiUser, method: string, apiPath: string, body?: unknown) =>
     handleApiRequest(context, { method, path: apiPath, body, user });

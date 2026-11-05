@@ -20,8 +20,8 @@
  * review first; helpline staff see their own helplines'. Its state lives in draftsListSlice.ts.
  */
 import { useEffect } from 'react';
-import type { DraftSummary } from '@tech-matters/form-builder-shared';
-import type { FlagKind } from '@tech-matters/form-builder-shared';
+import { type DraftSummary, type FlagKind } from '@tech-matters/form-builder-shared';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectIsAseloStaff } from '../app/sessionSlice';
 import { openHelpline } from '../workspace/workspaceSlice';
@@ -109,6 +109,7 @@ export const DraftsList = () => {
                 </td>
                 <td>
                   {/* Forms have their own review: submitted drafts are applied by Aselo staff in the builder */}
+                  {/* eslint-disable-next-line no-nested-ternary */}
                   {draft.meta.status === 'submitted' ? (
                     <span className="design-status design-status-ready">
                       Submitted for review{draft.meta.submittedBy ? ` by ${draft.meta.submittedBy}` : ''}

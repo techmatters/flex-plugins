@@ -23,13 +23,16 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
+
+import type { BranchChoice, ImportSource, FromBranch } from '@tech-matters/form-builder-shared';
+
 import { readBranchHeads, PublicRepoSource } from './publicRepo';
 import { RepoSnapshots, Snapshot } from './repoSnapshot';
-import type { BranchChoice, ImportSource, FromBranch } from '@tech-matters/form-builder-shared';
-export type { BranchChoice, ImportSource, FromBranch };
+
+export type { ImportSource };
 
 // The folders an import reads
-export type ConfigDirs = { helplinesConfigDir: string; formDefinitionsDir: string };
+type ConfigDirs = { helplinesConfigDir: string; formDefinitionsDir: string };
 
 export type BranchSource = {
   // The default ('') first, then every branch
@@ -47,6 +50,7 @@ export const isValidBranch = (branch: string) =>
 
 export class GitHubBranches implements BranchSource {
   private snapshots = new Map<string, RepoSnapshots>();
+
   private heads?: { at: number; names: string[] };
 
   constructor(
@@ -72,7 +76,11 @@ export class GitHubBranches implements BranchSource {
   async snapshot(branch: string): Promise<Snapshot> {
     if (!isValidBranch(branch)) throw new Error(`Invalid branch ${branch}`);
     let snapshots = this.snapshots.get(branch);
-    if (!snapshots) {
+    if (snapshots) {
+      // Most recently used last
+      this.snapshots.delete(branch);
+      this.snapshots.set(branch, snapshots);
+    } else {
       snapshots = new RepoSnapshots(
         new PublicRepoSource(this.ownerAndRepo, branch, this.fetchImpl),
         path.join(this.rootDir, branch.replace(/[^A-Za-z0-9._-]/g, '_')),
@@ -87,10 +95,6 @@ export class GitHubBranches implements BranchSource {
           force: true,
         });
       }
-    } else {
-      // Most recently used last
-      this.snapshots.delete(branch);
-      this.snapshots.set(branch, snapshots);
     }
     return snapshots.latest();
   }

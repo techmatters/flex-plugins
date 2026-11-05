@@ -19,32 +19,35 @@
  * standards"). Problems are shown on the objects, in their settings and in the Check panel; they
  * never stop saving, since a board is a design in progress.
  */
-import type { BoardContent, FlowDetails, FlowObject, Frame, NamingChoices } from './model.ts';
 import {
+  type BoardContent,
   defaultSplitInputOf,
   exitConditionOf,
   exitsOf,
   fieldProblem,
   fieldShown,
+  flowChannelOf,
+  type FlowDetails,
   flowDetailsOf,
+  type FlowObject,
+  type Frame,
   hasFromField,
   isProfileFlagsInput,
   isSplitObject,
+  type NamingChoices,
   namingChoicesOf,
   OBJECT_TYPES,
   splitInputOf,
   standardStudioName,
   TASK_CHANNELS,
   taskChannelOf,
-  workerChannelOf,
-  flowChannelOf,
   variableKeyProblem,
   variesByVariant,
   widgetNamesOf,
-} from './model.ts';
-import type { Recording } from './recordings.ts';
-import { hasNonStandardRecording, isVoiceMessage, messageStatus } from './recordings.ts';
-import { taskAttributesProblem } from './taskAttributes.ts';
+  workerChannelOf,
+} from './model';
+import { hasNonStandardRecording, isVoiceMessage, messageStatus, type Recording } from './recordings';
+import { taskAttributesProblem } from './taskAttributes';
 
 const POSTQUEUE = 'postqueue_';
 
@@ -112,7 +115,7 @@ const labelOf = (object: FlowObject) => `“${object.text.trim() || OBJECT_TYPES
  * object: e.g. a Repeat repeat_x becomes split_x, which a Decision may be named. Each with the
  * message saying which name and where it comes from.
  */
-export const nameClashes = (content: Pick<BoardContent, 'objects' | 'frames'>): Map<string, string[]> => {
+const nameClashes = (content: Pick<BoardContent, 'objects' | 'frames'>): Map<string, string[]> => {
   const seen = new Map<string, { object: FlowObject; generated: boolean }[]>();
   content.objects.forEach(object => {
     const own = object.studioName ?? object.studio?.name;
@@ -122,6 +125,7 @@ export const nameClashes = (content: Pick<BoardContent, 'objects' | 'frames'>): 
     });
   });
   const clashes = new Map<string, string[]>();
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   seen.forEach((users, key) => {
     if (users.length < 2) return;
     const widget = key.slice(key.indexOf('|') + 1);
@@ -169,7 +173,7 @@ export const uniqueName = (
 // ---------------------------------------------------------------------------------------------
 // The whole board
 
-export type Severity = 'error' | 'warning';
+type Severity = 'error' | 'warning';
 
 export type Issue = {
   // Stable, for lists
@@ -215,6 +219,7 @@ export const boardChecks = (
     return choices.get(frameId)!;
   };
 
+  // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
   content.objects.forEach(object => {
     const info = OBJECT_TYPES[object.type];
     const frame = frameOf(object);
@@ -333,6 +338,7 @@ export const boardChecks = (
       (info.fields ?? [])
         .filter(field => field.required && fieldShown(field, object.settings))
         .filter(field =>
+          // eslint-disable-next-line no-nested-ternary
           field.key === 'taskChannel'
             ? !taskChannelOf(object, flowChannelOf(frame))
             : field.key === 'targetChannel'

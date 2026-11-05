@@ -24,20 +24,18 @@
  */
 import { useCallback, useEffect, useState } from 'react';
 import { ArrowLeft, Bot, CircleAlert, Download, Plus, TriangleAlert } from 'lucide-react';
-import type { ChatbotImport } from '@tech-matters/form-builder-shared';
-import type { FromBranch } from '@tech-matters/form-builder-shared';
+import { type ChatbotImport, type FromBranch } from '@tech-matters/form-builder-shared';
+import { DESIGN_STATUSES, type DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
+import { botLabel, type Chatbot, languageLabel } from '@tech-matters/form-builder-shared/chatbots/model';
+import { botStatusOf, isNewBot } from '@tech-matters/form-builder-shared/chatbots/status';
+
 import { BranchPicker, ImportedFrom } from '../common/BranchPicker';
 import { Loading } from '../common/Loading';
-import type { DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
-import { DESIGN_STATUSES } from '@tech-matters/form-builder-shared/designStatus';
 import { DesignStatusBadge, DesignStatusPicker } from '../common/DesignStatusPicker';
 import { AutoTextarea } from '../common/AutoTextarea';
 import { HelplineFilter } from '../common/HelplineFilter';
-import type { Chatbot } from '@tech-matters/form-builder-shared/chatbots/model';
-import { botLabel, languageLabel } from '@tech-matters/form-builder-shared/chatbots/model';
 import type { ChatbotIssue } from './chatbotChecks';
 import { openComments } from './edit';
-import { botStatusOf, isNewBot } from '@tech-matters/form-builder-shared/chatbots/status';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import {
   applyImport,
@@ -231,6 +229,7 @@ const BotNotes = ({ bot }: { bot: Chatbot }) => {
   );
 };
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 const Editor = () => {
   const dispatch = useAppDispatch();
   const { stored, design, saveStatus: status, conflict, tab, newChatbot } = useAppSelector(selectChatbots);
@@ -604,6 +603,7 @@ const ChatbotsHome = () => {
   );
 };
 
+// eslint-disable-next-line complexity
 export const ChatbotsArea = () => {
   const dispatch = useAppDispatch();
   const staffMode = useAppSelector(selectActingAsStaff);

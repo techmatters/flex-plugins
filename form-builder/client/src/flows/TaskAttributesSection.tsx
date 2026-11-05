@@ -19,7 +19,6 @@
  * rules read), where twilio-iac keeps it, and the other channels' when the flow is shared.
  */
 import type { Channel, TaskAttributes } from '@tech-matters/form-builder-shared/flows/model';
-import { JsonTextarea } from './JsonTextarea';
 import {
   channelAttributesJson,
   channelTemplateOf,
@@ -29,6 +28,8 @@ import {
   taskAttributeNames,
   taskAttributesProblem,
 } from '@tech-matters/form-builder-shared/flows/taskAttributes';
+
+import { JsonTextarea } from './JsonTextarea';
 
 // The attributes the routing rules usually read
 const ROUTING_ATTRIBUTES = new Set(['channelType', 'helpline', 'language', 'transferTargetType', 'ignoreAgent']);

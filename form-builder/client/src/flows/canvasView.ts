@@ -20,6 +20,7 @@
  * also removes what's inside frames and the connections left loose, through its changes).
  */
 import { useReactFlow } from '@xyflow/react';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import type { CanvasNode, ConnectionEdge } from './canvasModel';
 import { nodeSelected, selectLocked } from './boardSlice';

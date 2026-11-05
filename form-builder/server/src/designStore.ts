@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * One JSON design per helpline (routing designs, chatbot designs):
@@ -22,6 +23,7 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
+
 import {
   GetObjectCommand,
   ListObjectsV2Command,

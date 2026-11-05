@@ -18,8 +18,8 @@ import { afterEach, describe, expect, test, jest } from '@jest/globals';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { Provider } from 'react-redux';
-import { HELP_ARTICLES, parseArticle } from './articles';
-import type { HelpArea, HelpArticle } from './articles';
+
+import { HELP_ARTICLES, type HelpArea, type HelpArticle, parseArticle } from './articles';
 import { blocksOf } from './HelpMarkdown';
 import { HelpPanel } from './HelpPanel';
 import type { HelpClient } from './helpClient';

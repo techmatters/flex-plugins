@@ -19,7 +19,6 @@
  * workflows and task_queues blocks of the helpline's common.hcl. A design imported from a live
  * helpline and not changed gives back exactly its live config.
  */
-import { hclString, toHcl } from '../flows/studioTemplate';
 import {
   writeQueue,
   writeWorkflowSettings,
@@ -27,7 +26,9 @@ import {
 } from '@tech-matters/form-builder-shared/routing/convert';
 import type { RoutingDesign } from '@tech-matters/form-builder-shared/routing/model';
 
-export type GeneratedWorkflow = {
+import { hclString, toHcl } from '../flows/studioTemplate';
+
+type GeneratedWorkflow = {
   key: string;
   name: string;
   // Under twilio-iac/helplines; shared templates are used by other helplines too
@@ -37,7 +38,7 @@ export type GeneratedWorkflow = {
   text: string;
 };
 
-export type GeneratedRouting = {
+type GeneratedRouting = {
   workflows: GeneratedWorkflow[];
   // The workflows = {...} and task_queues = {...} blocks for common.hcl
   workflowsBlock: string;

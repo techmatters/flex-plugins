@@ -20,8 +20,8 @@
  * settings are edited straight in the draft (caseSections.ts says which files hold what).
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
-import type { DefinitionFileMap } from '../common/definitions';
-import { getCaseSections, getForm } from '../common/definitions';
+
+import { type DefinitionFileMap, getCaseSections, getForm } from '../common/definitions';
 import { AppThunk, RootState, rootReducer } from '../app/store';
 import { editDraftFiles } from '../drafts/draftSlice';
 import { Row, toRows } from '../common/SortableRows';
@@ -36,7 +36,7 @@ import {
   setSubstitution,
 } from './caseSections';
 
-export type CaseSectionsState = {
+type CaseSectionsState = {
   // Section keys, in the order they're listed
   rows: Row<string>[];
   // The name typed for a new section
@@ -63,6 +63,7 @@ const caseSectionsSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof caseSectionsSlice> {}
 }
 const injected = caseSectionsSlice.injectInto(rootReducer);

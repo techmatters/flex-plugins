@@ -17,16 +17,17 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { afterEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
-import { handleApiRequest } from '@tech-matters/form-builder-server/api';
+import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
 import type { BranchSource } from '@tech-matters/form-builder-server/branches';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { MemoryBoardStore } from '@tech-matters/form-builder-server/boards';
+import { Provider } from 'react-redux';
+
 import { boardClientFor } from './boardClient';
 import { ImportHelpline } from './ImportHelpline';
-import { Provider } from 'react-redux';
 import { createAppStore } from '../app/store';
 import { sessionLoaded } from '../app/sessionSlice';
 
@@ -61,7 +62,7 @@ describe('importing a helpline from a branch', () => {
       drafts: new MemoryDraftStore(),
       boards: new MemoryBoardStore(),
       branches,
-      notifier: { draftSubmitted: async () => {} },
+      notifier: { draftSubmitted: async () => undefined },
     };
     const client = boardClientFor((method, apiPath, body) =>
       handleApiRequest(context, { method, path: apiPath, body: structuredClone(body), user: staff }),

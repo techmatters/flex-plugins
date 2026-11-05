@@ -33,12 +33,11 @@ import {
   Tag,
   Voicemail,
 } from 'lucide-react';
-import type { Condition } from '@tech-matters/form-builder-shared/routing/model';
-import { attributeLabel, valueLabel } from '@tech-matters/form-builder-shared/routing/model';
+import { attributeLabel, type Condition, valueLabel } from '@tech-matters/form-builder-shared/routing/model';
 
-export type AttributeFamily = 'channel' | 'service' | 'language' | 'transfer' | 'offline' | 'other';
+type AttributeFamily = 'channel' | 'service' | 'language' | 'transfer' | 'offline' | 'other';
 
-export const FAMILIES: { family: AttributeFamily; label: string; icon: LucideIcon }[] = [
+const FAMILIES: { family: AttributeFamily; label: string; icon: LucideIcon }[] = [
   { family: 'channel', label: 'Channel', icon: MessageSquare },
   { family: 'service', label: 'Service', icon: Tag },
   { family: 'language', label: 'Language', icon: Languages },

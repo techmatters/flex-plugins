@@ -17,11 +17,10 @@
 import { readdirSync, readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { describe, expect, test } from '@jest/globals';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
-import { emptyBoard } from '@tech-matters/form-builder-shared/flows/model';
-import type { BoardContent, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
-import { toStudioFlow } from './studioTemplate';
+import { type BoardContent, emptyBoard, type FlowObject } from '@tech-matters/form-builder-shared/flows/model';
 import {
   isChannelAttributesReference,
   STANDARD_TASK_ATTRIBUTES,
@@ -30,6 +29,8 @@ import {
   taskAttributesProblem,
 } from '@tech-matters/form-builder-shared/flows/taskAttributes';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
+
+import { toStudioFlow } from './studioTemplate';
 import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');

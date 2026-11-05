@@ -19,10 +19,11 @@
  * languages and services set for the flow (FlowNaming); renaming keeps the recording playing.
  */
 import { describe, expect, test } from '@jest/globals';
-import type { BoardContent, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
 import {
+  type BoardContent,
   composeName,
   emptyBoard,
+  type FlowObject,
   nameParts,
   namingChoicesOf,
   standardStudioName,

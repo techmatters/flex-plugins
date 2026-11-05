@@ -25,13 +25,13 @@
  * (the answers and the ways to say them). Each item remembers the file it came from.
  */
 
-import type { DesignStatus } from '../designStatus.ts';
+import type { DesignStatus } from '../designStatus';
 
 export const CHATBOT_SCHEMA_VERSION = 1;
 
 // Where an item is kept: its file under twilio-iac/helplines, and whether other helplines share it
 // (configs/lex_v2/... rather than <code>/configs/lex_v2/...)
-export type Source = { file?: string; shared?: boolean };
+type Source = { file?: string; shared?: boolean };
 
 // A note left on a chatbot, a question, a list of answers or one answer, for the team and for
 // Claude (the export carries the open ones)
@@ -69,8 +69,10 @@ export type AnswerType = Source &
     resolution?: string;
   };
 
-export const answerKindOf = (type: AnswerType): AnswerKind =>
-  type.builtin ? 'builtin' : type.pattern !== undefined ? 'pattern' : 'list';
+export const answerKindOf = (type: AnswerType): AnswerKind => {
+  if (type.builtin) return 'builtin';
+  return type.pattern === undefined ? 'list' : 'pattern';
+};
 
 export const PATTERN_PARENT = 'AMAZON.AlphaNumeric';
 
@@ -268,7 +270,7 @@ export const patternProblem = (pattern: string): string | undefined => {
     return 'Lex doesn’t take unlimited repeats (*, + or {2,}): give a maximum, e.g. {1,30}.';
   if (/\./.test(plain)) return 'Lex doesn’t take “.” (any character): list the characters, e.g. [A-Za-z0-9 ].';
   try {
-    new RegExp(pattern);
+    RegExp(pattern);
   } catch {
     return 'This isn’t a valid pattern.';
   }
@@ -294,7 +296,7 @@ export const PATTERN_PRESETS: { label: string; pattern: string }[] = [
 ];
 
 // The contact form tabs a chatbot's answers can fill in, as in PrepopulateMappings.json
-export const FORM_TABS: { key: string; label: string }[] = [
+const FORM_TABS: { key: string; label: string }[] = [
   { key: 'ChildInformationTab', label: 'Service user information' },
   { key: 'CallerInformationTab', label: 'Help seeker information' },
   { key: 'CaseInformationTab', label: 'Case information' },

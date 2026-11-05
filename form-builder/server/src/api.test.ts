@@ -18,7 +18,9 @@ import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { beforeEach, describe, expect, test, jest } from '@jest/globals';
+
 import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { LocalDraftStore, MemoryDraftStore } from './drafts';
 import { LocalApplier, localUser } from './localServices';
@@ -47,7 +49,7 @@ beforeEach(() => {
     formDefinitionsDir,
     drafts: new MemoryDraftStore(),
     applier: { apply: jest.fn(async () => ({ description: 'Applied', written: ['x.json'] })) },
-    notifier: { draftSubmitted: jest.fn(async () => {}) },
+    notifier: { draftSubmitted: jest.fn(async () => undefined) },
     now: () => new Date('2026-10-26T12:00:00Z'),
   };
 });

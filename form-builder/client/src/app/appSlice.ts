@@ -19,10 +19,11 @@
  * as ?area=), which areas have been opened, the help panel beside them, and a guide's tour.
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
 import type { AppThunk, RootState } from './store';
 import type { HelpArticle } from '../help/articles';
 
-export type Area = 'forms' | 'flows' | 'routing' | 'chatbots';
+type Area = 'forms' | 'flows' | 'routing' | 'chatbots';
 
 export const AREAS: Area[] = ['forms', 'flows', 'routing', 'chatbots'];
 
@@ -38,7 +39,7 @@ const areaFromUrl = (): Area => {
   return area === 'flows' || area === 'routing' || area === 'chatbots' ? area : 'forms';
 };
 
-export type AppState = {
+type AppState = {
   area: Area;
   // Areas opened stay as they were left (hidden, not closed): e.g. add a skill in Routing and go
   // back to the board being worked on. Each has its own way back to its start page.

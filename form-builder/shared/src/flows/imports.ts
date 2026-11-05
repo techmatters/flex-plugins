@@ -17,7 +17,7 @@
 /**
  * A helpline's Studio flows read from its live config (server/src/flowImport.ts).
  */
-import type { BoardContent } from './model.ts';
+import type { BoardContent } from './model';
 
 export type ImportedRecording = {
   fileName: string;

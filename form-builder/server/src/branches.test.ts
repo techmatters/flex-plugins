@@ -16,11 +16,11 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { describe, expect, test } from '@jest/globals';
-import type { ApiContext, ApiUser } from './api';
-import { handleApiRequest } from './api';
-import type { BranchSource } from './branches';
-import { GitHubBranches, isValidBranch } from './branches';
+
+import { type ApiContext, type ApiUser, handleApiRequest } from './api';
+import { type BranchSource, GitHubBranches, isValidBranch } from './branches';
 import { MemoryChatbotStore } from './chatbotApi';
 import { MemoryDraftStore } from './drafts';
 import { MemoryRoutingStore } from './routingStore';
@@ -76,7 +76,7 @@ describe('branches', () => {
       chatbots: new MemoryChatbotStore(),
       routing: new MemoryRoutingStore(),
       branches,
-      notifier: { draftSubmitted: async () => {} },
+      notifier: { draftSubmitted: async () => undefined },
     };
     const staff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
     const uschStaff: ApiUser = { name: 'Childhelp person', role: 'helpline-staff', helplines: ['usch'] };

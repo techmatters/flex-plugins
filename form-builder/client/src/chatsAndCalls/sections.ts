@@ -19,6 +19,7 @@
  * canned responses and the automatic chat messages. Reading, checking and describing changes.
  */
 import type { CallTypeButtonsEntry, CannedResponsesDefinitions } from '@hrm-form-definitions/formDefinition/types';
+
 import type { DefinitionFileMap } from '../common/definitions';
 import { isSameJson } from '../drafts/changes';
 import type { ValidationIssue } from '../forms/validation';
@@ -37,7 +38,7 @@ export const MESSAGES_FILE = 'customStrings/Messages.json';
 export const POST_SURVEY_MESSAGES_FILE = 'customStrings/postSurveyMessages.json';
 
 // Call type names the plugin maps to its own call types (plugin-hrm-form DomainConstants)
-export const DATA_CALL_TYPE_NAMES = ['child', 'caller'] as const;
+const DATA_CALL_TYPE_NAMES = ['child', 'caller'] as const;
 
 export const getCallTypeButtons = (files: DefinitionFileMap): CallTypeButtonsEntry[] =>
   (files[CALL_TYPE_BUTTONS_FILE] as CallTypeButtonsEntry[] | undefined) ?? [];
@@ -203,7 +204,7 @@ export const validateSections = (
  * Plain-language descriptions of changes, for the review dialog and CHANGES.md
  */
 
-export type SectionChangeSummary = { title: string; lines: string[] };
+type SectionChangeSummary = { title: string; lines: string[] };
 
 const describeList = <T>(
   before: T[],

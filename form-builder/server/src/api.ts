@@ -45,9 +45,21 @@
  * (service-configuration/*.json). Deployed, both come from Okta groups.
  */
 import { randomUUID } from 'crypto';
+
+import {
+  type ApiUser,
+  applyApproval,
+  type ApplyDetails,
+  type ApplyResult,
+  applyThreadChange,
+  DraftReview,
+  isServiceConfigPath,
+  type Me,
+  sideOf,
+} from '@tech-matters/form-builder-shared';
+
 import { DefinitionsApiError, listHelplines, loadDefinitionFiles } from './definitionsApi';
 import { Draft, DraftStore, isValidDraftFilePath, isValidDraftKey, DraftMeta } from './drafts';
-import { applyApproval, applyThreadChange, DraftReview, sideOf } from '@tech-matters/form-builder-shared';
 import type { BoardStore } from './boards';
 import type { PeopleStore } from './people';
 import { handleBoardRequest } from './boardsApi';
@@ -55,16 +67,14 @@ import { handleRecordingRequest, RecordingStores } from './recordingsApi';
 import { importHelpline } from './flowImport';
 import { handleRoutingRequest } from './routingApi';
 import { ChatbotStore, handleChatbotRequest } from './chatbotApi';
-import type { BranchSource, ImportSource } from './branches';
-import { isValidBranch } from './branches';
+import { type BranchSource, type ImportSource, isValidBranch } from './branches';
 import type { RoutingStore } from './routingStore';
-import { isServiceConfigPath } from '@tech-matters/form-builder-shared';
 import { loadPostFlowChoices } from './postStudioFlowChoices';
 import { handleHelpRequest, HelpQuestionStore } from './helpQuestions';
-import type { ApiUser, Me, ApplyResult, ApplyDetails } from '@tech-matters/form-builder-shared';
-export type { ApiUser, Me, ApplyResult, ApplyDetails };
 
-export type ApiRequest = {
+export type { ApiUser, ApplyResult, ApplyDetails };
+
+type ApiRequest = {
   method: string;
   path: string;
   body?: unknown;
@@ -132,8 +142,7 @@ const fail = (status: number, message: string, extra: object = {}): ApiResponse 
   body: { message, ...extra },
 });
 
-export const canOpenHelpline = (user: ApiUser, code: string) =>
-  user.helplines === 'all' || user.helplines.includes(code);
+const canOpenHelpline = (user: ApiUser, code: string) => user.helplines === 'all' || user.helplines.includes(code);
 
 // The service configuration is Aselo staff business: helpline staff never see it, in the
 // current files or in drafts
@@ -171,6 +180,7 @@ const isSaveDraftBody = (body: unknown): body is SaveDraftBody => {
   );
 };
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 export const handleApiRequest = async (context: ApiContext, request: ApiRequest): Promise<ApiResponse> => {
   const { user } = request;
   const now = (context.now ?? (() => new Date()))().toISOString();

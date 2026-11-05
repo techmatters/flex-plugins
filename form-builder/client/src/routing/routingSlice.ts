@@ -23,25 +23,32 @@
  * If someone else saved it in between, saving stops and the user is asked to reload, rather than
  * either person silently overwriting the other.
  */
-import { addListener, createSelector, createSlice, PayloadAction, UnknownAction, WithSlice } from '@reduxjs/toolkit';
-import type { ListenerEffectAPI } from '@reduxjs/toolkit';
+import {
+  addListener,
+  createSelector,
+  createSlice,
+  type ListenerEffectAPI,
+  PayloadAction,
+  UnknownAction,
+  WithSlice,
+} from '@reduxjs/toolkit';
 import type { BranchChoice, FromBranch, RoutingImport } from '@tech-matters/form-builder-shared';
-import type { DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
-import { STATUS_AFTER_CHANGE } from '@tech-matters/form-builder-shared/designStatus';
-import type {
-  Capacity,
-  Queue,
-  RoutingDesign,
-  RoutingSummary,
-  Rule,
-  Skill,
-  StoredRouting,
-  Workflow,
+import { type DesignStatus, STATUS_AFTER_CHANGE } from '@tech-matters/form-builder-shared/designStatus';
+import {
+  type Capacity,
+  emptyRouting,
+  type Queue,
+  type RoutingDesign,
+  routingStatusOf,
+  type RoutingSummary,
+  type Rule,
+  type Skill,
+  type StoredRouting,
+  type Workflow,
 } from '@tech-matters/form-builder-shared/routing/model';
-import { emptyRouting, routingStatusOf } from '@tech-matters/form-builder-shared/routing/model';
 import type { TaskAttributes } from '@tech-matters/form-builder-shared/routing/describe';
-import type { AppDispatch, AppThunk, RootState, Services } from '../app/store';
-import { rootReducer } from '../app/store';
+
+import { type AppDispatch, type AppThunk, rootReducer, type RootState, type Services } from '../app/store';
 import { newRule, renameSkill, setCapacity, updateRule, updateWorkflow } from './edit';
 import { addCommonRule, CommonRule } from './commonRules';
 import { routingChecks, RoutingIssue } from './routingChecks';
@@ -56,12 +63,12 @@ export type RoutingTab =
   | { kind: 'test' }
   | { kind: 'check' };
 
-export type RoutingSaveState = 'saved' | 'unsaved' | 'saving' | 'conflict' | 'error';
+type RoutingSaveState = 'saved' | 'unsaved' | 'saving' | 'conflict' | 'error';
 
-export type RoutingConflict = { updatedBy?: string; updatedAt?: string };
+type RoutingConflict = { updatedBy?: string; updatedAt?: string };
 
 // The open design, as it's being edited
-export type RoutingEditorState = {
+type RoutingEditorState = {
   code: string;
   design: RoutingDesign;
   // The server's revision, so two people can't overwrite each other unknowingly
@@ -83,7 +90,7 @@ export type RoutingEditorState = {
   newSkillName: string;
 };
 
-export type RoutingState = {
+type RoutingState = {
   // The area was shown once (someone with a single helpline gets it opened straight away)
   entered: boolean;
   // The start page: every helpline's design this person can see, and how they're filtered
@@ -159,6 +166,7 @@ const queueKeyFor = (design: RoutingDesign, name: string) => {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '_')
       .replace(/^_|_$/g, '') || 'queue';
+  // eslint-disable-next-line no-loop-func -- the callback runs before the loop moves on
   while (design.queues.some(queue => queue.key === key)) key = `${key}_2`;
   return key;
 };
@@ -437,10 +445,12 @@ const routingSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof routingSlice> {}
 }
 const injected = routingSlice.injectInto(rootReducer);
-export const { selectRouting, selectRoutingEditor, selectRoutingDesign } = injected.selectors;
+const { selectRoutingDesign } = injected.selectors;
+export const { selectRouting, selectRoutingEditor } = injected.selectors;
 const routingOf = (state: RootState) => injected.selectSlice(state);
 
 export const {
@@ -509,10 +519,10 @@ export const selectRoutingHelplineCodes = createSelector([(state: RootState) => 
 
 // Saves the open design if it changed, after any save under way: what changes meanwhile is saved
 // once that one is done
-export const saveRouting =
+const saveRouting =
   (): AppThunk<Promise<void>> =>
   async (dispatch, getState, { routingClient }) => {
-    const editor = routingOf(getState()).editor;
+    const { editor } = routingOf(getState());
     if (!editor || editor.saving || editor.conflict) return;
     const json = JSON.stringify(editor.design);
     if (json === editor.savedJson) return;

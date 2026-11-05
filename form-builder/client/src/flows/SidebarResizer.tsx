@@ -66,6 +66,7 @@ export const SidebarResizer = ({
     onDone(next);
   };
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- a separator people move with the arrow keys
     <div
       className="flow-sidebar-resizer"
       role="separator"
@@ -73,6 +74,7 @@ export const SidebarResizer = ({
       aria-label="Resize the side panel"
       aria-valuemin={SIDEBAR_MIN_WIDTH}
       aria-valuenow={width}
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a separator people move with the arrow keys
       tabIndex={0}
       title="Drag to make the panel wider; double-click to go back"
       onPointerDown={e => {

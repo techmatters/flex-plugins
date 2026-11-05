@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Questions the help panel couldn't answer, sent to the Aselo team by the person who asked (they
@@ -27,9 +28,12 @@
 import { randomUUID } from 'crypto';
 import { promises as fs } from 'fs';
 import path from 'path';
+
 import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import type { ApiResponse, ApiUser } from './api';
 import type { HelpQuestion } from '@tech-matters/form-builder-shared';
+
+import type { ApiResponse, ApiUser } from './api';
+
 export type { HelpQuestion };
 
 export interface HelpQuestionStore {
@@ -99,6 +103,7 @@ export const handleHelpRequest = async (
   body: unknown,
   user: ApiUser,
   now: () => Date,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<ApiResponse> => {
   if (!store) return { status: 501, body: { message: "Questions can't be sent from here." } };
   if (method === 'POST') {

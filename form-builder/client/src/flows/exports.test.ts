@@ -15,10 +15,10 @@
  */
 
 import { describe, expect, test } from '@jest/globals';
-import type { Board } from '@tech-matters/form-builder-shared/flows/model';
-import { BOARD_SCHEMA_VERSION } from '@tech-matters/form-builder-shared/flows/model';
-import { exportFileName, scriptRows, toFlowExport } from './exports';
+import { type Board, BOARD_SCHEMA_VERSION } from '@tech-matters/form-builder-shared/flows/model';
 import type { RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
+
+import { exportFileName, scriptRows, toFlowExport } from './exports';
 
 const board: Board = {
   code: 'usnm',

@@ -20,6 +20,7 @@
  * components/forms/formInputs (Input, Select, DependentSelect, Checkbox, validation.ts).
  */
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { localizeText, PreEngagementForm, Strings, WebchatField } from './webchat';
 import { answerPreview, previewStartedSet, PreviewValue as Value, selectWebchat } from './webchatSlice';
@@ -75,6 +76,14 @@ export const WebchatPreview = ({ form, strings }: Props) => {
     </span>
   );
 
+  const renderOptions = (options: SelectOption[]) =>
+    options.map((option, index) => (
+      <option key={index} value={String(option.value)}>
+        {t(option.label)}
+      </option>
+    ));
+
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const renderField = (field: WebchatField) => {
     const error = Boolean(errorOf(field) && touched.includes(field.name));
     const id = `webchat-preview-${field.name}`;
@@ -104,11 +113,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
               value={String(valueOf(field))}
               onChange={e => setValue(field.name, e.target.value)}
             >
-              {((field.options ?? []) as SelectOption[]).map((option, index) => (
-                <option key={index} value={String(option.value)}>
-                  {t(option.label)}
-                </option>
-              ))}
+              {renderOptions((field.options ?? []) as SelectOption[])}
             </select>
           </label>
         );
@@ -125,11 +130,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
               value={String(valueOf(field))}
               onChange={e => setValue(field.name, e.target.value)}
             >
-              {list.map((option, index) => (
-                <option key={index} value={String(option.value)}>
-                  {t(option.label)}
-                </option>
-              ))}
+              {renderOptions(list)}
             </select>
           </label>
         );
@@ -146,6 +147,7 @@ export const WebchatPreview = ({ form, strings }: Props) => {
             />
             <span>
               {/* The webchat shows checkbox labels as HTML, so they can hold a link */}
+              {/* eslint-disable-next-line react/no-danger -- sanitized by sanitizeLabelHtml, as the webchat does */}
               <span dangerouslySetInnerHTML={{ __html: sanitizeLabelHtml(t(field.label)) }} />
               {field.required ? '*' : ''}
             </span>

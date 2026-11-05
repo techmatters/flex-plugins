@@ -23,10 +23,11 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
+
 import * as tar from 'tar';
 import { REPO_FORM_DEFINITIONS_DIR, REPO_WEBCHAT_CONFIG_DIR } from '@tech-matters/form-builder-shared';
 
-export const REPO_HELPLINES_CONFIG_DIR = 'twilio-iac/helplines';
+const REPO_HELPLINES_CONFIG_DIR = 'twilio-iac/helplines';
 
 const SNAPSHOT_DIRS = [REPO_FORM_DEFINITIONS_DIR, REPO_HELPLINES_CONFIG_DIR, REPO_WEBCHAT_CONFIG_DIR];
 
@@ -49,7 +50,7 @@ const isWanted = (entryPath: string) => {
   return SNAPSHOT_DIRS.some(dir => inRepo === dir || inRepo.startsWith(`${dir}/`));
 };
 
-export const extractSnapshot = async (tarball: Buffer, targetDir: string) => {
+const extractSnapshot = async (tarball: Buffer, targetDir: string) => {
   await fs.mkdir(targetDir, { recursive: true });
   await pipeline(Readable.from(tarball), tar.x({ cwd: targetDir, strip: 1, filter: entryPath => isWanted(entryPath) }));
 };
@@ -64,7 +65,9 @@ const snapshotOf = (sha: string, repoRoot: string): Snapshot => ({
 
 export class RepoSnapshots {
   private current?: Snapshot;
+
   private checkedAt = 0;
+
   private pending?: Promise<Snapshot>;
 
   constructor(

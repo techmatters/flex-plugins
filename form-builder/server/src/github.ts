@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Talks to GitHub as the "Aselo Form Builder" GitHub App (see terraform/README.md): reads
@@ -21,21 +22,21 @@
  */
 import { createSign } from 'crypto';
 
-export type GitHubAppCredentials = {
+type GitHubAppCredentials = {
   appId: string;
   installationId: string;
   privateKey: string;
 };
 
-export type GitHubRepo = { owner: string; repo: string };
+type GitHubRepo = { owner: string; repo: string };
 
-export const FLEX_PLUGINS: GitHubRepo = { owner: 'techmatters', repo: 'flex-plugins' };
+const FLEX_PLUGINS: GitHubRepo = { owner: 'techmatters', repo: 'flex-plugins' };
 
 const API = 'https://api.github.com';
 
 const base64Url = (input: string | Buffer) => Buffer.from(input).toString('base64url');
 
-export const createAppJwt = (appId: string, privateKey: string, now = Date.now()) => {
+const createAppJwt = (appId: string, privateKey: string, now = Date.now()) => {
   const issuedAt = Math.floor(now / 1000) - 60; // GitHub allows for clock drift this way
   const header = base64Url(JSON.stringify({ alg: 'RS256', typ: 'JWT' }));
   const payload = base64Url(JSON.stringify({ iat: issuedAt, exp: issuedAt + 9 * 60, iss: appId }));
@@ -43,7 +44,7 @@ export const createAppJwt = (appId: string, privateKey: string, now = Date.now()
   return `${header}.${payload}.${base64Url(signature)}`;
 };
 
-export class GitHubError extends Error {
+class GitHubError extends Error {
   constructor(message: string, public readonly status: number) {
     super(message);
   }
@@ -71,6 +72,7 @@ export class GitHubClient {
       },
     });
     if (!response.ok) throw new GitHubError(`GitHub sign-in failed (${response.status})`, response.status);
+    // eslint-disable-next-line camelcase -- as the API spells it
     const body = (await response.json()) as { token: string; expires_at: string };
     this.token = { value: body.token, expiresAt: Date.parse(body.expires_at) };
     return body.token;

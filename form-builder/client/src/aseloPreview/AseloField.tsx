@@ -20,6 +20,7 @@
  */
 import { useState } from 'react';
 import type { FormItemJsonDefinition, SelectOption } from '@hrm-form-definitions/formDefinition/types';
+
 import { resolveOptions } from '../common/definitions';
 import { dependentOptionsFor, FieldValue, FormValues } from './aseloFields';
 import { Strings, translate } from './translations';
@@ -42,8 +43,14 @@ const RequiredAsterisk = () => (
   </span>
 );
 
-const cssSize = (size: number | string | undefined, fallback: number) =>
-  size === undefined ? `${fallback}px` : typeof size === 'number' ? `${size}px` : size;
+const cssSize = (size: number | string | undefined, fallback: number) => {
+  if (size === undefined) return `${fallback}px`;
+  return typeof size === 'number' ? `${size}px` : size;
+};
+
+const CHECKBOX_MARKS: Record<string, string> = { true: '✓', false: '✕' };
+const INPUT_TYPES: Record<string, string> = { 'date-input': 'date', 'time-input': 'time' };
+const NEXT_MIXED_STATE: Record<string, boolean | 'mixed'> = { mixed: true, true: false, false: 'mixed' };
 
 // The custom checkbox square: grey when empty, blue with a tick, red with a cross (mixed "no")
 const CheckboxBox = ({ state }: { state: boolean }) => (
@@ -57,7 +64,7 @@ const MixedBox = ({ state }: { state: boolean | 'mixed' }) => (
     className={`aselo-checkbox-box ${state === true ? 'is-yes' : ''} ${state === false ? 'is-no' : ''}`}
     aria-hidden="true"
   >
-    {state === true ? '✓' : state === false ? '✕' : ''}
+    {CHECKBOX_MARKS[String(state)] ?? ''}
   </span>
 );
 
@@ -110,6 +117,7 @@ export const AseloField = ({ item, values, referenceData, strings, error, onChan
     </div>
   );
 
+  // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
   const renderInput = () => {
     switch (item.type) {
       case 'input':
@@ -123,7 +131,7 @@ export const AseloField = ({ item, values, referenceData, strings, error, onChan
             <input
               id={id}
               // Email and number boxes are plain text boxes in Aselo, checked when saving
-              type={item.type === 'date-input' ? 'date' : item.type === 'time-input' ? 'time' : 'text'}
+              type={INPUT_TYPES[item.type] ?? 'text'}
               className={`aselo-input ${error ? 'has-error' : ''}`}
               value={typeof value === 'string' ? value : ''}
               aria-invalid={Boolean(error)}
@@ -224,7 +232,7 @@ export const AseloField = ({ item, values, referenceData, strings, error, onChan
       case 'mixed-checkbox': {
         const state = value === true || value === false ? value : 'mixed';
         // Each click moves through: unanswered -> yes -> no -> unanswered
-        const next = state === 'mixed' ? true : state === true ? false : 'mixed';
+        const next = NEXT_MIXED_STATE[String(state)];
         return (
           <div className="aselo-form-label">
             <span className="aselo-checkbox-wrapper">

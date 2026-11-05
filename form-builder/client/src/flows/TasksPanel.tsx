@@ -19,8 +19,9 @@
  * are. Done tasks stay, greyed out, so the board keeps a record of what was decided.
  */
 import { Square, SquareCheck } from 'lucide-react';
-import type { CanvasNode, StickyNode } from './canvasModel';
 import { TASK_STATUSES, TaskStatus } from '@tech-matters/form-builder-shared/flows/model';
+
+import type { CanvasNode, StickyNode } from './canvasModel';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectUser } from '../app/sessionSlice';
 import { nodeDataChanged, selectBoard, selectReadOnly, TaskFilter, tasksFilterChanged } from './boardSlice';
@@ -28,7 +29,7 @@ import { useCanvasView } from './canvasView';
 
 type Filter = TaskFilter;
 
-export const taskNodes = (nodes: CanvasNode[]) =>
+const taskNodes = (nodes: CanvasNode[]) =>
   nodes.filter((node): node is StickyNode => node.type === 'sticky' && Boolean(node.data.sticky.task));
 
 export const openTaskCount = (nodes: CanvasNode[]) =>

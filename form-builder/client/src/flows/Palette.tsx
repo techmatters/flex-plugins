@@ -25,6 +25,7 @@ import {
   OBJECT_TYPES,
   ObjectTypeInfo,
 } from '@tech-matters/form-builder-shared/flows/model';
+
 import { ObjectIcon, ShapeOutline } from './shapes';
 import { BOARD_HELP } from './stepHelp';
 import { useHoverHelp } from './StepHelpCard';
@@ -67,6 +68,7 @@ const PaletteButton = ({
     className="flow-palette-item"
     draggable
     title={hoverProps ? undefined : title ?? label}
+    // eslint-disable-next-line react/jsx-props-no-spreading -- the step help's hover props
     {...hoverProps}
     onDragStart={e => {
       hoverProps?.onDragStart?.(e);

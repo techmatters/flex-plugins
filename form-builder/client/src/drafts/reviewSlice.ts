@@ -22,6 +22,7 @@
  */
 import { createSelector, createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { ApplyResult } from '@tech-matters/form-builder-shared';
+
 import { AppThunk, RootState, rootReducer } from '../app/store';
 import { reviewClosed, reviewOpened, selectDefinitions, selectReviewIssues } from '../workspace/workspaceSlice';
 import { applyDraft, selectDraftFiles, selectOriginalFiles, submitDraft } from './draftSlice';
@@ -29,7 +30,7 @@ import { summarizeContactFormChanges } from './changes';
 import { summarizeSectionChanges } from '../chatsAndCalls/sections';
 import { buildChangeLog, downloadExportZip } from './exportZip';
 
-export type ReviewState = {
+type ReviewState = {
   // The zip was downloaded
   exported: boolean;
   // Submitting or applying is under way
@@ -75,6 +76,7 @@ const reviewSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof reviewSlice> {}
 }
 const injected = reviewSlice.injectInto(rootReducer);

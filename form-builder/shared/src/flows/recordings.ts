@@ -23,8 +23,7 @@
  * Aselo staff approve it and publish it to the production folder, which is what production
  * Studio flows play.
  */
-import type { FlowObject, Frame } from './model.ts';
-import { messageChannelOf, OBJECT_TYPES } from './model.ts';
+import { type FlowObject, type Frame, messageChannelOf, OBJECT_TYPES } from './model';
 
 export type RecordingEnvironment = 'staging' | 'production';
 

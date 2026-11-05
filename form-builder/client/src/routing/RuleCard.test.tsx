@@ -22,6 +22,7 @@ import { cleanup, fireEvent, render, screen, within } from '@testing-library/rea
 import { DndContext } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import type { RoutingDesign, Rule } from '@tech-matters/form-builder-shared/routing/model';
+
 import { RuleCard } from './RuleCard';
 import { routingChecks } from './routingChecks';
 
@@ -62,10 +63,10 @@ const Card = ({ start }: { start: Rule }) => {
             readOnly={false}
             selected
             expanded
-            onToggle={() => {}}
+            onToggle={() => undefined}
             onChange={setRule}
-            onRemove={() => {}}
-            onSelect={() => {}}
+            onRemove={() => undefined}
+            onSelect={() => undefined}
           />
         </ul>
       </SortableContext>

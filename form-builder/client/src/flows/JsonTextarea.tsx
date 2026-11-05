@@ -20,6 +20,7 @@
  * and clicking around never changes it.
  */
 import { TextareaHTMLAttributes, useRef } from 'react';
+
 import { AutoTextarea } from '../common/AutoTextarea';
 import { formatTemplateJson } from './jsonFormat';
 
@@ -51,5 +52,6 @@ export const JsonTextarea = ({ value, onValueChange, isValid, autoGrow = false, 
       onBlur?.(e);
     },
   };
+  // eslint-disable-next-line react/jsx-props-no-spreading -- forwards the textarea's props
   return autoGrow ? <AutoTextarea {...rest} minRows={minRows} {...handlers} /> : <textarea {...rest} {...handlers} />;
 };

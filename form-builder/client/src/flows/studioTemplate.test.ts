@@ -17,14 +17,21 @@
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { describe, expect, test } from '@jest/globals';
-import type { BoardContent, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
-import { emptyBoard, fieldProblem, fixedExitsOf } from '@tech-matters/form-builder-shared/flows/model';
+import {
+  type BoardContent,
+  emptyBoard,
+  fieldProblem,
+  fixedExitsOf,
+  type FlowObject,
+} from '@tech-matters/form-builder-shared/flows/model';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
-import { toStudioFlow, toStudioFlows } from './studioTemplate';
 import { standardTaskAttributes } from '@tech-matters/form-builder-shared/flows/taskAttributes';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
 import { parseTemplate } from '@tech-matters/form-builder-server/hcl';
+
+import { toStudioFlow, toStudioFlows } from './studioTemplate';
 import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
@@ -351,6 +358,7 @@ describe('Other function / HTTP request', () => {
 });
 
 describe('Splits and the standard requests', () => {
+  // eslint-disable-next-line sonarjs/no-identical-functions -- the same test widget as above, kept next to the tests that use it
   const object = (id: string, type: FlowObject['type'], extra: Partial<FlowObject> = {}): FlowObject => ({
     id,
     type,

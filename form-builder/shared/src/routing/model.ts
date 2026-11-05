@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { DesignStatus } from '../designStatus.ts';
+import type { DesignStatus } from '../designStatus';
 
 /**
  * A helpline's routing design: TaskRouter workflows, queues, skills and capacity, in terms people
@@ -216,14 +216,11 @@ export const VALUE_LABELS: Record<string, string> = {
 };
 
 export const attributeLabel = (attribute: string) => ATTRIBUTE_LABELS[attribute] ?? attribute;
-export const valueLabel = (value: string | number | boolean) =>
-  typeof value === 'string'
-    ? VALUE_LABELS[value] ?? value
-    : value === true
-    ? 'yes'
-    : value === false
-    ? 'no'
-    : String(value);
+export const valueLabel = (value: string | number | boolean) => {
+  if (typeof value === 'string') return VALUE_LABELS[value] ?? value;
+  if (typeof value === 'boolean') return value ? 'yes' : 'no';
+  return String(value);
+};
 
 export const emptyRouting = (helpline: string): RoutingDesign => ({
   schemaVersion: ROUTING_SCHEMA_VERSION,

@@ -20,10 +20,11 @@
  * importing a live helpline, and the Aselo templates.
  */
 import { useEffect } from 'react';
-import { HelplineFilter } from '../common/HelplineFilter';
-import { Loading } from '../common/Loading';
 import { BoardSummary, TEMPLATES_CODE } from '@tech-matters/form-builder-shared/flows/model';
 import { statusLabel } from '@tech-matters/form-builder-shared/designStatus';
+
+import { HelplineFilter } from '../common/HelplineFilter';
+import { Loading } from '../common/Loading';
 import { DesignStatusBadge } from '../common/DesignStatusPicker';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
@@ -54,6 +55,7 @@ const labelOf = (code: string) => (code === TEMPLATES_CODE ? 'Aselo templates' :
 const lastChange = (board: BoardSummary) =>
   `${board.meta.updatedBy}, ${new Date(board.meta.updatedAt).toLocaleString()}`;
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const FlowsHome = () => {
   const dispatch = useAppDispatch();
   // Helplines this person can add boards to

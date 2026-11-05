@@ -31,6 +31,7 @@
  */
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { ApplyResult, DraftMeta, ImportSource } from '@tech-matters/form-builder-shared';
+
 import type { DefinitionFileMap } from '../common/definitions';
 import type { AppListenerStartListening, AppThunk, RootState } from '../app/store';
 import { getChangedFilePaths } from './changes';
@@ -38,9 +39,7 @@ import type { DraftConflict, ThreadChange } from './draftClient';
 
 export type SaveState = 'loading' | 'saved' | 'pending' | 'saving' | 'conflict' | 'error';
 
-export type { DraftConflict };
-
-export type DraftState = {
+type DraftState = {
   code: string;
   version: string;
   // The flex-plugins branch the files were read from, when not the default (sent with each save)
@@ -160,7 +159,8 @@ const draftSlice = createSlice({
   },
 });
 
-export const { draftStarted, filesUpdated, noticeDismissed } = draftSlice.actions;
+const { filesUpdated } = draftSlice.actions;
+export const { draftStarted, noticeDismissed } = draftSlice.actions;
 const {
   draftLoaded,
   draftFromOtherBranch,
@@ -259,15 +259,15 @@ const saveNow =
         ),
         ...(state.source ? { source: state.source } : {}),
       });
-      if (!outcome.ok) dispatch(saveConflicted(outcome.conflict));
-      else dispatch(draftSaved({ meta: outcome.meta, json }));
+      if (outcome.ok) dispatch(draftSaved({ meta: outcome.meta, json }));
+      else dispatch(saveConflicted(outcome.conflict));
     } catch (err) {
       dispatch(saveFailed((err as Error).message));
     }
   };
 
 // Saves now, after any save already under way (each uses the revision the previous one returned)
-export const flushDraft = (): AppThunk<Promise<void>> => (dispatch, _getState, services) => {
+const flushDraft = (): AppThunk<Promise<void>> => (dispatch, _getState, services) => {
   services.saveQueue.current = services.saveQueue.current.then(() => dispatch(saveNow()));
   return services.saveQueue.current;
 };
@@ -277,7 +277,7 @@ export const flushDraft = (): AppThunk<Promise<void>> => (dispatch, _getState, s
 export const saveBeforeLeaving = (): AppThunk<Promise<void> | undefined> => (dispatch, getState) => {
   const state = getState().draft;
   if (!state.code || state.saveState === 'loading' || state.conflict) return undefined;
-  return changedJsonOf(state) !== state.lastSavedJson ? dispatch(flushDraft()) : undefined;
+  return changedJsonOf(state) === state.lastSavedJson ? undefined : dispatch(flushDraft());
 };
 
 export const discardDraft = (): AppThunk<Promise<void>> => async (dispatch, getState, services) => {

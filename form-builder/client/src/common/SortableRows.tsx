@@ -50,7 +50,7 @@ export const toRows = <T,>(values: T[]): Row<T>[] =>
  * Rows kept in step with a list in the draft: edits go through `commit`, which updates the
  * rows and writes the plain values back.
  */
-export const useRows = <T,>(initial: T[], write: (values: T[]) => void) => {
+const useRows = <T,>(initial: T[], write: (values: T[]) => void) => {
   const [rows, setRows] = useState(() => toRows(initial));
   const commit = (next: Row<T>[]) => {
     setRows(next);
@@ -67,7 +67,9 @@ const SortableRow = ({ id, label, children }: { id: string; label: string; child
         type="button"
         className="drag-handle"
         aria-label={`Drag to reorder ${label}`}
+        // eslint-disable-next-line react/jsx-props-no-spreading -- dnd-kit's drag handle props
         {...attributes}
+        // eslint-disable-next-line react/jsx-props-no-spreading -- dnd-kit's drag handle props
         {...listeners}
       >
         ⋮⋮

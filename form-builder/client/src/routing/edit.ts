@@ -28,13 +28,13 @@ import type {
 } from '@tech-matters/form-builder-shared/routing/model';
 
 let nextId = 0;
-export const newRoutingId = (prefix: string) => {
+const newRoutingId = (prefix: string) => {
   nextId += 1;
   return `${prefix}-${Date.now().toString(36)}-${nextId}`;
 };
 
 // The blocks every new target starts with: the way the helplines' targets are usually written
-export const STANDARD_BLOCKS: WhoBlock[] = [
+const STANDARD_BLOCKS: WhoBlock[] = [
   { kind: 'notWaitingOffline' },
   { kind: 'voiceChatExclusive' },
   { kind: 'skills', skills: [] },

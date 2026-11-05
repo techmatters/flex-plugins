@@ -16,6 +16,7 @@
 
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import { DefinitionFiles, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
+
 import { formDefinitionsDir, helplinesConfigDir, webchatConfigDir } from '../testing/workspaceHarness';
 import type { DefinitionFileMap } from '../common/definitions';
 import {
@@ -99,7 +100,7 @@ describe('reading', () => {
 
 describe('writing', () => {
   test.each(['usnm', 'usch', 'usvc'])('reads and writes %s back unchanged', code => {
-    const files = { usnm, usch, usvc }[code]!.files;
+    const { files } = { usnm, usch, usvc }[code]!;
     const info = readFormSelector(files);
     expect(formSelectorJson(info.selector)).toEqual(mappingsOf(files).formSelector);
     expect(setFormSelector(files, info.selector)).toBe(files);

@@ -17,17 +17,23 @@
 import { existsSync, readdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
-import { exitsOf } from '@tech-matters/form-builder-shared/flows/model';
-import { toFlowExport } from './exports';
+import {
+  type Board,
+  type BoardContent,
+  type BoardSummary,
+  exitsOf,
+} from '@tech-matters/form-builder-shared/flows/model';
 import { HelplineImport, importHelpline, separate } from '@tech-matters/form-builder-server/flowImport';
-import type { Board, BoardContent, BoardSummary } from '@tech-matters/form-builder-shared/flows/model';
 import type { RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
 import { ApiContext, ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
 import { MemoryBoardStore } from '@tech-matters/form-builder-server/boards';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { MemoryRecordingFiles, MemoryRecordingLogStore } from '@tech-matters/form-builder-server/recordingStores';
+
+import { toFlowExport } from './exports';
 import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
@@ -274,7 +280,7 @@ describe('the import routes', () => {
         log: new MemoryRecordingLogStore(),
         fetchSource: async url => new TextEncoder().encode(`audio from ${url}`),
       },
-      notifier: { draftSubmitted: async () => {} },
+      notifier: { draftSubmitted: async () => undefined },
       now: () => new Date('2026-10-28T12:00:00Z'),
     };
   });

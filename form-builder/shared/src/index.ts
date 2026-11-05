@@ -18,14 +18,14 @@
  * The shared package's types and rules used across the builder. Feature modules (flows/,
  * routing/, chatbots/, designStatus) are imported by their path.
  */
-export * from './drafts.ts';
-export * from './definitions.ts';
-export * from './api.ts';
-export * from './filePaths.ts';
-export * from './reviews.ts';
-export * from './branches.ts';
-export * from './postFlowChoices.ts';
-export * from './help.ts';
-export * from './flows/imports.ts';
-export * from './routing/imports.ts';
-export * from './chatbots/imports.ts';
+export * from './drafts';
+export * from './definitions';
+export * from './api';
+export * from './filePaths';
+export * from './reviews';
+export * from './branches';
+export * from './postFlowChoices';
+export * from './help';
+export * from './flows/imports';
+export * from './routing/imports';
+export * from './chatbots/imports';

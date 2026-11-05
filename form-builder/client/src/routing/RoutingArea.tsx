@@ -32,16 +32,14 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { ArrowLeft, ChevronsDownUp, ChevronsUpDown, Download } from 'lucide-react';
-import type { RoutingImport } from '@tech-matters/form-builder-shared';
-import type { FromBranch } from '@tech-matters/form-builder-shared';
+import { type FromBranch, type RoutingImport } from '@tech-matters/form-builder-shared';
+import { DESIGN_STATUSES, type DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
+import { routingStatusOf, type Rule } from '@tech-matters/form-builder-shared/routing/model';
+
 import { BranchPicker, ImportedFrom } from '../common/BranchPicker';
 import { Loading } from '../common/Loading';
-import type { DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
-import { DESIGN_STATUSES } from '@tech-matters/form-builder-shared/designStatus';
 import { DesignStatusBadge, DesignStatusPicker } from '../common/DesignStatusPicker';
 import { HelplineFilter } from '../common/HelplineFilter';
-import type { Rule } from '@tech-matters/form-builder-shared/routing/model';
-import { routingStatusOf } from '@tech-matters/form-builder-shared/routing/model';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { RuleCard } from './RuleCard';
@@ -462,6 +460,7 @@ const RoutingHome = () => {
   );
 };
 
+// eslint-disable-next-line complexity
 export const RoutingArea = () => {
   const dispatch = useAppDispatch();
   const { code, stored, error, preview, branch, importing, working, editor } = useAppSelector(selectRouting);

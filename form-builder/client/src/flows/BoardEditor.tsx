@@ -47,9 +47,6 @@ import {
   Undo2,
   Users,
 } from 'lucide-react';
-import { downloadFlowExport, downloadScripts } from './exports';
-import { CheckPanel } from './CheckPanel';
-import { RecordingsPanel } from './RecordingControls';
 import {
   isImportedBoard,
   objectColor,
@@ -58,6 +55,10 @@ import {
   VARIANT_LANGUAGES,
   variantInLanguage,
 } from '@tech-matters/form-builder-shared/flows/model';
+
+import { downloadFlowExport, downloadScripts } from './exports';
+import { CheckPanel } from './CheckPanel';
+import { RecordingsPanel } from './RecordingControls';
 import { DesignStatusPicker } from '../common/DesignStatusPicker';
 import { ARROW, CanvasNode, ConnectionEdge, facingSide } from './canvasModel';
 import { EDGE_TYPES, NODE_TYPES } from './nodes';
@@ -117,6 +118,7 @@ const isTyping = (target: EventTarget | null) =>
 
 const NOTICE_MS = 5000;
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 const Editor = () => {
   const dispatch = useAppDispatch();
   const { flow, rectOf, showNode, deleteSelected } = useCanvasView();
@@ -283,6 +285,7 @@ const Editor = () => {
   };
 
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- dnd-kit's attributes make it a focusable button
     <div className={`flow-editor ${mode}`} onKeyDown={onKeyDown}>
       <div className="flow-toolbar">
         <button type="button" className="link-button" onClick={close}>

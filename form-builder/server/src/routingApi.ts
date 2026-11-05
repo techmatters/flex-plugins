@@ -24,14 +24,15 @@
  *
  * Helpline staff see and edit their own helplines' designs; importing is for Aselo staff.
  */
-import type {
-  Condition,
-  RoutingDesign,
-  RoutingSummary,
-  StoredRouting,
+import {
+  type Condition,
+  type RoutingDesign,
+  routingStatusOf,
+  type RoutingSummary,
+  type StoredRouting,
 } from '@tech-matters/form-builder-shared/routing/model';
-import { routingStatusOf } from '@tech-matters/form-builder-shared/routing/model';
 import { isDesignStatus } from '@tech-matters/form-builder-shared/designStatus';
+
 import type { ApiResponse, ApiUser } from './api';
 import { importRouting } from './routingImport';
 import { isValidRoutingCode, RoutingStore } from './routingStore';
@@ -75,6 +76,7 @@ const isDesign = (value: unknown): value is RoutingDesign => {
   );
 };
 
+// eslint-disable-next-line complexity
 export const handleRoutingRequest = async (
   store: RoutingStore | undefined,
   helplinesConfigDir: string | undefined,
@@ -83,6 +85,7 @@ export const handleRoutingRequest = async (
   body: unknown,
   user: ApiUser,
   now: string,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<ApiResponse> => {
   if (!store) return fail(501, "The routing designer isn't set up here.");
   if (method === 'GET' && path === '/api/routing') {

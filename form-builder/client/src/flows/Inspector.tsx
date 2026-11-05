@@ -18,63 +18,60 @@
  * The side panel: settings of what's selected (or of the board, when nothing is).
  */
 import { useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../app/store';
-import { selectUser } from '../app/sessionSlice';
 import {
+  type BoardContent,
   Channel,
   CommentThread,
   composeName,
+  composePrefixed,
+  defaultSplitInputOf,
   exitConditionOf,
   exitsOf,
-  fixedExitsOf,
-  isSplitObject,
-  SPLIT_OPERATORS,
-  taskChannelOf,
-  workerChannelOf,
-  flowChannelOf,
-  NAMING_LANGUAGES,
-  namingLanguageOf,
-  FlowObjectType,
   fieldProblem,
   fieldShown,
+  fixedExitsOf,
+  flowChannelOf,
+  type FlowDetails,
+  type FlowNaming,
+  type FlowObject,
+  FlowObjectType,
+  FlowStage,
+  type FlowVariable,
+  type Frame,
   isNamedByParts,
-  splitInputsOf,
-  defaultSplitInputOf,
+  isSplitObject,
   lockedPrefixesOf,
-  composePrefixed,
-  prefixedName,
-  standardPrefixedName,
-  variableKeyProblem,
   messageChannelOf,
   messageFor,
   nameParts,
+  type NameParts,
+  NAMING_LANGUAGES,
+  type NamingChoices,
   namingChoicesOf,
-  variesByVariant,
-  withVariantMessage,
-  FlowStage,
+  namingLanguageOf,
   OBJECT_COLORS,
   OBJECT_TYPES,
   objectColor,
+  type ObjectField,
+  type Person,
+  prefixedName,
+  type PrefixedName,
+  SPLIT_OPERATORS,
+  splitInputsOf,
+  standardPrefixedName,
   standardStudioName,
   STICKY_COLORS,
   StickyColor,
   suggestStudioName,
   TASK_STATUSES,
+  taskChannelOf,
   TaskStatus,
+  TEMPLATES_CODE,
   toSnake,
-} from '@tech-matters/form-builder-shared/flows/model';
-import type {
-  BoardContent,
-  FlowDetails,
-  FlowNaming,
-  FlowObject,
-  FlowVariable,
-  Frame,
-  NameParts,
-  PrefixedName,
-  NamingChoices,
-  ObjectField,
-  Person,
+  variableKeyProblem,
+  variesByVariant,
+  withVariantMessage,
+  workerChannelOf,
 } from '@tech-matters/form-builder-shared/flows/model';
 import {
   hasNonStandardRecording,
@@ -82,11 +79,13 @@ import {
   playsWaitRecording,
   withStudioName,
 } from '@tech-matters/form-builder-shared/flows/recordings';
+import { type Issue, uniqueName } from '@tech-matters/form-builder-shared/flows/checks';
+
+import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectUser } from '../app/sessionSlice';
 import { JsonTextarea } from './JsonTextarea';
 import { CanvasNode, ConnectionEdge, FrameNode, newId, ObjectNode, StickyNode } from './canvasModel';
 import type { HelplineChoices } from './boardClient';
-import type { Issue } from '@tech-matters/form-builder-shared/flows/checks';
-import { uniqueName } from '@tech-matters/form-builder-shared/flows/checks';
 import { RecordingActions, RecordingSection, ScriptApproval, useRecordingActions } from './RecordingControls';
 import {
   duplicateSelection,
@@ -112,7 +111,6 @@ import {
   variantRenamed,
 } from './boardSlice';
 import { useCanvasView } from './canvasView';
-import { TEMPLATES_CODE } from '@tech-matters/form-builder-shared/flows/model';
 import { TaskAttributesSection } from './TaskAttributesSection';
 
 const CHANNELS: { value: Channel; label: string }[] = [
@@ -126,7 +124,7 @@ const CHANNELS: { value: Channel; label: string }[] = [
   { value: 'line', label: 'LINE' },
 ];
 
-export type InspectorProps = {
+type InspectorProps = {
   title: string;
   // The board as saved, for checks across objects (e.g. names already used)
   content: BoardContent;
@@ -166,7 +164,7 @@ export type InspectorProps = {
 };
 
 // One flow per language sharing the board's template: making it so, and its languages (BoardEditor)
-export type SharedLanguageActions = {
+type SharedLanguageActions = {
   // From these languages (the first is the board's own), or back to one flow named per language
   onShare: (languages: string[]) => void;
   onUnshare: () => void;
@@ -559,21 +557,7 @@ const MultiSelect = ({
         ))}
       </span>
       {!readOnly &&
-        (typing !== undefined ? (
-          <input
-            type="text"
-            autoFocus
-            aria-label={`Other ${label.toLowerCase()}`}
-            value={typing}
-            placeholder={other}
-            onChange={e => setTyping(e.target.value)}
-            onBlur={stopTyping}
-            onKeyDown={e => {
-              if (e.key === 'Enter') stopTyping();
-              else if (e.key === 'Escape') setTyping(undefined);
-            }}
-          />
-        ) : (
+        (typing === undefined ? (
           <select
             aria-label={`Add ${label.toLowerCase()}`}
             value=""
@@ -589,6 +573,21 @@ const MultiSelect = ({
               ))}
             {other && <option value={OTHER}>Other…</option>}
           </select>
+        ) : (
+          <input
+            type="text"
+            // eslint-disable-next-line jsx-a11y/no-autofocus -- it appears when the person asks for it, ready to type in
+            autoFocus
+            aria-label={`Other ${label.toLowerCase()}`}
+            value={typing}
+            placeholder={other}
+            onChange={e => setTyping(e.target.value)}
+            onBlur={stopTyping}
+            onKeyDown={e => {
+              if (e.key === 'Enter') stopTyping();
+              else if (e.key === 'Escape') setTyping(undefined);
+            }}
+          />
         ))}
       <span className="field-hint">{hint}</span>
     </div>
@@ -618,6 +617,7 @@ const NamingSection = ({
   onChange: (naming: FlowNaming | undefined) => void;
   // The board's own flow: its languages can be flows sharing its template
   languages?: SharedLanguageActions;
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const naming = details?.naming ?? {};
   // What's used when nothing is set: the flow's channel, its messages' languages
@@ -929,7 +929,7 @@ const ExitsEditor = ({
     <h3>Ways out</h3>
     <p className="field-hint">
       The answers or results this can lead to. Each connection from it is one of these. Those Studio always has (no
-      match, timeout, failed...) can't be removed.
+      match, timeout, failed...) can&apos;t be removed.
     </p>
     {hint && <p className="field-hint">{hint}</p>}
     {operatorOf && (
@@ -993,6 +993,7 @@ const ExitsEditor = ({
   </section>
 );
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorProps }) => {
   const { readOnly, onNodeData, sketch } = props;
   const { object } = node.data;
@@ -1189,6 +1190,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
 
       {info.studioPrefix && (
         <section className="flow-inspector-section">
+          {/* eslint-disable-next-line no-nested-ternary */}
           {isNamedByParts(object.type) &&
           (!object.studioName || nameParts(object.studioName, info.studioPrefix, choices)) ? (
             <NamePartsEditor
@@ -1257,11 +1259,13 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
               A Twilio Function in Studio (<code>run-function</code>): its settings stay as they are live.
             </p>
           )}
+          {/* eslint-disable-next-line complexity, sonarjs/cognitive-complexity */}
           {fields.map(field => {
             const value = object.settings?.[field.key] ?? '';
             // Not chosen: a Send to queue's task channel follows the flow's channel
             const flowChannel = flowChannelOf(details);
             const automatic =
+              // eslint-disable-next-line no-nested-ternary
               field.key === 'taskChannel'
                 ? taskChannelOf({}, flowChannel)
                 : field.key === 'targetChannel'
@@ -1297,6 +1301,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                   {field.label}
                   {field.required && !object.studio && <span className="field-required"> (required)</span>}
                 </span>
+                {/* eslint-disable no-nested-ternary */}
                 {field.custom ? (
                   <ChoiceOrText key={node.id} field={field} value={value} disabled={readOnly} onChange={set} />
                 ) : field.options ? (
@@ -1342,6 +1347,7 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
                     onChange={e => set(e.target.value)}
                   />
                 )}
+                {/* eslint-enable no-nested-ternary */}
                 {suggestions.length > 0 && field.suggestions !== 'skills' && (
                   <datalist id={`suggestions-${node.id}-${field.key}`}>
                     {suggestions.map(({ value: offered, detail }) => (
@@ -1576,16 +1582,7 @@ const StickySettings = ({ node, props }: { node: StickyNode; props: InspectorPro
       </section>
       <section className="flow-inspector-section">
         <h3>Task</h3>
-        {!task ? (
-          <>
-            <p className="field-hint">Turn this note into something to do, for someone.</p>
-            {!props.readOnly && (
-              <button type="button" className="secondary-button" onClick={() => updateTask({ status: 'todo' })}>
-                Make it a task
-              </button>
-            )}
-          </>
-        ) : (
+        {task ? (
           <>
             <label className="field">
               <span className="field-label">Status</span>
@@ -1639,6 +1636,15 @@ const StickySettings = ({ node, props }: { node: StickyNode; props: InspectorPro
               </button>
             )}
           </>
+        ) : (
+          <>
+            <p className="field-hint">Turn this note into something to do, for someone.</p>
+            {!props.readOnly && (
+              <button type="button" className="secondary-button" onClick={() => updateTask({ status: 'todo' })}>
+                Make it a task
+              </button>
+            )}
+          </>
         )}
       </section>
     </>
@@ -1654,6 +1660,7 @@ const ConnectionSettings = ({ edge, props }: { edge: ConnectionEdge; props: Insp
     props.edges.filter(other => other.source === edge.source && other.id !== edge.id).map(other => other.data?.exit),
   );
   const nameOf = (node?: CanvasNode) =>
+    // eslint-disable-next-line no-nested-ternary
     node?.type === 'object' ? node.data.object.text : node?.type === 'sticky' ? 'note' : 'frame';
   return (
     <section className="flow-inspector-section">
@@ -1771,7 +1778,7 @@ const useInspectorProps = (): InspectorProps => {
     recordings,
     variant,
     helplineChoices,
-    onRefreshChoices: () => void dispatch(loadHelplineChoices()),
+    onRefreshChoices: () => dispatch(loadHelplineChoices()),
     onBoardFlow: next => dispatch(flowChanged(next)),
     languages: {
       onShare: languages => dispatch(languagesShared(languages)),

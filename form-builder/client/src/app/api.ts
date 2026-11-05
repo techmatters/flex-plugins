@@ -14,9 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import type { BranchChoice } from '@tech-matters/form-builder-shared';
-import type { DefinitionFiles, HelplineSummary } from '@tech-matters/form-builder-shared';
-import type { PostFlowChoices } from '@tech-matters/form-builder-shared';
+import {
+  type BranchChoice,
+  type DefinitionFiles,
+  type HelplineSummary,
+  type PostFlowChoices,
+} from '@tech-matters/form-builder-shared';
+
 import { apiFetch } from './auth';
 
 const getJson = async <T>(url: string): Promise<T> => {

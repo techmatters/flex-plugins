@@ -32,9 +32,17 @@
  * is filled by hand on the boards page.
  */
 import { randomUUID } from 'crypto';
-import type { Board, BoardContent } from '@tech-matters/form-builder-shared/flows/model';
-import { emptyBoard, statusOf, TEMPLATES_CODE, upgradeContent } from '@tech-matters/form-builder-shared/flows/model';
+
+import {
+  type Board,
+  type BoardContent,
+  emptyBoard,
+  statusOf,
+  TEMPLATES_CODE,
+  upgradeContent,
+} from '@tech-matters/form-builder-shared/flows/model';
 import { STATUS_AFTER_CHANGE } from '@tech-matters/form-builder-shared/designStatus';
+
 import type { ApiResponse, ApiUser } from './api';
 import { BoardStore, isBoardContent, isValidBoardKey } from './boards';
 import { ASELO_PEOPLE_CODE, isValidPeopleCode, normalizePeople, PeopleStore } from './people';
@@ -58,7 +66,7 @@ const canEdit = (user: ApiUser, code: string) => isStaff(user) && canSee(user, c
 
 const newBoardId = () => randomUUID().slice(0, 8);
 
-export type FlowStores = { boards: BoardStore; people?: PeopleStore };
+type FlowStores = { boards: BoardStore; people?: PeopleStore };
 
 type CreateBody = { title?: unknown; copyFrom?: { code?: unknown; id?: unknown }; content?: unknown };
 type SaveBody = { expectedRevision?: unknown; content?: unknown };
@@ -85,6 +93,7 @@ const handlePeopleRequest = async (
   return fail(404, `Unknown API route ${method} /api/people/${code}`);
 };
 
+// eslint-disable-next-line complexity
 export const handleBoardRequest = async (
   { boards, people }: FlowStores,
   method: string,
@@ -92,6 +101,7 @@ export const handleBoardRequest = async (
   body: unknown,
   user: ApiUser,
   now: string,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<ApiResponse> => {
   const peopleMatch = path.match(/^\/api\/people\/([^/]+)$/);
   if (peopleMatch) return handlePeopleRequest(people, method, peopleMatch[1], body, user);

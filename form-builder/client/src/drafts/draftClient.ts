@@ -19,10 +19,16 @@
  * the same server code directly. Only types are imported from the server here, so no Node code
  * ends up in the browser bundle.
  */
-import type { ImportSource } from '@tech-matters/form-builder-shared';
-import type { ApplyResult, Me } from '@tech-matters/form-builder-shared';
-import type { Draft, DraftMeta, DraftSummary } from '@tech-matters/form-builder-shared';
-import type { FlagKind } from '@tech-matters/form-builder-shared';
+import {
+  type ApplyResult,
+  type Draft,
+  type DraftMeta,
+  type DraftSummary,
+  type FlagKind,
+  type ImportSource,
+  type Me,
+} from '@tech-matters/form-builder-shared';
+
 import { apiFetch } from '../app/auth';
 
 // A change to a draft's review threads (shared/src/reviews.ts, POST .../threads)
@@ -32,7 +38,7 @@ export type ThreadChange =
   | { action: 'resolve'; id: string; resolved: boolean }
   | { action: 'delete'; id: string };
 
-export type SaveDraftRequest = {
+type SaveDraftRequest = {
   expectedRevision: number;
   files: Record<string, unknown>;
   baseHashes: Record<string, string>;
@@ -43,7 +49,7 @@ export type SaveDraftRequest = {
 // Someone else saved the draft meanwhile, or (branch) it was started from another branch
 export type DraftConflict = { updatedBy?: string; updatedAt?: string; branch?: string };
 
-export type SaveOutcome =
+type SaveOutcome =
   | { ok: true; meta: Partial<DraftMeta> & { revision: number } }
   | { ok: false; conflict: DraftConflict };
 

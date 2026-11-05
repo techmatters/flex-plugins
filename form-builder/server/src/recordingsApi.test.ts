@@ -24,6 +24,7 @@ import {
 } from '@aws-sdk/client-s3';
 import { CreateInvalidationCommand } from '@aws-sdk/client-cloudfront';
 import type { RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
+
 import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { MemoryDraftStore } from './drafts';
 import {
@@ -57,7 +58,7 @@ beforeEach(() => {
     formDefinitionsDir: '/nowhere',
     drafts: new MemoryDraftStore(),
     recordings: { files, log: new MemoryRecordingLogStore() },
-    notifier: { draftSubmitted: jest.fn(async () => {}) },
+    notifier: { draftSubmitted: jest.fn(async () => undefined) },
     now: () => new Date('2026-10-28T12:00:00Z'),
   };
 });

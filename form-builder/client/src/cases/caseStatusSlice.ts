@@ -21,15 +21,16 @@
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { StatusInfo } from '@hrm-form-definitions/formDefinition/types';
+
 import { AppThunk, rootReducer } from '../app/store';
 import { editDraftFiles } from '../drafts/draftSlice';
 import { Row, toRows } from '../common/SortableRows';
 import { CASE_STATUS_FILE, getCaseStatusMap, newStatusValue } from './caseStatuses';
 
 // Rows keep the status's key in the file (usually the same as its value)
-export type StatusRow = { key: string; status: StatusInfo };
+type StatusRow = { key: string; status: StatusInfo };
 
-export type CaseStatusState = {
+type CaseStatusState = {
   rows: Row<StatusRow>[];
   // The status of the case in the preview
   current: string;
@@ -55,6 +56,7 @@ const caseStatusSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof caseStatusSlice> {}
 }
 const injected = caseStatusSlice.injectInto(rootReducer);

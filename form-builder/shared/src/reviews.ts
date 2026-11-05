@@ -27,7 +27,7 @@
  * Targets: a form (`contactTab:CallerInformationTab`, `caseSection:note`) or one of its fields
  * (`contactTab:CallerInformationTab#firstName`).
  */
-import type { ApiUser } from './api.ts';
+import type { ApiUser } from './api';
 
 export type ReviewSide = 'helpline' | 'aselo';
 
@@ -129,12 +129,14 @@ export const applyApproval = (review: DraftReview, body: unknown, actor: Actor, 
 
 // Flag a target (a new thread), reply to a thread, resolve or reopen it, or delete it (its
 // author, or Aselo staff)
+// eslint-disable-next-line complexity
 export const applyThreadChange = (
   review: DraftReview,
   body: unknown,
   actor: Actor,
   now: string,
   newId: () => string,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Outcome => {
   const change = (body ?? {}) as Record<string, unknown>;
   const threads = review.threads ?? [];
@@ -179,6 +181,7 @@ export const applyThreadChange = (
   const thread = threads.find(candidate => candidate.id === change.id);
   if (!thread) return failed(404, 'No such comment');
   const replace = (next: ReviewThread | undefined) =>
+    // eslint-disable-next-line no-nested-ternary
     threads.flatMap(candidate => (candidate === thread ? (next ? [next] : []) : [candidate]));
 
   if (change.action === 'reply') {

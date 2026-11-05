@@ -23,12 +23,13 @@
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { FlagKind } from '@tech-matters/form-builder-shared';
 import type { Person } from '@tech-matters/form-builder-shared/flows/model';
+
 import { AppThunk, rootReducer } from '../app/store';
 import { approveReview, changeReviewThread, draftStarted } from '../drafts/draftSlice';
 import type { ThreadChange } from '../drafts/draftClient';
 import { selectPeople } from '../workspace/workspaceSlice';
 
-export type NewFlag = {
+type NewFlag = {
   // Open (Cancel closes it, keeping what was written)
   adding: boolean;
   // Its kind, once chosen (until then, the side's usual one: ReviewPanel)
@@ -39,9 +40,9 @@ export type NewFlag = {
 };
 
 // A change being saved, and why the last one failed
-export type Saving = { busy: boolean; error?: string };
+type Saving = { busy: boolean; error?: string };
 
-export type ReviewPanelState = {
+type ReviewPanelState = {
   // By thread id
   replies: Record<string, string>;
   // By target, while being written
@@ -110,6 +111,7 @@ const reviewPanelSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof reviewPanelSlice> {}
 }
 const injected = reviewPanelSlice.injectInto(rootReducer);

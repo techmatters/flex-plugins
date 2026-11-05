@@ -18,11 +18,13 @@
  * Talks to the chatbot designer's routes (server/src/chatbotApi.ts). Tests run the same server code in
  * process through the Send.
  */
-import { apiFetch } from '../app/auth';
-import type { Send } from '../drafts/draftClient';
-import type { ChatbotImport } from '@tech-matters/form-builder-shared';
-import type { BranchChoice, FromBranch } from '@tech-matters/form-builder-shared';
-import type { DefinitionFiles, HelplineSummary } from '@tech-matters/form-builder-shared';
+import {
+  type BranchChoice,
+  type ChatbotImport,
+  type DefinitionFiles,
+  type FromBranch,
+  type HelplineSummary,
+} from '@tech-matters/form-builder-shared';
 import type {
   ChatbotDesign,
   ChatbotMeta,
@@ -31,7 +33,10 @@ import type {
 } from '@tech-matters/form-builder-shared/chatbots/model';
 import { ContactForms, contactFormsOf } from '@tech-matters/form-builder-shared/chatbots/formMappings';
 
-export type ChatbotSaveOutcome =
+import type { Send } from '../drafts/draftClient';
+import { apiFetch } from '../app/auth';
+
+type ChatbotSaveOutcome =
   | { ok: true; meta: ChatbotMeta }
   | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
 

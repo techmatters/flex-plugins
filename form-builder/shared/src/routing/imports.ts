@@ -17,7 +17,7 @@
 /**
  * A helpline's routing read from its live config (server/src/routingImport.ts).
  */
-import type { RoutingDesign } from './model.ts';
+import type { RoutingDesign } from './model';
 
 export type RoutingImportReport = {
   helpline: string;

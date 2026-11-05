@@ -55,7 +55,7 @@ import {
 } from 'lucide-react';
 import type { Shape } from '@tech-matters/form-builder-shared/flows/model';
 
-export const ICONS: Record<string, LucideIcon> = {
+const ICONS: Record<string, LucideIcon> = {
   BellRing,
   Bot,
   BotOff,
@@ -123,15 +123,18 @@ export const ShapeOutline = ({ shape, width: w, height: h, fill, stroke, dashed 
   let body: JSX.Element;
   switch (shape) {
     case 'pill':
+      // eslint-disable-next-line react/jsx-props-no-spreading -- the shape's own SVG props, the same on every outline
       body = <rect x={r} y={r} width={w - 2 * S} height={h - 2 * S} rx={(h - 2 * S) / 2} {...common} />;
       break;
     case 'rounded':
+      // eslint-disable-next-line react/jsx-props-no-spreading -- the shape's own SVG props, the same on every outline
       body = <rect x={r} y={r} width={w - 2 * S} height={h - 2 * S} rx={12} {...common} />;
       break;
     case 'predefined':
       // A box with double sides: a call to something defined elsewhere (subflow, function)
       body = (
         <>
+          {/* eslint-disable-next-line react/jsx-props-no-spreading -- the shape's own SVG props, the same on every outline */}
           <rect x={r} y={r} width={w - 2 * S} height={h - 2 * S} rx={6} {...common} />
           <line x1={12} y1={S} x2={12} y2={bottom} stroke={stroke} strokeWidth={2 * S} />
           <line x1={w - 12} y1={S} x2={w - 12} y2={bottom} stroke={stroke} strokeWidth={2 * S} />
@@ -139,14 +142,17 @@ export const ShapeOutline = ({ shape, width: w, height: h, fill, stroke, dashed 
       );
       break;
     case 'diamond':
+      // eslint-disable-next-line react/jsx-props-no-spreading -- the shape's own SVG props, the same on every outline
       body = <polygon points={`${w / 2},${S} ${right},${h / 2} ${w / 2},${bottom} ${S},${h / 2}`} {...common} />;
       break;
     case 'parallelogram': {
       const k = Math.min(22, w * 0.12);
+      // eslint-disable-next-line react/jsx-props-no-spreading -- the shape's own SVG props, the same on every outline
       body = <polygon points={`${k},${S} ${right},${S} ${w - k},${bottom} ${S},${bottom}`} {...common} />;
       break;
     }
     case 'manualInput':
+      // eslint-disable-next-line react/jsx-props-no-spreading -- the shape's own SVG props, the same on every outline
       body = <polygon points={`${S},${h * 0.32} ${right},${S} ${right},${bottom} ${S},${bottom}`} {...common} />;
       break;
     case 'document': {
@@ -156,6 +162,7 @@ export const ShapeOutline = ({ shape, width: w, height: h, fill, stroke, dashed 
           d={`M${S},${S} H${right} V${bottom - wave} Q${w * 0.75},${bottom - 2 * wave} ${w / 2},${
             bottom - wave
           } T${S},${bottom - wave} Z`}
+          // eslint-disable-next-line react/jsx-props-no-spreading -- the shape's own SVG props, the same on every outline
           {...common}
         />
       );
@@ -170,6 +177,7 @@ export const ShapeOutline = ({ shape, width: w, height: h, fill, stroke, dashed 
             d={`M${S},${S + ry} A${rx},${ry} 0 0 1 ${right},${S + ry} V${bottom - ry} A${rx},${ry} 0 0 1 ${S},${
               bottom - ry
             } Z`}
+            // eslint-disable-next-line react/jsx-props-no-spreading -- the shape's own SVG props, the same on every outline
             {...common}
           />
           <path
@@ -187,6 +195,7 @@ export const ShapeOutline = ({ shape, width: w, height: h, fill, stroke, dashed 
       body = (
         <path
           d={`M${S},${S} H${right - radius} A${radius},${radius} 0 0 1 ${right - radius},${bottom} H${S} Z`}
+          // eslint-disable-next-line react/jsx-props-no-spreading -- the shape's own SVG props, the same on every outline
           {...common}
         />
       );
@@ -197,12 +206,14 @@ export const ShapeOutline = ({ shape, width: w, height: h, fill, stroke, dashed 
       body = (
         <polygon
           points={`${S},${S} ${right - tip},${S} ${right},${h / 2} ${right - tip},${bottom} ${S},${bottom}`}
+          // eslint-disable-next-line react/jsx-props-no-spreading -- the shape's own SVG props, the same on every outline
           {...common}
         />
       );
       break;
     }
     default:
+      // eslint-disable-next-line react/jsx-props-no-spreading -- the shape's own SVG props, the same on every outline
       body = <rect x={r} y={r} width={w - 2 * S} height={h - 2 * S} rx={3} {...common} />;
   }
   return (

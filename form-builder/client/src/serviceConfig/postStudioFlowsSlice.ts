@@ -21,6 +21,7 @@
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { PostFlowChoices, ServiceConfigFileName } from '@tech-matters/form-builder-shared';
+
 import { AppThunk, rootReducer } from '../app/store';
 import { selectDraftFiles } from '../drafts/draftSlice';
 import { selectDefinitions } from '../workspace/workspaceSlice';
@@ -28,7 +29,7 @@ import { editServiceConfig } from './serviceConfigSlice';
 import { setServiceConfigValue } from './serviceConfig';
 import { FILE_OF, flowRef, POST_STUDIO_FLOWS_KEYS, postStudioFlowEntries, queueLabel, Where } from './postStudioFlows';
 
-export type PostStudioFlowsState = {
+type PostStudioFlowsState = {
   // The helpline the choices are for
   code?: string;
   choices?: PostFlowChoices;
@@ -83,6 +84,7 @@ const postStudioFlowsSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof postStudioFlowsSlice> {}
 }
 const injected = postStudioFlowsSlice.injectInto(rootReducer);

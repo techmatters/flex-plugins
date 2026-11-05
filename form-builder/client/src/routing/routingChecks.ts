@@ -52,6 +52,7 @@ export const routingChecks = (design: RoutingDesign): RoutingIssue[] => {
   const usedSkills = new Set<string>();
   const usedQueues = new Set<string>();
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   design.workflows.forEach(workflow => {
     if (workflow.templateText) return;
     const names = new Set<string>();

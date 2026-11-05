@@ -32,20 +32,19 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
-import type {
-  Channel,
-  Connection,
-  FlowObject,
-  FlowObjectType,
-  FlowDetails,
-  FlowVariant,
-  Side,
-  TaskAttributes,
-} from '@tech-matters/form-builder-shared/flows/model';
+
 import {
+  type Channel,
   conditionExitName,
+  type Connection,
   emptyBoard,
+  type FlowDetails,
+  type FlowObject,
+  type FlowObjectType,
+  type FlowVariant,
   OBJECT_TYPES,
+  type Side,
+  type TaskAttributes,
   variesByVariant,
 } from '@tech-matters/form-builder-shared/flows/model';
 import { importedRecordingKey, RECORDING_FILE_PATTERN } from '@tech-matters/form-builder-shared/flows/recordings';
@@ -56,7 +55,6 @@ import {
   channelAttributesKeys,
   isChannelAttributesReference,
 } from '@tech-matters/form-builder-shared/flows/taskAttributes';
-import { HclObject, HclValue, isObject, localsOf, parseHcl, parseTemplate } from './hcl';
 import type {
   ImportedRecording,
   ImportReport,
@@ -64,14 +62,10 @@ import type {
   HelplineImport,
   Environment,
 } from '@tech-matters/form-builder-shared';
-export type {
-  ImportedRecording,
-  ImportedFlow,
-  ImportReport,
-  ImportedBoard,
-  HelplineImport,
-  Environment,
-} from '@tech-matters/form-builder-shared';
+
+import { HclObject, HclValue, isObject, localsOf, parseHcl, parseTemplate } from './hcl';
+
+export type { HelplineImport } from '@tech-matters/form-builder-shared';
 
 const ENVIRONMENTS = ['production', 'staging'] as const;
 
@@ -112,6 +106,7 @@ const PREFIXES = [
 ];
 const LANGUAGES = ['en', 'es', 'fr', 'pt', 'mt', 'zh', 'ar', 'th', 'sw'];
 
+// eslint-disable-next-line camelcase -- as Studio and Terraform spell it
 type Vars = { flow_vars: HclObject; channel_flow_vars: HclObject };
 type FlowSource = {
   title: string;
@@ -215,6 +210,7 @@ const variantLabelOf = (source: FlowSource) => {
   return (code && LANGUAGE_NAMES[code]) ?? source.flowName ?? source.title;
 };
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 const typeOf = (widget: HclObject): FlowObjectType | undefined => {
   const name = textOf(widget.name) ?? '';
   const properties = objectOf(widget.properties);
@@ -355,6 +351,7 @@ const helplinesUsing = async (helplinesDir: string, code: string) => {
       .sort();
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const importHelpline = async (helplinesDir: string, code: string): Promise<HelplineImport> => {
   const notes: string[] = [];
   // Recordings whose address isn't a URL (yet), by flow and address
@@ -538,6 +535,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
       };
     };
 
+    // eslint-disable-next-line no-loop-func, complexity -- the callback runs before the loop moves on
     const objects: FlowObject[] = states.map((state, index) => {
       const name = textOf(state.name) ?? `widget ${index + 1}`;
       const properties = objectOf(state.properties);
@@ -565,7 +563,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
         x: offsets[index].x - minX + FRAME_PADDING,
         y: Math.round((offsets[index].y - minY) * VERTICAL_SCALE) + FRAME_PADDING,
         ...info.defaultSize,
-        ...(type !== 'incoming' ? { studioName: name } : {}),
+        ...(type === 'incoming' ? {} : { studioName: name }),
         exits,
         studio: {
           name,
@@ -643,7 +641,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
               // Who plays it, when the file isn't named after them (to give it its standard name)
               const widgets = [
                 ...(known?.widgets ?? []),
-                ...(fileName.replace(/\.(mp3|wav)$/, '') !== name ? [name] : []),
+                ...(fileName.replace(/\.(mp3|wav)$/, '') === name ? [] : [name]),
               ];
               const recording = {
                 fileName,
@@ -674,7 +672,7 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
           ...(channel ? { channel } : {}),
           ...(isVoice || info.hasMessage ? { language: languageOf(name, properties, primary) } : {}),
           ...(script ? { script } : {}),
-          ...(recordingFile && recordingFile.replace(/\.(mp3|wav)$/, '') !== name ? { recordingFile } : {}),
+          ...(recordingFile && recordingFile.replace(/\.(mp3|wav)$/, '') === name ? {} : { recordingFile }),
         };
         if (!object.message.language) delete object.message.language;
         // So regenerating the flow only touches the text if it's changed on the board

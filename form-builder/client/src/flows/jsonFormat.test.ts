@@ -15,8 +15,9 @@
  */
 
 import { describe, expect, test } from '@jest/globals';
-import { formatTemplateJson } from './jsonFormat';
 import { taskAttributesProblem } from '@tech-matters/form-builder-shared/flows/taskAttributes';
+
+import { formatTemplateJson } from './jsonFormat';
 
 describe('formatTemplateJson', () => {
   test('lays out plain JSON as Studio writes it', () => {

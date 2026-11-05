@@ -23,8 +23,14 @@
  * whoever changes it, the approval shows as "changed since".
  */
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
-import type { Approval, FlagKind, ReviewSide, ReviewThread } from '@tech-matters/form-builder-shared';
-import { approvalKey } from '@tech-matters/form-builder-shared';
+import {
+  type Approval,
+  approvalKey,
+  type FlagKind,
+  type ReviewSide,
+  type ReviewThread,
+} from '@tech-matters/form-builder-shared';
+
 import { hashJson } from '../drafts/draftSlice';
 
 // The builder's screens that are forms

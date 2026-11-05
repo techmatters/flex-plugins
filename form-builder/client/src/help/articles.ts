@@ -21,10 +21,10 @@
 
 export type HelpArea = 'forms' | 'flows' | 'routing' | 'chatbots' | 'general';
 // Who it's written for: helpline staff, Aselo staff, or both
-export type HelpAudience = 'helpline' | 'aselo' | 'everyone';
+type HelpAudience = 'helpline' | 'aselo' | 'everyone';
 // A guide walks through a process step by step; an answer answers one question; a section
 // explains one part of the builder (what it's for), and is what its "Need help?" opens
-export type HelpKind = 'guide' | 'answer' | 'section';
+type HelpKind = 'guide' | 'answer' | 'section';
 
 // A "Show me" step: what to point at (button:<text>, text:<text>, label:<aria-label> or
 // css:<selector>, Tour.tsx), what to say, and what to say when it isn't on screen

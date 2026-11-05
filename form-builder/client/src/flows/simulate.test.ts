@@ -15,8 +15,13 @@
  */
 
 import { describe, expect, test } from '@jest/globals';
-import type { BoardContent, Connection, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
-import { emptyBoard } from '@tech-matters/form-builder-shared/flows/model';
+import {
+  type BoardContent,
+  type Connection,
+  emptyBoard,
+  type FlowObject,
+} from '@tech-matters/form-builder-shared/flows/model';
+
 import {
   answer,
   coverageOf,

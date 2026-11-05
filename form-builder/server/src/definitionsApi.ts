@@ -24,23 +24,18 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
+
 import {
+  type DefinitionFileError,
+  type DefinitionFiles,
+  type HelplineSummary,
   SERVICE_CONFIG_FILE_NAMES,
   serviceConfigPath,
   WEBCHAT_TRANSLATIONS_PREFIX,
+  type WebchatSettings,
 } from '@tech-matters/form-builder-shared';
-import type {
-  HelplineSummary,
-  DefinitionFileError,
-  DefinitionFiles,
-  WebchatSettings,
-} from '@tech-matters/form-builder-shared';
-export type {
-  HelplineSummary,
-  DefinitionFileError,
-  DefinitionFiles,
-  WebchatSettings,
-} from '@tech-matters/form-builder-shared';
+
+export type { DefinitionFiles } from '@tech-matters/form-builder-shared';
 
 export class DefinitionsApiError extends Error {
   constructor(message: string, public readonly statusCode: number) {
@@ -142,7 +137,7 @@ export const readFeatureFlags = async (helplinesConfigDir: string, code: string)
 
 // The logo in Flex's header (attributes.logo_url). Staging logos are labelled "STAGING", so
 // only production and common settings are used; without one the preview shows a wordmark.
-export const readLogoUrl = (helplinesConfigDir: string, code: string) =>
+const readLogoUrl = (helplinesConfigDir: string, code: string) =>
   readServiceConfigValue(helplinesConfigDir, code, config => config.attributes?.logo_url ?? config.logo_url, [
     'production.json',
     'common.json',
@@ -160,7 +155,7 @@ const readJsonFile = async (filePath: string): Promise<Record<string, any> | und
  * The helpline's service configuration files, exactly as in the repo, keyed under
  * service-configuration/ (files that don't exist yet are left out), and the shared defaults.
  */
-export const loadServiceConfigFiles = async (
+const loadServiceConfigFiles = async (
   helplinesConfigDir: string,
   code: string,
 ): Promise<{ files: Record<string, unknown>; errors: DefinitionFileError[]; defaults?: Record<string, unknown> }> => {
@@ -192,7 +187,7 @@ export const loadServiceConfigFiles = async (
  * merges them (scripts/mergeConfigs.js): defaults.json, common.json, then production.json.
  * Undefined when the helpline has no webchat.
  */
-export const loadWebchatFiles = async (
+const loadWebchatFiles = async (
   webchatConfigDir: string,
   code: string,
 ): Promise<

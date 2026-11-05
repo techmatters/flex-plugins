@@ -15,15 +15,16 @@
  */
 
 import { describe, expect, test } from '@jest/globals';
-import type { BoardContent } from '@tech-matters/form-builder-shared/flows/model';
 import {
   BOARD_SCHEMA_VERSION,
+  type BoardContent,
   designOf,
   emptyBoard,
   exitsOf,
   statusOf,
   suggestStudioName,
 } from '@tech-matters/form-builder-shared/flows/model';
+
 import {
   CanvasNode,
   duplicate,

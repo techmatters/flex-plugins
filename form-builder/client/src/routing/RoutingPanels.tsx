@@ -19,8 +19,14 @@
  * read the open design from the store (routingSlice.ts) and change it with its actions.
  */
 import { CircleAlert, Trash2, TriangleAlert, X } from 'lucide-react';
-import type { Condition, QueueWorkers, RoutingDesign, Workflow } from '@tech-matters/form-builder-shared/routing/model';
-import { attributeLabel, valueLabel } from '@tech-matters/form-builder-shared/routing/model';
+import {
+  attributeLabel,
+  type Condition,
+  type QueueWorkers,
+  type RoutingDesign,
+  valueLabel,
+  type Workflow,
+} from '@tech-matters/form-builder-shared/routing/model';
 import {
   attributesOf,
   describeCondition,
@@ -32,6 +38,7 @@ import {
   queueName,
   testTask,
 } from '@tech-matters/form-builder-shared/routing/describe';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import type { RoutingIssue } from './routingChecks';
@@ -77,7 +84,7 @@ const useShowIssue = () => {
 };
 
 // The skills, as chips that can be dragged onto a step or a queue
-export const SkillsBar = ({ design }: { design: RoutingDesign }) => (
+const SkillsBar = ({ design }: { design: RoutingDesign }) => (
   <div className="routing-skills-bar" aria-label="Skills">
     <span className="field-hint">Skills (drag onto a step or a queue):</span>
     {design.skills.map(skill => (
@@ -406,7 +413,7 @@ export const SkillsPanel = () => {
           disabled={readOnly}
           onChange={e => dispatch(capacityChanged({ voicemailOneAtATime: e.target.checked }))}
         />
-        <span>One voicemail at a time (taken whatever else they're handling)</span>
+        <span>One voicemail at a time (taken whatever else they&apos;re handling)</span>
       </label>
       <label className="field">
         <span className="field-label">Chats a counselor can have at once</span>
@@ -575,7 +582,7 @@ export const TestTaskPanel = () => {
                   <span>
                     in <strong>{queueName(design, target.queue)}</strong> to{' '}
                     {target.knownWorker ? 'the counselor it was transferred to' : describeWho(target.who).toLowerCase()}
-                    {target.priority !== undefined ? ` (priority ${target.priority})` : ''}.
+                    {target.priority === undefined ? '' : ` (priority ${target.priority})`}.
                   </span>
                   <span className="field-hint">
                     {index === result.matched!.targets.length - 1 && target.moveOn.kind !== 'wait'

@@ -20,8 +20,12 @@
  * form to start a new board, the people lists tasks are assigned from, and importing a live helpline.
  */
 import { createSelector, createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
-import type { BoardSummary, Person } from '@tech-matters/form-builder-shared/flows/model';
-import { ASELO_PEOPLE_CODE, TEMPLATES_CODE } from '@tech-matters/form-builder-shared/flows/model';
+import {
+  ASELO_PEOPLE_CODE,
+  type BoardSummary,
+  type Person,
+  TEMPLATES_CODE,
+} from '@tech-matters/form-builder-shared/flows/model';
 import type { DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
 import type { BranchChoice, FromBranch, HelplineImport } from '@tech-matters/form-builder-shared';
 import {
@@ -29,8 +33,8 @@ import {
   importedRecordingKey,
   standardRecordingName,
 } from '@tech-matters/form-builder-shared/flows/recordings';
-import type { AppThunk, RootState } from '../app/store';
-import { rootReducer } from '../app/store';
+
+import { type AppThunk, rootReducer, type RootState } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { boardClosed, boardLoaded, saveBoard } from './boardSlice';
 
@@ -38,9 +42,9 @@ export type BoardFilter = 'all' | DesignStatus;
 
 type Open = { code: string; id: string };
 
-export type ImportCopying = { done: number; total: number; failed: string[] };
+type ImportCopying = { done: number; total: number; failed: string[] };
 
-export type FlowsState = {
+type FlowsState = {
   // The area read the board to open from the address
   started: boolean;
   open?: Open;
@@ -230,6 +234,7 @@ const flowsSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof flowsSlice> {}
 }
 
@@ -470,6 +475,7 @@ export const selectImportChoice = createSelector(
 // A board per chosen Studio flow, then their recordings copied into the recordings bucket
 export const createImportedBoards =
   (): AppThunk<Promise<void>> =>
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   async (dispatch, getState, { boardClient }) => {
     const { preview, code, standardNames, copyRecordings } = selectFlows(getState()).importer;
     const { chosenBoards, chosenRecordings } = selectImportChoice(getState());

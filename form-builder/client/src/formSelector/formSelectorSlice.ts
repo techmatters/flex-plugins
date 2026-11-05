@@ -20,6 +20,7 @@
  * PrepopulateMappings.json (formSelector.ts).
  */
 import { createSelector, createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
+
 import { AppThunk, rootReducer } from '../app/store';
 import { editDraftFiles } from '../drafts/draftSlice';
 import { selectSectionIssues } from '../workspace/workspaceSlice';
@@ -37,7 +38,7 @@ export type StaticSelector = Extract<FormSelector, { kind: 'static' }>;
 export type ChoiceSelector = Extract<FormSelector, { kind: 'choice' }>;
 export type SelectorType = '' | 'staticSelector' | 'serviceUserChoiceSelector';
 
-export type FormSelectorState = {
+type FormSelectorState = {
   remembered: { static?: StaticSelector; choice?: ChoiceSelector };
 };
 
@@ -65,10 +66,11 @@ const formSelectorSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof formSelectorSlice> {}
 }
 const injected = formSelectorSlice.injectInto(rootReducer);
-export const { selectFormSelectorEditor } = injected.selectors;
+const { selectFormSelectorEditor } = injected.selectors;
 const { selectorRemembered } = formSelectorSlice.actions;
 export const { formSelectorOpened } = formSelectorSlice.actions;
 
@@ -77,6 +79,7 @@ export const selectFormSelectorIssues = createSelector([selectSectionIssues], is
 );
 
 export const selectorTypeOf = (implicit: boolean, selector: FormSelector): SelectorType =>
+  // eslint-disable-next-line no-nested-ternary
   implicit ? '' : selector.kind === 'static' ? 'staticSelector' : 'serviceUserChoiceSelector';
 
 export const writeFormSelector =

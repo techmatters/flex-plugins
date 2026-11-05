@@ -23,10 +23,11 @@
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
+
 import { AppThunk, RootState, rootReducer } from '../app/store';
 import { isBlankOption } from './formEditing';
 
-export type OptionsEditorState = {
+type OptionsEditorState = {
   // Stable ids for drag and drop, kept in step with the answers (not counting a blank first one)
   ids: string[];
   // Rows that were already saved answers when the editor opened (decided once per row)
@@ -59,6 +60,7 @@ const optionsEditorSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof optionsEditorSlice> {}
 }
 optionsEditorSlice.injectInto(rootReducer);

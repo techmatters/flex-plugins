@@ -18,10 +18,7 @@
  * Talks to the routing designer's routes (server/src/routingApi.ts). Tests run the same server code in
  * process through the Send.
  */
-import { apiFetch } from '../app/auth';
-import type { Send } from '../drafts/draftClient';
-import type { RoutingImport } from '@tech-matters/form-builder-shared';
-import type { BranchChoice, FromBranch } from '@tech-matters/form-builder-shared';
+import { type BranchChoice, type FromBranch, type RoutingImport } from '@tech-matters/form-builder-shared';
 import type {
   RoutingDesign,
   RoutingMeta,
@@ -29,7 +26,10 @@ import type {
   StoredRouting,
 } from '@tech-matters/form-builder-shared/routing/model';
 
-export type RoutingSaveOutcome =
+import type { Send } from '../drafts/draftClient';
+import { apiFetch } from '../app/auth';
+
+type RoutingSaveOutcome =
   | { ok: true; meta: RoutingMeta }
   | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
 

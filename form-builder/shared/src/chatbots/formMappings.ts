@@ -23,7 +23,7 @@
  * options (ignoring case); anything else is saved as its "Unknown" option. "age" is special: a
  * number is matched to the age options ("16", ">25").
  */
-import type { AnswerType, ChatbotDesign, FormMappings } from './model.ts';
+import type { AnswerType, ChatbotDesign, FormMappings } from './model';
 
 export const PREPOPULATE_FILE = 'PrepopulateMappings.json';
 
@@ -31,7 +31,7 @@ export const formDefinitionsPath = (code: string, version: string) =>
   `lambdas/packages/hrm-form-definitions/form-definitions/${code}/${version}/${PREPOPULATE_FILE}`;
 
 // "a", ["a", "b"] and [["a", "b"], ["c"]] as the lambda reads them: a list of "first of" lists
-export const normaliseMapping = (value: unknown): string[][] => {
+const normaliseMapping = (value: unknown): string[][] => {
   const entries = Array.isArray(value) ? value : [value];
   return entries
     .map(entry => (Array.isArray(entry) ? entry : [entry]).filter((item): item is string => typeof item === 'string'))
@@ -75,8 +75,8 @@ export const renameFormTargets = (design: ChatbotDesign, from: string, to: strin
 /**
  * The contact form fields there are to fill in, from the helpline's form definitions files
  */
-export type FormField = { name: string; label: string; type: string; options?: string[]; unknownOption?: string };
-export type FormTab = { key: string; label: string; fields: FormField[] };
+type FormField = { name: string; label: string; type: string; options?: string[]; unknownOption?: string };
+type FormTab = { key: string; label: string; fields: FormField[] };
 export type ContactForms = {
   version: string;
   tabs: FormTab[];
@@ -100,6 +100,7 @@ export const contactFormsOf = (
   version: string,
   files: Record<string, unknown>,
   featureFlags?: Record<string, boolean>,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): ContactForms => ({
   version,
   tabs: TAB_FILES.map(({ key, label, file }) => ({

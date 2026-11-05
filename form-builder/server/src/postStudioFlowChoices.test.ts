@@ -16,13 +16,15 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { describe, expect, test, jest } from '@jest/globals';
+import { emptyBoard } from '@tech-matters/form-builder-shared/flows/model';
+
 import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { MemoryDraftStore } from './drafts';
 import { MemoryBoardStore } from './boards';
 import { MemoryRoutingStore } from './routingStore';
 import type { PostFlowChoices } from './postStudioFlowChoices';
-import { emptyBoard } from '@tech-matters/form-builder-shared/flows/model';
 
 const helplinesConfigDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../twilio-iac/helplines');
 const staff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
@@ -36,7 +38,7 @@ describe('what postStudioFlows can point at', () => {
       formDefinitionsDir: '/nowhere',
       helplinesConfigDir,
       drafts: new MemoryDraftStore(),
-      notifier: { draftSubmitted: jest.fn(async () => {}) },
+      notifier: { draftSubmitted: jest.fn(async () => undefined) },
       boards: new MemoryBoardStore(),
       routing,
     };

@@ -18,16 +18,20 @@
  * What's missing or confusing in a chatbots design, in plain words. Errors are what Lex would
  * refuse or can't work; warnings are what a contact would likely trip over.
  */
-import type { ChatbotDesign, ChatbotQuestion } from '@tech-matters/form-builder-shared/chatbots/model';
 import {
   answerTypeOf,
   botLabel,
   builtinInfo,
+  type ChatbotDesign,
+  type ChatbotQuestion,
   fillsInContact,
   patternProblem,
 } from '@tech-matters/form-builder-shared/chatbots/model';
-import type { ContactForms } from '@tech-matters/form-builder-shared/chatbots/formMappings';
-import { findFormField, unmatchedAnswers } from '@tech-matters/form-builder-shared/chatbots/formMappings';
+import {
+  type ContactForms,
+  findFormField,
+  unmatchedAnswers,
+} from '@tech-matters/form-builder-shared/chatbots/formMappings';
 
 export type ChatbotIssue = {
   key: string;
@@ -52,6 +56,7 @@ const slotFile = (question: ChatbotQuestion) =>
     question.required,
   ]);
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const chatbotChecks = (design: ChatbotDesign, forms?: ContactForms): ChatbotIssue[] => {
   const issues: ChatbotIssue[] = [];
   const usedTypes = new Set<string>();

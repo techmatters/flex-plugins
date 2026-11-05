@@ -21,14 +21,16 @@
  */
 
 import { describe, expect, test } from '@jest/globals';
-import type { BoardContent, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
 import {
+  type BoardContent,
   emptyBoard,
   flowChannelOf,
+  type FlowObject,
   namingChoicesOf,
   sharedLanguageVariants,
 } from '@tech-matters/form-builder-shared/flows/model';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
+
 import { toStudioFlow } from './studioTemplate';
 
 const object = (id: string, type: FlowObject['type'], extra: Partial<FlowObject> = {}): FlowObject => ({

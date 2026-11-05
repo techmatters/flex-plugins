@@ -84,7 +84,9 @@ export const AseloContactPanel = ({ strings }: { strings: Strings }) => {
   const renderTabContent = () => {
     if (currentTab === 'search') {
       return (
-        <p className="aselo-search-placeholder">Counselors search previous contacts here. It isn't part of the form.</p>
+        <p className="aselo-search-placeholder">
+          Counselors search previous contacts here. It isn&apos;t part of the form.
+        </p>
       );
     }
     if (currentTab === 'categories') {

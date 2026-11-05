@@ -17,7 +17,7 @@
 /**
  * A helpline's chatbots read from its live config (server/src/chatbotImport.ts).
  */
-import type { ChatbotDesign } from './model.ts';
+import type { ChatbotDesign } from './model';
 
 export type ChatbotImportReport = {
   helpline: string;

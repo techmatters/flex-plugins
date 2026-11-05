@@ -22,6 +22,7 @@
  */
 import { useEffect } from 'react';
 import { ArrowDown, ArrowUp, Info, Plus, Trash2 } from 'lucide-react';
+
 import {
   ChoiceSource,
   DEFAULT_ABOUT_SELF_VALUE,
@@ -147,6 +148,7 @@ export const FormSelectorEditor = () => {
     </>
   );
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const renderChoices = (current: ChoiceSelector) => {
     const update = (index: number, change: Partial<ServiceUserChoice>) =>
       write({
@@ -343,6 +345,7 @@ export const FormSelectorEditor = () => {
             </select>
             <InfoTip
               text={
+                // eslint-disable-next-line no-nested-ternary
                 selectorType === ''
                   ? HELP.notSet
                   : selectorType === 'staticSelector'

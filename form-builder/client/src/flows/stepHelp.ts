@@ -18,10 +18,9 @@
  * What each step does, in plain words for helpline staff new to Aselo: shown when hovering a step
  * in the left menu, and from the (i) on a step on the board.
  */
-import type { FlowObject, FlowObjectType } from '@tech-matters/form-builder-shared/flows/model';
-import { exitsOf } from '@tech-matters/form-builder-shared/flows/model';
+import { exitsOf, type FlowObject, type FlowObjectType } from '@tech-matters/form-builder-shared/flows/model';
 
-export type StepHelp = {
+type StepHelp = {
   // What it does, in a sentence or two
   summary: string;
   // Where the contact goes next, by way out

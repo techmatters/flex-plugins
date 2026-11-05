@@ -20,12 +20,10 @@
  * edit the board uploads (to staging); Aselo staff approve, publish and rename them.
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
-import type { FlowObject } from '@tech-matters/form-builder-shared/flows/model';
-import { TEMPLATES_CODE } from '@tech-matters/form-builder-shared/flows/model';
-import type { RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
-import { standardRecordingName } from '@tech-matters/form-builder-shared/flows/recordings';
-import type { AppThunk, RootState } from '../app/store';
-import { rootReducer } from '../app/store';
+import { type FlowObject, TEMPLATES_CODE } from '@tech-matters/form-builder-shared/flows/model';
+import { type RecordingsList, standardRecordingName } from '@tech-matters/form-builder-shared/flows/recordings';
+
+import { type AppThunk, rootReducer, type RootState } from '../app/store';
 import type { BoardClient } from './boardClient';
 import {
   boardOpened,
@@ -37,7 +35,7 @@ import {
   selectVariants,
 } from './boardSlice';
 
-export type BoardRecordingsState = {
+type BoardRecordingsState = {
   list?: RecordingsList;
   // Why recordings can't be shown (e.g. not set up yet)
   unavailable?: string;
@@ -78,6 +76,7 @@ const recordingsSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof recordingsSlice> {}
 }
 
@@ -145,6 +144,7 @@ export const removeRecording = (fileName: string) =>
  */
 export const renameRecordings =
   (objectIds: string[], given: Pick<FlowObject, 'id' | 'studioName' | 'message'>[] = []): AppThunk<Promise<void>> =>
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   async (dispatch, getState, { boardClient }) => {
     const { board } = selectBoard(getState());
     if (!board) return;

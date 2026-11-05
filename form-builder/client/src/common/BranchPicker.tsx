@@ -68,7 +68,7 @@ export const BranchPicker = ({ load, value, onChange }: Props) => {
 
 // Where a branch and a commit of flex-plugins are on GitHub
 const REPO_URL = 'https://github.com/techmatters/flex-plugins';
-export const branchUrl = (branch: string) => `${REPO_URL}/tree/${encodeURI(branch)}`;
+const branchUrl = (branch: string) => `${REPO_URL}/tree/${encodeURI(branch)}`;
 const commitUrl = (sha: string) => `${REPO_URL}/commit/${encodeURIComponent(sha)}`;
 
 // A branch's name, linking to it on GitHub

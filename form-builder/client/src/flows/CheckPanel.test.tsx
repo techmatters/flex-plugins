@@ -18,8 +18,8 @@
 import { useState } from 'react';
 import { afterEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import type { Issue } from '@tech-matters/form-builder-shared/flows/checks';
-import { splitIgnored } from '@tech-matters/form-builder-shared/flows/checks';
+import { type Issue, splitIgnored } from '@tech-matters/form-builder-shared/flows/checks';
+
 import { CheckPanel } from './CheckPanel';
 
 afterEach(cleanup);
@@ -37,8 +37,8 @@ const Harness = ({ readOnly = false }: { readOnly?: boolean }) => {
       issues={active}
       ignored={ignored}
       readOnly={readOnly}
-      onShow={() => {}}
-      onEndHere={() => {}}
+      onShow={() => undefined}
+      onEndHere={() => undefined}
       onIgnore={(key, ignore) =>
         setIgnoredKeys(current => (ignore ? [...current, key] : current.filter(other => other !== key)))
       }

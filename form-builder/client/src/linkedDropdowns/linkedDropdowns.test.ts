@@ -16,9 +16,11 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
 import { listHelplines, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
+
 import { DefinitionFileMap, getForm, getReferenceData } from '../common/definitions';
 import {
   AnswerNode,
@@ -167,13 +169,13 @@ describe('makeKeyValuesUnique', () => {
   });
 
   test('repeated names at the last level are fine and left alone', () => {
-    const roots = rowsToTree(
+    const { roots } = rowsToTree(
       [
         ['A', 'Poblacion'],
         ['B', 'Poblacion'],
       ],
       2,
-    ).roots;
+    );
     expect(makeKeyValuesUnique(roots, 2, { fixExisting: true }).renamed).toBe(0);
   });
 });
@@ -260,6 +262,7 @@ describe('every linked dropdown in the repo', () => {
         const { files } = await loadDefinitionFiles(formDefinitionsDir, code, version);
         Object.entries(files)
           .filter(([, content]) => Array.isArray(content))
+          // eslint-disable-next-line no-loop-func -- the callbacks run before the loop moves on
           .forEach(([filePath, content]) => {
             const form = content as FormItemJsonDefinition[];
             form

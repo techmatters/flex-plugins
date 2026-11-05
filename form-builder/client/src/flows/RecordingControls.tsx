@@ -22,9 +22,24 @@
  * Anyone who can edit the board uploads (to staging); Aselo staff approve and publish.
  */
 import { useMemo, useRef, useState } from 'react';
-import type { FlowObject, Frame } from '@tech-matters/form-builder-shared/flows/model';
-import type { MessageStatus, Recording, RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
-import { flowDetailsOf, messageFor } from '@tech-matters/form-builder-shared/flows/model';
+import { flowDetailsOf, type FlowObject, type Frame, messageFor } from '@tech-matters/form-builder-shared/flows/model';
+import {
+  hasNonStandardRecording,
+  isApproved,
+  isPublished,
+  isVoiceMessage,
+  MAX_RECORDING_BYTES,
+  type MessageStatus,
+  messageStatus,
+  playsWaitRecording,
+  playUrl,
+  type Recording,
+  RECORDING_EXTENSIONS,
+  recordingOf,
+  type RecordingsList,
+  standardRecordingName,
+} from '@tech-matters/form-builder-shared/flows/recordings';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { selectContent, selectMainVariant, selectReadOnly, selectVariant } from './boardSlice';
@@ -38,19 +53,6 @@ import {
   uploadRecording,
 } from './recordingsSlice';
 import { useCanvasView } from './canvasView';
-import {
-  hasNonStandardRecording,
-  isApproved,
-  isPublished,
-  isVoiceMessage,
-  MAX_RECORDING_BYTES,
-  messageStatus,
-  playsWaitRecording,
-  playUrl,
-  RECORDING_EXTENSIONS,
-  recordingOf,
-  standardRecordingName,
-} from '@tech-matters/form-builder-shared/flows/recordings';
 
 export type RecordingActions = {
   list?: RecordingsList;
@@ -95,7 +97,7 @@ const ACCEPT = '.mp3,.wav,audio/mpeg,audio/wav';
 const extensionOf = (file: File) => file.name.split('.').pop()?.toLowerCase() ?? '';
 
 // Whether the file can be a recording; the problem in plain language if not
-export const recordingFileProblem = (file: File) => {
+const recordingFileProblem = (file: File) => {
   if (!(RECORDING_EXTENSIONS as readonly string[]).includes(extensionOf(file))) {
     return `${file.name} isn't an MP3 or WAV file.`;
   }
@@ -108,7 +110,7 @@ export const recordingFileProblem = (file: File) => {
  * which is what Studio plays), or one named after its Studio name. A different kind (a WAV for an
  * MP3) can't replace it: Studio would keep playing the old file.
  */
-export const uploadTarget = (file: File, studioName: string, current?: Recording) => {
+const uploadTarget = (file: File, studioName: string, current?: Recording) => {
   if (!current) return { fileName: `${studioName}.${extensionOf(file)}` };
   const kind = current.fileName.split('.').pop()?.toLowerCase();
   return kind === extensionOf(file)
@@ -116,7 +118,7 @@ export const uploadTarget = (file: File, studioName: string, current?: Recording
     : { problem: `This widget plays ${current.fileName}: upload the new recording as ${kind?.toUpperCase()} too.` };
 };
 
-export const StatusChip = ({ status }: { status: MessageStatus }) => (
+const StatusChip = ({ status }: { status: MessageStatus }) => (
   <span className={`flow-status flow-status-${status.toLowerCase().replace(/\s+/g, '-')}`}>{status}</span>
 );
 
@@ -194,6 +196,7 @@ const UploadButton = ({
  * A voice message's recording: its status, players for staging and production, and what this
  * person can do next.
  */
+// eslint-disable-next-line complexity
 export const RecordingSection = ({
   object,
   frame,
@@ -204,6 +207,7 @@ export const RecordingSection = ({
   frame?: Pick<Frame, 'channel'>;
   actions: RecordingActions;
   title?: string;
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const [problem, setProblem] = useState<string>();
   const [renaming, setRenaming] = useState(false);
@@ -267,6 +271,7 @@ export const RecordingSection = ({
                 Staging · uploaded{recording.uploadedBy ? ` by ${recording.uploadedBy}` : ''}{' '}
                 {when(recording.uploadedAt)}
               </span>
+              {/* eslint-disable-next-line jsx-a11y/media-has-caption -- a recording of a script shown next to it */}
               <audio controls preload="none" src={playUrl(recording.staging)} aria-label="Staging recording" />
               {recording.approvedBy && (
                 <span className="field-hint">
@@ -283,6 +288,7 @@ export const RecordingSection = ({
                 {recording.publishedBy ? ` · published by ${recording.publishedBy} ${when(recording.publishedAt)}` : ''}
               </span>
               {!isPublished(recording) && (
+                // eslint-disable-next-line jsx-a11y/media-has-caption -- a recording of a script shown next to it
                 <audio controls preload="none" src={playUrl(recording.production)} aria-label="Production recording" />
               )}
             </div>
@@ -534,6 +540,7 @@ export const RecordingsPanel = () => {
               </button>
               <StatusChip status={messageStatus(object, frame, recordings)} />
               {recording?.staging && (
+                // eslint-disable-next-line jsx-a11y/media-has-caption -- a recording of a script shown next to it
                 <audio
                   controls
                   preload="none"
@@ -558,6 +565,7 @@ export const RecordingsPanel = () => {
               <li key={recording.fileName}>
                 <code>{recording.fileName}</code>
                 <span className="field-hint">
+                  {/* eslint-disable-next-line no-nested-ternary */}
                   {isPublished(recording)
                     ? 'Published'
                     : recording.production
@@ -565,6 +573,7 @@ export const RecordingsPanel = () => {
                     : 'Staging only'}
                 </span>
                 {recording.staging && (
+                  // eslint-disable-next-line jsx-a11y/media-has-caption -- a recording of a script shown next to it
                   <audio
                     controls
                     preload="none"

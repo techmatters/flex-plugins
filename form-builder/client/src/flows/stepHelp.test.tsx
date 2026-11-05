@@ -18,8 +18,8 @@
 
 import { afterEach, describe, expect, test, jest } from '@jest/globals';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { OBJECT_TYPES } from '@tech-matters/form-builder-shared/flows/model';
-import type { FlowObjectType } from '@tech-matters/form-builder-shared/flows/model';
+import { type FlowObjectType, OBJECT_TYPES } from '@tech-matters/form-builder-shared/flows/model';
+
 import { Palette } from './Palette';
 import { STEP_DETAILS } from './stepDetails';
 import { pathsOf, STEP_HELP } from './stepHelp';

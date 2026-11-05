@@ -25,11 +25,13 @@
  */
 import { createSelector, createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { FormItemJsonDefinition, SelectOption } from '@hrm-form-definitions/formDefinition/types';
+
 import { AppThunk, RootState, rootReducer } from '../app/store';
 import { editDraftFiles, selectOriginalFiles } from '../drafts/draftSlice';
-import type { DefinitionFileMap, FormTarget } from '../common/definitions';
 import {
+  type DefinitionFileMap,
   describeDefinitionFile,
+  type FormTarget,
   getForm,
   getReferenceData,
   getSplitFormAt,
@@ -67,17 +69,17 @@ export const COLUMN_KEYS: ColumnKey[] = ['left', 'right'];
 
 // Editor-only wrapper: a stable id for drag and drop and selection (field names can change)
 export type Entry = { id: string; item: FormItemJsonDefinition };
-export type Columns = Record<ColumnKey, Entry[]>;
+type Columns = Record<ColumnKey, Entry[]>;
 
 // Linked dropdowns whose answers are being edited
-export type EditingChain = {
+type EditingChain = {
   names: string[];
   fields: FormItemJsonDefinition[];
   tree: ChainTree;
   notes: string[];
 };
 
-export type FormEditorState = {
+type FormEditorState = {
   // The form open, and the editors' revision it was opened at (see workspaceSlice)
   target?: FormTarget;
   revision?: number;
@@ -155,6 +157,7 @@ const formEditorSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof formEditorSlice> {}
 }
 const injected = formEditorSlice.injectInto(rootReducer);
@@ -282,7 +285,7 @@ export const addField =
     dispatch(fieldSelected(entry.id));
   };
 
-export const changeSelectedField =
+const changeSelectedField =
   (item: FormItemJsonDefinition): AppThunk =>
   (dispatch, getState) => {
     const { columns, selectedId } = selectFormEditor(getState());
@@ -299,7 +302,7 @@ const updateSelectedField =
   };
 
 // A new field's saved name follows its label, until someone sets the name by hand
-export const autoFieldNameOf = (state: RootState, label: string) => {
+const autoFieldNameOf = (state: RootState, label: string) => {
   const { columns, selectedId } = selectFormEditor(state);
   const otherNames = [...columns.left, ...columns.right]
     .filter(entry => entry.id !== selectedId)
@@ -361,7 +364,7 @@ export const removeSelectedField = (): AppThunk => (dispatch, getState) => {
 };
 
 // Sets the helpline's own wording for a translation key (customStrings/Substitutions.json)
-export const setTranslation =
+const setTranslation =
   (key: string, text: string): AppThunk =>
   (dispatch, getState) => {
     const helplineLanguage = getState().workspace.definitions?.helplineLanguage;

@@ -22,6 +22,7 @@
 import { useState } from 'react';
 import { Check, MessageCircle, Trash2, Undo2 } from 'lucide-react';
 import type { DesignComment } from '@tech-matters/form-builder-shared/chatbots/model';
+
 import { newComment, openComments } from './edit';
 import { AutoTextarea } from '../common/AutoTextarea';
 

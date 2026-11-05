@@ -17,7 +17,7 @@
 /**
  * A question the help panel couldn't answer, sent to the Aselo team (server/src/helpQuestions.ts).
  */
-import type { ApiUser } from './api.ts';
+import type { ApiUser } from './api';
 
 export type HelpQuestion = {
   id: string;

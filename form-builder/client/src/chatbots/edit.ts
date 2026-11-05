@@ -17,16 +17,17 @@
 /**
  * Changes to a chatbots design, as plain functions (the editor calls them; tests can too).
  */
-import type {
-  AnswerKind,
-  AnswerType,
-  Chatbot,
-  ChatbotDesign,
-  ChatbotIntent,
-  ChatbotQuestion,
-  DesignComment,
+import {
+  type AnswerKind,
+  type AnswerType,
+  type Chatbot,
+  type ChatbotDesign,
+  type ChatbotIntent,
+  type ChatbotQuestion,
+  type DesignComment,
+  newChatbotId,
+  PATTERN_PARENT,
 } from '@tech-matters/form-builder-shared/chatbots/model';
-import { newChatbotId, PATTERN_PARENT } from '@tech-matters/form-builder-shared/chatbots/model';
 
 export const updateBot = (design: ChatbotDesign, botId: string, change: (bot: Chatbot) => Chatbot): ChatbotDesign => ({
   ...design,
@@ -58,6 +59,7 @@ export const moveQuestion = (intent: ChatbotIntent, from: number, to: number): C
 // A new question, saving its answer under a name not used yet in the intent
 export const newQuestion = (intent: ChatbotIntent, answerType: string): ChatbotQuestion => {
   let index = intent.questions.length + 1;
+  // eslint-disable-next-line no-loop-func -- the callback runs before the loop moves on
   while (intent.questions.some(question => question.slot === `question${index}`)) index += 1;
   return {
     id: newChatbotId('q'),
@@ -139,7 +141,7 @@ export const addComment = <T extends { comments?: DesignComment[] }>(item: T, co
   comments: [...(item.comments ?? []), comment],
 });
 
-export const updateComment = <T extends { comments?: DesignComment[] }>(
+const updateComment = <T extends { comments?: DesignComment[] }>(
   item: T,
   commentId: string,
   change: (comment: DesignComment) => DesignComment | undefined,
@@ -157,7 +159,7 @@ export const openComments = (comments?: DesignComment[]) => (comments ?? []).fil
  * slot types are found by name in each language's folder, so a copy's intents are named after the
  * new chatbot; a copy into another language takes the answers it uses with it.
  */
-export type NewChatbot = { name: string; language: string; locale: string; copyFrom?: Chatbot };
+type NewChatbot = { name: string; language: string; locale: string; copyFrom?: Chatbot };
 
 export const addChatbot = (design: ChatbotDesign, { name, language, locale, copyFrom }: NewChatbot) => {
   const intentName = (old: string) =>
@@ -184,7 +186,7 @@ export const addChatbot = (design: ChatbotDesign, { name, language, locale, copy
     environments: [],
     status: 'in-progress',
   };
-  let answerTypes = design.answerTypes;
+  let { answerTypes } = design;
   if (copyFrom && copyFrom.language !== language) {
     const used = new Set(intents.flatMap(intent => intent.questions.map(question => question.answerType)));
     const copied = Object.fromEntries(

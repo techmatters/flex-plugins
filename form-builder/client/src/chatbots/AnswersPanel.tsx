@@ -24,9 +24,10 @@
  */
 import { useState } from 'react';
 import { CircleAlert, CircleCheck, ListChecks, Plus, Regex, Sparkles, Trash2 } from 'lucide-react';
-import type { AnswerOption, AnswerType } from '@tech-matters/form-builder-shared/chatbots/model';
 import {
   answerKindOf,
+  type AnswerOption,
+  type AnswerType,
   builtinInfo,
   builtinLabel,
   languageLabel,
@@ -34,6 +35,7 @@ import {
   PATTERN_PRESETS,
   patternProblem,
 } from '@tech-matters/form-builder-shared/chatbots/model';
+
 import type { ChatbotIssue } from './chatbotChecks';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import {

@@ -21,18 +21,21 @@
  */
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import type { BoardContent } from '@tech-matters/form-builder-shared/flows/model';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
-import type { RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
-import { hasNonStandardRecording, standardRecordingName } from '@tech-matters/form-builder-shared/flows/recordings';
-import { toStudioFlows } from './studioTemplate';
-import type { HelplineImport } from '@tech-matters/form-builder-server/flowImport';
-import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
-import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
-import { handleApiRequest } from '@tech-matters/form-builder-server/api';
+import {
+  hasNonStandardRecording,
+  type RecordingsList,
+  standardRecordingName,
+} from '@tech-matters/form-builder-shared/flows/recordings';
+import { type HelplineImport, importHelpline } from '@tech-matters/form-builder-server/flowImport';
+import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { MemoryRecordingFiles, MemoryRecordingLogStore } from '@tech-matters/form-builder-server/recordingStores';
+
+import { toStudioFlows } from './studioTemplate';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
 const WIDGET = 'play_message_childhelp_voice_welcome';
@@ -101,7 +104,7 @@ describe('recordings with older names', () => {
     // The widgets renamed (their recordings given the new names, as the builder copies them), and a
     // new menu with a script and no recording
     const designed = (): BoardContent => {
-      const frameId = welcome.objects.find(object => object.studioName === WIDGET)!.frameId;
+      const { frameId } = welcome.objects.find(object => object.studioName === WIDGET)!;
       return {
         ...welcome,
         objects: [
@@ -192,7 +195,7 @@ describe('recordings with older names', () => {
       formDefinitionsDir: '/nowhere',
       drafts: new MemoryDraftStore(),
       recordings: { files, log: new MemoryRecordingLogStore() },
-      notifier: { draftSubmitted: async () => {} },
+      notifier: { draftSubmitted: async () => undefined },
     };
     const call = (user: ApiUser, method: string, apiPath: string, body?: unknown) =>
       handleApiRequest(context, { method, path: apiPath, body, user });

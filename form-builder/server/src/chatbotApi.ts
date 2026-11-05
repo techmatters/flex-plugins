@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * The chatbot designer's routes, called from api.ts:
@@ -28,6 +29,7 @@
 import type { S3Client } from '@aws-sdk/client-s3';
 import type { ChatbotDesign, ChatbotsSummary, StoredChatbots } from '@tech-matters/form-builder-shared/chatbots/model';
 import { botStatusOf, isNewBot } from '@tech-matters/form-builder-shared/chatbots/status';
+
 import type { ApiResponse, ApiUser } from './api';
 import { importChatbots } from './chatbotImport';
 import { DesignStore, isValidDesignCode, LocalDesignStore, MemoryDesignStore, S3DesignStore } from './designStore';
@@ -79,6 +81,7 @@ const isDesign = (value: unknown): value is ChatbotDesign => {
   );
 };
 
+// eslint-disable-next-line complexity
 export const handleChatbotRequest = async (
   store: ChatbotStore | undefined,
   helplinesConfigDir: string | undefined,
@@ -88,6 +91,7 @@ export const handleChatbotRequest = async (
   body: unknown,
   user: ApiUser,
   now: string,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<ApiResponse> => {
   if (!store) return fail(501, "The chatbot designer isn't set up here.");
   if (method === 'GET' && path === '/api/chatbots') {

@@ -21,18 +21,18 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { describe, expect, test } from '@jest/globals';
-import type { Board } from '@tech-matters/form-builder-shared/flows/model';
-import { messageFor, withVariantMessage } from '@tech-matters/form-builder-shared/flows/model';
+import { type Board, messageFor, withVariantMessage } from '@tech-matters/form-builder-shared/flows/model';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
-import { toFlowExport } from './exports';
-import { toStudioFlows } from './studioTemplate';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
 import { parseTemplate } from '@tech-matters/form-builder-server/hcl';
-import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
-import { handleApiRequest } from '@tech-matters/form-builder-server/api';
+import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { MemoryRecordingFiles, MemoryRecordingLogStore } from '@tech-matters/form-builder-server/recordingStores';
+
+import { toStudioFlows } from './studioTemplate';
+import { toFlowExport } from './exports';
 
 const fixtures = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '__fixtures__/helplines');
 
@@ -161,7 +161,7 @@ describe('recordings in a flow’s own folder', () => {
     formDefinitionsDir: '/nowhere',
     drafts: new MemoryDraftStore(),
     recordings: { files, log: new MemoryRecordingLogStore() },
-    notifier: { draftSubmitted: async () => {} },
+    notifier: { draftSubmitted: async () => undefined },
   };
   const call = (method: string, apiPath: string, body?: unknown) =>
     handleApiRequest(context, { method, path: apiPath, body, user: staff });

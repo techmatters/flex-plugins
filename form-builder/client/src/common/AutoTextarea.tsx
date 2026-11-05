@@ -36,6 +36,7 @@ export const AutoTextarea = ({ value, minRows = 1, ...rest }: Props) => {
       value={value}
       rows={Math.max(minRows, value.split('\n').length)}
       style={{ resize: 'none', overflow: 'hidden' }}
+      // eslint-disable-next-line react/jsx-props-no-spreading -- forwards the textarea's props
       {...rest}
     />
   );

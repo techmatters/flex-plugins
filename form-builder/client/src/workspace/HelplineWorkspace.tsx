@@ -19,6 +19,7 @@
  * Rendered with a code/version key so switching helpline starts fresh.
  */
 import type { FlagKind, ReviewSide } from '@tech-matters/form-builder-shared';
+
 import { NeedHelp } from '../help/HelpContext';
 import { ImportedFrom } from '../common/BranchPicker';
 import { Loading } from '../common/Loading';
@@ -159,6 +160,7 @@ const SAVE_STATE_TEXT: Record<SaveState, string> = {
   error: "Couldn't save",
 };
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 export const HelplineWorkspace = () => {
   const dispatch = useAppDispatch();
   const definitions = useAppSelector(selectDefinitions)!;
@@ -254,13 +256,14 @@ export const HelplineWorkspace = () => {
           >
             Try it out in Aselo
           </button>
-          <span className="muted">See the draft form in the counselor's screen and fill it in.</span>
+          <span className="muted">See the draft form in the counselor&apos;s screen and fill it in.</span>
         </div>
         <ContactFormEditor key={`${tab.key}-${editorRevision}`} tab={tab} />
       </>
     );
   };
 
+  // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
   const renderMain = () => {
     // Editors build their state from the files when they open, so wait for the saved draft
     if (draft.saveState === 'loading') return <Loading text="Loading the draft…" />;
@@ -318,6 +321,7 @@ export const HelplineWorkspace = () => {
         <ContactFormEditor key={`case-${target.key}-${editorRevision}`} tab={target} />
         {previewingSection === target.key && (
           <div className="modal-backdrop" role="presentation" onClick={() => dispatch(sectionPreviewClosed())}>
+            {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- only keeps clicks inside the dialog from closing it */}
             <div
               className="modal modal-wide"
               role="dialog"
@@ -351,6 +355,7 @@ export const HelplineWorkspace = () => {
     <>
       <div className="action-bar">
         <span className={changeCount ? 'change-count has-changes' : 'change-count'}>
+          {/* eslint-disable-next-line no-nested-ternary */}
           {changeCount
             ? `Draft: ${changeCount} file${changeCount === 1 ? '' : 's'} changed · ${SAVE_STATE_TEXT[draft.saveState]}`
             : draft.saveState === 'loading'
@@ -408,7 +413,7 @@ export const HelplineWorkspace = () => {
         <div className="alert alert-error">
           {draft.conflict.updatedBy ?? 'Someone else'} changed this draft
           {draft.conflict.updatedAt ? ` at ${new Date(draft.conflict.updatedAt).toLocaleString()}` : ''} while you were
-          editing, so your latest changes weren't saved. Reload to see their version, then make your changes again.
+          editing, so your latest changes weren&apos;t saved. Reload to see their version, then make your changes again.
           <button type="button" className="link-button" onClick={() => dispatch(reloadHelpline())}>
             Reload
           </button>

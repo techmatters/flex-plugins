@@ -27,7 +27,7 @@
  *
  * and rendered with ${helpline} and ${task_language}. The designer shows the JSON itself.
  */
-import type { Channel, TaskAttributes } from './model.ts';
+import type { Channel, TaskAttributes } from './model';
 
 // The reference in a send-to-flex widget: "${channel_attributes.default}", or channel_attributes["default"]
 // in templates written with jsonencode (read as { expression })
@@ -35,6 +35,7 @@ export const CHANNEL_ATTRIBUTES_REFERENCE = '${channel_attributes.default}';
 
 export const isChannelAttributesReference = (value: unknown): boolean => {
   const text =
+    // eslint-disable-next-line no-nested-ternary
     typeof value === 'string'
       ? value
       : value && typeof value === 'object' && typeof (value as { expression?: unknown }).expression === 'string'

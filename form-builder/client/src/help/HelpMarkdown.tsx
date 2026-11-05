@@ -71,6 +71,7 @@ export const blocksOf = (source: string): Block[] => {
     if (paragraph.length) blocks.push({ kind: 'paragraph', text: paragraph.join(' ') });
     paragraph = [];
   };
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   lines.forEach(raw => {
     const line = raw.trimEnd();
     const heading = line.match(/^(##|###)\s+(.*)$/);
@@ -79,7 +80,10 @@ export const blocksOf = (source: string): Block[] => {
     const tip = line.match(/^>\s?(.*)$/);
     const continuation = line.match(/^\s{2,}(\S.*)$/);
     const last = blocks[blocks.length - 1];
-    if (!line.trim()) return flush();
+    if (!line.trim()) {
+      flush();
+      return;
+    }
     if (heading) {
       flush();
       blocks.push({ kind: 'heading', level: heading[1] === '##' ? 2 : 3, text: heading[2] });

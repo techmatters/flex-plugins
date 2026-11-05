@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Where recordings are kept (see docs/flow-designer.md, "Where recordings are stored"):
@@ -34,6 +35,7 @@
 import { createHash, randomUUID } from 'crypto';
 import { promises as fs } from 'fs';
 import path from 'path';
+
 import {
   CopyObjectCommand,
   DeleteObjectCommand,
@@ -45,14 +47,17 @@ import {
 } from '@aws-sdk/client-s3';
 import { CloudFrontClient, CreateInvalidationCommand } from '@aws-sdk/client-cloudfront';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import type { RecordingEnvironment, StoredRecording } from '@tech-matters/form-builder-shared/flows/recordings';
-import { RECORDING_FILE_PATTERN } from '@tech-matters/form-builder-shared/flows/recordings';
+import {
+  RECORDING_FILE_PATTERN,
+  type RecordingEnvironment,
+  type StoredRecording,
+} from '@tech-matters/form-builder-shared/flows/recordings';
 
 const ENVIRONMENTS: RecordingEnvironment[] = ['staging', 'production'];
 
-export type UploadTarget = { url: string; method: 'PUT'; headers: Record<string, string> };
+type UploadTarget = { url: string; method: 'PUT'; headers: Record<string, string> };
 
-export type StoredFiles = Record<RecordingEnvironment, Map<string, StoredRecording>>;
+type StoredFiles = Record<RecordingEnvironment, Map<string, StoredRecording>>;
 
 export interface RecordingFiles {
   // The folder Studio plays from: the recordings URL variable for that environment
@@ -76,7 +81,7 @@ export interface RecordingFiles {
   refresh(code: string, environment: RecordingEnvironment, fileName: string): Promise<void>;
 }
 
-export type RecordingLogEntry = {
+type RecordingLogEntry = {
   uploadedBy?: string;
   uploadedAt?: string;
   approvedBy?: string;
@@ -99,9 +104,9 @@ export interface RecordingLogStore {
 }
 
 // A library: the helpline ("usvc"), or one of its flows' folders ("usvc/post_call_survey_es")
-export const RECORDING_LIBRARY_PATTERN = /^[a-z0-9]+(\/[a-z0-9_]+)?$/;
+const RECORDING_LIBRARY_PATTERN = /^[a-z0-9]+(\/[a-z0-9_]+)?$/;
 
-export const isValidRecordingKey = (library: string, fileName: string) =>
+const isValidRecordingKey = (library: string, fileName: string) =>
   RECORDING_LIBRARY_PATTERN.test(library) && RECORDING_FILE_PATTERN.test(fileName);
 
 const check = (library: string, fileName: string) => {

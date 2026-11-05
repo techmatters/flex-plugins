@@ -33,8 +33,8 @@ import type {
   FormItemJsonDefinition,
   SelectOption,
 } from '@hrm-form-definitions/formDefinition/types';
-import type { DefinitionFileMap } from '../common/definitions';
-import { getReferenceData, resolveOptions } from '../common/definitions';
+
+import { type DefinitionFileMap, getReferenceData, resolveOptions } from '../common/definitions';
 import { blankOptionValueFor, isBlankOption, toFieldName, uniqueFieldName, updateField } from '../forms/formEditing';
 
 export type AnswerNode = {
@@ -47,7 +47,7 @@ export type AnswerNode = {
 };
 
 // Lists bigger than this are moved to ReferenceData.json instead of sitting in the form
-export const REFERENCE_DATA_THRESHOLD = 200;
+const REFERENCE_DATA_THRESHOLD = 200;
 const MAX_CHAIN_DEPTH = 10;
 
 let nextAnswerId = 0;
@@ -114,7 +114,7 @@ export type ChainTree = {
   unusedLists: UnusedList[];
 };
 
-export type UnusedList = { level: number; key: string; options: SelectOption[] };
+type UnusedList = { level: number; key: string; options: SelectOption[] };
 
 const toNodes = (options: SelectOption[], level: number, levelOptions: unknown[], depth: number): AnswerNode[] =>
   options.map(option => {
@@ -209,6 +209,7 @@ type UniqueResult = {
  * Answers that already existed keep their value unless fixExisting is set (used after a
  * spreadsheet import, where the user is replacing the whole list).
  */
+/* eslint-disable sonarjs/cognitive-complexity */
 export const makeKeyValuesUnique = (
   roots: AnswerNode[],
   depth: number,
@@ -230,6 +231,7 @@ export const makeKeyValuesUnique = (
       groups.set(placed.node.value, group);
     });
 
+    // eslint-disable-next-line no-loop-func -- the callbacks run before the loop moves on
     groups.forEach(group => {
       if (group.length < 2 || !group.some(({ node }) => node.children.length > 0)) return;
       const toRename = group.filter(({ node }) => fixExisting || !node.existing);
@@ -260,12 +262,13 @@ export const makeKeyValuesUnique = (
 
   return { roots: cloned, renamed, stillShared };
 };
+/* eslint-enable sonarjs/cognitive-complexity */
 
 /**
  * Spreadsheet rows <-> tree
  */
 
-export type ImportStats = {
+type ImportStats = {
   rowsRead: number;
   emptyRows: number;
   // Rows like "Abra, , Agtangao" where a level in the middle is missing

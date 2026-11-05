@@ -22,6 +22,7 @@
  */
 import { useCallback } from 'react';
 import type { ImportedFlow } from '@tech-matters/form-builder-shared';
+
 import { BranchPicker, ImportedFrom } from '../common/BranchPicker';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import {
@@ -44,6 +45,7 @@ const onlyIn = (flow: ImportedFlow) =>
     .filter(([, environments]) => environments.length < flow.environments.length)
     .map(([channel, [environment]]) => `${channel}: ${environment} only`);
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 export const ImportHelpline = () => {
   const dispatch = useAppDispatch();
   const helplineCodes = useAppSelector(selectHelplineCodes);

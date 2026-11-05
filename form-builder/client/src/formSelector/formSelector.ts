@@ -32,8 +32,7 @@
  * Only used when the helpline's use_prepopulate_mappings flag is on. Only the formSelector key
  * is written here; survey and preEngagement are left as they are.
  */
-import type { DefinitionFileMap } from '../common/definitions';
-import { CONTACT_TABS } from '../common/definitions';
+import { CONTACT_TABS, type DefinitionFileMap } from '../common/definitions';
 import { isSameJson } from '../drafts/changes';
 import type { ValidationIssue } from '../forms/validation';
 import { getPreEngagementForm, plainText, PREPOPULATE_MAPPINGS_FILE, visibleOptions } from '../webchat/webchat';
@@ -42,11 +41,11 @@ export const FORM_SELECTOR_PREFIX = 'Filling in the contact';
 
 // The tabs the lambda can fill in (hrm-form-definitions FORM_DEFINITION_MAP)
 export const SELECTABLE_TABS = ['ChildInformationTab', 'CallerInformationTab', 'CaseInformationTab'] as const;
-export type SelectableTab = (typeof SELECTABLE_TABS)[number];
+type SelectableTab = (typeof SELECTABLE_TABS)[number];
 
 // The call types the plugin knows for contacts with a form (hrm-types callTypes)
 export const CALL_TYPE_CHILD = 'Child calling about self';
-export const CALL_TYPE_CALLER = 'Someone calling about a child';
+const CALL_TYPE_CALLER = 'Someone calling about a child';
 export const PRESELECTABLE_CALL_TYPES = [CALL_TYPE_CHILD, CALL_TYPE_CALLER];
 
 export const DEFAULT_ABOUT_SELF_VALUE = 'Yes';
@@ -60,7 +59,7 @@ export type FormSelector =
   | { kind: 'static'; tabs: string[]; callType?: string }
   | { kind: 'choice'; choices: ServiceUserChoice[] };
 
-export type FormSelectorInfo = {
+type FormSelectorInfo = {
   selector: FormSelector;
   // Not written in the file: Aselo's default applies
   implicit: boolean;
@@ -88,7 +87,7 @@ const readChoice = (entry: unknown): ServiceUserChoice => {
   return {
     form: form === 'preEngagement' ? 'preEngagement' : 'survey',
     input: String(input ?? ''),
-    ...(aboutSelfValue !== undefined ? { aboutSelfValue: String(aboutSelfValue) } : {}),
+    ...(aboutSelfValue === undefined ? {} : { aboutSelfValue: String(aboutSelfValue) }),
   };
 };
 
@@ -148,6 +147,7 @@ export const setFormSelector = (files: DefinitionFileMap, selector: FormSelector
   const mappings = getMappings(files);
   const formSelector = formSelectorJson(selector);
   const next =
+    // eslint-disable-next-line no-nested-ternary
     mappings === undefined
       ? { formSelector, survey: {}, preEngagement: {} }
       : 'formSelector' in mappings
@@ -168,22 +168,22 @@ export const removeFormSelector = (files: DefinitionFileMap): DefinitionFileMap 
  * What it does, in plain words
  */
 
-export const tabTitle = (tabKey: string) => CONTACT_TABS.find(tab => tab.key === tabKey)?.title ?? tabKey;
+const tabTitle = (tabKey: string) => CONTACT_TABS.find(tab => tab.key === tabKey)?.title ?? tabKey;
 
 const listTabs = (tabs: string[]) => (tabs.length > 0 ? tabs.map(tabTitle).join(', ') : 'nothing');
 
-export const SOURCE_TITLES: Record<ChoiceSource, string> = { survey: 'chatbot', preEngagement: 'webchat form' };
+const SOURCE_TITLES: Record<ChoiceSource, string> = { survey: 'chatbot', preEngagement: 'webchat form' };
 
-export const aboutSelfValueOf = (choice: ServiceUserChoice) => choice.aboutSelfValue || DEFAULT_ABOUT_SELF_VALUE;
+const aboutSelfValueOf = (choice: ServiceUserChoice) => choice.aboutSelfValue || DEFAULT_ABOUT_SELF_VALUE;
 
 const describeChoice = (choice: ServiceUserChoice) =>
   `“${choice.input}” in the ${SOURCE_TITLES[choice.form]} (about themselves when “${aboutSelfValueOf(choice)}”)`;
 
 // What a contact gets in each case, for the panel's diagram
-export type FormSelectorOutcome = { when: string; tabs: string[]; callType?: string; note?: string };
+type FormSelectorOutcome = { when: string; tabs: string[]; callType?: string; note?: string };
 
-export const ABOUT_SELF_TABS = ['CaseInformationTab', 'ChildInformationTab'];
-export const ABOUT_OTHER_TABS = ['CaseInformationTab', 'CallerInformationTab'];
+const ABOUT_SELF_TABS = ['CaseInformationTab', 'ChildInformationTab'];
+const ABOUT_OTHER_TABS = ['CaseInformationTab', 'CallerInformationTab'];
 
 export const formSelectorOutcomes = (selector: FormSelector): FormSelectorOutcome[] => {
   if (selector.kind === 'static') {
@@ -270,6 +270,7 @@ const mappingGroups = (value: unknown): string[][] =>
     (Array.isArray(entry) ? entry : [entry]).filter((target): target is string => typeof target === 'string'),
   );
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const checkFormSelector = (files: DefinitionFileMap): ValidationIssue[] => {
   const mappings = getMappings(files);
   if (!mappings) return [];
@@ -362,7 +363,7 @@ export const validateFormSelector = (
   );
 };
 
-export const formSelectorChanged = (originalFiles: DefinitionFileMap, draftFiles: DefinitionFileMap) =>
+const formSelectorChanged = (originalFiles: DefinitionFileMap, draftFiles: DefinitionFileMap) =>
   !isSameJson(getMappings(originalFiles)?.formSelector, getMappings(draftFiles)?.formSelector);
 
 // A changed selector does nothing while the helpline still uses PrepopulateKeys.json

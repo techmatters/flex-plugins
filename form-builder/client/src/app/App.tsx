@@ -16,6 +16,7 @@
 
 import { useCallback, useEffect } from 'react';
 import { ArrowLeft, CircleHelp } from 'lucide-react';
+
 import { ImportForms } from '../drafts/ImportForms';
 import { Loading } from '../common/Loading';
 import { isSignInEnabled, signOut } from './auth';
@@ -39,6 +40,7 @@ import { HelpPanel } from '../help/HelpPanel';
 import { HelpContext } from '../help/HelpContext';
 import { Tour } from '../help/Tour';
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 export const App = () => {
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectUser);

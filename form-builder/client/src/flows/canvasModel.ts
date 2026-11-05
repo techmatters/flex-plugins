@@ -243,7 +243,7 @@ export const withIds = (nodes: CanvasNode[]): CanvasNode[] =>
   });
 
 // A node's position on the canvas, adding its frame's
-export const absolutePosition = (node: CanvasNode, nodes: CanvasNode[]): Position => {
+const absolutePosition = (node: CanvasNode, nodes: CanvasNode[]): Position => {
   const parent = node.parentId ? nodes.find(candidate => candidate.id === node.parentId) : undefined;
   return parent ? { x: parent.position.x + node.position.x, y: parent.position.y + node.position.y } : node.position;
 };
@@ -283,7 +283,7 @@ export const reparent = (nodes: CanvasNode[], nodeId: string): CanvasNode[] => {
   return [...others.filter(n => n.type === 'frame'), ...others.filter(n => n.type !== 'frame'), moved];
 };
 
-export type NextExit = { ok: true; exit?: string } | { ok: false; reason: string };
+type NextExit = { ok: true; exit?: string } | { ok: false; reason: string };
 
 /**
  * Whether another connection can start from this object, and which way out it is. In Studio each

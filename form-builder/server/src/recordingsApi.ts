@@ -37,12 +37,14 @@
  * publish, and a file has to be approved before it's published. The browser sends files straight
  * to storage (a signed upload link when deployed), since the Lambda can't take large bodies.
  */
-import type { Recording, RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
 import {
   MAX_RECORDING_BYTES,
+  type Recording,
   RECORDING_CONTENT_TYPES,
   RECORDING_FILE_PATTERN,
+  type RecordingsList,
 } from '@tech-matters/form-builder-shared/flows/recordings';
+
 import type { ApiResponse, ApiUser } from './api';
 import type { RecordingFiles, RecordingLog, RecordingLogStore } from './recordingStores';
 
@@ -83,7 +85,7 @@ const fail = (status: number, message: string): ApiResponse => ({ status, body: 
 const isStaff = (user: ApiUser) => user.role === 'aselo-staff';
 const canOpen = (user: ApiUser, code: string) => user.helplines === 'all' || user.helplines.includes(code);
 
-export const listRecordings = async ({ files, log }: RecordingStores, code: string): Promise<RecordingsList> => {
+const listRecordings = async ({ files, log }: RecordingStores, code: string): Promise<RecordingsList> => {
   const [stored, notes] = await Promise.all([files.list(code), log.get(code)]);
   const fileNames = [...new Set([...stored.staging.keys(), ...stored.production.keys()])].sort();
   return {
@@ -111,6 +113,7 @@ const updateLog = async (log: RecordingLogStore, code: string, change: (log: Rec
   await log.put(code, current);
 };
 
+// eslint-disable-next-line complexity
 export const handleRecordingRequest = async (
   stores: RecordingStores | undefined,
   method: string,
@@ -118,6 +121,7 @@ export const handleRecordingRequest = async (
   body: unknown,
   user: ApiUser,
   now: string,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<ApiResponse> => {
   if (!stores) return fail(501, "Recordings aren't set up here.");
   const match = path.match(

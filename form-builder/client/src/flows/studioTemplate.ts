@@ -34,30 +34,33 @@
  *   and imported ones renamed or playing a renamed recording. One with a script but no recording yet
  *   says its script (from flow_vars) until the recording is uploaded.
  */
-import type { BoardContent, FlowObject, Frame, TaskAttributes } from '@tech-matters/form-builder-shared/flows/model';
 import {
+  type BoardContent,
   conditionExitName,
   defaultSplitInputOf,
   exitConditionOf,
   exitsOf,
-  PROFILE_FIXED_EXITS,
+  flowChannelOf,
+  type FlowObject,
   followingSplitName,
+  type Frame,
   OBJECT_TYPES,
+  PROFILE_FIXED_EXITS,
   repeatWidgetNames,
   studioConditionName,
+  type TaskAttributes,
   taskChannelOf,
-  workerChannelOf,
-  flowChannelOf,
   toSnake,
   widgetNamesOf,
+  workerChannelOf,
 } from '@tech-matters/form-builder-shared/flows/model';
 import { janitorValuesOf, withJanitorValues } from '@tech-matters/form-builder-shared/flows/janitor';
-import type { RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
 import {
   isRecordingsBucketUrl,
   isVoiceMessage,
-  RECORDINGS_URL_VARIABLE,
   recordingOf,
+  RECORDINGS_URL_VARIABLE,
+  type RecordingsList,
   standardRecordingName,
   variantRecordingsUrls,
 } from '@tech-matters/form-builder-shared/flows/recordings';
@@ -70,14 +73,14 @@ import {
 
 // Who a message is from: as chosen on the board, otherwise the helpline's name
 
-export type StudioTransition = Record<string, unknown> & { event: string; next?: string };
-export type StudioState = {
+type StudioTransition = Record<string, unknown> & { event: string; next?: string };
+type StudioState = {
   name: string;
   type: string;
   transitions: StudioTransition[];
   properties: Record<string, unknown>;
 };
-export type StudioFlow = Record<string, unknown> & { states: StudioState[] };
+type StudioFlow = Record<string, unknown> & { states: StudioState[] };
 
 // A text to set in the helpline's variables (staging.hcl / production.hcl): flow_vars, or the
 // channel's channel_flow_vars
@@ -103,7 +106,7 @@ export type TaskAttributesChange = {
   source: TaskAttributes['source'];
 };
 
-export type GeneratedStudioFlow = {
+type GeneratedStudioFlow = {
   frameId?: string;
   title: string;
   // The template it came from (under twilio-iac/helplines) and the channels using it, if imported
@@ -216,8 +219,8 @@ const interpolationEnd = (text: string, start: number) => {
 
 // Where messages read their Conversations service and channel from; the legacy trigger.message
 // ones (still in many live flows) are replaced when the widget changes
-export const MESSAGE_SERVICE = '{{trigger.conversation.InstanceSid}}';
-export const MESSAGE_CHANNEL = '{{trigger.conversation.ChannelSid}}';
+const MESSAGE_SERVICE = '{{trigger.conversation.InstanceSid}}';
+const MESSAGE_CHANNEL = '{{trigger.conversation.ChannelSid}}';
 const LEGACY_MESSAGE_SOURCE: Record<string, string> = {
   service: '{{trigger.message.InstanceSid}}',
   channel: '{{trigger.message.ChannelSid}}',
@@ -257,6 +260,7 @@ const isStudioTypeOf = (type: FlowObject['type'], studioType: string) =>
 
 // The same JSON, whatever the order of its keys
 const canonical = (value: unknown): unknown =>
+  // eslint-disable-next-line no-nested-ternary
   Array.isArray(value)
     ? value.map(canonical)
     : value && typeof value === 'object'
@@ -269,7 +273,7 @@ const canonical = (value: unknown): unknown =>
 const sameJson = (a: unknown, b: unknown) => JSON.stringify(canonical(a)) === JSON.stringify(canonical(b));
 
 // A message widget's properties with the legacy service and channel replaced
-export const withConversationSource = (type: string, properties: Record<string, unknown>) => {
+const withConversationSource = (type: string, properties: Record<string, unknown>) => {
   if (!MESSAGE_WIDGET_TYPES.has(type)) return properties;
   return {
     ...properties,
@@ -316,7 +320,7 @@ export const toHcl = (value: unknown, indent = ''): string => {
     .join(',\n')}\n${indent}}`;
 };
 
-export const toTemplateText = (flow: StudioFlow) => `\${\n  jsonencode(${toHcl(flow, '  ')})\n}\n`;
+const toTemplateText = (flow: StudioFlow) => `\${\n  jsonencode(${toHcl(flow, '  ')})\n}\n`;
 
 /**
  * The Studio flow for one frame of a board (or for the objects outside frames, without frameId).
@@ -325,6 +329,7 @@ export const toStudioFlow = (
   content: BoardContent,
   frame?: Frame,
   recordings?: RecordingsList,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): GeneratedStudioFlow => {
   const objects = content.objects.filter(object => object.frameId === frame?.id);
   // What the flow is: the frame's, or the board's own (an imported board's Studio flow)
@@ -389,11 +394,7 @@ export const toStudioFlow = (
   const fromBucket = (widget: string, file: string) => {
     if (!bucketListed) {
       bucketListed = true;
-      if (!bucketUrls) {
-        todo.push(
-          `Set flow_vars.${bucketVariable} to the helpline's folder in the Aselo recordings bucket (https://recordings.tl.techmatters.org/<helpline>/<environment>).`,
-        );
-      } else {
+      if (bucketUrls) {
         const folders = variants.length > 0 ? variants : [undefined];
         folders.forEach(variant => {
           const values = variant ? variantRecordingsUrls(bucketUrls, variants, variant.recordingsFolder) : bucketUrls;
@@ -407,6 +408,10 @@ export const toStudioFlow = (
             values,
           });
         });
+      } else {
+        todo.push(
+          `Set flow_vars.${bucketVariable} to the helpline's folder in the Aselo recordings bucket (https://recordings.tl.techmatters.org/<helpline>/<environment>).`,
+        );
       }
     }
     return `\${flow_vars.${bucketVariable}}/${file}`;
@@ -533,6 +538,7 @@ export const toStudioFlow = (
     }
   };
 
+  // eslint-disable-next-line complexity
   const widgetsOf = (object: FlowObject): StudioState[] => {
     const name = nameOf(object);
     if (!name) {
@@ -1218,6 +1224,8 @@ export const toStudioFlow = (
           );
         }
         const attributes = object.taskAttributes;
+        const attributesJson =
+          attributes && usesChannelAttributes(attributes) ? CHANNEL_ATTRIBUTES_REFERENCE : attributes?.json;
         if (attributes) listTaskAttributes(object, name, 'new');
         else todo.push(`${label(object)}: set its task attributes.`);
         return [
@@ -1235,11 +1243,7 @@ export const toStudioFlow = (
               channel: taskChannel ? `\${task_channel_sids.${taskChannel}}` : TODO,
               ...waitSettingsOf(object, name),
               timeout: object.settings?.timeout || '3600',
-              attributes: !attributes
-                ? TODO
-                : usesChannelAttributes(attributes)
-                ? CHANNEL_ATTRIBUTES_REFERENCE
-                : attributes.json,
+              attributes: attributes ? attributesJson : TODO,
             },
           },
         ];
@@ -1276,6 +1280,7 @@ export const toStudioFlow = (
         ];
       case 'systemDown':
       case 'subflow': {
+        // eslint-disable-next-line callback-return -- next() finds the widget a way out leads to: not a callback
         const after = next(exits[0] ?? '');
         if (object.type === 'subflow') todo.push(`${label(object)}: set the subflow it runs.`);
         return [

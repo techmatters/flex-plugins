@@ -22,27 +22,30 @@
 import { existsSync, readdirSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { describe, expect, test } from '@jest/globals';
-import type { BoardContent, FlowObject } from '@tech-matters/form-builder-shared/flows/model';
 import {
+  type BoardContent,
   composePrefixed,
   emptyBoard,
   exitsOf,
+  type FlowObject,
+  hasFromField,
+  liveFromOf,
   lockedPrefixesOf,
   prefixedName,
   repeatWidgetNames,
   splitInputsOf,
   standardPrefixedName,
-  hasFromField,
-  liveFromOf,
   suggestStudioName,
   upgradeContent,
 } from '@tech-matters/form-builder-shared/flows/model';
-import { createObjectNode } from './canvasModel';
 import { janitorValuesOf } from '@tech-matters/form-builder-shared/flows/janitor';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
-import { toStudioFlow } from './studioTemplate';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
+
+import { toStudioFlow } from './studioTemplate';
+import { createObjectNode } from './canvasModel';
 import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
@@ -785,6 +788,7 @@ describe('who a message is from', () => {
       boards
         .flatMap(imported => imported.content.objects)
         .filter(candidate => hasFromField(candidate.type) && candidate.studio)
+        // eslint-disable-next-line no-loop-func -- the callback runs before the loop moves on
         .forEach(message => {
           const live = liveFromOf(message);
           expectAt(`${code} ${message.studioName}`, message.settings?.from).toBe(live);

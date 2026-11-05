@@ -21,9 +21,15 @@
  * resolved; "Reply and resolve" answers and closes it in one go.
  */
 import { Check, Trash2, Undo2 } from 'lucide-react';
-import type { Approval, FlagKind, ReviewSide, ReviewThread } from '@tech-matters/form-builder-shared';
-import { FLAG_KINDS } from '@tech-matters/form-builder-shared';
+import {
+  type Approval,
+  FLAG_KINDS,
+  type FlagKind,
+  type ReviewSide,
+  type ReviewThread,
+} from '@tech-matters/form-builder-shared';
 import type { Person } from '@tech-matters/form-builder-shared/flows/model';
+
 import {
   approvalOf,
   approvalState,
@@ -51,6 +57,7 @@ import {
   selectReviewPanel,
   sendReply,
 } from './reviewPanelSlice';
+
 const personLabel = (person: Person) => (person.email ? `${person.name} (${person.email})` : person.name);
 
 const when = (at: string) =>

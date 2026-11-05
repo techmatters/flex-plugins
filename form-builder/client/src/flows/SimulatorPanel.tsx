@@ -21,9 +21,9 @@
  */
 import { useEffect, useRef } from 'react';
 import { ArrowRight, CheckCheck, CircleAlert, Play, RotateCcw, Square, Trash2, Undo2, X } from 'lucide-react';
-import type { FlowObject } from '@tech-matters/form-builder-shared/flows/model';
-import { messageFor, OBJECT_TYPES } from '@tech-matters/form-builder-shared/flows/model';
+import { type FlowObject, messageFor, OBJECT_TYPES } from '@tech-matters/form-builder-shared/flows/model';
 import { playUrl, recordingOf } from '@tech-matters/form-builder-shared/flows/recordings';
+
 import { coverageOf, SimAnswer, widgetNameOf } from './simulate';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import {
@@ -59,6 +59,7 @@ const ANSWERED = new Set(['reply', 'incomingMessage', 'keypress', 'speech']);
 
 const labelOf = (object?: FlowObject) => (object ? object.text.trim() || OBJECT_TYPES[object.type].label : 'Gone');
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 export const SimulatorPanel = () => {
   const dispatch = useAppDispatch();
   const content = useAppSelector(selectContent);
@@ -190,6 +191,7 @@ export const SimulatorPanel = () => {
                 <p className="field-hint">No script yet.</p>
               )}
               {recording?.staging ? (
+                // eslint-disable-next-line jsx-a11y/media-has-caption -- a recording of a script shown next to it
                 <audio controls preload="none" src={playUrl(recording.staging)} aria-label="Recording" />
               ) : (
                 message.recordingFile && (
@@ -202,6 +204,7 @@ export const SimulatorPanel = () => {
             <>
               {prompt.note && <p className="field-hint">{prompt.note}</p>}
               <span className="flow-sim-choices">
+                {/* eslint-disable-next-line jsx-a11y/no-autofocus -- it appears when the person asks for it, ready to type in */}
                 <button type="button" className="primary-button" autoFocus onClick={() => reply({ kind: 'continue' })}>
                   Next{prompt.exit ? `: ${prompt.exit}` : ''} <ArrowRight size={14} aria-hidden />
                 </button>
@@ -217,6 +220,7 @@ export const SimulatorPanel = () => {
               }}
             >
               <input
+                // eslint-disable-next-line jsx-a11y/no-autofocus -- it appears when the person asks for it, ready to type in
                 autoFocus
                 value={text}
                 placeholder="Their reply"

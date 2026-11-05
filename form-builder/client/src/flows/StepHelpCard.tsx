@@ -21,8 +21,8 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown, Info, X } from 'lucide-react';
-import type { FlowObject } from '@tech-matters/form-builder-shared/flows/model';
-import { OBJECT_TYPES } from '@tech-matters/form-builder-shared/flows/model';
+import { type FlowObject, OBJECT_TYPES } from '@tech-matters/form-builder-shared/flows/model';
+
 import { ObjectIcon } from './shapes';
 import { STEP_DETAILS } from './stepDetails';
 import { pathsOf, STEP_HELP } from './stepHelp';
@@ -54,6 +54,7 @@ const FloatingCard = ({
   // Placed again when it changes (its content grew)
   layoutKey?: unknown;
   children: React.ReactNode;
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [place, setPlace] = useState<{ left: number; top: number; arrow: number; flipped: boolean }>();
@@ -75,7 +76,7 @@ const FloatingCard = ({
   }, [anchor, side, layoutKey]);
   // Closed by Escape or a click anywhere else
   useEffect(() => {
-    if (!onClose) return;
+    if (!onClose) return undefined;
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     const onPointer = (e: PointerEvent) => {
       const target = e.target as Node;
@@ -227,7 +228,7 @@ export const StepInfoButton = ({ object }: { object: Pick<FlowObject, 'type' | '
   const [anchor, setAnchor] = useState<DOMRect>();
   const [expanded, setExpanded] = useState(false);
   const button = useRef<HTMLButtonElement>(null);
-  const label = OBJECT_TYPES[object.type].label;
+  const { label } = OBJECT_TYPES[object.type];
   const close = useCallback(() => {
     setAnchor(undefined);
     setExpanded(false);

@@ -20,10 +20,9 @@
  * text, forgiving typos and word endings, with the builder's words and their synonyms treated as
  * the same, and the area the person is in counting most.
  */
-import MiniSearch from 'minisearch';
-import type { Query } from 'minisearch';
-import type { HelpArea, HelpArticle } from './articles';
-import { HELP_ARTICLES, visibleTo } from './articles';
+import MiniSearch, { type Query } from 'minisearch';
+
+import { HELP_ARTICLES, type HelpArea, type HelpArticle, visibleTo } from './articles';
 
 // Words that mean the same here: a question with one finds articles with any of them
 const SYNONYMS: string[][] = [
@@ -98,7 +97,7 @@ const buildIndex = (articles: HelpArticle[]) => {
 
 let defaultIndex: MiniSearch<Indexed> | undefined;
 
-export type HelpResult = { article: HelpArticle; score: number };
+type HelpResult = { article: HelpArticle; score: number };
 
 /**
  * The articles answering a question, best first: those of the area the person is in count most,
@@ -109,7 +108,8 @@ export type HelpResult = { article: HelpArticle; score: number };
 export const searchHelp = (
   query: string,
   { area, isAseloStaff, articles }: { area: HelpArea; isAseloStaff: boolean; articles?: HelpArticle[] },
-): { results: HelpResult[]; confident: boolean } => {
+): // eslint-disable-next-line sonarjs/cognitive-complexity
+{ results: HelpResult[]; confident: boolean } => {
   const words = tokenize(query).filter(word => !STOP_WORDS.has(word));
   if (words.length === 0) return { results: [], confident: false };
   const pool = articles ?? HELP_ARTICLES;

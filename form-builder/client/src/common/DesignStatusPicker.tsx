@@ -18,8 +18,7 @@
  * A design's status (designStatus.ts) as a coloured pill: a dropdown for Aselo staff, a badge for
  * everyone else. "New" is shown next to it for designs not in the live config yet.
  */
-import type { DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
-import { DESIGN_STATUSES, statusLabel } from '@tech-matters/form-builder-shared/designStatus';
+import { DESIGN_STATUSES, type DesignStatus, statusLabel } from '@tech-matters/form-builder-shared/designStatus';
 import './designStatus.css';
 
 type BadgeProps = { status: DesignStatus; isNew?: boolean };

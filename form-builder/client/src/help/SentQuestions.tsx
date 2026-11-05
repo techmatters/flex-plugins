@@ -20,8 +20,8 @@
  * (its header's `questions:`), or write a new one when nothing is close.
  */
 import { Copy } from 'lucide-react';
-import type { HelpArea } from './articles';
-import { articleBySlug } from './articles';
+
+import { articleBySlug, type HelpArea } from './articles';
 import type { HelpQuestion } from './helpClient';
 import { searchHelp } from './search';
 import { useAppDispatch, useAppSelector } from '../app/store';

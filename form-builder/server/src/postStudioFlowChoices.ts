@@ -19,21 +19,23 @@
  * survey flows (studio_flows keys starting post_call_survey_), from its twilio-iac config and from
  * the builder (its routing design's queues, its boards' flows, e.g. a language added on a board).
  */
+import type { ConfigEnvironment, PostFlowChoices } from '@tech-matters/form-builder-shared';
+
 import type { BoardStore } from './boards';
 import type { RoutingStore } from './routingStore';
 import { readHelplineConfigs } from './flowImport';
-import type { HclObject, HclValue } from './hcl';
-import { isObject } from './hcl';
-import type { ConfigEnvironment, PostFlowChoices } from '@tech-matters/form-builder-shared';
-export type { ConfigEnvironment, PostFlowChoices };
+import { type HclObject, type HclValue, isObject } from './hcl';
 
-export const POST_CALL_SURVEY_PREFIX = 'post_call_survey_';
+export type { PostFlowChoices };
+
+const POST_CALL_SURVEY_PREFIX = 'post_call_survey_';
 
 const objectOf = (value: HclValue | undefined): HclObject => (isObject(value) ? value : {});
 
 export const loadPostFlowChoices = async (
   stores: { helplinesConfigDir?: string; routing?: RoutingStore; boards?: BoardStore },
   code: string,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<PostFlowChoices> => {
   const queues = new Map<string, PostFlowChoices['queues'][number]>();
   const flows = new Map<string, PostFlowChoices['flows'][number]>();

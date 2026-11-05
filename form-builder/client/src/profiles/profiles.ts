@@ -29,6 +29,7 @@ import type {
   ProfileFlagDurationDefinition,
   ProfileSectionDefinition,
 } from '@hrm-form-definitions/formDefinition/types';
+
 import type { DefinitionFileMap } from '../common/definitions';
 import { isSameJson } from '../drafts/changes';
 import type { ValidationIssue } from '../forms/validation';
@@ -37,7 +38,7 @@ export const PROFILE_SECTIONS_FILE = 'profileForms/Sections.json';
 export const FLAG_DURATIONS_FILE = 'profileForms/FlagDurations.json';
 export const PROFILE_OVERVIEW_FILE = 'profileForms/ProfileOverview.json';
 
-export type ProfileOverview = Record<string, { isPII?: boolean }>;
+type ProfileOverview = Record<string, { isPII?: boolean }>;
 
 export const getProfileSections = (files: DefinitionFileMap) =>
   (files[PROFILE_SECTIONS_FILE] ?? []) as ProfileSectionDefinition[];

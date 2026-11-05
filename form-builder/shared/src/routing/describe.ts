@@ -18,18 +18,19 @@
  * The routing design in plain words, for people with no technical background; and "test a task":
  * which rule a task would match, and who could get it.
  */
-import type {
-  Condition,
-  MoveOn,
-  QueueWorkers,
-  Role,
-  RoutingDesign,
-  Rule,
-  Target,
-  WhoBlock,
-  Workflow,
-} from './model.ts';
-import { attributeLabel, valueLabel } from './model.ts';
+import {
+  attributeLabel,
+  type Condition,
+  type MoveOn,
+  type QueueWorkers,
+  type Role,
+  type RoutingDesign,
+  type Rule,
+  type Target,
+  valueLabel,
+  type WhoBlock,
+  type Workflow,
+} from './model';
 
 const list = (items: string[], last = 'and') =>
   items.length <= 1 ? items.join('') : `${items.slice(0, -1).join(', ')} ${last} ${items[items.length - 1]}`;
@@ -66,9 +67,9 @@ const ROLE_WORDS: Record<string, string> = {
   supervisor: 'Supervisors',
 };
 
-export const rolesLabel = (roles: Role[]) => ROLE_WORDS[roles.join(',')] ?? roles.join(' or ');
+const rolesLabel = (roles: Role[]) => ROLE_WORDS[roles.join(',')] ?? roles.join(' or ');
 
-export const describeBlock = (block: WhoBlock): string => {
+const describeBlock = (block: WhoBlock): string => {
   switch (block.kind) {
     case 'notWaitingOffline':
       return 'not busy with an offline contact';
@@ -152,7 +153,7 @@ export const queueName = (design: RoutingDesign, key: string) =>
 
 export type TaskAttributes = Record<string, string | number | boolean>;
 
-export type ConditionResult = { condition: Condition; result: boolean | 'unknown' };
+type ConditionResult = { condition: Condition; result: boolean | 'unknown' };
 
 const matches = (condition: Condition, task: TaskAttributes): boolean | 'unknown' => {
   if (condition.kind === 'custom') return 'unknown';
@@ -169,16 +170,18 @@ const matches = (condition: Condition, task: TaskAttributes): boolean | 'unknown
 
 export type GroupResult = { conditions: ConditionResult[]; matched: boolean | 'unknown' };
 
-export type TaskTest = {
+type TaskTest = {
   // Each rule in order, until the one that matches
   checked: { rule: Rule; groups: GroupResult[]; matched: boolean | 'unknown' }[];
   matched?: Rule;
 };
 
 const allOf = (results: (boolean | 'unknown')[]): boolean | 'unknown' =>
+  // eslint-disable-next-line no-nested-ternary
   results.includes(false) ? false : results.includes('unknown') ? 'unknown' : true;
 
 const anyOf = (results: (boolean | 'unknown')[]): boolean | 'unknown' =>
+  // eslint-disable-next-line no-nested-ternary
   results.includes(true) ? true : results.includes('unknown') ? 'unknown' : false;
 
 /**

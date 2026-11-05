@@ -20,6 +20,7 @@
  * and how lives in caseSectionsSlice.ts.
  */
 import { useEffect, useMemo } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { getCaseSections, getForm } from '../common/definitions';

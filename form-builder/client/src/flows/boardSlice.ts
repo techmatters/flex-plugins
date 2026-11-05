@@ -22,34 +22,37 @@
  * overwritten silently.
  */
 import { createSelector, createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
-import { applyEdgeChanges, applyNodeChanges, reconnectEdge } from '@xyflow/react';
-import type { Connection as FlowConnection, EdgeChange, NodeChange } from '@xyflow/react';
-import type {
-  Board,
-  BoardContent,
-  FlowDetails,
-  FlowObject,
-  FlowObjectType,
-  FlowVariant,
-  Person,
-  TestedPath,
-} from '@tech-matters/form-builder-shared/flows/model';
+import {
+  applyEdgeChanges,
+  applyNodeChanges,
+  type Connection as FlowConnection,
+  type EdgeChange,
+  type NodeChange,
+  reconnectEdge,
+} from '@xyflow/react';
 import {
   ASELO_PEOPLE_CODE,
+  type Board,
+  type BoardContent,
   designOf,
+  type FlowDetails,
   flowDetailsOf,
+  type FlowObject,
+  type FlowObjectType,
+  type FlowVariant,
   messageFor,
   OBJECT_TYPES,
+  type Person,
   sharedLanguageVariants,
   statusOf,
   TEMPLATES_CODE,
+  type TestedPath,
   toSnake,
   VARIANT_LANGUAGES,
   variantInLanguage,
   variesByVariant,
 } from '@tech-matters/form-builder-shared/flows/model';
-import type { DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
-import { STATUS_AFTER_CHANGE } from '@tech-matters/form-builder-shared/designStatus';
+import { type DesignStatus, STATUS_AFTER_CHANGE } from '@tech-matters/form-builder-shared/designStatus';
 import {
   boardChecks,
   issuesByObject,
@@ -57,8 +60,8 @@ import {
   splitIgnored,
 } from '@tech-matters/form-builder-shared/flows/checks';
 import { approvalOf } from '@tech-matters/form-builder-shared/flows/recordings';
-import type { AppThunk, RootState } from '../app/store';
-import { rootReducer } from '../app/store';
+
+import { type AppThunk, rootReducer, type RootState } from '../app/store';
 import { selectActingAsStaff, selectUser } from '../app/sessionSlice';
 import { HelplineChoices, NO_HELPLINE_CHOICES } from './boardClient';
 import {
@@ -80,22 +83,21 @@ import {
   withIds,
 } from './canvasModel';
 import type { PaletteItem } from './Palette';
-import { coverageOf, testedPathOf, validTestedPaths, visitedBy } from './simulate';
-import type { SimRun } from './simulate';
+import { coverageOf, type SimRun, testedPathOf, validTestedPaths, visitedBy } from './simulate';
 
-export type BoardMode = 'sketch' | 'design' | 'test';
+type BoardMode = 'sketch' | 'design' | 'test';
 
 export type BoardSaveState = 'saved' | 'unsaved' | 'saving' | 'conflict' | 'error';
 
-export type SideTab = 'test' | 'settings' | 'tasks' | 'check' | 'recordings';
+type SideTab = 'test' | 'settings' | 'tasks' | 'check' | 'recordings';
 
 export type TaskFilter = 'open' | 'mine' | 'all';
 
-export type BoardConflict = { updatedBy?: string; updatedAt?: string };
+type BoardConflict = { updatedBy?: string; updatedAt?: string };
 
 const HISTORY_LIMIT = 100;
 
-export type BoardState = {
+type BoardState = {
   // The board as loaded (its content is what follows, as it's being changed)
   board?: Omit<Board, 'content'>;
   // Goes up each time a board is opened (or reloaded), so its editor starts afresh
@@ -265,6 +267,7 @@ const boardSlice = createSlice({
         if (node.id !== id || node.type !== 'object') return node;
         const info = OBJECT_TYPES[type];
         // (A profile check starts with its own: its flags, not blocked and failed)
+        // eslint-disable-next-line no-nested-ternary
         const exits = info.editableExits
           ? type === 'checkClientProfile'
             ? info.exits
@@ -558,6 +561,7 @@ const boardSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof boardSlice> {}
 }
 
@@ -619,14 +623,14 @@ const {
 // Selectors
 
 export const selectBoard = (state: RootState) => state.board ?? initialState;
-export const selectNodes = (state: RootState) => selectBoard(state).nodes;
-export const selectEdges = (state: RootState) => selectBoard(state).edges;
+const selectNodes = (state: RootState) => selectBoard(state).nodes;
+const selectEdges = (state: RootState) => selectBoard(state).edges;
 const selectTitle = (state: RootState) => selectBoard(state).title;
 const selectStatus = (state: RootState) => selectBoard(state).status;
 const selectFlow = (state: RootState) => selectBoard(state).flow;
 const selectIgnoredChecks = (state: RootState) => selectBoard(state).ignoredChecks;
 const selectTestedPaths = (state: RootState) => selectBoard(state).testedPaths;
-export const selectMode = (state: RootState) => selectBoard(state).mode;
+const selectMode = (state: RootState) => selectBoard(state).mode;
 
 // For now helpline staff see boards without changing them
 export const selectReadOnly = (state: RootState) => !selectActingAsStaff(state);
@@ -694,7 +698,7 @@ export const selectIssues = createSelector(
 export const selectProblems = createSelector([selectIssues], ({ active }) => issuesByObject(active));
 
 // Approved scripts and recordings, in the flow shown: a check on the object
-export const selectApprovals = createSelector(
+const selectApprovals = createSelector(
   [selectContent, (state: RootState) => selectVariant(state)?.key, selectMainVariant, selectRecordings],
   (content, variantKey, mainVariant, recordings) => {
     const found = new Map<string, 'Approved' | 'Published'>();
@@ -713,7 +717,7 @@ export const selectApprovals = createSelector(
 // Test mode: the run on the board, and the tested paths (simulatorSlice)
 const selectRun = (state: RootState) => state.simulator?.run;
 const selectShowTested = (state: RootState) => state.simulator?.showTested ?? true;
-export const selectSimulation = createSelector(
+const selectSimulation = createSelector(
   [selectMode, selectRun, selectShowTested, selectContent, selectValidPaths],
   (mode, run: SimRun | undefined, showTested, content, validPaths) => {
     if (mode !== 'test') return undefined;
@@ -866,7 +870,7 @@ export const reconnectConnection =
         dispatch(noticeShown(next.reason));
         return;
       }
-      exit = next.exit;
+      ({ exit } = next);
     }
     dispatch(edgeReconnected({ oldEdge, connection, exit }));
   };
@@ -955,7 +959,7 @@ export const splitVariant =
     const content = selectContent(state);
     const leaving = variants.find(candidate => candidate.key === key);
     if (!board || !leaving || !flow?.studio) return;
-    const template = flow.studio.template;
+    const { template } = flow.studio;
     const objects = content.objects.map(({ variantMessages, ...object }) => {
       const own = variantMessages?.[key];
       return {

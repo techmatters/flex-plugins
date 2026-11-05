@@ -28,6 +28,7 @@
 const LIQUID_OPENERS: Record<string, string> = { '{{': '}}', '{%': '%}' };
 const TERRAFORM_OPENERS = ['${', '%{'];
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const tokenize = (text: string): string[] | undefined => {
   const tokens: string[] = [];
   let i = 0;
@@ -53,7 +54,10 @@ const tokenize = (text: string): string[] | undefined => {
       let end = i + 1;
       for (; end < text.length; end += 1) {
         if (text[end] === '{') depth += 1;
-        else if (text[end] === '}' && --depth === 0) break;
+        else if (text[end] === '}') {
+          depth -= 1;
+          if (depth === 0) break;
+        }
       }
       if (end >= text.length) return undefined;
       tokens.push(text.slice(i, end + 1));
@@ -76,6 +80,7 @@ const tokenize = (text: string): string[] | undefined => {
  * The text laid out, or undefined if it can't be (an unclosed string or placeholder). Callers
  * check it's valid first (fieldProblem, taskAttributesProblem): this only changes the layout.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const formatTemplateJson = (text: string, indent = '  '): string | undefined => {
   const tokens = tokenize(text);
   if (!tokens || tokens.length === 0) return undefined;

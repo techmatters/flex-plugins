@@ -17,7 +17,9 @@
 import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
+
 import { afterAll, beforeAll, describe, expect, test, jest } from '@jest/globals';
+
 import type { Draft } from './drafts';
 import type { GitHubClient } from './github';
 import { branchNameFor, GitHubApplier } from './githubApplier';

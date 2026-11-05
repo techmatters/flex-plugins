@@ -230,6 +230,8 @@ FORM_BUILDER_ROLE=helpline-staff FORM_BUILDER_HELPLINES=usnm npm run dev
 
 ```bash
 npm run typecheck   # TypeScript, including the shared form-definition types
+npm run lint        # ESLint, with the webchat's rules (.eslintrc.js says where it differs and why)
+npm run format      # Prettier, as the rest of the repo (format:check only checks)
 npm test            # Jest: unit tests, every helpline loaded and validated, and UI tests in jsdom
 npm run build       # webpack: the web app, into client/dist
 ```

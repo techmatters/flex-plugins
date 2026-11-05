@@ -1,8 +1,6 @@
 {
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
-    // The shared package names its files with .ts
-    "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
     // Off because hrm-form-definitions re-exports types (export { LayoutVersion }), which
     // isolatedModules rejects. The bundler drops those re-exports at build time anyway.

@@ -19,15 +19,8 @@
  * design. Reading keeps what each part was; writing gives back exactly that for whatever wasn't
  * changed, and builds the rest from the design's blocks.
  */
-import {
-  readConditions,
-  readQueueWorkers,
-  readWho,
-  writeConditions,
-  writeQueueWorkers,
-  writeWho,
-} from './expressions.ts';
-import type { MoveOn, Queue, Rule, Target, Workflow } from './model.ts';
+import { readConditions, readQueueWorkers, readWho, writeConditions, writeQueueWorkers, writeWho } from './expressions';
+import type { MoveOn, Queue, Rule, Target, Workflow } from './model';
 
 type Json = Record<string, unknown>;
 
@@ -61,13 +54,13 @@ const moveOnOf = (target: Json): MoveOn => {
   return { kind: 'wait' };
 };
 
-export const readTarget = (target: Json): Target => {
+const readTarget = (target: Json): Target => {
   const queue = textOf(target.queue) ?? '';
   return {
     id: newId('t'),
     queue: queueKeyOf(queue) ?? queue,
     who: readWho(textOf(target.expression)),
-    ...(numberOf(target.priority) !== undefined ? { priority: numberOf(target.priority) } : {}),
+    ...(numberOf(target.priority) === undefined ? {} : { priority: numberOf(target.priority) }),
     moveOn: moveOnOf(target),
     ...(textOf(target.order_by) ? { orderBy: textOf(target.order_by) } : {}),
     ...(textOf(target.known_worker_sid) ? { knownWorker: textOf(target.known_worker_sid) } : {}),
@@ -83,7 +76,8 @@ const meaningOf = (target: Target) => {
 
 const MANAGED_TARGET_KEYS = ['queue', 'expression', 'priority', 'timeout', 'skip_if', 'order_by', 'known_worker_sid'];
 
-export const writeTarget = (target: Target): Json => {
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const writeTarget = (target: Target): Json => {
   if (target.original && meaningOf(readTarget(target.original)) === meaningOf(target)) return target.original;
   const kept = Object.fromEntries(
     Object.entries(target.original ?? {}).filter(([key]) => !MANAGED_TARGET_KEYS.includes(key)),
@@ -100,7 +94,7 @@ export const writeTarget = (target: Target): Json => {
     ...(expression ? { expression } : {}),
     ...(target.moveOn.kind === 'skip' ? { skip_if: target.moveOn.expression } : {}),
     ...(target.moveOn.kind === 'timeout' ? { timeout: target.moveOn.seconds } : {}),
-    ...(target.priority !== undefined ? { priority: target.priority } : {}),
+    ...(target.priority === undefined ? {} : { priority: target.priority }),
     ...(target.orderBy ? { order_by: target.orderBy } : {}),
     ...kept,
   };
@@ -151,9 +145,9 @@ export const readWorkflow = (
   return {
     key,
     name: textOf(settings.friendly_name) ?? key,
-    ...(numberOf(settings.task_reservation_timeout) !== undefined
-      ? { reservationTimeout: numberOf(settings.task_reservation_timeout) }
-      : {}),
+    ...(numberOf(settings.task_reservation_timeout) === undefined
+      ? {}
+      : { reservationTimeout: numberOf(settings.task_reservation_timeout) }),
     rules: (Array.isArray(filters) ? filters : []).map(filter => readRule(filter as Json)),
     ...source,
     settings: routingRest,
@@ -175,7 +169,7 @@ export const writeWorkflowSettings = (workflow: Workflow): Json => {
     friendly_name: workflow.name,
     ...(workflow.template ? { templatefile: `/app/twilio-iac/helplines/${workflow.template}` } : {}),
     ...kept,
-    ...(workflow.reservationTimeout !== undefined ? { task_reservation_timeout: workflow.reservationTimeout } : {}),
+    ...(workflow.reservationTimeout === undefined ? {} : { task_reservation_timeout: workflow.reservationTimeout }),
   };
 };
 

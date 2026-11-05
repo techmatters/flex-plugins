@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { describe, expect, test } from '@jest/globals';
-import { handleApiRequest } from './api';
-import type { ApiContext, ApiUser } from './api';
+
+import { type ApiContext, type ApiUser, handleApiRequest } from './api';
 import type { HelpQuestion, HelpQuestionStore } from './helpQuestions';
 
 const memoryStore = (): HelpQuestionStore & { months: Map<string, HelpQuestion[]> } => {

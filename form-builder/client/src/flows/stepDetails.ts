@@ -20,7 +20,7 @@
  */
 import type { FlowObjectType } from '@tech-matters/form-builder-shared/flows/model';
 
-export type StepDetails = { details: string[]; example?: string };
+type StepDetails = { details: string[]; example?: string };
 
 export const STEP_DETAILS: Record<FlowObjectType, StepDetails> = {
   incoming: {

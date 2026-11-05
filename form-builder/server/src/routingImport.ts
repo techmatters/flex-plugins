@@ -22,18 +22,19 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
+
 import { readQueue, readWorkflow } from '@tech-matters/form-builder-shared/routing/convert';
 import { levelOrderOf } from '@tech-matters/form-builder-shared/routing/describe';
 import { skillsIn } from '@tech-matters/form-builder-shared/routing/expressions';
-import type { RoutingDesign } from '@tech-matters/form-builder-shared/routing/model';
-import { ROUTING_SCHEMA_VERSION } from '@tech-matters/form-builder-shared/routing/model';
+import { ROUTING_SCHEMA_VERSION, type RoutingDesign } from '@tech-matters/form-builder-shared/routing/model';
+import type { RoutingImportReport, RoutingImport } from '@tech-matters/form-builder-shared';
+
 import { readHelplineConfigs, templatePathOf } from './flowImport';
 import { HclObject, isObject, parseTemplate } from './hcl';
-import type { RoutingImportReport, RoutingImport } from '@tech-matters/form-builder-shared';
-export type { RoutingImportReport, RoutingImport };
 
 const objectOf = (value: unknown): HclObject => (isObject(value as never) ? (value as HclObject) : {});
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const importRouting = async (helplinesDir: string, code: string): Promise<RoutingImport> => {
   const { configs, environments } = await readHelplineConfigs(helplinesDir, code);
   const notes: string[] = [];

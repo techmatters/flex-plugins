@@ -21,6 +21,7 @@
  * (both environments) or one environment's file.
  */
 import type { PostFlowChoices, ServiceConfigFileName } from '@tech-matters/form-builder-shared';
+
 import type { DefinitionFileMap } from '../common/definitions';
 import { getServiceConfigFile, isConfigObject } from './serviceConfig';
 
@@ -64,7 +65,7 @@ export const flowRef = (key: string) => `\${studio_flow_sids.${key}}`;
 export const keyOf = (ref: string, kind: 'task_queues' | 'studio_flow_sids') =>
   ref.match(new RegExp(`^\\$\\{${kind}\\.([A-Za-z0-9_]+)\\}$`))?.[1];
 
-export type Entry = {
+type Entry = {
   file: ServiceConfigFileName;
   queue: string;
   flowTrigger: string;
@@ -91,6 +92,7 @@ export const postStudioFlowEntries = (files: DefinitionFileMap): Entry[] =>
 
 // The environments a file reaches
 const environmentsOf = (file: ServiceConfigFileName) =>
+  // eslint-disable-next-line no-nested-ternary
   file === 'common' ? (['staging', 'production'] as const) : file === 'development' ? [] : ([file] as const);
 
 /**

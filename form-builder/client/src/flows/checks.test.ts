@@ -15,7 +15,7 @@
  */
 
 import { describe, expect, test } from '@jest/globals';
-import type { FlowObject, Frame } from '@tech-matters/form-builder-shared/flows/model';
+import { type Connection, type FlowObject, type Frame } from '@tech-matters/form-builder-shared/flows/model';
 import {
   boardChecks as allChecks,
   objectProblems,
@@ -23,12 +23,11 @@ import {
   studioNameProblems,
   uniqueName,
 } from '@tech-matters/form-builder-shared/flows/checks';
+import { standardTaskAttributes } from '@tech-matters/form-builder-shared/flows/taskAttributes';
 
 // The checks but the flows' unset channels, languages and services (tested on their own)
 const boardChecks = (...args: Parameters<typeof allChecks>) =>
   allChecks(...args).filter(issue => !issue.key.includes('|naming-'));
-import { standardTaskAttributes } from '@tech-matters/form-builder-shared/flows/taskAttributes';
-import type { Connection } from '@tech-matters/form-builder-shared/flows/model';
 
 const object = (id: string, type: FlowObject['type'], studioName?: string, frameId?: string): FlowObject => ({
   id,
@@ -259,6 +258,7 @@ describe('the board check', () => {
     const ended = {
       ...content,
       objects: content.objects.map(item =>
+        // eslint-disable-next-line no-nested-ternary
         item.id === 'lang' ? { ...item, endedExits: ['No'] } : item.id === 'bye' ? { ...item, endedExits: [''] } : item,
       ),
     };

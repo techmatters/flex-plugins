@@ -24,10 +24,6 @@
  * deepmerge's always_merger (objects merge, lists add up, anything else is replaced), and
  * settings set to null removed.
  */
-import featureFlagsSource from '../../../../plugin-hrm-form/src/types/FeatureFlags.ts?raw';
-import type { DefinitionFileMap } from '../common/definitions';
-import { isSameJson } from '../drafts/changes';
-import type { ValidationIssue } from '../forms/validation';
 import {
   isServiceConfigPath,
   repoServiceConfigDir,
@@ -36,8 +32,14 @@ import {
   serviceConfigPath,
 } from '@tech-matters/form-builder-shared';
 
+// eslint-disable-next-line import/extensions -- webpack's ?raw import: the plugin's source, as text
+import featureFlagsSource from '../../../../plugin-hrm-form/src/types/FeatureFlags.ts?raw';
+import type { DefinitionFileMap } from '../common/definitions';
+import { isSameJson } from '../drafts/changes';
+import type { ValidationIssue } from '../forms/validation';
+
 export type ConfigObject = Record<string, unknown>;
-export type ServiceConfigEnvironment = Exclude<ServiceConfigFileName, 'common'>;
+type ServiceConfigEnvironment = Exclude<ServiceConfigFileName, 'common'>;
 // Where a value can come from: Aselo's shared defaults, or one of the helpline's files
 export type ConfigLayer = 'defaults' | ServiceConfigFileName;
 
@@ -82,7 +84,7 @@ const removeNulls = (value: ConfigObject): ConfigObject =>
       .map(([key, item]) => [key, isConfigObject(item) ? removeNulls(item) : item]),
   );
 
-export const layersFor = (environment: ServiceConfigEnvironment): ConfigLayer[] => ['defaults', 'common', environment];
+const layersFor = (environment: ServiceConfigEnvironment): ConfigLayer[] => ['defaults', 'common', environment];
 
 const layerValue = (files: DefinitionFileMap, defaults: ConfigObject | undefined, layer: ConfigLayer) =>
   layer === 'defaults' ? defaults : getServiceConfigFile(files, layer);
@@ -100,13 +102,13 @@ export const mergedServiceConfig = (
 export const getIn = (node: unknown, keys: string[]): unknown =>
   keys.reduce<unknown>((current, key) => (isConfigObject(current) ? current[key] : undefined), node);
 
-export const setIn = (node: ConfigObject, [key, ...rest]: string[], value: unknown): ConfigObject =>
+const setIn = (node: ConfigObject, [key, ...rest]: string[], value: unknown): ConfigObject =>
   rest.length === 0
     ? { ...node, [key]: value }
     : { ...node, [key]: setIn(isConfigObject(node[key]) ? (node[key] as ConfigObject) : {}, rest, value) };
 
 // Removes a setting, and any object left empty by removing it
-export const deleteIn = (node: ConfigObject, [key, ...rest]: string[]): ConfigObject => {
+const deleteIn = (node: ConfigObject, [key, ...rest]: string[]): ConfigObject => {
   if (!(key in node)) return node;
   const { [key]: child, ...others } = node;
   if (rest.length === 0 || !isConfigObject(child)) return rest.length === 0 ? others : node;
@@ -131,7 +133,7 @@ const collectSettingKeys = (config: unknown, prefix: string[] = [], found = new 
   return found;
 };
 
-export type SettingGroup = 'featureFlags' | 'attributes' | 'uiAttributes' | 'other';
+type SettingGroup = 'featureFlags' | 'attributes' | 'uiAttributes' | 'other';
 
 export const SETTING_GROUPS: { key: SettingGroup; title: string }[] = [
   { key: 'featureFlags', title: 'Feature flags' },
@@ -140,7 +142,7 @@ export const SETTING_GROUPS: { key: SettingGroup; title: string }[] = [
   { key: 'other', title: 'Other Flex settings' },
 ];
 
-export const groupOf = (keys: string[]): SettingGroup => {
+const groupOf = (keys: string[]): SettingGroup => {
   if (keys[0] === 'attributes' && keys[1] === 'feature_flags' && keys.length === 3) return 'featureFlags';
   if (keys[0] === 'attributes' && keys.length === 2) return 'attributes';
   if (keys[0] === 'ui_attributes' && keys.length === 2) return 'uiAttributes';
@@ -400,7 +402,7 @@ export const validateServiceConfig = (
     settingChanges(getServiceConfigFile(originalFiles, name), getServiceConfigFile(draftFiles, name)).forEach(
       ({ keys, after }) => {
         const path = keys.join('.');
-        const note = after !== undefined ? applyNoteFor(keys) : undefined;
+        const note = after === undefined ? undefined : applyNoteFor(keys);
         if (note) issues.push({ severity: 'warning', message: `${name}.json sets ${path}: ${note}` });
         if (after === undefined && !isReplacedOnApply(keys)) {
           issues.push({

@@ -24,19 +24,17 @@ import { useState } from 'react';
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
 import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, GripVertical, Trash2, X } from 'lucide-react';
-import type {
-  Condition,
-  MoveOn,
-  Role,
-  RoutingDesign,
-  Rule,
-  Target,
-} from '@tech-matters/form-builder-shared/routing/model';
 import {
   ATTRIBUTE_LABELS,
   attributeLabel,
-  valueLabel,
+  type Condition,
+  type MoveOn,
+  type Role,
+  type RoutingDesign,
+  type Rule,
+  type Target,
   VALUE_LABELS,
+  valueLabel,
 } from '@tech-matters/form-builder-shared/routing/model';
 import { queueKeyOf, queueReference, writeRule } from '@tech-matters/form-builder-shared/routing/convert';
 import {
@@ -45,9 +43,18 @@ import {
   levelOrder,
   queueName,
 } from '@tech-matters/form-builder-shared/routing/describe';
+
 import { hasBlock, newTarget, rolesOf, setRoles, setSkills, skillsOf, toggleBlock, updateTarget } from './edit';
 import { isOfflineContactsRule } from './routingChecks';
 import { familyOf } from './ConditionChip';
+
+// What each "move on" choice means; a custom one stays as written
+const moveOnFor = (value: string, current: MoveOn): MoveOn => {
+  if (value === 'skip') return { kind: 'skip', expression: '1==1' };
+  if (value === 'timeout') return { kind: 'timeout', seconds: current.kind === 'timeout' ? current.seconds : 120 };
+  if (value === 'custom') return current;
+  return { kind: 'wait' };
+};
 
 export const SKILL_MIME = 'application/x-aselo-skill';
 
@@ -137,6 +144,7 @@ const AttributePicker = ({
         defaultValue={attribute}
         aria-label="Task attribute"
         placeholder="e.g. clinical, preEngagementData.area"
+        // eslint-disable-next-line jsx-a11y/no-autofocus -- it appears when the person asks for it, ready to type in
         autoFocus
         onBlur={e => commit(e.target.value)}
         onKeyDown={e => {
@@ -165,6 +173,7 @@ const AttributePicker = ({
   );
 };
 
+// eslint-disable-next-line complexity
 const ConditionRow = ({
   condition,
   design,
@@ -353,8 +362,10 @@ const ROLE_CHOICES: { value: string; label: string; roles?: Role[] }[] = [
 ];
 
 const moveOnValue = (moveOn: MoveOn) =>
+  // eslint-disable-next-line no-nested-ternary
   moveOn.kind === 'skip' ? (/^1\s*==\s*1$/.test(moveOn.expression) ? 'skip' : 'custom') : moveOn.kind;
 
+// eslint-disable-next-line complexity
 const TargetRow = ({
   target,
   step,
@@ -376,6 +387,7 @@ const TargetRow = ({
   onChange: (target: Target) => void;
   onMove: (direction: -1 | 1) => void;
   onRemove: () => void;
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 }) => {
   const skills = skillsOf(target);
   const roles = rolesOf(target);
@@ -632,18 +644,8 @@ const TargetRow = ({
             value={moveOnValue(target.moveOn)}
             disabled={readOnly}
             onChange={e => {
-              const value = e.target.value;
-              const moveOn: MoveOn =
-                value === 'skip'
-                  ? { kind: 'skip', expression: '1==1' }
-                  : value === 'timeout'
-                  ? {
-                      kind: 'timeout',
-                      seconds: target.moveOn.kind === 'timeout' ? target.moveOn.seconds : 120,
-                    }
-                  : value === 'custom'
-                  ? target.moveOn
-                  : { kind: 'wait' };
+              const { value } = e.target;
+              const moveOn = moveOnFor(value, target.moveOn);
               onChange({ ...target, moveOn });
             }}
           >
@@ -816,6 +818,7 @@ export const RuleCard = ({
     onChange({ ...rule, targets });
   };
   return (
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- only keeps clicks inside the dialog from closing it
     <li
       ref={setNodeRef}
       id={`rule-${rule.id}`}
@@ -834,6 +837,7 @@ export const RuleCard = ({
           {expanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
         </button>
         {!readOnly && (
+          // eslint-disable-next-line react/jsx-props-no-spreading -- dnd-kit's drag handle props
           <button type="button" className="drag-handle" aria-label="Drag to reorder" {...attributes} {...listeners}>
             <GripVertical size={16} />
           </button>
@@ -877,6 +881,7 @@ export const RuleCard = ({
         )}
       </div>
 
+      {/* eslint-disable-next-line no-negated-condition, no-nested-ternary -- collapsed first, as on screen */}
       {!expanded ? (
         <p className="routing-rule-summary">{summaryOf(rule, design)}</p>
       ) : view === 'json' ? (
@@ -896,7 +901,7 @@ export const RuleCard = ({
           </div>
           <div className="routing-section">
             <h4>
-              Worker conditions <span className="field-hint">who it's offered to, step by step</span>
+              Worker conditions <span className="field-hint">who it&apos;s offered to, step by step</span>
             </h4>
             <ol className="routing-targets">
               {rule.targets.map((target, step) => (

@@ -31,15 +31,22 @@ import {
 } from '@xyflow/react';
 import { Check, MessageSquareText, Square, SquareCheck, TriangleAlert } from 'lucide-react';
 import { iconOf, OBJECT_TYPES, objectColor, STICKY_COLORS } from '@tech-matters/form-builder-shared/flows/model';
-import type { ConnectionEdge, FrameNode, ObjectNode, StickyNode } from './canvasModel';
-import { labelOffsetOf, labelSlot } from './canvasModel';
+
+import {
+  type ConnectionEdge,
+  type FrameNode,
+  labelOffsetOf,
+  labelSlot,
+  type ObjectNode,
+  type StickyNode,
+} from './canvasModel';
 import { ObjectIcon, ShapeOutline } from './shapes';
 import { StepInfoButton } from './StepHelpCard';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { nodeDataChanged, selectEditingView } from './boardSlice';
 
 // A run of the simulator on the board, and the tested paths shown (Test mode)
-export type SimulationView = {
+type SimulationView = {
   // Each object it went through, with its step numbers; the connections it took
   visited: Map<string, number[]>;
   connections: Set<string>;
@@ -160,7 +167,8 @@ const lighter = (color: string) => {
   return `rgb(${channel(0)}, ${channel(2)}, ${channel(4)})`;
 };
 
-export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<ObjectNode>) => {
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
+const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<ObjectNode>) => {
   const dispatch = useAppDispatch();
   const { readOnly, problems, simulation, sketch, approvals } = useEditingView();
   const { object } = data;
@@ -246,7 +254,7 @@ export const ObjectNodeView = ({ id, data, selected, width, height }: NodeProps<
   );
 };
 
-export const FrameNodeView = ({ id, data, selected }: NodeProps<FrameNode>) => {
+const FrameNodeView = ({ id, data, selected }: NodeProps<FrameNode>) => {
   const dispatch = useAppDispatch();
   const { readOnly } = useEditingView();
   const { frame } = data;
@@ -269,7 +277,7 @@ export const FrameNodeView = ({ id, data, selected }: NodeProps<FrameNode>) => {
   );
 };
 
-export const StickyNodeView = ({ id, data, selected }: NodeProps<StickyNode>) => {
+const StickyNodeView = ({ id, data, selected }: NodeProps<StickyNode>) => {
   const dispatch = useAppDispatch();
   const { readOnly } = useEditingView();
   const { sticky } = data;
@@ -321,7 +329,7 @@ const useLabelSlot = (id: string, source: string, target: string) =>
   useStore(state => labelSlot(state.edges as ConnectionEdge[], { id, source, target }));
 
 // Straight lines with rounded corners, an arrow, and the exit it stands for
-export const ConnectionEdgeView = ({
+const ConnectionEdgeView = ({
   id,
   source,
   target,

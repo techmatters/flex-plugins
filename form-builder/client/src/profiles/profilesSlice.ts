@@ -24,6 +24,7 @@ import type {
   ProfileFlagDurationDefinition,
   ProfileSectionDefinition,
 } from '@hrm-form-definitions/formDefinition/types';
+
 import { AppThunk, RootState, rootReducer } from '../app/store';
 import { editDraftFiles, selectDraftFiles, selectOriginalFiles } from '../drafts/draftSlice';
 import { selectDefinitions } from '../workspace/workspaceSlice';
@@ -44,7 +45,7 @@ import {
   toHours,
 } from './profiles';
 
-export type ProfilesState = {
+type ProfilesState = {
   sections: Row<ProfileSectionDefinition>[];
   durations: Row<ProfileFlagDurationDefinition>[];
   // The unit each blocking option's length is shown in, by row id
@@ -74,6 +75,7 @@ const profilesSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof profilesSlice> {}
 }
 const injected = profilesSlice.injectInto(rootReducer);

@@ -20,6 +20,7 @@
  * feature flag is on. What's edited and how lives in cannedResponsesSlice.ts.
  */
 import { useEffect } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectDraftFiles } from '../drafts/draftSlice';
 import { selectDefinitions, selectWorkspace, tryItOutOpened } from '../workspace/workspaceSlice';
@@ -65,8 +66,8 @@ export const CannedResponsesEditor = () => {
           <p className="muted">Ready-made messages counselors can pick in a chat, then edit before sending.</p>
           {!enabled && (
             <p className="issue issue-warning">
-              Canned responses are switched off for this helpline, so counselors don't see them yet. Ask Aselo staff to
-              turn on <code>enable_canned_responses</code>.
+              Canned responses are switched off for this helpline, so counselors don&apos;t see them yet. Ask Aselo
+              staff to turn on <code>enable_canned_responses</code>.
             </p>
           )}
 
@@ -122,6 +123,7 @@ export const CannedResponsesEditor = () => {
                 <textarea
                   rows={6}
                   value={pasteText}
+                  // eslint-disable-next-line jsx-a11y/no-autofocus -- it appears when the person asks for it, ready to type in
                   autoFocus
                   onChange={e => dispatch(pasteTextChanged(e.target.value))}
                   placeholder={'Greeting\tHi, thanks for reaching out.'}

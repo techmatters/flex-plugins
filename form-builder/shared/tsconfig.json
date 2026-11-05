@@ -4,8 +4,6 @@
     // No Node: the server and the browser both use it (DOM only for URL, which both have)
     "lib": ["ES2020", "DOM"],
     "types": [],
-    // index.ts names its files with .ts, so Node (e.g. loading the dev server's config) can read it
-    "allowImportingTsExtensions": true
   },
   "include": ["src"]
 }

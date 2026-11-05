@@ -18,8 +18,6 @@
  * Talks to the flow designer's API routes (server/src/boardsApi.ts, server/src/recordingsApi.ts). Tests
  * run the same server code in process through clientFor's Send.
  */
-import { apiFetch } from '../app/auth';
-import type { Send } from '../drafts/draftClient';
 import type {
   Board,
   BoardContent,
@@ -29,21 +27,28 @@ import type {
 } from '@tech-matters/form-builder-shared/flows/model';
 import type { RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
 import type { RoutingDesign } from '@tech-matters/form-builder-shared/routing/model';
-import type { HelplineImport, ImportedRecording } from '@tech-matters/form-builder-shared';
-import type { BranchChoice, FromBranch } from '@tech-matters/form-builder-shared';
+import {
+  type BranchChoice,
+  type FromBranch,
+  type HelplineImport,
+  type ImportedRecording,
+} from '@tech-matters/form-builder-shared';
 
-export type UploadTarget = { url: string; method: 'PUT'; headers: Record<string, string> };
+import type { Send } from '../drafts/draftClient';
+import { apiFetch } from '../app/auth';
+
+type UploadTarget = { url: string; method: 'PUT'; headers: Record<string, string> };
 
 // Sends a file to where the API said (a signed S3 link when deployed). Not through apiFetch: the
 // link carries its own permission, and an extra Authorization header would break it.
-export type SendFile = (target: UploadTarget, file: Blob) => Promise<void>;
+type SendFile = (target: UploadTarget, file: Blob) => Promise<void>;
 
-export const sendFileWithFetch: SendFile = async (target, file) => {
+const sendFileWithFetch: SendFile = async (target, file) => {
   const response = await fetch(target.url, { method: target.method, headers: target.headers, body: file });
   if (!response.ok) throw new Error(`The upload failed (${response.status}). Please try again.`);
 };
 
-export type BoardSaveOutcome =
+type BoardSaveOutcome =
   | { ok: true; meta: BoardMeta }
   | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
 
@@ -76,7 +81,7 @@ export type BoardClient = {
 };
 
 // A chatbot a flow can start: its name (botSuffix) and language (en_USCH, the configs folder)
-export type ChatbotChoice = { name: string; language: string };
+type ChatbotChoice = { name: string; language: string };
 
 export type HelplineChoices = {
   chatbots: ChatbotChoice[];

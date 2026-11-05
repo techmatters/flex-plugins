@@ -19,11 +19,12 @@
  * them (server/src/helpQuestions.ts).
  */
 import type { HelpQuestion } from '@tech-matters/form-builder-shared';
+
 import { apiFetch } from '../app/auth';
 
 export type { HelpQuestion };
 
-export type SentQuestion = Pick<HelpQuestion, 'question' | 'area' | 'reason' | 'article'>;
+type SentQuestion = Pick<HelpQuestion, 'question' | 'area' | 'reason' | 'article'>;
 
 export type HelpClient = {
   send(question: SentQuestion): Promise<void>;

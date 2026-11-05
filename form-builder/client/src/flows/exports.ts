@@ -20,17 +20,15 @@
  * - the recordings and scripts list, as a spreadsheet for the helpline.
  * See docs/flow-designer.md, "Outputs".
  */
-import type {
-  Board,
-  BoardContent,
-  Channel,
-  FlowNaming,
-  FlowObject,
-  Frame,
-} from '@tech-matters/form-builder-shared/flows/model';
 import {
+  type Board,
+  type BoardContent,
+  type Channel,
   exitsOf,
   flowDetailsOf,
+  type FlowNaming,
+  type FlowObject,
+  type Frame,
   hasFromField,
   isImportedBoard,
   messageChannelOf,
@@ -39,18 +37,22 @@ import {
   templateTargetOf,
   toSnake,
 } from '@tech-matters/form-builder-shared/flows/model';
-import type { DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
-import { statusLabel } from '@tech-matters/form-builder-shared/designStatus';
+import { type DesignStatus, statusLabel } from '@tech-matters/form-builder-shared/designStatus';
 import { boardChecks, flowScopeOf, splitIgnored } from '@tech-matters/form-builder-shared/flows/checks';
-import type { FlowVarChange, TaskAttributesChange } from './studioTemplate';
-import { toStudioFlows } from './studioTemplate';
 import { taskAttributesSourceOf } from '@tech-matters/form-builder-shared/flows/taskAttributes';
-import type { MessageStatus, RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
-import { messageStatus, recordingOf, variantRecordingsUrls } from '@tech-matters/form-builder-shared/flows/recordings';
+import {
+  type MessageStatus,
+  messageStatus,
+  recordingOf,
+  type RecordingsList,
+  variantRecordingsUrls,
+} from '@tech-matters/form-builder-shared/flows/recordings';
 
-export const FLOW_EXPORT_SCHEMA_VERSION = 1;
+import { type FlowVarChange, type TaskAttributesChange, toStudioFlows } from './studioTemplate';
 
-export type ExportedExit = {
+const FLOW_EXPORT_SCHEMA_VERSION = 1;
+
+type ExportedExit = {
   // The way out ("Yes", "failed"...); "" when the object has a single one
   name: string;
   // Where it leads: the object's id and Studio name
@@ -60,7 +62,7 @@ export type ExportedExit = {
   endsFlow?: boolean;
 };
 
-export type ExportedObject = {
+type ExportedObject = {
   id: string;
   type: FlowObject['type'];
   kind: string;
@@ -91,7 +93,7 @@ export type ExportedObject = {
   currentStudioWidget?: FlowObject['studio'];
 };
 
-export type ExportedFlow = {
+type ExportedFlow = {
   // Frames with the same channel are one Studio flow
   key: string;
   channel?: Channel;
@@ -101,7 +103,7 @@ export type ExportedFlow = {
   objects: ExportedObject[];
 };
 
-export type FlowExport = {
+type FlowExport = {
   schemaVersion: number;
   about: string;
   board: {
@@ -220,6 +222,7 @@ const ABOUT = [
 // template), or each channel's channel_flow_vars, in both environments' files
 const variableTargetsOf = (code: string, variable: FlowVarChange, channels: string[]) => {
   const blocks =
+    // eslint-disable-next-line no-nested-ternary
     variable.scope === 'channel_flow_vars'
       ? channels.length > 0
         ? channels.map(channel => `channels.${channel}.channel_flow_vars`)
@@ -260,11 +263,13 @@ const recordingFileOf = (object: FlowObject, frame?: Pick<Frame, 'channel'>, rec
   return recordingOf(object, recordings?.recordings)?.fileName ?? `${object.studioName}.mp3`;
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExport => {
   const { content } = board;
   const byId = new Map(content.objects.map(object => [object.id, object]));
   const frameOf = (object: FlowObject) => flowDetailsOf(content, object.frameId);
 
+  // eslint-disable-next-line complexity
   const exportObject = (object: FlowObject): ExportedObject => {
     const info = OBJECT_TYPES[object.type];
     const frame = frameOf(object);
@@ -420,7 +425,7 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
 
 // The flows sharing the board's template, and the one split off from it (see FlowExport)
 const sharedTemplateOf = (content: BoardContent, recordings?: RecordingsList): Partial<FlowExport> => {
-  const flow = content.flow;
+  const { flow } = content;
   const variants = flow?.variants ?? [];
   const parts: Partial<FlowExport> = {};
   if (flow?.ownTemplate && flow.studio) {
@@ -455,7 +460,7 @@ const sharedTemplateOf = (content: BoardContent, recordings?: RecordingsList): P
 // ---------------------------------------------------------------------------------------------
 // Recordings and scripts
 
-export const SCRIPT_COLUMNS = [
+const SCRIPT_COLUMNS = [
   'Frame',
   'Studio name',
   'Recording file',
@@ -467,7 +472,7 @@ export const SCRIPT_COLUMNS = [
   'Status',
 ] as const;
 
-export type ScriptRow = Record<(typeof SCRIPT_COLUMNS)[number], string>;
+type ScriptRow = Record<(typeof SCRIPT_COLUMNS)[number], string>;
 
 /**
  * One row per message or question: what to record (voice) or to approve (messaging), in board

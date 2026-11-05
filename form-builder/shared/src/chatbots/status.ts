@@ -19,9 +19,8 @@
  * questions take, or the form fields they fill in makes it "In progress"; notes, comments and the
  * status itself don't.
  */
-import type { DesignStatus } from '../designStatus.ts';
-import { STATUS_AFTER_CHANGE } from '../designStatus.ts';
-import type { AnswerType, Chatbot, ChatbotDesign } from './model.ts';
+import { type DesignStatus, STATUS_AFTER_CHANGE } from '../designStatus';
+import type { AnswerType, Chatbot, ChatbotDesign } from './model';
 
 const withoutComments = <T extends object>(value: T): T =>
   JSON.parse(

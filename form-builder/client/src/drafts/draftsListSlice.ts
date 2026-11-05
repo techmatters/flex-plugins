@@ -21,9 +21,10 @@
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { DraftSummary } from '@tech-matters/form-builder-shared';
+
 import type { AppThunk, RootState } from '../app/store';
 
-export type DraftsListState = {
+type DraftsListState = {
   // Undefined while loading
   drafts?: DraftSummary[];
   // The helpline shown ('' for all)
@@ -57,6 +58,7 @@ export const { helplineFilterChanged } = draftsListSlice.actions;
 export const draftsListReducer = draftsListSlice.reducer;
 
 const submittedFirst = (a: DraftSummary, b: DraftSummary) =>
+  // eslint-disable-next-line no-nested-ternary
   a.meta.status === b.meta.status
     ? b.meta.updatedAt.localeCompare(a.meta.updatedAt)
     : a.meta.status === 'submitted'

@@ -20,27 +20,28 @@
  */
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { jest } from '@jest/globals';
 import { render } from '@testing-library/react';
 import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
 import type { DefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
-import type { Draft } from '@tech-matters/form-builder-shared';
-import { repoPathOf } from '@tech-matters/form-builder-shared';
-import { inProcessDraftClient } from './draftClient.inProcess';
+import { type Draft, repoPathOf } from '@tech-matters/form-builder-shared';
 import { Provider } from 'react-redux';
-import { HelplineWorkspace } from '../workspace/HelplineWorkspace';
 import type { Person } from '@tech-matters/form-builder-shared/flows/model';
+
+import { inProcessDraftClient } from './draftClient.inProcess';
+import { HelplineWorkspace } from '../workspace/HelplineWorkspace';
 import { openHelpline, selectDefinitions } from '../workspace/workspaceSlice';
 import { createAppStore, useAppSelector } from '../app/store';
 import { sessionLoaded } from '../app/sessionSlice';
 
-export const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../..');
 export const formDefinitionsDir = path.join(repoRoot, 'lambdas/packages/hrm-form-definitions/form-definitions');
 export const helplinesConfigDir = path.join(repoRoot, 'twilio-iac/helplines');
 export const webchatConfigDir = path.join(repoRoot, 'aselo-webchat-react-app/configSrc');
 
-export const helplineStaff: ApiUser = { name: 'Helpline person', role: 'helpline-staff', helplines: 'all' };
+const helplineStaff: ApiUser = { name: 'Helpline person', role: 'helpline-staff', helplines: 'all' };
 export const aseloStaff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
 
 // The workspace, once its helpline's files have loaded (as App shows it)
@@ -59,14 +60,14 @@ export const createHarness = () => {
         written: Object.keys(draft.files).map(filePath => repoPathOf(draft.code, draft.version, filePath)),
       })),
     },
-    notifier: { draftSubmitted: jest.fn(async () => {}) },
+    notifier: { draftSubmitted: jest.fn(async () => undefined) },
   };
 
   const renderWorkspace = (
     definitions: DefinitionFiles,
     {
       user = helplineStaff,
-      onReload = () => {},
+      onReload = () => undefined,
       applyInBuilder = true,
       loadPeople,
     }: {

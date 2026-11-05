@@ -41,6 +41,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import {
   addOptions,
@@ -91,6 +92,7 @@ const OptionRow = ({
   const canEditValue = !isExisting || staffMode;
   return (
     <li ref={setNodeRef} style={{ transform: CSS.Transform.toString(transform), transition }} className="option-row">
+      {/* eslint-disable-next-line react/jsx-props-no-spreading -- dnd-kit's drag handle props */}
       <button type="button" className="drag-handle" aria-label="Drag to reorder" {...attributes} {...listeners}>
         ⋮⋮
       </button>
@@ -225,6 +227,7 @@ export const OptionsEditor = ({ options, originalValues, staffMode, onChange }: 
             <textarea
               rows={6}
               value={bulkText}
+              // eslint-disable-next-line jsx-a11y/no-autofocus -- it appears when the person asks for it, ready to type in
               autoFocus
               onChange={e => dispatch(bulkTextChanged(editorId, e.target.value))}
               placeholder={'Spanish\nFrench\n00;0'}

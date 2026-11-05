@@ -19,6 +19,7 @@
  * first, and submitting or applying it. Its state and logic live in reviewSlice.ts.
  */
 import { repoPathOf } from '@tech-matters/form-builder-shared';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff, selectUser } from '../app/sessionSlice';
 import { reviewClosed, selectReviewIssues } from '../workspace/workspaceSlice';
@@ -32,6 +33,7 @@ import {
   submitReview,
 } from './reviewSlice';
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 export const ReviewChanges = () => {
   const dispatch = useAppDispatch();
   const { code, version, meta, source } = useAppSelector(selectDraft);
@@ -73,7 +75,7 @@ export const ReviewChanges = () => {
             </p>
           )}
           <div className="modal-footer">
-            <p className="muted">The draft is cleared now that it's been applied.</p>
+            <p className="muted">The draft is cleared now that it&apos;s been applied.</p>
             <button type="button" className="primary-button" onClick={onClose}>
               Done
             </button>
@@ -85,6 +87,7 @@ export const ReviewChanges = () => {
 
   return (
     <div className="modal-backdrop" role="presentation" onClick={onClose}>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- only keeps clicks inside the dialog from closing it */}
       <div
         className="modal"
         role="dialog"
@@ -100,7 +103,7 @@ export const ReviewChanges = () => {
         </div>
 
         {changedPaths.length === 0 ? (
-          <p className="muted">You haven't changed anything yet.</p>
+          <p className="muted">You haven&apos;t changed anything yet.</p>
         ) : (
           <>
             {summaries.map(summary => (
@@ -154,7 +157,9 @@ export const ReviewChanges = () => {
             {warnings.length > 0 && (
               <section className="review-section">
                 <h3>Notes for the Aselo team</h3>
-                <p className="muted">These don't stop the changes going ahead; they're passed on to the reviewer.</p>
+                <p className="muted">
+                  These don&apos;t stop the changes going ahead; they&apos;re passed on to the reviewer.
+                </p>
                 <ul className="issue-list">
                   {warnings.map(issue => (
                     <li key={issue.message} className="issue issue-warning">

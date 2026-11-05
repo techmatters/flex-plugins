@@ -19,18 +19,20 @@
  */
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { describe, expect, test } from '@jest/globals';
-import { answer, startRun } from './simulate';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
+
+import { answer, startRun } from './simulate';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
 
 describe('simulating imported flows', () => {
   test("usnm's voice flow: pressing 2 for Spanish takes the Spanish welcome, on the live split's conditions", async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
-    const content = boards.find(({ content: candidate }) =>
+    const { content } = boards.find(({ content: candidate }) =>
       candidate.objects.some(object => object.studioName === 'split_voice_language'),
-    )!.content;
+    )!;
     const trigger = content.objects.find(object => object.type === 'incoming')!;
     const nameOf = (id?: string) => content.objects.find(object => object.id === id)?.studioName;
 

@@ -17,8 +17,8 @@
 /**
  * A draft: work in progress on a helpline's definitions (server/src/drafts.ts stores them).
  */
-import type { ImportSource } from './branches.ts';
-import type { DraftReview } from './reviews.ts';
+import type { ImportSource } from './branches';
+import type { DraftReview } from './reviews';
 
 export type DraftStatus = 'editing' | 'submitted';
 

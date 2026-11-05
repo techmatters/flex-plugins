@@ -17,7 +17,9 @@
 import { readdirSync, readFileSync, statSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { describe, expect, test } from '@jest/globals';
+
 import { HclObject, isObject, localsOf, parseHcl, parseTemplate } from './hcl';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../twilio-iac/helplines');

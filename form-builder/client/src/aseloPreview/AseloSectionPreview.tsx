@@ -19,8 +19,8 @@
  */
 import { useState } from 'react';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
-import type { DefinitionFileMap } from '../common/definitions';
-import { getReferenceData } from '../common/definitions';
+
+import { type DefinitionFileMap, getReferenceData } from '../common/definitions';
 import { AseloFormBody } from './AseloFormBody';
 import { FormValues, initialValueFor } from './aseloFields';
 import { translate, useStrings } from './translations';

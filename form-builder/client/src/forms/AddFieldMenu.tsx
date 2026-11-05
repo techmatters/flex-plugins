@@ -43,7 +43,7 @@ export const AddFieldMenu = ({ onAdd, onAddLinked, onCancel }: Props) => (
         <button type="button" className="field-type-option" onClick={onAddLinked}>
           <span className="field-type-name">Linked dropdowns</span>
           <span className="muted">
-            Two or more dropdowns where each one's answers depend on the one above, like province → district
+            Two or more dropdowns where each one&apos;s answers depend on the one above, like province → district
           </span>
         </button>
       </li>

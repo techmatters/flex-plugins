@@ -22,14 +22,13 @@
  * the frame's top left corner (so moving a frame moves its contents); the rest are absolute.
  */
 
-import type { DesignStatus } from '../designStatus.ts';
-import { STATUS_AFTER_CHANGE } from '../designStatus.ts';
-import { janitorValuesOf } from './janitor.ts';
+import { type DesignStatus, STATUS_AFTER_CHANGE } from '../designStatus';
+import { janitorValuesOf } from './janitor';
 
 export const BOARD_SCHEMA_VERSION = 1;
 
 export type Position = { x: number; y: number };
-export type Size = { width: number; height: number };
+type Size = { width: number; height: number };
 
 export type Channel = 'voice' | 'sms' | 'webchat' | 'whatsapp' | 'messenger' | 'instagram' | 'telegram' | 'line';
 export type FlowStage = 'prequeue' | 'postqueue';
@@ -161,7 +160,7 @@ export const sharedLanguageVariants = (title: string, languages: string[]): Flow
   });
 };
 
-export type StudioFlowSource = {
+type StudioFlowSource = {
   // Its template, under twilio-iac/helplines, e.g. usnm/templates/studio-flows/voice.tftpl
   template: string;
   // The channels (in the helpline's config) that use it
@@ -192,7 +191,7 @@ export type FlowVariable = { key: string; value: string };
 export const variableKeyProblem = (key: string) =>
   /^[A-Za-z_][A-Za-z0-9_]*$/.test(key) ? undefined : 'Letters, numbers and underscores, not starting with a number.';
 
-export type BoardComment = {
+type BoardComment = {
   id: string;
   author: string;
   at: string;
@@ -204,7 +203,7 @@ export type CommentThread = {
   resolved: boolean;
 };
 
-export type MessageContent = {
+type MessageContent = {
   channel?: Channel;
   // e.g. en, es
   language?: string;
@@ -248,7 +247,7 @@ export type FlowObject = Position &
     variantMessages?: Record<string, VariantMessage>;
   };
 
-export type VariantMessage = Pick<MessageContent, 'language' | 'script' | 'approved'> & { importedScript?: string };
+type VariantMessage = Pick<MessageContent, 'language' | 'script' | 'approved'> & { importedScript?: string };
 
 export type TaskAttributes = {
   // As JSON, as Studio sends them: {{…}} is filled in from the contact (Liquid); ${helpline} and
@@ -292,7 +291,7 @@ export type Sticky = Position &
 
 export type TaskStatus = 'todo' | 'doing' | 'done';
 
-export type StickyTask = {
+type StickyTask = {
   status: TaskStatus;
   assignee?: string;
   // From the people list, when the person has one
@@ -410,7 +409,7 @@ export const messageFor = (
   return {
     ...shared,
     ...(own?.language ? { language: own.language } : {}),
-    ...(own?.script !== undefined ? { script: own.script } : {}),
+    ...(own?.script === undefined ? {} : { script: own.script }),
     ...(own?.approved ? { approved: own.approved } : {}),
   };
 };
@@ -506,7 +505,7 @@ export type Shape =
   | 'offPage'
   | 'none';
 
-export type ColorFamily = 'terminal' | 'decision' | 'check' | 'message' | 'voicemail' | 'queue' | 'chatbot' | 'neutral';
+type ColorFamily = 'terminal' | 'decision' | 'check' | 'message' | 'voicemail' | 'queue' | 'chatbot' | 'neutral';
 
 export type ObjectTypeInfo = {
   label: string;
@@ -539,7 +538,7 @@ export type ObjectTypeInfo = {
   nameSuffixFromText?: boolean;
 };
 
-export type StudioWidget = {
+type StudioWidget = {
   name: string;
   type: string;
   // Its settings, without its position
@@ -584,11 +583,13 @@ export const TASK_CHANNELS = ['voice', 'chat', 'voicemail'];
 // A Send to queue's task channel: the one chosen, otherwise the flow's (voice for calls, chat for
 // messaging); undefined while the flow's channel isn't known
 export const taskChannelOf = (object: Pick<FlowObject, 'settings'>, channel?: Channel) =>
+  // eslint-disable-next-line no-nested-ternary
   object.settings?.taskChannel || (channel ? (channel === 'voice' ? 'voice' : 'chat') : undefined);
 
 // A Skilled worker available? check's channel: the one chosen, otherwise the flow's (voice for
 // calls, chat for messaging); the route needs one (STUDIO_ROUTES.md)
 export const workerChannelOf = (object: Pick<FlowObject, 'settings'>, channel?: Channel) =>
+  // eslint-disable-next-line no-nested-ternary
   object.settings?.targetChannel || (channel ? (channel === 'voice' ? 'voice' : 'chat') : undefined);
 
 /**
@@ -605,7 +606,7 @@ export const flowChannelOf = (details?: Pick<Frame, 'channel' | 'naming'>): Chan
 // Who a message is from, as the person sees it: the helpline's name (${helpline}, from its
 // common.hcl), Bot, or anything typed (Custom). Always set: new messages are from Bot, imported
 // ones from whoever their live widget says (checks.ts flags one left empty)
-export const MESSAGE_FROM_HELPLINE = '${helpline}';
+const MESSAGE_FROM_HELPLINE = '${helpline}';
 export const MESSAGE_FROM_BOT = 'Bot';
 const FROM_FIELD: ObjectField = {
   key: 'from',
@@ -1270,6 +1271,7 @@ export const exitsOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio'>): 
  * Boards saved before a kind was replaced, brought up to date: "Wait / repeat" (a picture only) is
  * now Repeat, a counter and a split, whose way back round is the one way out it had.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const upgradeContent = (content: BoardContent): BoardContent => {
   const waits = new Set(content.objects.filter(object => (object.type as string) === 'wait').map(object => object.id));
   // Send to queue's ways out are Studio's events now (imported ones always were)
@@ -1396,7 +1398,7 @@ export const widgetNamesOf = (
   return splitAfter ? [name, followingSplitName(name)] : [name];
 };
 
-export const CHANNEL_ICONS: Record<Channel, string> = {
+const CHANNEL_ICONS: Record<Channel, string> = {
   voice: 'Phone',
   sms: 'MessageSquare',
   webchat: 'Monitor',
@@ -1413,7 +1415,7 @@ export const iconOf = (object: Pick<FlowObject, 'type' | 'message'>) =>
     : OBJECT_TYPES[object.type].icon;
 
 // The route's own name: worker/isSkilledWorkerAvailable -> isSkilledWorkerAvailable
-export const routeName = (route: string) => route.split('/').pop() ?? route;
+const routeName = (route: string) => route.split('/').pop() ?? route;
 
 export const toSnake = (text: string) =>
   text
@@ -1436,6 +1438,7 @@ export const suggestStudioName = (
   frame?: Pick<Frame, 'stage' | 'channel'>,
   // The flow's names' parts: its only channel, language and service are in every message's name
   choices?: NamingChoices,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): string | undefined => {
   const info = OBJECT_TYPES[object.type];
   if (!info.studioPrefix) return undefined;
@@ -1443,6 +1446,7 @@ export const suggestStudioName = (
   if (info.studioPrefix === 'f_') {
     // Named after the route it calls, plus what tells two calls apart (e.g. the skills)
     if (info.studioRoute) {
+      // eslint-disable-next-line no-nested-ternary
       const suffix = info.nameSuffixFrom
         ? toSnake(object.settings?.[info.nameSuffixFrom] ?? '')
         : info.nameSuffixFromText
@@ -1659,7 +1663,7 @@ export const standardPrefixedName = (
 };
 
 // Where Studio reads what a flow keeps: flow memory on the conversation, and Set variable's
-export const FLOW_MEMORY_REFERENCE = '{{trigger.conversation.ChannelAttributes.flowMemory.';
+const FLOW_MEMORY_REFERENCE = '{{trigger.conversation.ChannelAttributes.flowMemory.';
 
 /**
  * What a split can read in this flow, offered in its settings: the flow memory's keys (kept across
@@ -1772,6 +1776,7 @@ export const SPLIT_OPERATORS: { type: string; label: string }[] = [
 export const isSplitObject = (object: Pick<FlowObject, 'type' | 'studio'>) =>
   object.studio ? object.studio.type === 'split-based-on' : ['decision', 'checkCountry'].includes(object.type);
 
+// eslint-disable-next-line camelcase -- as Studio and Terraform spell it
 type SplitCondition = { friendly_name?: string; arguments?: unknown[]; type?: string; value?: string };
 
 // An imported split's live condition for a way out (a match with a single condition), if it has one
@@ -1790,11 +1795,13 @@ const liveConditionOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio'>, 
  * out's name, except an imported condition whose way out is named otherwise (e.g. "Spanish" for 2).
  * Undefined for noMatch and conditions that aren't a single comparison.
  */
+// eslint-disable-next-line complexity
 export const exitConditionOf = (
   object: Pick<FlowObject, 'type' | 'exits' | 'studio' | 'exitOperators' | 'settings'>,
   exit: string,
   // What it splits on, when it isn't set on it (a new split's default, from the widget before it)
   defaultInput?: string,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): { type: string; value: string; changed: boolean; blockedContains?: boolean } | undefined => {
   if (!isSplitObject(object) || !exit || exit === 'noMatch') return undefined;
   const live = liveConditionOf(object, exit);

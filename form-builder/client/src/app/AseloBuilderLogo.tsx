@@ -20,7 +20,7 @@
  */
 import { useId } from 'react';
 
-export const AseloBuilderMark = ({ size = 28 }: { size?: number }) => {
+const AseloBuilderMark = ({ size = 28 }: { size?: number }) => {
   // Each mark needs its own gradient id
   const gradient = `aselo-builder-${useId().replace(/:/g, '')}`;
   return (

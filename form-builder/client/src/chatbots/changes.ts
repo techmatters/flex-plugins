@@ -34,7 +34,7 @@ import type {
 } from '@tech-matters/form-builder-shared/chatbots/model';
 import { formDefinitionsPath, mappingJson } from '@tech-matters/form-builder-shared/chatbots/formMappings';
 
-export type ChatbotChange = {
+type ChatbotChange = {
   bot: string;
   // What changed, e.g. "question text", "new question", "answers"
   what: string;
@@ -71,6 +71,7 @@ const typeSettings = (type: AnswerType) => ({
   resolution: type.resolution,
 });
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const chatbotChanges = (design: ChatbotDesign): ChatbotChange[] => {
   const code = design.helpline;
   const changes: ChatbotChange[] = [];

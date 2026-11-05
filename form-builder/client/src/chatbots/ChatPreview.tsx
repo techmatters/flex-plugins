@@ -24,6 +24,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { RotateCcw } from 'lucide-react';
 import { answerKindOf, botLabel, builtinLabel } from '@tech-matters/form-builder-shared/chatbots/model';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectSelectedBot, selectSelectedIntent } from './chatbotsSlice';
 import {
@@ -115,6 +116,7 @@ export const ChatPreview = () => {
               type="text"
               value={typed}
               placeholder={
+                // eslint-disable-next-line no-nested-ternary
                 kind === 'builtin'
                   ? `Type ${builtinLabel(type!.name)}…`
                   : kind === 'pattern'

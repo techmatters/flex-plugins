@@ -20,6 +20,7 @@
  * edited and how lives in caseStatusSlice.ts.
  */
 import { useEffect, useMemo } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { selectOriginalFiles } from '../drafts/draftSlice';
@@ -79,12 +80,12 @@ export const CaseStatusEditor = () => {
         <section className="panel">
           <h2>Case statuses</h2>
           <p className="muted">
-            Where a case is up to. Counselors change it from the case, choosing among the statuses it's allowed to move
-            to.
+            Where a case is up to. Counselors change it from the case, choosing among the statuses it&apos;s allowed to
+            move to.
           </p>
           <p className="field-hint">
             Cases save the status itself, so names can change any time. “Open” (new cases) and “Closed” are needed by
-            Aselo and can't be removed.
+            Aselo and can&apos;t be removed.
           </p>
           {issues.length > 0 && (
             <ul className="issue-list">
@@ -210,7 +211,9 @@ export const CaseStatusEditor = () => {
               Reopening a closed case also needs the counselor to have permission to reopen cases.
             </p>
           )}
-          {offered.length <= 1 && <p className="field-hint">This is a final status: cases can't move on from it.</p>}
+          {offered.length <= 1 && (
+            <p className="field-hint">This is a final status: cases can&apos;t move on from it.</p>
+          )}
         </div>
       </aside>
     </div>

@@ -26,13 +26,10 @@ import {
   configureStore,
   createListenerMiddleware,
   ThunkAction,
+  type TypedStartListening,
   UnknownAction,
 } from '@reduxjs/toolkit';
-import type { TypedStartListening } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
-import { RoutingClient, httpRoutingClient } from '../routing/routingClient';
-import { ChatbotClient, httpChatbotClient } from '../chatbots/chatbotClient';
-import { HelpClient, httpHelpClient } from '../help/helpClient';
 import type {
   BranchChoice,
   DefinitionFiles,
@@ -40,6 +37,10 @@ import type {
   PostFlowChoices,
 } from '@tech-matters/form-builder-shared';
 import type { Person } from '@tech-matters/form-builder-shared/flows/model';
+
+import { RoutingClient, httpRoutingClient } from '../routing/routingClient';
+import { ChatbotClient, httpChatbotClient } from '../chatbots/chatbotClient';
+import { HelpClient, httpHelpClient } from '../help/helpClient';
 import { DraftClient, httpDraftClient } from '../drafts/draftClient';
 import { draftReducer, startDraftAutosave } from '../drafts/draftSlice';
 import { draftsListReducer } from '../drafts/draftsListSlice';
@@ -77,6 +78,7 @@ export type Services = {
 // Each editor's slice (its working copy and selections) is added by the editor's own module, with
 // rootReducer.inject: declare it in LazyLoadedSlices (e.g. categories/categoriesSlice.ts)
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
 export interface LazyLoadedSlices {}
 
 export const rootReducer = combineSlices({
@@ -129,4 +131,3 @@ export type AppListenerStartListening = TypedStartListening<RootState, AppDispat
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export const useAppSelector = useSelector.withTypes<RootState>();
-export { addListener };

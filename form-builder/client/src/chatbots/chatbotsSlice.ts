@@ -27,26 +27,35 @@
 import { createSelector, createSlice, isAnyOf, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { BranchChoice, ChatbotImport, FromBranch } from '@tech-matters/form-builder-shared';
 import type { DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
-import type {
-  AnswerType,
-  Chatbot,
-  ChatbotDesign,
-  ChatbotIntent,
-  ChatbotQuestion,
-  ChatbotsSummary,
-  StoredChatbots,
+import {
+  type AnswerType,
+  type Chatbot,
+  type ChatbotDesign,
+  type ChatbotIntent,
+  type ChatbotQuestion,
+  type ChatbotsSummary,
+  emptyChatbots,
+  type StoredChatbots,
 } from '@tech-matters/form-builder-shared/chatbots/model';
-import { emptyChatbots } from '@tech-matters/form-builder-shared/chatbots/model';
-import type { ContactForms } from '@tech-matters/form-builder-shared/chatbots/formMappings';
-import { renameFormTargets, setFormTargets } from '@tech-matters/form-builder-shared/chatbots/formMappings';
+import {
+  type ContactForms,
+  renameFormTargets,
+  setFormTargets,
+} from '@tech-matters/form-builder-shared/chatbots/formMappings';
 import {
   botStatusOf,
   isNewBot,
   setBotStatus,
   withStatusUpdates,
 } from '@tech-matters/form-builder-shared/chatbots/status';
-import type { AppListenerStartListening, AppThunk, RootState, Services } from '../app/store';
-import { rootReducer } from '../app/store';
+
+import {
+  type AppListenerStartListening,
+  type AppThunk,
+  rootReducer,
+  type RootState,
+  type Services,
+} from '../app/store';
 import { selectActingAsStaff, selectUser } from '../app/sessionSlice';
 import {
   addAnswerType,
@@ -63,14 +72,14 @@ import {
 import { chatbotChecks, ChatbotIssue } from './chatbotChecks';
 import { chatbotChanges } from './changes';
 
-export type ChatbotsTab = 'conversation' | 'answers' | 'check';
+type ChatbotsTab = 'conversation' | 'answers' | 'check';
 export type ChatbotsFilter = 'all' | DesignStatus;
-export type ChatbotsSaveStatus = 'saved' | 'unsaved' | 'saving' | 'conflict' | 'error';
-export type ChatbotsConflict = { updatedBy?: string; updatedAt?: string };
+type ChatbotsSaveStatus = 'saved' | 'unsaved' | 'saving' | 'conflict' | 'error';
+type ChatbotsConflict = { updatedBy?: string; updatedAt?: string };
 
-export type NewChatbotForm = { name: string; language: string; locale: string; copyFrom: string };
+type NewChatbotForm = { name: string; language: string; locale: string; copyFrom: string };
 // A new list of answers or pattern being named
-export type NewAnswerTypeForm = { kind: 'list' | 'pattern'; name: string };
+type NewAnswerTypeForm = { kind: 'list' | 'pattern'; name: string };
 
 // Lex V2 locales a chatbot can be in (the ones Aselo's languages need)
 export const LOCALES = [
@@ -90,7 +99,7 @@ export const LOCALES = [
 const localeFor = (language: string) =>
   ({ en: 'en_US', es: 'es_US', pt: 'pt_BR', fr: 'fr_FR' }[language.slice(0, 2).toLowerCase()] ?? 'en_US');
 
-export type ChatbotsState = {
+type ChatbotsState = {
   // Set once the area has been shown (a person with one helpline goes straight to its chatbots)
   started: boolean;
   // The start page: what's listed, and how it's filtered
@@ -321,6 +330,7 @@ const chatbotsSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof chatbotsSlice> {}
 }
 
@@ -510,7 +520,7 @@ const saveNow =
   };
 
 // Saves now, after any save already under way
-export const flushChatbots = (): AppThunk<Promise<void>> => (dispatch, _getState, services) => {
+const flushChatbots = (): AppThunk<Promise<void>> => (dispatch, _getState, services) => {
   const queue = saveQueues.get(services) ?? { current: Promise.resolve() };
   saveQueues.set(services, queue);
   queue.current = queue.current.then(() => dispatch(saveNow()));
@@ -597,7 +607,7 @@ export const applyImport = (): AppThunk<Promise<void>> => async (dispatch, getSt
 // ----- Changing the design
 
 // Every change goes through here: the chatbots it changed are In progress again
-export const editChatbots =
+const editChatbots =
   (change: (design: ChatbotDesign) => ChatbotDesign): AppThunk =>
   (dispatch, getState) => {
     const { design } = selectChatbots(getState());

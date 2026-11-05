@@ -21,10 +21,11 @@
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { BranchChoice } from '@tech-matters/form-builder-shared';
+
 import { AppThunk, rootReducer } from '../app/store';
 import { loadDrafts } from './draftsListSlice';
 
-export type ImportFormsState = {
+type ImportFormsState = {
   code: string;
   branch: string;
   // The helpline's versions in the branch, once read
@@ -71,6 +72,7 @@ const importFormsSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof importFormsSlice> {}
 }
 const injected = importFormsSlice.injectInto(rootReducer);

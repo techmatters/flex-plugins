@@ -21,6 +21,7 @@
  * file can also be flat (one set for every language) and keeps whichever shape it has.
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
+
 import type { DefinitionFileMap } from '../common/definitions';
 import { AppThunk, rootReducer } from '../app/store';
 import { editDraftFiles } from '../drafts/draftSlice';
@@ -28,7 +29,7 @@ import { getMessages, isFlatMessages, LocalizedMessages, MESSAGES_FILE, POST_SUR
 
 export const ALL_LANGUAGES = '(all languages)';
 
-export type MessagesState = {
+type MessagesState = {
   language: string;
   // A language code being typed to add
   newLanguage: string;
@@ -54,6 +55,7 @@ const messagesSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof messagesSlice> {}
 }
 const injected = messagesSlice.injectInto(rootReducer);

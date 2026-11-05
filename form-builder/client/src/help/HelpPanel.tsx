@@ -34,8 +34,8 @@ import {
   ThumbsUp,
   X,
 } from 'lucide-react';
-import type { HelpArea, HelpArticle } from './articles';
-import { HELP_ARTICLES, visibleTo } from './articles';
+
+import { HELP_ARTICLES, type HelpArea, type HelpArticle, visibleTo } from './articles';
 import { searchHelp } from './search';
 import { HelpMarkdown } from './HelpMarkdown';
 import { SentQuestions } from './SentQuestions';
@@ -56,7 +56,7 @@ import {
 } from './helpSlice';
 import './help.css';
 
-export const HELP_AREA_LABELS: Record<HelpArea, string> = {
+const HELP_AREA_LABELS: Record<HelpArea, string> = {
   forms: 'Forms',
   flows: 'Contact flows',
   routing: 'Routing',
@@ -85,6 +85,7 @@ const ArticleLink = ({ article, onOpen }: { article: HelpArticle; onOpen: (slug:
   </li>
 );
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 export const HelpPanel = ({ articles = HELP_ARTICLES }: Props) => {
   const dispatch = useAppDispatch();
   const { area: shown, helpRequest: request } = useAppSelector(selectApp);

@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Who works on each helpline, so tasks can be assigned to them: one list per helpline, plus one
@@ -24,11 +25,10 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
-import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
-import type { Person } from '@tech-matters/form-builder-shared/flows/model';
-import { ASELO_PEOPLE_CODE } from '@tech-matters/form-builder-shared/flows/model';
 
-export type { Person };
+import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { ASELO_PEOPLE_CODE, type Person } from '@tech-matters/form-builder-shared/flows/model';
+
 export { ASELO_PEOPLE_CODE };
 
 export interface PeopleStore {

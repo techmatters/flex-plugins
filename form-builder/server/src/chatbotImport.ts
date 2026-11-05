@@ -26,18 +26,19 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
-import type {
-  AnswerType,
-  Chatbot,
-  ChatbotDesign,
-  ChatbotIntent,
-  ChatbotQuestion,
+
+import {
+  type AnswerType,
+  type Chatbot,
+  CHATBOT_SCHEMA_VERSION,
+  type ChatbotDesign,
+  type ChatbotIntent,
+  type ChatbotQuestion,
 } from '@tech-matters/form-builder-shared/chatbots/model';
-import { CHATBOT_SCHEMA_VERSION } from '@tech-matters/form-builder-shared/chatbots/model';
 import { PREPOPULATE_FILE, readSurveyMappings } from '@tech-matters/form-builder-shared/chatbots/formMappings';
-import { readHelplineConfigs } from './flowImport';
 import type { ChatbotImportReport, ChatbotImport } from '@tech-matters/form-builder-shared';
-export type { ChatbotImportReport, ChatbotImport };
+
+import { readHelplineConfigs } from './flowImport';
 
 type Json = Record<string, unknown>;
 
@@ -58,7 +59,7 @@ const messageOf = (groups: unknown): string | undefined => {
  * The form definitions version the helpline uses: its service configuration's definitionVersion
  * ("usch-v1" -> v1, the plugin's rule: the last two characters), else the newest folder
  */
-export const formsVersionOf = async (helplinesDir: string, formDefinitionsDir: string, code: string) => {
+const formsVersionOf = async (helplinesDir: string, formDefinitionsDir: string, code: string) => {
   for (const file of ['production.json', 'common.json', 'staging.json']) {
     try {
       const config = JSON.parse(
@@ -80,11 +81,13 @@ export const formsVersionOf = async (helplinesDir: string, formDefinitionsDir: s
 const same = (a?: string, b?: string) =>
   (a ?? '').replace(/\s+/g, ' ').trim() === (b ?? '').replace(/\s+/g, ' ').trim();
 
+// eslint-disable-next-line complexity
 export const importChatbots = async (
   helplinesDir: string,
   code: string,
   // The form definitions, for the contact form fields the answers fill in
   formDefinitionsDir?: string,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<ChatbotImport> => {
   const { configs, environments } = await readHelplineConfigs(helplinesDir, code);
   const notes: string[] = [];
@@ -239,7 +242,8 @@ export const importChatbots = async (
 
       // The answers each question takes
       for (const question of questions) {
-        const types = (design.answerTypes[language] ??= {});
+        design.answerTypes[language] ??= {};
+        const types = design.answerTypes[language];
         if (!question.answerType || types[question.answerType]) continue;
         if (question.answerType.startsWith('AMAZON.')) {
           types[question.answerType] = { name: question.answerType, builtin: true, values: [] };

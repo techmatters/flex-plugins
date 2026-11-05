@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Routing designs (docs/routing-designer.md), one per helpline:
@@ -22,6 +23,7 @@
  */
 import type { S3Client } from '@aws-sdk/client-s3';
 import type { StoredRouting } from '@tech-matters/form-builder-shared/routing/model';
+
 import { DesignStore, isValidDesignCode, LocalDesignStore, MemoryDesignStore, S3DesignStore } from './designStore';
 
 export type RoutingStore = DesignStore<StoredRouting>;

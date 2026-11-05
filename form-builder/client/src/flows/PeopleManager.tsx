@@ -20,8 +20,9 @@
  * staff are picked from to join the helplines they work on. Helpline staff manage their own
  * helpline's list; the Aselo team's is Aselo staff's.
  */
-import { Loading } from '../common/Loading';
 import { ASELO_PEOPLE_CODE, Person } from '@tech-matters/form-builder-shared/flows/model';
+
+import { Loading } from '../common/Loading';
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { addPerson, choosePeopleList, personTyped, savePeople, selectFlows, selectPeopleCodes } from './flowsSlice';

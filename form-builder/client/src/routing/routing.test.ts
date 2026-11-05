@@ -17,6 +17,7 @@
 import { existsSync, readdirSync, readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { describe, expect, test } from '@jest/globals';
 import {
   readConditions,
@@ -26,15 +27,16 @@ import {
   writeQueueWorkers,
   writeWho,
 } from '@tech-matters/form-builder-shared/routing/expressions';
-import { addCommonRule, COMMON_RULES, commonRule, hasCommonRule } from './commonRules';
 import { writeRule } from '@tech-matters/form-builder-shared/routing/convert';
-import { newRule } from './edit';
-import { generateRouting } from './generate';
 import { emptyRouting, Workflow } from '@tech-matters/form-builder-shared/routing/model';
-import { routingChecks } from './routingChecks';
 import { readHelplineConfigs } from '@tech-matters/form-builder-server/flowImport';
 import { parseHcl, parseTemplate } from '@tech-matters/form-builder-server/hcl';
 import { importRouting } from '@tech-matters/form-builder-server/routingImport';
+
+import { routingChecks } from './routingChecks';
+import { generateRouting } from './generate';
+import { newRule } from './edit';
+import { addCommonRule, COMMON_RULES, commonRule, hasCommonRule } from './commonRules';
 import { expectAt } from '../testing/expectAt';
 
 const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines');
@@ -208,7 +210,9 @@ describe('a routing design from a live helpline', () => {
     calls.rules = [rule, ...calls.rules.filter(candidate => candidate !== rule)];
 
     const written = parseTemplate(generateRouting(design).workflows[0].text) as {
+      // eslint-disable-next-line camelcase -- as Studio and Terraform spell it
       task_routing: {
+        // eslint-disable-next-line camelcase -- as Studio and Terraform spell it
         filters: { filter_friendly_name: string; targets: { expression: string }[] }[];
       };
     };
@@ -227,6 +231,7 @@ describe('a routing design from a live helpline', () => {
 describe('common rules', () => {
   const masterFilters = () => {
     const text = readFileSync(path.join(helplinesDir, 'templates/workflows/master.tftpl'), 'utf8');
+    // eslint-disable-next-line camelcase -- as Studio and Terraform spell it
     return (JSON.parse(text) as { task_routing: { filters: Record<string, unknown>[] } }).task_routing.filters;
   };
   const design = (queues: string[]) => ({

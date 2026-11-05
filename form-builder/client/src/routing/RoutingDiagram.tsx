@@ -45,6 +45,7 @@ import {
   queueName,
   targetSkills,
 } from '@tech-matters/form-builder-shared/routing/describe';
+
 import { ConditionChip, FamilyLegend } from './ConditionChip';
 
 type RuleData = {
@@ -164,6 +165,7 @@ type Props = {
 };
 
 const Diagram = ({ design, workflow, selectedRuleId, onSelectRule }: Props) => {
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const { nodes, edges } = useMemo(() => {
     const nodes: Node[] = [{ id: 'start', type: 'start', position: { x: 40, y: 0 }, data: {}, draggable: false }];
     const edges: Edge[] = [];

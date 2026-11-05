@@ -24,13 +24,14 @@
  *
  * Whatever isn't one of the blocks is kept as a custom condition, as written.
  */
-import type { Condition, QueueWorkers, Role, WhoBlock } from './model.ts';
+import type { Condition, QueueWorkers, Role, WhoBlock } from './model';
 
 // Spaces as TaskRouter ignores them: single spaces, none just inside brackets, single quotes
 const canonical = (text: string) =>
   text.replace(/\s+/g, ' ').replace(/\(\s+/g, '(').replace(/\s+\)/g, ')').replace(/"/g, "'").trim();
 
 // Outer brackets around the whole expression, if they're a pair
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const unwrap = (text: string): string => {
   let result = text.trim();
   for (;;) {
@@ -51,7 +52,7 @@ const unwrap = (text: string): string => {
 };
 
 // The parts of an expression joined by AND (or OR) outside brackets and quotes
-export const splitTopLevel = (text: string, operator: 'AND' | 'OR'): string[] => {
+const splitTopLevel = (text: string, operator: 'AND' | 'OR'): string[] => {
   const parts: string[] = [];
   const separator = ` ${operator} `;
   let depth = 0;
@@ -118,6 +119,7 @@ const readClause = (clause: string): WhoBlock => {
 };
 
 // Who can get a task, from a target's expression
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const readWho = (expression: string | undefined): WhoBlock[] => {
   if (!expression?.trim()) return [];
   const alternatives = splitTopLevel(unwrap(expression), 'OR');
@@ -246,6 +248,7 @@ export const readConditions = (expression: string | undefined): Condition[][] =>
 
 // A condition still missing its value is written as empty text (it matches nothing; the checks say so)
 const writeValue = (value: string | number | boolean | undefined) =>
+  // eslint-disable-next-line no-nested-ternary
   value === undefined ? "''" : typeof value === 'string' ? `'${value}'` : String(value);
 
 const writeGroup = (conditions: Condition[]): string =>

@@ -20,21 +20,26 @@
  * and what's being typed.
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
-import type { AnswerType } from '@tech-matters/form-builder-shared/chatbots/model';
-import { answerKindOf, answerTypeOf, matchesPattern } from '@tech-matters/form-builder-shared/chatbots/model';
+import {
+  answerKindOf,
+  type AnswerType,
+  answerTypeOf,
+  matchesPattern,
+} from '@tech-matters/form-builder-shared/chatbots/model';
+
 import { AppThunk, rootReducer, RootState } from '../app/store';
 import { selectChatbotDesign, selectSelectedBot, selectSelectedIntent } from './chatbotsSlice';
 
-export type PreviewMessage = { from: 'bot' | 'contact' | 'system'; text: string; tone?: 'retry' | 'end' };
+type PreviewMessage = { from: 'bot' | 'contact' | 'system'; text: string; tone?: 'retry' | 'end' };
 
-export type PreviewProgress = {
+type PreviewProgress = {
   question: number;
   retries: number;
   answers: Record<string, string>;
   ended?: 'done' | 'failed';
 };
 
-export type ChatPreviewState = { messages: PreviewMessage[]; progress: PreviewProgress; typed: string };
+type ChatPreviewState = { messages: PreviewMessage[]; progress: PreviewProgress; typed: string };
 
 const START: PreviewProgress = { question: 0, retries: 0, answers: {} };
 
@@ -63,6 +68,7 @@ const chatPreviewSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof chatPreviewSlice> {}
 }
 const injected = chatPreviewSlice.injectInto(rootReducer);
@@ -99,6 +105,7 @@ export const restartPreview = (): AppThunk => (dispatch, getState) => {
 // What the contact said, and the answer saved (none: not understood, so it asks again or stops)
 export const answerPreview =
   (said: string, understood?: string): AppThunk =>
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   (dispatch, getState) => {
     const intent = selectSelectedIntent(getState());
     const { progress } = selectChatPreview(getState());

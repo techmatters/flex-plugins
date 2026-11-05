@@ -25,6 +25,7 @@ import type {
   FormItemJsonDefinition,
   SelectOption,
 } from '@hrm-form-definitions/formDefinition/types';
+
 import { resolveOptions } from '../common/definitions';
 
 export type FieldValue = string | boolean | 'mixed' | string[] | undefined;
@@ -34,14 +35,14 @@ const NUMERIC_PATTERN = /^[0-9]+$/;
 const NUMERIC_MESSAGE = 'This field only accepts numeric input.';
 const EMAIL_PATTERN = /\S+@\S+\.\S+/;
 const EMAIL_MESSAGE = 'Entered value does not match email format';
-export const REQUIRED_MESSAGE = 'RequiredFieldError';
+const REQUIRED_MESSAGE = 'RequiredFieldError';
 
 type Rule<T> = { value: T; message: string };
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
 export const initialValueFor = (item: FormItemJsonDefinition, referenceData: Record<string, unknown>): FieldValue => {
-  const initializeWithCurrent = (item as { initializeWithCurrent?: boolean }).initializeWithCurrent;
+  const { initializeWithCurrent } = item as { initializeWithCurrent?: boolean };
   const now = new Date();
   switch (item.type) {
     case 'select': {
@@ -94,10 +95,12 @@ export const dependentOptionsFor = (
 /**
  * The error message key or text to show under a field, or undefined if it's fine
  */
+// eslint-disable-next-line complexity
 export const validateField = (
   item: FormItemJsonDefinition,
   values: FormValues,
   referenceData: Record<string, unknown>,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): string | undefined => {
   const value = values[item.name];
   const required = isRequired(item);

@@ -14,25 +14,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable max-classes-per-file -- stand-ins for what jsdom lacks */
 
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { afterEach, beforeAll, beforeEach, describe, expect, test, jest } from '@jest/globals';
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
-import { handleApiRequest } from '@tech-matters/form-builder-server/api';
+import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
 import { MemoryBoardStore } from '@tech-matters/form-builder-server/boards';
 import { MemoryPeopleStore } from '@tech-matters/form-builder-server/people';
 import { MemoryRecordingFiles, MemoryRecordingLogStore } from '@tech-matters/form-builder-server/recordingStores';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { MemoryRoutingStore } from '@tech-matters/form-builder-server/routingStore';
 import { emptyRouting } from '@tech-matters/form-builder-shared/routing/model';
-import { boardClientFor } from './boardClient';
-import { FlowsArea } from './FlowsArea';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
-import type { FlowObject } from '@tech-matters/form-builder-shared/flows/model';
-import { emptyBoard } from '@tech-matters/form-builder-shared/flows/model';
+import { emptyBoard, type FlowObject } from '@tech-matters/form-builder-shared/flows/model';
+
+import { FlowsArea } from './FlowsArea';
+import { boardClientFor } from './boardClient';
 import { createAppStore } from '../app/store';
 import { sessionLoaded } from '../app/sessionSlice';
 import { switchArea } from '../app/appSlice';
@@ -47,16 +48,20 @@ beforeAll(() => {
       this.callback([{ target, contentRect } as ResizeObserverEntry], this as unknown as globalThis.ResizeObserver);
     }
 
-    unobserve() {}
+    unobserve() {
+      // jsdom has no layout to observe
+    }
 
-    disconnect() {}
+    disconnect() {
+      // jsdom has no layout to observe
+    }
   }
   class DOMMatrixReadOnly {
     m22: number;
 
     constructor(transform?: string) {
       const scale = transform?.match(/scale\(([1-9.]+)\)/)?.[1];
-      this.m22 = scale !== undefined ? Number(scale) : 1;
+      this.m22 = scale === undefined ? 1 : Number(scale);
     }
   }
   Object.assign(globalThis, { ResizeObserver });
@@ -122,7 +127,7 @@ beforeEach(() => {
     },
     // The repo's twilio-iac/helplines, for importing a live helpline
     helplinesConfigDir: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines'),
-    notifier: { draftSubmitted: async () => {} },
+    notifier: { draftSubmitted: async () => undefined },
   };
 });
 

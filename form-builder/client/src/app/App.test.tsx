@@ -17,12 +17,13 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
-import { handleApiRequest } from '@tech-matters/form-builder-server/api';
+import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { Provider } from 'react-redux';
+
 import { clientFor } from '../drafts/draftClient';
 import { createAppStore } from './store';
 import { App } from './App';
@@ -40,7 +41,7 @@ beforeEach(() => {
       '../../../../lambdas/packages/hrm-form-definitions/form-definitions',
     ),
     drafts: new MemoryDraftStore(),
-    notifier: { draftSubmitted: async () => {} },
+    notifier: { draftSubmitted: async () => undefined },
   };
   // The app's own GETs (helplines, definitions) go to the same in-process API
   global.fetch = (async (url: string) => {

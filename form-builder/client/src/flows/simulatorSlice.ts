@@ -21,14 +21,14 @@
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import { OBJECT_TYPES } from '@tech-matters/form-builder-shared/flows/model';
-import type { AppThunk, RootState } from '../app/store';
-import { rootReducer } from '../app/store';
+
+import { type AppThunk, rootReducer, type RootState } from '../app/store';
 import { answer, SimAnswer, SimRun, startRun } from './simulate';
 import { boardOpened, exitEnded, modeSwitched, selectContent, selectReadOnly } from './boardSlice';
 
-export type MemoryRow = { key: string; value: string };
+type MemoryRow = { key: string; value: string };
 
-export type SimulatorState = {
+type SimulatorState = {
   run?: SimRun;
   // The run as it was before each answer, for Back
   history: SimRun[];
@@ -108,6 +108,7 @@ const simulatorSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof simulatorSlice> {}
 }
 

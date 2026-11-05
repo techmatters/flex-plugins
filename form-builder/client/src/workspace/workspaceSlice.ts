@@ -21,6 +21,7 @@
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { DefinitionFiles } from '@tech-matters/form-builder-shared';
 import { ASELO_PEOPLE_CODE, Person } from '@tech-matters/form-builder-shared/flows/model';
+
 import type { AppThunk, RootState } from '../app/store';
 import { caseSectionTarget, CONTACT_TABS, getCaseSections, isContactTab } from '../common/definitions';
 import { validateSections } from '../chatsAndCalls/sections';
@@ -58,7 +59,7 @@ export const sameView = (a: View, b: View) => JSON.stringify(a) === JSON.stringi
 
 const FIRST_VIEW: View = { kind: 'contactTab', tabKey: CONTACT_TABS[0].key };
 
-export type WorkspaceState = {
+type WorkspaceState = {
   code: string;
   version: string;
   // The flex-plugins branch the forms are read from ('' for the default; a version imported from a
@@ -184,7 +185,7 @@ export const openHelpline =
     const saving = dispatch(saveBeforeLeaving());
     if (saving) await saving;
     dispatch(helplineRequested({ code, version, branch }));
-    dispatch(loadPeople(code)).catch(() => {});
+    dispatch(loadPeople(code)).catch(() => undefined);
     try {
       const definitions = await fetchDefinitionFiles(code, version, branch);
       dispatch(helplineLoaded(definitions));

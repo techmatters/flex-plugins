@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Reads the HCL in twilio-iac: the helplines' Terragrunt files (common.hcl, staging.hcl...) and
@@ -25,14 +26,14 @@
  * - any other expression (`merge(...)`, `local.config`, `a ? b : c`) is kept as { expression }.
  */
 
-export type HclExpression = { expression: string };
+type HclExpression = { expression: string };
 export type HclValue = string | number | boolean | null | HclValue[] | HclObject | HclExpression;
 export type HclObject = { [key: string]: HclValue };
 
-export type HclBlock = { type: string; labels: string[]; body: HclBody };
-export type HclBody = { attributes: HclObject; blocks: HclBlock[] };
+type HclBlock = { type: string; labels: string[]; body: HclBody };
+type HclBody = { attributes: HclObject; blocks: HclBlock[] };
 
-export const isExpression = (value: HclValue | undefined): value is HclExpression =>
+const isExpression = (value: HclValue | undefined): value is HclExpression =>
   typeof value === 'object' &&
   value !== null &&
   !Array.isArray(value) &&
@@ -42,7 +43,7 @@ export const isExpression = (value: HclValue | undefined): value is HclExpressio
 export const isObject = (value: HclValue | undefined): value is HclObject =>
   typeof value === 'object' && value !== null && !Array.isArray(value) && !isExpression(value);
 
-export class HclError extends Error {}
+class HclError extends Error {}
 
 const IDENT = /[A-Za-z_][A-Za-z0-9_-]*/y;
 const NUMBER = /-?\d+(\.\d+)?([eE][+-]?\d+)?/y;
@@ -66,6 +67,7 @@ class Parser {
   }
 
   // Spaces, comments and (unless inline) newlines
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   private skip(newlines = true) {
     for (;;) {
       const char = this.peek();
@@ -97,6 +99,7 @@ class Parser {
   }
 
   // A body: attributes (name = value) and blocks (name "label" { ... }), until } or the end
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   parseBody(end?: string): HclBody {
     const body: HclBody = { attributes: {}, blocks: [] };
     for (;;) {
@@ -142,6 +145,7 @@ class Parser {
     return value;
   }
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   private parsePrimary(): HclValue {
     const char = this.peek();
     if (char === '{') return this.parseObject();
@@ -168,13 +172,11 @@ class Parser {
     const ident = this.match(/[A-Za-z_][A-Za-z0-9_]*/y);
     if (ident === 'true' || ident === 'false') return ident === 'true';
     if (ident === 'null') return null;
-    if (ident && this.peek() === '(') {
-      if (ident === 'jsonencode') {
-        this.at += 1;
-        const value = this.parseExpression();
-        this.expect(')');
-        return value;
-      }
+    if (ident === 'jsonencode' && this.peek() === '(') {
+      this.at += 1;
+      const value = this.parseExpression();
+      this.expect(')');
+      return value;
     }
     this.at = start;
     return { expression: this.rawExpression() };
@@ -219,6 +221,7 @@ class Parser {
   }
 
   // A quoted string; interpolations (${...}, %{...}) are kept as they're written
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   parseString(): string {
     this.at += 1;
     let result = '';
@@ -290,6 +293,7 @@ class Parser {
   }
 
   // An expression we don't read, as written: up to the end of the line (or a , } ] at depth 0)
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   private rawExpression(): string {
     const start = this.at;
     let depth = 0;

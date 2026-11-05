@@ -17,20 +17,21 @@
 
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { afterEach, beforeAll, beforeEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
-import { handleApiRequest } from '@tech-matters/form-builder-server/api';
+import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { MemoryChatbotStore } from '@tech-matters/form-builder-server/chatbotApi';
 import { Provider } from 'react-redux';
+
 import { createAppStore } from '../app/store';
 import { sessionLoaded } from '../app/sessionSlice';
 import { chatbotClientFor } from './chatbotClient';
 import { ChatbotsArea } from './ChatbotsArea';
 
 beforeAll(() => {
-  Element.prototype.scrollIntoView = () => {};
+  Element.prototype.scrollIntoView = () => undefined;
 });
 
 const staff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
@@ -53,7 +54,7 @@ beforeEach(() => {
     drafts: new MemoryDraftStore(),
     chatbots: store,
     helplinesConfigDir: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines'),
-    notifier: { draftSubmitted: async () => {} },
+    notifier: { draftSubmitted: async () => undefined },
   };
 });
 
