@@ -19,6 +19,10 @@
                 "flowTrigger": "inProgressCall",
                 "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
             },
+            "${task_queues.courage_first}": {
+                "flowTrigger": "inProgressCall",
+                "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+            },
             "${task_queues.childhelp_spanish}": {
                 "flowTrigger": "inProgressCall",
                 "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
