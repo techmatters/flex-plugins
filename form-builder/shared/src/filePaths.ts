@@ -49,7 +49,21 @@ export const serviceConfigPath = (name: ServiceConfigFileName) => `${SERVICE_CON
 
 export const repoServiceConfigDir = (code: string) => `twilio-iac/helplines/${code}/configs/service-configuration`;
 
+/**
+ * The helpline's operating hours (lambdas/account-scoped/src/operatingInfo/<code>.json), read by
+ * the account-scoped Lambda's operatingHours route, keyed as `account-scoped/operatingInfo.json`.
+ * Only Aselo staff see or change it, and a change ships with an account-scoped Lambda deploy.
+ */
+export const REPO_OPERATING_INFO_DIR = 'lambdas/account-scoped/src/operatingInfo';
+export const OPERATING_INFO_FILE = 'account-scoped/operatingInfo.json';
+
+export const isOperatingInfoPath = (filePath: string) => filePath === OPERATING_INFO_FILE;
+
+// Files only Aselo staff see or change: the service configuration and the operating hours
+export const isStaffOnlyPath = (filePath: string) => isServiceConfigPath(filePath) || isOperatingInfoPath(filePath);
+
 export const repoPathOf = (code: string, version: string, filePath: string) => {
+  if (isOperatingInfoPath(filePath)) return `${REPO_OPERATING_INFO_DIR}/${code}.json`;
   if (isServiceConfigPath(filePath)) {
     return `${repoServiceConfigDir(code)}/${filePath.slice(SERVICE_CONFIG_PREFIX.length)}`;
   }

@@ -58,6 +58,7 @@ const SERVICE_CONFIG_FILE_PATH_PATTERN = /^service-configuration\/(common|stagin
 
 export const isValidDraftFilePath = (filePath: string) => {
   if (filePath.startsWith('webchat-app/')) return WEBCHAT_FILE_PATH_PATTERN.test(filePath);
+  if (filePath.startsWith('account-scoped/')) return filePath === 'account-scoped/operatingInfo.json';
   if (filePath.startsWith('service-configuration/')) return SERVICE_CONFIG_FILE_PATH_PATTERN.test(filePath);
   return FILE_PATH_PATTERN.test(filePath) && !filePath.split('/').includes('..');
 };

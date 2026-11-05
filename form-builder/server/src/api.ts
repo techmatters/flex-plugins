@@ -25,6 +25,8 @@
  *          (both with ?branch=<branch>, Aselo staff: read from that flex-plugins branch instead)
  *   GET    /api/service-config/:code/post-flow-choices  Aselo staff: queues and post-call survey flows for postStudioFlows
  *   POST   /api/helplines/:code/word-usage          Aselo staff: where words appear in its twilio-iac config ({ words })
+ *   GET    /api/helplines/:code/operating-hours-usage    Aselo staff: the channels and offices its Studio flows check
+ *   GET    /api/helplines/:code/operating-hours-choices  the channels and offices in its operating hours (flow designer)
  *   GET    /api/drafts                              drafts this person can see
  *   GET    /api/drafts/:code/:version               a draft (404 if there's none)
  *   PUT    /api/drafts/:code/:version               save a draft
@@ -54,7 +56,7 @@ import {
   type ApplyResult,
   applyThreadChange,
   DraftReview,
-  isServiceConfigPath,
+  isStaffOnlyPath,
   type Me,
   sideOf,
 } from '@tech-matters/form-builder-shared';
@@ -73,6 +75,7 @@ import type { RoutingStore } from './routingStore';
 import { loadPostFlowChoices } from './postStudioFlowChoices';
 import { handleHelpRequest, HelpQuestionStore } from './helpQuestions';
 import { findWordUsage } from './wordUsage';
+import { findOperatingHoursUsage, operatingHoursChoices } from './operatingHoursApi';
 
 export type { ApiUser, ApplyResult, ApplyDetails };
 
@@ -159,8 +162,9 @@ const reviewOf = ({ approvals, threads, reviewLog }: DraftMeta): DraftReview => 
   ...(threads ? { threads } : {}),
   ...(reviewLog ? { reviewLog } : {}),
 });
-const pickFiles = <T>(files: Record<string, T>, serviceConfig: boolean) =>
-  Object.fromEntries(Object.entries(files).filter(([filePath]) => isServiceConfigPath(filePath) === serviceConfig));
+// The files only Aselo staff see (staffOnly), or the others
+const pickFiles = <T>(files: Record<string, T>, staffOnly: boolean) =>
+  Object.fromEntries(Object.entries(files).filter(([filePath]) => isStaffOnlyPath(filePath) === staffOnly));
 
 const draftForUser = (draft: Draft, user: ApiUser): Draft =>
   isStaff(user)
@@ -328,6 +332,22 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       return await handleBoardRequest(stores, request.method.toUpperCase(), boardsPath, request.body, user, now);
     }
 
+    // The channels and offices the helpline's Studio flows ask the operatingHours route about
+    const operatingUsageMatch = route.match(/^GET \/api\/helplines\/([a-z0-9]+)\/operating-hours-usage$/);
+    if (operatingUsageMatch) {
+      if (!isStaff(user)) return fail(403, 'Only Aselo staff change the operating hours.');
+      if (!context.helplinesConfigDir) return fail(501, "The helplines' config isn't available here.");
+      return ok(await findOperatingHoursUsage(context.helplinesConfigDir, operatingUsageMatch[1]));
+    }
+    // The channels and offices in its operating hours, for the flow designer's Check operating hours
+    const operatingChoicesMatch = route.match(/^GET \/api\/helplines\/([a-z0-9]+)\/operating-hours-choices$/);
+    if (operatingChoicesMatch) {
+      if (!canOpenHelpline(user, operatingChoicesMatch[1])) {
+        return fail(403, `You don't have access to ${operatingChoicesMatch[1]}.`);
+      }
+      return ok(await operatingHoursChoices(context.formDefinitionsDir, operatingChoicesMatch[1]));
+    }
+
     // Where words still appear in the helpline's twilio-iac config (Helpline terms: what's left by hand)
     const wordUsageMatch = route.match(/^POST \/api\/helplines\/([a-z0-9]+)\/word-usage$/);
     if (wordUsageMatch) {
@@ -401,10 +421,10 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       }
       let { files } = request.body;
       if (!isStaff(user)) {
-        if (Object.keys(files).some(isServiceConfigPath)) {
-          return fail(403, 'Only Aselo staff can change the service configuration');
+        if (Object.keys(files).some(isStaffOnlyPath)) {
+          return fail(403, 'Only Aselo staff can change the service configuration or the operating hours');
         }
-        // Keep the service configuration changes Aselo staff made in this draft
+        // Keep the changes to staff-only files (service configuration, operating hours) Aselo staff made in this draft
         files = { ...files, ...pickFiles(existing?.files ?? {}, true) };
       }
       const invalidPath = Object.keys(files).find(filePath => !isValidDraftFilePath(filePath));

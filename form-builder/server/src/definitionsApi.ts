@@ -31,6 +31,8 @@ import {
   type HelplineSummary,
   SERVICE_CONFIG_FILE_NAMES,
   serviceConfigPath,
+  OPERATING_INFO_FILE,
+  REPO_OPERATING_INFO_DIR,
   WEBCHAT_TRANSLATIONS_PREFIX,
   type WebchatSettings,
 } from '@tech-matters/form-builder-shared';
@@ -231,6 +233,26 @@ const loadWebchatFiles = async (
   };
 };
 
+/**
+ * The helpline's operating hours (Aselo staff only), if it has them: lambdas/account-scoped/src/
+ * operatingInfo/<code>.json, next to the form definitions in the repo (and in its snapshot)
+ */
+const loadOperatingInfo = async (formDefinitionsDir: string, code: string) => {
+  const filePath = path.resolve(
+    formDefinitionsDir,
+    '../../..',
+    path.relative('lambdas', REPO_OPERATING_INFO_DIR),
+    `${code}.json`,
+  );
+  const text = await fs.readFile(filePath, 'utf8').catch(() => undefined);
+  if (text === undefined) return { files: {}, errors: [] };
+  try {
+    return { files: { [OPERATING_INFO_FILE]: JSON.parse(text.replace(/^\uFEFF/, '')) }, errors: [] };
+  } catch (err) {
+    return { files: {}, errors: [{ path: OPERATING_INFO_FILE, message: (err as Error).message }] };
+  }
+};
+
 export const loadDefinitionFiles = async (
   rootDir: string,
   code: string,
@@ -274,12 +296,13 @@ export const loadDefinitionFiles = async (
   const webchat = webchatConfigDir ? await loadWebchatFiles(webchatConfigDir, code) : undefined;
   // The service configuration, as files the draft can change (Aselo staff only)
   const serviceConfig = helplinesConfigDir ? await loadServiceConfigFiles(helplinesConfigDir, code) : undefined;
+  const operatingInfo = await loadOperatingInfo(rootDir, code);
   return {
     code,
     version,
-    files: { ...files, ...webchat?.files, ...serviceConfig?.files },
+    files: { ...files, ...webchat?.files, ...serviceConfig?.files, ...operatingInfo.files },
     serviceConfigDefaults: serviceConfig?.defaults,
-    errors: [...errors, ...(webchat?.errors ?? []), ...(serviceConfig?.errors ?? [])],
+    errors: [...errors, ...(webchat?.errors ?? []), ...(serviceConfig?.errors ?? []), ...operatingInfo.errors],
     helplineLanguage,
     logoUrl,
     featureFlags,

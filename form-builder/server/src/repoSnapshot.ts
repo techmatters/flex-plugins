@@ -25,11 +25,20 @@ import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import * as tar from 'tar';
-import { REPO_FORM_DEFINITIONS_DIR, REPO_WEBCHAT_CONFIG_DIR } from '@tech-matters/form-builder-shared';
+import {
+  REPO_FORM_DEFINITIONS_DIR,
+  REPO_OPERATING_INFO_DIR,
+  REPO_WEBCHAT_CONFIG_DIR,
+} from '@tech-matters/form-builder-shared';
 
 const REPO_HELPLINES_CONFIG_DIR = 'twilio-iac/helplines';
 
-const SNAPSHOT_DIRS = [REPO_FORM_DEFINITIONS_DIR, REPO_HELPLINES_CONFIG_DIR, REPO_WEBCHAT_CONFIG_DIR];
+const SNAPSHOT_DIRS = [
+  REPO_FORM_DEFINITIONS_DIR,
+  REPO_HELPLINES_CONFIG_DIR,
+  REPO_WEBCHAT_CONFIG_DIR,
+  REPO_OPERATING_INFO_DIR,
+];
 
 export type Snapshot = {
   sha: string;

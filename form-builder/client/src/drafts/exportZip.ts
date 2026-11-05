@@ -20,7 +20,7 @@
  * Phase 4 replaces the download with "Apply", which writes the same files to a branch.
  */
 import JSZip from 'jszip';
-import { isServiceConfigPath, repoPathOf } from '@tech-matters/form-builder-shared';
+import { isOperatingInfoPath, isServiceConfigPath, repoPathOf } from '@tech-matters/form-builder-shared';
 
 import type { DefinitionFileMap } from '../common/definitions';
 import { getChangedFilePaths, summarizeContactFormChanges } from './changes';
@@ -103,6 +103,11 @@ export const buildChangeLog = ({
     ...(getChangedFilePaths(originalFiles, draftFiles).some(isServiceConfigPath)
       ? [
           `- The service configuration changed too: once merged, run make service-config-plan and make service-config-apply (HL=${code}) for each environment.`,
+        ]
+      : []),
+    ...(getChangedFilePaths(originalFiles, draftFiles).some(isOperatingInfoPath)
+      ? [
+          '- The operating hours changed too: once merged, deploy the account-scoped Lambda (the "Deploy All Twilio Lambdas" workflow) to staging, then production.',
         ]
       : []),
     '',

@@ -27,7 +27,9 @@ import os from 'os';
 import path from 'path';
 
 import {
+  isOperatingInfoPath,
   isServiceConfigPath,
+  repoPathOf,
   isWebchatTranslationsPath,
   SERVICE_CONFIG_PREFIX,
   WEBCHAT_TRANSLATIONS_PREFIX,
@@ -63,6 +65,8 @@ export class LocalApplier implements DraftApplier {
   ) {}
 
   private targetOf(draft: Draft, filePath: string) {
+    if (isOperatingInfoPath(filePath))
+      return path.join(this.repoRoot, ...repoPathOf(draft.code, draft.version, filePath).split('/'));
     if (isServiceConfigPath(filePath)) {
       if (!this.helplinesConfigDir) throw new Error('No helplines config directory to write to');
       const fileName = filePath.slice(SERVICE_CONFIG_PREFIX.length);

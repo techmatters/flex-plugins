@@ -26,6 +26,7 @@ export * from './reviews';
 export * from './branches';
 export * from './postFlowChoices';
 export * from './wordUsage';
+export * from './operatingHours';
 export * from './help';
 export * from './flows/imports';
 export * from './routing/imports';
