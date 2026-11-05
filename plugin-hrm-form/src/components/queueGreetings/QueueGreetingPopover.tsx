@@ -16,7 +16,7 @@
 
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TaskCanvasChildrenProps } from '@twilio/flex-ui';
+import { TaskCanvasChildrenProps, Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../states';
 import { selectQueueGreeting } from '../../states/configuration/selectDefinitions';
@@ -25,8 +25,6 @@ import { newSetQueueGreetingDismissedAction } from '../../states/routing/actions
 import { Popover } from '../../design-system/popovers/Popover';
 import { GreetingPopoverAnchor } from './styles';
 
-const MAX_TITLE_LENGTH = 60;
-const MAX_CONTENT_LENGTH = 300;
 // Keeps the popover clear of the call actions at the bottom of the task canvas
 const DISTANCE_FROM_CANVAS_BOTTOM = 116;
 
@@ -56,13 +54,13 @@ const QueueGreetingPopover: React.FC<Props> = ({ task }) => {
       <Popover
         open={isTaskSelected && !isDismissed}
         anchorElement={anchorElement}
-        title={queueGreeting.popoverTitle.slice(0, MAX_TITLE_LENGTH)}
+        title={queueGreeting.popoverTitle}
         onClose={dismiss}
         variant="guidance"
         placement="top"
         distanceFromAnchor={DISTANCE_FROM_CANVAS_BOTTOM}
       >
-        {queueGreeting.popoverContent.slice(0, MAX_CONTENT_LENGTH)}
+        <Template code={queueGreeting.popoverContent} />
       </Popover>
     </>
   );

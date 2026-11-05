@@ -57,5 +57,7 @@ export const PopoverContent = styled('div')<VariantProps>`
   font-style: ${({ variant }) => (variant === 'guidance' ? 'italic' : 'normal')};
   color: #000;
   overflow-wrap: break-word;
+  max-width: 250px;
+  max-height: 160px;
 `;
 PopoverContent.displayName = 'PopoverContent';
