@@ -1,5 +1,5 @@
 {
-  "description": "Standard SAML attribute statements sent by Okta to Twilio Flex. Single source of truth for the flex-saml-app Terraform module and for twilio-iac/scripts/okta. 'legacy' = legacy profile attribute statements (okta_app_saml.attribute_statements, Okta Expression Language v1). 'federated' = new attribute statements / federated claims (okta_app_federated_claim, Expression Language for Identity Engine). Order matters for legacy statements: it is the order Okta stores them in.",
+  "description": "Standard SAML attribute statements sent by Okta to Twilio Flex. Single source of truth for the flex-saml-app Terraform module and for twilio-iac/scripts/python_tools/src/okta. 'legacy' = legacy profile attribute statements (okta_app_saml.attribute_statements, Okta Expression Language v1). 'federated' = new attribute statements / federated claims (okta_app_federated_claim, Expression Language for Identity Engine). Order matters for legacy statements: it is the order Okta stores them in.",
   "attributes": [
     {
       "name": "full_name",

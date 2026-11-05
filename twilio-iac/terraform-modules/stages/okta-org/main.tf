@@ -5,7 +5,7 @@
  *
  * Manages the helpline groups. Group rules are only DESCRIBED here (output `group_rules`): Okta lets
  * only Super Admins and Org Admins edit rules, so a person creates them in the Okta console.
- * twilio-iac/scripts/okta/verifySso.mjs and auditGroupRules.mjs check they exist and match.
+ * twilio-iac/scripts/python_tools/oktaSso.py verify-sso and oktaSso.py audit-group-rules check they exist and match.
  */
 
 # Okta API Services app used by Terraform, one SSM parameter per value (easy to enter in the AWS console):
@@ -19,7 +19,7 @@ data "aws_ssm_parameter" "okta_terraform_app" {
 
 locals {
   # Each rule's Okta expression, built from its structured form. Keep in sync with
-  # twilio-iac/scripts/okta/lib/groupRules.mjs, which the checks use.
+  # twilio-iac/scripts/python_tools/src/okta/group_rules.py, which the checks use.
   group_rule_expressions = {
     for code, okta in var.helpline_okta : code => (
       okta.group_rule.expression != null ? okta.group_rule.expression :

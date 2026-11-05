@@ -1,7 +1,7 @@
 /**
  * One Okta SAML app that logs users into one Twilio Flex account (one helpline + environment).
  * The SAML settings below are the Aselo standard; the attributes come from attribute-statements.json,
- * which twilio-iac/scripts/okta also reads, so code and checks never drift apart.
+ * which twilio-iac/scripts/python_tools/src/okta also reads, so code and checks never drift apart.
  */
 
 locals {

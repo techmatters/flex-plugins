@@ -19,7 +19,7 @@ output "attribute_names" {
 }
 
 # Paste these into Twilio Console > Flex > Users and access > Single sign-on (SSO).
-# Also printed by twilio-iac/scripts/okta/flexSsoHandoff.mjs.
+# Also printed by twilio-iac/scripts/python_tools/oktaSso.py flex-sso-handoff.
 output "flex_sso_settings" {
   value = module.flex_saml_app.flex_sso_settings
 }

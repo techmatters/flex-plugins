@@ -42,14 +42,14 @@ group that production uses.
 
 | # | Step | How | Who |
 |---|---|---|---|
-| 1 | Find the account's Flex SSO connection (`JQ...`) | Automatic during `plan` (public Flex endpoint) · `scripts/okta/flexSsoConnection.mjs` | Terraform / script |
+| 1 | Find the account's Flex SSO connection (`JQ...`) | Automatic during `plan` (public Flex endpoint) · `scripts/python_tools/oktaSso.py flex-sso-connection` | Terraform / script |
 | 2 | Create or adopt the Okta app and its groups | `okta-org` and `okta-app` stages | Terraform |
-| 3 | Enter the friendly name and Okta's issuer, SSO URL and certificate in **Twilio Console › Flex › Users and access › Single sign-on (SSO)** | `scripts/okta/flexSsoHandoff.mjs` prints the 4 values | **Person**: Twilio has no documented API for this page |
-| 4 | Check the app against the standard and config | `scripts/okta/verifySso.mjs` | Script |
-| 5 | Check Okta and Flex point at each other | `verifySso.mjs` (Flex connection check) | Script |
-| 6 | Log a test user in and inspect the real SAML assertion | `verifySso.mjs --login` | Script |
+| 3 | Enter the friendly name and Okta's issuer, SSO URL and certificate in **Twilio Console › Flex › Users and access › Single sign-on (SSO)** | `scripts/python_tools/oktaSso.py flex-sso-handoff` prints the 4 values | **Person**: Twilio has no documented API for this page |
+| 4 | Check the app against the standard and config | `scripts/python_tools/oktaSso.py verify-sso` | Script |
+| 5 | Check Okta and Flex point at each other | `oktaSso.py verify-sso` (Flex connection check) | Script |
+| 6 | Log a test user in and inspect the real SAML assertion | `oktaSso.py verify-sso --login` | Script |
 
-The audit script (`auditSsoDrift.mjs`) runs steps 4 and 5 for every Flex app in the org.
+The audit script (`oktaSso.py audit-sso-drift`) runs steps 4 and 5 for every Flex app in the org.
 
 Nothing account-specific is committed. The Twilio account SID comes from the existing SSM secret
 (`/terraform/twilio-iac/<env>/<code>/secrets.json`), the Flex connection is looked up live, and
@@ -186,8 +186,8 @@ permissions still got "You do not have permission"). Instead:
 - A person with Super/Org Admin creates it: **Okta Admin › Directory › Groups › Rules › Add rule** ›
   name, **Use Okta Expression Language**, paste the expression, assign to the group, **Save**, then
   **Activate**.
-- `verifySso.mjs` fails (❌) when the configured rule is missing, different or inactive, and
-  `auditGroupRules.mjs` checks every helpline and lists rules in Okta that are not in config.
+- `oktaSso.py verify-sso` fails (❌) when the configured rule is missing, different or inactive, and
+  `oktaSso.py audit-group-rules` checks every helpline and lists rules in Okta that are not in config.
 
 Several `organizations` or `email_domains` are joined with `OR`. Include the `@` in email domains
 (`"@example.org"`), otherwise `"example.org"` also matches addresses like `x@example.org.fake.net`.
@@ -214,18 +214,18 @@ All `make` targets run on the devops node as for any other stage.
    `config_list` was empty before, a `JQ...` connection existed after). The plan fails with a clear
    message if the connection is missing.
 4. `cd ../okta-app && make plan HL=<code> HL_ENV=staging`, review, then `make apply ...`.
-5. `node twilio-iac/scripts/okta/flexSsoHandoff.mjs --hl <code> --env staging`, then paste the 4
+5. `python3 twilio-iac/scripts/python_tools/oktaSso.py flex-sso-handoff --hl <code> --env staging`, then paste the 4
    values into the Flex SSO page and save. **Friendly name** = the Okta app label (e.g.
    `STG_<app_name> (<CODE>)`), which also matches the Twilio account name.
-6. `node twilio-iac/scripts/okta/verifySso.mjs --hl <code> --env staging --login`
+6. `python3 twilio-iac/scripts/python_tools/oktaSso.py verify-sso --hl <code> --env staging --login`
 7. Near launch, repeat steps 3–6 with `okta_app = {}` in `production.hcl` and `HL_ENV=production`.
 8. After launch, if the helpline chooses production only, set `include_helpline_group = false` in
    `staging.hcl` and apply.
 
 ### B. Adopt an existing helpline
 
-1. Add the `okta` and `okta_app` blocks with `import_existing = true`. Use `verifySso.mjs --label ...`
-   and `auditSsoDrift.mjs` to see its current state first.
+1. Add the `okta` and `okta_app` blocks with `import_existing = true`. Use `oktaSso.py verify-sso --label ...`
+   and `oktaSso.py audit-sso-drift` to see its current state first.
 2. Plan `okta-org`, then `okta-app` for each environment. A clean adoption shows only
    `N to import, 0 to change`. Anything else is a real difference from the standard: fix the config
    or accept the change.
@@ -240,11 +240,11 @@ plan instead of creating a new app.
 
 - Managed helplines: `make plan` shows changes. A `check` block also warns about group assignments
   added by hand, which Terraform does not remove on its own.
-- Whole org: `node twilio-iac/scripts/okta/auditSsoDrift.mjs --out report.md`
+- Whole org: `python3 twilio-iac/scripts/python_tools/oktaSso.py audit-sso-drift --out report.md`
 
 ### D. Move an app to the new attribute statements
 
-1. Capture the current assertion: `verifySso.mjs --hl <code> --env staging --login --json > before.json`
+1. Capture the current assertion: `oktaSso.py verify-sso --hl <code> --env staging --login --json > before.json`
 2. Set `attribute_statements_mode = "federated"` in `staging.hcl`, then plan (expect N claims to be
    created and the legacy statements removed) and apply.
 3. Capture again (`after.json`) and compare. Log in to Flex staging and check the worker attributes in
@@ -301,12 +301,12 @@ replaced by test values because there are no AWS credentials locally:
 | Import IDs from data sources (nothing hard-coded) | ✅ |
 | `okta-app` stage on all 8 pilot apps | 6 × `0 to change`. USCH stg: attribute reorder only. USVC stg: adds the missing *Staff* group, and the check block flags *Production* + *VPN* |
 | `okta-org` stage on the 4 pilot groups + 2 rules | ✅ `6 to import, 0 to change` (rules later moved out of Terraform) |
-| Group rules: structured config renders the exact existing expressions; `auditGroupRules.mjs` | ✅ |
+| Group rules: structured config renders the exact existing expressions; `oktaSso.py audit-group-rules` | ✅ |
 | Federated mode on ASOP stg (applied, real Flex logins) | ✅ Same worker attributes as legacy; profile changes propagate |
 | New helpline end to end (ASOP stg: group, app, Flex SSO, login) | ✅ |
 | Terragrunt collection of `okta` blocks across all 32 `common.hcl` | ✅ |
 | Scripts: connection, handoff, verify (without `--login`), audit | ✅ |
-| `verifySso --login` | ⚠️ Only the public half was tested (Flex → Okta redirect). Needs a no-MFA test user |
+| `oktaSso.py verify-sso --login` | ⚠️ Only the public half was tested (Flex → Okta redirect). Needs a no-MFA test user |
 | Runs inside the pipeline container (Terraform 1.14.3) | ⚠️ Not run. Tested locally with Terraform 1.16.5; uses no features newer than 1.7 |
 
 ## Limitations and open questions

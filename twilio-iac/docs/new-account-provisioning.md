@@ -19,7 +19,7 @@ A person can do every 🤖 step too.
 > asking; anything else needs the person's OK. Stop and wait at every 🧑 step.
 
 Related docs: [Terragrunt in this repo](terragrunt.md) · [Okta ⇄ Flex SSO](okta.md) ·
-[Okta scripts](../scripts/okta/README.md) · [Service configuration](service_configuration.md)
+[Okta scripts](../scripts/python_tools/src/okta/README.md) · [Service configuration](service_configuration.md)
 
 ---
 
@@ -48,7 +48,7 @@ Related docs: [Terragrunt in this repo](terragrunt.md) · [Okta ⇄ Flex SSO](ok
 - For Okta: the Terraform service app is already set up (one-off, see [okta.md](okta.md#before-the-first-apply-decisions-for-review));
   a **Super Admin or Org Admin** only if the helpline has a group rule.
 - For agents running the read-only Okta scripts: the `OKTA_*` variables for a read-only service app
-  ([scripts README](../scripts/okta/README.md#credentials)).
+  ([scripts README](../scripts/python_tools/src/okta/README.md#credentials)).
 
 ---
 
@@ -106,12 +106,12 @@ Full detail: [okta.md runbook A](okta.md#a-new-helpline).
 | 2 | `make apply` (okta-org uses the production role: needs `twilio-iac-production` access) | 🧑 |
 | 3 | **If `okta.group_rule` is set:** create the rule by hand from the plan's `group_rules` output (Okta › Directory › Groups › Rules › Add rule › Okta Expression Language › Save › **Activate**). Needs Super/Org Admin | 🧑 |
 | 4 | Twilio Console › **Flex › Users and access › Single sign-on**: open the page once so the Flex SSO connection exists | 🧑 |
-| 5 | `node twilio-iac/scripts/okta/flexSsoConnection.mjs --hl <code> --env staging`: connection `JQ...` exists | 🤖 |
+| 5 | `python3 twilio-iac/scripts/python_tools/oktaSso.py flex-sso-connection --hl <code> --env staging`: connection `JQ...` exists | 🤖 |
 | 6 | `cd twilio-iac/stages/okta-app && make plan HL=<code> HL_ENV=staging`: **creates 1 app + its claims + group assignments** | 🤖 |
 | 7 | `make apply HL=<code> HL_ENV=staging` | 🧑 |
-| 8 | `node twilio-iac/scripts/okta/flexSsoHandoff.mjs --hl <code> --env staging`: prints the 4 values | 🤖 |
+| 8 | `python3 twilio-iac/scripts/python_tools/oktaSso.py flex-sso-handoff --hl <code> --env staging`: prints the 4 values | 🤖 |
 | 9 | On the Flex SSO page: tick "I confirm the Flex application Entity ID and ACS URL have been updated", paste **Friendly name** (= Okta app label, e.g. `STG_SafeSpot (JM)`), **Certificate**, **Single sign-on URL** (and issuer if asked), **Save**, **Validate the connection** | 🧑 |
-| 10 | `node twilio-iac/scripts/okta/verifySso.mjs --hl <code> --env staging`: all ✅ (includes the group rule check) | 🤖 |
+| 10 | `python3 twilio-iac/scripts/python_tools/oktaSso.py verify-sso --hl <code> --env staging`: all ✅ (includes the group rule check) | 🤖 |
 | 11 | Log in to Flex with **Login with SSO** as a member of the helpline group or *Tech Matters - Staff*; check the worker attributes in TaskRouter | 🧑 |
 
 Users get access through **groups**, not individual assignments: the helpline group (by hand or by
@@ -175,8 +175,8 @@ Ask an AWS admin to add the `tl-aselo-docs-<code>-production` bucket to CloudTra
 
 ## Phase 3: Verification 🤝
 
-- 🤖 `node twilio-iac/scripts/okta/verifySso.mjs --hl <code> --env <env>`: all ✅
-- 🤖 `node twilio-iac/scripts/okta/auditGroupRules.mjs --hl <code>`: ✅
+- 🤖 `python3 twilio-iac/scripts/python_tools/oktaSso.py verify-sso --hl <code> --env <env>`: all ✅
+- 🤖 `python3 twilio-iac/scripts/python_tools/oktaSso.py audit-group-rules --hl <code>`: ✅
 - 🤖 Re-plan `okta-org`, `okta-app`, `provision`, `lex`, `configure`: **No changes**
 - 🧑 Log in through SSO, open a test contact, check the forms load and a webchat/SMS/call reaches a counsellor.
 
@@ -200,7 +200,7 @@ Copy into the helpline's tracking issue / task and tick as you go.
 - [ ] 1.2 SSM secrets
 - [ ] 1.3 provision / lex / configure applied
 - [ ] 1.4 Error webhook + TwilioErrorReporter PR
-- [ ] 1.5 Okta: group (okta-org) · group rule (manual, if any) · Flex SSO page opened · app (okta-app) · Flex SSO values pasted · verifySso ✅ · SSO login ✅
+- [ ] 1.5 Okta: group (okta-org) · group rule (manual, if any) · Flex SSO page opened · app (okta-app) · Flex SSO values pasted · verify-sso ✅ · SSO login ✅
 - [ ] 1.6 Twilio console users invited
 - [ ] 2.1 Form definitions
 - [ ] 2.2 Serverless deployed

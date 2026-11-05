@@ -6,7 +6,7 @@ description: Set up, adopt, verify or audit the Okta SAML apps that log Aselo he
 # Okta ⇄ Flex SSO
 
 Full design and runbooks: `twilio-iac/docs/okta.md`. Read it before changing anything.
-Scripts: `twilio-iac/scripts/okta/` (README there). Terraform: `twilio-iac/stages/okta-org` (Layer 1,
+Scripts: `twilio-iac/scripts/python_tools/oktaSso.py` (README in `src/okta/`). Terraform: `twilio-iac/stages/okta-org` (Layer 1,
 helpline groups) and `twilio-iac/stages/okta-app` (Layer 2, one app per helpline + environment).
 
 ## Hard rules
@@ -31,19 +31,19 @@ helpline groups) and `twilio-iac/stages/okta-app` (Layer 2, one app per helpline
 2. `cd twilio-iac/stages/okta-org && make plan`. Show it; it must only add this helpline's group.
    **If there is a group rule, remind the person**: Terraform does not create rules (only Super/Org
    Admins can). Give them the name, group and expression from the `group_rules` output and the steps
-   in docs/okta.md "Group rules"; `verifySso` fails until the rule exists.
+   in docs/okta.md "Group rules"; `oktaSso.py verify-sso` fails until the rule exists.
 3. After the person applies: `cd ../okta-app && make plan HL=<code> HL_ENV=staging`. Show it.
-4. After the person applies: run `node twilio-iac/scripts/okta/flexSsoHandoff.mjs --hl <code> --env staging`
+4. After the person applies: run `python3 twilio-iac/scripts/python_tools/oktaSso.py flex-sso-handoff --hl <code> --env staging`
    and give the person the 4 values (friendly name = Okta app label, issuer, SSO URL, certificate). **Stop and wait**: they enter them in Twilio Console › Flex ›
    Users and access › Single sign-on (SSO). There is no API for this step.
-5. When they confirm: `node twilio-iac/scripts/okta/verifySso.mjs --hl <code> --env staging --login`
+5. When they confirm: `python3 twilio-iac/scripts/python_tools/oktaSso.py verify-sso --hl <code> --env staging --login`
    (needs `OKTA_TEST_USERNAME`/`OKTA_TEST_PASSWORD`; without them, run it without `--login`).
 6. Production repeats 1 and 3–5 with `production.hcl` / `HL_ENV=production`, only when the person
    says the helpline is close to launch.
 
 ### Adopt an existing helpline
 
-1. Check the current state: `node twilio-iac/scripts/okta/verifySso.mjs --hl <code> --env <env> --label "<label>"`.
+1. Check the current state: `python3 twilio-iac/scripts/python_tools/oktaSso.py verify-sso --hl <code> --env <env> --label "<label>"`.
 2. Add `okta`/`okta_app` blocks with `import_existing = true`. Match reality: `label` if it doesn't
    follow the convention, `include_helpline_group = false` if the helpline group is intentionally not
    on staging, `optional_attribute_sets`, `extra_attribute_statements`.
@@ -52,10 +52,10 @@ helpline groups) and `twilio-iac/stages/okta-app` (Layer 2, one app per helpline
 
 ### Verify / audit
 
-- One app: `verifySso.mjs --hl <code> --env <env>`. Exit code 1 means errors.
-- Whole org: `auditSsoDrift.mjs --out <file>.md`. Summarize errors first (wrong values, trailing
+- One app: `oktaSso.py verify-sso --hl <code> --env <env>`. Exit code 1 means errors.
+- Whole org: `oktaSso.py audit-sso-drift --out <file>.md`. Summarize errors first (wrong values, trailing
   spaces in names, groups, wrong Flex connection), then warnings.
-- Group rules: `auditGroupRules.mjs [--hl <codes>] [--out <file>.md]`. Missing/different/inactive
+- Group rules: `oktaSso.py audit-group-rules [--hl <codes>] [--out <file>.md]`. Missing/different/inactive
   configured rules are errors; rules in Okta that are not in config are listed for adoption.
 
 ### Move to the new attribute statements (federated claims)
