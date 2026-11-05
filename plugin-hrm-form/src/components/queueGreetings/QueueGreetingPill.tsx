@@ -44,7 +44,7 @@ const QueueGreetingPill: React.FC<Props> = ({ task, selectedTaskSid, onSelected 
 
   return (
     <GuidancePillContainer isSelected={Boolean(task) && task.sid === selectedTaskSid} onClick={selectTask}>
-      <GreetingPill as="button" variant="guidance" onClick={reopenGreeting}>
+      <GreetingPill type="button" variant="guidance" onClick={reopenGreeting}>
         {queueGreeting.pillText.slice(0, MAX_PILL_TEXT_LENGTH)}
       </GreetingPill>
     </GuidancePillContainer>

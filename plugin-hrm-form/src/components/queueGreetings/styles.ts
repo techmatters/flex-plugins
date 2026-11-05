@@ -17,7 +17,7 @@
 import { styled } from '@twilio/flex-ui';
 
 import { selectedTaskListItemBorder, selectedTaskListItemBorderWidth } from '../../styles/HrmTheme';
-import { Pill } from '../../design-system/pills/Pill';
+import { PillButton } from '../../design-system/pills/Pill';
 
 const taskListItemHoverStyle = `
   background-color: rgb(225, 227, 234);
@@ -61,9 +61,8 @@ export const GuidancePillContainer = styled('div')<GuidancePillContainerProps>`
 GuidancePillContainer.displayName = 'GuidancePillContainer';
 
 // Places the design system's pill within the pill row
-export const GreetingPill = styled(Pill)`
+export const GreetingPill = styled(PillButton)`
   display: inline-block;
-  cursor: pointer;
   margin: 0 0 12px 16px;
 `;
 GreetingPill.displayName = 'GreetingPill';

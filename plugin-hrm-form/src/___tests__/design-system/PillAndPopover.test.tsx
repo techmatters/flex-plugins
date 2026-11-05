@@ -21,7 +21,7 @@ import '@testing-library/jest-dom/extend-expect';
 import each from 'jest-each';
 
 import { Popover } from '../../design-system/popovers/Popover';
-import { Pill } from '../../design-system/pills/Pill';
+import { Pill, PillButton } from '../../design-system/pills/Pill';
 
 // jsdom does not implement ResizeObserver
 global.ResizeObserver = class {
@@ -84,5 +84,21 @@ describe('Pill', () => {
     renderWithTheme(<Pill variant={variant}>A pill</Pill>);
 
     expect(screen.getByText('A pill')).toHaveStyle(`background-color: ${background}`);
+  });
+});
+
+describe('PillButton', () => {
+  test('is a clickable button with the pill styles', () => {
+    const onClick = jest.fn();
+    renderWithTheme(
+      <PillButton type="button" variant="guidance" onClick={onClick}>
+        A pill
+      </PillButton>,
+    );
+
+    const pill = screen.getByRole('button', { name: 'A pill' });
+    expect(pill).toHaveStyle('background-color: rgb(255, 254, 239)');
+    pill.click();
+    expect(onClick).toHaveBeenCalled();
   });
 });

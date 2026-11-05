@@ -93,7 +93,7 @@ describe('QueueGreetingPill', () => {
     const store = createStore();
     renderWithStore(<QueueGreetingPill task={taskFromQueue('WR2', 'greetedQueue')} />, store);
 
-    screen.getByText('A pill text longer t').click();
+    screen.getByRole('button', { name: 'A pill text longer t' }).click();
 
     expect(store.getActions()).toStrictEqual([newSetQueueGreetingDismissedAction('task-WR2', false)]);
     expect(Actions.invokeAction).toHaveBeenCalledWith('SelectTask', { sid: 'WR2' });
