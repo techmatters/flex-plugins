@@ -246,8 +246,9 @@ export const FlexDesktopPreview = () => {
   const { tryItOut } = useAppSelector(selectWorkspace);
   const { opened, channel, language, saveResult } = useAppSelector(selectPreview);
   const focus = tryItOut?.focus ?? 'form';
-  // Shown when the helpline's enable_canned_responses flag is on, or while editing them
-  const cannedResponsesEnabled = definitions?.featureFlags?.enable_canned_responses !== false;
+  // Shown when the helpline's enable_canned_responses flag is on (Aselo needs it set), or while
+  // editing them
+  const cannedResponsesEnabled = definitions?.featureFlags?.enable_canned_responses === true;
   const showCannedResponses = cannedResponsesEnabled || focus === 'cannedResponses';
   const strings: Strings = useStrings(language, files);
 
@@ -279,6 +280,8 @@ export const FlexDesktopPreview = () => {
 
   if (!tryItOut || !opened || !definitions) return null;
   const onClose = () => dispatch(tryItOutClosed());
+  // The sample task's queue, named after the helpline
+  const queueName = getHelplineName(files, definitions.code);
 
   return (
     <div className="flex-preview-overlay" role="dialog" aria-modal="true" aria-label="Try it out in Aselo">
@@ -323,12 +326,8 @@ export const FlexDesktopPreview = () => {
           <span className="flex-header-icon">
             <HamburgerIcon />
           </span>
-          {definitions.logoUrl ? (
-            <img className="flex-logo" src={definitions.logoUrl} alt="Helpline logo" />
-          ) : (
-            <span className="flex-wordmark">Aselo</span>
-          )}
-          <span className="flex-preview-label">(preview)</span>
+          {/* Without a logo, Aselo shows nothing here */}
+          {definitions.logoUrl && <img className="flex-logo" src={definitions.logoUrl} alt="Helpline logo" />}
           <span className="flex-header-spacer" />
           <span className="flex-header-icon" title="Outbound Dialpad">
             <DialpadIcon />
@@ -352,7 +351,7 @@ export const FlexDesktopPreview = () => {
             ))}
           </nav>
 
-          <ContactsWaiting channel={channel} queueName={getHelplineName(files, definitions.code)} />
+          <ContactsWaiting channel={channel} queueName={queueName} />
 
           <div className="flex-splitter" ref={splitterArea}>
             <section
@@ -391,7 +390,7 @@ export const FlexDesktopPreview = () => {
             />
 
             <section className="flex-panel flex-crm" aria-label="Contact form">
-              <AseloContactPanel strings={strings} />
+              <AseloContactPanel strings={strings} queueName={queueName} />
             </section>
           </div>
         </div>

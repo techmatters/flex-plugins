@@ -83,9 +83,8 @@ describe('FlexDesktopPreview', () => {
     expect(screen.getByRole('complementary', { name: 'Contacts waiting (sample)' })).toBeTruthy();
     expect(screen.getByRole('navigation', { name: 'Side bar (sample)' })).toBeTruthy();
     expect(screen.getByRole('separator', { name: 'Drag to resize' })).toBeTruthy();
-    // No production logo is configured for USNM, so the wordmark stands in
-    expect(document.querySelector('.flex-header .flex-wordmark')?.textContent).toBe('Aselo');
-    expect(screen.getByText('(preview)')).toBeTruthy();
+    // No production logo is configured for USNM: as in Aselo, the header shows none
+    expect(document.querySelector('.flex-header .flex-logo')).toBeNull();
     // One sample queue, named after the helpline (HelplineInformation.json)
     const queues = screen.getByRole('complementary', { name: 'Contacts waiting (sample)' });
     expect(within(queues).getByText('NAMI')).toBeTruthy();

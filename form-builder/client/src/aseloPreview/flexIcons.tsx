@@ -114,6 +114,30 @@ export const AddIcon = filled(
 
 export const BackIcon = filled('M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z');
 
+// The scrollable tabs' scroll buttons (Material UI's TabScrollButton)
+export const KeyboardArrowLeftIcon = filled('M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z');
+
+export const KeyboardArrowRightIcon = filled('M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z');
+
+export const KeyboardArrowDownIcon = filled('M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z');
+
+export const KeyboardArrowUpIcon = filled('M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z');
+
+// "Add to Case" (AddCaseButton)
+export const FolderIcon = filled(
+  'M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z',
+);
+
+// The call types' icon (CallTypeIcon): one face for the child, two for a caller
+export const FaceIcon = filled(
+  'M9 11.75c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm6 0c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 8.33 14.05 10 17.42 10c.78 0 1.53-.09 2.25-.26.21.71.33 1.47.33 2.26 0 4.41-3.59 8-8 8z',
+);
+
+// Dialogs' close button
+export const ClearIcon = filled(
+  'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z',
+);
+
 export const ArrowDropDownIcon = filled('M7 10l5 5 5-5H7z');
 
 export const ArrowDropUpIcon = filled('M7 14l5-5 5 5H7z');

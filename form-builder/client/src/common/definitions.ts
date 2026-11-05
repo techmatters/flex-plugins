@@ -166,6 +166,7 @@ export const resolveOptions = <T = SelectOption[]>(
 
 // Mirrors splitAt / splitInHalf in plugin-hrm-form/src/components/common/forms/formGenerators.tsx
 export const splitIntoColumns = <T>(items: T[], splitFormAt?: number): [T[], T[]] => {
-  const splitIndex = splitFormAt ?? Math.ceil(items.length / 2);
+  // As in Aselo, 0 (or none) splits the form in half
+  const splitIndex = splitFormAt || Math.ceil(items.length / 2);
   return [items.slice(0, splitIndex), items.slice(splitIndex)];
 };

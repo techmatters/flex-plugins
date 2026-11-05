@@ -62,8 +62,12 @@ type PreviewState = {
   tabIndex: number;
   values: Record<ContactTabKey, FormValues>;
   selectedCategories: SelectedCategories;
-  // Like the plugin's form library: errors show after the first save attempt, then update live
+  // Like the plugin's form library (react-hook-form, mode onChange): a field shows its error once
+  // it's been changed, and every field does after the first save attempt
   submitted: boolean;
+  touched: Record<ContactTabKey, string[]>;
+  // The categories tab's open sections and view, kept when switching tabs as Aselo does
+  categoriesView: { expanded: Record<string, boolean>; gridView: boolean };
 };
 
 const initialState: PreviewState = {
@@ -77,6 +81,8 @@ const initialState: PreviewState = {
   values: { CallerInformationTab: {}, ChildInformationTab: {}, CaseInformationTab: {} },
   selectedCategories: {},
   submitted: false,
+  touched: { CallerInformationTab: [], ChildInformationTab: [], CaseInformationTab: [] },
+  categoriesView: { expanded: {}, gridView: false },
 };
 
 const previewSlice = createSlice({
@@ -112,13 +118,22 @@ const previewSlice = createSlice({
     nonDataCallTypeChosen: state => {
       state.saveResult = 'saved';
     },
-    answersChanged: (state, action: PayloadAction<{ tabKey: ContactTabKey; values: FormValues }>) => {
-      state.values[action.payload.tabKey] = action.payload.values;
+    answersChanged: (state, action: PayloadAction<{ tabKey: ContactTabKey; name: string; values: FormValues }>) => {
+      const { tabKey, name, values } = action.payload;
+      state.values[tabKey] = values;
+      if (!state.touched[tabKey].includes(name)) state.touched[tabKey].push(name);
       state.saveResult = undefined;
     },
     categoriesChanged: (state, action: PayloadAction<SelectedCategories>) => {
       state.selectedCategories = action.payload;
       state.saveResult = undefined;
+    },
+    categorySectionToggled: (state, action: PayloadAction<string>) => {
+      const { expanded } = state.categoriesView;
+      expanded[action.payload] = !expanded[action.payload];
+    },
+    categoriesViewChanged: (state, action: PayloadAction<boolean>) => {
+      state.categoriesView.gridView = action.payload;
     },
     saveAttempted: (state, action: PayloadAction<SaveResult>) => {
       state.submitted = true;
@@ -149,6 +164,8 @@ export const {
   backToCallTypes,
   nonDataCallTypeChosen,
   categoriesChanged,
+  categorySectionToggled,
+  categoriesViewChanged,
 } = previewSlice.actions;
 
 // IssueCategorizationTab is keyed by helpline name; contacts use the default helpline
@@ -166,7 +183,7 @@ const formsOf = (files: DefinitionFileMap) =>
     FormItemJsonDefinition[]
   >;
 
-// The search tab, then Caller (only when someone calls about another person), Child, Categories and Summary
+// The search tab (it opens Aselo's search, it's never the tab shown), then Caller (only when someone calls about another person), Child, Categories and Summary
 const tabsFor = (callType: CallType): TabId[] => [
   'search',
   ...(callType === 'caller' ? (['CallerInformationTab'] as const) : []),
@@ -188,11 +205,11 @@ export const selectContactPanel = createSelector([selectPreview, selectDraftFile
   const errorsByTab = Object.fromEntries(
     contactTabsIn(tabs).map(tabKey => [
       tabKey,
-      preview.submitted
-        ? Object.fromEntries(
-            forms[tabKey].map(item => [item.name, validateField(item, preview.values[tabKey], referenceData)]),
-          )
-        : {},
+      Object.fromEntries(
+        forms[tabKey]
+          .filter(item => preview.submitted || preview.touched[tabKey].includes(item.name))
+          .map(item => [item.name, validateField(item, preview.values[tabKey], referenceData)]),
+      ),
     ]),
   ) as Record<ContactTabKey, Record<string, string | undefined>>;
   const selectedCount = countSelected(preview.selectedCategories);
@@ -236,6 +253,8 @@ export const openPreview = (): AppThunk => (dispatch, getState) => {
       ) as Record<ContactTabKey, FormValues>,
       selectedCategories: {},
       submitted: false,
+      touched: { CallerInformationTab: [], ChildInformationTab: [], CaseInformationTab: [] },
+      categoriesView: { expanded: {}, gridView: false },
     }),
   );
 };
@@ -253,7 +272,7 @@ export const setPreviewAnswer =
       .forEach(item => {
         tabValues[item.name] = initialValueFor(item, referenceData);
       });
-    dispatch(answersChanged({ tabKey, values: tabValues }));
+    dispatch(answersChanged({ tabKey, name, values: tabValues }));
   };
 
 export const nextPreviewTab = (): AppThunk => (dispatch, getState) =>
@@ -265,8 +284,8 @@ export const chooseDataCallType =
   dispatch =>
     dispatch(previewSlice.actions.dataCallTypeChosen(name === 'caller' ? 'caller' : 'child'));
 
-// "Save and End": checks the answers the way Aselo does
-export const saveAndEnd = (): AppThunk => (dispatch, getState) => {
+// "Save and End": checks the answers the way Aselo does, and says what it found
+export const saveAndEnd = (): AppThunk<SaveResult> => (dispatch, getState) => {
   const state = getState();
   const preview = selectPreview(state);
   const files = selectDraftFiles(state);
@@ -280,5 +299,7 @@ export const saveAndEnd = (): AppThunk => (dispatch, getState) => {
     ) ||
     selectedCount < 1 ||
     selectedCount > maxSelections;
-  dispatch(saveAttempted(invalid ? 'invalid' : 'saved'));
+  const result = invalid ? 'invalid' : 'saved';
+  dispatch(saveAttempted(result));
+  return result;
 };

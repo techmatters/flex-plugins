@@ -17,9 +17,9 @@
 /**
  * The categories tab as counselors see it (IssueCategorizationSectionForm in the plugin):
  * a collapsible section per category, with coloured answer chips shown as a grid or a list,
- * and a limit on how many can be ticked.
+ * and a limit on how many can be ticked. Which sections are open and the view are kept by the
+ * preview (previewSlice), so they stay as they were when coming back to the tab, as in Aselo.
  */
-import { useState } from 'react';
 import type { CategoriesDefinition } from '@hrm-form-definitions/formDefinition/types';
 
 import { ArrowDropDownIcon, ArrowDropUpIcon, GridIcon, ListIcon } from './flexIcons';
@@ -33,17 +33,25 @@ export type SelectedCategories = Record<string, string[]>;
 type Props = {
   definition?: CategoriesDefinition;
   selected: SelectedCategories;
-  hasError: boolean;
+  view: { expanded: Record<string, boolean>; gridView: boolean };
   strings: Strings;
   onChange: (selected: SelectedCategories) => void;
+  onToggleSection: (category: string) => void;
+  onViewChange: (gridView: boolean) => void;
 };
 
 export const countSelected = (selected: SelectedCategories) =>
   Object.values(selected).reduce((total, list) => total + list.length, 0);
 
-export const AseloCategories = ({ definition, selected, hasError, strings, onChange }: Props) => {
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
-  const [gridView, setGridView] = useState(false);
+export const AseloCategories = ({
+  definition,
+  selected,
+  view: { expanded, gridView },
+  strings,
+  onChange,
+  onToggleSection,
+  onViewChange,
+}: Props) => {
   const maxSelections = definition?.maxSelections ?? DEFAULT_MAXIMUM_SELECTIONS;
   const selectedCount = countSelected(selected);
 
@@ -61,14 +69,15 @@ export const AseloCategories = ({ definition, selected, hasError, strings, onCha
     <div className="aselo-categories">
       <h3 className="aselo-category-title">{translate(strings, 'Categories-Title')}</h3>
       <div className="aselo-category-subtitle">
-        <span className={hasError ? 'aselo-category-required has-error' : 'aselo-category-required'}>
+        {/* CategoryRequiredText: always marked required; a missing answer shows on the tab, not here */}
+        <span className="aselo-category-required">
           {translate(strings, 'Error-CategoryRequired', { minSelections: 1, maxSelections })}
         </span>
         <button
           type="button"
           className={gridView ? 'aselo-toggle-view active' : 'aselo-toggle-view'}
           aria-label="Grid view"
-          onClick={() => setGridView(true)}
+          onClick={() => onViewChange(true)}
         >
           <GridIcon size={18} />
         </button>
@@ -76,7 +85,7 @@ export const AseloCategories = ({ definition, selected, hasError, strings, onCha
           type="button"
           className={gridView ? 'aselo-toggle-view' : 'aselo-toggle-view active'}
           aria-label="List view"
-          onClick={() => setGridView(false)}
+          onClick={() => onViewChange(false)}
         >
           <ListIcon size={18} />
         </button>
@@ -92,7 +101,7 @@ export const AseloCategories = ({ definition, selected, hasError, strings, onCha
                 type="button"
                 className="aselo-section-button"
                 aria-expanded={isExpanded}
-                onClick={() => setExpanded({ ...expanded, [category]: !isExpanded })}
+                onClick={() => onToggleSection(category)}
               >
                 <span>{translate(strings, category)}</span>
                 {isExpanded ? <ArrowDropUpIcon size={20} /> : <ArrowDropDownIcon size={20} />}

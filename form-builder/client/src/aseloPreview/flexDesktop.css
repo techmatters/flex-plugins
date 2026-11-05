@@ -109,19 +109,6 @@
   height: 40px;
 }
 
-.flex-wordmark {
-  font-size: 26px;
-  font-weight: 400;
-  color: #1a6e8e;
-  letter-spacing: -0.5px;
-}
-
-.flex-preview-label {
-  color: #d61f1f;
-  font-size: 15px;
-  font-weight: 700;
-}
-
 .flex-header-spacer {
   flex: 1;
 }
