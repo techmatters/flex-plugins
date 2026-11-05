@@ -60,6 +60,7 @@ import { CaseStatusEditor } from '../cases/CaseStatusEditor';
 import { CaseSectionsEditor } from '../cases/CaseSectionsEditor';
 import { FeaturesEditor } from '../serviceConfig/FeaturesEditor';
 import { ServiceConfigEditor } from '../serviceConfig/ServiceConfigEditor';
+import { TranslationsEditor } from '../translations/TranslationsEditor';
 import { ProfilesEditor } from '../profiles/ProfilesEditor';
 import { hasProfiles } from '../profiles/profiles';
 import { CannedResponsesEditor } from '../chatsAndCalls/CannedResponsesEditor';
@@ -296,6 +297,9 @@ export const HelplineWorkspace = () => {
     if (view.kind === 'serviceConfig' && canApply) {
       return <ServiceConfigEditor key={editorKey} />;
     }
+    if (view.kind === 'translations' && canApply) {
+      return <TranslationsEditor key={editorKey} />;
+    }
     if (view.kind === 'caseSections') {
       return <CaseSectionsEditor key={editorKey} />;
     }
@@ -431,7 +435,7 @@ export const HelplineWorkspace = () => {
 
       <div className="workspace">
         <nav className="sidebar">
-          {/* Features and the service configuration are for Aselo staff only (not when viewing as helpline staff) */}
+          {/* Features, the service configuration and translations are for Aselo staff only (not when viewing as helpline staff) */}
           {canApply && (
             <>
               <h3>Helpline</h3>
@@ -449,6 +453,13 @@ export const HelplineWorkspace = () => {
                   reviewOf={reviewOf}
                   target={{ kind: 'serviceConfig' }}
                   label="Service configuration"
+                />
+                <NavItem
+                  current={view}
+                  onSelect={setView}
+                  reviewOf={reviewOf}
+                  target={{ kind: 'translations' }}
+                  label="Translations"
                 />
               </ul>
             </>

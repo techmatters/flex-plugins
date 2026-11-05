@@ -1,0 +1,193 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+/* Translations (Aselo staff) */
+.translation-languages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.translation-add-language,
+.translation-add-string {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.translation-add-language input,
+.translation-add-string input,
+.translation-find-fields input[type='text'],
+.translation-edit textarea {
+  font: inherit;
+  padding: 5px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.translation-add-language input {
+  width: 190px;
+}
+
+.translation-toolbar-actions {
+  display: flex;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.translation-import {
+  cursor: pointer;
+}
+
+.translations-table td:first-child code {
+  font-size: 12px;
+}
+
+.translation-text {
+  white-space: pre-wrap;
+}
+
+.translation-badge-english {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+}
+
+.translation-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.translation-edit textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+.translation-aselo-text {
+  white-space: pre-wrap;
+}
+
+.translation-edit-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.translation-more {
+  margin-top: 12px;
+}
+
+.translation-find-replace {
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+
+.translation-find-fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.translation-find-fields label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.translation-find-fields .checkbox-label {
+  flex-direction: row;
+  align-items: center;
+  font-weight: normal;
+  font-size: 13px;
+  padding-bottom: 6px;
+}
+
+.translation-replacements {
+  list-style: none;
+  margin: 8px 0 12px;
+  padding: 0;
+  max-height: 340px;
+  overflow-y: auto;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.translation-replacements li {
+  display: grid;
+  grid-template-columns: minmax(180px, 30%) 1fr;
+  gap: 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.translation-replacements li:last-child {
+  border-bottom: none;
+}
+
+.translation-replacements label {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  overflow-wrap: anywhere;
+}
+
+.translation-replacement-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.translation-before {
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+.translation-add-string {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.translation-add-string h3 {
+  flex-basis: 100%;
+  font-size: 14px;
+  margin: 0;
+}
+
+.translation-add-string .field-hint {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+.translations-panel .visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

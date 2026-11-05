@@ -46,15 +46,27 @@ const loadFile = async (name: string): Promise<Strings> => {
 
 const SUBSTITUTIONS_FILE = 'customStrings/Substitutions.json';
 
+/**
+ * Aselo's own text in a language, before the helpline changes any of it: en.json, then the base
+ * language's file, then the locale's. `translated` are the keys the language's files have (the
+ * rest is English, shown until someone translates it).
+ */
+export const loadPluginStrings = async (language: string): Promise<{ strings: Strings; translated: string[] }> => {
+  const [baseLanguage] = language.split('-');
+  const ownFiles = [
+    ...(baseLanguage === 'en' ? [] : [await loadFile(baseLanguage)]),
+    ...(language === baseLanguage ? [] : [await loadFile(language)]),
+  ];
+  return {
+    strings: Object.assign({}, await loadFile('en'), ...ownFiles),
+    translated: [...new Set(ownFiles.flatMap(file => Object.keys(file)))],
+  };
+};
+
 const loadStrings = async (language: string, files: DefinitionFileMap): Promise<Strings> => {
   const [baseLanguage] = language.split('-');
   const substitutions = (files[SUBSTITUTIONS_FILE] ?? {}) as Record<string, Strings>;
-  return {
-    ...(await loadFile('en')),
-    ...(baseLanguage === 'en' ? {} : await loadFile(baseLanguage)),
-    ...(language === baseLanguage ? {} : await loadFile(language)),
-    ...(substitutions[baseLanguage] ?? {}),
-  };
+  return { ...(await loadPluginStrings(language)).strings, ...(substitutions[baseLanguage] ?? {}) };
 };
 
 export const useStrings = (language: string, files: DefinitionFileMap): Strings => {

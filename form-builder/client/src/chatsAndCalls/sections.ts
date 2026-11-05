@@ -31,6 +31,7 @@ import { summarizeFeatureChanges } from '../serviceConfig/helplineFeatures';
 import { summarizeServiceConfigChanges, validateServiceConfig } from '../serviceConfig/serviceConfig';
 import { summarizeProfileChanges, validateProfiles } from '../profiles/profiles';
 import { summarizeFormSelectorChanges, validateFormSelector } from '../formSelector/formSelector';
+import { summarizeTranslationChanges } from '../translations/translations';
 
 export const CALL_TYPE_BUTTONS_FILE = 'CallTypeButtons.json';
 export const CANNED_RESPONSES_FILE = 'CannedResponses.json';
@@ -260,6 +261,7 @@ export const summarizeSectionChanges = (
     ...summarizeCaseSectionChanges(originalFiles, draftFiles),
     ...summarizeProfileChanges(originalFiles, draftFiles),
     ...summarizeServiceConfigChanges(originalFiles, draftFiles),
+    ...summarizeTranslationChanges(originalFiles, draftFiles),
   ];
   const changed = (filePath: string) => !isSameJson(originalFiles[filePath], draftFiles[filePath]);
 

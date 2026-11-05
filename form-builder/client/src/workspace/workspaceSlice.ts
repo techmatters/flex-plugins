@@ -53,6 +53,7 @@ export type View =
   | { kind: 'caseSections' }
   | { kind: 'features' }
   | { kind: 'serviceConfig' }
+  | { kind: 'translations' }
   | { kind: 'profiles' };
 
 export const sameView = (a: View, b: View) => JSON.stringify(a) === JSON.stringify(b);
