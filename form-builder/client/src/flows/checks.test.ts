@@ -439,3 +439,50 @@ test("a message's Studio name says its language", () => {
   expect(check('play_message_voice_es_closed')).toEqual([]);
   expect(check('play_message_voice_en_closed')).toEqual(["“Closed” is in “es”, but its Studio name doesn't say so."]);
 });
+
+test("Check operating hours asks about a channel and office in the helpline's operating hours", () => {
+  const hours = { hasOperatingHours: true, channels: ['sms', 'voice'], offices: ['preClosing'] };
+  const check = (settings?: Record<string, string>, extra: Partial<FlowObject> = {}, operatingHours = hours) =>
+    boardChecks(
+      {
+        frames: [frame('f', 'webchat')],
+        objects: [named('h', 'checkOperatingHours', 'f', { text: 'Hours', settings, endedExits: [''], ...extra })],
+        connections: [],
+      },
+      undefined,
+      operatingHours,
+    )
+      .filter(issue => issue.key.includes('|hours'))
+      .map(issue => issue.message);
+  const body = (keys: Record<string, string>) => ({ body: JSON.stringify(keys) });
+
+  expect(check(body({ channel: 'sms', office: 'preClosing', language: 'en-US' }))).toEqual([]);
+  expect(check(body({ channel: 'whatsapp', office: 'lateNight' }))).toEqual([
+    "“Hours” asks about the “whatsapp” channel, which the helpline's operating hours don't have (sms, voice): the check fails.",
+    "“Hours” asks about the “lateNight” office, which the helpline's operating hours don't have: it uses the main schedule instead.",
+  ]);
+  expect(check(body({ language: 'en-US' }))).toEqual([
+    "“Hours”: its request body doesn't say the channel, so the check fails. Choose one.",
+  ]);
+  // An empty body sends the flow's channel
+  expect(check()).toEqual([
+    "“Hours” asks about the “webchat” channel (the flow’s), which the helpline's operating hours don't have (sms, voice): the check fails.",
+  ]);
+  // Worked out when the flow runs or when it's deployed
+  expect(check(body({ channel: '{{flow.variables.channel}}', office: '${office}' }))).toEqual([]);
+  // An imported step: its live body
+  expect(
+    check(undefined, {
+      studio: { name: 'f_x', type: 'make-http-request', properties: { body: '{"channel": "whatsapp"}' } },
+    }),
+  ).toHaveLength(1);
+  // No operating hours file (or not known): nothing to check against
+  expect(check(body({ channel: 'whatsapp' }), {}, { hasOperatingHours: false, channels: [], offices: [] })).toEqual([]);
+  expect(
+    boardChecks({
+      frames: [],
+      objects: [named('h', 'checkOperatingHours', undefined, { settings: body({}) })],
+      connections: [],
+    }).filter(issue => issue.key.includes('|hours')),
+  ).toEqual([]);
+});

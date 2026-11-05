@@ -80,12 +80,14 @@ import {
   withStudioName,
 } from '@tech-matters/form-builder-shared/flows/recordings';
 import { type Issue, uniqueName } from '@tech-matters/form-builder-shared/flows/checks';
+import type { OperatingHoursChoices } from '@tech-matters/form-builder-shared';
 
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectUser } from '../app/sessionSlice';
 import { JsonTextarea } from './JsonTextarea';
 import { CanvasNode, ConnectionEdge, FrameNode, newId, ObjectNode, StickyNode } from './canvasModel';
 import type { HelplineChoices } from './boardClient';
+import { OperatingHoursFields } from './OperatingHoursFields';
 import { RecordingActions, RecordingSection, ScriptApproval, useRecordingActions } from './RecordingControls';
 import {
   duplicateSelection,
@@ -153,6 +155,8 @@ type InspectorProps = {
   variant?: string;
   // The helpline's chatbots, queues, workflows and skills, offered in objects' settings
   helplineChoices?: HelplineChoices;
+  // Its operating hours' channels and offices, for Check operating hours (none on the templates board)
+  operatingHours?: OperatingHoursChoices;
   // Read them again (e.g. a skill was just added in Routing)
   onRefreshChoices?: () => void;
   // The board's own flow's settings changed (its objects outside frames)
@@ -1254,6 +1258,16 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
               Calls <code>{info.studioRoute}</code> (see STUDIO_ROUTES.md in the account-scoped lambdas).
             </p>
           )}
+          {object.type === 'checkOperatingHours' && (
+            <OperatingHoursFields
+              key={node.id}
+              object={object}
+              choices={props.operatingHours}
+              flowChannel={details?.channel}
+              readOnly={readOnly}
+              onBodyChange={body => update({ settings: { ...object.settings, body } })}
+            />
+          )}
           {object.type === 'function' && object.studio?.type === 'run-function' && (
             <p className="field-hint">
               A Twilio Function in Studio (<code>run-function</code>): its settings stay as they are live.
@@ -1778,6 +1792,7 @@ const useInspectorProps = (): InspectorProps => {
     recordings,
     variant,
     helplineChoices,
+    operatingHours: code === TEMPLATES_CODE ? undefined : helplineChoices.operatingHours,
     onRefreshChoices: () => dispatch(loadHelplineChoices()),
     onBoardFlow: next => dispatch(flowChanged(next)),
     languages: {

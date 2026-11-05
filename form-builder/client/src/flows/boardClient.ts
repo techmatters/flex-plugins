@@ -32,6 +32,7 @@ import {
   type FromBranch,
   type HelplineImport,
   type ImportedRecording,
+  type OperatingHoursChoices,
 } from '@tech-matters/form-builder-shared';
 
 import type { Send } from '../drafts/draftClient';
@@ -75,8 +76,8 @@ export type BoardClient = {
   branches(): Promise<BranchChoice[]>;
   importRecording(code: string, recording: ImportedRecording): Promise<RecordingsList>;
   // What the helpline has in its other designs, offered in objects' settings: its chatbots (Chatbot),
-  // and its routing's queues and workflows (Send to queue) and skills (the skilled worker checks).
-  // Empty where it has no design yet
+  // its routing's queues and workflows (Send to queue) and skills (the skilled worker checks), and
+  // its operating hours' channels and offices (Check operating hours). Empty where it has none yet
   helplineChoices(code: string): Promise<HelplineChoices>;
 };
 
@@ -89,9 +90,16 @@ export type HelplineChoices = {
   queues: { key: string; name: string }[];
   workflows: { key: string; name: string }[];
   skills: string[];
+  operatingHours: OperatingHoursChoices;
 };
 
-export const NO_HELPLINE_CHOICES: HelplineChoices = { chatbots: [], queues: [], workflows: [], skills: [] };
+export const NO_HELPLINE_CHOICES: HelplineChoices = {
+  chatbots: [],
+  queues: [],
+  workflows: [],
+  skills: [],
+  operatingHours: { hasOperatingHours: false, channels: [], offices: [] },
+};
 
 export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetch): BoardClient => {
   const expectOk = async (method: string, path: string, body?: unknown) => {
@@ -136,9 +144,10 @@ export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetc
     branches: () => expectOk('GET', '/api/branches'),
     importRecording: (code, recording) => expectOk('POST', `/api/recordings/${code}/import`, recording),
     async helplineChoices(code) {
-      const [chatbots, routing] = await Promise.all([
+      const [chatbots, routing, operatingHours] = await Promise.all([
         send('GET', `/api/chatbots/${code}`),
         send('GET', `/api/routing/${code}`),
+        send('GET', `/api/helplines/${code}/operating-hours-choices`),
       ]);
       const bots: ChatbotChoice[] = chatbots.status < 400 ? chatbots.body?.design?.bots ?? [] : [];
       const design: Partial<RoutingDesign> = routing.status < 400 ? routing.body?.design ?? {} : {};
@@ -147,6 +156,8 @@ export const boardClientFor = (send: Send, sendFile: SendFile = sendFileWithFetc
         queues: (design.queues ?? []).map(({ key, name }) => ({ key, name })),
         workflows: (design.workflows ?? []).map(({ key, name }) => ({ key, name })),
         skills: (design.skills ?? []).map(({ name }) => name),
+        operatingHours:
+          operatingHours.status < 400 && operatingHours.body ? operatingHours.body : NO_HELPLINE_CHOICES.operatingHours,
       };
     },
   };

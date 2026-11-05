@@ -37,6 +37,7 @@ import {
   designOf,
   type FlowDetails,
   flowDetailsOf,
+  type Frame,
   type FlowObject,
   type FlowObjectType,
   type FlowVariant,
@@ -60,6 +61,7 @@ import {
   splitIgnored,
 } from '@tech-matters/form-builder-shared/flows/checks';
 import { approvalOf } from '@tech-matters/form-builder-shared/flows/recordings';
+import { withOperatingHoursValue } from '@tech-matters/form-builder-shared/flows/operatingHoursRequest';
 
 import { type AppThunk, rootReducer, type RootState } from '../app/store';
 import { selectActingAsStaff, selectUser } from '../app/sessionSlice';
@@ -700,7 +702,9 @@ export const selectValidPaths = createSelector([selectCanvasContent, selectTeste
 const selectRecordingList = (state: RootState) => state.boardRecordings?.list;
 const selectRecordings = (state: RootState) => selectRecordingList(state)?.recordings;
 
-const selectAllIssues = createSelector([selectContent, selectRecordings], boardChecks);
+// Check operating hours steps against the helpline's operating hours (not the templates board's: it has none)
+const selectOperatingHours = (state: RootState) => selectBoard(state).helplineChoices.operatingHours;
+const selectAllIssues = createSelector([selectContent, selectRecordings, selectOperatingHours], boardChecks);
 // In a sketch, only what's about the flow's shape (no scripts, recordings, settings...)
 export const selectIssues = createSelector(
   [selectAllIssues, selectIgnoredChecks, selectMode],
@@ -815,6 +819,18 @@ export const boardLoaded =
 // ---------------------------------------------------------------------------------------------
 // Adding and connecting
 
+// A helpline with one channel in its operating hours: a new Check operating hours asks about that one
+const withOnlyHoursChannel = (
+  node: ObjectNode,
+  { helplineChoices, flow }: Pick<BoardState, 'helplineChoices' | 'flow'>,
+  frame?: Pick<Frame, 'channel'>,
+): ObjectNode => {
+  const { channels } = helplineChoices.operatingHours;
+  if (node.data.object.type !== 'checkOperatingHours' || channels.length !== 1) return node;
+  const body = withOperatingHoursValue('', 'channel', channels[0], (frame ?? flow)?.channel) ?? '';
+  return { ...node, data: { object: { ...node.data.object, settings: { body } } } };
+};
+
 // An object, sticky note or frame from the palette, centred where it's dropped (or the view's centre)
 export const addItem =
   (item: PaletteItem, at: { x: number; y: number }): AppThunk =>
@@ -832,6 +848,7 @@ export const addItem =
         item.kind === 'object'
           ? createObjectNode(item.type, position, frame?.id)
           : createStickyNode(position, frame?.id);
+      if (node.type === 'object') node = withOnlyHoursChannel(node, selectBoard(getState()), frame?.data.frame);
     }
     dispatch(nodesAdded({ nodes: withIds([node]) }));
   };

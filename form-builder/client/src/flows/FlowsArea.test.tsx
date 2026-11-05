@@ -33,7 +33,7 @@ import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
 import { emptyBoard, type FlowObject } from '@tech-matters/form-builder-shared/flows/model';
 
 import { FlowsArea } from './FlowsArea';
-import { boardClientFor } from './boardClient';
+import { boardClientFor, NO_HELPLINE_CHOICES } from './boardClient';
 import { createAppStore } from '../app/store';
 import { sessionLoaded } from '../app/sessionSlice';
 import { switchArea } from '../app/appSlice';
@@ -364,6 +364,109 @@ describe('flow designer', () => {
     });
     fireEvent.click(palette().getByRole('button', { name: /^Skilled worker logged in/ }));
     expect(await settings().findByRole('button', { name: '+ French' })).toBeTruthy();
+  });
+
+  // A Check operating hours step's request body, as saved
+  const savedHoursBody = async (id: string) => {
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    const saved = await boards.get('usnm', id);
+    const step = saved?.content.objects.find(candidate => candidate.type === 'checkOperatingHours');
+    return JSON.parse(step?.settings?.body ?? '{}');
+  };
+
+  test("Check operating hours: the channel and office come from the helpline's operating hours, written in its body", async () => {
+    // The repo's operating hours files (USNM's: sms and voice, and a preClosing office)
+    context.formDefinitionsDir = path.resolve(
+      path.dirname(fileURLToPath(import.meta.url)),
+      '../../../../lambdas/packages/hrm-form-definitions/form-definitions',
+    );
+    const board = await clientAs(staff).create('usnm', 'Hours');
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+    const { store } = renderArea(staff);
+    await screen.findByRole('heading', { name: 'Hours' });
+    fireEvent.click(within(screen.getByRole('tablist', { name: 'Mode' })).getByRole('tab', { name: /Build/ }));
+    await waitFor(() => expect(store.getState().board?.helplineChoices.operatingHours.channels).toHaveLength(2));
+    fireEvent.click(palette().getByRole('button', { name: /^Check operating hours/ }));
+
+    const channel = () => settings().getByRole('combobox', { name: /^Channel/ }) as HTMLSelectElement;
+    const office = () => settings().getByRole('combobox', { name: /^Office/ }) as HTMLSelectElement;
+    const body = () => settings().getByRole('textbox', { name: /^Request body/ }) as HTMLTextAreaElement;
+    const optionsOf = (select: HTMLSelectElement) => [...select.options].map(option => option.textContent);
+    // Two channels: none chosen yet (an empty body sends the flow's), and the main schedule
+    expect(optionsOf(channel())).toEqual(['Not set', 'sms', 'voice', 'Other…']);
+    expect(channel().value).toBe('');
+    expect(optionsOf(office())).toEqual(['Main schedule (no office)', 'preClosing']);
+    expect(office().value).toBe('');
+    expect(body().value).toBe('');
+
+    // Chosen: the body starts from what an empty one sends
+    fireEvent.change(channel(), { target: { value: 'sms' } });
+    expect(JSON.parse(body().value)).toEqual({
+      channel: 'sms',
+      includeMessageTextInResponse: 'true',
+      language: 'en-US',
+      from: '{{trigger.conversation.From}}',
+    });
+
+    // Its other keys are kept when the channel and office change
+    fireEvent.change(body(), { target: { value: '{"language": "es-US", "channel": "sms", "extra": "kept"}' } });
+    fireEvent.change(office(), { target: { value: 'preClosing' } });
+    fireEvent.change(channel(), { target: { value: 'voice' } });
+    expect(JSON.parse(body().value)).toEqual({
+      channel: 'voice',
+      language: 'es-US',
+      extra: 'kept',
+      office: 'preClosing',
+    });
+    expect(await savedHoursBody(board.id)).toEqual(JSON.parse(body().value));
+
+    // Another channel, typed: the check says the helpline's operating hours don't have it
+    fireEvent.change(channel(), { target: { value: '__other' } });
+    fireEvent.change(settings().getByRole('textbox', { name: 'Channel (other)' }), { target: { value: 'whatsapp' } });
+    expect(JSON.parse(body().value)).toMatchObject({ channel: 'whatsapp', office: 'preClosing', extra: 'kept' });
+    expect(within(screen.getByRole('list', { name: 'Problems' })).getByText(/“whatsapp” channel/)).toBeTruthy();
+    // Back to the main schedule: no office in the body
+    fireEvent.change(office(), { target: { value: '' } });
+    expect(JSON.parse(body().value)).not.toHaveProperty('office');
+  });
+
+  test('Check operating hours: the one channel is chosen for a new step; no operating hours, the JSON only', async () => {
+    const withHours = (operatingHours: typeof NO_HELPLINE_CHOICES.operatingHours) => ({
+      ...clientAs(staff),
+      helplineChoices: async () => ({ ...NO_HELPLINE_CHOICES, operatingHours }),
+    });
+    const board = await clientAs(staff).create('usnm', 'One channel');
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+    const { store } = renderArea(
+      staff,
+      withHours({ hasOperatingHours: true, channels: ['voice'], offices: ['preClosing'] }),
+    );
+    await screen.findByRole('heading', { name: 'One channel' });
+    fireEvent.click(within(screen.getByRole('tablist', { name: 'Mode' })).getByRole('tab', { name: /Build/ }));
+    await waitFor(() => expect(store.getState().board?.helplineChoices.operatingHours.channels).toEqual(['voice']));
+    fireEvent.click(palette().getByRole('button', { name: /^Check operating hours/ }));
+    expect(settings().getByRole('combobox', { name: /^Channel/ })).toHaveProperty('value', 'voice');
+    // An office changes what it answers: the main schedule unless chosen
+    expect(settings().getByRole('combobox', { name: /^Office/ })).toHaveProperty('value', '');
+    expect(await savedHoursBody(board.id)).toEqual({
+      channel: 'voice',
+      includeMessageTextInResponse: 'true',
+      language: 'en-US',
+      from: '{{trigger.conversation.From}}',
+    });
+    cleanup();
+
+    // No operating hours file: said, and only the JSON
+    const other = await clientAs(staff).create('usnm', 'No hours');
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${other.id}`);
+    const { store: noHours } = renderArea(staff, withHours({ hasOperatingHours: false, channels: [], offices: [] }));
+    await screen.findByRole('heading', { name: 'No hours' });
+    fireEvent.click(within(screen.getByRole('tablist', { name: 'Mode' })).getByRole('tab', { name: /Build/ }));
+    await waitFor(() => expect(noHours.getState().board?.helplineChoices.chatbots).toEqual([]));
+    fireEvent.click(palette().getByRole('button', { name: /^Check operating hours/ }));
+    expect(settings().getByText(/no operating hours file, so the check always answers “open”/)).toBeTruthy();
+    expect(settings().queryByRole('combobox', { name: /^Channel/ })).toBeNull();
+    expect(settings().getByRole('textbox', { name: /^Request body/ })).toBeTruthy();
   });
 
   test("messages are named by parts: the prefix is set, the flow's channels, languages and services are chosen", async () => {

@@ -46,6 +46,8 @@ import {
   widgetNamesOf,
   workerChannelOf,
 } from './model';
+import type { OperatingHoursChoices } from '../operatingHours';
+import { isWorkedOutLater, operatingHoursBodyOf, operatingHoursKeysOf } from './operatingHoursRequest';
 import { hasNonStandardRecording, isVoiceMessage, messageStatus, type Recording } from './recordings';
 import { taskAttributesProblem } from './taskAttributes';
 
@@ -198,6 +200,8 @@ export const boardChecks = (
   content: Pick<BoardContent, 'objects' | 'frames' | 'connections' | 'flow'>,
   // The helpline's recordings, when they're known: voice messages are then checked for theirs
   recordings?: Recording[],
+  // Its operating hours' channels and offices: Check operating hours steps are then checked against them
+  operatingHours?: OperatingHoursChoices,
 ): Issue[] => {
   const issues: Issue[] = [];
   const add = (issue: Omit<Issue, 'key'>, kind: string) =>
@@ -427,6 +431,53 @@ export const boardChecks = (
     if (object.type === 'chatbot' && !object.studio && !object.settings?.botSuffix?.trim()) {
       add({ severity: 'warning', message: `${name}: choose the chatbot it starts.`, objectId }, 'noChatbot');
     }
+    // What it asks the operatingHours route about, against the helpline's file (without one, it's always open)
+    if (object.type === 'checkOperatingHours' && operatingHours?.hasOperatingHours) {
+      const body = operatingHoursBodyOf(object);
+      const keys = operatingHoursKeysOf(body);
+      // An empty body sends the flow's channel
+      const channel = body.trim() ? keys?.channel : frame?.channel;
+      if (keys && body.trim() && channel === undefined) {
+        add(
+          {
+            severity: 'warning',
+            message: `${name}: its request body doesn't say the channel, so the check fails. Choose one.`,
+            objectId,
+          },
+          'hoursNoChannel',
+        );
+      }
+      if (typeof channel === 'string' && !isWorkedOutLater(channel) && !operatingHours.channels.includes(channel)) {
+        add(
+          {
+            severity: 'warning',
+            message: `${name} asks about the “${channel}” channel${
+              body.trim() ? '' : ' (the flow’s)'
+            }, which the helpline's operating hours don't have (${
+              operatingHours.channels.join(', ') || 'none'
+            }): the check fails.`,
+            objectId,
+          },
+          'hoursChannel',
+        );
+      }
+      const office = keys?.office;
+      if (
+        typeof office === 'string' &&
+        office &&
+        !isWorkedOutLater(office) &&
+        !operatingHours.offices.includes(office)
+      ) {
+        add(
+          {
+            severity: 'warning',
+            message: `${name} asks about the “${office}” office, which the helpline's operating hours don't have: it uses the main schedule instead.`,
+            objectId,
+          },
+          'hoursOffice',
+        );
+      }
+    }
 
     // Incoming contacts check that the system is up before anything else
     if (object.type === 'incoming' && frame?.stage !== 'postqueue') {
@@ -605,7 +656,7 @@ export const splitIgnored = (issues: Issue[], ignoredKeys: string[] = []) => {
 // What a sketch (Sketch mode) leaves for later: scripts, recordings, languages, the names' standard
 // parts, call settings, variables and task attributes
 const DETAIL_CHECKS =
-  /^(nameStandard|noFrom|noScript|recording|scriptApproval|language|oldRecordingName|taskAttributes|noUrl|noVariables|noInput|noChatbot|field-.*|required-.*|taskChannel|naming-.*|variable-.*)$/;
+  /^(nameStandard|noFrom|noScript|recording|scriptApproval|language|oldRecordingName|taskAttributes|noUrl|noVariables|noInput|noChatbot|field-.*|required-.*|taskChannel|naming-.*|variable-.*|hours.*)$/;
 
 /** The issues that matter in a sketch: the flow's shape (ways out, names, what's unreachable...). */
 export const sketchIssues = (issues: Issue[]) => issues.filter(issue => !DETAIL_CHECKS.test(issue.key.split('|')[1]));

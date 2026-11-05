@@ -55,6 +55,7 @@ import {
   workerChannelOf,
 } from '@tech-matters/form-builder-shared/flows/model';
 import { janitorValuesOf, withJanitorValues } from '@tech-matters/form-builder-shared/flows/janitor';
+import { defaultOperatingHoursRequest } from '@tech-matters/form-builder-shared/flows/operatingHoursRequest';
 import {
   isRecordingsBucketUrl,
   isVoiceMessage,
@@ -171,13 +172,7 @@ const operatingHoursBody = (channel: string | undefined, todo: string[], name: s
   todo.push(
     `${name}: check its channel is in the helpline's operating info, and its language (the closed message's) and office.`,
   );
-  const from = channel === 'voice' ? '{{trigger.call.From}}' : '{{trigger.conversation.From}}';
-  return JSON.stringify({
-    channel: channel ?? TODO,
-    includeMessageTextInResponse: 'true',
-    language: 'en-US',
-    from,
-  });
+  return JSON.stringify(defaultOperatingHoursRequest(channel ?? TODO));
 };
 
 const notifyErrorBody = (text: string) => {
