@@ -1,0 +1,130 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+/* Helpline terms */
+.term-card h3 {
+  font-size: 15px;
+  margin: 0 0 4px;
+}
+
+.term-hint {
+  margin: 0 0 12px;
+}
+
+.term-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.term-choice {
+  padding: 5px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.term-choice:hover {
+  border-color: var(--color-accent);
+}
+
+.term-choice.active {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.term-choice.active .muted {
+  color: inherit;
+  font-weight: normal;
+}
+
+.term-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.term-words label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.term-words input {
+  font: inherit;
+  font-weight: normal;
+  padding: 5px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  width: 200px;
+}
+
+.term-words-hint {
+  flex-basis: 100%;
+  margin: 0;
+}
+
+.term-samples {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+
+.term-samples-title {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.term-samples ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.term-samples li {
+  margin: 3px 0;
+}
+
+.term-sample-new {
+  font-weight: 600;
+}
+
+.term-sample-was {
+  margin-left: 8px;
+  font-size: 12px;
+}
+
+.term-hand-written {
+  margin: 10px 0 0;
+}
+
+.term-guessed p {
+  margin: 0 0 6px;
+}
+
+.term-guessed ul {
+  margin: 0 0 10px;
+}

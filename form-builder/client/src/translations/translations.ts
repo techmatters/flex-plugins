@@ -27,12 +27,15 @@
 import type { DefinitionFileMap } from '../common/definitions';
 
 export const SUBSTITUTIONS_FILE = 'customStrings/Substitutions.json';
+// The helpline's terms and the strings they made (helplineTerms/terms.ts)
+export const HELPLINE_TERMS_FILE = 'customStrings/HelplineTerms.json';
 
 export type Strings = Record<string, string>;
 type Substitutions = Record<string, Strings>;
 
 // Where the text counselors see comes from
-type TranslationSource = 'aselo' | 'helpline' | 'helplineOnly';
+// Aselo's, made from the helpline's terms, written for the helpline, or a key only the helpline has
+type TranslationSource = 'aselo' | 'terms' | 'helpline' | 'helplineOnly';
 
 export type TranslationRow = {
   key: string;
@@ -85,6 +88,10 @@ export const getTranslationRows = (
   aselo: { strings: Strings; translated: string[] },
 ): TranslationRow[] => {
   const own = getSubstitutions(files)[language] ?? {};
+  const fromTerms =
+    language === 'en'
+      ? (files[HELPLINE_TERMS_FILE] as { generated?: Strings } | undefined)?.generated ?? {}
+      : ({} as Strings);
   const translated = new Set(aselo.translated);
   const keys = [...new Set([...Object.keys(aselo.strings), ...Object.keys(own)])];
   return keys.map(key => {
@@ -92,6 +99,7 @@ export const getTranslationRows = (
     const hasOwn = key in own;
     let source: TranslationSource = 'aselo';
     if (hasOwn) source = key in aselo.strings ? 'helpline' : 'helplineOnly';
+    if (hasOwn && fromTerms[key] === own[key]) source = 'terms';
     return {
       key,
       aseloText,

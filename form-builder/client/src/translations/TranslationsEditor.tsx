@@ -60,6 +60,7 @@ const ASELO_LANGUAGES = [...new Set(AVAILABLE_LANGUAGES.map(code => code.split('
 
 const SOURCE_BADGES: Record<TranslationRow['source'], { label: string; className: string } | undefined> = {
   aselo: undefined,
+  terms: { label: 'From helpline terms', className: 'badge badge-env' },
   helpline: { label: 'Changed', className: 'badge badge-edited' },
   helplineOnly: { label: 'Helpline only', className: 'badge badge-new' },
 };

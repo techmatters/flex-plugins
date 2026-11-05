@@ -61,6 +61,9 @@ import { CaseSectionsEditor } from '../cases/CaseSectionsEditor';
 import { FeaturesEditor } from '../serviceConfig/FeaturesEditor';
 import { ServiceConfigEditor } from '../serviceConfig/ServiceConfigEditor';
 import { TranslationsEditor } from '../translations/TranslationsEditor';
+import { HelplineTermsEditor } from '../helplineTerms/HelplineTermsEditor';
+import { selectHelplineTerms } from '../helplineTerms/helplineTermsSlice';
+import { contactTabTitle } from '../helplineTerms/terms';
 import { ProfilesEditor } from '../profiles/ProfilesEditor';
 import { hasProfiles } from '../profiles/profiles';
 import { CannedResponsesEditor } from '../chatsAndCalls/CannedResponsesEditor';
@@ -99,6 +102,7 @@ const SECTION_HELP: Partial<Record<View['kind'], { slug: string; what: string }>
   formSelector: { slug: 'section-filling-in-the-contact', what: 'filling in the contact' },
   caseStatus: { slug: 'section-case-statuses', what: 'case statuses' },
   caseSections: { slug: 'section-case-sections', what: 'case sections' },
+  helplineTerms: { slug: 'section-helpline-terms', what: 'helpline terms' },
   caseSection: { slug: 'section-case-section-forms', what: 'this case section’s form' },
   profiles: { slug: 'section-client-profiles', what: 'client profiles' },
 };
@@ -300,6 +304,9 @@ export const HelplineWorkspace = () => {
     if (view.kind === 'translations' && canApply) {
       return <TranslationsEditor key={editorKey} />;
     }
+    if (view.kind === 'helplineTerms') {
+      return <HelplineTermsEditor key={editorKey} />;
+    }
     if (view.kind === 'caseSections') {
       return <CaseSectionsEditor key={editorKey} />;
     }
@@ -354,6 +361,7 @@ export const HelplineWorkspace = () => {
   };
 
   const sectionHelp = sectionHelpOf(view);
+  const helplineTerms = useAppSelector(selectHelplineTerms);
 
   return (
     <>
@@ -435,11 +443,18 @@ export const HelplineWorkspace = () => {
 
       <div className="workspace">
         <nav className="sidebar">
-          {/* Features, the service configuration and translations are for Aselo staff only (not when viewing as helpline staff) */}
-          {canApply && (
-            <>
-              <h3>Helpline</h3>
-              <ul>
+          <h3>Helpline</h3>
+          <ul>
+            <NavItem
+              current={view}
+              onSelect={setView}
+              reviewOf={reviewOf}
+              target={{ kind: 'helplineTerms' }}
+              label="Helpline terms"
+            />
+            {/* Features, the service configuration and translations are for Aselo staff only (not when viewing as helpline staff) */}
+            {canApply && (
+              <>
                 <NavItem
                   current={view}
                   onSelect={setView}
@@ -461,9 +476,9 @@ export const HelplineWorkspace = () => {
                   target={{ kind: 'translations' }}
                   label="Translations"
                 />
-              </ul>
-            </>
-          )}
+              </>
+            )}
+          </ul>
           <h3>Contact forms</h3>
           <ul>
             {CONTACT_TABS.filter(tab => files[tab.filePath]).map(tab => (
@@ -473,7 +488,7 @@ export const HelplineWorkspace = () => {
                 reviewOf={reviewOf}
                 key={tab.key}
                 target={{ kind: 'contactTab', tabKey: tab.key }}
-                label={tab.title}
+                label={contactTabTitle(tab, helplineTerms)}
                 errors={errorCount(tab.key)}
               />
             ))}

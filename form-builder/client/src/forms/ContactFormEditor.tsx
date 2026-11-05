@@ -87,6 +87,8 @@ import {
   threadsOn,
 } from '../reviews/formReviews';
 import { SectionTitle } from '../help/HelpContext';
+import { selectHelplineTerms } from '../helplineTerms/helplineTermsSlice';
+import { contactTabTitle } from '../helplineTerms/terms';
 
 // What a field card shows of its review: each side's approval, and its open flags
 type CardReview = {
@@ -178,6 +180,7 @@ const Column = ({ id, children }: { id: ColumnKey; children: React.ReactNode }) 
 };
 
 export const ContactFormEditor = ({ tab }: { tab: FormTarget }) => {
+  const helplineTerms = useAppSelector(selectHelplineTerms);
   const dispatch = useAppDispatch();
   const draftFiles = useAppSelector(selectDraftFiles);
   const { editorRevision } = useAppSelector(selectWorkspace);
@@ -249,7 +252,8 @@ export const ContactFormEditor = ({ tab }: { tab: FormTarget }) => {
     <div className="editor">
       <section className="panel editor-canvas">
         <SectionTitle>
-          {tab.title} <span className="muted count">{allEntries.length} fields</span>
+          {isContactTab(tab) ? contactTabTitle(tab, helplineTerms) : tab.title}{' '}
+          <span className="muted count">{allEntries.length} fields</span>
         </SectionTitle>
         <p className="muted editor-hint">
           Click a field to change it. Drag fields to reorder them or move them to the other column.
