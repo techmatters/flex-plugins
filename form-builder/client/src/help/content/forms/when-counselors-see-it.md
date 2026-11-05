@@ -10,6 +10,7 @@ questions:
   - how long does it take
 keywords: live, counselors, see, when, published, how long, deploy, appear
 ---
+
 Only after the Aselo team has reviewed and published your draft. Until then, your changes are in the draft, and counselors keep using the current forms.
 
-The Forms list says where your draft is: *In progress*, *Submitted for review*, or open questions and changes waiting for you. To know when it'll be live, email support@aselo.org.
+The Forms list says where your draft is: _In progress_, _Submitted for review_, or open questions and changes waiting for you. To know when it'll be live, email support@aselo.org.

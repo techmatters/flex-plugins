@@ -23,6 +23,7 @@ tour:
   - text:Help box under the field (optional) | Guidance for counselors, shown under the question, e.g. how to ask it. | Select a field to see its settings.
   - button:Try it out in Aselo | Fill in the form as counselors would, to check it. | Open a form first.
 ---
+
 Each question counselors answer is a **field**. You can add one to any contact form tab or case form.
 
 1. In the left menu, open the form, e.g. **Contact forms › Help seeker information**.

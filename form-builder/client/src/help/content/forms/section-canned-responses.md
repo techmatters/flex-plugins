@@ -10,6 +10,7 @@ questions:
   - why don't counselors see canned responses
 keywords: canned responses, ready-made, saved replies, templates, quick replies, chat messages, counselors
 ---
+
 Canned responses are **ready-made messages counselors can pick in a chat**, then edit before sending: a greeting, a safety message, information about a service, how to reach you again...
 
 They save counselors time and keep important messages consistent. Counselors always see the text before it's sent, and can change it.

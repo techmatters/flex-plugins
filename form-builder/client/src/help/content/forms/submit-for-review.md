@@ -20,6 +20,7 @@ tour:
   - text:Notes for the Aselo team | Things the reviewer should know. They don't stop you submitting. | No notes this time.
   - button:Submit for review | When it all looks right, click **Submit for review**. The Aselo team is told straight away. | It shows once you've opened **Review & submit**.
 ---
+
 When your team is happy with the changes, send them to the Aselo team.
 
 1. Click **Review & submit** at the top right.
@@ -28,6 +29,6 @@ When your team is happy with the changes, send them to the Aselo team.
 4. **Notes for the Aselo team** are things the reviewer should know. They don't stop you.
 5. Click **Submit for review**.
 
-The Aselo team is told straight away, and the Forms list shows *Submitted for review by* you.
+The Aselo team is told straight away, and the Forms list shows _Submitted for review by_ you.
 
-> **Changed something after submitting?** That's fine: the draft goes back to *In progress*. Submit again when you're done.
+> **Changed something after submitting?** That's fine: the draft goes back to _In progress_. Submit again when you're done.

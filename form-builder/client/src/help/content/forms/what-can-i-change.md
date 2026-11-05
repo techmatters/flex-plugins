@@ -12,6 +12,7 @@ questions:
   - change the automatic messages
 keywords: menu, left menu, sections, contact forms, issue categories, call types, canned responses, automatic messages, webchat form, cases, case statuses, profiles
 ---
+
 The left menu has everything you can change:
 
 - **Contact forms**: the contact form tabs (e.g. help seeker and service user information) and the **Issue categories**.

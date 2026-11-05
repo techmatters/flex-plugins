@@ -11,6 +11,7 @@ questions:
   - terms and conditions checkbox
 keywords: webchat, website, pre-engagement, before the chat, start chat, terms and conditions, languages, visitors
 ---
+
 The webchat form has **the questions visitors answer on your website before a chat starts**, e.g. their age, where they are, the language they prefer, and accepting your terms.
 
 Their answers can fill in the contact form for the counselor, so they don't have to ask again, and can decide where the chat goes (e.g. a Spanish-speaking counselor).

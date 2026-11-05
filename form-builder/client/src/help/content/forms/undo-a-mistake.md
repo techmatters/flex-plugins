@@ -13,6 +13,7 @@ questions:
   - will I break something
 keywords: undo, mistake, wrong, revert, discard, start again, reset, broke, safe, break, try
 ---
+
 Don't worry: nothing reaches counselors until the Aselo team publishes it.
 
 - Change it back in the editor, the same way you changed it.

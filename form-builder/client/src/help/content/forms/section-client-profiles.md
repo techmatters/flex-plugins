@@ -10,6 +10,7 @@ questions:
   - profile sections
 keywords: profiles, client, block, blocking, flags, history, notes, repeat, identifier
 ---
+
 A profile brings together **everything about one person who gets in touch**: their past contacts, their cases, and notes counselors keep about them. Counselors find it from the person's phone number or contact details, so they know the history before they start.
 
 Counselors can also **flag** a profile, e.g. block someone after abusive contacts. A blocked person gets a short message and doesn't reach a counselor until the block ends.

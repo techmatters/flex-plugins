@@ -11,7 +11,8 @@ questions:
   - remove a category
 keywords: issue, categories, category, subcategory, subcategories, topic, categorization, colour, color, help link
 ---
-Issue categories are what counselors pick to say what a contact was about, e.g. *Mental health › Anxiety*.
+
+Issue categories are what counselors pick to say what a contact was about, e.g. _Mental health › Anxiety_.
 
 1. In the left menu, open **Contact forms › Issue categories**. **How it looks in Aselo** shows them as counselors see them.
 2. Click **+ Add a category** at the bottom, and type its name. You can choose its colour.

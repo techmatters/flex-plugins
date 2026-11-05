@@ -11,6 +11,7 @@ questions:
   - what if nobody takes the contact
 keywords: rule, card, change, order, add, queue, skills, priority, condition, timeout, nobody, workflow
 ---
+
 Each rule is a card, in order: the first one that fits a contact takes it.
 
 1. Open Routing and the workflow (each workflow is a tab).

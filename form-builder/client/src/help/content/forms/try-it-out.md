@@ -10,6 +10,7 @@ questions:
   - try it out
 keywords: preview, try, test, see, counselor screen, try it out in aselo, look
 ---
+
 You can fill in the draft form exactly as counselors would, before anything is published.
 
 1. Open the form.

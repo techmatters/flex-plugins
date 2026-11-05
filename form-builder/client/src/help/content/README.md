@@ -12,11 +12,11 @@ staff.
 
 ```markdown
 ---
-title: Send your changes for review     # as a task or a question
-kind: guide                            # guide (steps), answer (one question) or section (what a screen is for)
-audience: helpline                     # helpline, aselo or everyone
-order: 22                              # its place in the area's list (lower first)
-questions:                             # how people ask for it: the more, the better it's found
+title: Send your changes for review # as a task or a question
+kind: guide # guide (steps), answer (one question) or section (what a screen is for)
+audience: helpline # helpline, aselo or everyone
+order: 22 # its place in the area's list (lower first)
+questions: # how people ask for it: the more, the better it's found
   - how do I submit my changes
   - I'm done, what now
 keywords: submit, send, review, finish # other words people might use
@@ -53,8 +53,9 @@ optional for the person, and never starts by itself. Each step is a line of `tou
 
 ```markdown
 tour:
-  - button:Review & submit | Click **Review & submit**. | Open your forms first: it's at the top right.
-  - text:Fix these first | Fix anything listed here. | Nothing needs fixing. Good!
+
+- button:Review & submit | Click **Review & submit**. | Open your forms first: it's at the top right.
+- text:Fix these first | Fix anything listed here. | Nothing needs fixing. Good!
 ```
 
 `<what to point at> | <what to say> | <what to say when it isn't on screen>` (the last is

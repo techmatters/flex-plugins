@@ -9,6 +9,7 @@ questions:
   - mark a board ready for claude
 keywords: export, json, claude, ready, status, implemented, skill, studio, studio-flow-from-board
 ---
+
 1. Go through the **Check** tab with the helpline until there are no errors and the warnings left are agreed.
 2. Set the status to **Ready for Claude** (next to the board's title).
 3. **Export** › Flows for Claude (JSON), and give it to Claude with the studio-flow-from-board skill, staging first.

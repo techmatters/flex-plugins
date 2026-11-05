@@ -9,6 +9,7 @@ questions:
   - validate the technical side
 keywords: review, submitted, validate, approve, aselo, technical, pii, saved names, reports
 ---
+
 Submissions are posted in Slack, and come first in the Forms list.
 
 1. Click **Review** next to the draft.

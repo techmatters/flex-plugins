@@ -12,8 +12,9 @@ questions:
   - who can use the builder
 keywords: sign in, login, access, okta, group, permission, account, password, sign out, colleague
 ---
+
 You sign in with your Aselo Okta account. What you can open depends on the group the Aselo team puts you in: helpline staff open their own helpline's forms and designs; Aselo staff open every helpline's.
 
-If the builder says *You are not in a form builder group*, or you can't see your helpline, email support@aselo.org and ask to be added. For a colleague, send their name and email.
+If the builder says _You are not in a form builder group_, or you can't see your helpline, email support@aselo.org and ask to be added. For a colleague, send their name and email.
 
 You stay signed in for 8 hours in that browser tab. **Sign out** is at the top right.

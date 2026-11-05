@@ -12,6 +12,7 @@ questions:
   - why did it go back to in progress
 keywords: status, imported, in progress, ready for claude, implemented, new, board, chatbot, routing, design
 ---
+
 Contact flow boards, chatbots and routing designs each have a status that says where the design is:
 
 - **Imported**: read from what's live today, and nothing changed yet.
@@ -21,4 +22,4 @@ Contact flow boards, chatbots and routing designs each have a status that says w
 
 **New** means it isn't in your live setup yet.
 
-Comments, notes and tasks don't change the status; changes to the design itself do, so a design has to be marked ready again after a change. Only the Aselo team sets *Ready for Claude* and *Implemented*: when your team is happy with a design, tell them, e.g. with a comment.
+Comments, notes and tasks don't change the status; changes to the design itself do, so a design has to be marked ready again after a change. Only the Aselo team sets _Ready for Claude_ and _Implemented_: when your team is happy with a design, tell them, e.g. with a comment.

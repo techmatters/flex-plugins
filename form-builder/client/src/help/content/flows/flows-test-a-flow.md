@@ -11,6 +11,7 @@ questions:
   - green paths
 keywords: test, try, simulate, run, path, tested, green, dialpad, reply, walk through
 ---
+
 **Test** mode walks through a flow as a contact would, without calling or texting anyone. It checks the flow's paths, not its live messages.
 
 1. Click **Test** in the toolbar. The board can't be changed while testing.

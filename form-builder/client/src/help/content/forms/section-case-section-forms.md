@@ -9,6 +9,7 @@ questions:
   - change the note form
 keywords: case section, form, note, referral, household, perpetrator, incident, fields
 ---
+
 Each [case section](help:section-case-sections) has a form: what counselors fill in when they add one to a case, e.g. a referral's organisation and date, or a household member's name and relationship.
 
 ## What you can change

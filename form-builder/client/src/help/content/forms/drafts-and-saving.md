@@ -15,8 +15,9 @@ questions:
   - my changes disappeared
 keywords: save, saved, draft, lost, reload, someone else, same time, together, share, colleague, disappeared
 ---
-Yes: everything saves by itself a moment after each change. The bar at the top says *All changes saved*.
 
-Your changes go into a **draft**: one per helpline, shared by everyone at your helpline and the Aselo team. Counselors don't see it until the Aselo team publishes it. The draft shows *Last change by* whoever changed it last.
+Yes: everything saves by itself a moment after each change. The bar at the top says _All changes saved_.
+
+Your changes go into a **draft**: one per helpline, shared by everyone at your helpline and the Aselo team. Counselors don't see it until the Aselo team publishes it. The draft shows _Last change by_ whoever changed it last.
 
 Two people can work on it, but if someone else saved while you were editing, the builder stops and asks you to **Reload**, so nobody's work is overwritten without noticing. Reload, then make your change again.

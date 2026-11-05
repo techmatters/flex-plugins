@@ -10,6 +10,7 @@ questions:
   - where do the details of the person we help go
 keywords: service user, child, client, person helped, about themselves, tab, contact form, personal information
 ---
+
 This form is about the **person the contact is about**: the one your helpline is helping. Counselors fill it in with what they learn about them: age, gender, where they live, their situation...
 
 It's always there. When people contact you about themselves, it holds their own details. When someone contacts you about another person, it holds that other person's details, and the one contacting goes in [Help seeker information](help:section-help-seeker-information).
@@ -24,4 +25,4 @@ Answers from the webchat form or the chatbot can fill some of it in before the c
 
 Some questions, such as age and gender, can't be removed: Aselo and its reports need them.
 
-> **In Aselo** this tab may still be called *Child information* for your counselors: the builder uses “service user” because not every helpline works with children.
+> **In Aselo** this tab may still be called _Child information_ for your counselors: the builder uses “service user” because not every helpline works with children.

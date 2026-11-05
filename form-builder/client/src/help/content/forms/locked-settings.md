@@ -11,6 +11,7 @@ questions:
   - I can't change the call type
 keywords: locked, greyed, disabled, can't, cannot, rename, remove, saved name, required, call type, category
 ---
+
 Some things are locked because contacts already saved, and your reports, depend on them: changing them could break those reports or lose information.
 
 Locked for helpline staff:

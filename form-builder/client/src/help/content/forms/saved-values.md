@@ -10,7 +10,8 @@ questions:
   - what does 00;0 mean
 keywords: saved value, show saved values, value, text, label, semicolon, report
 ---
-Each answer has two parts: the **text** counselors see, and the **saved value**: what's stored in the contact and shown in reports. They're usually the same, but can differ, e.g. *0* saved as *00*.
+
+Each answer has two parts: the **text** counselors see, and the **saved value**: what's stored in the contact and shown in reports. They're usually the same, but can differ, e.g. _0_ saved as _00_.
 
 **Show saved values** shows them next to each answer. You can give a new answer its own saved value; existing answers keep theirs, so reports stay consistent.
 

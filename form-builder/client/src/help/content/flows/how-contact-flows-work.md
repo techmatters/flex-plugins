@@ -11,6 +11,7 @@ questions:
   - who does what in contact flows
 keywords: contact flows, board, frame, design, process, steps, whiteboard, miro, studio, flow
 ---
+
 A contact flow is **what happens to someone from the moment they call, text or chat until they reach a counselor** (and after): the messages they get, the questions they answer, the checks Aselo makes, the queue they wait in. You design it on a **board**, like a whiteboard, with your team and the Aselo team.
 
 1. **Open your helpline's board** from the Contact flows page.
@@ -20,4 +21,4 @@ A contact flow is **what happens to someone from the moment they call, text or c
 5. **Try it** in **Test** mode: walk through it as a contact would, path by path. See [Test a flow](help:flows-test-a-flow).
 6. **The Aselo team marks it Ready for Claude** when it's agreed, and it's written into your helpline's setup, tested on staging, and then goes live.
 
-Each board is divided into **frames**, one per flow, e.g. *Voice*, *SMS*, *Webchat*. The (i) on each step says what it does.
+Each board is divided into **frames**, one per flow, e.g. _Voice_, _SMS_, _Webchat_. The (i) on each step says what it does.

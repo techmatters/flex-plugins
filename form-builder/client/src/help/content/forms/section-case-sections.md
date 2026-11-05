@@ -10,6 +10,7 @@ questions:
   - notes referrals household
 keywords: case, cases, sections, notes, referrals, household, perpetrator, incident, documents, follow up
 ---
+
 A **case** follows a person over several contacts: counselors open one when someone needs ongoing support, and link their contacts to it.
 
 Case sections are **what counselors can add to a case**, e.g. notes, referrals, household members, incidents, documents. Each section has its own form.

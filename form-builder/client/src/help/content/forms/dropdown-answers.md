@@ -15,6 +15,7 @@ questions:
   - upload an excel list of answers
 keywords: answer, option, dropdown, list, paste, several, spreadsheet, rename, remove, saved value, typo, spelling, excel, upload
 ---
+
 A dropdown's answers are edited in its **Field settings**.
 
 1. Open the form and click the dropdown's field.

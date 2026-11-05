@@ -23,12 +23,13 @@ tour:
   - text:For | Choose who it's for: someone at your helpline, someone at Aselo, or no one in particular. | Click **+ Flag or comment** first.
   - label:New comment | Write it here, then add it. Its icon shows on the field and in the left menu until someone resolves it. | Click **+ Flag or comment** first.
 ---
+
 You can leave a question or comment on a whole form or on one field. It stays there, with its replies, until someone marks it resolved, so your team and the Aselo team can discuss it right where it matters.
 
 1. Open the form. To comment on one field, click it; to comment on the whole form, use the **Review** box at the top of the form.
 2. Click **+ Flag or comment**.
 3. Choose its **Kind**:
-   - **Question** (blue ?): something you want answered, e.g. “Should *Other* be an option?”
+   - **Question** (blue ?): something you want answered, e.g. “Should _Other_ be an option?”
    - **Needs attention** (yellow !): something to check, e.g. “Check this before go-live”
    - **Needs changes** (orange ⚠): something that must change, e.g. “This answer is misspelled”
    - **Note** (grey): anything else worth knowing
