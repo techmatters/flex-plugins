@@ -151,3 +151,18 @@
 .operating-check-result.operating-error {
   color: var(--color-danger, #b42318);
 }
+
+/* What changes the hours: disabled (but readable) for helpline staff */
+.operating-changes {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.operating-changes:disabled .operating-add,
+.operating-changes:disabled .operating-day-actions,
+.operating-changes:disabled .operating-week-actions,
+.operating-changes:disabled .operating-public-holidays {
+  display: none;
+}

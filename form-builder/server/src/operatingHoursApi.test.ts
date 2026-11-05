@@ -56,23 +56,38 @@ describe('operating hours', () => {
     expect((await operatingHoursChoices(formDefinitionsDir, 'usvc')).hasOperatingHours).toBe(false);
   });
 
-  test('its file is in the draft for Aselo staff only, written to the account-scoped Lambda', async () => {
+  test('its file is in the draft for everyone, changed by Aselo staff only, written to the account-scoped Lambda', async () => {
+    const shared = context();
     const definitionsFor = async (user: ApiUser) =>
-      (await handleApiRequest(context(), { method: 'GET', path: '/api/definitions/usnm/v1', user })).body as {
+      (await handleApiRequest(shared, { method: 'GET', path: '/api/definitions/usnm/v1', user })).body as {
         files: Record<string, { timezone?: string }>;
       };
     expect((await definitionsFor(staff)).files[OPERATING_INFO_FILE]?.timezone).toBe('America/New_York');
-    expect(OPERATING_INFO_FILE in (await definitionsFor(usnmStaff)).files).toBe(false);
+    // Helpline staff see it (to review and comment on), but not the service configuration
+    const forHelpline = (await definitionsFor(usnmStaff)).files;
+    expect(forHelpline[OPERATING_INFO_FILE]?.timezone).toBe('America/New_York');
+    expect(Object.keys(forHelpline).some(filePath => filePath.startsWith('service-configuration/'))).toBe(false);
     expect(repoPathOf('usnm', 'v1', OPERATING_INFO_FILE)).toBe('lambdas/account-scoped/src/operatingInfo/usnm.json');
 
-    // Helpline staff can't change it
-    const save = await handleApiRequest(context(), {
-      method: 'PUT',
-      path: '/api/drafts/usnm/v1',
-      body: { expectedRevision: 0, files: { [OPERATING_INFO_FILE]: { timezone: 'UTC' } }, baseHashes: {} },
-      user: usnmStaff,
-    });
-    expect(save.status).toBe(403);
+    const save = (user: ApiUser, revision: number, files: Record<string, unknown>) =>
+      handleApiRequest(shared, {
+        method: 'PUT',
+        path: '/api/drafts/usnm/v1',
+        body: { expectedRevision: revision, files, baseHashes: {} },
+        user,
+      });
+    // Aselo staff change it; a helpline person's save (with their own copy of it) leaves it as Aselo staff left it
+    expect((await save(staff, 0, { [OPERATING_INFO_FILE]: { timezone: 'America/Chicago' } })).status).toBe(200);
+    expect(
+      (await save(usnmStaff, 1, { [OPERATING_INFO_FILE]: { timezone: 'UTC' }, 'customStrings/Messages.json': {} }))
+        .status,
+    ).toBe(200);
+    const draft = (await handleApiRequest(shared, { method: 'GET', path: '/api/drafts/usnm/v1', user: staff }))
+      .body as {
+      files: Record<string, { timezone?: string }>;
+    };
+    expect(draft.files[OPERATING_INFO_FILE]?.timezone).toBe('America/Chicago');
+    expect('customStrings/Messages.json' in draft.files).toBe(true);
   });
 
   test('only Aselo staff see what the flows ask for; anyone with the helpline sees the choices', async () => {

@@ -56,6 +56,7 @@ import {
   type ApplyResult,
   applyThreadChange,
   DraftReview,
+  isHiddenFromHelplinePath,
   isStaffOnlyPath,
   type Me,
   sideOf,
@@ -162,17 +163,17 @@ const reviewOf = ({ approvals, threads, reviewLog }: DraftMeta): DraftReview => 
   ...(threads ? { threads } : {}),
   ...(reviewLog ? { reviewLog } : {}),
 });
-// The files only Aselo staff see (staffOnly), or the others
-const pickFiles = <T>(files: Record<string, T>, staffOnly: boolean) =>
-  Object.fromEntries(Object.entries(files).filter(([filePath]) => isStaffOnlyPath(filePath) === staffOnly));
+// The files matching (or, with false, not matching) a kind of path
+const pickFiles = <T>(files: Record<string, T>, matches: (filePath: string) => boolean, keep = true) =>
+  Object.fromEntries(Object.entries(files).filter(([filePath]) => matches(filePath) === keep));
 
 const draftForUser = (draft: Draft, user: ApiUser): Draft =>
   isStaff(user)
     ? draft
     : {
         ...draft,
-        files: pickFiles(draft.files, false),
-        meta: { ...draft.meta, baseHashes: pickFiles(draft.meta.baseHashes, false) },
+        files: pickFiles(draft.files, isHiddenFromHelplinePath, false),
+        meta: { ...draft.meta, baseHashes: pickFiles(draft.meta.baseHashes, isHiddenFromHelplinePath, false) },
       };
 
 const isSaveDraftBody = (body: unknown): body is SaveDraftBody => {
@@ -383,7 +384,11 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
         context.webchatConfigDir,
       );
       if (isStaff(user)) return ok(definitions);
-      return ok({ ...definitions, files: pickFiles(definitions.files, false), serviceConfigDefaults: undefined });
+      return ok({
+        ...definitions,
+        files: pickFiles(definitions.files, isHiddenFromHelplinePath, false),
+        serviceConfigDefaults: undefined,
+      });
     }
 
     const draftMatch = route.match(
@@ -420,12 +425,15 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
         );
       }
       let { files } = request.body;
+      let savedBaseHashes = baseHashes;
       if (!isStaff(user)) {
-        if (Object.keys(files).some(isStaffOnlyPath)) {
-          return fail(403, 'Only Aselo staff can change the service configuration or the operating hours');
+        if (Object.keys(files).some(isHiddenFromHelplinePath)) {
+          return fail(403, 'Only Aselo staff can change the service configuration');
         }
-        // Keep the changes to staff-only files (service configuration, operating hours) Aselo staff made in this draft
-        files = { ...files, ...pickFiles(existing?.files ?? {}, true) };
+        // Files only Aselo staff change (e.g. the operating hours, which helpline staff see) stay as
+        // they left them in this draft, whatever this person's copy has
+        files = { ...pickFiles(files, isStaffOnlyPath, false), ...pickFiles(existing?.files ?? {}, isStaffOnlyPath) };
+        savedBaseHashes = pickFiles(baseHashes, isStaffOnlyPath, false);
       }
       const invalidPath = Object.keys(files).find(filePath => !isValidDraftFilePath(filePath));
       if (invalidPath) return fail(400, `Invalid file path ${invalidPath}`);
@@ -462,7 +470,7 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
           status: 'editing',
           updatedAt: now,
           updatedBy: user.name,
-          baseHashes: { ...(existing?.meta.baseHashes ?? {}), ...baseHashes },
+          baseHashes: { ...(existing?.meta.baseHashes ?? {}), ...savedBaseHashes },
           ...(source ? { source } : {}),
           ...(existing?.meta.imported ? { imported: true } : {}),
           // Kept: an approval only stops counting when what it approved changes (client/src/reviews/formReviews.ts)
@@ -474,11 +482,11 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
     }
 
     if (method === 'DELETE' && !action) {
-      const kept = isStaff(user) ? {} : pickFiles(existing?.files ?? {}, true);
+      const kept = isStaff(user) ? {} : pickFiles(existing?.files ?? {}, isStaffOnlyPath);
       // Aselo staff take an imported version off the list (?remove=true); discarding keeps it there
       const removing = isStaff(user) && request.query?.remove === 'true';
       if (existing && !removing && (Object.keys(kept).length > 0 || existing.meta.imported)) {
-        // Helpline staff discard their own changes; Aselo staff's service configuration stays
+        // Helpline staff discard their own changes; Aselo staff's (service configuration, operating hours) stay
         const draft: Draft = {
           ...existing,
           files: kept,
@@ -488,7 +496,7 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
             status: 'editing',
             updatedAt: now,
             updatedBy: user.name,
-            baseHashes: pickFiles(existing.meta.baseHashes, true),
+            baseHashes: pickFiles(existing.meta.baseHashes, isStaffOnlyPath),
           },
         };
         await context.drafts.put(draft);

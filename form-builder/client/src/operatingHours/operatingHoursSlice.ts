@@ -32,6 +32,7 @@ import {
 import { AppThunk, rootReducer, RootState } from '../app/store';
 import { editDraftFiles, selectDraftFiles } from '../drafts/draftSlice';
 import { selectWorkspace } from '../workspace/workspaceSlice';
+import { selectActingAsStaff } from '../app/sessionSlice';
 import {
   copyDay,
   emptyWeek,
@@ -157,9 +158,10 @@ const loadOperatingHoursUsage =
     }
   };
 
-export const openOperatingHours = (): AppThunk => dispatch => {
+// What the flows ask for is read for Aselo staff (who change the hours)
+export const openOperatingHours = (): AppThunk => (dispatch, getState) => {
   dispatch(operatingHoursOpened());
-  dispatch(loadOperatingHoursUsage());
+  if (selectActingAsStaff(getState())) dispatch(loadOperatingHoursUsage());
 };
 
 /**

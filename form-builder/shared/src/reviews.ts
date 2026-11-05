@@ -25,7 +25,8 @@
  * - A log of who did what, when.
  *
  * Targets: a form (`contactTab:CallerInformationTab`, `caseSection:note`) or one of its fields
- * (`contactTab:CallerInformationTab#firstName`).
+ * (`contactTab:CallerInformationTab#firstName`), or a whole section reviewed as one
+ * (`section:operatingHours`, `section:permissions`).
  */
 import type { ApiUser } from './api';
 
@@ -77,7 +78,8 @@ export const approvalKey = (side: ReviewSide, target: string) => `${side}|${targ
 
 export const sideOf = (user: ApiUser): ReviewSide => (user.role === 'aselo-staff' ? 'aselo' : 'helpline');
 
-const TARGET_PATTERN = /^(contactTab|caseSection):[A-Za-z0-9_-]{1,100}(#[A-Za-z0-9_-]{1,100})?$/;
+const TARGET_PATTERN =
+  /^((contactTab|caseSection):[A-Za-z0-9_-]{1,100}(#[A-Za-z0-9_-]{1,100})?|section:(operatingHours|permissions))$/;
 const FINGERPRINT_PATTERN = /^[0-9a-f]{1,16}$/;
 const MAX_TEXT_LENGTH = 5000;
 const MAX_THREADS = 500;

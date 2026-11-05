@@ -52,15 +52,19 @@ export const repoServiceConfigDir = (code: string) => `twilio-iac/helplines/${co
 /**
  * The helpline's operating hours (lambdas/account-scoped/src/operatingInfo/<code>.json), read by
  * the account-scoped Lambda's operatingHours route, keyed as `account-scoped/operatingInfo.json`.
- * Only Aselo staff see or change it, and a change ships with an account-scoped Lambda deploy.
+ * Only Aselo staff change it (helpline staff see it), and a change ships with an account-scoped
+ * Lambda deploy.
  */
 export const REPO_OPERATING_INFO_DIR = 'lambdas/account-scoped/src/operatingInfo';
 export const OPERATING_INFO_FILE = 'account-scoped/operatingInfo.json';
 
 export const isOperatingInfoPath = (filePath: string) => filePath === OPERATING_INFO_FILE;
 
-// Files only Aselo staff see or change: the service configuration and the operating hours
+// Files only Aselo staff change: the service configuration and the operating hours
 export const isStaffOnlyPath = (filePath: string) => isServiceConfigPath(filePath) || isOperatingInfoPath(filePath);
+
+// Of those, the ones helpline staff don't even see (the operating hours they see, review and comment on)
+export const isHiddenFromHelplinePath = (filePath: string) => isServiceConfigPath(filePath);
 
 export const repoPathOf = (code: string, version: string, filePath: string) => {
   if (isOperatingInfoPath(filePath)) return `${REPO_OPERATING_INFO_DIR}/${code}.json`;

@@ -309,7 +309,8 @@ export const ReviewPanel = ({
   review: ReviewContext;
   target: string;
   fingerprint: string;
-  what: 'form' | 'field';
+  // What's approved, e.g. 'form', 'field' or 'these hours'
+  what: string;
   title: string;
 }) => {
   const dispatch = useAppDispatch();

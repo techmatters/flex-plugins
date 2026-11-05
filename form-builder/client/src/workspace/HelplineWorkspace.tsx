@@ -319,7 +319,8 @@ export const HelplineWorkspace = () => {
     if (view.kind === 'translations' && canApply) {
       return <TranslationsEditor key={editorKey} />;
     }
-    if (view.kind === 'operatingHours' && canApply) {
+    // Helpline staff see them (to review and comment on); Aselo staff change them
+    if (view.kind === 'operatingHours') {
       return <OperatingHoursEditor key={editorKey} />;
     }
     if (view.kind === 'helplineTerms') {
@@ -483,6 +484,14 @@ export const HelplineWorkspace = () => {
               target={{ kind: 'helplineTerms' }}
               label="Helpline terms"
             />
+            {/* Changed by Aselo staff; helpline staff see, review and comment on them */}
+            <NavItem
+              current={view}
+              onSelect={setView}
+              reviewOf={reviewOf}
+              target={{ kind: 'operatingHours' }}
+              label="Operating hours"
+            />
             {/* Features, the service configuration and translations are for Aselo staff only (not when viewing as helpline staff) */}
             {canApply && (
               <>
@@ -506,13 +515,6 @@ export const HelplineWorkspace = () => {
                   reviewOf={reviewOf}
                   target={{ kind: 'translations' }}
                   label="Translations"
-                />
-                <NavItem
-                  current={view}
-                  onSelect={setView}
-                  reviewOf={reviewOf}
-                  target={{ kind: 'operatingHours' }}
-                  label="Operating hours"
                 />
               </>
             )}

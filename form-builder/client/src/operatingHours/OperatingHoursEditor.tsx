@@ -15,7 +15,8 @@
  */
 
 /**
- * Aselo staff only: when the helpline is open (lambdas/account-scoped/src/operatingInfo/<code>.json),
+ * When the helpline is open (lambdas/account-scoped/src/operatingInfo/<code>.json), changed by
+ * Aselo staff and seen, reviewed and commented on by helpline staff (the review panel at the top),
  * per schedule (the main one and the offices a flow can ask for): its time zone, its hours per
  * channel and day, and its holidays, checked against what the helpline's Studio flows ask for,
  * with "Check a time" answering as the Lambda would. State and logic live in
@@ -25,6 +26,10 @@ import { useEffect, useState } from 'react';
 import type { OperatingSchedule, OperatingShift } from '@tech-matters/form-builder-shared';
 
 import { useAppDispatch, useAppSelector } from '../app/store';
+import { selectActingAsStaff } from '../app/sessionSlice';
+import { hashJson } from '../drafts/draftSlice';
+import { ReviewPanel } from '../reviews/ReviewPanel';
+import { useReviewContext } from '../workspace/useReviewContext';
 import { SectionTitle } from '../help/HelpContext';
 import { selectWorkspace, viewSelected } from '../workspace/workspaceSlice';
 import {
@@ -80,10 +85,12 @@ const TIME_ZONES: string[] = (() => {
 })();
 
 const TimeZonePicker = ({
+  disabled = false,
   value,
   onChange,
   label,
 }: {
+  disabled?: boolean;
   value: string;
   onChange: (zone: string) => void;
   label: string;
@@ -92,6 +99,7 @@ const TimeZonePicker = ({
     <input
       type="text"
       list="operating-time-zones"
+      disabled={disabled}
       aria-label={label}
       value={value}
       placeholder="e.g. America/New_York"
@@ -517,6 +525,8 @@ export const OperatingHoursEditor = () => {
   const { office, usage } = useAppSelector(selectOperatingHoursEditor);
   const { schedule, channels, channel } = useAppSelector(selectShownSchedule);
   const issues = useAppSelector(selectOperatingHoursIssues);
+  const canChange = useAppSelector(selectActingAsStaff);
+  const review = useReviewContext();
   // Typed until the office is added
   const [newOffice, setNewOffice] = useState('');
 
@@ -548,11 +558,28 @@ export const OperatingHoursEditor = () => {
           ). Checked in production only, unless the Aselo team turns it on for staging. A change reaches flows after the
           PR is merged and the account-scoped Lambda deployed.
         </p>
+        {!canChange && (
+          <p className="alert alert-info">
+            The Aselo team sets these. Review them, and ask a question or leave a comment below if something should
+            change.
+          </p>
+        )}
         {usage.status === 'error' && (
           <p className="alert alert-error">Couldn’t read what the helpline’s flows check: {usage.error}</p>
         )}
-        {!info && <SetUp />}
+        {!info && canChange && <SetUp />}
+        {!info && !canChange && <p>This helpline has no operating hours, so its flows are always told it’s open.</p>}
       </section>
+
+      {review && (
+        <ReviewPanel
+          review={review}
+          target="section:operatingHours"
+          fingerprint={hashJson(info ?? null)}
+          what="these hours"
+          title="Review: operating hours"
+        />
+      )}
 
       {info && (
         <>
@@ -586,29 +613,31 @@ export const OperatingHoursEditor = () => {
                 </button>
               ))}
             </div>
-            <form
-              className="operating-add"
-              onSubmit={e => {
-                e.preventDefault();
-                dispatch(addOffice(newOffice, true));
-                setNewOffice('');
-              }}
-            >
-              <input
-                type="text"
-                aria-label="Add an office"
-                placeholder="Add an office (e.g. preClosing)"
-                value={newOffice}
-                onChange={e => setNewOffice(e.target.value)}
-              />
-              <button
-                type="submit"
-                className="secondary-button"
-                disabled={!newOffice.trim() || offices.includes(newOffice.trim())}
+            {canChange && (
+              <form
+                className="operating-add"
+                onSubmit={e => {
+                  e.preventDefault();
+                  dispatch(addOffice(newOffice, true));
+                  setNewOffice('');
+                }}
               >
-                Add office (copy of the main schedule)
-              </button>
-            </form>
+                <input
+                  type="text"
+                  aria-label="Add an office"
+                  placeholder="Add an office (e.g. preClosing)"
+                  value={newOffice}
+                  onChange={e => setNewOffice(e.target.value)}
+                />
+                <button
+                  type="submit"
+                  className="secondary-button"
+                  disabled={!newOffice.trim() || offices.includes(newOffice.trim())}
+                >
+                  Add office (copy of the main schedule)
+                </button>
+              </form>
+            )}
             <p className="field-hint">
               An office is another schedule a flow can ask for (its “office” in Check operating hours), e.g. the main
               hours ending 15 minutes early. For a channel it doesn’t have, the main schedule is used.
@@ -619,12 +648,13 @@ export const OperatingHoursEditor = () => {
                 <div className="operating-timezone">
                   <span className="field-label">Time zone</span>
                   <TimeZonePicker
+                    disabled={!canChange}
                     value={schedule.timezone}
                     onChange={zone => dispatch(setTimezone(zone))}
                     label={`Time zone of ${office === MAIN ? 'the main schedule' : office}`}
                   />
                   {nowIn(schedule.timezone) && <span className="muted">Now there: {nowIn(schedule.timezone)}</span>}
-                  {office !== MAIN && (
+                  {office !== MAIN && canChange && (
                     <button
                       type="button"
                       className="link-button"
@@ -652,7 +682,12 @@ export const OperatingHoursEditor = () => {
                         </button>
                       ))}
                     </div>
-                    {channel && <ChannelHours schedule={schedule} channel={channel} />}
+                    {/* What changes the hours: disabled (but readable) for helpline staff */}
+                    {channel && (
+                      <fieldset className="operating-changes" disabled={!canChange}>
+                        <ChannelHours schedule={schedule} channel={channel} />
+                      </fieldset>
+                    )}
                   </>
                 ) : (
                   <p className="muted">
@@ -661,12 +696,16 @@ export const OperatingHoursEditor = () => {
                       : 'No channels of its own: the main schedule’s hours are used.'}
                   </p>
                 )}
-                <AddChannel channels={channels} />
+                {canChange && <AddChannel channels={channels} />}
               </>
             )}
           </section>
 
-          {schedule && <Holidays schedule={schedule} />}
+          {schedule && (
+            <fieldset className="operating-changes" disabled={!canChange}>
+              <Holidays schedule={schedule} />
+            </fieldset>
+          )}
           <CheckATime channels={allChannels} offices={offices} />
         </>
       )}

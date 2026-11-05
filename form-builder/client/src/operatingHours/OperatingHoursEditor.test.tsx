@@ -41,10 +41,37 @@ const openOperatingHours = async (definitions: DefinitionFiles) => {
 };
 
 describe('operating hours', () => {
-  test('only Aselo staff have them', async () => {
-    createHarness().renderWorkspace(usnm, { user: usnmStaff });
+  test('helpline staff see them, can’t change them, and can comment on them', async () => {
+    const harness = createHarness();
+    harness.renderWorkspace(usnm, { user: usnmStaff });
     await waitFor(() => expect(screen.queryByText('Loading the draft…')).toBeNull());
-    expect(screen.queryByRole('button', { name: 'Operating hours' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Operating hours' }));
+    expect(screen.getByText(/The Aselo team sets these/)).toBeTruthy();
+    // Readable, not changeable
+    const monday = screen.getByRole('rowheader', { name: 'Monday' }).closest('tr')!;
+    expect(within(monday).getByLabelText('Monday opens').matches(':disabled')).toBe(true);
+    // (hidden on the page; disabled either way)
+    expect(screen.getAllByRole('button', { name: 'Add hours' }).every(button => button.matches(':disabled'))).toBe(
+      true,
+    );
+    expect(screen.queryByRole('textbox', { name: 'Add an office' })).toBeNull();
+    // The other channels and offices can still be looked at
+    fireEvent.click(screen.getByRole('button', { name: 'voice' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Office: preClosing' }));
+    expect(screen.getByRole('rowheader', { name: 'Monday' })).toBeTruthy();
+    // A question for the Aselo team
+    const review = screen.getByRole('region', { name: 'Review: operating hours' });
+    fireEvent.click(within(review).getByRole('button', { name: '+ Flag or comment' }));
+    fireEvent.change(within(review).getByRole('textbox', { name: 'New comment' }), {
+      target: { value: 'Can we close at 21:00 on Fridays?' },
+    });
+    fireEvent.click(within(review).getByRole('button', { name: /Send|Add|Post|Flag/ }));
+    await within(review).findByText('Can we close at 21:00 on Fridays?');
+    const draft = await harness.store.get('usnm', 'v1');
+    expect(draft?.meta.threads?.[0]).toMatchObject({
+      target: 'section:operatingHours',
+      text: 'Can we close at 21:00 on Fridays?',
+    });
   });
 
   test('changing a day’s hours, and checking a time', async () => {
