@@ -292,11 +292,11 @@ ${
             "event": "match",
             "conditions": [
               {
-                "friendly_name": "If value equal_to blocked",
+                "friendly_name": "If value contains blocked",
                 "arguments": [
                   "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
                 ],
-                "type": "equal_to",
+                "type": "contains",
                 "value": "blocked"
               }
             ],
@@ -510,7 +510,7 @@ ${
         ],
         "properties": {
           "offset": {
-            "x": 1640,
+            "x": 1880,
             "y": 2620
           },
           "workflow": "${workflow_sids.master}",
@@ -534,8 +534,8 @@ ${
         ],
         "properties": {
           "offset": {
-            "x": 1360,
-            "y": 2400
+            "x": 1560,
+            "y": 2420
           },
           "service": "{{trigger.conversation.InstanceSid}}",
           "channel": "{{trigger.conversation.ChannelSid}}",
@@ -595,7 +595,7 @@ ${
                 "value": "Si,si,Sí,sí,ok"
               }
             ],
-            "next": "send_to_queue_childhelp_spanish"
+            "next": "send_message_webchat_es_childhelp_prequeue"
           },
           {
             "event": "match",
@@ -633,8 +633,8 @@ ${
         ],
         "properties": {
           "offset": {
-            "x": 1035,
-            "y": 3168
+            "x": 1100,
+            "y": 3200
           },
           "method": "POST",
           "content_type": "application/x-www-form-urlencoded;charset=utf-8",
