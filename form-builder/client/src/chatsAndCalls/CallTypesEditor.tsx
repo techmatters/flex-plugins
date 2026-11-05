@@ -25,6 +25,7 @@
  *   contact's call type, so renaming an existing one splits reporting. That needs staff mode.
  */
 import { useEffect, useMemo } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { selectDraftFiles, selectOriginalFiles } from '../drafts/draftSlice';
@@ -126,8 +127,8 @@ export const CallTypesEditor = () => {
 
           <h3 className="section-heading">Buttons that close the contact without a form</h3>
           <p className="field-hint">
-            For contacts like silent calls or wrong numbers. The contact is saved with the button's text, so existing
-            buttons can only be renamed by Aselo staff.
+            For contacts like silent calls or wrong numbers. The contact is saved with the button&apos;s text, so
+            existing buttons can only be renamed by Aselo staff.
           </p>
           <SortableRows
             rows={nonDataRows}
@@ -175,6 +176,7 @@ export const CallTypesEditor = () => {
               <textarea
                 rows={5}
                 value={bulkText}
+                // eslint-disable-next-line jsx-a11y/no-autofocus -- it appears when the person asks for it, ready to type in
                 autoFocus
                 aria-label="Button texts, one per line"
                 placeholder="One button per line"
@@ -206,7 +208,7 @@ export const CallTypesEditor = () => {
         </div>
         <div className="aselo section-preview-frame">
           <div className="aselo-tab-content">
-            <AseloCallTypeScreen buttons={buttons} strings={strings} taskType="chat" onDataCallType={() => {}} />
+            <AseloCallTypeScreen buttons={buttons} strings={strings} taskType="chat" onDataCallType={() => undefined} />
           </div>
         </div>
       </aside>

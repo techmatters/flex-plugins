@@ -27,14 +27,13 @@
  *   Case-SectionList-Title/<key> and Case-SectionList-Add/<key> (plugin translations, or the
  *   helpline's customStrings/Substitutions.json).
  */
-import type { DefinitionFileMap } from '../common/definitions';
-import { getCaseSections, getForm, LAYOUT_FILE } from '../common/definitions';
+import { type DefinitionFileMap, getCaseSections, getForm, LAYOUT_FILE } from '../common/definitions';
 import { isSameJson } from '../drafts/changes';
 import { toFieldName } from '../forms/formEditing';
 import type { ValidationIssue } from '../forms/validation';
 
 export const CASE_SECTIONS_FILE = 'CaseSections.json';
-export const SUBSTITUTIONS_FILE = 'customStrings/Substitutions.json';
+const SUBSTITUTIONS_FILE = 'customStrings/Substitutions.json';
 
 export const titleKey = (sectionKey: string) => `Case-SectionList-Title/${sectionKey}`;
 export const addKey = (sectionKey: string) => `Case-SectionList-Add/${sectionKey}`;
@@ -173,6 +172,7 @@ export const validateCaseSections = (
 export const summarizeCaseSectionChanges = (
   originalFiles: DefinitionFileMap,
   draftFiles: DefinitionFileMap,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): { title: string; lines: string[] }[] => {
   const before = getCaseSections(originalFiles);
   const after = getCaseSections(draftFiles);

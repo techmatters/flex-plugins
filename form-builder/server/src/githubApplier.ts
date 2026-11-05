@@ -21,9 +21,11 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
+
+import { repoPathOf } from '@tech-matters/form-builder-shared';
+
 import type { ApiUser, ApplyDetails, ApplyResult, DraftApplier } from './api';
 import type { Draft } from './drafts';
-import { repoPathOf } from '@tech-matters/form-builder-shared';
 import type { GitHubClient } from './github';
 import type { RepoSnapshots } from './repoSnapshot';
 import { serializeLike } from './serializeLike';
@@ -71,6 +73,7 @@ export class GitHubApplier implements DraftApplier {
 
     const branch = branchNameFor(draft, this.now());
     await this.github.request('POST', '/git/refs', { ref: `refs/heads/${branch}`, sha: commit.sha });
+    // eslint-disable-next-line camelcase -- as the API spells it
     const pull = await this.github.request<{ number: number; html_url: string }>('POST', '/pulls', {
       title: `${helpline}: Form builder changes (${draft.version})`,
       head: branch,

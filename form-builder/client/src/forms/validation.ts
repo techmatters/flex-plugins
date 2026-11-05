@@ -28,8 +28,14 @@ import type {
   SelectOption,
 } from '@hrm-form-definitions/formDefinition/types';
 import type { OneToOneConfigSpec } from '@hrm-form-definitions/formDefinition/insightsConfig';
-import type { DefinitionFileMap, FormTarget } from '../common/definitions';
-import { getForm, getReferenceData, resolveOptions } from '../common/definitions';
+
+import {
+  type DefinitionFileMap,
+  type FormTarget,
+  getForm,
+  getReferenceData,
+  resolveOptions,
+} from '../common/definitions';
 import { isBlankOption, isChoiceType } from './formEditing';
 import { getFormSpecification, validateFormDefinition } from './specification';
 
@@ -150,6 +156,7 @@ const checkLinkedDropdown = (
   return issues;
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const checkForm = (form: FormItemJsonDefinition[], tab: FormTarget, files: DefinitionFileMap): ValidationIssue[] => {
   const referenceData = getReferenceData(files);
   const issues: ValidationIssue[] = [];
@@ -170,10 +177,10 @@ const checkForm = (form: FormItemJsonDefinition[], tab: FormTarget, files: Defin
     }
     if (isChoiceType(item.type)) {
       const options = resolveOptions(item, referenceData);
-      if (!options) {
-        error(`The answers for ${describeField(item, tab)} could not be found.`, item.name);
-      } else {
+      if (options) {
         checkOptions(item, options, tab).forEach(message => error(message, item.name));
+      } else {
+        error(`The answers for ${describeField(item, tab)} could not be found.`, item.name);
       }
     }
     if (item.type === 'dependent-select') {

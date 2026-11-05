@@ -22,6 +22,7 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, test, jest } from '@jest/globals';
 import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { DefinitionFiles, listHelplines, loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
+
 import { createHarness, formDefinitionsDir, helplinesConfigDir } from '../testing/workspaceHarness';
 import { validateCaseStatuses } from './caseStatuses';
 import { validateCaseSections } from './caseSections';
@@ -152,13 +153,7 @@ describe('case sections', () => {
   test('sections and statuses in the repo today only produce warnings', async () => {
     for (const { code, versions } of await listHelplines(formDefinitionsDir)) {
       const { files } = await loadDefinitionFiles(formDefinitionsDir, code, versions[0]);
-      validateCaseSections(files, files).forEach(issue =>
-        expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({
-          at: `${code}: ${issue.message}`,
-          value: 'warning',
-        }),
-      );
-      validateCaseStatuses(files, files).forEach(issue =>
+      [...validateCaseSections(files, files), ...validateCaseStatuses(files, files)].forEach(issue =>
         expect({ at: `${code}: ${issue.message}`, value: issue.severity }).toEqual({
           at: `${code}: ${issue.message}`,
           value: 'warning',

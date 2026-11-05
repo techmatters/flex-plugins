@@ -29,6 +29,7 @@
  */
 import { GetParametersCommand, SSMClient } from '@aws-sdk/client-ssm';
 import type { APIGatewayProxyEventV2WithJWTAuthorizer, APIGatewayProxyResultV2 } from 'aws-lambda';
+
 import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { localNotifier } from './localServices';
 import { PublicRepoSource } from './publicRepo';
@@ -87,6 +88,7 @@ const json = (statusCode: number, body: unknown): APIGatewayProxyResultV2 => ({
   body: JSON.stringify(body),
 });
 
+// eslint-disable-next-line import/no-unused-modules -- the Lambda's entry point (terraform)
 export const handler = async (event: APIGatewayProxyEventV2WithJWTAuthorizer): Promise<APIGatewayProxyResultV2> => {
   const user = userFromClaims(event.requestContext.authorizer?.jwt?.claims ?? {});
   if (!user) return json(403, { message: 'You are not in a form builder group. Ask the Aselo team for access.' });

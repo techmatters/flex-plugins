@@ -15,6 +15,7 @@
  */
 
 import { describe, expect, test, jest } from '@jest/globals';
+
 import { userFromClaims } from './lambda';
 import { SlackNotifier } from './slackNotifier';
 

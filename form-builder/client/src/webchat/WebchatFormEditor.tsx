@@ -23,6 +23,7 @@
  * for translated texts, or the form itself. What's edited and how lives in webchatSlice.ts.
  */
 import { useEffect, useMemo } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { selectDraftFiles, selectOriginalFiles } from '../drafts/draftSlice';
@@ -137,7 +138,7 @@ export const WebchatFormEditor = () => {
           <h3 className="section-heading">Texts</h3>
           {!context.canTranslate && (
             <p className="field-hint">
-              This helpline's webchat has no texts of its own for {locale} yet. Ask Aselo staff to add them.
+              This helpline&apos;s webchat has no texts of its own for {locale} yet. Ask Aselo staff to add them.
             </p>
           )}
           {WEBCHAT_TEXTS.map(info => {
@@ -174,10 +175,12 @@ export const WebchatFormEditor = () => {
             rows={rows}
             labelOf={field => plainText(localizeField(field, context.strings).label) || field.name}
             onReorder={next => dispatch(reorderQuestions(next))}
+            // eslint-disable-next-line sonarjs/cognitive-complexity
             renderRow={row => {
               const field = localizeField(row.value, context.strings);
               const original = originalByName.get(row.value.name);
-              const status = !original ? 'new' : isSameJson(original, row.value) ? undefined : 'edited';
+              const edited = original && !isSameJson(original, row.value) ? 'edited' : undefined;
+              const status = original ? edited : 'new';
               const selected = row.id === selectedId;
               const hasError = fieldIssues(row.value.name).some(issue => issue.severity === 'error');
               return (
@@ -254,7 +257,8 @@ export const WebchatFormEditor = () => {
                   <button type="button" className="field-type-option" onClick={() => dispatch(wizardOpened())}>
                     <span className="field-type-name">Linked dropdowns</span>
                     <span className="muted">
-                      Two or more dropdowns where each one's answers depend on the one above, like province → district
+                      Two or more dropdowns where each one&apos;s answers depend on the one above, like province →
+                      district
                     </span>
                   </button>
                 </li>

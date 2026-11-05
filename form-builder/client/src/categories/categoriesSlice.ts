@@ -22,6 +22,7 @@
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { CategoriesDefinition } from '@hrm-form-definitions/formDefinition/types';
+
 import { AppThunk, rootReducer } from '../app/store';
 import { editDraftFiles } from '../drafts/draftSlice';
 import { Row, toRows } from '../common/SortableRows';
@@ -29,7 +30,7 @@ import type { SelectedCategories } from '../aseloPreview/AseloCategories';
 import { CATEGORY_COLORS, getHelplineCategories, setHelplineCategories, Subcategory } from './categories';
 
 // Names can change while editing, so rows carry ids
-export type CategoryValue = {
+type CategoryValue = {
   name: string;
   // The name it was loaded with, for categories that existed before this draft
   originalName?: string;
@@ -38,7 +39,7 @@ export type CategoryValue = {
   subcategories: Row<Subcategory>[];
 };
 
-export type CategoriesState = {
+type CategoriesState = {
   // The helpline whose categories are shown (a file can hold several)
   helpline?: string;
   rows: Row<CategoryValue>[];
@@ -80,6 +81,7 @@ const categoriesSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof categoriesSlice> {}
 }
 const injected = categoriesSlice.injectInto(rootReducer);
@@ -101,8 +103,7 @@ const toCategoryRows = (
   );
 
 // Names are keys in the file, so nothing is saved while two categories share one
-export const hasDuplicateNames = (rows: Row<CategoryValue>[]) =>
-  new Set(rows.map(row => row.value.name)).size < rows.length;
+const hasDuplicateNames = (rows: Row<CategoryValue>[]) => new Set(rows.map(row => row.value.name)).size < rows.length;
 
 const uniqueName = (base: string, taken: string[]) => {
   let name = base;
@@ -194,7 +195,7 @@ export const removeCategory =
   (dispatch, getState) =>
     dispatch(write(selectCategories(getState()).rows.filter(row => row.id !== id)));
 
-export const addSubcategories = (id: string, labels: string[]): AppThunk =>
+const addSubcategories = (id: string, labels: string[]): AppThunk =>
   updateCategory(id, value => {
     const taken = value.subcategories.map(sub => sub.value.label);
     const added = labels

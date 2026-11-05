@@ -13,6 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
+/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Drafts: work in progress on a helpline's definitions, kept apart from the real files until
@@ -29,8 +30,10 @@
  */
 import { promises as fs } from 'fs';
 import path from 'path';
+
 import type { DraftStatus, DraftMeta, Draft, DraftSummary } from '@tech-matters/form-builder-shared';
-export type { DraftStatus, DraftMeta, Draft, DraftSummary };
+
+export type { Draft, DraftSummary };
 
 export interface DraftStore {
   get(code: string, version: string): Promise<Draft | undefined>;

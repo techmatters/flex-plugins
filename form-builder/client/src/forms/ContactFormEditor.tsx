@@ -43,9 +43,9 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
-import type { FormTarget } from '../common/definitions';
-import { getReferenceData } from '../common/definitions';
+import { type FormTarget, getReferenceData } from '../common/definitions';
 import { isSameJson } from '../drafts/changes';
 import { selectDraftFiles } from '../drafts/draftSlice';
 import { selectIssuesByTab, selectWorkspace } from '../workspace/workspaceSlice';
@@ -75,7 +75,7 @@ import { AddFieldMenu } from './AddFieldMenu';
 import { LinkedAnswersEditor } from '../linkedDropdowns/LinkedAnswersEditor';
 import { LinkedDropdownsWizard } from '../linkedDropdowns/LinkedDropdownsWizard';
 
-const noop = () => {};
+const noop = () => undefined;
 
 const FieldCard = ({
   entry,
@@ -119,6 +119,7 @@ const SortableFieldCard = ({
     id: entry.id,
   });
   return (
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- dnd-kit's attributes make it a focusable button
     <div
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
@@ -129,7 +130,9 @@ const SortableFieldCard = ({
         cardProps.hasError ? 'has-error' : '',
       ].join(' ')}
       onClick={onSelect}
+      // eslint-disable-next-line react/jsx-props-no-spreading -- dnd-kit's drag handle props
       {...attributes}
+      // eslint-disable-next-line react/jsx-props-no-spreading -- dnd-kit's drag handle props
       {...listeners}
       aria-label={`${entry.item.label || entry.item.name}. Click to edit, or drag to move.`}
     >
@@ -207,7 +210,7 @@ export const ContactFormEditor = ({ tab }: { tab: FormTarget }) => {
         </p>
         {formIsEmpty && (
           <p className="muted">
-            This form has no fields, so counselors don't see this tab. Add a field to start using it.
+            This form has no fields, so counselors don&apos;t see this tab. Add a field to start using it.
           </p>
         )}
         <DndContext
@@ -282,7 +285,7 @@ export const ContactFormEditor = ({ tab }: { tab: FormTarget }) => {
           <div className="settings-empty">
             <h3>Field settings</h3>
             <p className="muted">
-              Click any field on the left to change its question, answers or whether it's required.
+              Click any field on the left to change its question, answers or whether it&apos;s required.
             </p>
             <p className="muted">
               Changes are saved as a draft automatically. Nothing reaches Aselo until the Aselo team reviews and applies

@@ -20,6 +20,7 @@
  * post-chat survey). How they're written lives in messagesSlice.ts.
  */
 import { useEffect } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { getHelplineName } from '../common/definitions';
 import { selectDraftFiles } from '../drafts/draftSlice';
@@ -82,7 +83,7 @@ export const MessagesEditor = () => {
         onChange={e => onChange(e.target.value)}
       />
       {DEFAULT_MESSAGES[key] && !value && (
-        <span className="field-hint">Empty, so Aselo's default (shown above) is sent.</span>
+        <span className="field-hint">Empty, so Aselo&apos;s default (shown above) is sent.</span>
       )}
     </div>
   );
@@ -191,13 +192,14 @@ export const MessagesEditor = () => {
                 : entry.text;
               if (!text) return null;
               const isContact = entry.from === 'contact';
+              const counselorName = entry.from === 'helpline' ? helplineName : 'Counselor';
               return (
                 <div
                   key={index}
                   className={`flex-message ${isContact ? 'flex-message-contact' : 'flex-message-counselor'}`}
                 >
                   <div className="flex-message-meta">
-                    <strong>{isContact ? 'Contact' : entry.from === 'helpline' ? helplineName : 'Counselor'}</strong>
+                    <strong>{isContact ? 'Contact' : counselorName}</strong>
                   </div>
                   <div className="flex-message-bubble">{text}</div>
                 </div>

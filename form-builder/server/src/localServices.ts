@@ -25,17 +25,17 @@
 import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
-import type { ApiUser, ApplyResult, DraftApplier, Notifier } from './api';
-import type { Draft } from './drafts';
+
 import {
   isServiceConfigPath,
   isWebchatTranslationsPath,
   SERVICE_CONFIG_PREFIX,
   WEBCHAT_TRANSLATIONS_PREFIX,
 } from '@tech-matters/form-builder-shared';
-import { serializeLike } from './serializeLike';
 
-export { serializeLike };
+import type { ApiUser, ApplyResult, DraftApplier, Notifier } from './api';
+import type { Draft } from './drafts';
+import { serializeLike } from './serializeLike';
 
 export const localUser = (env: Record<string, string | undefined> = process.env): ApiUser => {
   const role = env.FORM_BUILDER_ROLE === 'helpline-staff' ? 'helpline-staff' : 'aselo-staff';

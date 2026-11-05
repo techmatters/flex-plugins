@@ -21,6 +21,7 @@
  */
 import { useEffect } from 'react';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { AnswerNode } from './linkedDropdowns';
 import { selectWizard, wizardChanged, wizardClosed, wizardOpened, wizardToAnswers } from './linkedDropdownsSlice';
@@ -111,7 +112,7 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
               disabled={startCandidates.length === 0}
               onChange={() => dispatch(wizardChanged({ startFrom: 'existing', roots: [] }))}
             />
-            <span>A dropdown that's already on this form</span>
+            <span>A dropdown that&apos;s already on this form</span>
           </label>
         </fieldset>
 
@@ -155,7 +156,7 @@ export const LinkedDropdownsWizard = ({ formItems, referenceData, onCreate, onCa
         )}
 
         <div className="modal-footer">
-          <p className="muted">Next you'll fill in the answers, by hand or from a spreadsheet.</p>
+          <p className="muted">Next you&apos;ll fill in the answers, by hand or from a spreadsheet.</p>
           <button
             type="button"
             className="primary-button"

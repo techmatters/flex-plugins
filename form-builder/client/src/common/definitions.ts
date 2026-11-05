@@ -74,7 +74,7 @@ const CASE_STATUS_FILE = 'CaseStatus.json';
 export const LAYOUT_FILE = 'LayoutDefinitions.json';
 export const REFERENCE_DATA_FILE = 'ReferenceData.json';
 
-export type CaseSection = {
+type CaseSection = {
   key: string;
   label: string;
   formPath: string;
@@ -143,7 +143,7 @@ export const getHelplineName = (files: DefinitionFileMap, code: string): string 
   return helpline?.label || helpline?.value || code.toUpperCase();
 };
 
-export const getCaseStatuses = (files: DefinitionFileMap): StatusInfo[] =>
+const getCaseStatuses = (files: DefinitionFileMap): StatusInfo[] =>
   Object.values((files[CASE_STATUS_FILE] ?? {}) as Record<string, StatusInfo>);
 
 // IssueCategorizationTab is keyed by the helpline display name (e.g. "NAMI"), not the short code

@@ -19,10 +19,17 @@
  * reviewer can read ("added field X") as well as the list of files to export.
  */
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
-import type { DefinitionFileMap, FormTarget } from '../common/definitions';
-import { caseSectionTarget, CONTACT_TABS, getCaseSections, getForm } from '../common/definitions';
 
-export type FormChangeSummary = {
+import {
+  caseSectionTarget,
+  CONTACT_TABS,
+  type DefinitionFileMap,
+  type FormTarget,
+  getCaseSections,
+  getForm,
+} from '../common/definitions';
+
+type FormChangeSummary = {
   tab: FormTarget;
   added: string[];
   removed: string[];

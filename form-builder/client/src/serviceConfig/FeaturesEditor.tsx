@@ -44,9 +44,7 @@ export const FeaturesEditor = () => {
           ? 'Switch features on or off for counselors. These are settings in the helpline’s service configuration (see Service configuration for everything, per environment); after the PR is merged, apply the service configuration to staging and production.'
           : 'What’s switched on for your counselors. To change any of these, contact the Aselo team.'}
       </p>
-      {!features ? (
-        <p className="muted">This helpline’s Flex service configuration wasn’t found.</p>
-      ) : (
+      {features ? (
         <ul className="feature-list">
           {FEATURE_INFO.map(info => (
             <li key={info.key}>
@@ -83,6 +81,8 @@ export const FeaturesEditor = () => {
             </div>
           </li>
         </ul>
+      ) : (
+        <p className="muted">This helpline’s Flex service configuration wasn’t found.</p>
       )}
     </section>
   );

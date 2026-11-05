@@ -23,6 +23,7 @@
  * order and transitions are free to change.
  */
 import type { StatusInfo } from '@hrm-form-definitions/formDefinition/types';
+
 import type { DefinitionFileMap } from '../common/definitions';
 import { isSameJson } from '../drafts/changes';
 import { toFieldName } from '../forms/formEditing';
@@ -35,7 +36,7 @@ export const STATUS_COLORS = ['green', 'blue', 'yellow', 'orange', 'red', 'grey'
 
 export const REQUIRED_STATUSES = ['open', 'closed'];
 
-export type CaseStatuses = Record<string, StatusInfo>;
+type CaseStatuses = Record<string, StatusInfo>;
 
 export const getCaseStatusMap = (files: DefinitionFileMap): CaseStatuses =>
   (files[CASE_STATUS_FILE] ?? {}) as CaseStatuses;

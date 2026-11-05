@@ -21,6 +21,7 @@
  */
 import { useState } from 'react';
 import type { CategoriesDefinition } from '@hrm-form-definitions/formDefinition/types';
+
 import { ArrowDropDownIcon, ArrowDropUpIcon, GridIcon, ListIcon } from './flexIcons';
 import { Strings, translate } from './translations';
 
@@ -73,7 +74,7 @@ export const AseloCategories = ({ definition, selected, hasError, strings, onCha
         </button>
         <button
           type="button"
-          className={!gridView ? 'aselo-toggle-view active' : 'aselo-toggle-view'}
+          className={gridView ? 'aselo-toggle-view' : 'aselo-toggle-view active'}
           aria-label="List view"
           onClick={() => setGridView(false)}
         >

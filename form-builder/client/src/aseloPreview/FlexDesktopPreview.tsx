@@ -23,6 +23,7 @@
  * task and the conversation are sample content.
  */
 import { useEffect, useRef, useState } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { DefinitionFileMap, getHelplineName } from '../common/definitions';
 import { selectDraftFiles } from '../drafts/draftSlice';
@@ -304,13 +305,13 @@ export const FlexDesktopPreview = () => {
         </label>
         {focus === 'cannedResponses' && !cannedResponsesEnabled && (
           <span className="flex-preview-invalid">
-            Canned responses are switched off for this helpline (enable_canned_responses), so counselors don't see them
-            yet.
+            Canned responses are switched off for this helpline (enable_canned_responses), so counselors don&apos;t see
+            them yet.
           </span>
         )}
         {saveResult === 'saved' && <span className="flex-preview-ok">Aselo would save this contact.</span>}
         {saveResult === 'invalid' && (
-          <span className="flex-preview-invalid">Aselo wouldn't save it yet: check the tabs marked in red.</span>
+          <span className="flex-preview-invalid">Aselo wouldn&apos;t save it yet: check the tabs marked in red.</span>
         )}
         <button type="button" className="flex-preview-close" onClick={onClose}>
           Back to editing

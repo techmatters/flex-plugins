@@ -20,12 +20,13 @@
  * Phase 4 replaces the download with "Apply", which writes the same files to a branch.
  */
 import JSZip from 'jszip';
+import { isServiceConfigPath, repoPathOf } from '@tech-matters/form-builder-shared';
+
 import type { DefinitionFileMap } from '../common/definitions';
 import { getChangedFilePaths, summarizeContactFormChanges } from './changes';
 import { summarizeSectionChanges } from '../chatsAndCalls/sections';
 import type { ValidationIssue } from '../forms/validation';
 import { changedWebchatTranslationFiles } from '../webchat/webchat';
-import { isServiceConfigPath, repoPathOf } from '@tech-matters/form-builder-shared';
 
 // Most definition files in the repo are 2-space JSON, so this keeps diffs small
 export const serializeDefinitionFile = (value: unknown) => `${JSON.stringify(value, null, 2)}\n`;

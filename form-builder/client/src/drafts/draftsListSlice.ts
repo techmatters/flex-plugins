@@ -20,9 +20,10 @@
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { DraftSummary } from '@tech-matters/form-builder-shared';
+
 import type { AppThunk, RootState } from '../app/store';
 
-export type DraftsListState = { drafts?: DraftSummary[] };
+type DraftsListState = { drafts?: DraftSummary[] };
 
 const draftsListSlice = createSlice({
   name: 'draftsList',
@@ -37,12 +38,10 @@ const draftsListSlice = createSlice({
 const { draftsListed } = draftsListSlice.actions;
 export const draftsListReducer = draftsListSlice.reducer;
 
-const submittedFirst = (a: DraftSummary, b: DraftSummary) =>
-  a.meta.status === b.meta.status
-    ? b.meta.updatedAt.localeCompare(a.meta.updatedAt)
-    : a.meta.status === 'submitted'
-    ? -1
-    : 1;
+const submittedFirst = (a: DraftSummary, b: DraftSummary) => {
+  if (a.meta.status === b.meta.status) return b.meta.updatedAt.localeCompare(a.meta.updatedAt);
+  return a.meta.status === 'submitted' ? -1 : 1;
+};
 
 export const selectDrafts = (state: RootState) => state.draftsList.drafts;
 

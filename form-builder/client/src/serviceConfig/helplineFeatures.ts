@@ -19,6 +19,8 @@
  * helpline's service configuration (serviceConfig.ts); the Service configuration page shows
  * them all, per environment.
  */
+import { SERVICE_CONFIG_FILE_NAMES } from '@tech-matters/form-builder-shared';
+
 import type { DefinitionFileMap } from '../common/definitions';
 import {
   ConfigObject,
@@ -28,7 +30,6 @@ import {
   mergedServiceConfig,
   setServiceConfigValue,
 } from './serviceConfig';
-import { SERVICE_CONFIG_FILE_NAMES } from '@tech-matters/form-builder-shared';
 
 export type HelplineFeatures = {
   enableClientProfiles: boolean;

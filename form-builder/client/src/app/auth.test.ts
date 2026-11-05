@@ -16,6 +16,7 @@
  */
 
 import { afterEach, describe, expect, test, jest } from '@jest/globals';
+
 import { apiFetch, initAuth, setAuthConfigForTests } from './auth';
 
 const CONFIG = { issuer: 'https://techmatters.okta.com/oauth2/abc', clientId: 'client-1' };
@@ -64,7 +65,7 @@ describe('signing in', () => {
 
     // Back from Okta
     at('/login/callback', `?code=the-code&state=${state}`);
-    const replaceState = jest.spyOn(window.history, 'replaceState').mockImplementation(() => {});
+    const replaceState = jest.spyOn(window.history, 'replaceState').mockImplementation(() => undefined);
     const fetchImpl = jest.fn(async (url: string | URL | Request, _init?: RequestInit) =>
       String(url).endsWith('/config.json')
         ? json(CONFIG)

@@ -25,6 +25,7 @@
  */
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import path from 'path';
+
 import { ApiContext, handleApiRequest } from './api';
 import { LocalDraftStore } from './drafts';
 import { LocalApplier, localNotifier, localUser } from './localServices';

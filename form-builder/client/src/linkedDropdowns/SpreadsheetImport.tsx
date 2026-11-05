@@ -20,6 +20,7 @@
  * pasted or read is kept in linkedDropdownsSlice.ts while it's open.
  */
 import { useEffect, useMemo } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { AnswerNode, countByLevel, makeKeyValuesUnique, rowsToTree } from './linkedDropdowns';
 import { parseDelimitedText, SPREADSHEET_FILE_TYPES } from './spreadsheet';
@@ -55,7 +56,7 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
     };
   }, [dispatch]);
 
-  const dataRows = useMemo(() => (rows ? (firstRowIsHeader ? rows.slice(1) : rows) : []), [rows, firstRowIsHeader]);
+  const dataRows = useMemo(() => (firstRowIsHeader ? rows?.slice(1) : rows) ?? [], [rows, firstRowIsHeader]);
 
   const result = useMemo(() => {
     if (!dataRows.length) return undefined;
@@ -82,7 +83,95 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
 
   return (
     <div className="spreadsheet-import">
-      {!rows ? (
+      {rows ? (
+        <>
+          <p>
+            Read <strong>{rows.length.toLocaleString()}</strong> rows from {source}.{' '}
+            <button
+              type="button"
+              className="link-button"
+              onClick={() => dispatch(spreadsheetImportChanged({ rows: undefined }))}
+            >
+              Use something else
+            </button>
+          </p>
+          <label className="field field-checkbox">
+            <input
+              type="checkbox"
+              checked={firstRowIsHeader}
+              onChange={e => dispatch(spreadsheetImportChanged({ firstRowIsHeader: e.target.checked }))}
+            />
+            <span>The first row has column names (don&apos;t import it)</span>
+          </label>
+
+          <div className="import-preview">
+            <table>
+              <thead>
+                <tr>
+                  {levelLabels.map(label => (
+                    <th key={label}>{label}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {dataRows.slice(0, PREVIEW_ROWS).map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {levelLabels.map((label, index) => (
+                      <td key={label}>{row[index]}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {dataRows.length > PREVIEW_ROWS && (
+              <p className="field-hint">…and {(dataRows.length - PREVIEW_ROWS).toLocaleString()} more rows</p>
+            )}
+          </div>
+
+          {columnCount < depth && (
+            <p className="issue issue-warning">
+              The rows have {columnCount} column(s) but there are {depth} levels, so the last level(s) will have no
+              answers.
+            </p>
+          )}
+
+          {result && (
+            <ul className="import-summary">
+              {levelLabels.map((label, index) => (
+                <li key={label}>
+                  <strong>{result.counts[index].toLocaleString()}</strong> {label}
+                </li>
+              ))}
+              {result.stats.duplicateRows > 0 && (
+                <li className="muted">{result.stats.duplicateRows} repeated row(s) skipped</li>
+              )}
+              {result.stats.emptyRows > 0 && <li className="muted">{result.stats.emptyRows} empty row(s) skipped</li>}
+              {result.stats.rowsWithGaps > 0 && (
+                <li className="issue issue-warning">
+                  {result.stats.rowsWithGaps} row(s) skipped because a level in the middle was empty
+                </li>
+              )}
+              {result.stats.extraColumns && <li className="muted">Columns after the {depth} level(s) were ignored</li>}
+              {result.renamed > 0 && (
+                <li className="muted">
+                  {result.renamed} answers share a name with another under a different parent. They&apos;ll be saved
+                  with the parent added (e.g. “San Jose (Batangas)”) so each one keeps its own list. Counselors still
+                  see just the name.
+                </li>
+              )}
+            </ul>
+          )}
+
+          <div className="option-actions">
+            <button type="button" className="primary-button" disabled={!result} onClick={confirmImport}>
+              Replace all answers with these
+            </button>
+            <button type="button" className="link-button" onClick={onCancel}>
+              Cancel
+            </button>
+          </div>
+        </>
+      ) : (
         <>
           <p>
             Put one row per complete answer, with one column per level, in this order:{' '}
@@ -137,94 +226,6 @@ export const SpreadsheetImport = ({ levelLabels, currentRoots, onImport, onCance
                 }}
               />
             </label>
-          </div>
-        </>
-      ) : (
-        <>
-          <p>
-            Read <strong>{rows.length.toLocaleString()}</strong> rows from {source}.{' '}
-            <button
-              type="button"
-              className="link-button"
-              onClick={() => dispatch(spreadsheetImportChanged({ rows: undefined }))}
-            >
-              Use something else
-            </button>
-          </p>
-          <label className="field field-checkbox">
-            <input
-              type="checkbox"
-              checked={firstRowIsHeader}
-              onChange={e => dispatch(spreadsheetImportChanged({ firstRowIsHeader: e.target.checked }))}
-            />
-            <span>The first row has column names (don't import it)</span>
-          </label>
-
-          <div className="import-preview">
-            <table>
-              <thead>
-                <tr>
-                  {levelLabels.map(label => (
-                    <th key={label}>{label}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {dataRows.slice(0, PREVIEW_ROWS).map((row, rowIndex) => (
-                  <tr key={rowIndex}>
-                    {levelLabels.map((label, index) => (
-                      <td key={label}>{row[index]}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {dataRows.length > PREVIEW_ROWS && (
-              <p className="field-hint">…and {(dataRows.length - PREVIEW_ROWS).toLocaleString()} more rows</p>
-            )}
-          </div>
-
-          {columnCount < depth && (
-            <p className="issue issue-warning">
-              The rows have {columnCount} column(s) but there are {depth} levels, so the last level(s) will have no
-              answers.
-            </p>
-          )}
-
-          {result && (
-            <ul className="import-summary">
-              {levelLabels.map((label, index) => (
-                <li key={label}>
-                  <strong>{result.counts[index].toLocaleString()}</strong> {label}
-                </li>
-              ))}
-              {result.stats.duplicateRows > 0 && (
-                <li className="muted">{result.stats.duplicateRows} repeated row(s) skipped</li>
-              )}
-              {result.stats.emptyRows > 0 && <li className="muted">{result.stats.emptyRows} empty row(s) skipped</li>}
-              {result.stats.rowsWithGaps > 0 && (
-                <li className="issue issue-warning">
-                  {result.stats.rowsWithGaps} row(s) skipped because a level in the middle was empty
-                </li>
-              )}
-              {result.stats.extraColumns && <li className="muted">Columns after the {depth} level(s) were ignored</li>}
-              {result.renamed > 0 && (
-                <li className="muted">
-                  {result.renamed} answers share a name with another under a different parent. They'll be saved with the
-                  parent added (e.g. “San Jose (Batangas)”) so each one keeps its own list. Counselors still see just
-                  the name.
-                </li>
-              )}
-            </ul>
-          )}
-
-          <div className="option-actions">
-            <button type="button" className="primary-button" disabled={!result} onClick={confirmImport}>
-              Replace all answers with these
-            </button>
-            <button type="button" className="link-button" onClick={onCancel}>
-              Cancel
-            </button>
           </div>
         </>
       )}

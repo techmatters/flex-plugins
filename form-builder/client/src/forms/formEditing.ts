@@ -27,7 +27,7 @@ type FieldJson = Record<string, unknown>;
 
 const asField = (json: FieldJson) => json as unknown as FormItemJsonDefinition;
 
-export const REQUIRED_FIELD_MESSAGE = 'RequiredFieldError';
+const REQUIRED_FIELD_MESSAGE = 'RequiredFieldError';
 
 export const FIELD_TYPE_INFO: Record<FieldType, { label: string; description: string }> = {
   input: { label: 'Short text', description: 'One line of text, like a name or a city' },
@@ -93,7 +93,7 @@ const CHECKBOX_TYPES: FieldType[] = ['checkbox', 'mixed-checkbox', 'copy-to'];
 
 export const isChoiceType = (type: string) => CHOICE_TYPES.includes(type as FieldType);
 
-export const usesPlaceholder = (type: string) =>
+const usesPlaceholder = (type: string) =>
   ['input', 'textarea', 'email', 'numeric-input', 'search-input'].includes(type);
 
 /**

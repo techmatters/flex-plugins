@@ -25,6 +25,7 @@
  * Parses pasted cells (tab-separated) or CSV text into rows of cells.
  * Handles quoted CSV cells, including commas, quotes ("") and line breaks inside quotes.
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export const parseDelimitedText = (text: string): string[][] => {
   const normalized = text.replace(/^﻿/, '').replace(/\r\n?/g, '\n');
   const firstLine = normalized.split('\n', 1)[0];

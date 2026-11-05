@@ -27,12 +27,12 @@
  * and the helpline's translation files decide which languages the webchat offers.
  */
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
-import type { DefinitionFileMap } from '../common/definitions';
-import { CONTACT_TABS, getForm } from '../common/definitions';
+import { WEBCHAT_TRANSLATIONS_PREFIX, webchatLocaleOf } from '@tech-matters/form-builder-shared';
+
+import { CONTACT_TABS, type DefinitionFileMap, getForm } from '../common/definitions';
 import { isSameJson } from '../drafts/changes';
 import { toFieldName, uniqueFieldName } from '../forms/formEditing';
 import type { ValidationIssue } from '../forms/validation';
-import { WEBCHAT_TRANSLATIONS_PREFIX, webchatLocaleOf } from '@tech-matters/form-builder-shared';
 
 export const PRE_ENGAGEMENT_FILE = 'webchat/PreEngagementForm.json';
 
@@ -77,7 +77,7 @@ export const ADDABLE_WEBCHAT_FIELD_TYPES: WebchatFieldType[] = ['input', 'email'
 /**
  * Pre-engagement fields that mean something to the webchat or Aselo beyond the form
  */
-export const describeSpecialField = (name: string, contactIdentifierField?: string): string | undefined => {
+const describeSpecialField = (name: string, contactIdentifierField?: string): string | undefined => {
   if (name === 'friendlyName') return 'Its answer is the name counselors see for the chat.';
   if (name === 'language' || name === 'locale') return 'Its answer switches the webchat’s language.';
   if (name === contactIdentifierField) return 'Its answer identifies the contact (for blocking and profiles).';
@@ -87,7 +87,7 @@ export const describeSpecialField = (name: string, contactIdentifierField?: stri
 export const getPreEngagementForm = (files: DefinitionFileMap): PreEngagementForm | undefined =>
   files[PRE_ENGAGEMENT_FILE] as PreEngagementForm | undefined;
 
-export const webchatTranslationsPath = (locale: string) => `${WEBCHAT_TRANSLATIONS_PREFIX}${locale}.json`;
+const webchatTranslationsPath = (locale: string) => `${WEBCHAT_TRANSLATIONS_PREFIX}${locale}.json`;
 
 /**
  * The webchat's languages: one per translation file the helpline has, the default first
@@ -102,7 +102,7 @@ export const getWebchatLocales = (files: DefinitionFileMap, defaultLocale = 'en-
     : locales;
 };
 
-export const getHelplineWebchatStrings = (files: DefinitionFileMap, locale: string) =>
+const getHelplineWebchatStrings = (files: DefinitionFileMap, locale: string) =>
   files[webchatTranslationsPath(locale)] as Strings | undefined;
 
 // The webchat app's own translation files (small, so bundled up front)
@@ -163,7 +163,7 @@ export const WEBCHAT_TEXTS: { key: string; title: string; hint: string; multilin
  *   language, as it does today);
  * - new text goes into the form.
  */
-export type TextContext = {
+type TextContext = {
   locale: string;
   // Merged translations for this language
   strings: Strings;
@@ -182,9 +182,9 @@ export const buildTextContext = (files: DefinitionFileMap, locale: string, local
   canTranslate: getHelplineWebchatStrings(files, locale) !== undefined,
 });
 
-export type TextUpdate = { stored: string; translation?: [key: string, text: string] };
+type TextUpdate = { stored: string; translation?: [key: string, text: string] };
 
-export const updateText = (stored: unknown, text: string, context: TextContext): TextUpdate => {
+const updateText = (stored: unknown, text: string, context: TextContext): TextUpdate => {
   if (typeof stored === 'string') {
     if (localizeText(context.strings, stored) === text) return { stored };
     if (context.canTranslate && context.knownKeys.has(stored)) {
@@ -298,7 +298,7 @@ export const isRequired = (field: WebchatField) =>
   typeof field.required === 'object' ? Boolean(field.required.value) : Boolean(field.required);
 
 // The options of a dropdown, without the empty "nothing chosen yet" one
-export const visibleOptions = (options: unknown): SelectOption[] =>
+const visibleOptions = (options: unknown): SelectOption[] =>
   (Array.isArray(options) ? (options as SelectOption[]) : []).filter(option => !(option.value === '' && !option.label));
 
 /**
@@ -389,7 +389,7 @@ export const findWebchatFieldReferences = (
  * PrepopulateKeys.json is never written here). A target is "<Tab>.<field>", e.g.
  * "ChildInformationTab.age". Several targets are all filled in.
  */
-export const PREPOPULATE_MAPPINGS_FILE = 'PrepopulateMappings.json';
+const PREPOPULATE_MAPPINGS_FILE = 'PrepopulateMappings.json';
 
 type PrepopulateMappings = { preEngagement?: Record<string, unknown>; [other: string]: unknown };
 
@@ -463,6 +463,7 @@ export const findUnmatchedAnswers = (files: DefinitionFileMap, field: WebchatFie
 /**
  * Checks, for the workspace and review
  */
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const checkWebchatForm = (files: DefinitionFileMap): ValidationIssue[] => {
   const fields = getPreEngagementForm(files)?.fields;
   if (!fields) return [];
@@ -522,6 +523,7 @@ export const summarizeWebchatChanges = (
   originalFiles: DefinitionFileMap,
   draftFiles: DefinitionFileMap,
   defaultLocale = 'en-US',
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): { title: string; lines: string[] }[] => {
   const summaries: { title: string; lines: string[] }[] = [];
   const before = getPreEngagementForm(originalFiles)?.fields ?? [];

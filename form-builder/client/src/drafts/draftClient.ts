@@ -19,17 +19,23 @@
  * the same server code directly. Only types are imported from the server here, so no Node code
  * ends up in the browser bundle.
  */
-import type { ApplyResult, Me } from '@tech-matters/form-builder-shared';
-import type { Draft, DraftMeta, DraftSummary } from '@tech-matters/form-builder-shared';
+import {
+  type ApplyResult,
+  type Draft,
+  type DraftMeta,
+  type DraftSummary,
+  type Me,
+} from '@tech-matters/form-builder-shared';
+
 import { apiFetch } from '../app/auth';
 
-export type SaveDraftRequest = {
+type SaveDraftRequest = {
   expectedRevision: number;
   files: Record<string, unknown>;
   baseHashes: Record<string, string>;
 };
 
-export type SaveOutcome =
+type SaveOutcome =
   | { ok: true; meta: Partial<DraftMeta> & { revision: number } }
   | { ok: false; conflict: { updatedBy?: string; updatedAt?: string } };
 
@@ -45,7 +51,7 @@ export type DraftClient = {
   list(): Promise<DraftSummary[]>;
 };
 
-export type Send = (method: string, path: string, body?: unknown) => Promise<{ status: number; body: any }>;
+type Send = (method: string, path: string, body?: unknown) => Promise<{ status: number; body: any }>;
 
 export const clientFor = (send: Send): DraftClient => {
   const expectOk = async (method: string, path: string, body?: unknown) => {

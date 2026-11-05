@@ -96,6 +96,7 @@ const SAVE_STATE_TEXT: Record<SaveState, string> = {
   error: "Couldn't save",
 };
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 export const HelplineWorkspace = () => {
   const dispatch = useAppDispatch();
   const definitions = useAppSelector(selectDefinitions)!;
@@ -140,13 +141,14 @@ export const HelplineWorkspace = () => {
           >
             Try it out in Aselo
           </button>
-          <span className="muted">See the draft form in the counselor's screen and fill it in.</span>
+          <span className="muted">See the draft form in the counselor&apos;s screen and fill it in.</span>
         </div>
         <ContactFormEditor key={`${tab.key}-${editorRevision}`} tab={tab} />
       </>
     );
   };
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const renderMain = () => {
     // Editors build their state from the files when they open, so wait for the saved draft
     if (draft.saveState === 'loading') return <p className="muted">Loading the draft…</p>;
@@ -200,6 +202,7 @@ export const HelplineWorkspace = () => {
         <ContactFormEditor key={`case-${target.key}-${editorRevision}`} tab={target} />
         {previewingSection === target.key && (
           <div className="modal-backdrop" role="presentation" onClick={() => dispatch(sectionPreviewClosed())}>
+            {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- only keeps clicks inside the dialog from closing it */}
             <div
               className="modal modal-wide"
               role="dialog"
@@ -227,15 +230,14 @@ export const HelplineWorkspace = () => {
     );
   };
 
+  const noChangesText = draft.saveState === 'loading' ? SAVE_STATE_TEXT.loading : 'No changes yet';
   return (
     <>
       <div className="action-bar">
         <span className={changeCount ? 'change-count has-changes' : 'change-count'}>
           {changeCount
             ? `Draft: ${changeCount} file${changeCount === 1 ? '' : 's'} changed · ${SAVE_STATE_TEXT[draft.saveState]}`
-            : draft.saveState === 'loading'
-            ? SAVE_STATE_TEXT.loading
-            : 'No changes yet'}
+            : noChangesText}
         </span>
         {draft.meta?.status === 'submitted' && changeCount > 0 && (
           <span className="badge badge-new draft-status">
@@ -268,7 +270,7 @@ export const HelplineWorkspace = () => {
         <div className="alert alert-error">
           {draft.conflict.updatedBy ?? 'Someone else'} changed this draft
           {draft.conflict.updatedAt ? ` at ${new Date(draft.conflict.updatedAt).toLocaleString()}` : ''} while you were
-          editing, so your latest changes weren't saved. Reload to see their version, then make your changes again.
+          editing, so your latest changes weren&apos;t saved. Reload to see their version, then make your changes again.
           <button type="button" className="link-button" onClick={() => dispatch(reloadHelpline())}>
             Reload
           </button>

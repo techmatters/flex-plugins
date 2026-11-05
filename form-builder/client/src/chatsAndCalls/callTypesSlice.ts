@@ -21,13 +21,14 @@
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { CallTypeButtonsEntry } from '@hrm-form-definitions/formDefinition/types';
+
 import { AppThunk, RootState, rootReducer } from '../app/store';
 import { editDraftFiles } from '../drafts/draftSlice';
 import { Row, toRows } from '../common/SortableRows';
 import { toFieldName, uniqueFieldName } from '../forms/formEditing';
 import { CALL_TYPE_BUTTONS_FILE, getCallTypeButtons } from './sections';
 
-export type CallTypesState = {
+type CallTypesState = {
   nonDataRows: Row<CallTypeButtonsEntry>[];
   // Button texts being pasted, one per line
   bulkText?: string;
@@ -56,6 +57,7 @@ const callTypesSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof callTypesSlice> {}
 }
 const injected = callTypesSlice.injectInto(rootReducer);

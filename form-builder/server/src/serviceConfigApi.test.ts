@@ -18,7 +18,9 @@ import { promises as fs } from 'fs';
 import os from 'os';
 import path from 'path';
 import { fileURLToPath } from 'url';
+
 import { describe, expect, test, jest } from '@jest/globals';
+
 import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { Draft, MemoryDraftStore } from './drafts';
 import { LocalApplier } from './localServices';
@@ -36,7 +38,7 @@ const createContext = (): ApiContext & { drafts: MemoryDraftStore } => ({
   helplinesConfigDir,
   drafts: new MemoryDraftStore(),
   applier: { apply: jest.fn(async () => ({ description: '', written: [] })) },
-  notifier: { draftSubmitted: jest.fn(async () => {}) },
+  notifier: { draftSubmitted: jest.fn(async () => undefined) },
 });
 
 type Context = ApiContext;

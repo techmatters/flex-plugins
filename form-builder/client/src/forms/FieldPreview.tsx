@@ -23,6 +23,7 @@ import type {
   FormItemJsonDefinition,
   SelectOption,
 } from '@hrm-form-definitions/formDefinition/types';
+
 import { resolveOptions } from '../common/definitions';
 
 type Props = {
@@ -56,6 +57,7 @@ const SelectOptions = ({ options }: { options: SelectOption[] }) => (
   </>
 );
 
+// eslint-disable-next-line complexity
 export const FieldPreview = ({ item, referenceData, value, dependeeValue, onChange }: Props) => {
   switch (item.type) {
     case 'input':

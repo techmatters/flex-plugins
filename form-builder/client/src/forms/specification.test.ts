@@ -15,6 +15,7 @@
  */
 
 import { describe, expect, test } from '@jest/globals';
+
 import { isProtectedField } from './specification';
 import { CONTACT_TABS, ContactTab } from '../common/definitions';
 

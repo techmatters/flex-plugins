@@ -32,20 +32,27 @@
  * helplines, can't apply, and never see or change the service configuration
  * (service-configuration/*.json). Deployed, both come from Okta groups.
  */
+import {
+  type ApiUser,
+  type ApplyDetails,
+  type ApplyResult,
+  isServiceConfigPath,
+  type Me,
+} from '@tech-matters/form-builder-shared';
+
 import { DefinitionsApiError, listHelplines, loadDefinitionFiles } from './definitionsApi';
 import { Draft, DraftStore, isValidDraftFilePath, isValidDraftKey } from './drafts';
-import { isServiceConfigPath } from '@tech-matters/form-builder-shared';
-import type { ApiUser, Me, ApplyResult, ApplyDetails } from '@tech-matters/form-builder-shared';
-export type { ApiUser, Me, ApplyResult, ApplyDetails };
 
-export type ApiRequest = {
+export type { ApiUser, ApplyResult, ApplyDetails };
+
+type ApiRequest = {
   method: string;
   path: string;
   body?: unknown;
   user: ApiUser;
 };
 
-export type ApiResponse = { status: number; body: unknown };
+type ApiResponse = { status: number; body: unknown };
 
 export interface DraftApplier {
   apply(draft: Draft, user: ApiUser, details?: ApplyDetails): Promise<ApplyResult>;
@@ -80,8 +87,7 @@ const fail = (status: number, message: string, extra: object = {}): ApiResponse 
   body: { message, ...extra },
 });
 
-export const canOpenHelpline = (user: ApiUser, code: string) =>
-  user.helplines === 'all' || user.helplines.includes(code);
+const canOpenHelpline = (user: ApiUser, code: string) => user.helplines === 'all' || user.helplines.includes(code);
 
 // The service configuration is Aselo staff business: helpline staff never see it, in the
 // current files or in drafts
@@ -109,6 +115,7 @@ const isSaveDraftBody = (body: unknown): body is SaveDraftBody => {
   );
 };
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 export const handleApiRequest = async (context: ApiContext, request: ApiRequest): Promise<ApiResponse> => {
   const { user } = request;
   const now = (context.now ?? (() => new Date()))().toISOString();

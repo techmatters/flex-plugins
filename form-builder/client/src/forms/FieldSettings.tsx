@@ -19,6 +19,7 @@
  * saved name, and changes that affect data already collected, need Aselo staff mode.
  */
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { selectDraftFiles } from '../drafts/draftSlice';
@@ -50,12 +51,13 @@ import { translate, useStrings } from '../aseloPreview/translations';
 // Field types that are part of Aselo itself; only their label can be edited here
 const SPECIAL_TYPES = ['file-upload', 'button', 'copy-to', 'custom-contact-component', 'search-input', 'radio-input'];
 
+// eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 export const FieldSettings = () => {
   const dispatch = useAppDispatch();
   const { target } = useAppSelector(selectFormEditor);
   const tab = target!;
   const selectedEntry = useAppSelector(selectSelectedEntry)!;
-  const item = selectedEntry.item;
+  const { item } = selectedEntry;
   // The field as it was loaded; undefined for a field added in this draft
   const originalItem = useAppSelector(selectOriginalFieldsByName).get(item.name);
   // Every field in this form, to find the linked dropdowns this field belongs to
@@ -243,7 +245,7 @@ export const FieldSettings = () => {
 
           {usesSharedOptions && !isLinked && (
             <p className="field-hint">
-              This field's answers come from a list shared with other fields. Ask Aselo staff to change them.
+              This field&apos;s answers come from a list shared with other fields. Ask Aselo staff to change them.
             </p>
           )}
         </>
@@ -300,7 +302,7 @@ export const FieldSettings = () => {
         <button type="button" className="danger-button" onClick={confirmRemove} disabled={isProtected}>
           Remove this field
         </button>
-        {isProtected && <span className="field-hint">Aselo needs this field, so it can't be removed.</span>}
+        {isProtected && <span className="field-hint">Aselo needs this field, so it can&apos;t be removed.</span>}
       </div>
     </div>
   );

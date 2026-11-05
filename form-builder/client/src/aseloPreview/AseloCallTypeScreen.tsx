@@ -21,6 +21,7 @@
  */
 import { useState } from 'react';
 import type { CallTypeButtonsEntry } from '@hrm-form-definitions/formDefinition/types';
+
 import { Strings, translate } from './translations';
 
 type Props = {

@@ -15,6 +15,7 @@
  */
 
 import { describe, expect, test } from '@jest/globals';
+
 import { buildExportZip, serializeDefinitionFile } from './exportZip';
 import { summarizeFormChanges } from './changes';
 import { CONTACT_TABS } from '../common/definitions';

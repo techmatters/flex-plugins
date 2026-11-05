@@ -23,6 +23,7 @@
  * Field labels go through the same lookup, so a label can be a translation key.
  */
 import { useEffect, useState } from 'react';
+
 import type { DefinitionFileMap } from '../common/definitions';
 
 export type Strings = Record<string, string>;
@@ -45,13 +46,13 @@ const loadFile = async (name: string): Promise<Strings> => {
 
 const SUBSTITUTIONS_FILE = 'customStrings/Substitutions.json';
 
-export const loadStrings = async (language: string, files: DefinitionFileMap): Promise<Strings> => {
+const loadStrings = async (language: string, files: DefinitionFileMap): Promise<Strings> => {
   const [baseLanguage] = language.split('-');
   const substitutions = (files[SUBSTITUTIONS_FILE] ?? {}) as Record<string, Strings>;
   return {
     ...(await loadFile('en')),
-    ...(baseLanguage !== 'en' ? await loadFile(baseLanguage) : {}),
-    ...(language !== baseLanguage ? await loadFile(language) : {}),
+    ...(baseLanguage === 'en' ? {} : await loadFile(baseLanguage)),
+    ...(language === baseLanguage ? {} : await loadFile(language)),
     ...(substitutions[baseLanguage] ?? {}),
   };
 };

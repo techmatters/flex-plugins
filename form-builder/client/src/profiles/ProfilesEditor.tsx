@@ -20,6 +20,7 @@
  * how lives in profilesSlice.ts; see profiles.ts for the files.
  */
 import { useEffect } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { selectDraftFiles } from '../drafts/draftSlice';
@@ -112,7 +113,7 @@ export const ProfilesEditor = () => {
           </p>
           {!profilesEnabled && (
             <p className="issue issue-warning">
-              Client profiles are switched off for this helpline (see Features), so counselors don't see these yet.
+              Client profiles are switched off for this helpline (see Features), so counselors don&apos;t see these yet.
             </p>
           )}
           {issues.length > 0 && (
@@ -200,7 +201,7 @@ export const ProfilesEditor = () => {
                       disabled={!isNew && !staffMode}
                       onChange={e => dispatch(updateSection(row.id, { isPII: e.target.checked }))}
                     />
-                    <span>Could it identify someone? (protects what's written in it)</span>
+                    <span>Could it identify someone? (protects what&apos;s written in it)</span>
                   </label>
                   {staffMode && (
                     <span className="field-hint">
@@ -276,7 +277,7 @@ export const ProfilesEditor = () => {
                     onChange={e => dispatch(setOverviewIsPII(key, e.target.checked))}
                   />
                   <span>
-                    The profile's <code>{key}</code> is personal data
+                    The profile&apos;s <code>{key}</code> is personal data
                   </span>
                 </label>
               ))}

@@ -19,6 +19,7 @@
 // A file's text: '<file>?raw'
 declare module '*?raw' {
   const text: string;
+  // eslint-disable-next-line import/no-unused-modules -- declares the type of the ?raw imports
   export default text;
 }
 

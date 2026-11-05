@@ -28,15 +28,16 @@
  */
 import { createSelector, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { ApplyResult, DraftMeta } from '@tech-matters/form-builder-shared';
+
 import type { DefinitionFileMap } from '../common/definitions';
 import type { AppListenerStartListening, AppThunk, RootState } from '../app/store';
 import { getChangedFilePaths } from './changes';
 
 export type SaveState = 'loading' | 'saved' | 'pending' | 'saving' | 'conflict' | 'error';
 
-export type DraftConflict = { updatedBy?: string; updatedAt?: string };
+type DraftConflict = { updatedBy?: string; updatedAt?: string };
 
-export type DraftState = {
+type DraftState = {
   code: string;
   version: string;
   // The files as they are (applied), and as the draft has them
@@ -64,10 +65,12 @@ const initialState: DraftState = {
 };
 
 // Small non-cryptographic hash, only used to tell whether a file changed underneath a draft
-export const hashJson = (value: unknown) => {
+const hashJson = (value: unknown) => {
   const text = JSON.stringify(value) ?? '';
   let hash = 5381;
+  // eslint-disable-next-line no-bitwise -- a string hash
   for (let i = 0; i < text.length; i += 1) hash = (hash * 33) ^ text.charCodeAt(i);
+  // eslint-disable-next-line no-bitwise -- a string hash
   return (hash >>> 0).toString(16);
 };
 
@@ -140,7 +143,8 @@ const draftSlice = createSlice({
   },
 });
 
-export const { draftStarted, filesUpdated, noticeDismissed } = draftSlice.actions;
+const { filesUpdated } = draftSlice.actions;
+export const { draftStarted, noticeDismissed } = draftSlice.actions;
 const {
   draftLoaded,
   draftLoadFailed,
@@ -220,15 +224,15 @@ const saveNow =
           Object.keys(changed).map(filePath => [filePath, hashJson(state.original[filePath])]),
         ),
       });
-      if (!outcome.ok) dispatch(saveConflicted(outcome.conflict));
-      else dispatch(draftSaved({ meta: outcome.meta, json }));
+      if (outcome.ok) dispatch(draftSaved({ meta: outcome.meta, json }));
+      else dispatch(saveConflicted(outcome.conflict));
     } catch (err) {
       dispatch(saveFailed((err as Error).message));
     }
   };
 
 // Saves now, after any save already under way (each uses the revision the previous one returned)
-export const flushDraft = (): AppThunk<Promise<void>> => (dispatch, _getState, services) => {
+const flushDraft = (): AppThunk<Promise<void>> => (dispatch, _getState, services) => {
   services.saveQueue.current = services.saveQueue.current.then(() => dispatch(saveNow()));
   return services.saveQueue.current;
 };

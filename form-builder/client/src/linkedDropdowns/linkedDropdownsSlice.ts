@@ -25,6 +25,7 @@
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { FormItemJsonDefinition } from '@hrm-form-definitions/formDefinition/types';
+
 import { AppThunk, rootReducer } from '../app/store';
 import { AnswerNode, chainToTree, getChildrenAtPath, newAnswerNode, updateChildrenAtPath } from './linkedDropdowns';
 import { readSpreadsheetFile } from './spreadsheet';
@@ -33,7 +34,7 @@ import { readSpreadsheetFile } from './spreadsheet';
 export type ColumnInputs = { search: string; newLabel: string; bulkText?: string; message?: string };
 const EMPTY_INPUTS: ColumnInputs = { search: '', newLabel: '' };
 
-export type AnswersEditorState = {
+type AnswersEditorState = {
   roots: AnswerNode[];
   // The selected answer's id in each column
   selected: string[];
@@ -46,7 +47,7 @@ export type AnswersEditorState = {
   renaming?: { id: string; text: string };
 };
 
-export type SpreadsheetImportState = {
+type SpreadsheetImportState = {
   pastedText: string;
   rows?: string[][];
   // Where the rows came from (a file name, or the pasted cells)
@@ -55,7 +56,7 @@ export type SpreadsheetImportState = {
   error?: string;
 };
 
-export type WizardState = {
+type WizardState = {
   startFrom: 'new' | 'existing';
   // The dropdown already on the form that starts the chain, when starting from one
   rootName: string;
@@ -65,7 +66,7 @@ export type WizardState = {
   roots: AnswerNode[];
 };
 
-export type LinkedDropdownsState = {
+type LinkedDropdownsState = {
   answers?: AnswersEditorState;
   spreadsheetImport?: SpreadsheetImportState;
   wizard?: WizardState;
@@ -173,6 +174,7 @@ const linkedDropdownsSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof linkedDropdownsSlice> {}
 }
 const injected = linkedDropdownsSlice.injectInto(rootReducer);
@@ -213,7 +215,7 @@ const updateLevel =
   };
 
 // Adds answers to a column, skipping ones already there, and says which were skipped
-export const addAnswers =
+const addAnswers =
   (level: number, labels: string[]): AppThunk =>
   (dispatch, getState) => {
     const answers = selectAnswersEditor(getState());

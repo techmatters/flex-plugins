@@ -24,7 +24,7 @@
  * has a session). Tokens are kept per browser tab (sessionStorage).
  */
 
-export type AuthConfig = { issuer: string; clientId: string };
+type AuthConfig = { issuer: string; clientId: string };
 
 type Tokens = { accessToken: string; idToken?: string; expiresAt: number };
 
@@ -57,7 +57,7 @@ const readTokens = (): Tokens | undefined => {
   }
 };
 
-export const loadAuthConfig = async (fetchImpl: typeof fetch = fetch): Promise<AuthConfig | undefined> => {
+const loadAuthConfig = async (fetchImpl: typeof fetch = fetch): Promise<AuthConfig | undefined> => {
   try {
     const response = await fetchImpl('/config.json', { cache: 'no-store' });
     if (!response.ok) return undefined;
@@ -70,10 +70,7 @@ export const loadAuthConfig = async (fetchImpl: typeof fetch = fetch): Promise<A
   }
 };
 
-export const startSignIn = async (
-  authConfig: AuthConfig,
-  returnTo = window.location.pathname + window.location.search,
-) => {
+const startSignIn = async (authConfig: AuthConfig, returnTo = window.location.pathname + window.location.search) => {
   const state = randomString();
   const verifier = randomString();
   sessionStorage.setItem(
@@ -93,7 +90,7 @@ export const startSignIn = async (
 };
 
 // Back from Okta: swap the code for tokens; returns where to go next
-export const completeSignIn = async (authConfig: AuthConfig, fetchImpl: typeof fetch = fetch): Promise<string> => {
+const completeSignIn = async (authConfig: AuthConfig, fetchImpl: typeof fetch = fetch): Promise<string> => {
   const query = new URLSearchParams(window.location.search);
   const pending = JSON.parse(sessionStorage.getItem(PENDING_KEY) ?? 'null') as {
     state: string;
@@ -117,6 +114,7 @@ export const completeSignIn = async (authConfig: AuthConfig, fetchImpl: typeof f
     }),
   });
   if (!response.ok) throw new Error(`The sign-in could not be completed (${response.status}). Please try again.`);
+  // eslint-disable-next-line camelcase -- as the API spells it
   const body = (await response.json()) as { access_token: string; id_token?: string; expires_in: number };
   const tokens: Tokens = {
     accessToken: body.access_token,
@@ -154,7 +152,7 @@ export const apiFetch = async (input: string, init: RequestInit = {}): Promise<R
   const tokens = readTokens();
   if (!tokens) {
     await startSignIn(config);
-    return new Promise<Response>(() => {}); // the page is leaving
+    return new Promise<Response>(() => undefined); // the page is leaving
   }
   const response = await fetch(input, {
     ...init,
@@ -163,7 +161,7 @@ export const apiFetch = async (input: string, init: RequestInit = {}): Promise<R
   if (response.status === 401) {
     sessionStorage.removeItem(TOKENS_KEY);
     await startSignIn(config);
-    return new Promise<Response>(() => {});
+    return new Promise<Response>(() => undefined);
   }
   return response;
 };

@@ -20,15 +20,16 @@
  * preview. Every change is written to CannedResponses.json.
  */
 import { createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
+
 import { AppThunk, rootReducer } from '../app/store';
 import { editDraftFiles } from '../drafts/draftSlice';
 import { Row, toRows } from '../common/SortableRows';
 import { parseDelimitedText } from '../linkedDropdowns/spreadsheet';
 import { CANNED_RESPONSES_FILE, getCannedResponses } from './sections';
 
-export type CannedResponse = { label: string; text: string };
+type CannedResponse = { label: string; text: string };
 
-export type CannedResponsesState = {
+type CannedResponsesState = {
   rows: Row<CannedResponse>[];
   // Two columns pasted from a spreadsheet
   pasteText?: string;
@@ -62,6 +63,7 @@ const cannedResponsesSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof cannedResponsesSlice> {}
 }
 const injected = cannedResponsesSlice.injectInto(rootReducer);

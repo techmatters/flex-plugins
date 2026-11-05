@@ -23,6 +23,7 @@
  */
 import { createSelector, createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import { isServiceConfigPath, ServiceConfigFileName } from '@tech-matters/form-builder-shared';
+
 import type { DefinitionFileMap } from '../common/definitions';
 import { AppThunk, rootReducer, RootState } from '../app/store';
 import { editDraftFiles, selectDraftFiles, selectOriginalFiles } from '../drafts/draftSlice';
@@ -45,7 +46,7 @@ export type SettingsFilter = 'helpline' | 'all' | 'differs' | 'changed';
 // Text being typed, and why it isn't saved (not valid JSON) when it isn't
 export type JsonText = { text: string; error?: string };
 
-export type ServiceConfigState = {
+type ServiceConfigState = {
   mode: 'settings' | 'files';
   filter: SettingsFilter;
   search: string;
@@ -117,6 +118,7 @@ const serviceConfigSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof serviceConfigSlice> {}
 }
 const injected = serviceConfigSlice.injectInto(rootReducer);

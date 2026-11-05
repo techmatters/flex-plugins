@@ -21,16 +21,16 @@
  * real API in process.
  */
 import {
-  addListener,
   combineSlices,
   configureStore,
   createListenerMiddleware,
   ThunkAction,
+  type TypedStartListening,
   UnknownAction,
 } from '@reduxjs/toolkit';
-import type { TypedStartListening } from '@reduxjs/toolkit';
 import { useDispatch, useSelector } from 'react-redux';
 import type { DefinitionFiles, HelplineSummary } from '@tech-matters/form-builder-shared';
+
 import { DraftClient, httpDraftClient } from '../drafts/draftClient';
 import { draftReducer, startDraftAutosave } from '../drafts/draftSlice';
 import { draftsListReducer } from '../drafts/draftsListSlice';
@@ -38,7 +38,7 @@ import { workspaceReducer } from '../workspace/workspaceSlice';
 import { sessionReducer } from './sessionSlice';
 import { fetchDefinitionFiles, fetchHelplines } from './api';
 
-export type Services = {
+type Services = {
   draftClient: DraftClient;
   fetchHelplines: () => Promise<HelplineSummary[]>;
   fetchDefinitionFiles: (code: string, version: string) => Promise<DefinitionFiles>;
@@ -50,7 +50,7 @@ export type Services = {
 
 // Each editor's slice (its working copy and selections) is added by the editor's own module, with
 // rootReducer.inject: declare it in LazyLoadedSlices (e.g. categories/categoriesSlice.ts)
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
+// eslint-disable-next-line @typescript-eslint/no-empty-interface, import/no-unused-modules -- module augmentation: each slice adds itself
 export interface LazyLoadedSlices {}
 
 export const rootReducer = combineSlices({
@@ -86,11 +86,10 @@ export const createAppStore = (services: Partial<Omit<Services, 'saveQueue'>> = 
   return store;
 };
 
-export type AppStore = ReturnType<typeof createAppStore>;
-export type AppDispatch = AppStore['dispatch'];
+type AppStore = ReturnType<typeof createAppStore>;
+type AppDispatch = AppStore['dispatch'];
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, RootState, Services, UnknownAction>;
 export type AppListenerStartListening = TypedStartListening<RootState, AppDispatch, Services>;
 
 export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
 export const useAppSelector = useSelector.withTypes<RootState>();
-export { addListener };

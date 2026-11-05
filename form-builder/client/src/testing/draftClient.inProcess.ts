@@ -18,8 +18,8 @@
  * A DraftClient that runs the server's API code in the same process, for tests.
  * Not imported by the app (it pulls in Node-only server code).
  */
-import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
-import { handleApiRequest } from '@tech-matters/form-builder-server/api';
+import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
+
 import { clientFor, DraftClient } from '../drafts/draftClient';
 
 export const inProcessDraftClient = (context: ApiContext, user: ApiUser): DraftClient =>

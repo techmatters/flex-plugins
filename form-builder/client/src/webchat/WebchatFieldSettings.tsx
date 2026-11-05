@@ -20,6 +20,7 @@
  * contact form and reports by name.
  */
 import type { SelectOption } from '@hrm-form-definitions/formDefinition/types';
+
 import { isRequired, WEBCHAT_FIELD_TYPE_INFO, WebchatField, WebchatFieldType, webchatFieldName } from './webchat';
 import type { ContactTab } from '../common/definitions';
 import type { ValidationIssue } from '../forms/validation';
@@ -57,6 +58,7 @@ type Props = {
   onRemove: () => void;
 };
 
+/* eslint-disable complexity, sonarjs/cognitive-complexity */
 export const WebchatFieldSettings = ({
   field,
   originalField,
@@ -134,7 +136,9 @@ export const WebchatFieldSettings = ({
             To link to a page, write for example <code>{'I accept the <a href="https://…">terms</a>'}</code>
           </span>
         )}
-        {textIsShared && <span className="field-hint">This text isn't translated: it shows in every language.</span>}
+        {textIsShared && (
+          <span className="field-hint">This text isn&apos;t translated: it shows in every language.</span>
+        )}
       </label>
 
       <label className="field">
@@ -174,7 +178,7 @@ export const WebchatFieldSettings = ({
           </label>
           {isRequired(field) && (
             <label className="field">
-              <span className="field-label">Message if it isn't ticked (optional)</span>
+              <span className="field-label">Message if it isn&apos;t ticked (optional)</span>
               <input type="text" value={requiredMessage} onChange={e => setCheckboxRequired(true, e.target.value)} />
             </label>
           )}
@@ -225,7 +229,7 @@ export const WebchatFieldSettings = ({
       <div className="field">
         <span className="field-label">Fills in on the contact form</span>
         {prepopulate.targets.length === 0 && (
-          <span className="field-hint">Nothing: counselors don't get this answer filled in.</span>
+          <span className="field-hint">Nothing: counselors don&apos;t get this answer filled in.</span>
         )}
         <ul className="prepopulate-targets">
           {prepopulate.targets.map(target => {
@@ -251,8 +255,8 @@ export const WebchatFieldSettings = ({
                 )}
                 {unmatched.length > 0 && (
                   <span className="field-hint prepopulate-warning">
-                    That field has no answer for {unmatched.map(value => `“${value}”`).join(', ')}, so it's left empty
-                    when visitors choose {unmatched.length === 1 ? 'it' : 'them'}.
+                    That field has no answer for {unmatched.map(value => `“${value}”`).join(', ')}, so it&apos;s left
+                    empty when visitors choose {unmatched.length === 1 ? 'it' : 'them'}.
                   </span>
                 )}
               </li>
@@ -333,3 +337,4 @@ export const WebchatFieldSettings = ({
     </div>
   );
 };
+/* eslint-enable complexity, sonarjs/cognitive-complexity */

@@ -37,6 +37,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { AnswerNode, countDescendants } from '../linkedDropdowns/linkedDropdowns';
 import {
@@ -107,7 +108,9 @@ const AnswerRow = ({
           type="button"
           className="drag-handle"
           aria-label={`Drag to reorder ${answer.label}`}
+          // eslint-disable-next-line react/jsx-props-no-spreading -- dnd-kit's drag handle props
           {...attributes}
+          // eslint-disable-next-line react/jsx-props-no-spreading -- dnd-kit's drag handle props
           {...listeners}
         >
           ⋮⋮
@@ -133,6 +136,7 @@ const AnswerRow = ({
           type="text"
           className="answer-edit"
           value={editing}
+          // eslint-disable-next-line jsx-a11y/no-autofocus -- it appears when the person asks for it, ready to type in
           autoFocus
           aria-label="Answer"
           onChange={e => onEdit(e.target.value)}
@@ -277,6 +281,7 @@ export const AnswerColumn = ({ level, label, previousLabel, hasLevelBelow }: Pro
           <textarea
             rows={5}
             value={bulkText}
+            // eslint-disable-next-line jsx-a11y/no-autofocus -- it appears when the person asks for it, ready to type in
             autoFocus
             aria-label={`${label} answers, one per line`}
             placeholder="One answer per line"

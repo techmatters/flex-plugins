@@ -22,6 +22,7 @@
  */
 import { createSelector, createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
 import type { FormItemJsonDefinition, SelectOption } from '@hrm-form-definitions/formDefinition/types';
+
 import { AppThunk, RootState, rootReducer } from '../app/store';
 import type { DefinitionFileMap } from '../common/definitions';
 import { editDraftFiles, selectDraftFiles, selectOriginalFiles } from '../drafts/draftSlice';
@@ -57,9 +58,9 @@ import {
 // An answer in the preview
 export type PreviewValue = string | boolean;
 
-export type EditingChain = { fields: WebchatField[]; tree: ChainTree; notes: string[] };
+type EditingChain = { fields: WebchatField[]; tree: ChainTree; notes: string[] };
 
-export type WebchatState = {
+type WebchatState = {
   locale?: string;
   rows: Row<WebchatField>[];
   selectedId?: string;
@@ -127,6 +128,7 @@ const webchatSlice = createSlice({
 });
 
 declare module '../app/store' {
+  // eslint-disable-next-line import/no-unused-modules -- module augmentation: adds the slice to the store's state type
   export interface LazyLoadedSlices extends WithSlice<typeof webchatSlice> {}
 }
 const injected = webchatSlice.injectInto(rootReducer);

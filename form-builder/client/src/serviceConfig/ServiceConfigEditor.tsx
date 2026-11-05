@@ -21,6 +21,8 @@
  * What's edited and how lives in serviceConfigSlice.ts.
  */
 import { Fragment, useEffect, useMemo } from 'react';
+import { repoServiceConfigDir, ServiceConfigFileName } from '@tech-matters/form-builder-shared';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectDraftFiles } from '../drafts/draftSlice';
 import { selectDefinitions, selectWorkspace } from '../workspace/workspaceSlice';
@@ -59,7 +61,6 @@ import {
   typeFileJson,
   typeSettingJson,
 } from './serviceConfigSlice';
-import { repoServiceConfigDir, ServiceConfigFileName } from '@tech-matters/form-builder-shared';
 
 const FILTERS: { key: SettingsFilter; label: string }[] = [
   { key: 'helpline', label: 'Set by this helpline' },
@@ -319,7 +320,7 @@ const AddSetting = ({ rows, fileNames }: { rows: SettingRow[]; fileNames: Servic
         </button>
       </div>
       <p className="field-hint">
-        Values are read as JSON (true, 15, {'{"a": 1}'}, ["sms"]); anything else is kept as text.
+        Values are read as JSON (true, 15, {'{"a": 1}'}, [&quot;sms&quot;]); anything else is kept as text.
       </p>
       {error && <p className="issue-error-text">{error}</p>}
     </div>

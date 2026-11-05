@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export * from './drafts.ts';
-export * from './definitions.ts';
-export * from './api.ts';
-export * from './filePaths.ts';
+export * from './drafts';
+export * from './definitions';
+export * from './api';
+export * from './filePaths';

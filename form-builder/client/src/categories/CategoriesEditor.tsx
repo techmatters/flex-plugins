@@ -20,6 +20,7 @@
  * can change freely and what needs Aselo staff.
  */
 import { useEffect, useMemo } from 'react';
+
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { getCategoriesByHelpline } from '../common/definitions';
@@ -75,6 +76,7 @@ const HelplineCategories = ({ strings }: { strings: Record<string, string> }) =>
         rows={rows}
         labelOf={value => value.name}
         onReorder={next => dispatch(reorderCategories(next))}
+        // eslint-disable-next-line sonarjs/cognitive-complexity
         renderRow={row => {
           const { value } = row;
           const nameLocked = !staffMode && value.originalName !== undefined;
@@ -127,12 +129,12 @@ const HelplineCategories = ({ strings }: { strings: Record<string, string> }) =>
               </div>
               {rows.some(other => other.id !== row.id && other.value.name === value.name) && (
                 <span className="field-hint issue-error-text">
-                  Another category is already called “{value.name}”. Choose a different name; changes aren't saved until
-                  then.
+                  Another category is already called “{value.name}”. Choose a different name; changes aren&apos;t saved
+                  until then.
                 </span>
               )}
               {shownAs !== value.name && (
-                <span className="field-hint">Counselors see “{shownAs}” (from the helpline's translations).</span>
+                <span className="field-hint">Counselors see “{shownAs}” (from the helpline&apos;s translations).</span>
               )}
               {open && (
                 <div className="subcategories-editor">
@@ -203,6 +205,7 @@ const HelplineCategories = ({ strings }: { strings: Record<string, string> }) =>
                     <div className="bulk-add">
                       <textarea
                         rows={5}
+                        // eslint-disable-next-line jsx-a11y/no-autofocus -- it appears when the person asks for it, ready to type in
                         autoFocus
                         value={bulk.text}
                         aria-label="Subcategories, one per line"

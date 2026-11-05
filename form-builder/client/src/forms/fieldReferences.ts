@@ -19,8 +19,8 @@
  * name, so staff are warned before removing a field that reporting or automation relies on.
  */
 import type { OneToManyConfigSpecs, OneToOneConfigSpec } from '@hrm-form-definitions/formDefinition/insightsConfig';
-import type { DefinitionFileMap, FormTarget } from '../common/definitions';
-import { getForm, isContactTab } from '../common/definitions';
+
+import { type DefinitionFileMap, type FormTarget, getForm, isContactTab } from '../common/definitions';
 
 const ONE_TO_ONE_FILE = 'insights/oneToOneConfigSpec.json';
 const ONE_TO_MANY_FILE = 'insights/oneToManyConfigSpecs.json';

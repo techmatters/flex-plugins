@@ -24,6 +24,7 @@
  * Aselo staff. Order, colours, help links and the selection limit are free to change.
  */
 import type { CategoriesDefinition, CategoryEntry } from '@hrm-form-definitions/formDefinition/types';
+
 import { CATEGORIES_FILE, DefinitionFileMap, getCategoriesByHelpline } from '../common/definitions';
 import { isSameJson } from '../drafts/changes';
 import type { ValidationIssue } from '../forms/validation';
@@ -55,6 +56,7 @@ const checkCategories = (files: DefinitionFileMap): ValidationIssue[] => {
   const issues: ValidationIssue[] = [];
   const byHelpline = getCategoriesByHelpline(files);
   const several = Object.keys(byHelpline).length > 1;
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   Object.entries(byHelpline).forEach(([helpline, definition]) => {
     const where = several ? ` (${helpline})` : '';
     const add = (message: string) =>
@@ -99,6 +101,7 @@ export const validateCategories = (
 export const summarizeCategoryChanges = (
   originalFiles: DefinitionFileMap,
   draftFiles: DefinitionFileMap,
+  // eslint-disable-next-line sonarjs/cognitive-complexity
 ): { title: string; lines: string[] }[] => {
   const before = getCategoriesByHelpline(originalFiles);
   const after = getCategoriesByHelpline(draftFiles);
