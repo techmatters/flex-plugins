@@ -103,6 +103,7 @@ const SECTION_HELP: Partial<Record<View['kind'], { slug: string; what: string }>
   caseStatus: { slug: 'section-case-statuses', what: 'case statuses' },
   caseSections: { slug: 'section-case-sections', what: 'case sections' },
   helplineTerms: { slug: 'section-helpline-terms', what: 'helpline terms' },
+  translations: { slug: 'aselo-translations', what: 'translations' },
   caseSection: { slug: 'section-case-section-forms', what: 'this case section’s form' },
   profiles: { slug: 'section-client-profiles', what: 'client profiles' },
 };
