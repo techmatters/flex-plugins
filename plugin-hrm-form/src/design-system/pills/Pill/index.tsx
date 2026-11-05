@@ -27,13 +27,10 @@ type PillProps = {
   variant?: Variant;
 };
 
-/**
- * A short label. Renders a span by default; use `as="button"` for a clickable pill.
- */
-export const Pill = styled('span')<PillProps>`
+const pillStyles = ({ variant = 'default' }: PillProps) => `
   padding: 4px 8px;
-  background-color: ${({ variant = 'default' }) => variantBackgroundColors[variant]};
-  border: 1px solid ${({ variant = 'default' }) => borderColors[variant]};
+  background-color: ${variantBackgroundColors[variant]};
+  border: 1px solid ${borderColors[variant]};
   border-radius: 4px;
   font-family: 'Open Sans';
   font-size: 13px;
@@ -43,4 +40,16 @@ export const Pill = styled('span')<PillProps>`
   color: ${textColor};
   white-space: nowrap;
 `;
+
+// A short label
+export const Pill = styled('span')<PillProps>`
+  ${pillStyles}
+`;
 Pill.displayName = 'Pill';
+
+// A clickable pill
+export const PillButton = styled('button')<PillProps>`
+  ${pillStyles}
+  cursor: pointer;
+`;
+PillButton.displayName = 'PillButton';
