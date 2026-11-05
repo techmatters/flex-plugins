@@ -69,10 +69,12 @@ On the devops node, from any stage folder:
 make manage-ssm-secrets HL=<code> HL_ENV=staging
 ```
 
-It asks for the Twilio account SID and auth token, plus Datadog app id / access token. The Datadog
-values are currently unused; if you don't have them, enter values that pass validation
-(`00000000-0000-0000-0000-000000000000` and `pub` + 32 zeros). Never paste the auth token into a
-chat with an agent.
+It asks for the Twilio account SID and auth token. Never paste the auth token into a chat with an
+agent.
+
+> Until the branch `alejandro-c/remove_datadog_rum` is merged, it also asks for a Datadog app id and
+> access token. They're unused: enter values that pass validation
+> (`00000000-0000-0000-0000-000000000000` and `pub` + 32 zeros). Remove this note once it's merged.
 
 ### 1.3 Twilio infrastructure (Terraform) 🤝
 
