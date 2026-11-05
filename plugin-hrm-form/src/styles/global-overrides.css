@@ -63,7 +63,7 @@ button.Twilio-TaskListFilter-TaskFilterButton > div.Twilio-Icon-Filter {
 button.Twilio-TaskListFilter-TaskFilterButton > div.Twilio-Icon-FilterUp {
   margin-left: auto;
 }
-div.Twilio-TaskListBaseItem::before {
+div.Twilio-TaskListBaseItem {
   border-bottom: none;
 }
 div.Twilio-TaskListBaseItem::before {
