@@ -39,6 +39,7 @@ import {
   setSurveyMessage,
 } from './messagesSlice';
 import '../aseloPreview/flexDesktop.css';
+import { SectionTitle } from '../help/HelpContext';
 
 // Built-in fallbacks: lambdas/account-scoped/src/operatingHours.ts and translations/en.json
 const DEFAULT_MESSAGES: Record<string, string> = {
@@ -104,7 +105,7 @@ export const MessagesEditor = () => {
     <div className="section-editor">
       <div className="section-editor-main">
         <section className="panel">
-          <h2>Automatic chat messages</h2>
+          <SectionTitle>Automatic chat messages</SectionTitle>
           <p className="muted">Messages Aselo sends to the contact by itself, in each language.</p>
 
           <div className="language-tabs" role="tablist" aria-label="Language">

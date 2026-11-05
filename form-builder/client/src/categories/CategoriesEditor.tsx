@@ -49,6 +49,7 @@ import { AseloCategories } from '../aseloPreview/AseloCategories';
 import { translate, useStrings } from '../aseloPreview/translations';
 import { SortableRows } from '../common/SortableRows';
 import '../aseloPreview/aselo.css';
+import { SectionTitle } from '../help/HelpContext';
 
 const HelplineCategories = ({ strings }: { strings: Record<string, string> }) => {
   const dispatch = useAppDispatch();
@@ -281,7 +282,7 @@ export const CategoriesEditor = () => {
     <div className="section-editor">
       <div className="section-editor-main">
         <section className="panel">
-          <h2>Issue categories</h2>
+          <SectionTitle>Issue categories</SectionTitle>
           <p className="muted">
             What the contact was about. Counselors tick these on the Categories tab, and reports count them.
           </p>

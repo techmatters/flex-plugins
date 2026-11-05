@@ -45,6 +45,7 @@ import {
   writeSections,
 } from './profilesSlice';
 import { SortableRows } from '../common/SortableRows';
+import { SectionTitle } from '../help/HelpContext';
 
 const DurationInput = ({
   hours,
@@ -106,7 +107,7 @@ export const ProfilesEditor = () => {
     <div className="section-editor">
       <div className="section-editor-main">
         <section className="panel">
-          <h2>Client profiles</h2>
+          <SectionTitle>Client profiles</SectionTitle>
           <p className="muted">
             A profile brings together everything about one person who gets in touch: their contacts, cases, and notes
             counselors keep about them.

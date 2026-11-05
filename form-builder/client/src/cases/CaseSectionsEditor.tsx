@@ -41,6 +41,7 @@ import {
 } from './caseSectionsSlice';
 import { translate, useStrings } from '../aseloPreview/translations';
 import { SortableRows } from '../common/SortableRows';
+import { SectionTitle } from '../help/HelpContext';
 
 // The plugin shows up to this many fields side by side in a section's list
 const MAX_PREVIEW_FIELDS = 4;
@@ -88,7 +89,7 @@ export const CaseSectionsEditor = () => {
     <div className="section-editor">
       <div className="section-editor-main">
         <section className="panel">
-          <h2>Case sections</h2>
+          <SectionTitle>Case sections</SectionTitle>
           <p className="muted">
             What counselors can add to a case, like notes or referrals. Each section has its own form: open it from the
             menu on the left, or with “Edit the form”.

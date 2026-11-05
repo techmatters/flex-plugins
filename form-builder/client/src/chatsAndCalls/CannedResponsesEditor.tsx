@@ -40,6 +40,7 @@ import { translate, useStrings } from '../aseloPreview/translations';
 import { SortableRows } from '../common/SortableRows';
 import '../aseloPreview/aselo.css';
 import '../aseloPreview/flexDesktop.css';
+import { SectionTitle } from '../help/HelpContext';
 
 export const CannedResponsesEditor = () => {
   const dispatch = useAppDispatch();
@@ -62,7 +63,7 @@ export const CannedResponsesEditor = () => {
     <div className="section-editor">
       <div className="section-editor-main">
         <section className="panel">
-          <h2>Canned responses</h2>
+          <SectionTitle>Canned responses</SectionTitle>
           <p className="muted">Ready-made messages counselors can pick in a chat, then edit before sending.</p>
           {!enabled && (
             <p className="issue issue-warning">

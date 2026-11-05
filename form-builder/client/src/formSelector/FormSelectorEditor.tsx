@@ -50,6 +50,7 @@ import {
   switchSelectorType,
   writeFormSelector,
 } from './formSelectorSlice';
+import { SectionTitle } from '../help/HelpContext';
 
 // What each part means (lambdas/packages/hrm-form-definitions/src/formDefinition/formSelector)
 const HELP = {
@@ -311,9 +312,9 @@ export const FormSelectorEditor = () => {
     <div className="section-editor">
       <div className="section-editor-main">
         <section className="panel">
-          <h2>
+          <SectionTitle>
             Filling in the contact <code className="form-selector-file">PrepopulateMappings.json › formSelector</code>
-          </h2>
+          </SectionTitle>
           {!usePrepopulateMappings && (
             <div className="alert alert-info">
               <code>use_prepopulate_mappings</code> is off: the plugin still uses PrepopulateKeys.json, so this has no

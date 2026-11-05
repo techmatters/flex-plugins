@@ -86,6 +86,7 @@ import {
   SIDES,
   threadsOn,
 } from '../reviews/formReviews';
+import { SectionTitle } from '../help/HelpContext';
 
 // What a field card shows of its review: each side's approval, and its open flags
 type CardReview = {
@@ -247,9 +248,9 @@ export const ContactFormEditor = ({ tab }: { tab: FormTarget }) => {
   return (
     <div className="editor">
       <section className="panel editor-canvas">
-        <h2>
+        <SectionTitle>
           {tab.title} <span className="muted count">{allEntries.length} fields</span>
-        </h2>
+        </SectionTitle>
         <p className="muted editor-hint">
           Click a field to change it. Drag fields to reorder them or move them to the other column.
         </p>

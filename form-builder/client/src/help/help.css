@@ -392,14 +392,21 @@
   }
 }
 
-/* "Need help?" at the top right of a section */
-.need-help-row {
+/* A section's title, with "Need help?" to its right */
+.section-title-row {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: -4px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.panel .section-title-row h2 {
+  margin: 0;
 }
 
 .need-help {
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   gap: 5px;

@@ -72,6 +72,7 @@ import { LinkedDropdownsWizard } from '../linkedDropdowns/LinkedDropdownsWizard'
 import { SortableRows } from '../common/SortableRows';
 import { WebchatFieldSettings } from './WebchatFieldSettings';
 import { WebchatPreview } from './WebchatPreview';
+import { SectionTitle } from '../help/HelpContext';
 
 export const WebchatFormEditor = () => {
   const dispatch = useAppDispatch();
@@ -112,7 +113,7 @@ export const WebchatFormEditor = () => {
     <div className="section-editor">
       <div className="section-editor-main">
         <section className="panel">
-          <h2>Webchat form</h2>
+          <SectionTitle>Webchat form</SectionTitle>
           <p className="muted">
             The questions visitors answer on your website before a chat starts. Their answers can fill in the contact
             form for the counselor.

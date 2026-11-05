@@ -26,21 +26,35 @@ import { articleBySlug } from './articles';
 
 export const HelpContext = createContext<((slug?: string) => void) | undefined>(undefined);
 
-// "Need help?" at the top of a section, opening the article about it
-export const NeedHelp = ({ slug, what }: { slug: string; what: string }) => {
+type SectionHelp = { slug: string; what: string };
+
+// The article about the section open, set by the workspace for the section's title to link to
+export const SectionHelpContext = createContext<SectionHelp | undefined>(undefined);
+
+// "Need help?", opening the article about a section
+export const NeedHelp = ({ slug, what }: SectionHelp) => {
   const openHelp = useContext(HelpContext);
   if (!openHelp || !articleBySlug(slug)) return null;
   return (
-    <div className="need-help-row">
-      <button
-        type="button"
-        className="need-help"
-        aria-label={`Need help with ${what}?`}
-        title={`What ${what} is for, and how to change it`}
-        onClick={() => openHelp(slug)}
-      >
-        <CircleHelp size={14} aria-hidden /> Need help?
-      </button>
+    <button
+      type="button"
+      className="need-help"
+      aria-label={`Need help with ${what}?`}
+      title={`What ${what} is for, and how to change it`}
+      onClick={() => openHelp(slug)}
+    >
+      <CircleHelp size={14} aria-hidden /> Need help?
+    </button>
+  );
+};
+
+// A section editor's title, with "Need help?" to its right when the section has an article
+export const SectionTitle = ({ id, children }: { id?: string; children: React.ReactNode }) => {
+  const sectionHelp = useContext(SectionHelpContext);
+  return (
+    <div className="section-title-row">
+      <h2 id={id}>{children}</h2>
+      {sectionHelp && <NeedHelp slug={sectionHelp.slug} what={sectionHelp.what} />}
     </div>
   );
 };

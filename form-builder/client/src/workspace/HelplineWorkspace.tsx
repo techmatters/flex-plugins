@@ -20,7 +20,7 @@
  */
 import type { FlagKind, ReviewSide } from '@tech-matters/form-builder-shared';
 
-import { NeedHelp } from '../help/HelpContext';
+import { SectionHelpContext } from '../help/HelpContext';
 import { ImportedFrom } from '../common/BranchPicker';
 import { Loading } from '../common/Loading';
 import {
@@ -580,8 +580,8 @@ export const HelplineWorkspace = () => {
               </ul>
             </div>
           )}
-          {sectionHelp && <NeedHelp {...sectionHelp} />}
-          {renderMain()}
+          {/* The section's title shows "Need help?" (SectionTitle) */}
+          <SectionHelpContext.Provider value={sectionHelp}>{renderMain()}</SectionHelpContext.Provider>
         </main>
       </div>
 

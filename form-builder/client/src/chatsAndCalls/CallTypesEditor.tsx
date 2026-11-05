@@ -47,6 +47,7 @@ import { AseloCallTypeScreen } from '../aseloPreview/AseloCallTypeScreen';
 import { useStrings } from '../aseloPreview/translations';
 import { SortableRows } from '../common/SortableRows';
 import '../aseloPreview/aselo.css';
+import { SectionTitle } from '../help/HelpContext';
 
 export const CallTypesEditor = () => {
   const dispatch = useAppDispatch();
@@ -100,7 +101,7 @@ export const CallTypesEditor = () => {
     <div className="section-editor">
       <div className="section-editor-main">
         <section className="panel">
-          <h2>Call types</h2>
+          <SectionTitle>Call types</SectionTitle>
           <p className="muted">
             The buttons counselors see before the contact form. They choose one to say what kind of contact this is.
           </p>

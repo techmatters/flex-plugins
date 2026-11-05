@@ -15,7 +15,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { afterEach, describe, expect, test, jest } from '@jest/globals';
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { Provider } from 'react-redux';
 
@@ -266,6 +266,25 @@ describe('“Need help?” on a section', () => {
     expect(opened).toEqual(['section-service-user-information']);
     // An article that doesn't exist has no link
     expect(screen.queryByRole('button', { name: 'Need help with nothing?' })).toBeNull();
+  });
+
+  test('sits next to the section’s title, for the section open', async () => {
+    const { HelpContext, SectionHelpContext, SectionTitle } = await import('./HelpContext');
+    const opened: (string | undefined)[] = [];
+    render(
+      <HelpContext.Provider value={slug => opened.push(slug)}>
+        <SectionHelpContext.Provider value={{ slug: 'section-call-types', what: 'call types' }}>
+          <SectionTitle>Call types</SectionTitle>
+        </SectionHelpContext.Provider>
+        <SectionTitle>Service configuration</SectionTitle>
+      </HelpContext.Provider>,
+    );
+    const title = screen.getByRole('heading', { name: 'Call types' });
+    fireEvent.click(within(title.parentElement!).getByRole('button', { name: 'Need help with call types?' }));
+    expect(opened).toEqual(['section-call-types']);
+    // A section without an article (Aselo-only settings) has the title alone
+    const settingsTitle = screen.getByRole('heading', { name: 'Service configuration' });
+    expect(within(settingsTitle.parentElement!).queryByRole('button')).toBeNull();
   });
 
   test('the panel opens on the article asked for, with a way back to the rest', () => {

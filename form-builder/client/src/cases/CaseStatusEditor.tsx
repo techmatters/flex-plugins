@@ -38,6 +38,7 @@ import {
   setTransition,
 } from './caseStatusSlice';
 import { SortableRows } from '../common/SortableRows';
+import { SectionTitle } from '../help/HelpContext';
 
 export const CaseStatusEditor = () => {
   const dispatch = useAppDispatch();
@@ -78,7 +79,7 @@ export const CaseStatusEditor = () => {
     <div className="section-editor">
       <div className="section-editor-main">
         <section className="panel">
-          <h2>Case statuses</h2>
+          <SectionTitle>Case statuses</SectionTitle>
           <p className="muted">
             Where a case is up to. Counselors change it from the case, choosing among the statuses it&apos;s allowed to
             move to.
