@@ -57,12 +57,14 @@ import {
   applyThreadChange,
   DraftReview,
   isHiddenFromHelplinePath,
+  isOtherRepoPath,
   isStaffOnlyPath,
   type Me,
   sideOf,
 } from '@tech-matters/form-builder-shared';
 
 import { DefinitionsApiError, listHelplines, loadDefinitionFiles } from './definitionsApi';
+import { loadPermissions, type PermissionRulesSource } from './permissionsApi';
 import { Draft, DraftStore, isValidDraftFilePath, isValidDraftKey, DraftMeta } from './drafts';
 import type { BoardStore } from './boards';
 import type { PeopleStore } from './people';
@@ -121,6 +123,8 @@ export type ApiContext = {
   helpQuestions?: HelpQuestionStore;
   // Other flex-plugins branches imports can read ({ branch } in an import's body); without it, only the default
   branches?: BranchSource;
+  // The hrm repo's permission rules files; without it, the Permissions section has nothing to show
+  permissionRules?: PermissionRulesSource;
   now?: () => Date;
 };
 
@@ -376,13 +380,23 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
     if (definitionsMatch) {
       const [, code, version] = definitionsMatch;
       if (!canOpenHelpline(user, code)) return fail(403, `You don't have access to ${code}.`);
-      const definitions = await loadDefinitionFiles(
+      let definitions = await loadDefinitionFiles(
         context.formDefinitionsDir,
         code,
         version,
         context.helplinesConfigDir,
         context.webchatConfigDir,
       );
+      // The helpline's HRM permissions (another repo: permissionsApi.ts)
+      if (context.permissionRules && context.helplinesConfigDir) {
+        const permissions = await loadPermissions(context.helplinesConfigDir, code, context.permissionRules);
+        definitions = {
+          ...definitions,
+          files: { ...definitions.files, ...permissions.files },
+          errors: [...definitions.errors, ...permissions.errors],
+          permissions: permissions.info,
+        };
+      }
       if (isStaff(user)) return ok(definitions);
       return ok({
         ...definitions,
@@ -609,12 +623,36 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       if (!context.applier) {
         return fail(501, "Applying from the builder isn't set up. Download the changes and open a PR instead.");
       }
+      // Files for another repo (the HRM permissions) aren't in the PR: they stay in the draft until downloaded
+      const otherRepo = pickFiles(existing.files, isOtherRepoPath);
+      const forPr = pickFiles(existing.files, isOtherRepoPath, false);
+      if (Object.keys(forPr).length === 0) {
+        return fail(400, 'Only the HRM permissions changed: download them for the hrm repo instead.');
+      }
       const description = (request.body as ApplyDetails | undefined)?.description;
-      const result = await context.applier.apply(existing, user, {
+      const result = await context.applier.apply({ ...existing, files: forPr }, user, {
         description: typeof description === 'string' ? description : undefined,
       });
-      await context.drafts.remove(code, version);
-      return ok(result);
+      if (Object.keys(otherRepo).length === 0) {
+        await context.drafts.remove(code, version);
+        return ok(result);
+      }
+      await context.drafts.put({
+        ...existing,
+        files: otherRepo,
+        meta: {
+          ...existing.meta,
+          revision: existing.meta.revision + 1,
+          status: 'editing',
+          updatedAt: now,
+          updatedBy: user.name,
+          baseHashes: pickFiles(existing.meta.baseHashes, isOtherRepoPath),
+        },
+      });
+      return ok({
+        ...result,
+        description: `${result.description} The HRM permissions aren't in it: they stay in the draft until you download them for the hrm repo.`,
+      });
     }
 
     return fail(404, `Unknown API route ${route}`);

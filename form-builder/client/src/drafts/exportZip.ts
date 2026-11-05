@@ -20,8 +20,16 @@
  * Phase 4 replaces the download with "Apply", which writes the same files to a branch.
  */
 import JSZip from 'jszip';
-import { isOperatingInfoPath, isServiceConfigPath, repoPathOf } from '@tech-matters/form-builder-shared';
+import {
+  isOperatingInfoPath,
+  isPermissionRulesPath,
+  isServiceConfigPath,
+  type PermissionRules,
+  permissionRulesNameOf,
+  repoPathOf,
+} from '@tech-matters/form-builder-shared';
 
+import { formatPermissionRules, summarizePermissionChanges } from '../permissions/permissions';
 import type { DefinitionFileMap } from '../common/definitions';
 import { getChangedFilePaths, summarizeContactFormChanges } from './changes';
 import { summarizeSectionChanges } from '../chatsAndCalls/sections';
@@ -110,6 +118,17 @@ export const buildChangeLog = ({
           '- The operating hours changed too: once merged, deploy the account-scoped Lambda (the "Deploy All Twilio Lambdas" workflow) to staging, then production.',
         ]
       : []),
+    ...getChangedFilePaths(originalFiles, draftFiles)
+      .filter(isPermissionRulesPath)
+      .flatMap(filePath => [
+        `- The HRM permissions changed too (\`${permissionRulesNameOf(
+          filePath,
+        )}.json\`): they're for the hrm repo, under \`hrm/\` in this zip and not in the flex-plugins PR. Commit them to the hrm repo, then deploy HRM to staging, then production. A new file name also needs adding to \`hrm-domain/hrm-core/permissions/rulesMap.ts\`.`,
+        ...summarizePermissionChanges(
+          originalFiles[filePath] as PermissionRules | undefined,
+          draftFiles[filePath] as PermissionRules,
+        ).map(change => `  - ${change}`),
+      ]),
     '',
   );
   return lines.join('\n');
@@ -119,7 +138,12 @@ export const buildExportZip = (input: ExportInput): JSZip => {
   const { code, version, originalFiles, draftFiles } = input;
   const zip = new JSZip();
   getChangedFilePaths(originalFiles, draftFiles).forEach(filePath => {
-    zip.file(repoPathOf(code, version, filePath), serializeDefinitionFile(draftFiles[filePath]));
+    const value = draftFiles[filePath];
+    // The HRM permissions as the hrm repo writes them
+    const text = isPermissionRulesPath(filePath)
+      ? formatPermissionRules(value as PermissionRules)
+      : serializeDefinitionFile(value);
+    zip.file(repoPathOf(code, version, filePath), text);
   });
   zip.file('CHANGES.md', buildChangeLog(input));
   return zip;

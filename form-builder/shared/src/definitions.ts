@@ -17,6 +17,7 @@
 /**
  * A helpline's definition files as the API returns them (server/src/definitionsApi.ts reads them).
  */
+import type { PermissionsInfo } from './permissions';
 import type { ImportSource } from './branches';
 
 export type HelplineSummary = {
@@ -49,6 +50,8 @@ export type DefinitionFiles = {
   serviceConfigDefaults?: Record<string, unknown>;
   // The flex-plugins branch they were read from, when not the default (server/src/branches.ts)
   source?: ImportSource;
+  // The helpline's HRM permissions file (hrm-permission-rules/<name>.json in files) and who uses it
+  permissions?: PermissionsInfo;
 };
 
 export type WebchatSettings = {

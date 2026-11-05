@@ -1,7 +1,7 @@
 ---
 title: Operating hours
 kind: section
-audience: aselo
+audience: everyone
 order: 53
 questions:
   - how do I set operating hours
@@ -16,7 +16,7 @@ questions:
 keywords: operating hours, opening hours, open, closed, holiday, holidays, time zone, timezone, office, offices, shift, channel, operatingInfo, account-scoped, lambda, preClosing, closed message
 ---
 
-**Operating hours** (under **Helpline**, Aselo staff only) is when the helpline is open, as the **Check operating hours** step of its Studio flows asks: it's told **open**, **closed** or **holiday**, and closed or on a holiday the flow says so with the closed messages (**Automatic chat messages**: `ClosedOutOfShift`, `ClosedHolidays`).
+**Operating hours** (under **Helpline**; the Aselo team changes them, helpline staff review and comment on them) is when the helpline is open, as the **Check operating hours** step of its Studio flows asks: it's told **open**, **closed** or **holiday**, and closed or on a holiday the flow says so with the closed messages (**Automatic chat messages**: `ClosedOutOfShift`, `ClosedHolidays`).
 
 The hours are in `lambdas/account-scoped/src/operatingInfo/<code>.json`, inside the account-scoped Lambda, so a change reaches flows after the PR is merged **and the account-scoped Lambda is deployed** (the change list says so). Hours are only checked **in production**, unless the `operating_hours_enforced_override` SSM parameter turns them on for an account. A helpline without the file is always open.
 

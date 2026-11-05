@@ -63,6 +63,7 @@ import { FeaturesEditor } from '../serviceConfig/FeaturesEditor';
 import { ServiceConfigEditor } from '../serviceConfig/ServiceConfigEditor';
 import { TranslationsEditor } from '../translations/TranslationsEditor';
 import { OperatingHoursEditor } from '../operatingHours/OperatingHoursEditor';
+import { PermissionsEditor } from '../permissions/PermissionsEditor';
 import { HelplineTermsEditor } from '../helplineTerms/HelplineTermsEditor';
 import { selectHelplineTerms } from '../helplineTerms/helplineTermsSlice';
 import { contactTabTitle } from '../helplineTerms/terms';
@@ -107,6 +108,7 @@ const SECTION_HELP: Partial<Record<View['kind'], { slug: string; what: string }>
   helplineTerms: { slug: 'section-helpline-terms', what: 'helpline terms' },
   translations: { slug: 'aselo-translations', what: 'translations' },
   operatingHours: { slug: 'aselo-operating-hours', what: 'operating hours' },
+  permissions: { slug: 'section-permissions', what: 'permissions' },
   caseSection: { slug: 'section-case-section-forms', what: 'this case section’s form' },
   profiles: { slug: 'section-client-profiles', what: 'client profiles' },
 };
@@ -323,6 +325,9 @@ export const HelplineWorkspace = () => {
     if (view.kind === 'operatingHours') {
       return <OperatingHoursEditor key={editorKey} />;
     }
+    if (view.kind === 'permissions') {
+      return <PermissionsEditor key={editorKey} />;
+    }
     if (view.kind === 'helplineTerms') {
       return <HelplineTermsEditor key={editorKey} />;
     }
@@ -491,6 +496,13 @@ export const HelplineWorkspace = () => {
               reviewOf={reviewOf}
               target={{ kind: 'operatingHours' }}
               label="Operating hours"
+            />
+            <NavItem
+              current={view}
+              onSelect={setView}
+              reviewOf={reviewOf}
+              target={{ kind: 'permissions' }}
+              label="Permissions"
             />
             {/* Features, the service configuration and translations are for Aselo staff only (not when viewing as helpline staff) */}
             {canApply && (

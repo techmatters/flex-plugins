@@ -60,13 +60,38 @@ export const OPERATING_INFO_FILE = 'account-scoped/operatingInfo.json';
 
 export const isOperatingInfoPath = (filePath: string) => filePath === OPERATING_INFO_FILE;
 
-// Files only Aselo staff change: the service configuration and the operating hours
-export const isStaffOnlyPath = (filePath: string) => isServiceConfigPath(filePath) || isOperatingInfoPath(filePath);
+/**
+ * The helpline's HRM permissions: a rules file in the hrm repo (hrm-domain/hrm-core/permission-rules/
+ * <name>.json), named by permission_config in the helpline's .hcl files (usually its code; some
+ * helplines share one), keyed as `hrm-permission-rules/<name>.json`. Only Aselo staff change it
+ * (helpline staff see it). It's for another repo: flex-plugins PRs leave it out, it's downloaded
+ * for the hrm repo instead, and a change ships with an HRM deploy.
+ */
+export const HRM_PERMISSION_RULES_PREFIX = 'hrm-permission-rules/';
+export const REPO_HRM_PERMISSION_RULES_DIR = 'hrm-domain/hrm-core/permission-rules';
 
-// Of those, the ones helpline staff don't even see (the operating hours they see, review and comment on)
+export const isPermissionRulesPath = (filePath: string) => filePath.startsWith(HRM_PERMISSION_RULES_PREFIX);
+export const permissionRulesPath = (name: string) => `${HRM_PERMISSION_RULES_PREFIX}${name}.json`;
+// e.g. 'hrm-permission-rules/usnm.json' -> 'usnm'
+export const permissionRulesNameOf = (filePath: string) =>
+  filePath.slice(HRM_PERMISSION_RULES_PREFIX.length).replace(/\.json$/, '');
+
+// Files that live in another repo (hrm), so not in flex-plugins PRs
+export const isOtherRepoPath = (filePath: string) => isPermissionRulesPath(filePath);
+
+// Files only Aselo staff change: the service configuration, the operating hours and the permissions
+export const isStaffOnlyPath = (filePath: string) =>
+  isServiceConfigPath(filePath) || isOperatingInfoPath(filePath) || isPermissionRulesPath(filePath);
+
+// Of those, the ones helpline staff don't even see (the operating hours and permissions they see, review and
+// comment on)
 export const isHiddenFromHelplinePath = (filePath: string) => isServiceConfigPath(filePath);
 
+// Where a file goes, from the root of its repo; files for the hrm repo under hrm/ (as in the zip)
 export const repoPathOf = (code: string, version: string, filePath: string) => {
+  if (isPermissionRulesPath(filePath)) {
+    return `hrm/${REPO_HRM_PERMISSION_RULES_DIR}/${filePath.slice(HRM_PERMISSION_RULES_PREFIX.length)}`;
+  }
   if (isOperatingInfoPath(filePath)) return `${REPO_OPERATING_INFO_DIR}/${code}.json`;
   if (isServiceConfigPath(filePath)) {
     return `${repoServiceConfigDir(code)}/${filePath.slice(SERVICE_CONFIG_PREFIX.length)}`;

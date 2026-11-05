@@ -28,6 +28,7 @@ import path from 'path';
 
 import {
   isOperatingInfoPath,
+  isOtherRepoPath,
   isServiceConfigPath,
   repoPathOf,
   isWebchatTranslationsPath,
@@ -83,6 +84,8 @@ export class LocalApplier implements DraftApplier {
   async apply(draft: Draft): Promise<ApplyResult> {
     const written: string[] = [];
     for (const [filePath, value] of Object.entries(draft.files)) {
+      // Files for another repo (the HRM permissions) are downloaded for it, not written here
+      if (isOtherRepoPath(filePath)) continue;
       const target = this.targetOf(draft, filePath);
       const existingText = await fs.readFile(target, 'utf8').catch(() => undefined);
       await fs.mkdir(path.dirname(target), { recursive: true });

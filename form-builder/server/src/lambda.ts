@@ -35,6 +35,7 @@ import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { localNotifier } from './localServices';
 import { PublicRepoSource } from './publicRepo';
 import { GitHubBranches } from './branches';
+import { GitHubPermissionRules } from './permissionsApi';
 import { RepoSnapshots } from './repoSnapshot';
 import { S3BoardStore } from './s3BoardStore';
 import { S3DraftStore } from './s3DraftStore';
@@ -84,6 +85,8 @@ const loadServices = async (): Promise<Services> => {
     snapshots: new RepoSnapshots(new PublicRepoSource(), '/tmp/flex-plugins'),
     // Imports can read another branch (master is the default)
     branches: new GitHubBranches('/tmp/flex-plugins-branches'),
+    // The HRM permissions, from the public hrm repo
+    permissionRules: new GitHubPermissionRules(),
     drafts: new S3DraftStore(process.env.DRAFTS_BUCKET!),
     // Flow designer boards share the drafts bucket, under boards/
     boards: new S3BoardStore(process.env.DRAFTS_BUCKET!),

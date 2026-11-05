@@ -24,6 +24,7 @@
  * the requests to /api. Run from server/ (npm's working directory for its scripts), so the repo
  * is two folders up. Each folder can be pointed elsewhere with its environment variable.
  */
+import { existsSync } from 'fs';
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import path from 'path';
 
@@ -39,6 +40,7 @@ import { LocalRoutingStore } from './routingStore';
 import { LocalChatbotStore } from './chatbotApi';
 import { LocalHelpQuestionStore } from './helpQuestions';
 import { GitHubBranches } from './branches';
+import { GitHubPermissionRules, LocalPermissionRules } from './permissionsApi';
 
 const builderDir = path.resolve(process.cwd(), '..');
 const repoDir = path.resolve(builderDir, '..');
@@ -51,6 +53,15 @@ const formDefinitionsDir =
 const helplinesConfigDir = process.env.HELPLINES_CONFIG_DIR ?? path.resolve(repoDir, 'twilio-iac/helplines');
 // The webchat app's per-helpline settings and translations
 const webchatConfigDir = process.env.WEBCHAT_CONFIG_DIR ?? path.resolve(repoDir, 'aselo-webchat-react-app/configSrc');
+
+// The HRM permissions: an hrm checkout next to this repo (or HRM_DIR), else the hrm repo on GitHub
+const hrmPermissionRulesDir = path.resolve(
+  process.env.HRM_DIR ?? path.resolve(repoDir, '..', 'hrm'),
+  'hrm-domain/hrm-core/permission-rules',
+);
+const permissionRules = existsSync(hrmPermissionRulesDir)
+  ? new LocalPermissionRules(hrmPermissionRulesDir)
+  : new GitHubPermissionRules();
 
 // A folder of form-builder/, unless set (e.g. FORM_BUILDER_BOARDS_DIR)
 const localDir = (envName: string, folder: string) => process.env[envName] ?? path.resolve(builderDir, folder);
@@ -75,6 +86,7 @@ const context: ApiContext = {
   // Imports read this checkout, or a branch from GitHub (downloaded into branch-snapshots/)
   branches: new GitHubBranches(path.resolve(builderDir, 'branch-snapshots'), 'This checkout (local files)'),
   applier: new LocalApplier(formDefinitionsDir, repoDir, webchatConfigDir, helplinesConfigDir),
+  permissionRules,
   notifier: localNotifier,
 };
 

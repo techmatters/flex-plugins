@@ -22,7 +22,7 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-import { repoPathOf } from '@tech-matters/form-builder-shared';
+import { isOtherRepoPath, repoPathOf } from '@tech-matters/form-builder-shared';
 
 import type { ApiUser, ApplyDetails, ApplyResult, DraftApplier } from './api';
 import type { Draft } from './drafts';
@@ -49,13 +49,16 @@ export class GitHubApplier implements DraftApplier {
   async apply(draft: Draft, user: ApiUser, details: ApplyDetails = {}): Promise<ApplyResult> {
     const snapshot = await this.snapshots.latest();
     const files = await Promise.all(
-      Object.entries(draft.files).map(async ([filePath, value]) => {
-        const repoPath = repoPathOf(draft.code, draft.version, filePath);
-        const existingText = await fs
-          .readFile(path.join(snapshot.repoRoot, ...repoPath.split('/')), 'utf8')
-          .catch(() => undefined);
-        return { repoPath, content: serializeLike(value, existingText) };
-      }),
+      // Files for another repo (the HRM permissions) aren't flex-plugins'
+      Object.entries(draft.files)
+        .filter(([filePath]) => !isOtherRepoPath(filePath))
+        .map(async ([filePath, value]) => {
+          const repoPath = repoPathOf(draft.code, draft.version, filePath);
+          const existingText = await fs
+            .readFile(path.join(snapshot.repoRoot, ...repoPath.split('/')), 'utf8')
+            .catch(() => undefined);
+          return { repoPath, content: serializeLike(value, existingText) };
+        }),
     );
 
     const helpline = draft.code.toUpperCase();

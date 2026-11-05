@@ -1,0 +1,148 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+/* Permissions (Aselo staff change them; helpline staff see them) */
+.permissions .alert-warning {
+  background: var(--color-warning-bg, #fff8e1);
+  color: var(--color-warning-text, #7a5a00);
+}
+
+.permission-download {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.permission-issues,
+.permission-changes {
+  margin: 0 0 16px;
+  padding: 10px 14px 10px 30px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.permission-changes {
+  margin: 0;
+}
+
+.permission-issues .issue-error {
+  color: var(--color-danger, #b42318);
+}
+
+.permission-issues .issue-warning {
+  color: var(--color-warning, #9a6700);
+}
+
+.permission-group h3 {
+  font-size: 15px;
+  margin: 0 0 6px;
+}
+
+.permission-actions {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.permission-action {
+  padding: 10px 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.permission-action-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.permission-summary {
+  margin: 4px 0;
+}
+
+.permission-ways {
+  list-style: none;
+  margin: 4px 0;
+  padding: 0;
+}
+
+.permission-way {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+}
+
+.permission-or,
+.permission-and {
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #666);
+}
+
+.permission-condition {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+}
+
+.permission-condition.unknown {
+  border-color: var(--color-danger, #b42318);
+}
+
+.permission-condition input[type='number'] {
+  width: 60px;
+}
+
+.permission-way input,
+.permission-way select {
+  font: inherit;
+  padding: 2px 6px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.permission-action-buttons {
+  display: flex;
+  gap: 16px;
+}
+
+.permission-folded {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+/* What changes the permissions: disabled (but readable) for helpline staff */
+.permission-changes-allowed {
+  border: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+
+.permission-changes-allowed:disabled .permission-edit {
+  display: none;
+}
