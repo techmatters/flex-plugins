@@ -57,8 +57,8 @@ ${
           "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\": \"ChildHelp\",\n  \"language\": \"es-CH\",\n  \"counselingLanguage\": \"Spanish\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"ChildHelp Spanish\",\n    \"hang_up_by\": \"Customer\"\n  }\n}",
           "waitUrlMethod": "GET",
           "offset": {
-            "x": -300,
-            "y": 2440
+            "x": -150,
+            "y": 2480
           }
         }
       },
@@ -98,8 +98,8 @@ ${
           "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
           "url": "${webhook_url_studio_errors}",
           "offset": {
-            "x": -80,
-            "y": 2800
+            "x": -150,
+            "y": 2900
           }
         }
       },
@@ -117,7 +117,7 @@ ${
           "play": "${flow_vars.recordings_url}/play_message_voice_es_childhelp_no_spanish_counselor_prequeue.mp3",
           "offset": {
             "x": -640,
-            "y": 1810
+            "y": 2200
           }
         }
       },
@@ -141,11 +141,11 @@ ${
           "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageNoSpanish",
           "workflow": "${workflow_sids.master}",
           "channel": "${task_channel_sids.voice}",
-          "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n \"language\":\"en-CH\", \n \"service\":\"ChildHelp\",\n\"counselingLanguage\": \"Spanish\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"ChildHelp No Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
+          "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n \"language\":\"en-CH\", \n \"service\":\"ChildHelp\",\n\"counselingLanguage\": \"English\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"ChildHelp No Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
           "waitUrlMethod": "GET",
           "offset": {
-            "x": -660,
-            "y": 2060
+            "x": -640,
+            "y": 2480
           }
         }
       },
@@ -172,64 +172,8 @@ ${
           "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n \"language\":\"en-CH\", \n  \"service\":\"ChildHelp\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"ChildHelp English\",\n    \"hang_up_by\": \"Customer\"\n  }\n}",
           "waitUrlMethod": "GET",
           "offset": {
-            "x": 760,
+            "x": 390,
             "y": 2160
-          }
-        }
-      },
-      {
-        "name": "f_getProfileFlagsForIdentifier",
-        "type": "make-http-request",
-        "transitions": [
-          {
-            "event": "success",
-            "next": "split_contact_routing"
-          },
-          {
-            "event": "failed",
-            "next": "split_contact_routing"
-          }
-        ],
-        "properties": {
-          "method": "POST",
-          "content_type": "application/json;charset=utf-8",
-          "add_twilio_auth": false,
-          "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"voice\"}",
-          "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier",
-          "offset": {
-            "x": 10,
-            "y": -260
-          }
-        }
-      },
-      {
-        "name": "split_contact_routing",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "event": "noMatch",
-            "next": "play_message_voice_en_childhelp_voice_welcome"
-          },
-          {
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "If value equal_to blocked",
-                "arguments": [
-                  "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
-                ],
-                "type": "equal_to",
-                "value": "blocked"
-              }
-            ],
-            "next": "play_message_voice_blocked"
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
-          "offset": {
-            "x": 320,
-            "y": -30
           }
         }
       },
@@ -245,8 +189,8 @@ ${
           "loop": 1,
           "play": "${flow_vars.recordings_url}/play_message_voice_blocked.mp3",
           "offset": {
-            "x": 840,
-            "y": 530
+            "x": 1200,
+            "y": 930
           }
         }
       },
@@ -256,11 +200,11 @@ ${
         "transitions": [
           {
             "event": "completed",
-            "next": "f_getProfileFlagsForIdentifier"
+            "next": "f_getProfileFlagsForIdentifier_profile"
           },
           {
             "event": "failed",
-            "next": "f_getProfileFlagsForIdentifier"
+            "next": "f_getProfileFlagsForIdentifier_profile"
           }
         ],
         "properties": {
@@ -396,62 +340,6 @@ ${
         }
       },
       {
-        "name": "f_isSkilledWorkerAvailable_phone_advocate",
-        "type": "make-http-request",
-        "transitions": [
-          {
-            "event": "success",
-            "next": "split_is_skilled_worker_available_phone_advocate"
-          },
-          {
-            "event": "failed",
-            "next": "send_to_queue_childhelp_english"
-          }
-        ],
-        "properties": {
-          "offset": {
-            "x": 340,
-            "y": 2340
-          },
-          "method": "POST",
-          "content_type": "application/json;charset=utf-8",
-          "add_twilio_auth": false,
-          "body": "{\n  \"targetSkills\": \"Phone,Advocate\",\n  \"targetChannel\": \"voice\"\n}",
-          "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerAvailable"
-        }
-      },
-      {
-        "name": "split_is_skilled_worker_available_phone_advocate",
-        "type": "split-based-on",
-        "transitions": [
-          {
-            "event": "noMatch",
-            "next": "send_to_queue_childhelp_english"
-          },
-          {
-            "event": "match",
-            "conditions": [
-              {
-                "friendly_name": "available",
-                "arguments": [
-                  "{{widgets.f_isSkilledWorkerAvailable_phone_advocate.parsed.totalAvailableWorkers}}"
-                ],
-                "type": "greater_than",
-                "value": "0"
-              }
-            ],
-            "next": "send_to_queue_advocates"
-          }
-        ],
-        "properties": {
-          "input": "{{widgets.f_isSkilledWorkerAvailable_phone_advocate.parsed.totalAvailableWorkers}}",
-          "offset": {
-            "x": 340,
-            "y": 2580
-          }
-        }
-      },
-      {
         "name": "f_isSkilledWorkerAvailable_phone_spanish",
         "type": "make-http-request",
         "transitions": [
@@ -541,7 +429,7 @@ ${
                 "value": "2,4"
               }
             ],
-            "next": "f_isSkilledWorkerAvailable_phone_advocate"
+            "next": "f_isSkilledWorkerLoggedIn_logged"
           },
           {
             "event": "match",
@@ -563,6 +451,118 @@ ${
           "offset": {
             "x": 350,
             "y": 1660
+          }
+        }
+      },
+      {
+        "name": "f_getProfileFlagsForIdentifier_profile",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_get_profile_flags_for_identifier_profile"
+          },
+          {
+            "event": "failed",
+            "next": "play_message_voice_en_childhelp_voice_welcome"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 855,
+            "y": 688
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"voice\"}",
+          "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
+        }
+      },
+      {
+        "name": "split_get_profile_flags_for_identifier_profile",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "play_message_voice_en_childhelp_voice_welcome"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "blocked",
+                "arguments": [
+                  "{{widgets.f_getProfileFlagsForIdentifier_profile.parsed.flags}}"
+                ],
+                "type": "contains",
+                "value": "blocked"
+              }
+            ],
+            "next": "play_message_voice_blocked"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_getProfileFlagsForIdentifier_profile.parsed.flags}}",
+          "offset": {
+            "x": 855,
+            "y": 928
+          }
+        }
+      },
+      {
+        "name": "f_isSkilledWorkerLoggedIn_logged",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_is_skilled_worker_logged_in_logged"
+          },
+          {
+            "event": "failed",
+            "next": "send_to_queue_childhelp_english"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 700,
+            "y": 2320
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"targetSkills\": \"Phone,Advocate\"\n}",
+          "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerLoggedIn"
+        }
+      },
+      {
+        "name": "split_is_skilled_worker_logged_in_logged",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_to_queue_childhelp_english"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "logged in",
+                "arguments": [
+                  "{{widgets.f_isSkilledWorkerLoggedIn_logged.parsed.totalLoggedInWorkers}}"
+                ],
+                "type": "greater_than",
+                "value": "0"
+              }
+            ],
+            "next": "send_to_queue_advocates"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_isSkilledWorkerLoggedIn_logged.parsed.totalLoggedInWorkers}}",
+          "offset": {
+            "x": 700,
+            "y": 2560
           }
         }
       }
