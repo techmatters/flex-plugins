@@ -17,9 +17,7 @@
 import { styled } from '@twilio/flex-ui';
 
 import { selectedTaskListItemBorder, selectedTaskListItemBorderWidth } from '../../styles/HrmTheme';
-
-const guidanceBackground = '#fffeef';
-const textColor = '#192b33';
+import { Pill } from '../../design-system/pills/Pill';
 
 const taskListItemHoverStyle = `
   background-color: rgb(225, 227, 234);
@@ -62,64 +60,16 @@ export const GuidancePillContainer = styled('div')<GuidancePillContainerProps>`
 `;
 GuidancePillContainer.displayName = 'GuidancePillContainer';
 
-export const GuidancePill = styled('button')`
+// Places the design system's pill within the pill row
+export const GreetingPill = styled(Pill)`
   display: inline-block;
   cursor: pointer;
   margin: 0 0 12px 16px;
-  padding: 4px 8px;
-  background-color: ${guidanceBackground};
-  border: 1px solid #fff1b3;
-  border-radius: 4px;
-  font-family: 'Open Sans';
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 18px;
-  letter-spacing: 0.2px;
-  color: ${textColor};
-  white-space: nowrap;
 `;
-GuidancePill.displayName = 'GuidancePill';
+GreetingPill.displayName = 'GreetingPill';
 
-export const GuidancePopoverAnchor = styled('div')`
+export const GreetingPopoverAnchor = styled('div')`
   width: 100%;
   height: 0;
 `;
-GuidancePopoverAnchor.displayName = 'GuidancePopoverAnchor';
-
-export const GuidancePopoverContainer = styled('section')`
-  box-sizing: border-box;
-  width: 315px;
-  padding: 24px 24px 24px 28px;
-  background-color: ${guidanceBackground};
-  border: 1px solid #e0e3ea;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
-  font-family: 'Open Sans';
-`;
-GuidancePopoverContainer.displayName = 'GuidancePopoverContainer';
-
-export const GuidancePopoverHeader = styled('div')`
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  margin-bottom: 12px;
-`;
-GuidancePopoverHeader.displayName = 'GuidancePopoverHeader';
-
-export const GuidancePopoverTitle = styled('h2')`
-  flex: 1;
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: ${textColor};
-`;
-GuidancePopoverTitle.displayName = 'GuidancePopoverTitle';
-
-export const GuidancePopoverContent = styled('p')`
-  margin: 0;
-  font-size: 14px;
-  font-style: italic;
-  color: #000;
-  overflow-wrap: break-word;
-`;
-GuidancePopoverContent.displayName = 'GuidancePopoverContent';
+GreetingPopoverAnchor.displayName = 'GreetingPopoverAnchor';

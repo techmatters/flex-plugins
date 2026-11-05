@@ -22,7 +22,7 @@ import { TaskListItemChildrenProps } from '@twilio/flex-ui/src/components/TaskLi
 import { RootState } from '../../states';
 import { selectQueueGreeting } from '../../states/configuration/selectDefinitions';
 import { newSetQueueGreetingDismissedAction } from '../../states/routing/actions';
-import { GuidancePill, GuidancePillContainer } from './styles';
+import { GreetingPill, GuidancePillContainer } from './styles';
 
 const MAX_PILL_TEXT_LENGTH = 20;
 
@@ -44,9 +44,9 @@ const QueueGreetingPill: React.FC<Props> = ({ task, selectedTaskSid, onSelected 
 
   return (
     <GuidancePillContainer isSelected={Boolean(task) && task.sid === selectedTaskSid} onClick={selectTask}>
-      <GuidancePill type="button" onClick={reopenGreeting}>
+      <GreetingPill as="button" variant="guidance" onClick={reopenGreeting}>
         {queueGreeting.pillText.slice(0, MAX_PILL_TEXT_LENGTH)}
-      </GuidancePill>
+      </GreetingPill>
     </GuidancePillContainer>
   );
 };
