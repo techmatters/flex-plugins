@@ -26,7 +26,7 @@ import { render } from '@testing-library/react';
 import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
 import type { DefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
-import { type Draft, repoPathOf, type WordUsage } from '@tech-matters/form-builder-shared';
+import { type Draft, type OperatingHoursUsage, repoPathOf, type WordUsage } from '@tech-matters/form-builder-shared';
 import { Provider } from 'react-redux';
 import type { Person } from '@tech-matters/form-builder-shared/flows/model';
 
@@ -108,7 +108,16 @@ export const createHarness = () => {
       },
       // No people to choose from unless the test gives them
       loadPeople,
-      // The real route, in process
+      // The real routes, in process
+      fetchOperatingHoursUsage: async code => {
+        const response = await handleApiRequest(context, {
+          method: 'GET',
+          path: `/api/helplines/${code}/operating-hours-usage`,
+          user,
+        });
+        if (response.status !== 200) throw new Error((response.body as { message?: string }).message);
+        return response.body as OperatingHoursUsage[];
+      },
       fetchWordUsage: async (code, words) => {
         const response = await handleApiRequest(context, {
           method: 'POST',

@@ -62,6 +62,7 @@ import { CaseSectionsEditor } from '../cases/CaseSectionsEditor';
 import { FeaturesEditor } from '../serviceConfig/FeaturesEditor';
 import { ServiceConfigEditor } from '../serviceConfig/ServiceConfigEditor';
 import { TranslationsEditor } from '../translations/TranslationsEditor';
+import { OperatingHoursEditor } from '../operatingHours/OperatingHoursEditor';
 import { HelplineTermsEditor } from '../helplineTerms/HelplineTermsEditor';
 import { selectHelplineTerms } from '../helplineTerms/helplineTermsSlice';
 import { contactTabTitle } from '../helplineTerms/terms';
@@ -105,6 +106,7 @@ const SECTION_HELP: Partial<Record<View['kind'], { slug: string; what: string }>
   caseSections: { slug: 'section-case-sections', what: 'case sections' },
   helplineTerms: { slug: 'section-helpline-terms', what: 'helpline terms' },
   translations: { slug: 'aselo-translations', what: 'translations' },
+  operatingHours: { slug: 'aselo-operating-hours', what: 'operating hours' },
   caseSection: { slug: 'section-case-section-forms', what: 'this case section’s form' },
   profiles: { slug: 'section-client-profiles', what: 'client profiles' },
 };
@@ -317,6 +319,9 @@ export const HelplineWorkspace = () => {
     if (view.kind === 'translations' && canApply) {
       return <TranslationsEditor key={editorKey} />;
     }
+    if (view.kind === 'operatingHours' && canApply) {
+      return <OperatingHoursEditor key={editorKey} />;
+    }
     if (view.kind === 'helplineTerms') {
       return <HelplineTermsEditor key={editorKey} />;
     }
@@ -501,6 +506,13 @@ export const HelplineWorkspace = () => {
                   reviewOf={reviewOf}
                   target={{ kind: 'translations' }}
                   label="Translations"
+                />
+                <NavItem
+                  current={view}
+                  onSelect={setView}
+                  reviewOf={reviewOf}
+                  target={{ kind: 'operatingHours' }}
+                  label="Operating hours"
                 />
               </>
             )}

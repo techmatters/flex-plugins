@@ -1,0 +1,153 @@
+/**
+ * Copyright (C) 2021-2026 Technology Matters
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see https://www.gnu.org/licenses/.
+ */
+
+/* Operating hours (Aselo staff) */
+.operating-hours h3 {
+  font-size: 15px;
+  margin: 16px 0 8px;
+}
+
+.operating-hours section > h3:first-child {
+  margin-top: 0;
+}
+
+.operating-add,
+.operating-timezone {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.operating-hours input[type='text'],
+.operating-hours input[type='date'],
+.operating-hours input[type='time'],
+.operating-hours select {
+  font: inherit;
+  padding: 4px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.operating-timezone input[type='text'] {
+  width: 240px;
+}
+
+.operating-schedules {
+  margin-bottom: 4px;
+}
+
+.operating-week-table th:first-child {
+  width: 110px;
+}
+
+.operating-week-table th:last-child {
+  width: 220px;
+}
+
+.operating-shift {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 2px 0;
+}
+
+.operating-overnight {
+  font-size: 12px;
+  color: var(--color-warning, #9a6700);
+}
+
+.operating-day-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.operating-week-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 10px;
+}
+
+.operating-holidays {
+  list-style: none;
+  margin: 8px 0;
+  padding: 0;
+}
+
+.operating-holidays li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+}
+
+.operating-holidays li input {
+  width: 280px;
+}
+
+.operating-holiday-date {
+  width: 100px;
+  font-variant-numeric: tabular-nums;
+}
+
+.operating-past {
+  opacity: 0.55;
+}
+
+.operating-public-holidays {
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+}
+
+.operating-issues {
+  margin: 0 0 16px;
+  padding: 10px 14px 10px 30px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+}
+
+.operating-issues .issue-error {
+  color: var(--color-danger, #b42318);
+}
+
+.operating-issues .issue-warning {
+  color: var(--color-warning, #9a6700);
+}
+
+.operating-check-result {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  font-weight: 600;
+  background: var(--color-bg);
+}
+
+.operating-check-result.operating-open {
+  color: var(--color-success, #1a7f37);
+}
+
+.operating-check-result.operating-closed,
+.operating-check-result.operating-holiday,
+.operating-check-result.operating-error {
+  color: var(--color-danger, #b42318);
+}

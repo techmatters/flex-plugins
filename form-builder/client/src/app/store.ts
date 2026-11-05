@@ -35,6 +35,7 @@ import type {
   DefinitionFiles,
   HelplineSummary,
   PostFlowChoices,
+  OperatingHoursUsage,
   WordUsage,
 } from '@tech-matters/form-builder-shared';
 import type { Person } from '@tech-matters/form-builder-shared/flows/model';
@@ -51,7 +52,14 @@ import { startFlowsListeners } from '../flows/flowsListeners';
 import { startChatbotsListeners } from '../chatbots/chatbotsSlice';
 import { sessionReducer } from './sessionSlice';
 import { appReducer } from './appSlice';
-import { fetchBranches, fetchDefinitionFiles, fetchHelplines, fetchPostFlowChoices, fetchWordUsage } from './api';
+import {
+  fetchBranches,
+  fetchDefinitionFiles,
+  fetchHelplines,
+  fetchOperatingHoursUsage,
+  fetchPostFlowChoices,
+  fetchWordUsage,
+} from './api';
 
 export type Services = {
   draftClient: DraftClient;
@@ -63,6 +71,8 @@ export type Services = {
   fetchPostFlowChoices: (code: string) => Promise<PostFlowChoices>;
   // Where words still appear in a helpline's twilio-iac config (Helpline terms, Aselo staff)
   fetchWordUsage: (code: string, words: string[]) => Promise<WordUsage[]>;
+  // The channels and offices a helpline's Studio flows ask the operating hours about (Aselo staff)
+  fetchOperatingHoursUsage: (code: string) => Promise<OperatingHoursUsage[]>;
   // A people list (a helpline's, or the Aselo team's: the flow designer's), to say who a form
   // comment is for; none, no one to choose from
   loadPeople?: (code: string) => Promise<Person[]>;
@@ -104,6 +114,7 @@ export const createAppStore = (services: Partial<Omit<Services, 'saveQueue'>> = 
     fetchBranches,
     fetchPostFlowChoices,
     fetchWordUsage,
+    fetchOperatingHoursUsage,
     loadPeople: code => httpBoardClient.people(code),
     boardClient: httpBoardClient,
     routingClient: httpRoutingClient,

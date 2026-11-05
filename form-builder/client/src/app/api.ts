@@ -18,6 +18,7 @@ import {
   type BranchChoice,
   type DefinitionFiles,
   type HelplineSummary,
+  type OperatingHoursUsage,
   type PostFlowChoices,
   type WordUsage,
 } from '@tech-matters/form-builder-shared';
@@ -59,3 +60,7 @@ export const fetchWordUsage = async (code: string, words: string[]): Promise<Wor
   }
   return response.json();
 };
+
+// The channels and offices a helpline's Studio flows ask the operating hours about (Aselo staff)
+export const fetchOperatingHoursUsage = (code: string) =>
+  getJson<OperatingHoursUsage[]>(`/api/helplines/${code}/operating-hours-usage`);
