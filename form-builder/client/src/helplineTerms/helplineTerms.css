@@ -128,3 +128,39 @@
 .term-guessed ul {
   margin: 0 0 10px;
 }
+
+/* Where else the words appear (Aselo staff) */
+.words-elsewhere h3 {
+  font-size: 15px;
+  margin: 0 0 4px;
+}
+
+.words-elsewhere-draft {
+  margin: 8px 0 12px;
+}
+
+.words-elsewhere-group h4 {
+  font-size: 13px;
+  margin: 16px 0 6px;
+}
+
+.words-elsewhere details {
+  margin: 4px 0;
+}
+
+.words-elsewhere details ul {
+  margin: 6px 0 10px;
+  padding-left: 18px;
+  font-size: 12px;
+}
+
+.words-elsewhere details li {
+  margin: 2px 0;
+  overflow-wrap: anywhere;
+}
+
+.words-elsewhere mark {
+  background: var(--color-accent-soft);
+  color: inherit;
+  font-weight: 600;
+}

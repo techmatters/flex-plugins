@@ -24,6 +24,7 @@
  *   GET    /api/definitions/:code/:version          the current (applied) files
  *          (both with ?branch=<branch>, Aselo staff: read from that flex-plugins branch instead)
  *   GET    /api/service-config/:code/post-flow-choices  Aselo staff: queues and post-call survey flows for postStudioFlows
+ *   POST   /api/helplines/:code/word-usage          Aselo staff: where words appear in its twilio-iac config ({ words })
  *   GET    /api/drafts                              drafts this person can see
  *   GET    /api/drafts/:code/:version               a draft (404 if there's none)
  *   PUT    /api/drafts/:code/:version               save a draft
@@ -71,6 +72,7 @@ import { type BranchSource, type ImportSource, isValidBranch } from './branches'
 import type { RoutingStore } from './routingStore';
 import { loadPostFlowChoices } from './postStudioFlowChoices';
 import { handleHelpRequest, HelpQuestionStore } from './helpQuestions';
+import { findWordUsage } from './wordUsage';
 
 export type { ApiUser, ApplyResult, ApplyDetails };
 
@@ -324,6 +326,22 @@ export const handleApiRequest = async (context: ApiContext, request: ApiRequest)
       if (!context.boards) return fail(501, "The flow designer isn't set up here.");
       const stores = { boards: context.boards, people: context.people };
       return await handleBoardRequest(stores, request.method.toUpperCase(), boardsPath, request.body, user, now);
+    }
+
+    // Where words still appear in the helpline's twilio-iac config (Helpline terms: what's left by hand)
+    const wordUsageMatch = route.match(/^POST \/api\/helplines\/([a-z0-9]+)\/word-usage$/);
+    if (wordUsageMatch) {
+      if (!isStaff(user)) return fail(403, 'Only Aselo staff look in the helplines’ config.');
+      if (!context.helplinesConfigDir) return fail(501, "The helplines' config isn't available here.");
+      const words = (request.body as { words?: unknown } | undefined)?.words;
+      if (
+        !Array.isArray(words) ||
+        words.length > 40 ||
+        !words.every(word => typeof word === 'string' && /^[\p{L} '-]{1,40}$/u.test(word))
+      ) {
+        return fail(400, 'words must be a list of words.');
+      }
+      return ok(await findWordUsage(context.helplinesConfigDir, wordUsageMatch[1], words));
     }
 
     // What postStudioFlows can point at (the service configuration is Aselo staff's)

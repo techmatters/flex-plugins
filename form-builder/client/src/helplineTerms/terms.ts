@@ -423,6 +423,38 @@ export const pluralOf = (singular: string) => {
   return [...parts, plural].join(' ');
 };
 
+/**
+ * Aselo's words for the terms the helpline changed: what to look for in what the terms don't
+ * reach (its Studio flows, chatbots, automatic messages, webchat)
+ */
+export const replacedAseloWords = (terms: HelplineTerms): string[] =>
+  TERM_DEFINITIONS.filter(({ id }) => hasWords(terms[id])).flatMap(({ id, aselo }) => [
+    aselo.singular,
+    aselo.plural,
+    ...(aselo.shortSingular ? [aselo.shortSingular, aselo.shortPlural ?? ''] : []),
+    ...(id === 'counselor' ? ['counsellor', 'counsellors'] : []),
+  ]);
+
+const wordsPattern = (words: string[]) =>
+  new RegExp(`\\b(${words.map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`, 'i');
+
+/**
+ * Texts in the draft the terms don't change that still have Aselo's words: the automatic chat
+ * messages and the post-survey message, and the webchat's text, by file
+ */
+export const draftWordUsage = (files: DefinitionFileMap, words: string[], filePaths: string[]) => {
+  if (words.length === 0) return [];
+  const pattern = wordsPattern(words);
+  const textsOf = (value: unknown): string[] => {
+    if (typeof value === 'string') return [value];
+    if (value && typeof value === 'object') return Object.values(value).flatMap(textsOf);
+    return [];
+  };
+  return filePaths
+    .map(filePath => ({ filePath, texts: textsOf(files[filePath]).filter(text => pattern.test(text)) }))
+    .filter(({ texts }) => texts.length > 0);
+};
+
 // The contact tabs that are about a term: their names in the builder follow the helpline's word
 const TAB_TERMS: Record<string, TermId> = { CallerInformationTab: 'caller', ChildInformationTab: 'child' };
 

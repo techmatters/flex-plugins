@@ -21,10 +21,12 @@
  * helplineTermsSlice.ts and terms.ts.
  */
 import { useEffect } from 'react';
+import type { WordUsage } from '@tech-matters/form-builder-shared';
 
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
-import { selectWorkspace } from '../workspace/workspaceSlice';
+import { selectWorkspace, viewSelected } from '../workspace/workspaceSlice';
+import { MESSAGES_FILE, POST_SURVEY_MESSAGES_FILE } from '../chatsAndCalls/sections';
 import { SectionTitle } from '../help/HelpContext';
 import {
   fillTemplate,
@@ -47,6 +49,9 @@ import {
   selectHelplineTerms,
   selectHelplineTermsEditor,
   selectTermCatalogue,
+  findWordsElsewhere,
+  selectDraftWordUsage,
+  selectReplacedAseloWords,
 } from './helplineTermsSlice';
 import './helplineTerms.css';
 
@@ -248,6 +253,129 @@ const GuessedTerms = ({ guessed }: { guessed: HelplineTerms }) => {
   );
 };
 
+const KIND_TITLES: Record<WordUsage['kind'], string> = {
+  studio: 'Studio flows',
+  config: 'Flow texts and settings (.hcl)',
+  chatbot: 'Chatbots',
+};
+
+const DRAFT_FILE_TITLES: Record<string, string> = {
+  [MESSAGES_FILE]: 'Automatic chat messages',
+  [POST_SURVEY_MESSAGES_FILE]: 'Post-survey message',
+};
+
+// A line with the words found in it marked
+const Marked = ({ text, words }: { text: string; words: string[] }) => {
+  const pattern = new RegExp(
+    `\\b(${words.map(word => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')})\\b`,
+    'gi',
+  );
+  const parts = text.split(pattern);
+  return (
+    <>
+      {parts.map((part, index) =>
+        // Odd parts are the words found
+        index % 2 === 1 ? <mark key={index}>{part}</mark> : <span key={index}>{part}</span>,
+      )}
+    </>
+  );
+};
+
+/**
+ * Aselo staff: where Aselo's words for the terms changed still appear, in what the terms don't
+ * reach: the automatic messages and the webchat's text (in the builder), and the helpline's
+ * Studio flows, flow texts and chatbots in twilio-iac (changed there).
+ */
+const WordsElsewhere = () => {
+  const dispatch = useAppDispatch();
+  const staffMode = useAppSelector(selectActingAsStaff);
+  const words = useAppSelector(selectReplacedAseloWords);
+  const inDraft = useAppSelector(selectDraftWordUsage);
+  const { wordUsage } = useAppSelector(selectHelplineTermsEditor);
+  if (!staffMode || words.length === 0) return null;
+  const isCurrent = wordUsage && JSON.stringify(wordUsage.words) === JSON.stringify(words);
+  const byKind = (['studio', 'config', 'chatbot'] as const)
+    .map(kind => ({ kind, usages: (isCurrent ? wordUsage.usages : []).filter(usage => usage.kind === kind) }))
+    .filter(group => group.usages.length > 0);
+  const filesOf = (usages: WordUsage[]) => [...new Set(usages.map(usage => usage.file))];
+
+  return (
+    <section className="panel words-elsewhere" aria-labelledby="words-elsewhere-title">
+      <h3 id="words-elsewhere-title">
+        Where else these words appear <span className="badge">Aselo staff</span>
+      </h3>
+      <p className="muted">
+        The terms change Aselo’s own text. These still say {words.map(word => `“${word}”`).join(', ')}.
+      </p>
+
+      {inDraft.length > 0 && (
+        <ul className="words-elsewhere-draft">
+          {inDraft.map(({ filePath, texts }) => {
+            const isWebchat = !(filePath in DRAFT_FILE_TITLES);
+            const title = DRAFT_FILE_TITLES[filePath] ?? `Webchat (${filePath.split('/').pop()?.replace('.json', '')})`;
+            return (
+              <li key={filePath}>
+                <button
+                  type="button"
+                  className="link-button"
+                  onClick={() => dispatch(viewSelected(isWebchat ? { kind: 'translations' } : { kind: 'messages' }))}
+                >
+                  {title}
+                </button>
+                : {texts.length} text{texts.length === 1 ? '' : 's'}
+              </li>
+            );
+          })}
+        </ul>
+      )}
+
+      <button
+        type="button"
+        className="secondary-button"
+        disabled={wordUsage?.status === 'loading'}
+        onClick={() => dispatch(findWordsElsewhere())}
+      >
+        {isCurrent && wordUsage.status === 'loaded' ? 'Look again' : 'Look in Studio flows and chatbots'}
+      </button>
+      {isCurrent && wordUsage.status === 'loading' && <span className="muted"> Looking…</span>}
+      {isCurrent && wordUsage.status === 'error' && <p className="alert alert-error">{wordUsage.error}</p>}
+      {isCurrent && wordUsage.status === 'loaded' && byKind.length === 0 && (
+        <p className="muted">Not in this helpline’s Studio flows, flow texts or chatbots.</p>
+      )}
+      {byKind.map(({ kind, usages }) => (
+        <div key={kind} className="words-elsewhere-group">
+          <h4>
+            {KIND_TITLES[kind]} <span className="muted count">{usages.length}</span>
+          </h4>
+          {filesOf(usages).map(file => {
+            const lines = usages.filter(usage => usage.file === file);
+            return (
+              <details key={file}>
+                <summary>
+                  <code>twilio-iac/helplines/{file}</code> <span className="muted">({lines.length})</span>
+                </summary>
+                <ul>
+                  {lines.map(usage => (
+                    <li key={usage.line}>
+                      <span className="muted">{usage.line}:</span> <Marked text={usage.text} words={usage.words} />
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            );
+          })}
+        </div>
+      ))}
+      {byKind.length > 0 && (
+        <p className="field-hint">
+          Change these in twilio-iac: the contact flows and chatbot designers export them for Claude, or edit the files.
+          Words in comments or settings may not need changing.
+        </p>
+      )}
+    </section>
+  );
+};
+
 export const HelplineTermsEditor = () => {
   const dispatch = useAppDispatch();
   const { editorRevision } = useAppSelector(selectWorkspace);
@@ -275,6 +403,7 @@ export const HelplineTermsEditor = () => {
           {TERM_DEFINITIONS.map(definition => (
             <TermCard key={definition.id} definition={definition} />
           ))}
+          <WordsElsewhere />
         </>
       ) : (
         <p className="muted">Loading Aselo’s text…</p>

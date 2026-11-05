@@ -23,10 +23,10 @@ import { fileURLToPath } from 'url';
 
 import { jest } from '@jest/globals';
 import { render } from '@testing-library/react';
-import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
+import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
 import type { DefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
-import { type Draft, repoPathOf } from '@tech-matters/form-builder-shared';
+import { type Draft, repoPathOf, type WordUsage } from '@tech-matters/form-builder-shared';
 import { Provider } from 'react-redux';
 import type { Person } from '@tech-matters/form-builder-shared/flows/model';
 
@@ -90,6 +90,17 @@ export const createHarness = () => {
       },
       // No people to choose from unless the test gives them
       loadPeople,
+      // The real route, in process
+      fetchWordUsage: async (code, words) => {
+        const response = await handleApiRequest(context, {
+          method: 'POST',
+          path: `/api/helplines/${code}/word-usage`,
+          body: { words },
+          user,
+        });
+        if (response.status !== 200) throw new Error((response.body as { message?: string }).message);
+        return response.body as WordUsage[];
+      },
       saveDelayMs: 0,
     });
     appStore.dispatch(sessionLoaded({ user: { ...user, applyInBuilder }, helplines: [] }));

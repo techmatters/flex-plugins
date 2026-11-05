@@ -26,9 +26,11 @@ const zaStaff: ApiUser = { name: 'Childline person', role: 'helpline-staff', hel
 
 let usnm: DefinitionFiles;
 let za: DefinitionFiles;
+let usch: DefinitionFiles;
 beforeAll(async () => {
   usnm = await loadDefinitionFiles(formDefinitionsDir, 'usnm', 'v1', helplinesConfigDir);
   za = await loadDefinitionFiles(formDefinitionsDir, 'za', 'v1', helplinesConfigDir);
+  usch = await loadDefinitionFiles(formDefinitionsDir, 'usch', 'v1', helplinesConfigDir);
 });
 afterEach(cleanup);
 
@@ -110,5 +112,26 @@ describe('helpline terms', () => {
     expect((await harness.savedFile(usnm, 'customStrings/Substitutions.json')).en['CallType-child']).toBe(
       'Help seeker calling about self',
     );
+  });
+
+  test('Aselo staff see where Aselo’s words still appear: Studio flow texts and chatbots', async () => {
+    await openTerms(usch, aseloStaff);
+    // Nothing to look for until a word changes
+    expect(screen.queryByRole('region', { name: /Where else these words appear/ })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Not now' }));
+    const child = card(/person your helpline supports/);
+    fireEvent.click(within(child).getByRole('button', { name: 'young person' }));
+    const elsewhere = screen.getByRole('region', { name: /Where else these words appear/ });
+    expect(within(elsewhere).getByText(/These still say “child”, “children”/)).toBeTruthy();
+    fireEvent.click(within(elsewhere).getByRole('button', { name: 'Look in Studio flows and chatbots' }));
+    await within(elsewhere).findByText('twilio-iac/helplines/usch/production.hcl');
+    expect(within(elsewhere).getByRole('heading', { name: /Flow texts and settings/ })).toBeTruthy();
+    expect(within(elsewhere).getAllByText('Child').length).toBeGreaterThan(0);
+  });
+
+  test('helpline staff don’t see it', async () => {
+    await openTerms(za, zaStaff);
+    fireEvent.click(within(card(/person your helpline supports/)).getByRole('button', { name: 'young person' }));
+    expect(screen.queryByRole('region', { name: /Where else these words appear/ })).toBeNull();
   });
 });

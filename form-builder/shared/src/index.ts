@@ -25,6 +25,7 @@ export * from './filePaths';
 export * from './reviews';
 export * from './branches';
 export * from './postFlowChoices';
+export * from './wordUsage';
 export * from './help';
 export * from './flows/imports';
 export * from './routing/imports';

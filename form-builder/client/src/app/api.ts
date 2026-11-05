@@ -19,6 +19,7 @@ import {
   type DefinitionFiles,
   type HelplineSummary,
   type PostFlowChoices,
+  type WordUsage,
 } from '@tech-matters/form-builder-shared';
 
 import { apiFetch } from './auth';
@@ -44,3 +45,17 @@ export const fetchBranches = () => getJson<BranchChoice[]>('/api/branches');
 
 export const fetchPostFlowChoices = (code: string) =>
   getJson<PostFlowChoices>(`/api/service-config/${code}/post-flow-choices`);
+
+// Where words still appear in a helpline's twilio-iac config (Aselo staff)
+export const fetchWordUsage = async (code: string, words: string[]): Promise<WordUsage[]> => {
+  const response = await apiFetch(`/api/helplines/${code}/word-usage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ words }),
+  });
+  if (!response.ok) {
+    const body = await response.json().catch(() => ({}));
+    throw new Error(body.message ?? `Looking for the words failed (${response.status})`);
+  }
+  return response.json();
+};

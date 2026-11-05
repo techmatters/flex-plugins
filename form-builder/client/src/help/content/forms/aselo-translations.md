@@ -42,4 +42,6 @@ What you can do:
 
 > Strings written by hand are never overwritten by Helpline terms. In Helpline terms, Aselo staff can choose to make them from the terms.
 
+When a helpline changes its terms, **Helpline terms** shows Aselo staff **Where else these words appear**: the automatic messages and the webchat's text that still use Aselo's words (change them in the builder), and, with **Look in Studio flows and chatbots**, each line of the helpline's twilio-iac config (Studio templates, `.hcl` texts, chatbots) that does. Those are changed in twilio-iac.
+
 Changes reach counselors after the form definitions are deployed and Flex is reloaded. Counselors who change their language need to refresh the browser.

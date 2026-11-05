@@ -20,18 +20,23 @@
  * own text were set aside. The terms themselves are in the draft (terms.ts).
  */
 import { createSelector, createSlice, PayloadAction, WithSlice } from '@reduxjs/toolkit';
+import { WEBCHAT_TRANSLATIONS_PREFIX, type WordUsage } from '@tech-matters/form-builder-shared';
 
 import { AppThunk, rootReducer, RootState } from '../app/store';
 import type { DefinitionFileMap } from '../common/definitions';
 import { editDraftFiles, selectDraftFiles } from '../drafts/draftSlice';
 import { loadPluginStrings } from '../aseloPreview/translations';
 import { HELPLINE_TERMS_FILE, Strings, SUBSTITUTIONS_FILE } from '../translations/translations';
+import { MESSAGES_FILE, POST_SURVEY_MESSAGES_FILE } from '../chatsAndCalls/sections';
+import { selectWorkspace } from '../workspace/workspaceSlice';
 import {
   applyHelplineTerms,
+  draftWordUsage,
   getHelplineTerms,
   guessHelplineTerms,
   handWrittenKeys,
   HelplineTerms,
+  replacedAseloWords,
   termCatalogue,
   TermId,
   termsUsedBy,
@@ -43,6 +48,8 @@ type HelplineTermsState = {
   // Terms with "Something else" open, before (or while) their words are typed
   customOpen: TermId[];
   guessDismissed: boolean;
+  // Where Aselo's words still appear in the helpline's twilio-iac config (Aselo staff), for the words looked for
+  wordUsage?: { words: string[]; status: 'loading' | 'loaded' | 'error'; usages: WordUsage[]; error?: string };
 };
 
 const initialState: HelplineTermsState = { customOpen: [], guessDismissed: false };
@@ -62,6 +69,9 @@ const helplineTermsSlice = createSlice({
     guessDismissed: state => {
       state.guessDismissed = true;
     },
+    wordUsageChanged: (state, action: PayloadAction<HelplineTermsState['wordUsage']>) => {
+      state.wordUsage = action.payload;
+    },
   },
   selectors: {
     selectHelplineTermsEditor: state => state,
@@ -74,7 +84,7 @@ declare module '../app/store' {
 }
 const injected = helplineTermsSlice.injectInto(rootReducer);
 export const { selectHelplineTermsEditor } = injected.selectors;
-const { helplineTermsOpened, englishLoaded, customToggled } = helplineTermsSlice.actions;
+const { helplineTermsOpened, englishLoaded, customToggled, wordUsageChanged } = helplineTermsSlice.actions;
 export const { guessDismissed } = helplineTermsSlice.actions;
 
 // Every Aselo string with one of the words, as a template (none until Aselo's text has loaded)
@@ -170,4 +180,31 @@ export const replaceHandWritten =
   (dispatch, getState) => {
     const keys = selectHandWrittenByTerm(getState())[id] ?? [];
     dispatch(editTerms(selectHelplineTerms(getState()), keys));
+  };
+
+// Aselo's words for the terms the helpline changed
+export const selectReplacedAseloWords = createSelector([selectHelplineTerms], replacedAseloWords);
+
+// The automatic messages and the webchat's text in the draft that still have Aselo's words
+export const selectDraftWordUsage = createSelector([selectDraftFiles, selectReplacedAseloWords], (files, words) =>
+  draftWordUsage(files, words, [
+    MESSAGES_FILE,
+    POST_SURVEY_MESSAGES_FILE,
+    ...Object.keys(files).filter(filePath => filePath.startsWith(WEBCHAT_TRANSLATIONS_PREFIX)),
+  ]),
+);
+
+// Aselo staff: where Aselo's words still appear in the helpline's Studio flows, texts and chatbots
+export const findWordsElsewhere =
+  (): AppThunk<Promise<void>> =>
+  async (dispatch, getState, { fetchWordUsage }) => {
+    const words = selectReplacedAseloWords(getState());
+    const { code } = selectWorkspace(getState());
+    if (!code || words.length === 0) return;
+    dispatch(wordUsageChanged({ words, status: 'loading', usages: [] }));
+    try {
+      dispatch(wordUsageChanged({ words, status: 'loaded', usages: await fetchWordUsage(code, words) }));
+    } catch (err) {
+      dispatch(wordUsageChanged({ words, status: 'error', usages: [], error: (err as Error).message }));
+    }
   };
