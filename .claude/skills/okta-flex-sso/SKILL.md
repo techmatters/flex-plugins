@@ -20,6 +20,20 @@ helpline groups) and `twilio-iac/stages/okta-app` (Layer 2, one app per helpline
 - Helpline-level settings go in `common.hcl` (`okta = {...}`), environment-level ones in
   `<env>.hcl` (`okta_app = {...}`). Never duplicate them into both environment files.
 
+## Running the scripts
+
+`oktaSso.py` runs locally (not on the devops node, not in the Terraform container): it needs the
+person's Okta and AWS credentials. Before the first command:
+
+1. Install once: `pip install -r twilio-iac/scripts/python_tools/requirements.txt` (Python 3.11+).
+2. Check the variables are set, by name only (never print values): `OKTA_CLIENT_ID`,
+   `OKTA_PRIVATE_KEY_PATH` (optional `OKTA_ORG_URL`, `OKTA_KEY_ID`). If missing, stop and ask the
+   person; setup is in the scripts README "Credentials".
+3. The account SID comes from AWS SSM; without AWS credentials pass `--account-sid AC...` (ask the
+   person) or the Flex connection check is skipped with a warning.
+
+`python3 twilio-iac/scripts/python_tools/oktaSso.py <command> --help` lists every option.
+
 ## Workflows
 
 ### New helpline (staging first, production near launch)

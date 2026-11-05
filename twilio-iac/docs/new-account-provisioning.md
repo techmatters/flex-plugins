@@ -47,8 +47,9 @@ Related docs: [Terragrunt in this repo](terragrunt.md) · [Okta ⇄ Flex SSO](ok
 - SSH to the devops node (agent forwarding for git).
 - For Okta: the Terraform service app is already set up (one-off, see [okta.md](okta.md#before-the-first-apply-decisions-for-review));
   a **Super Admin or Org Admin** only if the helpline has a group rule.
-- For agents running the read-only Okta scripts: the `OKTA_*` variables for a read-only service app
-  ([scripts README](../scripts/python_tools/src/okta/README.md#credentials)).
+- For whoever runs the read-only Okta scripts (person or agent, on their own machine): Python 3.11+
+  with `pip install -r twilio-iac/scripts/python_tools/requirements.txt`, and the `OKTA_*` variables
+  for a read-only service app ([scripts README](../scripts/python_tools/src/okta/README.md#credentials)).
 
 ---
 

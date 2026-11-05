@@ -18,6 +18,11 @@ python3 twilio-iac/scripts/python_tools/oktaSso.py <command> --help
 
 Step 2 (creating/adopting the Okta app) is Terraform: the `okta-org` and `okta-app` stages.
 
+Nothing runs these automatically (no CI, make target or stage). A person, or an agent following
+the `okta-flex-sso` skill, runs them on their own machine during the steps above, because they use
+that person's Okta and AWS credentials. They are not set up to run on the devops node or in the
+Terraform container.
+
 Python 3.11+ with the packages in [requirements.txt](../../requirements.txt) (`cryptography` signs the
 Okta client assertion and DPoP proofs, `boto3` reads the account SID from SSM):
 

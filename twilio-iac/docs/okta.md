@@ -51,6 +51,12 @@ group that production uses.
 
 The audit script (`oktaSso.py audit-sso-drift`) runs steps 4 and 5 for every Flex app in the org.
 
+The scripts are read-only and run on your own machine (not in the Terraform container or on the
+devops node), because they use your local Okta and AWS credentials. Setup, once:
+`pip install -r twilio-iac/scripts/python_tools/requirements.txt` (Python 3.11+) and the `OKTA_*`
+variables. See the [scripts README](../scripts/python_tools/src/okta/README.md) for credentials and
+every command's options (`oktaSso.py <command> --help`).
+
 Nothing account-specific is committed. The Twilio account SID comes from the existing SSM secret
 (`/terraform/twilio-iac/<env>/<code>/secrets.json`), the Flex connection is looked up live, and
 existing Okta apps and groups are found by name.
