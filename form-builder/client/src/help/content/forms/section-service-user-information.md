@@ -24,5 +24,3 @@ Answers from the webchat form or the chatbot can fill some of it in before the c
 - Change the answers of its dropdowns: see [Change the answers of a dropdown](help:dropdown-answers).
 
 Some questions, such as age and gender, can't be removed: Aselo and its reports need them.
-
-> **In Aselo** this tab may still be called _Child information_ for your counselors: the builder uses “service user” because not every helpline works with children.

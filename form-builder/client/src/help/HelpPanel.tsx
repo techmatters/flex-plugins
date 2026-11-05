@@ -80,6 +80,11 @@ const ArticleLink = ({ article, onOpen }: { article: HelpArticle; onOpen: (slug:
     <button type="button" className="help-article-link" onClick={() => onOpen(article.slug)}>
       {article.kind === 'guide' ? <ListChecks size={15} aria-hidden /> : <BookOpen size={15} aria-hidden />}
       <span>{article.title}</span>
+      {article.tour && (
+        <span className="help-badge help-badge-tour" title="This guide can show you each step on the page">
+          <MousePointerClick size={11} aria-hidden /> Show me
+        </span>
+      )}
       {article.audience === 'aselo' && <span className="help-badge">Aselo staff</span>}
     </button>
   </li>

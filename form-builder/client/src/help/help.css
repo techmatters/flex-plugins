@@ -161,6 +161,19 @@
   background: var(--color-accent-soft);
 }
 
+/* A guide with a "Show me" tour */
+.help-badge-tour {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.help-badge + .help-badge {
+  margin-left: 4px;
+}
+
 .help-badge {
   display: inline-block;
   margin-left: auto;

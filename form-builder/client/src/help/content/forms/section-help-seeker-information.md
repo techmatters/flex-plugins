@@ -20,5 +20,3 @@ Counselors only see this tab when the call type says the contact is about someon
 - Add, change, reorder or remove questions: see [Add a question](help:add-a-question).
 - Make questions required, and add guidance for counselors under them.
 - Change the answers of its dropdowns: see [Change the answers of a dropdown](help:dropdown-answers).
-
-> **In Aselo** this tab may still be called _Caller information_ for your counselors: the builder uses “help seeker” because not every helpline takes calls.
