@@ -20,7 +20,7 @@
  * Saved automatically, with the same "someone else changed it" check as boards. Its state and
  * logic are in routingSlice.ts.
  */
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import {
   closestCenter,
   DndContext,
@@ -62,6 +62,7 @@ import {
   loadRoutingList,
   openRouting,
   previewRoutingImport,
+  retryRoutingSave,
   routingExport,
   RoutingFilter,
   RoutingTab,
@@ -235,6 +236,7 @@ const SAVE_STATE_TEXT = {
   saved: 'All changes saved',
   unsaved: 'Unsaved changes…',
   saving: 'Saving…',
+  retrying: 'Couldn’t save, trying again…',
   conflict: 'Not saved',
   error: 'Could not save',
 };
@@ -245,9 +247,20 @@ const sameTab = (a: RoutingTab, b: RoutingTab) =>
 const Editor = () => {
   const dispatch = useAppDispatch();
   const { code } = useAppSelector(selectRouting);
-  const { design, tab, saveState, conflict } = useAppSelector(selectRoutingEditor)!;
+  const { design, tab, saveState, saveError, conflict } = useAppSelector(selectRoutingEditor)!;
   const staffMode = useAppSelector(selectActingAsStaff);
   const issues = useAppSelector(selectRoutingIssues);
+
+  // Closing or reloading the page with changes not saved yet asks first (e.g. while a save is failing)
+  const unsaved = useRef(false);
+  unsaved.current = ['unsaved', 'saving', 'retrying', 'error'].includes(saveState);
+  useEffect(() => {
+    const warn = (event: BeforeUnloadEvent) => {
+      if (unsaved.current) event.preventDefault();
+    };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, []);
 
   const exportForClaude = () => {
     const file = dispatch(routingExport());
@@ -294,6 +307,19 @@ const Editor = () => {
           <button type="button" className="secondary-button" onClick={() => dispatch(loadRouting())}>
             Reload
           </button>
+        </div>
+      )}
+      {saveState === 'error' && saveError && (
+        <div className="alert alert-error" role="alert">
+          <strong>Your changes couldn’t be saved</strong> ({saveError}). They’re still here in this page: don’t close or
+          reload it until they’re saved.{' '}
+          <button type="button" className="link-button" onClick={() => dispatch(retryRoutingSave())}>
+            Try again
+          </button>
+          <span className="muted">
+            {' '}
+            If it keeps happening, check your internet connection or contact the Aselo team.
+          </span>
         </div>
       )}
       <div className="routing-tabs" role="tablist">

@@ -22,7 +22,7 @@
  * Saved automatically, with the same "someone else changed it" check as boards. What's open, edited
  * and saved, and how, lives in chatbotsSlice.ts.
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, Bot, CircleAlert, Download, Plus, TriangleAlert } from 'lucide-react';
 import { type ChatbotImport, type FromBranch } from '@tech-matters/form-builder-shared';
 import { DESIGN_STATUSES, type DesignStatus } from '@tech-matters/form-builder-shared/designStatus';
@@ -63,6 +63,7 @@ import {
   openNewChatbot,
   previewImport,
   reloadChatbots,
+  retryChatbotsSave,
   selectChatbotChanges,
   selectChatbotIssues,
   selectChatbots,
@@ -232,13 +233,25 @@ const BotNotes = ({ bot }: { bot: Chatbot }) => {
 // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
 const Editor = () => {
   const dispatch = useAppDispatch();
-  const { stored, design, saveStatus: status, conflict, tab, newChatbot } = useAppSelector(selectChatbots);
+  const { stored, design, saveStatus: status, saveError, conflict, tab, newChatbot } = useAppSelector(selectChatbots);
   const staffMode = useAppSelector(selectActingAsStaff);
   const readOnly = useAppSelector(selectChatbotsReadOnly);
   const issues = useAppSelector(selectChatbotIssues);
   const changes = useAppSelector(selectChatbotChanges);
   const bot = useAppSelector(selectSelectedBot);
   const intent = useAppSelector(selectSelectedIntent);
+
+  // Closing or reloading the page with changes not saved yet asks first (e.g. while a save is failing)
+  const unsaved = useRef(false);
+  unsaved.current = ['unsaved', 'saving', 'retrying', 'error'].includes(status);
+  useEffect(() => {
+    const warn = (event: BeforeUnloadEvent) => {
+      if (unsaved.current) event.preventDefault();
+    };
+    window.addEventListener('beforeunload', warn);
+    return () => window.removeEventListener('beforeunload', warn);
+  }, []);
+
   if (!stored || !design) return null;
 
   // Shown where it is, then scrolled to once it's there
@@ -270,6 +283,7 @@ const Editor = () => {
                 saved: 'All changes saved',
                 unsaved: 'Unsaved changes…',
                 saving: 'Saving…',
+                retrying: 'Couldn’t save, trying again…',
                 conflict: 'Not saved',
                 error: 'Could not save',
               }[status]}
@@ -293,6 +307,19 @@ const Editor = () => {
           <button type="button" className="secondary-button" onClick={() => dispatch(reloadChatbots())}>
             Reload
           </button>
+        </div>
+      )}
+      {status === 'error' && saveError && (
+        <div className="alert alert-error" role="alert">
+          <strong>Your changes couldn’t be saved</strong> ({saveError}). They’re still here in this page: don’t close or
+          reload it until they’re saved.{' '}
+          <button type="button" className="link-button" onClick={() => dispatch(retryChatbotsSave())}>
+            Try again
+          </button>
+          <span className="muted">
+            {' '}
+            If it keeps happening, check your internet connection or contact the Aselo team.
+          </span>
         </div>
       )}
 

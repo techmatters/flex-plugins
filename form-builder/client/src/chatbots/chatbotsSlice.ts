@@ -20,7 +20,9 @@
  * new chatbot form and importing from the live config.
  *
  * The design is saved a moment after each change, one save at a time (startChatbotsListeners). If
- * someone else saved it in between, saving stops and the user is asked to reload, as with boards.
+ * someone else saved it in between, saving stops and the user is asked to reload, as with boards. A
+ * save that fails (the server can't be reached) is tried again a little later, a few times, then the
+ * error shows until one works.
  * Changes go through editChatbots, which puts the chatbots they changed back In progress
  * (shared/src/chatbots/status.ts); the pure changes themselves are in edit.ts.
  */
@@ -74,7 +76,7 @@ import { chatbotChanges } from './changes';
 
 type ChatbotsTab = 'conversation' | 'answers' | 'check';
 export type ChatbotsFilter = 'all' | DesignStatus;
-type ChatbotsSaveStatus = 'saved' | 'unsaved' | 'saving' | 'conflict' | 'error';
+type ChatbotsSaveStatus = 'saved' | 'unsaved' | 'saving' | 'retrying' | 'conflict' | 'error';
 type ChatbotsConflict = { updatedBy?: string; updatedAt?: string };
 
 type NewChatbotForm = { name: string; language: string; locale: string; copyFrom: string };
@@ -123,6 +125,10 @@ type ChatbotsState = {
   revision: number;
   savedJson: string;
   saveStatus: ChatbotsSaveStatus;
+  // Saves that failed in a row (a lost connection, the server down): retried a few times, then
+  // the error is shown until a save works
+  failedSaves: number;
+  saveError?: string;
   conflict?: ChatbotsConflict;
   // The helpline's contact form, for the fields answers fill in
   forms?: ContactForms;
@@ -145,6 +151,8 @@ const editorReset = {
   revision: 0,
   savedJson: '',
   saveStatus: 'saved' as ChatbotsSaveStatus,
+  failedSaves: 0,
+  saveError: undefined,
   conflict: undefined,
   forms: undefined,
   botId: undefined,
@@ -264,12 +272,26 @@ const chatbotsSlice = createSlice({
     chatbotsSaved: (state, action: PayloadAction<{ revision: number; json: string }>) => {
       state.revision = action.payload.revision;
       state.savedJson = action.payload.json;
+      state.failedSaves = 0;
+      state.saveError = undefined;
       // Changes made while it was saving still need saving
       state.saveStatus = JSON.stringify(state.design) === action.payload.json ? 'saved' : 'unsaved';
     },
     saveConflicted: (state, action: PayloadAction<ChatbotsConflict>) => {
+      state.failedSaves = 0;
+      state.saveError = undefined;
       state.conflict = action.payload;
       state.saveStatus = 'conflict';
+    },
+    // Retried while there are retries left (saveRetryDelaysMs), then shown as an error
+    saveFailed: (state, action: PayloadAction<{ message: string; retries: number }>) => {
+      state.failedSaves += 1;
+      state.saveError = action.payload.message;
+      state.saveStatus = state.failedSaves <= action.payload.retries ? 'retrying' : 'error';
+    },
+    // An edit, or "Try again": a fresh set of retries
+    saveRetriesReset: state => {
+      state.failedSaves = 0;
     },
     botSelected: (state, action: PayloadAction<string>) => {
       state.botId = action.payload;
@@ -363,6 +385,8 @@ const {
   saveStatusChanged,
   chatbotsSaved,
   saveConflicted,
+  saveFailed,
+  saveRetriesReset,
   issueShown,
   newChatbotOpened,
 } = chatbotsSlice.actions;
@@ -501,7 +525,7 @@ const saveQueues = new WeakMap<Services, { current: Promise<void> }>();
 
 const saveNow =
   (): AppThunk<Promise<void>> =>
-  async (dispatch, getState, { chatbotClient }) => {
+  async (dispatch, getState, { chatbotClient, saveRetryDelaysMs }) => {
     const state = selectChatbots(getState());
     if (!state.design || state.conflict || selectChatbotsReadOnly(getState())) return;
     const json = JSON.stringify(state.design);
@@ -514,8 +538,10 @@ const saveNow =
       if (selectChatbots(getState()).loadCount !== loadCount) return;
       if (outcome.ok) dispatch(chatbotsSaved({ revision: outcome.meta.revision, json }));
       else dispatch(saveConflicted(outcome.conflict));
-    } catch {
-      dispatch(saveStatusChanged('error'));
+    } catch (err) {
+      // Left, or loaded again, meanwhile: nothing to retry
+      if (selectChatbots(getState()).loadCount !== loadCount) return;
+      dispatch(saveFailed({ message: (err as Error).message, retries: saveRetryDelaysMs.length }));
     }
   };
 
@@ -527,11 +553,17 @@ const flushChatbots = (): AppThunk<Promise<void>> => (dispatch, _getState, servi
   return queue.current;
 };
 
+// "Try again" after the retries ran out: the changes are still in the page
+export const retryChatbotsSave = (): AppThunk<Promise<void>> => dispatch => {
+  dispatch(saveRetriesReset());
+  return dispatch(flushChatbots());
+};
+
 // Adds the slice to the store, and saves a moment after the last change (unless it's view only or
-// someone else saved meanwhile)
+// someone else saved meanwhile); a save that failed is tried again a little later, a few times
 export const startChatbotsListeners = (startListening: AppListenerStartListening) => {
   injectChatbotsSlice();
-  return startListening({
+  const unsubscribeEdits = startListening({
     matcher: isAnyOf(designUpdated, formsLoaded),
     effect: async (_action, listenerApi) => {
       const state = selectChatbots(listenerApi.getState());
@@ -541,14 +573,36 @@ export const startChatbotsListeners = (startListening: AppListenerStartListening
       // A newer change restarts the wait
       listenerApi.cancelActiveListeners();
       await listenerApi.delay(listenerApi.extra.saveDelayMs);
+      // Someone's editing: a failed save gets its retries again
+      listenerApi.dispatch(saveRetriesReset());
       await listenerApi.dispatch(flushChatbots());
     },
   });
+  // The server may be back by then
+  const unsubscribeRetries = startListening({
+    actionCreator: saveFailed,
+    effect: async (_action, listenerApi) => {
+      const { saveStatus, failedSaves, loadCount } = selectChatbots(listenerApi.getState());
+      if (saveStatus !== 'retrying') return;
+      listenerApi.cancelActiveListeners();
+      const delays = listenerApi.extra.saveRetryDelaysMs;
+      await listenerApi.delay(delays[Math.min(failedSaves, delays.length) - 1] ?? 0);
+      // Unless an edit's save already went through, or the helpline was left or loaded again
+      const now = selectChatbots(listenerApi.getState());
+      if (now.saveStatus !== 'retrying' || now.loadCount !== loadCount) return;
+      await listenerApi.dispatch(flushChatbots());
+    },
+  });
+  return () => {
+    unsubscribeEdits();
+    unsubscribeRetries();
+  };
 };
 
-// Back to the start page, saving what's still waiting first
+// Back to the start page, saving what's still waiting (or failing to save) first
 export const closeChatbots = (): AppThunk<Promise<void>> => async (dispatch, getState) => {
-  if (selectChatbots(getState()).saveStatus === 'unsaved') await dispatch(flushChatbots());
+  const { saveStatus } = selectChatbots(getState());
+  if (saveStatus === 'unsaved' || saveStatus === 'retrying' || saveStatus === 'error') await dispatch(flushChatbots());
   dispatch(helplineClosed());
 };
 

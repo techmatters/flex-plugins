@@ -135,8 +135,8 @@ afterEach(cleanup);
 
 // The area as the app shows it: in a store with the user signed in (Aselo staff, or a helpline's) and
 // the board client talking to the API in process
-const renderArea = (user: ApiUser, client = clientAs(user)) => {
-  const store = createAppStore({ boardClient: client });
+const renderArea = (user: ApiUser, client = clientAs(user), saveRetryDelaysMs?: number[]) => {
+  const store = createAppStore({ boardClient: client, ...(saveRetryDelaysMs && { saveRetryDelaysMs }) });
   store.dispatch(
     sessionLoaded({ user: { ...user, applyInBuilder: false }, helplines: [{ code: 'usnm', versions: [] }] }),
   );
@@ -907,5 +907,62 @@ describe('testing a flow (Test mode)', () => {
     ]);
     // Testing doesn't make the design "in progress" again
     expect(saved?.content.status).toBe(board.content.status);
+  });
+});
+
+describe('a board save that fails', () => {
+  // Saves fail (as when the server can't be reached) while `remaining` is above 0
+  const openFailing = async (failingSaves: { remaining: number }) => {
+    const board = await clientAs(staff).create('usnm', 'Unreliable');
+    window.history.replaceState(null, '', `/?area=flows&board=usnm/${board.id}`);
+    const client = clientAs(staff);
+    renderArea(
+      staff,
+      {
+        ...client,
+        save: async (...args) => {
+          if (failingSaves.remaining > 0) {
+            failingSaves.remaining -= 1;
+            throw new TypeError('Failed to fetch');
+          }
+          return client.save(...args);
+        },
+      },
+      [0, 0, 0],
+    );
+    await screen.findByRole('heading', { name: 'Unreliable' });
+    fireEvent.click(
+      within(screen.getByRole('complementary', { name: 'Objects' })).getByRole('button', { name: /^End/ }),
+    );
+    return board;
+  };
+  const savedObjects = async (id: string) => (await boards.get('usnm', id))!.content.objects.length;
+
+  test('is tried again, and saved once the server is back, without bothering anyone', async () => {
+    const failingSaves = { remaining: 2 };
+    const board = await openFailing(failingSaves);
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    expect(failingSaves.remaining).toBe(0);
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(await savedObjects(board.id)).toBe(1);
+  });
+
+  test('says so when the retries run out, keeps the changes, and can be tried again', async () => {
+    const failingSaves = { remaining: 100 };
+    const board = await openFailing(failingSaves);
+    const alert = await screen.findByRole('alert', {}, { timeout: 4000 });
+    expect(alert.textContent).toMatch(/Your changes couldn’t be saved \(Failed to fetch\)/);
+    expect(alert.textContent).toMatch(/don’t close or reload it/);
+    // The first save and three retries, then it stops
+    expect(failingSaves.remaining).toBe(96);
+    expect(screen.getByRole('status').textContent).toBe('Could not save');
+    expect(await savedObjects(board.id)).toBe(0);
+
+    // The server's back
+    failingSaves.remaining = 0;
+    fireEvent.click(within(alert).getByRole('button', { name: 'Try again' }));
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'));
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(await savedObjects(board.id)).toBe(1);
   });
 });

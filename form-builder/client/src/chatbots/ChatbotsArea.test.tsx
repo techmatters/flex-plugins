@@ -24,6 +24,7 @@ import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/f
 import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { MemoryChatbotStore } from '@tech-matters/form-builder-server/chatbotApi';
 import { Provider } from 'react-redux';
+import { emptyChatbots } from '@tech-matters/form-builder-shared/chatbots/model';
 
 import { createAppStore } from '../app/store';
 import { sessionLoaded } from '../app/sessionSlice';
@@ -198,5 +199,69 @@ describe('chatbot designer', () => {
     expect(screen.queryByRole('button', { name: /^Import/ })).toBeNull();
     expect(screen.queryByRole('button', { name: /Export for Claude/ })).toBeNull();
     expect(screen.queryByRole('button', { name: '+ Add a question' })).toBeNull();
+  });
+});
+
+describe('a chatbots save that fails', () => {
+  // Saves fail (as when the server can't be reached) while `remaining` is above 0
+  const openFailing = async (failingSaves: { remaining: number }) => {
+    await clientAs(staff).save('usnm', 0, emptyChatbots('usnm'));
+    const client = clientAs(staff);
+    const appStore = createAppStore({
+      chatbotClient: {
+        ...client,
+        save: async (...args) => {
+          if (failingSaves.remaining > 0) {
+            failingSaves.remaining -= 1;
+            throw new TypeError('Failed to fetch');
+          }
+          return client.save(...args);
+        },
+      },
+      saveDelayMs: 0,
+      saveRetryDelaysMs: [0, 0, 0],
+    });
+    appStore.dispatch(
+      sessionLoaded({ user: { ...staff, applyInBuilder: false }, helplines: [{ code: 'usnm', versions: [] }] }),
+    );
+    render(
+      <Provider store={appStore}>
+        <ChatbotsArea />
+      </Provider>,
+    );
+    // A new chatbot
+    fireEvent.click(await screen.findByRole('button', { name: /New chatbot/ }));
+    const form = within(screen.getByRole('form', { name: 'New chatbot' }));
+    fireEvent.change(form.getByRole('combobox', { name: 'Chatbot language' }), { target: { value: 'en_USNM' } });
+    fireEvent.click(form.getByRole('button', { name: 'Create' }));
+  };
+  const savedBots = async () => (await store.get('usnm'))!.design.bots.map(bot => bot.name);
+
+  test('is tried again, and saved once the server is back, without bothering anyone', async () => {
+    const failingSaves = { remaining: 2 };
+    await openFailing(failingSaves);
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'));
+    expect(failingSaves.remaining).toBe(0);
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(await savedBots()).toEqual(['pre_survey']);
+  });
+
+  test('says so when the retries run out, keeps the changes, and can be tried again', async () => {
+    const failingSaves = { remaining: 100 };
+    await openFailing(failingSaves);
+    const alert = await screen.findByRole('alert');
+    expect(alert.textContent).toMatch(/Your changes couldn’t be saved \(Failed to fetch\)/);
+    expect(alert.textContent).toMatch(/don’t close or reload it/);
+    // The first save and three retries, then it stops
+    expect(failingSaves.remaining).toBe(96);
+    expect(screen.getByRole('status').textContent).toBe('Could not save');
+    expect(await savedBots()).toEqual([]);
+
+    // The server's back
+    failingSaves.remaining = 0;
+    fireEvent.click(within(alert).getByRole('button', { name: 'Try again' }));
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'));
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(await savedBots()).toEqual(['pre_survey']);
   });
 });

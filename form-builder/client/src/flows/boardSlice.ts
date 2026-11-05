@@ -87,7 +87,7 @@ import { coverageOf, type SimRun, testedPathOf, validTestedPaths, visitedBy } fr
 
 type BoardMode = 'sketch' | 'design' | 'test';
 
-export type BoardSaveState = 'saved' | 'unsaved' | 'saving' | 'conflict' | 'error';
+export type BoardSaveState = 'saved' | 'unsaved' | 'saving' | 'retrying' | 'conflict' | 'error';
 
 type SideTab = 'test' | 'settings' | 'tasks' | 'check' | 'recordings';
 
@@ -128,6 +128,9 @@ type BoardState = {
   revision: number;
   saveState: BoardSaveState;
   saveError?: string;
+  // Saves that failed in a row (a lost connection, the server down): retried a few times, then
+  // the error is shown until a save works
+  failedSaves: number;
   // Someone else saved in between: saving stops
   conflict?: BoardConflict;
   // Who tasks can be assigned to: only the board's helpline's people (Aselo staff included, once
@@ -154,6 +157,7 @@ const initialState: BoardState = {
   savedJson: '',
   revision: 0,
   saveState: 'saved',
+  failedSaves: 0,
   people: [],
   helplineChoices: NO_HELPLINE_CHOICES,
   tasksFilter: 'open',
@@ -547,15 +551,24 @@ const boardSlice = createSlice({
       state.revision = revision;
       state.savedJson = json;
       state.saveError = undefined;
+      state.failedSaves = 0;
       state.saveState = latestJson === json ? 'saved' : 'unsaved';
     },
     saveConflicted: (state, action: PayloadAction<BoardConflict>) => {
+      state.failedSaves = 0;
+      state.saveError = undefined;
       state.conflict = action.payload;
       state.saveState = 'conflict';
     },
-    saveFailed: (state, action: PayloadAction<string>) => {
-      state.saveError = action.payload;
-      state.saveState = 'error';
+    // Retried while there are retries left (saveRetryDelaysMs), then shown as an error
+    saveFailed: (state, action: PayloadAction<{ message: string; retries: number }>) => {
+      state.failedSaves += 1;
+      state.saveError = action.payload.message;
+      state.saveState = state.failedSaves <= action.payload.retries ? 'retrying' : 'error';
+    },
+    // An edit, or "Try again": a fresh set of retries
+    saveRetriesReset: state => {
+      state.failedSaves = 0;
     },
   },
 });
@@ -602,6 +615,8 @@ export const {
   boardClosed,
   boardSaved,
   saveStateChanged,
+  saveFailed,
+  saveRetriesReset,
 } = boardSlice.actions;
 const {
   nodesAdded,
@@ -616,7 +631,6 @@ const {
   peopleLoaded,
   helplineChoicesLoaded,
   saveConflicted,
-  saveFailed,
 } = boardSlice.actions;
 
 // ---------------------------------------------------------------------------------------------
@@ -1000,7 +1014,7 @@ const saveQueues = new WeakMap<object, { current: Promise<void> }>();
 
 const saveNow =
   (): AppThunk<Promise<void>> =>
-  async (dispatch, getState, { boardClient }) => {
+  async (dispatch, getState, { boardClient, saveRetryDelaysMs }) => {
     const state = selectBoard(getState());
     if (!state.board || selectReadOnly(getState()) || state.conflict) return;
     const toSave = selectContentJson(getState());
@@ -1022,7 +1036,9 @@ const saveNow =
         dispatch(saveConflicted(outcome.conflict));
       }
     } catch (err) {
-      dispatch(saveFailed((err as Error).message));
+      // Another board opened meanwhile: its saves aren't failing
+      if (selectBoard(getState()).opened !== state.opened) return;
+      dispatch(saveFailed({ message: (err as Error).message, retries: saveRetryDelaysMs.length }));
     }
   };
 
@@ -1032,6 +1048,12 @@ export const saveBoard = (): AppThunk<Promise<void>> => (dispatch, _getState, se
   saveQueues.set(services, queue);
   queue.current = queue.current.then(() => dispatch(saveNow()));
   return queue.current;
+};
+
+// "Try again" after the retries ran out: the changes are still in the page
+export const retryBoardSave = (): AppThunk<Promise<void>> => dispatch => {
+  dispatch(saveRetriesReset());
+  return dispatch(saveBoard());
 };
 
 // Whether there are changes not saved yet (leaving the page warns about them)

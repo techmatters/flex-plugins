@@ -18,7 +18,8 @@
  * The Contact flows area's slices, added to the store when it's made, and what follows changes to
  * the open board:
  * - undo snapshots, taken when the canvas stops changing (not while something is being dragged);
- * - saving, a moment after the last change (one save at a time; none after a conflict);
+ * - saving, a moment after the last change (one save at a time; none after a conflict), and a
+ *   save that failed tried again a little later, a few times;
  * - the status, back to "In progress" when the design changes;
  * - tested paths, forgotten when something on them changes;
  * - recordings, read again when another variant (another recordings folder) is shown;
@@ -34,6 +35,8 @@ import {
   injectBoardSlice,
   loadHelplineChoices,
   saveBoard,
+  saveFailed,
+  saveRetriesReset,
   saveStateChanged,
   selectBoard,
   selectCanvasContent,
@@ -94,6 +97,24 @@ export const startFlowsListeners = (startListening: AppListenerStartListening) =
       listenerApi.cancelActiveListeners();
       if (selectDragging(state)) return;
       await listenerApi.delay(AUTOSAVE_DELAY_MS);
+      // Someone's editing: a failed save gets its retries again
+      listenerApi.dispatch(saveRetriesReset());
+      await listenerApi.dispatch(saveBoard());
+    },
+  });
+
+  // A failed save is tried again a little later, a few times (the server may be back by then)
+  startListening({
+    actionCreator: saveFailed,
+    effect: async (_action, listenerApi) => {
+      const { saveState, failedSaves, opened } = selectBoard(listenerApi.getState());
+      if (saveState !== 'retrying') return;
+      listenerApi.cancelActiveListeners();
+      const delays = listenerApi.extra.saveRetryDelaysMs;
+      await listenerApi.delay(delays[Math.min(failedSaves, delays.length) - 1] ?? 0);
+      // Unless an edit's save already went through, or another board was opened
+      const now = selectBoard(listenerApi.getState());
+      if (now.saveState !== 'retrying' || now.opened !== opened) return;
       await listenerApi.dispatch(saveBoard());
     },
   });

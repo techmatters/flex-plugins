@@ -26,6 +26,7 @@ import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { MemoryRoutingStore } from '@tech-matters/form-builder-server/routingStore';
 import { Provider } from 'react-redux';
 import { readWho } from '@tech-matters/form-builder-shared/routing/expressions';
+import { emptyRouting } from '@tech-matters/form-builder-shared/routing/model';
 
 import { routingClientFor } from './routingClient';
 import { RoutingArea } from './RoutingArea';
@@ -198,5 +199,68 @@ describe('routing designer', () => {
     // A queue's workers, in plain words
     fireEvent.click(screen.getByRole('tab', { name: /^Queues/ }));
     expect(screen.getByText('Counselors with Calls or SMS, TYA and Spanish')).toBeTruthy();
+  });
+});
+
+describe('a routing save that fails', () => {
+  // Saves fail (as when the server can't be reached) while `remaining` is above 0
+  const openFailing = async (failingSaves: { remaining: number }) => {
+    await clientAs(staff).save('usnm', 0, emptyRouting('usnm'));
+    const client = clientAs(staff);
+    const appStore = createAppStore({
+      routingClient: {
+        ...client,
+        save: async (...args) => {
+          if (failingSaves.remaining > 0) {
+            failingSaves.remaining -= 1;
+            throw new TypeError('Failed to fetch');
+          }
+          return client.save(...args);
+        },
+      },
+      saveRetryDelaysMs: [0, 0, 0],
+    });
+    appStore.dispatch(
+      sessionLoaded({ user: { ...staff, applyInBuilder: false }, helplines: [{ code: 'usnm', versions: ['v1'] }] }),
+    );
+    render(
+      <Provider store={appStore}>
+        <RoutingArea />
+      </Provider>,
+    );
+    // An empty design opens at its queues
+    fireEvent.change(await screen.findByRole('textbox', { name: "New queue's name" }), {
+      target: { value: 'Spanish' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Add a queue' }));
+  };
+  const savedQueues = async () => (await store.get('usnm'))!.design.queues.map(queue => queue.name);
+
+  test('is tried again, and saved once the server is back, without bothering anyone', async () => {
+    const failingSaves = { remaining: 2 };
+    await openFailing(failingSaves);
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    expect(failingSaves.remaining).toBe(0);
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(await savedQueues()).toEqual(['Spanish']);
+  });
+
+  test('says so when the retries run out, keeps the changes, and can be tried again', async () => {
+    const failingSaves = { remaining: 100 };
+    await openFailing(failingSaves);
+    const alert = await screen.findByRole('alert', {}, { timeout: 4000 });
+    expect(alert.textContent).toMatch(/Your changes couldn’t be saved \(Failed to fetch\)/);
+    expect(alert.textContent).toMatch(/don’t close or reload it/);
+    // The first save and three retries, then it stops
+    expect(failingSaves.remaining).toBe(96);
+    expect(screen.getByRole('status').textContent).toBe('Could not save');
+    expect(await savedQueues()).toEqual([]);
+
+    // The server's back
+    failingSaves.remaining = 0;
+    fireEvent.click(within(alert).getByRole('button', { name: 'Try again' }));
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'));
+    expect(screen.queryByRole('alert')).toBeNull();
+    expect(await savedQueues()).toEqual(['Spanish']);
   });
 });

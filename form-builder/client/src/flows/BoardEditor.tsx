@@ -87,7 +87,7 @@ import {
   pasteClipboard,
   reconnectConnection,
   redo,
-  saveBoard,
+  retryBoardSave,
   selectBoard,
   selectCanRedo,
   selectCanUndo,
@@ -280,6 +280,7 @@ const Editor = () => {
     saved: 'All changes saved',
     unsaved: 'Unsaved changes…',
     saving: 'Saving…',
+    retrying: 'Couldn’t save, trying again…',
     conflict: 'Not saved',
     error: 'Could not save',
   };
@@ -344,14 +345,6 @@ const Editor = () => {
         ) : (
           <span className={`flow-save-state ${saveState}`} role="status">
             {statusText[saveState]}
-            {saveState === 'error' && (
-              <>
-                {' '}
-                <button type="button" className="link-button" onClick={() => dispatch(saveBoard())}>
-                  Try again
-                </button>
-              </>
-            )}
           </span>
         )}
         {mode !== 'sketch' && (
@@ -548,7 +541,19 @@ const Editor = () => {
           </button>
         </div>
       )}
-      {saveState === 'error' && saveError && <div className="alert alert-error">{saveError}</div>}
+      {saveState === 'error' && saveError && (
+        <div className="alert alert-error" role="alert">
+          <strong>Your changes couldn’t be saved</strong> ({saveError}). They’re still here in this page: don’t close or
+          reload it until they’re saved.{' '}
+          <button type="button" className="link-button" onClick={() => dispatch(retryBoardSave())}>
+            Try again
+          </button>
+          <span className="muted">
+            {' '}
+            If it keeps happening, check your internet connection or contact the Aselo team.
+          </span>
+        </div>
+      )}
 
       <div className="flow-workspace">
         {!locked && <Palette onAdd={item => add(item)} />}

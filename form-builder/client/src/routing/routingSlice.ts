@@ -21,7 +21,8 @@
  *
  * The design is saved a moment after each change (routingAutosave), one save at a time.
  * If someone else saved it in between, saving stops and the user is asked to reload, rather than
- * either person silently overwriting the other.
+ * either person silently overwriting the other. A save that fails (the server can't be reached) is
+ * tried again a little later, a few times (routingSaveRetries), then the error shows until one works.
  */
 import {
   addListener,
@@ -63,7 +64,7 @@ export type RoutingTab =
   | { kind: 'test' }
   | { kind: 'check' };
 
-type RoutingSaveState = 'saved' | 'unsaved' | 'saving' | 'conflict' | 'error';
+type RoutingSaveState = 'saved' | 'unsaved' | 'saving' | 'retrying' | 'conflict' | 'error';
 
 type RoutingConflict = { updatedBy?: string; updatedAt?: string };
 
@@ -78,6 +79,10 @@ type RoutingEditorState = {
   saveState: RoutingSaveState;
   // A save is under way (edits can still be made meanwhile)
   saving: boolean;
+  // Saves that failed in a row (a lost connection, the server down): retried a few times, then
+  // the error is shown until a save works
+  failedSaves: number;
+  saveError?: string;
   conflict?: RoutingConflict;
   tab: RoutingTab;
   selectedRuleId?: string;
@@ -143,6 +148,7 @@ const editorFor = (stored: StoredRouting): RoutingEditorState => {
     savedJson: JSON.stringify(design),
     saveState: 'saved',
     saving: false,
+    failedSaves: 0,
     tab: firstWorkflow ? { kind: 'workflow', key: firstWorkflow.key } : { kind: 'queues' },
     expanded: [],
     test: { workflowKey: firstTestWorkflow(design), task: {} },
@@ -278,6 +284,8 @@ const routingSlice = createSlice({
       editor.saving = false;
       editor.revision = action.payload.revision;
       editor.savedJson = action.payload.json;
+      editor.failedSaves = 0;
+      editor.saveError = undefined;
       // Edits made while it was saving still need saving
       editor.saveState = JSON.stringify(editor.design) === action.payload.json ? 'saved' : 'unsaved';
     },
@@ -285,15 +293,24 @@ const routingSlice = createSlice({
       const { editor } = state;
       if (!editor || editor.code !== action.payload.code) return;
       editor.saving = false;
+      editor.failedSaves = 0;
+      editor.saveError = undefined;
       editor.conflict = action.payload.conflict;
       editor.saveState = 'conflict';
     },
-    saveFailed: (state, action: PayloadAction<string>) => {
+    // Retried while there are retries left (saveRetryDelaysMs), then shown as an error
+    saveFailed: (state, action: PayloadAction<{ code: string; message: string; retries: number }>) => {
       const { editor } = state;
-      if (!editor || editor.code !== action.payload) return;
+      if (!editor || editor.code !== action.payload.code) return;
       editor.saving = false;
-      editor.saveState = 'error';
+      editor.failedSaves += 1;
+      editor.saveError = action.payload.message;
+      editor.saveState = editor.failedSaves <= action.payload.retries ? 'retrying' : 'error';
     },
+    // An edit, or "Try again": a fresh set of retries
+    saveRetriesReset: onEditor<void>(editor => {
+      editor.failedSaves = 0;
+    }),
 
     // ----- The editor's pages
     tabChosen: onEditor<RoutingTab>((editor, action) => showTab(editor, action.payload)),
@@ -501,6 +518,7 @@ const {
   routingSaved,
   saveConflicted,
   saveFailed,
+  saveRetriesReset,
   ruleAdded,
 } = routingSlice.actions;
 
@@ -521,7 +539,7 @@ export const selectRoutingHelplineCodes = createSelector([(state: RootState) => 
 // once that one is done
 const saveRouting =
   (): AppThunk<Promise<void>> =>
-  async (dispatch, getState, { routingClient }) => {
+  async (dispatch, getState, { routingClient, saveRetryDelaysMs }) => {
     const { editor } = routingOf(getState());
     if (!editor || editor.saving || editor.conflict) return;
     const json = JSON.stringify(editor.design);
@@ -535,8 +553,8 @@ const saveRouting =
         return;
       }
       dispatch(routingSaved({ code, revision: outcome.meta.revision, json }));
-    } catch {
-      dispatch(saveFailed(code));
+    } catch (err) {
+      dispatch(saveFailed({ code, message: (err as Error).message, retries: saveRetryDelaysMs.length }));
       return;
     }
     const after = routingOf(getState()).editor;
@@ -558,19 +576,22 @@ export const loadRouting =
     }
   };
 
-// Opens a helpline's routing ('' back to the start page). Changes still waiting are saved first.
+// Opens a helpline's routing ('' back to the start page). Changes still waiting (or failing to
+// save) are saved first.
 export const openRouting =
   (code: string): AppThunk<Promise<void>> =>
   async (dispatch, getState) => {
-    if (routingOf(getState()).editor?.saveState === 'unsaved') dispatch(saveRouting());
+    const saveState = routingOf(getState()).editor?.saveState;
+    if (saveState === 'unsaved' || saveState === 'retrying' || saveState === 'error') dispatch(saveRouting());
     dispatch(routingOpened(code));
     if (code) await dispatch(loadRouting());
   };
 
 // The area is shown: someone with a single helpline gets its routing straight away (once)
 export const enterRouting = (): AppThunk => (dispatch, getState) => {
-  // Added once: the same predicate and effect again are the same listener
+  // Added once: the same predicate (or action) and effect again are the same listener
   dispatch(addListener.withTypes<RootState, AppDispatch, Services>()(routingAutosave));
+  dispatch(addListener.withTypes<RootState, AppDispatch, Services>()(routingSaveRetries));
   if (routingOf(getState()).entered) return;
   dispatch(routingEntered());
   const codes = selectRoutingHelplineCodes(getState());
@@ -665,6 +686,12 @@ export const addRoutingCommonRule =
     dispatch(ruleAdded({ workflowKey, rules: changed.rules, ruleId: rule.id }));
   };
 
+// "Try again" after the retries ran out: the changes are still in the page
+export const retryRoutingSave = (): AppThunk<Promise<void>> => dispatch => {
+  dispatch(saveRetriesReset());
+  return dispatch(saveRouting());
+};
+
 // The "Export for Claude" file: the design, what it generates, and its checks
 export const routingExport = (): AppThunk<{ fileName: string; text: string } | undefined> => (_dispatch, getState) => {
   const { stored, editor } = routingOf(getState());
@@ -710,6 +737,24 @@ const routingAutosave = {
     // A newer change restarts the wait
     listenerApi.cancelActiveListeners();
     await listenerApi.delay(AUTOSAVE_DELAY_MS);
+    // Someone's editing: a failed save gets its retries again
+    listenerApi.dispatch(saveRetriesReset());
+    await listenerApi.dispatch(saveRouting());
+  },
+};
+
+// A failed save is tried again a little later, a few times (the server may be back by then)
+const routingSaveRetries = {
+  actionCreator: saveFailed,
+  effect: async (_action: UnknownAction, listenerApi: ListenerEffectAPI<RootState, AppDispatch, Services>) => {
+    const { editor } = routingOf(listenerApi.getState());
+    if (editor?.saveState !== 'retrying') return;
+    listenerApi.cancelActiveListeners();
+    const delays = listenerApi.extra.saveRetryDelaysMs;
+    await listenerApi.delay(delays[Math.min(editor.failedSaves, delays.length) - 1] ?? 0);
+    // Unless an edit's save already went through, or another helpline was opened
+    const now = routingOf(listenerApi.getState()).editor;
+    if (now?.saveState !== 'retrying' || now.code !== editor.code) return;
     await listenerApi.dispatch(saveRouting());
   },
 };
