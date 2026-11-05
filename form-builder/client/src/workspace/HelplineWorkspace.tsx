@@ -34,6 +34,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../app/store';
 import { selectActingAsStaff } from '../app/sessionSlice';
 import { noticeDismissed, retrySave, SaveState, selectChangedPaths, selectDraft } from '../drafts/draftSlice';
+import { isSectionChanged } from './sectionChanges';
 import {
   discardWorkspaceDraft,
   reloadHelpline,
@@ -138,6 +139,15 @@ const NavItem = ({
   reviewOf: (target: View) => NavReview | undefined;
 }) => {
   const review = reviewOf(target);
+  const changedPaths = useAppSelector(selectChangedPaths);
+  const { files, original } = useAppSelector(selectDraft);
+  const caseTargets = useAppSelector(selectCaseTargets);
+  // Something in the draft changes this section
+  const changed = isSectionChanged(target, changedPaths, original, files, view => {
+    if (view.kind === 'contactTab') return CONTACT_TABS.find(tab => tab.key === view.tabKey)?.filePath;
+    if (view.kind === 'caseSection') return caseTargets.find(each => each.key === view.sectionKey)?.filePath;
+    return undefined;
+  });
   return (
     <li>
       <button
@@ -157,6 +167,11 @@ const NavItem = ({
         )}
         {label}
         {Boolean(errors) && <span className="nav-error-count">{errors}</span>}
+        {changed && (
+          <span className="badge badge-edited nav-edited" title="Changed in this draft">
+            Edited
+          </span>
+        )}
       </button>
     </li>
   );

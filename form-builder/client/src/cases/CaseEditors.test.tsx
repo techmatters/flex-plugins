@@ -133,7 +133,7 @@ describe('case sections', () => {
     expect(substitutions.en['Case-SectionList-Title/safetyPlan']).toBe('Safety plan');
 
     // Its form is in the menu, and the heading can be changed
-    expect(screen.getByRole('button', { name: 'Safety plan' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: /^Safety plan/ })).toBeTruthy();
     const row = (screen.getAllByRole('textbox', { name: 'Section name' }) as HTMLInputElement[])
       .find(input => input.value === 'Safety plan')!
       .closest('.case-section-row') as HTMLElement;

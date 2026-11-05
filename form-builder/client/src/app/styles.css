@@ -186,6 +186,16 @@ body {
   font-weight: 600;
 }
 
+/* A section the draft changes */
+.nav-edited {
+  float: right;
+  margin-left: 6px;
+}
+
+.nav-item.active .nav-edited {
+  background: var(--color-surface);
+}
+
 .main {
   flex: 1;
   padding: 24px;
