@@ -12,6 +12,7 @@ locals {
 
     #Studio flow
     flow_vars = {
+      send_message_janitor_function_sid     = "ZH91e33557d45b6dd60100876452e2428b"
       bot_language                          = "en-US"
       widget_from                           = "Aselo"
       chat_blocked_message                  = "Sorry, you're not able to contact Aselo from this device or account"
