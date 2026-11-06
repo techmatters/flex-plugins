@@ -27,15 +27,19 @@ def _secret_name(code: str, environment: str) -> str:
     return f'/terraform/twilio-iac/{environment}/{code}/secrets.json'
 
 
-def ssm_secret_status(code: str, environment: str) -> str:
+def ssm_parameter_status(name: str) -> str:
     '''done | missing | unknown (no AWS credentials). Checks existence only; the value is never read.'''
     try:
         parameters = _ssm().describe_parameters(
-            ParameterFilters=[{'Key': 'Name', 'Values': [_secret_name(code, environment)]}],
+            ParameterFilters=[{'Key': 'Name', 'Values': [name]}],
         )['Parameters']
         return 'done' if parameters else 'missing'
     except Exception:
         return 'unknown'
+
+
+def ssm_secret_status(code: str, environment: str) -> str:
+    return ssm_parameter_status(_secret_name(code, environment))
 
 
 def resolve_account_sid(code: str, environment: str, account_sid: str | None, accounts_file: str | None) -> str | None:
@@ -105,12 +109,14 @@ def onboarding_status(
         f'make plan HL={code} HL_ENV={environment} in each stage')
     add('1.3', 'Phone number points at the voice Studio flow', 'manual', 'Twilio Console › Phone Numbers')
 
-    # 1.4 Error reporting
-    reporter = (REPO_ROOT / 'lambdas' / 'TwilioErrorReporter' / 'index.ts').read_text(encoding='utf-8')
+    # 1.4 Error reporting: TwilioErrorReporter finds the account from this parameter (written by provision)
     if sid:
-        add('1.4', 'Account in TwilioErrorReporter', 'done' if sid in reporter else 'missing')
+        reporter_parameter = f'/{environment}/twilio/{sid}/short_helpline'
+        reporter_status = ssm_parameter_status(reporter_parameter)
+        add('1.4', f'SSM {reporter_parameter} (TwilioErrorReporter)', reporter_status,
+            'no AWS credentials here' if reporter_status == 'unknown' else '')
     else:
-        add('1.4', 'Account in TwilioErrorReporter', 'unknown', 'account SID unknown')
+        add('1.4', 'SSM short_helpline parameter (TwilioErrorReporter)', 'unknown', 'account SID unknown')
     add('1.4', 'Errors webhook set in the Twilio console', 'manual')
 
     # 1.5 Okta SSO
@@ -134,7 +140,7 @@ def onboarding_status(
     add('2.1', 'Form definitions deployed to S3', 'manual',
         'GitHub Actions › Deploy form-definitions to S3 (from the helpline branch until merged)')
     add('2.2', 'Twilio lambdas deployed', 'manual',
-        'GitHub Actions › Deploy All Twilio Lambdas (environment), from master after the PR is merged')
+        'GitHub Actions › Deploy All Twilio Lambdas (environment), from master')
     add('2.3', 'Flex plugin deployed', 'manual', 'Flex Deploy workflow')
     webchat_config = f'aselo-webchat-react-app/configSrc/{code}'
     add('2.4', 'Webchat config (if the helpline uses webchat)', 'done' if exists(webchat_config) else 'missing',

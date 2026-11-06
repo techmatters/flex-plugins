@@ -87,13 +87,13 @@ From `twilio-iac/stages/provision` on the devops node:
 5. 🧑 Buy/assign the phone number in Twilio and point its **A call comes in** to the voice Studio
    flow (Terraform does not manage phone numbers; it only uses `phone_numbers` in routing expressions).
 
-### 1.4 Error reporting 🤝
+### 1.4 Error reporting 🧑
 
-1. 🧑 Twilio Console › **Monitor › Errors › Webhooks & alerts**: set the webhook to the
-   TwilioErrorReporter URL (copy it from an existing account).
-2. 🤖 Add the account to `lambdas/TwilioErrorReporter/index.ts` (`stagingAccountMap` or
-   `productionAccountMap`, **alphabetical order**). The person opens the PR. (The SID is committed
-   there today; it is an existing exception.)
+Twilio Console › **Monitor › Errors › Webhooks & alerts**: set the webhook to the
+TwilioErrorReporter URL (copy it from an existing account).
+
+TwilioErrorReporter itself needs no change: it finds the helpline from the SSM parameter
+`/<environment>/twilio/<account SID>/short_helpline`, which the provision stage (1.3) writes.
 
 ### 1.5 Okta SSO 🧑
 
@@ -140,8 +140,7 @@ Twilio Console › Account › **Manage users**: invite the engineers and soluti
 
 Run *Deploy All Twilio Lambdas* ([twilio-lambda-deploy-all.yml](../../.github/workflows/twilio-lambda-deploy-all.yml))
 in this repo's GitHub Actions for the environment (`staging` / `production`). It deploys every
-Twilio lambda (account-scoped, TwilioErrorReporter, …) for all helplines of that environment, so it
-also picks up the new account in TwilioErrorReporter (step 1.4) once that PR is merged. Run it
+Twilio lambda (account-scoped, TwilioErrorReporter, …) for all helplines of that environment. Run it
 from master only: running it from the helpline's branch would deploy that branch's lambdas to every
 helpline.
 
@@ -220,7 +219,7 @@ Copy into the helpline's tracking issue / task and tick as you go.
 - [ ] 1.1 Helpline config committed
 - [ ] 1.2 SSM secrets
 - [ ] 1.3 provision / lex (if used) / system-down / configure applied · phone number → voice flow
-- [ ] 1.4 Error webhook + TwilioErrorReporter PR
+- [ ] 1.4 Error webhook
 - [ ] 1.5 Okta: group · app · Flex SSO values entered · SSO login ✅
 - [ ] 1.6 Twilio console users invited
 - [ ] 2.1 Form definitions
