@@ -10,7 +10,6 @@ locals {
 
 
     flow_vars = {
-      send_message_janitor_function_sid = "ZHb199d0023a1eb386f78b0ad778e93484"
       widget_from                       = "Childline Thailand"
       chat_blocked_message              = "Sorry, you're not able to contact Childline Thailand from this device or account"
 
