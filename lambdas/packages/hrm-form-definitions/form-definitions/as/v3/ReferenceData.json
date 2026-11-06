@@ -1,0 +1,118 @@
+{
+  "usStates": [
+    {
+      "value": "",
+      "label": ""
+    },
+    {
+      "value": "California",
+      "label": "California"
+    },
+    {
+      "value": "New Mexico",
+      "label": "New Mexico"
+    },
+    {
+      "value": "New York",
+      "label": "New York"
+    },
+    {
+      "value": "Texas",
+      "label": "Texas"
+    },
+    {
+      "value": "Outside the US",
+      "label": "Outside the US"
+    },
+    {
+      "value": "Unknown",
+      "label": "Unknown"
+    }
+  ],
+  "usCountiesByState": {
+    "California": [
+      {
+        "value": "Los Angeles County",
+        "label": "Los Angeles County"
+      },
+      {
+        "value": "Sacramento County",
+        "label": "Sacramento County"
+      },
+      {
+        "value": "San Diego County",
+        "label": "San Diego County"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "New Mexico": [
+      {
+        "value": "Bernalillo County",
+        "label": "Bernalillo County"
+      },
+      {
+        "value": "Doña Ana County",
+        "label": "Doña Ana County"
+      },
+      {
+        "value": "Santa Fe County",
+        "label": "Santa Fe County"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "New York": [
+      {
+        "value": "Albany County",
+        "label": "Albany County"
+      },
+      {
+        "value": "Erie County",
+        "label": "Erie County"
+      },
+      {
+        "value": "Kings County",
+        "label": "Kings County"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "Texas": [
+      {
+        "value": "Bexar County",
+        "label": "Bexar County"
+      },
+      {
+        "value": "Harris County",
+        "label": "Harris County"
+      },
+      {
+        "value": "Travis County",
+        "label": "Travis County"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "Outside the US": [
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "Unknown": [
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  }
+}
