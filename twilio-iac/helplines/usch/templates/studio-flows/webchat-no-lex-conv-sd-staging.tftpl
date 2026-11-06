@@ -587,12 +587,12 @@ ${
             "event": "match",
             "conditions": [
               {
-                "friendly_name": "If value matches_any_of Si,si,Sí,sí,ok",
+                "friendly_name": "If value matches_any_of Si,si,Sí,sí,ok,1",
                 "arguments": [
                   "{{widgets.send_wait_webchat_es_childhelp_wait_or_leave.inbound.Body}}"
                 ],
                 "type": "matches_any_of",
-                "value": "Si,si,Sí,sí,ok"
+                "value": "Si,si,Sí,sí,ok,1"
               }
             ],
             "next": "send_message_webchat_es_childhelp_prequeue"
@@ -601,12 +601,12 @@ ${
             "event": "match",
             "conditions": [
               {
-                "friendly_name": "If value matches_any_of No,nop,no",
+                "friendly_name": "If value matches_any_of No,nop,no,2",
                 "arguments": [
                   "{{widgets.send_wait_webchat_es_childhelp_wait_or_leave.inbound.Body}}"
                 ],
                 "type": "matches_any_of",
-                "value": "No,nop,no"
+                "value": "No,nop,no,2"
               }
             ],
             "next": "f_sendMessageAndRunJanitor_please_call"
