@@ -112,7 +112,7 @@ describe('Search Results', () => {
         },
         routing: {
           tasks: {
-            task1: [{ route: 'search', subroute: 'contact-results' }],
+            task1: { routeStack: [{ route: 'search', subroute: 'contact-results' }] },
           },
         },
       },
@@ -124,7 +124,7 @@ describe('Search Results', () => {
 
         routing: {
           tasks: {
-            task1: [{ route: 'search', subroute: 'case-results' }],
+            task1: { routeStack: [{ route: 'search', subroute: 'case-results' }] },
           },
         },
       },

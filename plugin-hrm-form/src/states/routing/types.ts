@@ -311,12 +311,15 @@ export type RoutingActionType =
   | OpenModalAction
   | CloseModalAction
   | SetQueueGreetingDismissedAction;
+// Routing state that belongs to a single task
+export type TaskRoutingState = {
+  // Not set yet for a task whose contact hasn't been created, e.g. while it's ringing
+  routeStack?: AppRoutes[];
+  isQueueGreetingDismissed?: boolean;
+};
+
 export type RoutingState = {
   tasks: {
-    [taskId in TaskSID]?: AppRoutes[];
-  };
-  // Tasks whose queue greeting popover the counsellor has dismissed
-  dismissedQueueGreetings: {
-    [taskId in TaskSID]?: boolean;
+    [taskId in TaskSID]?: TaskRoutingState;
   };
 };

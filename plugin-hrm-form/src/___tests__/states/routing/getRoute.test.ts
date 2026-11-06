@@ -36,7 +36,7 @@ type TestCase<T extends AppRoutes | AppRoutes[]> = {
 
 const stateWithRouteStack = (baseRoutes: AppRoutes[]): RoutingState => ({
   tasks: {
-    1: baseRoutes,
+    1: { routeStack: baseRoutes },
     [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
   },
 });
@@ -313,18 +313,20 @@ describe('selectIsQueueGreetingOpen', () => {
   const rootState = ({
     standaloneRoute = 'agent-desktop',
     selectedTaskSid = 'WR1',
-    dismissedQueueGreetings = {},
+    isQueueGreetingDismissed = false,
   }: {
     standaloneRoute?: string;
     selectedTaskSid?: string;
-    dismissedQueueGreetings?: RoutingState['dismissedQueueGreetings'];
+    isQueueGreetingDismissed?: boolean;
   }) =>
     (({
       flex: { view: { selectedTaskSid } },
       [namespace]: {
         routing: {
-          tasks: { [standaloneTaskSid]: [{ route: standaloneRoute }] },
-          dismissedQueueGreetings,
+          tasks: {
+            [standaloneTaskSid]: { routeStack: [{ route: standaloneRoute }] },
+            WT1: { isQueueGreetingDismissed },
+          },
         },
       },
     } as unknown) as RootState);
@@ -336,7 +338,7 @@ describe('selectIsQueueGreetingOpen', () => {
   each([
     { description: 'another view is shown', state: rootState({ standaloneRoute: 'case-list' }) },
     { description: 'another task is selected', state: rootState({ selectedTaskSid: 'WR2' }) },
-    { description: 'the greeting was dismissed', state: rootState({ dismissedQueueGreetings: { WT1: true } }) },
+    { description: 'the greeting was dismissed', state: rootState({ isQueueGreetingDismissed: true }) },
   ]).test('is closed when $description', ({ state }) => {
     expect(selectIsQueueGreetingOpen(state, task)).toBe(false);
   });
