@@ -39,10 +39,13 @@ import {
   standardPrefixedName,
   suggestStudioName,
   upgradeContent,
+  checkNoMatchNameOf,
+  conditionExitName,
   fixedExitsOf,
   widgetNamesOf,
 } from '@tech-matters/form-builder-shared/flows/model';
 import { janitorValuesOf } from '@tech-matters/form-builder-shared/flows/janitor';
+import { mergeImportedPairs } from '@tech-matters/form-builder-shared/flows/mergedWidgets';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
 
@@ -946,5 +949,77 @@ describe('who a message is from', () => {
     };
     const state = toStudioFlow(changed).flow.states.find(candidate => candidate.name === 'send_wait_sms_name_request')!;
     expect(state.properties).toMatchObject({ from: '${helpline}', message_type: 'custom', timeout: '180' });
+  });
+});
+
+describe('checks drawn new, exported and imported again', () => {
+  // The widgets as the import makes them: one object each, ways out named after their events and
+  // a split's after its conditions (noMatch has no name of its own in Studio)
+  const imported = (
+    states: {
+      name: string;
+      type: string;
+      properties: Record<string, unknown>;
+      transitions: Record<string, unknown>[];
+    }[],
+  ) => {
+    const objects = states.map((state, index) =>
+      object(`w${index}`, state.type === 'split-based-on' ? 'decision' : 'checkQueueAvailability', {
+        studioName: state.name,
+        exits: state.transitions.map(transition => {
+          // eslint-disable-next-line camelcase -- as Studio writes it
+          const [condition] = (transition.conditions ?? []) as { friendly_name?: string; value?: string }[];
+          return transition.event === 'match'
+            ? conditionExitName(condition?.friendly_name, condition?.value)!
+            : String(transition.event);
+        }),
+        studio: { name: state.name, type: state.type, properties: state.properties, transitions: state.transitions },
+      }),
+    );
+    const id = (name: unknown) => objects.find(candidate => candidate.studioName === name)?.id;
+    const connections = states.flatMap((state, index) =>
+      state.transitions
+        .filter(transition => id(transition.next))
+        .map((transition, at) => connect(objects[index].id, id(transition.next)!, objects[index].exits![at])),
+    );
+    return { objects, connections };
+  };
+
+  test('a skilled worker check keeps its ways out: available, not available and failed', () => {
+    const check = object('check', 'checkQueueAvailability', {
+      studioName: 'f_isSkilledWorkerAvailable_chattext_spanish',
+      exits: ['available', 'not available', 'failed'],
+      settings: { targetSkills: 'ChatText,Spanish', targetChannel: 'chat' },
+    });
+    const yes = object('yes', 'sendMessage', { studioName: 'send_message_yes' });
+    const no = object('no', 'sendMessage', { studioName: 'send_message_no' });
+    const drawn = board(
+      'webchat',
+      [check, yes, no],
+      [connect('check', 'yes', 'available'), connect('check', 'no', 'not available'), connect('check', 'no', 'failed')],
+    );
+    const states = toStudioFlow(drawn, drawn.frames[0]).flow.states.filter(state => state.name.match(/^(?:f_|split_)/));
+    const { objects, connections } = imported(
+      states.map(state => ({ ...state, transitions: state.transitions.map(transition => ({ ...transition })) })),
+    );
+    const merged = mergeImportedPairs(
+      [...objects, object('yes', 'sendMessage', { studioName: 'send_message_yes' })],
+      connections,
+    );
+    const again = merged.objects.find(candidate => candidate.studioName === check.studioName)!;
+    expect(again.exits).toEqual(['not available', 'available', 'failed']);
+    expect(fixedExitsOf(again)).toEqual(['not available', 'failed']);
+
+    // A board imported before the name was given gets it when it's opened, connections and all
+    const before = {
+      ...emptyBoard('Before'),
+      objects: [{ ...again, exits: again.exits!.map(exit => (exit === 'not available' ? 'noMatch' : exit)) }],
+      connections: [{ id: 'c', from: again.id, to: 'x', exit: 'noMatch' }],
+    };
+    const opened = upgradeContent(before);
+    expect(opened.objects[0].exits).toEqual(['not available', 'available', 'failed']);
+    expect(opened.connections[0].exit).toBe('not available');
+    // A split made some other way (usnm's: greater than 0, equal to 0) keeps noMatch
+    expect(checkNoMatchNameOf({ ...again, exits: ['noMatch', '0', '0 (3)', 'failed'] })).toBeUndefined();
   });
 });

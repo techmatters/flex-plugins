@@ -1272,6 +1272,34 @@ export const exitsOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio'>): 
   return info.exits ?? [''];
 };
 
+// What a check drawn new calls its split's noMatch, and the ways out it splits into otherwise (any
+// flags, for a client profile's)
+const CHECK_NO_MATCH: Partial<Record<FlowObjectType, { name: string; matches?: string[] }>> = {
+  checkClientProfile: { name: 'not blocked' },
+  checkQueueAvailability: { name: 'not available', matches: ['available'] },
+  checkWorkerLoggedIn: { name: 'not logged in', matches: ['logged in'] },
+  checkOperatingHours: { name: 'holiday', matches: ['open', 'closed'] },
+};
+
+/**
+ * A check imported with its split: the name a new check gives the split's noMatch, when the split's
+ * other ways out are the ones a new check has (so the export and the import name them the same).
+ * Undefined otherwise: a split made some other way keeps noMatch.
+ */
+export const checkNoMatchNameOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio' | 'studioSplit'>) => {
+  const rule = CHECK_NO_MATCH[object.type];
+  const exits = object.exits ?? [];
+  if (!rule || !object.studio || !object.studioSplit || !exits.includes('noMatch') || exits.includes(rule.name)) {
+    return undefined;
+  }
+  const { from } = object.studioSplit;
+  const own = (object.studio.transitions ?? []).map(transition => String(transition.event)).filter(e => e !== from);
+  const matches = exits.filter(exit => exit !== 'noMatch' && !own.includes(exit));
+  const same =
+    !rule.matches || (matches.length === rule.matches.length && rule.matches.every(m => matches.includes(m)));
+  return same ? rule.name : undefined;
+};
+
 /**
  * Boards saved before a kind was replaced, brought up to date: "Wait / repeat" (a picture only) is
  * now Repeat, a counter and a split, whose way back round is the one way out it had.
@@ -1297,6 +1325,11 @@ export const upgradeContent = (content: BoardContent): BoardContent => {
       if (value && !object.exits!.includes(value) && ![...renamed.values()].includes(value)) renamed.set(exit, value);
     });
     if (renamed.size > 0) splitExits.set(object.id, renamed);
+  });
+  // Checks imported with their split: its noMatch named as a new check's ("not available")
+  content.objects.forEach(object => {
+    const name = checkNoMatchNameOf(object);
+    if (name) splitExits.set(object.id, new Map([['noMatch', name]]));
   });
   const splitExit = (id: string, exit: string) => splitExits.get(id)?.get(exit) ?? exit;
   const changes = (connection: Connection) =>

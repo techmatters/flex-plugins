@@ -24,6 +24,7 @@
 
 import {
   BoardContent,
+  checkNoMatchNameOf,
   conditionExitName,
   Connection,
   counterOf,
@@ -152,7 +153,7 @@ export const mergeImportedPairs = (objects: FlowObject[], connections: Connectio
         if (noMatch) retargeted.set(connection.id, noMatch.to);
         else dropped.add(connection.id);
       });
-      merged.set(first.id, {
+      const check: FlowObject = {
         ...first,
         exits: [...splitExits, ...ownExits],
         studioSplit: {
@@ -161,7 +162,14 @@ export const mergeImportedPairs = (objects: FlowObject[], connections: Connectio
           after,
           ...(leading.length > 0 ? { alsoFrom: leading.map(connection => connection.exit ?? '') } : {}),
         },
-      });
+      };
+      // Its noMatch named as a new check's ("not available"), when it splits as one does
+      const noMatchName = checkNoMatchNameOf(check);
+      if (noMatchName) {
+        check.exits = check.exits!.map(exit => (exit === 'noMatch' ? noMatchName : exit));
+        exitRenames.set(split.id, new Map([['noMatch', noMatchName]]));
+      }
+      merged.set(first.id, check);
     } else {
       const repeat = repeatSplitOf(split, counter!);
       if (!repeat) return;
