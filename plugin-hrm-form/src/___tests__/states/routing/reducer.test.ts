@@ -64,6 +64,7 @@ describe('test reducer (specific actions)', () => {
       'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
       [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
     },
+    dismissedQueueGreetings: {},
   };
 
   test('should return initial state', async () => {
@@ -79,6 +80,7 @@ describe('test reducer (specific actions)', () => {
         'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
+      dismissedQueueGreetings: {},
     };
 
     const result = reduce(initialState, {
@@ -582,6 +584,7 @@ describe('test reducer (specific actions)', () => {
         'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
+      dismissedQueueGreetings: {},
     };
 
     const result = reduce(initialState, {
@@ -600,6 +603,7 @@ describe('test reducer (specific actions)', () => {
         'WT-task1': [{ route: 'case', subroute: 'home', caseId: '' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
+      dismissedQueueGreetings: {},
     };
 
     const result1 = reduce(
@@ -624,6 +628,7 @@ describe('test reducer (specific actions)', () => {
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
         [offlineContactTaskSid]: [{ ...newTaskEntry, route: 'tabbed-forms', subroute: 'childInformation' }],
       },
+      dismissedQueueGreetings: {},
     };
 
     const result = reduce(stateWithTask, {
@@ -652,6 +657,7 @@ describe('test reducer (specific actions)', () => {
         'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
+      dismissedQueueGreetings: {},
     };
 
     const result = reduce(
@@ -660,9 +666,28 @@ describe('test reducer (specific actions)', () => {
           ...stateWithTask.tasks,
           [offlineContactTaskSid]: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         },
+        dismissedQueueGreetings: {},
       },
       GeneralActions.removeContactState(offlineContactTaskSid, ''),
     );
     expect(result).toStrictEqual(expected);
+  });
+});
+
+describe('SET_QUEUE_GREETING_DISMISSED action', () => {
+  test('dismisses and reopens the queue greeting of a task', () => {
+    const dismissed = reduce(initialState, actions.newSetQueueGreetingDismissedAction('WT1', true));
+    expect(dismissed.dismissedQueueGreetings).toStrictEqual({ WT1: true });
+
+    const reopened = reduce(dismissed, actions.newSetQueueGreetingDismissedAction('WT1', false));
+    expect(reopened.dismissedQueueGreetings).toStrictEqual({ WT1: false });
+  });
+
+  test('REMOVE_CONTACT_STATE forgets the queue greeting state of the task', () => {
+    const dismissed = reduce(initialState, actions.newSetQueueGreetingDismissedAction('WT1', true));
+
+    const result = reduce(dismissed, GeneralActions.removeContactState('WT1', ''));
+
+    expect(result.dismissedQueueGreetings).toStrictEqual({});
   });
 });

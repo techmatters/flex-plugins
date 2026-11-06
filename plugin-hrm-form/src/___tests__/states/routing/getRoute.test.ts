@@ -23,7 +23,10 @@ import {
   getCurrentBaseRoute,
   getCurrentTopmostRouteForTask,
   getCurrentTopmostRouteStackForTask,
+  selectIsQueueGreetingOpen,
 } from '../../../states/routing/getRoute';
+import { RootState } from '../../../states';
+import { namespace } from '../../../states/storeNamespaces';
 
 type TestCase<T extends AppRoutes | AppRoutes[]> = {
   state: RoutingState;
@@ -302,5 +305,39 @@ describe('getCurrentBaseRouteForTask', () => {
 
   each(testCases).test('$description', ({ state, expected }) => {
     expect(getCurrentBaseRoute(state, '1')).toEqual(expected);
+  });
+});
+
+describe('selectIsQueueGreetingOpen', () => {
+  const task = { sid: 'WR1', taskSid: 'WT1' };
+  const rootState = ({
+    standaloneRoute = 'agent-desktop',
+    selectedTaskSid = 'WR1',
+    dismissedQueueGreetings = {},
+  }: {
+    standaloneRoute?: string;
+    selectedTaskSid?: string;
+    dismissedQueueGreetings?: RoutingState['dismissedQueueGreetings'];
+  }) =>
+    (({
+      flex: { view: { selectedTaskSid } },
+      [namespace]: {
+        routing: {
+          tasks: { [standaloneTaskSid]: [{ route: standaloneRoute }] },
+          dismissedQueueGreetings,
+        },
+      },
+    } as unknown) as RootState);
+
+  test('is open on the agent desktop when the task is selected and the greeting was not dismissed', () => {
+    expect(selectIsQueueGreetingOpen(rootState({}), task)).toBe(true);
+  });
+
+  each([
+    { description: 'another view is shown', state: rootState({ standaloneRoute: 'case-list' }) },
+    { description: 'another task is selected', state: rootState({ selectedTaskSid: 'WR2' }) },
+    { description: 'the greeting was dismissed', state: rootState({ dismissedQueueGreetings: { WT1: true } }) },
+  ]).test('is closed when $description', ({ state }) => {
+    expect(selectIsQueueGreetingOpen(state, task)).toBe(false);
   });
 });
