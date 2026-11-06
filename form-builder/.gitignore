@@ -1,0 +1,5 @@
+node_modules/
+dist/
+/drafts/
+dist-lambda/
+dist-dev/

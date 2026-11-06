@@ -1,0 +1,37 @@
+{
+  "name": "@tech-matters/form-builder-server",
+  "version": "0.1.0",
+  "description": "The form builder's API: Lambda when deployed, and the local dev API",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0",
+  "exports": {
+    "./*": "./src/*.ts"
+  },
+  "scripts": {
+    "dev": "npm run build:dev && node dist-dev/devServer.mjs",
+    "build:dev": "esbuild src/devServer.ts --bundle --platform=node --target=node22 --format=esm --outfile=dist-dev/devServer.mjs --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\"",
+    "test": "jest",
+    "typecheck": "tsc --noEmit -p .",
+    "build:lambda": "esbuild src/lambda.ts --bundle --platform=node --target=node22 --format=esm --outfile=dist-lambda/index.mjs --banner:js=\"import { createRequire } from 'module'; const require = createRequire(import.meta.url);\""
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.1157.0",
+    "@aws-sdk/client-ssm": "^3.1157.0",
+    "@tech-matters/form-builder-shared": "*",
+    "tar": "^7.5.22"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
+    "@babel/preset-typescript": "^7.26.0",
+    "@jest/globals": "^29.7.0",
+    "@types/aws-lambda": "^8.10.164",
+    "@types/node": "^20.14.0",
+    "babel-jest": "^29.7.0",
+    "babel-plugin-transform-import-meta": "^2.3.2",
+    "esbuild": "^0.21.5",
+    "jest": "^29.7.0",
+    "typescript": "^5.5.4"
+  }
+}

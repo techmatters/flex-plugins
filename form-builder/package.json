@@ -1,0 +1,36 @@
+{
+  "name": "@tech-matters/form-builder",
+  "version": "0.1.0",
+  "description": "Web app for helpline staff to configure Aselo: client, server and what they share",
+  "private": true,
+  "license": "AGPL-3.0",
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev": "concurrently --names api,web --prefix-colors blue,green \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w client",
+    "build:lambda": "npm run build:lambda -w server",
+    "test": "npm test -w server -w client",
+    "typecheck": "npm run typecheck -w shared -w server -w client",
+    "format": "prettier --write \"{client,server,shared}/**/*.{ts,tsx,js,cjs,css}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"{client,server,shared}/**/*.{ts,tsx,js,cjs,css}\" --ignore-path .gitignore",
+    "lint": "eslint --ext js --ext jsx --ext ts --ext tsx client/src server/src shared/src",
+    "lint:fix": "npm run lint -- --fix"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "concurrently": "^9.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-config-twilio-react": "^1.35.1",
+    "eslint-config-twilio-ts": "^1.35.1",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-prettier": "^4.2.5",
+    "eslint-plugin-sonarjs": "^0.13.0",
+    "prettier": "^2.8.8"
+  }
+}

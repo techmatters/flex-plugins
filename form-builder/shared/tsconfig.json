@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    // No Node or DOM: the server and the browser both use it
+    "lib": ["ES2020"],
+    "types": [],
+  },
+  "include": ["src"]
+}
