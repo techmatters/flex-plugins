@@ -27,6 +27,7 @@ export type { Twilio };
 
 export const BYPASS_NUMBERS = [
   '+12064083885', // Aselo Development Number, used to dial in for voice E2E tests
+  '+19047064372', // Aselo Staging Number, used by helpseeker-sim to text and call staging helplines
 ];
 
 export const getWorkspaceSid = async (accountSid: AccountSID): Promise<WorkspaceSID> =>
