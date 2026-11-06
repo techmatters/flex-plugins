@@ -213,27 +213,27 @@ ${
     },
     {
       "name": "send_blocked_location_message",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${serverless_service_sid}",
-        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": -480,
           "y": 200
         },
-        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
-            "key": "channelSid"
+            "key": "conversationSid"
           },
           {
             "value": "${flow_vars.outside_country_message}",
@@ -244,7 +244,7 @@ ${
             "key": "from"
           }
         ],
-        "url": "${serverless_url}/sendMessageAndRunJanitor"
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
