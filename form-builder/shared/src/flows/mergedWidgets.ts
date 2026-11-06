@@ -17,9 +17,9 @@
 /**
  * Two live widgets shown as one object, as the board draws them new: a check (an HTTP request to
  * getProfileFlagsForIdentifier, operatingHours, isSkilledWorkerAvailable...) and the split on its
- * answer, or a counter (Set Variables adding one) and the split on it, which is a Repeat. Imported
- * pairs are merged into one object (the first widget's), and split back into their two widgets,
- * as they are live, when the flow is exported.
+ * answer, a voice menu (Gather) and the split on its digits, or a counter (Set Variables adding one)
+ * and the split on it, which is a Repeat. Imported pairs are merged into one object (the first
+ * widget's), and split back into their two widgets, as they are live, when the flow is exported.
  */
 
 import {
@@ -33,14 +33,30 @@ import {
   repeatNameFromCounter,
 } from './model';
 
-// Kinds whose answer a split reads right after them
-const CHECKS = new Set<FlowObjectType>([
-  'checkClientProfile',
-  'checkOperatingHours',
-  'checkQueueAvailability',
-  'checkWorkerLoggedIn',
-]);
-const REQUEST_TYPES = ['make-http-request', 'run-function'];
+// Kinds whose answer a split reads right after them: the Studio widgets they are, the way out that
+// leads to the split, and what the split reads (a request's answer, a menu's keys pressed)
+type Answered = { studioTypes: string[]; from: string; reads: (name: string, input: string) => boolean };
+const CHECK: Answered = {
+  studioTypes: ['make-http-request', 'run-function'],
+  from: 'success',
+  reads: (name, input) => input.includes(`widgets.${name}.`),
+};
+const ANSWERED: Partial<Record<FlowObjectType, Answered>> = {
+  checkClientProfile: CHECK,
+  checkOperatingHours: CHECK,
+  checkQueueAvailability: CHECK,
+  checkWorkerLoggedIn: CHECK,
+  // A voice menu's options: the split on its digits
+  menuVoice: {
+    studioTypes: ['gather-input-on-call'],
+    from: 'keypress',
+    reads: (name, input) => input.trim() === `{{widgets.${name}.Digits}}`,
+  },
+};
+const answeredBy = (object: Pick<FlowObject, 'type' | 'studio'>) => {
+  const answered = ANSWERED[object.type];
+  return answered && object.studio && answered.studioTypes.includes(object.studio.type) ? answered : undefined;
+};
 
 // The split's way out a Repeat goes back round on, and the one past its maximum
 const REPEAT_EXITS = ['repeat', 'max reached'];
@@ -64,7 +80,7 @@ const repeatSplitOf = (split: FlowObject, counter: string) => {
   return { noMatch, match, maxRepeats: value.trim() };
 };
 
-// Conditions that can't match when there's nothing to compare (a failed request has no answer)
+// Conditions that can't match when there's nothing to compare (a failed request, no keys pressed)
 const ANSWER_CONDITIONS = new Set([
   'equal_to',
   'matches_any_of',
@@ -99,16 +115,18 @@ export const mergeImportedPairs = (objects: FlowObject[], connections: Connectio
   // The connections each merged pair no longer needs, and the split's ways out renamed (a Repeat's)
   const dropped = new Set<string>();
   const exitRenames = new Map<string, Map<string, string>>();
-  // A check's ways out that led to its split, now leading where the split's noMatch does
+  // Other ways out of a check or menu that led to its split (failed, a menu's speech or timeout),
+  // now leading where the split's noMatch does
   const retargeted = new Map<string, string>();
 
   // eslint-disable-next-line complexity, sonarjs/cognitive-complexity -- each condition is a reason not to merge
   objects.forEach(first => {
     if (!first.studio || into.has(first.id)) return;
-    const isCheck = CHECKS.has(first.type) && REQUEST_TYPES.includes(first.studio.type);
+    const answered = answeredBy(first);
+    const isCheck = answered !== undefined;
     const counter = isCheck ? undefined : counterOf(first);
     if (!isCheck && !counter) return;
-    const from = isCheck ? 'success' : 'next';
+    const from = answered?.from ?? 'next';
     const link = connections.find(connection => connection.from === first.id && connection.exit === from);
     const split = link && byId.get(link.to);
     if (!link || !split?.studio || split.studio.type !== 'split-based-on') return;
@@ -121,11 +139,11 @@ export const mergeImportedPairs = (objects: FlowObject[], connections: Connectio
     const after = objects[objects.indexOf(split) - 1]?.studio?.name ?? '';
     if (isCheck) {
       const input = split.studio.properties?.input;
-      if (typeof input !== 'string' || !input.includes(`widgets.${first.studio.name}.`)) return;
+      if (typeof input !== 'string' || !answered!.reads(first.studio.name, input)) return;
       const splitExits = split.exits ?? [];
       if (splitExits.some(exit => ownExits.includes(exit))) return;
-      // A failed request leading to the split too takes its noMatch (nothing to compare matches
-      // none of its conditions), so on the board it goes where noMatch goes
+      // A failed request, or a menu answered by speech or not at all, leading to the split too takes
+      // its noMatch (no answer matches none of its conditions), so on the board it goes where noMatch goes
       if (leading.length > 0 && !onlyMatchesAnswers(split)) return;
       const noMatch = connections.find(
         connection => connection.from === split.id && connection.exit === splitExits[noMatchIndexOf(split)],
@@ -233,7 +251,7 @@ export const splitMergedObjects = (content: BoardContent): { content: BoardConte
     const splitWidget = { ...live };
     const label = `“${object.studioName ?? object.text}”`;
     const counter = counterOf(object);
-    const isCheck = CHECKS.has(object.type) && REQUEST_TYPES.includes(studio.type);
+    const isCheck = answeredBy(object) !== undefined;
     const isRepeat = object.type === 'repeat' && counter !== undefined;
     if (!isCheck && !isRepeat) {
       // Made another kind on the board: a new widget of its kind

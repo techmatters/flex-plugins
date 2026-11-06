@@ -30,8 +30,9 @@ const helplinesDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), 
 describe('simulating imported flows', () => {
   test("usnm's voice flow: pressing 2 for Spanish takes the Spanish welcome, on the live split's conditions", async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
+    // (the language menu and the split on its digits are one object)
     const { content } = boards.find(({ content: candidate }) =>
-      candidate.objects.some(object => object.studioName === 'split_voice_language'),
+      candidate.objects.some(object => object.studioSplit?.name === 'split_voice_language'),
     )!;
     const trigger = content.objects.find(object => object.type === 'incoming')!;
     const nameOf = (id?: string) => content.objects.find(object => object.id === id)?.studioName;
@@ -59,10 +60,10 @@ describe('simulating imported flows', () => {
     expect(run.ended).toBeUndefined();
     expect(run.prompt).toMatchObject({ kind: 'dialpad' });
     run = answer(content, run, { kind: 'digits', digits: '2' });
-    const split = run.steps.find(step => nameOf(step.objectId) === 'split_voice_language')!;
-    expect(split.exit).toBe('2');
-    expect(split.note).toContain('= “2”');
-    const after = run.steps[run.steps.indexOf(split) + 1];
+    const menu = run.steps.find(step => nameOf(step.objectId) === 'gather_input_voice_language')!;
+    expect(menu.exit).toBe('2');
+    expect(menu.note).toContain('pressed 2');
+    const after = run.steps[run.steps.indexOf(menu) + 1];
     expect(nameOf(after.objectId)).toBe('play_message_voice_es_welcome');
   });
 });

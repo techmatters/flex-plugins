@@ -93,7 +93,7 @@ channel's task attributes carrying `"clinical": "{{flow.variables.clinical}}"` a
 rule on `clinical == 'true'`. An imported check comes with the split on its answer (see "Imported
 checks and counters" below): the split's ways out are its flags, with their live conditions.
 
-**Imported checks and counters are one object**, as they're drawn new. When a live check (client
+**Imported checks, menus and counters are one object**, as they're drawn new. When a live check (client
 profile, operating hours, skilled worker available or logged in) leads on `success` to a split on
 its answer that nothing else leads to, the import shows them as the check, with the split's ways
 out (as an imported Decision's: `noMatch` and each condition's value) and its own (`failed`); the
@@ -102,6 +102,10 @@ also led to the split live (as usnm's) shows `failed` going where `noMatch` goes
 Studio does with no answer to compare; left so, it's written back through the split, connected
 elsewhere it goes straight there (only for splits whose conditions can't match an empty answer).
 The ways out's comparisons can be chosen as on a Decision, and a way out added is a new condition.
+A voice menu (Gather) whose keypress leads to a split on its digits (`{{widgets.<gather>.Digits}}`)
+is one Menu the same way: the split's ways out (`noMatch` and each option, e.g. `2`), then its own
+`speech` and `timeout`; one of those leading to the split live goes where `noMatch` goes. The
+simulator sends the keys pressed down the live conditions.
 A Set Variables that only adds one to a counter, followed by a split on that counter (`noMatch`
 back round, `greater_than` the times to repeat), is a **Repeat** (`repeat_<counter>`), its times
 to repeat the condition's value; changed, the condition compares with the new number. Renamed, a

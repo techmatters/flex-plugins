@@ -39,6 +39,7 @@ import {
   standardPrefixedName,
   suggestStudioName,
   upgradeContent,
+  fixedExitsOf,
   widgetNamesOf,
 } from '@tech-matters/form-builder-shared/flows/model';
 import { janitorValuesOf } from '@tech-matters/form-builder-shared/flows/janitor';
@@ -450,12 +451,19 @@ describe('menus, repeats and chatbots', () => {
     );
   });
 
-  test('imported checks and counters are one object with their split, written back as the two widgets', async () => {
+  test('imported checks, menus and counters are one object with their split, written back as the two widgets', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const voice = boards.find(({ content: theirs }) =>
       theirs.objects.some(candidate => candidate.studioName === 'repeat_en_no_tya_service'),
     )!.content;
     const names = voice.objects.map(candidate => candidate.studioName);
+    // usnm's language menu and the split on its digits are a Menu: its options (2 for Spanish, the rest
+    // English), then speech and timeout
+    const menu = voice.objects.find(candidate => candidate.studioName === 'gather_input_voice_language')!;
+    expect(menu).toMatchObject({ type: 'menuVoice', studioSplit: { name: 'split_voice_language', from: 'keypress' } });
+    expect(menu.exits).toEqual(['noMatch', '2', 'speech', 'timeout']);
+    expect(names).not.toContain('split_voice_language');
+    expect(fixedExitsOf(menu)).toEqual(expect.arrayContaining(['noMatch', 'speech', 'timeout']));
     // usnm's counter and the split on it are a Repeat, its times to repeat from the split's condition
     const repeat = voice.objects.find(candidate => candidate.studioName === 'repeat_en_no_tya_service')!;
     expect(repeat).toMatchObject({ type: 'repeat', exits: ['repeat', 'max reached'], settings: { maxRepeats: '2' } });
@@ -481,6 +489,13 @@ describe('menus, repeats and chatbots', () => {
       next: 'gather_input_voice_en_no_tya_service',
     });
     expect(state(check.studioName!).transitions[0]).toMatchObject({ next: 'split_specialist_available_tya_calls' });
+    expect(state('gather_input_voice_language').transitions[0]).toEqual({
+      event: 'keypress',
+      next: 'split_voice_language',
+    });
+    expect(state('split_voice_language').transitions).toEqual(
+      expect.arrayContaining([expect.objectContaining({ next: 'play_message_voice_es_welcome' })]),
+    );
 
     // usnm's availability check: its failed request leads to the split live, and is drawn going where
     // the split's noMatch goes. Left so, it's written back through the split; connected elsewhere, it
@@ -630,23 +645,21 @@ describe('menus, repeats and chatbots', () => {
   test('imported splits keep what they split on; changed, their conditions read the new input too', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const voice = boards.find(({ content: theirs }) =>
-      theirs.objects.some(candidate => candidate.studioName === 'split_voice_en_no_tya_service'),
+      theirs.objects.some(candidate => candidate.studioName === 'split_service'),
     )!.content;
-    const split = voice.objects.find(candidate => candidate.studioName === 'split_voice_en_no_tya_service')!;
-    expect(split.settings?.input).toBe('{{widgets.gather_input_voice_en_no_tya_service.Digits}}');
+    const split = voice.objects.find(candidate => candidate.studioName === 'split_service')!;
+    expect(split.settings?.input).toBe('{{widgets.send_wait_sms_service.inbound.Body}}');
     const changed = {
       ...voice,
       objects: voice.objects.map(candidate =>
         candidate.id === split.id ? { ...candidate, settings: { input: '{{flow.variables.tries}}' } } : candidate,
       ),
     };
-    const state = toStudioFlow(changed).flow.states.find(
-      candidate => candidate.name === 'split_voice_en_no_tya_service',
-    )!;
+    const state = toStudioFlow(changed).flow.states.find(candidate => candidate.name === 'split_service')!;
     expect(state.properties.input).toBe('{{flow.variables.tries}}');
-    expect(JSON.stringify(state.transitions)).not.toContain('gather_input_voice_en_no_tya_service.Digits');
+    expect(JSON.stringify(state.transitions)).not.toContain('send_wait_sms_service.inbound.Body');
     // The board's own object isn't changed by generating its flow
-    expect(JSON.stringify(split.studio?.transitions)).toContain('gather_input_voice_en_no_tya_service.Digits');
+    expect(JSON.stringify(split.studio?.transitions)).toContain('send_wait_sms_service.inbound.Body');
   });
 
   test('send and wait: its timeout; release from chatbot: only the conversation', async () => {
@@ -736,14 +749,14 @@ describe('what a split splits on', () => {
   test('imported splits\' ways out are their values ("2"), also on boards imported before', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const voice = boards.find(({ content }) =>
-      content.objects.some(candidate => candidate.studioName === 'split_voice_language'),
+      content.objects.some(candidate => candidate.studioName === 'split_service'),
     )!.content;
-    const split = voice.objects.find(candidate => candidate.studioName === 'split_voice_language')!;
+    const split = voice.objects.find(candidate => candidate.studioName === 'split_service')!;
     expect(split.exits).toContain('2');
     expect(split.exits!.some(exit => exit.startsWith('If value'))).toBe(false);
     expect(voice.connections.filter(connection => connection.from === split.id).map(({ exit }) => exit)).toContain('2');
     // Unchanged, it's generated as it is live
-    const live = toStudioFlow(voice).flow.states.find(state => state.name === 'split_voice_language')!;
+    const live = toStudioFlow(voice).flow.states.find(state => state.name === 'split_service')!;
     expect(live.transitions).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ conditions: [expect.objectContaining({ friendly_name: 'If value equal_to 2' })] }),

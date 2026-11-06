@@ -34,6 +34,7 @@ import {
   repeatWidgetNames,
   type TestedPath,
 } from '@tech-matters/form-builder-shared/flows/model';
+import { splitViewOf } from '@tech-matters/form-builder-shared/flows/mergedWidgets';
 
 // ---------------------------------------------------------------------------------------------
 // A tiny Liquid: {{ path | filter: arg }}, {% if %}/{% elsif %}/{% else %}/{% endif %}
@@ -385,6 +386,17 @@ const conditionMet = (type: string, value: string, condition: string): boolean |
   }
 };
 
+// A menu imported with the split on its digits: the way out the keys pressed take, on its conditions
+const menuExitOf = (split: FlowObject, digits: string) => {
+  const input = String(split.studio?.properties?.input ?? '');
+  const found = splitMatchesOf(split, input).find(({ conditions }) =>
+    conditions.every(
+      candidate => candidate.argument === input && conditionMet(candidate.type, digits, candidate.value) === true,
+    ),
+  );
+  return found?.exit ?? 'noMatch';
+};
+
 // What a split reads: as set on the board, the answer of the widget before it, or as live
 const splitInputOf = (object: FlowObject, content: Pick<BoardContent, 'objects' | 'connections'>) =>
   object.settings?.input?.trim() ||
@@ -733,8 +745,12 @@ export const answer = (content: BoardContent, run: SimRun, given: SimAnswer): Si
 
   if (prompt.kind === 'dialpad') {
     if (given.kind === 'digits') {
-      // Boards made when a menu's options were its ways out: the digit is the way out
-      const exit = firstOf(exits, ['keypress']) ?? (exits.includes(given.digits) ? given.digits : 'noMatch');
+      // Imported with the split on its digits: where the live conditions send them. Boards made when a
+      // menu's options were its ways out: the digit is the way out
+      const split = splitViewOf(object);
+      const exit = split
+        ? menuExitOf(split, given.digits)
+        : firstOf(exits, ['keypress']) ?? (exits.includes(given.digits) ? given.digits : 'noMatch');
       const changed = nextRun(run, { widgets: { ...run.widgets, [name]: { Digits: given.digits } } });
       return advance(content, leave(content, changed, exit, `pressed ${given.digits}`));
     }
