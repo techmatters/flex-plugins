@@ -555,11 +555,11 @@ ${
           },
           {
             "event": "timeout",
-            "next": "f_sendMessageAndRunJanitor_please_call"
+            "next": "set_var_wait_or_leave_counter"
           },
           {
             "event": "deliveryFailure",
-            "next": "f_sendMessageAndRunJanitor_please_call"
+            "next": "set_var_wait_or_leave_counter"
           }
         ],
         "properties": {
@@ -581,7 +581,7 @@ ${
         "transitions": [
           {
             "event": "noMatch",
-            "next": "f_sendMessageAndRunJanitor_please_call"
+            "next": "set_var_wait_or_leave_counter"
           },
           {
             "event": "match",
@@ -617,6 +617,59 @@ ${
           "offset": {
             "x": 1380,
             "y": 2940
+          }
+        }
+      },
+      {
+        "name": "set_var_wait_or_leave_counter",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "event": "next",
+            "next": "split_wait_or_leave"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "value": "{% if flow.variables.wait_or_leave_counter %}{{flow.variables.wait_or_leave_counter | plus: 1}}{% else %}1{% endif %}",
+              "key": "wait_or_leave_counter"
+            }
+          ],
+          "offset": {
+            "x": 1700,
+            "y": 2900
+          }
+        }
+      },
+      {
+        "name": "split_wait_or_leave",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_wait_webchat_es_childhelp_wait_or_leave"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value greater_than 1",
+                "arguments": [
+                  "{{flow.variables.wait_or_leave_counter}}"
+                ],
+                "type": "greater_than",
+                "value": "1"
+              }
+            ],
+            "next": "f_sendMessageAndRunJanitor_please_call"
+          }
+        ],
+        "properties": {
+          "input": "{{flow.variables.wait_or_leave_counter}}",
+          "offset": {
+            "x": 1450,
+            "y": 2700
           }
         }
       },
