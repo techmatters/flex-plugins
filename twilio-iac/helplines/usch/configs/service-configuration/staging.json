@@ -9,6 +9,24 @@
             "use_twilio_lambda_janitor": false,
             "use_twilio_lambda_to_transition_participants": false,
             "use_twilio_lambda_transfers": false
+        },
+        "postStudioFlows": {
+            "${task_queues.master}": {
+                "flowTrigger": "inProgressCall",
+                "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+            },
+            "${task_queues.advocate_line}": {
+                "flowTrigger": "inProgressCall",
+                "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+            },
+            "${task_queues.courage_first}": {
+                "flowTrigger": "inProgressCall",
+                "studioFlowSid": "${studio_flow_sids.post_call_survey_en}"
+            },
+            "${task_queues.childhelp_spanish}": {
+                "flowTrigger": "inProgressCall",
+                "studioFlowSid": "${studio_flow_sids.post_call_survey_es}"
+            }
         }
     }
 }

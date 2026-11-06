@@ -1,0 +1,571 @@
+${
+  jsonencode({
+    "description": "${flow_description}",
+    "initial_state": "Trigger",
+    "flags": {
+      "allow_concurrent_calls": true
+    },
+    "states": [
+      {
+        "name": "Trigger",
+        "type": "trigger",
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "event": "incomingCall",
+            "next": "run_subflow_system_down"
+          },
+          {
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 100,
+            "y": -660
+          }
+        }
+      },
+      {
+        "name": "send_to_queue_childhelp_spanish",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          }
+        ],
+        "properties": {
+          "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageSpanish",
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.voice}",
+          "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\": \"ChildHelp\",\n  \"language\": \"es-CH\",\n  \"counselingLanguage\": \"Spanish\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"ChildHelp Spanish\",\n    \"hang_up_by\": \"Customer\"\n  }\n}",
+          "waitUrlMethod": "GET",
+          "offset": {
+            "x": -150,
+            "y": 2480
+          }
+        }
+      },
+      {
+        "name": "play_message_voice_en_childhelp_voice_welcome",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete",
+            "next": "gather_input_voice_en_childhelp_service_menu"
+          }
+        ],
+        "properties": {
+          "play": "${flow_vars.recordings_url}/play_message_voice_en_childhelp_voice_welcome.mp3",
+          "loop": 1,
+          "offset": {
+            "x": 0,
+            "y": 230
+          }
+        }
+      },
+      {
+        "name": "http_post_webhook_notify_failed_to_enqueue",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "properties": {
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "url": "${webhook_url_studio_errors}",
+          "offset": {
+            "x": -150,
+            "y": 2900
+          }
+        }
+      },
+      {
+        "name": "play_message_voice_es_childhelp_no_spanish_counselor_prequeue",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete",
+            "next": "send_to_queue_childhelp_no_spanish"
+          }
+        ],
+        "properties": {
+          "loop": 1,
+          "play": "${flow_vars.recordings_url}/play_message_voice_es_childhelp_no_spanish_counselor_prequeue.mp3",
+          "offset": {
+            "x": -640,
+            "y": 2200
+          }
+        }
+      },
+      {
+        "name": "send_to_queue_childhelp_no_spanish",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          }
+        ],
+        "properties": {
+          "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageNoSpanish",
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.voice}",
+          "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n \"language\":\"en-CH\", \n \"service\":\"ChildHelp\",\n\"counselingLanguage\": \"English\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"ChildHelp No Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
+          "waitUrlMethod": "GET",
+          "offset": {
+            "x": -640,
+            "y": 2480
+          }
+        }
+      },
+      {
+        "name": "send_to_queue_childhelp_english",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          }
+        ],
+        "properties": {
+          "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageEnglish",
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.voice}",
+          "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n \"language\":\"en-CH\", \n  \"service\":\"ChildHelp\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"ChildHelp English\",\n    \"hang_up_by\": \"Customer\"\n  }\n}",
+          "waitUrlMethod": "GET",
+          "offset": {
+            "x": 390,
+            "y": 2160
+          }
+        }
+      },
+      {
+        "name": "play_message_voice_blocked",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete"
+          }
+        ],
+        "properties": {
+          "loop": 1,
+          "play": "${flow_vars.recordings_url}/play_message_voice_blocked.mp3",
+          "offset": {
+            "x": 1200,
+            "y": 930
+          }
+        }
+      },
+      {
+        "name": "run_subflow_system_down",
+        "type": "run-subflow",
+        "transitions": [
+          {
+            "event": "completed",
+            "next": "f_getProfileFlagsForIdentifier_profile"
+          },
+          {
+            "event": "failed",
+            "next": "f_getProfileFlagsForIdentifier_profile"
+          }
+        ],
+        "properties": {
+          "flow_sid": "${system_down_studio_subflow_sid}",
+          "flow_revision": "LatestPublished",
+          "parameters": [
+            {
+              "type": "string",
+              "value": "true",
+              "key": "system_down"
+            }
+          ],
+          "offset": {
+            "x": -260,
+            "y": -440
+          }
+        }
+      },
+      {
+        "name": "gather_input_voice_en_childhelp_service_menu",
+        "type": "gather-input-on-call",
+        "transitions": [
+          {
+            "event": "keypress",
+            "next": "split_service_menu"
+          },
+          {
+            "event": "speech"
+          },
+          {
+            "event": "timeout",
+            "next": "set_var_menu_counter"
+          }
+        ],
+        "properties": {
+          "say": "${flow_vars.gather_input_voice_en_childhelp_service_menu}",
+          "language": "en-US",
+          "number_of_digits": 1,
+          "speech_timeout": "auto",
+          "offset": {
+            "x": 920,
+            "y": 1300
+          },
+          "loop": 1,
+          "finish_on_key": "#",
+          "stop_gather": true,
+          "gather_language": "en",
+          "speech_model": "numbers_and_commands",
+          "timeout": 10
+        }
+      },
+      {
+        "name": "send_to_queue_advocates",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 250,
+            "y": 3020
+          },
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.voice}",
+          "timeout": "3600",
+          "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageEnglish",
+          "waitUrlMethod": "GET",
+          "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\": \"AdvocateLine\",\n  \"language\": \"en-CH\",\n  \"counselingLanguage\": \"English\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"Advocate\",\n    \"hang_up_by\": \"Customer\"\n  }\n}"
+        }
+      },
+      {
+        "name": "set_var_menu_counter",
+        "type": "set-variables",
+        "transitions": [
+          {
+            "event": "next",
+            "next": "split_menu"
+          }
+        ],
+        "properties": {
+          "variables": [
+            {
+              "type": "string",
+              "value": "{% if flow.variables.menu_counter %}{{flow.variables.menu_counter | plus: 1}}{% else %}1{% endif %}",
+              "key": "menu_counter"
+            }
+          ],
+          "offset": {
+            "x": 1200,
+            "y": 1480
+          }
+        }
+      },
+      {
+        "name": "split_menu",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "gather_input_voice_en_childhelp_service_menu"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value greater_than 1",
+                "arguments": [
+                  "{{flow.variables.menu_counter}}"
+                ],
+                "type": "greater_than",
+                "value": "1"
+              }
+            ],
+            "next": "send_to_queue_childhelp_english"
+          }
+        ],
+        "properties": {
+          "input": "{{flow.variables.menu_counter}}",
+          "offset": {
+            "x": 1200,
+            "y": 1720
+          }
+        }
+      },
+      {
+        "name": "f_isSkilledWorkerAvailable_phone_spanish",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_is_skilled_worker_available_phone_spanish"
+          },
+          {
+            "event": "failed",
+            "next": "play_message_voice_es_childhelp_no_spanish_counselor_prequeue"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": -300,
+            "y": 1960
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"targetSkills\": \"Phone,Spanish\",\n  \"targetChannel\": \"voice\"\n}",
+          "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerAvailable"
+        }
+      },
+      {
+        "name": "split_is_skilled_worker_available_phone_spanish",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "play_message_voice_es_childhelp_no_spanish_counselor_prequeue"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "available",
+                "arguments": [
+                  "{{widgets.f_isSkilledWorkerAvailable_phone_spanish.parsed.totalAvailableWorkers}}"
+                ],
+                "type": "greater_than",
+                "value": "0"
+              }
+            ],
+            "next": "send_to_queue_childhelp_spanish"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_isSkilledWorkerAvailable_phone_spanish.parsed.totalAvailableWorkers}}",
+          "offset": {
+            "x": -300,
+            "y": 2200
+          }
+        }
+      },
+      {
+        "name": "split_service_menu",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "set_var_menu_counter"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 1",
+                "arguments": [
+                  "{{widgets.gather_input_voice_en_childhelp_service_menu.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "1"
+              }
+            ],
+            "next": "f_isSkilledWorkerAvailable_phone_spanish"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value matches_any_of 2,4",
+                "arguments": [
+                  "{{widgets.gather_input_voice_en_childhelp_service_menu.Digits}}"
+                ],
+                "type": "matches_any_of",
+                "value": "2,4"
+              }
+            ],
+            "next": "f_isSkilledWorkerLoggedIn_logged"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 3",
+                "arguments": [
+                  "{{widgets.gather_input_voice_en_childhelp_service_menu.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "3"
+              }
+            ],
+            "next": "send_to_queue_childhelp_english"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.gather_input_voice_en_childhelp_service_menu.Digits}}",
+          "offset": {
+            "x": 350,
+            "y": 1660
+          }
+        }
+      },
+      {
+        "name": "f_getProfileFlagsForIdentifier_profile",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_get_profile_flags_for_identifier_profile"
+          },
+          {
+            "event": "failed",
+            "next": "play_message_voice_en_childhelp_voice_welcome"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 855,
+            "y": 688
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"voice\"}",
+          "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
+        }
+      },
+      {
+        "name": "split_get_profile_flags_for_identifier_profile",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "play_message_voice_en_childhelp_voice_welcome"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "blocked",
+                "arguments": [
+                  "{{widgets.f_getProfileFlagsForIdentifier_profile.parsed.flags}}"
+                ],
+                "type": "contains",
+                "value": "blocked"
+              }
+            ],
+            "next": "play_message_voice_blocked"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_getProfileFlagsForIdentifier_profile.parsed.flags}}",
+          "offset": {
+            "x": 855,
+            "y": 928
+          }
+        }
+      },
+      {
+        "name": "f_isSkilledWorkerLoggedIn_logged",
+        "type": "make-http-request",
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_is_skilled_worker_logged_in_logged"
+          },
+          {
+            "event": "failed",
+            "next": "send_to_queue_childhelp_english"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 700,
+            "y": 2320
+          },
+          "method": "POST",
+          "content_type": "application/json;charset=utf-8",
+          "add_twilio_auth": false,
+          "body": "{\n  \"targetSkills\": \"Phone,Advocate\"\n}",
+          "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerLoggedIn"
+        }
+      },
+      {
+        "name": "split_is_skilled_worker_logged_in_logged",
+        "type": "split-based-on",
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "send_to_queue_childhelp_english"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "logged in",
+                "arguments": [
+                  "{{widgets.f_isSkilledWorkerLoggedIn_logged.parsed.totalLoggedInWorkers}}"
+                ],
+                "type": "greater_than",
+                "value": "0"
+              }
+            ],
+            "next": "send_to_queue_advocates"
+          }
+        ],
+        "properties": {
+          "input": "{{widgets.f_isSkilledWorkerLoggedIn_logged.parsed.totalLoggedInWorkers}}",
+          "offset": {
+            "x": 700,
+            "y": 2560
+          }
+        }
+      }
+    ]
+  })
+}

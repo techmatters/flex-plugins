@@ -1,0 +1,95 @@
+{
+  "post_survey": {
+    "description": "Specific usch/configs/lex_v2/es_USCH/bots Spanish Post Survey bot",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "300",
+    "staging_bot_alias_id": "TSTALIASID",
+    "type": "Bot",
+    "intents": {
+      "post_survey_yes": {
+        "utterances": [
+          {
+            "utterance": "Sí"
+          },
+          {
+            "utterance": "sí"
+          },
+          {
+            "utterance": "Si"
+          },
+          {
+            "utterance": "si"
+          },
+          {
+            "utterance": "Claro"
+          },
+          {
+            "utterance": "claro"
+          },
+          {
+            "utterance": "1"
+          },
+          {
+            "utterance": "Yes"
+          },
+          {
+            "utterance": "yes"
+          },
+          {
+            "utterance": "yeah"
+          }
+        ],
+        "closing_response": {
+          "message": "Gracias por comunicarte con la línea de ayuda. No dudes en volver a escribirnos si necesitas más apoyo."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "experience_rating",
+            "slot_type_name": "four_level_assessment",
+            "slot_question": "¿Cómo fue tu experiencia hoy? \nResponde con 1 = Excelente, 2 = Buena, 3 = Regular, 4 = Mala",
+            "failure_response": "Gracias por comunicarte con nosotros. Vuelve a escribirnos si necesitas más ayuda."
+          },
+          "2": {
+            "slot_name": "feel_supported",
+            "slot_type_name": "yes_no",
+            "slot_question": "¿Sentiste apoyo y respeto por parte del consejero o consejera? \nResponde con: \n1 = Sí, 2 = No",
+            "failure_response": "Gracias por comunicarte con nosotros. Vuelve a escribirnos si necesitas más ayuda."
+          },
+          "3": {
+            "slot_name": "better_prepared",
+            "slot_type_name": "yes_no",
+            "slot_question": "¿Sientes que tienes más herramientas para enfrentar tu situación después de esta conversación? \nResponde con: \n1 = Sí, 2 = No",
+            "failure_response": "Gracias por comunicarte con nosotros. Vuelve a escribirnos si necesitas más ayuda."
+          }
+        }
+      },
+      "post_survey_no": {
+        "utterances": [
+          {
+            "utterance": "No"
+          },
+          {
+            "utterance": "no"
+          },
+          {
+            "utterance": "Nop"
+          },
+          {
+            "utterance": "nop"
+          },
+          {
+            "utterance": "2"
+          },
+          {
+            "utterance": "nope"
+          }
+        ],
+        "closing_response": {
+          "message": "Gracias por comunicarte con la línea de ayuda. No dudes en volver a escribirnos si necesitas más apoyo."
+        },
+        "slot_priorities": {}
+      }
+    }
+  }
+}
