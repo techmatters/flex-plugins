@@ -107,15 +107,17 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
    * @param removeTask - will try to cancel the task rather than complete it, and failing that, remove it. Used when attempting to complete has already failed
    */
   const updateTaskAndFinalizeContact = async (removeTask = false) => {
-    const updatedContact = {
-      ...savedContact,
-      rawJson: {
-        callType: 'Uncategorized',
-        ...savedContact.rawJson,
-      },
-    };
     try {
       setFinalizeRequested(true);
+
+      const updatedContact = {
+        ...savedContact,
+        rawJson: {
+          callType: 'Uncategorized',
+          ...savedContact.rawJson,
+        },
+      };
+
       await asyncDispatcher(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact, removeTask));
     } catch (error) {
       console.error('Failed to save and finalize contact:', error);
@@ -146,6 +148,12 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
           setIsFinalizeContactDialogOpen(true);
         } else {
           const taskResponse = await getTaskAndReservations(savedContact.taskId);
+
+          if (!taskResponse) {
+            await updateTaskAndFinalizeContact();
+            return;
+          }
+
           if (taskResponse?.task?.status === 'completed') {
             setIsFinalizeContactDialogOpen(true);
           } else {
