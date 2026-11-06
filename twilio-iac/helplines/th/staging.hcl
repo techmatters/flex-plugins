@@ -17,13 +17,6 @@ locals {
     }
 
     channels = {
-      webchat : {
-        channel_type         = "web"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
-      },
       facebook : {
         messaging_mode       = "conversations"
         channel_type         = "messenger"
