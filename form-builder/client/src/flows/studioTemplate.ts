@@ -888,7 +888,8 @@ export const toStudioFlow = (
               from: fromOf(object),
               message_type: 'custom',
               body: fromFlowVars(),
-              timeout: object.settings?.timeout || '3600',
+              // 5 minutes unless set on the board
+              timeout: object.settings?.timeout || '300',
             },
           },
         ];

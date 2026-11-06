@@ -250,6 +250,16 @@ describe('menus, repeats and chatbots', () => {
     expect(boardChecks(marked).map(issue => issue.message)).not.toContainEqual(expect.stringContaining('callFailure'));
   });
 
+  test('a question waits 5 minutes for the reply unless the board sets it', () => {
+    const question = (settings: Record<string, string>) =>
+      toStudioFlow(
+        board('webchat', [object('q', 'questionMessaging', { studioName: 'send_wait_question', settings })], []),
+        { id: 'f', title: 'Flow', x: 0, y: 0, width: 900, height: 600, channel: 'webchat' },
+      ).flow.states[0].properties;
+    expect(question({})).toMatchObject({ timeout: '300' });
+    expect(question({ timeout: '60' })).toMatchObject({ timeout: '60' });
+  });
+
   test('send to queue: what callers hear while waiting, and for how long', async () => {
     const queue = (settings: Record<string, string>) =>
       toStudioFlow(
