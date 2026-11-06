@@ -137,7 +137,7 @@ ${
           "from": "${helpline}",
           "message_type": "custom",
           "body": "${flow_vars.childhelp_sms_language_message}",
-          "timeout": "3600",
+          "timeout": "300",
           "offset": {
             "x": 0,
             "y": 1180
@@ -250,7 +250,7 @@ ${
           "from": "${helpline}",
           "message_type": "custom",
           "body": "${flow_vars.send_wait_sms_en_service_options}",
-          "timeout": "3600"
+          "timeout": "300"
         }
       },
       {
@@ -259,7 +259,7 @@ ${
         "transitions": [
           {
             "event": "noMatch",
-            "next": "f_setFlowMemory_service_childhelp"
+            "next": "set_var_service_options_counter"
           },
           {
             "event": "match",
@@ -1014,7 +1014,7 @@ ${
           "from": "${helpline}",
           "message_type": "custom",
           "body": "${flow_vars.send_wait_sms_es_childhelp_wait_for_counselor}",
-          "timeout": "3600"
+          "timeout": "300"
         }
       },
       {
@@ -1023,7 +1023,7 @@ ${
         "transitions": [
           {
             "event": "noMatch",
-            "next": "f_sendMessageAndRunJanitor_es_please_call"
+            "next": "set_var_wait_for_counselor_counter"
           },
           {
             "event": "match",
@@ -1399,7 +1399,7 @@ ${
         "transitions": [
           {
             "event": "noMatch",
-            "next": "f_setFlowMemory_lang_en"
+            "next": "set_var_language_options_counter"
           },
           {
             "event": "match",
