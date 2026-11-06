@@ -81,8 +81,7 @@ Later on this information may come from a tool that collects it from meetings; u
 ### 5. Twilio infrastructure (steps 1.2–1.4)
 
 - 1.2 🧑 SSM secrets: give the person the `make manage-ssm-secrets` command (Twilio account SID and
-  auth token). Until `alejandro-c/remove_datadog_rum` is merged it also asks for Datadog values:
-  dummy ones are fine (see the guide).
+  auth token).
 - 1.3 Run `make plan HL=<code> HL_ENV=<env>` in `stages/provision`, then `stages/lex` (only if the
   helpline uses Lex chatbots or a post-survey bot; skip it otherwise), then
   `stages/system-down`, then `stages/configure` (first time: the person runs `setup-new-environment`
