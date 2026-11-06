@@ -49,6 +49,7 @@ import {
 } from '@tech-matters/form-builder-shared/flows/model';
 import { importedRecordingKey, RECORDING_FILE_PATTERN } from '@tech-matters/form-builder-shared/flows/recordings';
 import { janitorValuesOf } from '@tech-matters/form-builder-shared/flows/janitor';
+import { mergeImportedPairs } from '@tech-matters/form-builder-shared/flows/mergedWidgets';
 import { studioNameProblems } from '@tech-matters/form-builder-shared/flows/checks';
 import {
   CHANNEL_ATTRIBUTES_REFERENCE,
@@ -820,6 +821,9 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
       });
     });
 
+    // A check and the split on its answer, or a counter and the split on it, are one object (as drawn new)
+    const merged = mergeImportedPairs(objects, connections);
+
     // [channels] · template, e.g. "[voice_courage_first] · voice-courage-first-op-hours-sd"
     const title = source.channels.length > 0 ? `[${source.channels.join(', ')}] · ${source.title}` : source.title;
     // A template shared by helplines: who else uses it (a change to it would change them too)
@@ -862,7 +866,13 @@ export const importHelpline = async (helplinesDir: string, code: string): Promis
     const boardTitle = `${code.toUpperCase()} · ${title}`;
     boards.push({
       title: boardTitle,
-      content: { ...emptyBoard(boardTitle), flow: flowDetails, objects, connections, status: 'imported' },
+      content: {
+        ...emptyBoard(boardTitle),
+        flow: flowDetails,
+        objects: merged.objects,
+        connections: merged.connections,
+        status: 'imported',
+      },
       recordingFiles: [...flowRecordingFiles],
     });
     reportFlows.push({

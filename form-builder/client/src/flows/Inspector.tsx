@@ -73,6 +73,7 @@ import {
   withVariantMessage,
   workerChannelOf,
 } from '@tech-matters/form-builder-shared/flows/model';
+import { splitViewOf } from '@tech-matters/form-builder-shared/flows/mergedWidgets';
 import {
   hasNonStandardRecording,
   isVoiceMessage,
@@ -1019,6 +1020,11 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
   const splitInputs = splitInputsOf(props.content.objects);
   // Not set, a split reads the answer of the widget before it
   const defaultSplitInput = defaultSplitInputOf(props.content, object.id);
+  // A check imported with the split on its answer: that split's conditions, for its ways out
+  const mergedSplit = splitViewOf(object);
+  const exitsHint = mergedSplit
+    ? `Its ways out are those of ${mergedSplit.studioName}, the split on its answer in Studio, and its own.`
+    : undefined;
   const recordingList = props.recordings.list?.recordings;
   // Renamed, a message keeps playing its recording until the file is copied to the new name
   const rename = (studioName: string | undefined) =>
@@ -1458,20 +1464,25 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
         </section>
       )}
 
-      {info.editableExits && !(object.type === 'checkClientProfile' && object.studio) && (
+      {((info.editableExits && !(object.type === 'checkClientProfile' && object.studio && !object.studioSplit)) ||
+        mergedSplit) && (
         <ExitsEditor
           hint={
-            object.type === 'checkClientProfile'
+            exitsHint ??
+            (object.type === 'checkClientProfile'
               ? 'Each way out but “not blocked” and “failed” is a flag on the profile (e.g. “case management”), checked in this order: the first one the profile has is where the contact goes.'
-              : undefined
+              : undefined)
           }
           exits={exitsOf(object)}
           fixed={fixedExitsOf(object)}
           readOnly={readOnly}
           onChange={(exits, renamed) => props.onRenameExit(node.id, exits, renamed)}
-          {...(isSplitObject(object)
+          {...(isSplitObject(object) || mergedSplit
             ? {
-                operatorOf: (exit: string) => exitConditionOf(object, exit, defaultSplitInput)?.type,
+                operatorOf: (exit: string) =>
+                  mergedSplit && !exitsOf(mergedSplit).includes(exit)
+                    ? undefined
+                    : exitConditionOf(mergedSplit ?? object, exit, defaultSplitInput)?.type,
                 onOperator: (exit: string, type: string) =>
                   update({ exitOperators: { ...object.exitOperators, [exit]: type } }),
               }

@@ -644,7 +644,13 @@ describe("the blocked check on a client profile's flags (a list): contains, not 
 
   test("USCH's live equal_to is exported as contains, the rest of the split as live, and said in the TODOs", async () => {
     const content = await voiceBoard();
-    const live = content.objects.find(object => object.studioName === 'split_contact_routing')!.studio!;
+    // The split is imported with the check (one object), and exported as the widget it is live
+    const {
+      from: _from,
+      after: _after,
+      alsoFrom: _alsoFrom,
+      ...live
+    } = content.objects.find(object => object.studioSplit?.name === 'split_contact_routing')!.studioSplit!;
     const split = stateOf(content, 'split_contact_routing');
     expect(split.transitions).toEqual([
       live.transitions![0],
@@ -667,7 +673,8 @@ describe("the blocked check on a client profile's flags (a list): contains, not 
 
   test('equal_to chosen on the board stays, with a warning that it misses contacts with more than one flag', async () => {
     const content = await voiceBoard();
-    const routing = content.objects.find(object => object.studioName === 'split_contact_routing')!;
+    // (on the check the split is imported with)
+    const routing = content.objects.find(object => object.studioSplit?.name === 'split_contact_routing')!;
     routing.exitOperators = { blocked: 'equal_to' };
     const [, blocked] = stateOf(content, 'split_contact_routing').transitions;
     expect(blocked.conditions).toEqual([expect.objectContaining({ type: 'equal_to', value: 'blocked' })]);
@@ -683,7 +690,15 @@ describe("the blocked check on a client profile's flags (a list): contains, not 
 
   test('a new Decision on the flags (chosen, or after an imported client profile check) defaults to contains', async () => {
     const content = await voiceBoard();
-    const check = content.objects.find(object => object.studioName === 'f_getProfileFlagsForIdentifier')!;
+    // An imported check without a split of its own (as one whose split was removed on the board)
+    const merged = content.objects.find(object => object.studioName === 'f_getProfileFlagsForIdentifier')!;
+    const check: FlowObject = {
+      ...merged,
+      id: 'old-check',
+      exits: ['success', 'failed'],
+      studioSplit: undefined,
+    };
+    content.objects = [...content.objects, check];
     const decision: FlowObject = {
       id: 'new-split',
       type: 'decision',

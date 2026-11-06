@@ -39,6 +39,7 @@ import {
   standardPrefixedName,
   suggestStudioName,
   upgradeContent,
+  widgetNamesOf,
 } from '@tech-matters/form-builder-shared/flows/model';
 import { janitorValuesOf } from '@tech-matters/form-builder-shared/flows/janitor';
 import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
@@ -447,28 +448,91 @@ describe('menus, repeats and chatbots', () => {
     expect(boardChecks(none).map(issue => issue.message)).toContainEqual(
       expect.stringContaining('add the variables it sets'),
     );
+  });
 
-    // usnm's counter: imported with its key and value; a changed value written back
+  test('imported checks and counters are one object with their split, written back as the two widgets', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const voice = boards.find(({ content: theirs }) =>
-      theirs.objects.some(candidate => candidate.studioName === 'set_var_en_no_tya_service_counter'),
+      theirs.objects.some(candidate => candidate.studioName === 'repeat_en_no_tya_service'),
     )!.content;
-    const counter = voice.objects.find(candidate => candidate.studioName === 'set_var_en_no_tya_service_counter')!;
-    expect(counter.variables).toEqual([
-      { key: 'en_no_tya_service_counter', value: expect.stringContaining('plus: 1') },
+    const names = voice.objects.map(candidate => candidate.studioName);
+    // usnm's counter and the split on it are a Repeat, its times to repeat from the split's condition
+    const repeat = voice.objects.find(candidate => candidate.studioName === 'repeat_en_no_tya_service')!;
+    expect(repeat).toMatchObject({ type: 'repeat', exits: ['repeat', 'max reached'], settings: { maxRepeats: '2' } });
+    expect(names).not.toContain('set_var_en_no_tya_service_counter');
+    expect(names).not.toContain('split_end_cycle_en_no_tya_service');
+    // A check and the split on its answer are one object, with the split's ways out and its own
+    const check = voice.objects.find(
+      candidate => candidate.studioSplit?.name === 'split_specialist_available_tya_calls',
+    )!;
+    expect(check.type).toBe('checkQueueAvailability');
+    expect(check.exits).toContain('failed');
+    expect(names).not.toContain('split_specialist_available_tya_calls');
+    expect(widgetNamesOf(check)).toEqual([check.studioName, 'split_specialist_available_tya_calls']);
+
+    // Exported, both are their two widgets again, with their names and where they lead
+    const { states } = toStudioFlow(voice).flow;
+    const state = (name: string) => states.find(candidate => candidate.name === name)!;
+    expect(state('set_var_en_no_tya_service_counter').transitions).toEqual([
+      { event: 'next', next: 'split_end_cycle_en_no_tya_service' },
     ]);
+    expect(state('split_end_cycle_en_no_tya_service').transitions[0]).toEqual({
+      event: 'noMatch',
+      next: 'gather_input_voice_en_no_tya_service',
+    });
+    expect(state(check.studioName!).transitions[0]).toMatchObject({ next: 'split_specialist_available_tya_calls' });
+
+    // usnm's availability check: its failed request leads to the split live, and is drawn going where
+    // the split's noMatch goes. Left so, it's written back through the split; connected elsewhere, it
+    // goes straight there
+    const availability = voice.objects.find(
+      candidate => candidate.studioSplit?.name === 'split_specialist_available_tya_calls',
+    )!;
+    expect(availability.studioSplit?.alsoFrom).toEqual(['failed']);
+    expect(state('f_isSkilledWorkerAvailable_tya_calls').transitions[1]).toEqual({
+      event: 'failed',
+      next: 'split_specialist_available_tya_calls',
+    });
+    const elsewhere = voice.objects.find(candidate => candidate.studioName === 'play_message_voice_outside_us')!;
+    const reconnected = {
+      ...voice,
+      connections: voice.connections.map(connection =>
+        connection.from === availability.id && connection.exit === 'failed'
+          ? { ...connection, to: elsewhere.id }
+          : connection,
+      ),
+    };
+    const failed = toStudioFlow(reconnected).flow.states.find(
+      candidate => candidate.name === 'f_isSkilledWorkerAvailable_tya_calls',
+    )!.transitions[1];
+    expect(failed).toEqual({ event: 'failed', next: 'play_message_voice_outside_us' });
+
+    // The times to repeat changed on the board: the split's condition compares with the new number
     const changed = {
       ...voice,
       objects: voice.objects.map(candidate =>
-        candidate.id === counter.id
-          ? { ...candidate, variables: [{ key: 'en_no_tya_service_counter', value: '1' }] }
-          : candidate,
+        candidate.id === repeat.id ? { ...candidate, settings: { maxRepeats: '3' } } : candidate,
       ),
     };
-    const state = toStudioFlow(changed).flow.states.find(
-      candidate => candidate.name === 'set_var_en_no_tya_service_counter',
-    )!;
-    expect(state.properties.variables).toEqual([{ type: 'string', value: '1', key: 'en_no_tya_service_counter' }]);
+    const { flow, todo } = toStudioFlow(changed);
+    const split = flow.states.find(candidate => candidate.name === 'split_end_cycle_en_no_tya_service')!;
+    expect(split.transitions[1]).toMatchObject({
+      next: 'play_message_voice_en_prequeue_std',
+      conditions: [expect.objectContaining({ friendly_name: 'If value greater_than 3', value: '3' })],
+    });
+    expect(todo.join('\n')).not.toMatch(/en_no_tya_service/);
+
+    // Renamed, it's built as a new Repeat (and said so)
+    const renamed = toStudioFlow({
+      ...voice,
+      objects: voice.objects.map(candidate =>
+        candidate.id === repeat.id ? { ...candidate, studioName: 'repeat_tya_menu' } : candidate,
+      ),
+    });
+    expect(renamed.flow.states.map(candidate => candidate.name)).toEqual(
+      expect.arrayContaining(['set_var_tya_menu_counter', 'split_tya_menu']),
+    );
+    expect(renamed.todo.join('\n')).toMatch(/set_var_en_no_tya_service_counter .* renamed, so built as a new Repeat/);
   });
 
   test("names start as their kind's do: locked in the settings, given that start when they don't have it", () => {
@@ -566,10 +630,10 @@ describe('menus, repeats and chatbots', () => {
   test('imported splits keep what they split on; changed, their conditions read the new input too', async () => {
     const { boards } = await importHelpline(helplinesDir, 'usnm');
     const voice = boards.find(({ content: theirs }) =>
-      theirs.objects.some(candidate => candidate.studioName === 'split_end_cycle_en_no_tya_service'),
+      theirs.objects.some(candidate => candidate.studioName === 'split_voice_en_no_tya_service'),
     )!.content;
-    const split = voice.objects.find(candidate => candidate.studioName === 'split_end_cycle_en_no_tya_service')!;
-    expect(split.settings?.input).toBe('{{flow.variables.en_no_tya_service_counter}}');
+    const split = voice.objects.find(candidate => candidate.studioName === 'split_voice_en_no_tya_service')!;
+    expect(split.settings?.input).toBe('{{widgets.gather_input_voice_en_no_tya_service.Digits}}');
     const changed = {
       ...voice,
       objects: voice.objects.map(candidate =>
@@ -577,12 +641,12 @@ describe('menus, repeats and chatbots', () => {
       ),
     };
     const state = toStudioFlow(changed).flow.states.find(
-      candidate => candidate.name === 'split_end_cycle_en_no_tya_service',
+      candidate => candidate.name === 'split_voice_en_no_tya_service',
     )!;
     expect(state.properties.input).toBe('{{flow.variables.tries}}');
-    expect(JSON.stringify(state.transitions)).not.toContain('en_no_tya_service_counter');
+    expect(JSON.stringify(state.transitions)).not.toContain('gather_input_voice_en_no_tya_service.Digits');
     // The board's own object isn't changed by generating its flow
-    expect(JSON.stringify(split.studio?.transitions)).toContain('en_no_tya_service_counter');
+    expect(JSON.stringify(split.studio?.transitions)).toContain('gather_input_voice_en_no_tya_service.Digits');
   });
 
   test('send and wait: its timeout; release from chatbot: only the conversation', async () => {

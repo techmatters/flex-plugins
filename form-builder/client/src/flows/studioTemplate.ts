@@ -55,6 +55,7 @@ import {
   workerChannelOf,
 } from '@tech-matters/form-builder-shared/flows/model';
 import { janitorValuesOf, withJanitorValues } from '@tech-matters/form-builder-shared/flows/janitor';
+import { splitMergedObjects } from '@tech-matters/form-builder-shared/flows/mergedWidgets';
 import { defaultOperatingHoursRequest } from '@tech-matters/form-builder-shared/flows/operatingHoursRequest';
 import {
   isRecordingsBucketUrl,
@@ -321,11 +322,13 @@ const toTemplateText = (flow: StudioFlow) => `\${\n  jsonencode(${toHcl(flow, ' 
  * The Studio flow for one frame of a board (or for the objects outside frames, without frameId).
  */
 export const toStudioFlow = (
-  content: BoardContent,
+  board: BoardContent,
   frame?: Frame,
   recordings?: RecordingsList,
   // eslint-disable-next-line sonarjs/cognitive-complexity
 ): GeneratedStudioFlow => {
+  // Objects imported with their split (a check, a Repeat) are their two widgets again
+  const { content, todo: mergedTodo } = splitMergedObjects(board);
   const objects = content.objects.filter(object => object.frameId === frame?.id);
   // What the flow is: the frame's, or the board's own (an imported board's Studio flow)
   const details = frame ?? content.flow;
@@ -335,7 +338,7 @@ export const toStudioFlow = (
   const ids = new Set(objects.map(object => object.id));
   const connections = content.connections.filter(connection => ids.has(connection.from) && ids.has(connection.to));
   const byId = new Map(objects.map(object => [object.id, object]));
-  const todo: string[] = [];
+  const todo: string[] = [...mergedTodo];
   const flowVars: FlowVarChange[] = [];
   const taskAttributes: TaskAttributesChange[] = [];
   const label = (object: FlowObject) => `“${object.studioName ?? object.text}”`;

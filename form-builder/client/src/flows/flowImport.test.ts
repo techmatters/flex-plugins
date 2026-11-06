@@ -148,12 +148,20 @@ describe('importing a live helpline', () => {
     const firstStep = voice.connections.find(connection => connection.from === trigger.id)!;
     expect(voice.objects.find(object => object.id === firstStep.to)?.studioName).toBe('f_countryVoipFilter');
 
-    expect(find(voice, 'f_isSkilledWorkerAvailable_tya_calls')).toMatchObject({
+    // A check and the split on its answer are one object: the split's ways out, then its own
+    const check = find(voice, 'f_isSkilledWorkerAvailable_tya_calls')!;
+    expect(check).toMatchObject({
       type: 'checkQueueAvailability',
       settings: { targetChannel: 'voice', targetSkills: 'TYA,Calls' },
-      exits: ['success', 'failed'],
+      exits: ['noMatch', '0', '0 (3)', 'failed'],
       studio: { type: 'make-http-request', properties: { method: 'POST' } },
+      studioSplit: { name: 'split_specialist_available_tya_calls', from: 'success', alsoFrom: ['failed'] },
     });
+    expect(find(voice, 'split_specialist_available_tya_calls')).toBeUndefined();
+    // Its failed request led to the split live, so it goes where the split's noMatch goes
+    const targetOf = (exit: string) =>
+      voice.connections.find(connection => connection.from === check.id && connection.exit === exit)?.to;
+    expect(targetOf('failed')).toBe(targetOf('noMatch'));
     expect(find(voice, 'play_message_voice_outside_us')).toMatchObject({
       type: 'playMessage',
       message: { channel: 'voice' },

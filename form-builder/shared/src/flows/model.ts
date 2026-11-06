@@ -240,6 +240,11 @@ export type FlowObject = Position &
     endedExits?: string[];
     // The Studio widget it was imported from: its name, type and settings, as in the template
     studio?: StudioWidget;
+    // The split imported with it (mergedWidgets.ts): a check's split on its answer, or a Repeat's on
+    // its counter, which of the studio widget's ways out leads to it, and the widget it comes after in
+    // the template ('' when it's the first), so it's written back where it was. alsoFrom: its other
+    // ways out that lead to the split live (a failed request, which takes its noMatch)
+    studioSplit?: StudioWidget & { from: string; after?: string; alsoFrom?: string[] };
     // For "Send to queue": the task's attributes (see taskAttributes.ts)
     taskAttributes?: TaskAttributes;
     // The message as each other variant has it (FlowDetails.variants), by key: its script and
@@ -1348,6 +1353,27 @@ const QUEUE_EXITS_BEFORE: Record<string, string> = {
   'failed to enqueue': 'failedToEnqueue',
 };
 
+// The counter a Set Variables widget only adds one to ({{flow.variables.x | plus: 1}}), if that's all it does
+export const counterOf = (object: Pick<FlowObject, 'studio'>) => {
+  const variables = object.studio?.properties?.variables;
+  if (object.studio?.type !== 'set-variables' || !Array.isArray(variables) || variables.length !== 1) return undefined;
+  const [{ key, value }] = variables as { key?: unknown; value?: unknown }[];
+  if (typeof key !== 'string' || typeof value !== 'string') return undefined;
+  const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`flow\\.variables\\.${escaped}\\s*\\|\\s*plus:\\s*1\\b`).test(value) ? key : undefined;
+};
+
+// A Repeat's name from its counter: set_var_menu_counter (menu_counter) is repeat_menu, and after the
+// queue postqueue_repeat_menu
+export const repeatNameFromCounter = (setVarName: string, counter: string) =>
+  `${setVarName.startsWith('postqueue_') ? 'postqueue_' : ''}repeat_${counter.replace(/_counter$/, '')}`;
+
+// An imported Repeat's name, as its counter gives it (undefined when it isn't one)
+const mergedRepeatNameOf = (object: Pick<FlowObject, 'studio'>) => {
+  const counter = counterOf(object);
+  return counter && object.studio ? repeatNameFromCounter(object.studio.name, counter) : undefined;
+};
+
 /**
  * The two widgets a Repeat becomes, from its name: repeat_menu is set_var_menu_counter (adding one
  * to flow.variables.menu_counter) then split_menu. After the queue, both start with postqueue_.
@@ -1383,11 +1409,15 @@ const MENU_EVENTS = ['keypress', 'speech', 'noMatch', 'timeout'];
  * `name` is the object's when it has none yet (the template's todo_... ones).
  */
 export const widgetNamesOf = (
-  object: Pick<FlowObject, 'type' | 'exits' | 'studio' | 'studioName'>,
+  object: Pick<FlowObject, 'type' | 'exits' | 'studio' | 'studioName' | 'studioSplit'>,
   name = object.studioName ?? object.studio?.name,
 ): string[] => {
   if (!name) return [];
-  if (object.studio) return [name];
+  // Imported with its split: both, as they are live (a Repeat renamed is built as a new one)
+  if (object.studio && object.studioSplit) {
+    if (object.type !== 'repeat') return [name, object.studioSplit.name];
+    if (name === mergedRepeatNameOf(object)) return [object.studio.name, object.studioSplit.name];
+  } else if (object.studio) return [name];
   if (object.type === 'repeat') {
     const { setVar, split } = repeatWidgetNames(name);
     return [setVar, split];
@@ -1745,9 +1775,17 @@ export const PROFILE_FIXED_EXITS = ['not blocked', 'failed'];
 
 // Ways out Studio always has (a split's noMatch, a Gather's timeout, a request's failed...): they're
 // kept, as named. Imported widgets: those that aren't a split's conditions
-export const fixedExitsOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio'>): string[] => {
+export const fixedExitsOf = (object: Pick<FlowObject, 'type' | 'exits' | 'studio' | 'studioSplit'>): string[] => {
   const exits = exitsOf(object);
   const transitions = object.studio?.transitions;
+  // Imported with its split: its own ways out (failed), and the split's that aren't its conditions
+  if (object.studioSplit) {
+    if (object.type === 'repeat') return exits;
+    const { from, transitions: splitTransitions = [] } = object.studioSplit;
+    const own = (transitions ?? []).map(transition => String(transition.event)).filter(event => event !== from);
+    const splitExits = exits.filter(exit => !own.includes(exit));
+    return exits.filter(exit => own.includes(exit) || splitTransitions[splitExits.indexOf(exit)]?.event === 'noMatch');
+  }
   if (transitions) return exits.filter((_, index) => transitions[index] && transitions[index].event !== 'match');
   if (object.type === 'other') return [];
   if (object.type === 'checkClientProfile') return exits.filter(exit => PROFILE_FIXED_EXITS.includes(exit));

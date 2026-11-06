@@ -91,6 +91,8 @@ type ExportedObject = {
   taskAttributes?: Omit<NonNullable<FlowObject['taskAttributes']>, 'imported'> & { changed?: boolean };
   // The live Studio widget it was imported from, as it is in the template today
   currentStudioWidget?: FlowObject['studio'];
+  // A check or Repeat imported with its split: that split widget, as it is live
+  currentStudioSplit?: FlowObject['studioSplit'];
 };
 
 type ExportedFlow = {
@@ -183,6 +185,8 @@ const ABOUT = [
   'Messages (Send message, Question, Send message and close) say who they are from in message.from: ${helpline},',
   'Bot or the text chosen, exactly as the template writes it.',
   'Objects imported from a live helpline carry currentStudioWidget: the widget as it is in the template today.',
+  'A check (client profile, operating hours, skilled worker) or Repeat imported with the split on its answer is one',
+  'object: currentStudioSplit is that split widget, and studioTemplates writes both back as they are live.',
   '"studioTemplates" has each frame already written as a .tftpl (rebuilt exactly as it is live for widgets nobody',
   'changed), the texts to set in the .hcl variables, and the TODOs it could not fill in: start from those.',
   'Its "variables" are every value the template reads from the helpline config that is new or changed, each with',
@@ -337,6 +341,7 @@ export const toFlowExport = (board: Board, recordings?: RecordingsList): FlowExp
         : {}),
       ...(object.variables?.length ? { variables: object.variables } : {}),
       ...(object.studio ? { currentStudioWidget: object.studio } : {}),
+      ...(object.studioSplit ? { currentStudioSplit: object.studioSplit } : {}),
       ...(openComments.length > 0 ? { openComments: openComments.map(({ author, text }) => ({ author, text })) } : {}),
     };
   };

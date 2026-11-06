@@ -47,6 +47,7 @@ import {
   workerChannelOf,
 } from './model';
 import type { OperatingHoursChoices } from '../operatingHours';
+import { splitViewOf } from './mergedWidgets';
 import { isWorkedOutLater, operatingHoursBodyOf, operatingHoursKeysOf } from './operatingHoursRequest';
 import { hasNonStandardRecording, isVoiceMessage, messageStatus, type Recording } from './recordings';
 import { taskAttributesProblem } from './taskAttributes';
@@ -392,10 +393,12 @@ export const boardChecks = (
       add({ severity: 'warning', message: `${name}: choose what it splits on.`, objectId }, 'noInput');
     }
     // A split on a client profile's flags (a list): "equal to" only matches contacts with that one flag
-    if (isSplitObject(object)) {
-      const input = splitInputOf(object) ?? defaultSplitInputOf(content, object.id);
+    // (a check imported with its split too)
+    const split = splitViewOf(object) ?? (isSplitObject(object) ? object : undefined);
+    if (split) {
+      const input = splitInputOf(split) ?? defaultSplitInputOf(content, object.id);
       const equalTo = isProfileFlagsInput(input)
-        ? exitsOf(object).filter(exit => exitConditionOf(object, exit, input)?.type === 'equal_to')
+        ? exitsOf(split).filter(exit => exitConditionOf(split, exit, input)?.type === 'equal_to')
         : [];
       if (equalTo.length > 0) {
         add(

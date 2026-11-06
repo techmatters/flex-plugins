@@ -90,8 +90,23 @@ the order listed (the first one the profile has wins, so keep `blocked` first), 
 is where contacts with none of them go. `not blocked` and `failed` can't be removed. NZ's pattern
 after the flag: a Set variables (`set_var_clinical`, `clinical` = `true`) and the queue, with the
 channel's task attributes carrying `"clinical": "{{flow.variables.clinical}}"` and a workflow
-rule on `clinical == 'true'`. An imported check is the request alone: its flags are the ways out
-of the Decision after it, which defaults to `contains` too.
+rule on `clinical == 'true'`. An imported check comes with the split on its answer (see "Imported
+checks and counters" below): the split's ways out are its flags, with their live conditions.
+
+**Imported checks and counters are one object**, as they're drawn new. When a live check (client
+profile, operating hours, skilled worker available or logged in) leads on `success` to a split on
+its answer that nothing else leads to, the import shows them as the check, with the split's ways
+out (as an imported Decision's: `noMatch` and each condition's value) and its own (`failed`); the
+split is kept in the object (`studioSplit`) and named in its Inspector. A check whose `failed`
+also led to the split live (as usnm's) shows `failed` going where `noMatch` goes, which is what
+Studio does with no answer to compare; left so, it's written back through the split, connected
+elsewhere it goes straight there (only for splits whose conditions can't match an empty answer).
+The ways out's comparisons can be chosen as on a Decision, and a way out added is a new condition.
+A Set Variables that only adds one to a counter, followed by a split on that counter (`noMatch`
+back round, `greater_than` the times to repeat), is a **Repeat** (`repeat_<counter>`), its times
+to repeat the condition's value; changed, the condition compares with the new number. Renamed, a
+Repeat is built as a new one. The export writes each back as its two live widgets, in their
+place in the template, so an unchanged board still gives back the live template exactly.
 
 Colours by family: green for start and end, yellow for decisions, blue for checks and functions,
 white for messages and questions, red for voicemail, pink for queues. Twilio's own Studio icons
