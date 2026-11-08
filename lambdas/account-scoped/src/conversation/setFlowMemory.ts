@@ -16,7 +16,7 @@
 
 import type { AccountSID, ConversationSID } from '@tech-matters/twilio-types';
 import { getTwilioClient } from '@tech-matters/twilio-configuration';
-import { newErr, newOk } from '@tech-matters/result-type';
+import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import type { AccountScopedHandler, HttpRequest } from '../httpTypes';
 import { patchConversationAttributes } from './patchConversationAttributes';
 
@@ -32,25 +32,30 @@ type FlowMemory = Record<string, unknown>;
  * The values to keep: an object (a JSON body from Studio) or a JSON string (form-encoded
  * parameters, or as additionControlTaskAttributes is sent to captureChannelWithBot)
  */
-const parseFlowMemory = (value: unknown): FlowMemory | string => {
+const parseFlowMemory = (value: unknown): Result<string, FlowMemory> => {
+  const invalid = (message: string) => newErr({ message, error: message });
   let parsed = value;
   if (typeof value === 'string') {
     try {
       parsed = JSON.parse(value);
     } catch {
-      return 'flowMemory is not valid JSON.';
+      return invalid('flowMemory is not valid JSON.');
     }
   }
   if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-    return 'flowMemory must be an object of the values to keep, e.g. {"entryPoint": "sms"}.';
+    return invalid(
+      'flowMemory must be an object of the values to keep, e.g. {"entryPoint": "sms"}.',
+    );
   }
   const keys = Object.keys(parsed);
-  if (keys.length === 0) return 'flowMemory has no values to keep.';
-  const invalid = keys.filter(key => !KEY_PATTERN.test(key));
-  if (invalid.length > 0) {
-    return `flowMemory keys must be letters, numbers and underscores, not starting with a number: ${invalid.join(', ')}`;
+  if (keys.length === 0) return invalid('flowMemory has no values to keep.');
+  const invalidKeys = keys.filter(key => !KEY_PATTERN.test(key));
+  if (invalidKeys.length > 0) {
+    return invalid(
+      `flowMemory keys must be letters, numbers and underscores, not starting with a number: ${invalidKeys.join(', ')}`,
+    );
   }
-  return parsed as FlowMemory;
+  return newOk(parsed as FlowMemory);
 };
 
 /**
@@ -74,10 +79,11 @@ export const setFlowMemoryHandler: AccountScopedHandler = async (
       error: { statusCode: 400 },
     });
   }
-  const values = parseFlowMemory(body.flowMemory);
-  if (typeof values === 'string') {
-    return newErr({ message: values, error: { statusCode: 400 } });
+  const parsed = parseFlowMemory(body.flowMemory);
+  if (isErr(parsed)) {
+    return newErr({ message: parsed.message, error: { statusCode: 400 } });
   }
+  const values = parsed.data;
 
   try {
     const client = await getTwilioClient(accountSid);
