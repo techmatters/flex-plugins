@@ -139,10 +139,12 @@ locals {
   }
 }
 
+# for_each uses the table names: the two table definitions have different shapes, so the object itself
+# can't be used in a conditional (Terraform can't convert it to a map).
 data "aws_s3_objects" "datadog_helpline_tags" {
-  for_each = local.datadog_tagging_enabled ? local.datadog_tag_tables : {}
+  for_each = local.datadog_tagging_enabled ? toset(keys(local.datadog_tag_tables)) : toset([])
   bucket   = var.datadog_tags_bucket
-  prefix   = "${local.datadog_tags_prefix}/${each.value.folder}/"
+  prefix   = "${local.datadog_tags_prefix}/${local.datadog_tag_tables[each.key].folder}/"
 }
 
 data "aws_s3_object" "datadog_helpline_tags" {
@@ -152,9 +154,9 @@ data "aws_s3_object" "datadog_helpline_tags" {
 }
 
 resource "aws_s3_object" "datadog_helpline_tags_own" {
-  for_each     = local.datadog_tagging_enabled ? local.datadog_tag_tables : {}
+  for_each     = local.datadog_tagging_enabled ? toset(keys(local.datadog_tag_tables)) : toset([])
   bucket       = var.datadog_tags_bucket
-  key          = "${local.datadog_tags_prefix}/${each.value.folder}/${local.datadog_tags_own_file}"
+  key          = "${local.datadog_tags_prefix}/${local.datadog_tag_tables[each.key].folder}/${local.datadog_tags_own_file}"
   content      = "${local.datadog_csv[each.key].own}\n"
   content_type = "text/csv"
 }
@@ -162,9 +164,9 @@ resource "aws_s3_object" "datadog_helpline_tags_own" {
 # Shared files: every helpline's state writes them, so plans show a change here whenever another
 # helpline applied since. That's expected.
 resource "aws_s3_object" "datadog_helpline_tags_all" {
-  for_each     = local.datadog_tagging_enabled ? local.datadog_tag_tables : {}
+  for_each     = local.datadog_tagging_enabled ? toset(keys(local.datadog_tag_tables)) : toset([])
   bucket       = var.datadog_tags_bucket
-  key          = each.value.merged_file
+  key          = local.datadog_tag_tables[each.key].merged_file
   content      = "${local.datadog_csv[each.key].all}\n"
   content_type = "text/csv"
 }
