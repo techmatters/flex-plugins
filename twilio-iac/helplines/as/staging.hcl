@@ -7,6 +7,8 @@ locals {
     enable_external_recordings = true
     enable_post_survey                    = true
     enable_datadog_monitoring             = false
+    # Datadog: publish this helpline's account + Studio flow SIDs to the Reference Tables (log tagging)
+    enable_datadog_tagging                = true
     custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice', 'modica','external','voicemail'] OR  twilioNumber == 'messenger:131329426738030' "
     permission_config                     = "demo"
 
