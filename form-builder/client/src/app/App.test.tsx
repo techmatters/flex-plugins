@@ -21,7 +21,7 @@ import { fileURLToPath } from 'url';
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
-import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import { newMemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { Provider } from 'react-redux';
 
 import { clientFor } from '../drafts/draftClient';
@@ -40,7 +40,7 @@ beforeEach(() => {
       path.dirname(fileURLToPath(import.meta.url)),
       '../../../../lambdas/packages/hrm-form-definitions/form-definitions',
     ),
-    drafts: new MemoryDraftStore(),
+    drafts: newMemoryDraftStore(),
     notifier: { draftSubmitted: async () => undefined },
   };
   // The app's own GETs (helplines, definitions) go to the same in-process API

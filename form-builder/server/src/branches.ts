@@ -26,8 +26,8 @@ import path from 'path';
 
 import type { BranchChoice, ImportSource, FromBranch } from '@tech-matters/form-builder-shared';
 
-import { readBranchHeads, PublicRepoSource } from './publicRepo';
-import { RepoSnapshots, Snapshot } from './repoSnapshot';
+import { readBranchHeads, newPublicRepoSource } from './publicRepo';
+import { newRepoSnapshots, RepoSnapshots, Snapshot } from './repoSnapshot';
 
 export type { ImportSource };
 
@@ -48,54 +48,53 @@ export const isValidBranch = (branch: string) =>
   !branch.startsWith('-') &&
   !branch.endsWith('/');
 
-export class GitHubBranches implements BranchSource {
-  private snapshots = new Map<string, RepoSnapshots>();
+export const newGitHubBranches = (
+  // Where the snapshots go (a temporary folder, or a gitignored one locally)
+  rootDir: string,
+  // The default's label: "master" deployed, "This checkout (local files)" locally
+  defaultLabel = 'master',
+  ownerAndRepo = 'techmatters/flex-plugins',
+  fetchImpl: typeof fetch = fetch,
+  maxBranches = 3,
+  now = () => Date.now(),
+): BranchSource => {
+  const snapshotsByBranch = new Map<string, RepoSnapshots>();
+  let heads: { at: number; names: string[] } | undefined;
 
-  private heads?: { at: number; names: string[] };
-
-  constructor(
-    // Where the snapshots go (a temporary folder, or a gitignored one locally)
-    private readonly rootDir: string,
-    // The default's label: "master" deployed, "This checkout (local files)" locally
-    private readonly defaultLabel = 'master',
-    private readonly ownerAndRepo = 'techmatters/flex-plugins',
-    private readonly fetchImpl: typeof fetch = fetch,
-    private readonly maxBranches = 3,
-    private readonly now = () => Date.now(),
-  ) {}
-
-  async choices(): Promise<BranchChoice[]> {
-    if (!this.heads || this.now() - this.heads.at > 60_000) {
-      const names = [...(await readBranchHeads(this.ownerAndRepo, this.fetchImpl)).keys()].filter(isValidBranch);
-      this.heads = { at: this.now(), names: names.sort((a, b) => a.localeCompare(b)) };
+  const choices = async (): Promise<BranchChoice[]> => {
+    if (!heads || now() - heads.at > 60_000) {
+      const names = [...(await readBranchHeads(ownerAndRepo, fetchImpl)).keys()].filter(isValidBranch);
+      heads = { at: now(), names: names.sort((a, b) => a.localeCompare(b)) };
     }
-    const others = this.heads.names.filter(name => this.defaultLabel !== 'master' || name !== 'master');
-    return [{ value: '', label: this.defaultLabel }, ...others.map(name => ({ value: name, label: name }))];
-  }
+    const others = heads.names.filter(name => defaultLabel !== 'master' || name !== 'master');
+    return [{ value: '', label: defaultLabel }, ...others.map(name => ({ value: name, label: name }))];
+  };
 
-  async snapshot(branch: string): Promise<Snapshot> {
+  const snapshot = async (branch: string): Promise<Snapshot> => {
     if (!isValidBranch(branch)) throw new Error(`Invalid branch ${branch}`);
-    let snapshots = this.snapshots.get(branch);
+    let snapshots = snapshotsByBranch.get(branch);
     if (snapshots) {
       // Most recently used last
-      this.snapshots.delete(branch);
-      this.snapshots.set(branch, snapshots);
+      snapshotsByBranch.delete(branch);
+      snapshotsByBranch.set(branch, snapshots);
     } else {
-      snapshots = new RepoSnapshots(
-        new PublicRepoSource(this.ownerAndRepo, branch, this.fetchImpl),
-        path.join(this.rootDir, branch.replace(/[^A-Za-z0-9._-]/g, '_')),
+      snapshots = newRepoSnapshots(
+        newPublicRepoSource(ownerAndRepo, branch, fetchImpl),
+        path.join(rootDir, branch.replace(/[^A-Za-z0-9._-]/g, '_')),
       );
-      this.snapshots.set(branch, snapshots);
+      snapshotsByBranch.set(branch, snapshots);
       // The oldest branches go, files and all
-      while (this.snapshots.size > this.maxBranches) {
-        const [oldest] = this.snapshots.keys();
-        this.snapshots.delete(oldest);
-        await fs.rm(path.join(this.rootDir, oldest.replace(/[^A-Za-z0-9._-]/g, '_')), {
+      while (snapshotsByBranch.size > maxBranches) {
+        const [oldest] = snapshotsByBranch.keys();
+        snapshotsByBranch.delete(oldest);
+        await fs.rm(path.join(rootDir, oldest.replace(/[^A-Za-z0-9._-]/g, '_')), {
           recursive: true,
           force: true,
         });
       }
     }
     return snapshots.latest();
-  }
-}
+  };
+
+  return { choices, snapshot };
+};

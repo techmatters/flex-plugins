@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Who works on each helpline, so tasks can be assigned to them: one list per helpline, plus one
@@ -57,66 +56,68 @@ export const normalizePeople = (people: unknown): Person[] | undefined => {
   return result.sort((a, b) => a.name.localeCompare(b.name));
 };
 
-export class LocalPeopleStore implements PeopleStore {
-  constructor(private readonly rootDir: string) {}
-
-  private file(code: string) {
+export const newLocalPeopleStore = (rootDir: string): PeopleStore => {
+  const file = (code: string) => {
     if (!isValidPeopleCode(code)) throw new Error(`Invalid helpline ${code}`);
-    return path.join(this.rootDir, `${code}.json`);
-  }
+    return path.join(rootDir, `${code}.json`);
+  };
 
-  async get(code: string): Promise<Person[]> {
+  const get = async (code: string): Promise<Person[]> => {
     try {
-      return JSON.parse(await fs.readFile(this.file(code), 'utf8')) as Person[];
+      return JSON.parse(await fs.readFile(file(code), 'utf8')) as Person[];
     } catch {
       return [];
     }
-  }
+  };
 
-  async put(code: string, people: Person[]): Promise<void> {
-    await fs.mkdir(this.rootDir, { recursive: true });
-    await fs.writeFile(this.file(code), `${JSON.stringify(people, null, 2)}\n`);
-  }
-}
+  const put = async (code: string, people: Person[]): Promise<void> => {
+    await fs.mkdir(rootDir, { recursive: true });
+    await fs.writeFile(file(code), `${JSON.stringify(people, null, 2)}\n`);
+  };
 
-export class MemoryPeopleStore implements PeopleStore {
-  private lists = new Map<string, Person[]>();
+  return { get, put };
+};
 
-  async get(code: string) {
-    return structuredClone(this.lists.get(code) ?? []);
-  }
+export const newMemoryPeopleStore = (): PeopleStore => {
+  const lists = new Map<string, Person[]>();
 
-  async put(code: string, people: Person[]) {
-    this.lists.set(code, structuredClone(people));
-  }
-}
+  const get = async (code: string) => {
+    return structuredClone(lists.get(code) ?? []);
+  };
 
-export class S3PeopleStore implements PeopleStore {
-  constructor(private readonly bucket: string, private readonly s3: Pick<S3Client, 'send'> = new S3Client({})) {}
+  const put = async (code: string, people: Person[]) => {
+    lists.set(code, structuredClone(people));
+  };
 
-  private key(code: string) {
+  return { get, put };
+};
+
+export const newS3PeopleStore = (bucket: string, s3: Pick<S3Client, 'send'> = new S3Client({})): PeopleStore => {
+  const key = (code: string) => {
     if (!isValidPeopleCode(code)) throw new Error(`Invalid helpline ${code}`);
     return `people/${code}.json`;
-  }
+  };
 
-  async get(code: string): Promise<Person[]> {
+  const get = async (code: string): Promise<Person[]> => {
     try {
-      const response = await this.s3.send(new GetObjectCommand({ Bucket: this.bucket, Key: this.key(code) }));
+      const response = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key(code) }));
       return JSON.parse(await response.Body!.transformToString()) as Person[];
     } catch (err) {
       if ((err as Error).name === 'NoSuchKey') return [];
       throw err;
     }
-  }
+  };
 
-  async put(code: string, people: Person[]): Promise<void> {
-    await this.s3.send(
+  const put = async (code: string, people: Person[]): Promise<void> => {
+    await s3.send(
       new PutObjectCommand({
-        Bucket: this.bucket,
-        Key: this.key(code),
+        Bucket: bucket,
+        Key: key(code),
         Body: JSON.stringify(people),
         ContentType: 'application/json',
       }),
     );
-  }
-}
+  };
+
+  return { get, put };
+};

@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * The chatbot designer's routes, called from api.ts:
@@ -32,16 +31,19 @@ import { botStatusOf, isNewBot } from '@tech-matters/form-builder-shared/chatbot
 
 import type { ApiResponse, ApiUser } from './api';
 import { importChatbots } from './chatbotImport';
-import { DesignStore, isValidDesignCode, LocalDesignStore, MemoryDesignStore, S3DesignStore } from './designStore';
+import {
+  DesignStore,
+  isValidDesignCode,
+  newLocalDesignStore,
+  newMemoryDesignStore,
+  newS3DesignStore,
+} from './designStore';
 
 export type ChatbotStore = DesignStore<StoredChatbots>;
-export class LocalChatbotStore extends LocalDesignStore<StoredChatbots> {}
-export class MemoryChatbotStore extends MemoryDesignStore<StoredChatbots> {}
-export class S3ChatbotStore extends S3DesignStore<StoredChatbots> {
-  constructor(bucket: string, s3?: Pick<S3Client, 'send'>) {
-    super(bucket, 'chatbots', s3);
-  }
-}
+export const newLocalChatbotStore = (rootDir: string): ChatbotStore => newLocalDesignStore<StoredChatbots>(rootDir);
+export const newMemoryChatbotStore = (): ChatbotStore => newMemoryDesignStore<StoredChatbots>();
+export const newS3ChatbotStore = (bucket: string, s3?: Pick<S3Client, 'send'>): ChatbotStore =>
+  newS3DesignStore<StoredChatbots>(bucket, 'chatbots', s3);
 
 // Answer types can carry long lists of ways to say things; this still stops a runaway design
 const MAX_DESIGN_BYTES = 4_000_000;

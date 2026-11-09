@@ -38,16 +38,14 @@ export const branchNameFor = (draft: Draft, now: Date) =>
     now.getUTCDate(),
   )}-${pad(now.getUTCHours())}${pad(now.getUTCMinutes())}`;
 
-export class GitHubApplier implements DraftApplier {
-  constructor(
-    private readonly github: GitHubClient,
-    private readonly snapshots: RepoSnapshots,
-    private readonly baseBranch = 'master',
-    private readonly now = () => new Date(),
-  ) {}
-
-  async apply(draft: Draft, user: ApiUser, details: ApplyDetails = {}): Promise<ApplyResult> {
-    const snapshot = await this.snapshots.latest();
+export const newGitHubApplier = (
+  github: GitHubClient,
+  snapshots: RepoSnapshots,
+  baseBranch = 'master',
+  now = () => new Date(),
+): DraftApplier => {
+  const apply = async (draft: Draft, user: ApiUser, details: ApplyDetails = {}): Promise<ApplyResult> => {
+    const snapshot = await snapshots.latest();
     const files = await Promise.all(
       // Files for another repo (the HRM permissions) aren't flex-plugins'
       Object.entries(draft.files)
@@ -62,25 +60,25 @@ export class GitHubApplier implements DraftApplier {
     );
 
     const helpline = draft.code.toUpperCase();
-    const baseCommit = await this.github.request<{ tree: { sha: string } }>('GET', `/git/commits/${snapshot.sha}`);
-    const tree = await this.github.request<{ sha: string }>('POST', '/git/trees', {
+    const baseCommit = await github.request<{ tree: { sha: string } }>('GET', `/git/commits/${snapshot.sha}`);
+    const tree = await github.request<{ sha: string }>('POST', '/git/trees', {
       base_tree: baseCommit.tree.sha,
       tree: files.map(({ repoPath, content }) => ({ path: repoPath, mode: '100644', type: 'blob', content })),
     });
     const coAuthor = user.email ? `\n\nCo-authored-by: ${user.name} <${user.email}>` : '';
-    const commit = await this.github.request<{ sha: string }>('POST', '/git/commits', {
+    const commit = await github.request<{ sha: string }>('POST', '/git/commits', {
       message: `${helpline}: Form changes (${draft.version})\n\nApplied by ${user.name} from the Aselo Builder.${coAuthor}`,
       tree: tree.sha,
       parents: [snapshot.sha],
     });
 
-    const branch = branchNameFor(draft, this.now());
-    await this.github.request('POST', '/git/refs', { ref: `refs/heads/${branch}`, sha: commit.sha });
+    const branch = branchNameFor(draft, now());
+    await github.request('POST', '/git/refs', { ref: `refs/heads/${branch}`, sha: commit.sha });
     // eslint-disable-next-line camelcase -- as the API spells it
-    const pull = await this.github.request<{ number: number; html_url: string }>('POST', '/pulls', {
+    const pull = await github.request<{ number: number; html_url: string }>('POST', '/pulls', {
       title: `${helpline}: Form changes (${draft.version})`,
       head: branch,
-      base: this.baseBranch,
+      base: baseBranch,
       body: [
         details.description?.trim() ||
           `Files changed:\n\n${files.map(({ repoPath }) => `- \`${repoPath}\``).join('\n')}`,
@@ -95,5 +93,7 @@ export class GitHubApplier implements DraftApplier {
       written: files.map(({ repoPath }) => repoPath),
       link: pull.html_url,
     };
-  }
-}
+  };
+
+  return { apply };
+};

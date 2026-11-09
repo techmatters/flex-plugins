@@ -20,30 +20,28 @@
  */
 import type { Notifier } from './api';
 
-export class SlackNotifier implements Notifier {
-  constructor(
-    private readonly webhookUrl: string,
-    // Where the builder is served, for the link in the message
-    private readonly appUrl: string,
-    private readonly fetchImpl: typeof fetch = fetch,
-  ) {}
-
-  async draftSubmitted(
+export const newSlackNotifier = (
+  webhookUrl: string,
+  // Where the builder is served, for the link in the message
+  appUrl: string,
+  fetchImpl: typeof fetch = fetch,
+): Notifier => {
+  const draftSubmitted = async (
     draft: Parameters<Notifier['draftSubmitted']>[0],
     user: Parameters<Notifier['draftSubmitted']>[1],
-  ) {
+  ) => {
     const fileCount = Object.keys(draft.files).length;
     const text = [
       `*${draft.code.toUpperCase()}* form changes (${draft.version}) were submitted for review by ${user.name}.`,
-      `${fileCount} file${fileCount === 1 ? '' : 's'} changed. Review and apply them in the Aselo Builder: ${
-        this.appUrl
-      }`,
+      `${fileCount} file${fileCount === 1 ? '' : 's'} changed. Review and apply them in the Aselo Builder: ${appUrl}`,
     ].join('\n');
-    const response = await this.fetchImpl(this.webhookUrl, {
+    const response = await fetchImpl(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text }),
     });
     if (!response.ok) throw new Error(`Slack notification failed (${response.status})`);
-  }
-}
+  };
+
+  return { draftSubmitted };
+};

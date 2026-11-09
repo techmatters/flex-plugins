@@ -31,16 +31,16 @@ import path from 'path';
 import { RECORDING_CONTENT_TYPES, type RecordingEnvironment } from '@tech-matters/form-builder-shared/flows/recordings';
 
 import { ApiContext, handleApiRequest } from './api';
-import { LocalDraftStore } from './drafts';
-import { LocalApplier, localNotifier, localUser } from './localServices';
-import { LocalBoardStore } from './boards';
-import { LocalPeopleStore } from './people';
-import { LocalRecordingFiles, LocalRecordingLogStore } from './recordingStores';
-import { LocalRoutingStore } from './routingStore';
-import { LocalChatbotStore } from './chatbotApi';
-import { LocalHelpQuestionStore } from './helpQuestions';
-import { GitHubBranches } from './branches';
-import { GitHubPermissionRules, LocalPermissionRules } from './permissionsApi';
+import { newLocalDraftStore } from './drafts';
+import { newLocalApplier, localNotifier, localUser } from './localServices';
+import { newLocalBoardStore } from './boards';
+import { newLocalPeopleStore } from './people';
+import { newLocalRecordingFiles, newLocalRecordingLogStore } from './recordingStores';
+import { newLocalRoutingStore } from './routingStore';
+import { newLocalChatbotStore } from './chatbotApi';
+import { newLocalHelpQuestionStore } from './helpQuestions';
+import { newGitHubBranches } from './branches';
+import { newGitHubPermissionRules, newLocalPermissionRules } from './permissionsApi';
 
 const builderDir = path.resolve(process.cwd(), '..');
 const repoDir = path.resolve(builderDir, '..');
@@ -60,32 +60,32 @@ const hrmPermissionRulesDir = path.resolve(
   'hrm-domain/hrm-core/permission-rules',
 );
 const permissionRules = existsSync(hrmPermissionRulesDir)
-  ? new LocalPermissionRules(hrmPermissionRulesDir)
-  : new GitHubPermissionRules();
+  ? newLocalPermissionRules(hrmPermissionRulesDir)
+  : newGitHubPermissionRules();
 
 // A folder of form-builder/, unless set (e.g. FORM_BUILDER_BOARDS_DIR)
 const localDir = (envName: string, folder: string) => process.env[envName] ?? path.resolve(builderDir, folder);
 
-const recordingFiles = new LocalRecordingFiles(localDir('FORM_BUILDER_RECORDINGS_DIR', 'recordings'));
+const recordingFiles = newLocalRecordingFiles(localDir('FORM_BUILDER_RECORDINGS_DIR', 'recordings'));
 const context: ApiContext = {
   formDefinitionsDir,
   helplinesConfigDir,
   webchatConfigDir,
   // Work in progress, kept out of git; deployed, drafts live in a private S3 bucket
-  drafts: new LocalDraftStore(localDir('FORM_BUILDER_DRAFTS_DIR', 'drafts')),
+  drafts: newLocalDraftStore(localDir('FORM_BUILDER_DRAFTS_DIR', 'drafts')),
   // Flow designer boards and its people lists, also kept out of git
-  boards: new LocalBoardStore(localDir('FORM_BUILDER_BOARDS_DIR', 'boards')),
-  people: new LocalPeopleStore(localDir('FORM_BUILDER_PEOPLE_DIR', 'people')),
+  boards: newLocalBoardStore(localDir('FORM_BUILDER_BOARDS_DIR', 'boards')),
+  people: newLocalPeopleStore(localDir('FORM_BUILDER_PEOPLE_DIR', 'people')),
   recordings: {
     files: recordingFiles,
-    log: new LocalRecordingLogStore(localDir('FORM_BUILDER_RECORDINGS_DIR', 'recordings')),
+    log: newLocalRecordingLogStore(localDir('FORM_BUILDER_RECORDINGS_DIR', 'recordings')),
   },
-  routing: new LocalRoutingStore(localDir('FORM_BUILDER_ROUTING_DIR', 'routing')),
-  chatbots: new LocalChatbotStore(localDir('FORM_BUILDER_CHATBOTS_DIR', 'chatbots-designs')),
-  helpQuestions: new LocalHelpQuestionStore(localDir('FORM_BUILDER_HELP_QUESTIONS_DIR', 'help-questions')),
+  routing: newLocalRoutingStore(localDir('FORM_BUILDER_ROUTING_DIR', 'routing')),
+  chatbots: newLocalChatbotStore(localDir('FORM_BUILDER_CHATBOTS_DIR', 'chatbots-designs')),
+  helpQuestions: newLocalHelpQuestionStore(localDir('FORM_BUILDER_HELP_QUESTIONS_DIR', 'help-questions')),
   // Imports read this checkout, or a branch from GitHub (downloaded into branch-snapshots/)
-  branches: new GitHubBranches(path.resolve(builderDir, 'branch-snapshots'), 'This checkout (local files)'),
-  applier: new LocalApplier(formDefinitionsDir, repoDir, webchatConfigDir, helplinesConfigDir),
+  branches: newGitHubBranches(path.resolve(builderDir, 'branch-snapshots'), 'This checkout (local files)'),
+  applier: newLocalApplier(formDefinitionsDir, repoDir, webchatConfigDir, helplinesConfigDir),
   permissionRules,
   notifier: localNotifier,
 };

@@ -29,9 +29,13 @@ import {
 import { HelplineImport, importHelpline, separate } from '@tech-matters/form-builder-server/flowImport';
 import type { RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
 import { ApiContext, ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
-import { MemoryBoardStore } from '@tech-matters/form-builder-server/boards';
-import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
-import { MemoryRecordingFiles, MemoryRecordingLogStore } from '@tech-matters/form-builder-server/recordingStores';
+import { newMemoryBoardStore } from '@tech-matters/form-builder-server/boards';
+import { newMemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import {
+  newMemoryRecordingFiles,
+  MemoryRecordingFiles,
+  newMemoryRecordingLogStore,
+} from '@tech-matters/form-builder-server/recordingStores';
 
 import { toFlowExport } from './exports';
 import { expectAt } from '../testing/expectAt';
@@ -277,15 +281,15 @@ describe('the import routes', () => {
     handleApiRequest(context, { method, path: apiPath, body, user });
 
   beforeAll(() => {
-    files = new MemoryRecordingFiles();
+    files = newMemoryRecordingFiles();
     context = {
       formDefinitionsDir: '/nowhere',
       helplinesConfigDir: helplinesDir,
-      drafts: new MemoryDraftStore(),
-      boards: new MemoryBoardStore(),
+      drafts: newMemoryDraftStore(),
+      boards: newMemoryBoardStore(),
       recordings: {
         files,
-        log: new MemoryRecordingLogStore(),
+        log: newMemoryRecordingLogStore(),
         fetchSource: async url => new TextEncoder().encode(`audio from ${url}`),
       },
       notifier: { draftSubmitted: async () => undefined },

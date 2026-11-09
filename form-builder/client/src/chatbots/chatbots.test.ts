@@ -29,9 +29,9 @@ import {
 } from '@tech-matters/form-builder-shared/chatbots/status';
 import { loadDefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
 import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
-import { MemoryChatbotStore } from '@tech-matters/form-builder-server/chatbotApi';
+import { newMemoryChatbotStore } from '@tech-matters/form-builder-server/chatbotApi';
 import { importChatbots } from '@tech-matters/form-builder-server/chatbotImport';
-import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import { newMemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 
 import {
   addAnswerType,
@@ -297,8 +297,8 @@ describe('the chatbot routes', () => {
   const uschStaff: ApiUser = { name: 'Childhelp person', role: 'helpline-staff', helplines: ['usch'] };
   const context: ApiContext = {
     formDefinitionsDir: '/nowhere',
-    drafts: new MemoryDraftStore(),
-    chatbots: new MemoryChatbotStore(),
+    drafts: newMemoryDraftStore(),
+    chatbots: newMemoryChatbotStore(),
     helplinesConfigDir: helplinesDir,
     notifier: { draftSubmitted: async () => undefined },
   };

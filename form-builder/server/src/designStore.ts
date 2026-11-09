@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * One JSON design per helpline (routing designs, chatbot designs):
@@ -45,102 +44,106 @@ const check = (code: string) => {
   if (!isValidDesignCode(code)) throw new Error(`Invalid helpline ${code}`);
 };
 
-export class LocalDesignStore<T extends { code: string }> implements DesignStore<T> {
-  constructor(private readonly rootDir: string) {}
-
-  private file(code: string) {
+export const newLocalDesignStore = <T extends { code: string }>(rootDir: string): DesignStore<T> => {
+  const file = (code: string) => {
     check(code);
-    return path.join(this.rootDir, `${code}.json`);
-  }
+    return path.join(rootDir, `${code}.json`);
+  };
 
-  async get(code: string) {
-    try {
-      return JSON.parse(await fs.readFile(this.file(code), 'utf8')) as T;
-    } catch {
-      return undefined;
-    }
-  }
+  return {
+    get: async code => {
+      try {
+        return JSON.parse(await fs.readFile(file(code), 'utf8')) as T;
+      } catch {
+        return undefined;
+      }
+    },
 
-  async put(design: T) {
-    await fs.mkdir(this.rootDir, { recursive: true });
-    await fs.writeFile(this.file(design.code), `${JSON.stringify(design, null, 2)}\n`);
-  }
-
-  async list() {
-    const files = await fs.readdir(this.rootDir).catch(() => [] as string[]);
-    return files
-      .filter(name => name.endsWith('.json'))
-      .map(name => name.slice(0, -'.json'.length))
-      .filter(isValidDesignCode);
-  }
-}
-
-export class MemoryDesignStore<T extends { code: string }> implements DesignStore<T> {
-  private designs = new Map<string, T>();
-
-  async get(code: string) {
-    const found = this.designs.get(code);
-    return found ? structuredClone(found) : undefined;
-  }
-
-  async put(design: T) {
-    this.designs.set(design.code, structuredClone(design));
-  }
-
-  async list() {
-    return [...this.designs.keys()];
-  }
-}
-
-export class S3DesignStore<T extends { code: string }> implements DesignStore<T> {
-  constructor(
-    // The private drafts bucket
-    private readonly bucket: string,
-    // The folder in it, e.g. routing
-    private readonly prefix: string,
-    private readonly s3: Pick<S3Client, 'send'> = new S3Client({}),
-  ) {}
-
-  private key(code: string) {
-    check(code);
-    return `${this.prefix}/${code}.json`;
-  }
-
-  async get(code: string) {
-    try {
-      const response = await this.s3.send(new GetObjectCommand({ Bucket: this.bucket, Key: this.key(code) }));
-      return JSON.parse(await response.Body!.transformToString()) as T;
-    } catch (err) {
-      if ((err as Error).name === 'NoSuchKey') return undefined;
-      throw err;
-    }
-  }
-
-  async put(design: T) {
-    await this.s3.send(
-      new PutObjectCommand({
-        Bucket: this.bucket,
-        Key: this.key(design.code),
-        Body: JSON.stringify(design),
-        ContentType: 'application/json',
-      }),
-    );
-  }
-
-  async list() {
-    const codes: string[] = [];
-    const pattern = new RegExp(`^${this.prefix}/([a-z0-9]+)\\.json$`);
-    let token: string | undefined;
-    do {
-      const page: ListObjectsV2CommandOutput = await this.s3.send(
-        new ListObjectsV2Command({ Bucket: this.bucket, Prefix: `${this.prefix}/`, ContinuationToken: token }),
+    put: async design => {
+      await fs.mkdir(rootDir, { recursive: true });
+      await fs.writeFile(
+        file(design.code),
+        `${JSON.stringify(design, null, 2)}
+`,
       );
-      (page.Contents ?? []).forEach(object => {
-        const code = object.Key?.match(pattern)?.[1];
-        if (code) codes.push(code);
-      });
-      token = page.NextContinuationToken;
-    } while (token);
-    return codes;
-  }
-}
+    },
+
+    list: async () => {
+      const files = await fs.readdir(rootDir).catch(() => [] as string[]);
+      return files
+        .filter(name => name.endsWith('.json'))
+        .map(name => name.slice(0, -'.json'.length))
+        .filter(isValidDesignCode);
+    },
+  };
+};
+
+export const newMemoryDesignStore = <T extends { code: string }>(): DesignStore<T> => {
+  const designs = new Map<string, T>();
+
+  return {
+    get: async code => {
+      const found = designs.get(code);
+      return found ? structuredClone(found) : undefined;
+    },
+
+    put: async design => {
+      designs.set(design.code, structuredClone(design));
+    },
+
+    list: async () => [...designs.keys()],
+  };
+};
+
+export const newS3DesignStore = <T extends { code: string }>(
+  // The private drafts bucket
+  bucket: string,
+  // The folder in it, e.g. routing
+  prefix: string,
+  s3: Pick<S3Client, 'send'> = new S3Client({}),
+): DesignStore<T> => {
+  const key = (code: string) => {
+    check(code);
+    return `${prefix}/${code}.json`;
+  };
+
+  return {
+    get: async code => {
+      try {
+        const response = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key(code) }));
+        return JSON.parse(await response.Body!.transformToString()) as T;
+      } catch (err) {
+        if ((err as Error).name === 'NoSuchKey') return undefined;
+        throw err;
+      }
+    },
+
+    put: async design => {
+      await s3.send(
+        new PutObjectCommand({
+          Bucket: bucket,
+          Key: key(design.code),
+          Body: JSON.stringify(design),
+          ContentType: 'application/json',
+        }),
+      );
+    },
+
+    list: async () => {
+      const codes: string[] = [];
+      const pattern = new RegExp(`^${prefix}/([a-z0-9]+)\.json$`);
+      let token: string | undefined;
+      do {
+        const page: ListObjectsV2CommandOutput = await s3.send(
+          new ListObjectsV2Command({ Bucket: bucket, Prefix: `${prefix}/`, ContinuationToken: token }),
+        );
+        (page.Contents ?? []).forEach(object => {
+          const code = object.Key?.match(pattern)?.[1];
+          if (code) codes.push(code);
+        });
+        token = page.NextContinuationToken;
+      } while (token);
+      return codes;
+    },
+  };
+};

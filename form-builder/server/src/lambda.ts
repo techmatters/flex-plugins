@@ -33,18 +33,18 @@ import type { APIGatewayProxyEventV2WithJWTAuthorizer, APIGatewayProxyResultV2 }
 
 import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { localNotifier } from './localServices';
-import { PublicRepoSource } from './publicRepo';
-import { GitHubBranches } from './branches';
-import { GitHubPermissionRules } from './permissionsApi';
-import { RepoSnapshots } from './repoSnapshot';
-import { S3BoardStore } from './s3BoardStore';
-import { S3DraftStore } from './s3DraftStore';
-import { S3PeopleStore } from './people';
-import { S3RoutingStore } from './routingStore';
-import { S3ChatbotStore } from './chatbotApi';
-import { S3HelpQuestionStore } from './helpQuestions';
-import { S3RecordingFiles, S3RecordingLogStore } from './recordingStores';
-import { SlackNotifier } from './slackNotifier';
+import { newPublicRepoSource } from './publicRepo';
+import { newGitHubBranches } from './branches';
+import { newGitHubPermissionRules } from './permissionsApi';
+import { newRepoSnapshots, RepoSnapshots } from './repoSnapshot';
+import { newS3BoardStore } from './s3BoardStore';
+import { newS3DraftStore } from './s3DraftStore';
+import { newS3PeopleStore } from './people';
+import { newS3RoutingStore } from './routingStore';
+import { newS3ChatbotStore } from './chatbotApi';
+import { newS3HelpQuestionStore } from './helpQuestions';
+import { newS3RecordingFiles, newS3RecordingLogStore } from './recordingStores';
+import { newSlackNotifier } from './slackNotifier';
 
 const ASELO_STAFF_GROUP = 'form-builder-aselo-staff';
 const HELPLINE_GROUP_PATTERN = /^form-builder-([a-z0-9]+)$/;
@@ -82,32 +82,32 @@ const loadServices = async (): Promise<Services> => {
   const slackWebhookUrl = Parameters.find(parameter => parameter.Name === `${prefix}/slack_webhook_url`)?.Value;
 
   return {
-    snapshots: new RepoSnapshots(new PublicRepoSource(), '/tmp/flex-plugins'),
+    snapshots: newRepoSnapshots(newPublicRepoSource(), '/tmp/flex-plugins'),
     // Imports can read another branch (master is the default)
-    branches: new GitHubBranches('/tmp/flex-plugins-branches'),
+    branches: newGitHubBranches('/tmp/flex-plugins-branches'),
     // The HRM permissions, from the public hrm repo
-    permissionRules: new GitHubPermissionRules(),
-    drafts: new S3DraftStore(process.env.DRAFTS_BUCKET!),
+    permissionRules: newGitHubPermissionRules(),
+    drafts: newS3DraftStore(process.env.DRAFTS_BUCKET!),
     // Flow designer boards share the drafts bucket, under boards/
-    boards: new S3BoardStore(process.env.DRAFTS_BUCKET!),
-    people: new S3PeopleStore(process.env.DRAFTS_BUCKET!),
-    routing: new S3RoutingStore(process.env.DRAFTS_BUCKET!),
-    chatbots: new S3ChatbotStore(process.env.DRAFTS_BUCKET!),
-    helpQuestions: new S3HelpQuestionStore(process.env.DRAFTS_BUCKET!),
+    boards: newS3BoardStore(process.env.DRAFTS_BUCKET!),
+    people: newS3PeopleStore(process.env.DRAFTS_BUCKET!),
+    routing: newS3RoutingStore(process.env.DRAFTS_BUCKET!),
+    chatbots: newS3ChatbotStore(process.env.DRAFTS_BUCKET!),
+    helpQuestions: newS3HelpQuestionStore(process.env.DRAFTS_BUCKET!),
     // Until the recordings bucket is set up (RECORDINGS_BUCKET), recordings answer 501
     recordings: process.env.RECORDINGS_BUCKET
       ? {
-          files: new S3RecordingFiles(
+          files: newS3RecordingFiles(
             process.env.RECORDINGS_BUCKET,
             process.env.RECORDINGS_URL ?? 'https://recordings.tl.techmatters.org',
             process.env.RECORDINGS_DISTRIBUTION_ID,
           ),
-          log: new S3RecordingLogStore(process.env.DRAFTS_BUCKET!),
+          log: newS3RecordingLogStore(process.env.DRAFTS_BUCKET!),
         }
       : undefined,
     // Until the Slack webhook is set up, submissions are only logged
     notifier: slackWebhookUrl
-      ? new SlackNotifier(slackWebhookUrl, process.env.APP_URL ?? 'https://form-builder.tl.techmatters.org')
+      ? newSlackNotifier(slackWebhookUrl, process.env.APP_URL ?? 'https://form-builder.tl.techmatters.org')
       : localNotifier,
   };
 };

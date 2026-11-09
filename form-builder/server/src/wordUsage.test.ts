@@ -19,7 +19,7 @@ import { fileURLToPath } from 'url';
 import { describe, expect, test, jest } from '@jest/globals';
 
 import { ApiContext, ApiUser, handleApiRequest } from './api';
-import { MemoryDraftStore } from './drafts';
+import { newMemoryDraftStore } from './drafts';
 import { findWordUsage } from './wordUsage';
 
 const helplinesConfigDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../twilio-iac/helplines');
@@ -50,7 +50,7 @@ describe('where words appear in a helpline’s twilio-iac config', () => {
     const context: ApiContext = {
       formDefinitionsDir: '',
       helplinesConfigDir,
-      drafts: new MemoryDraftStore(),
+      drafts: newMemoryDraftStore(),
       notifier: { draftSubmitted: jest.fn(async () => undefined) },
     };
     const ask = (user: ApiUser, body: unknown) =>

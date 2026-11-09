@@ -25,7 +25,7 @@ import { jest } from '@jest/globals';
 import { render } from '@testing-library/react';
 import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
 import type { DefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
-import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import { newMemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { type Draft, type OperatingHoursUsage, repoPathOf, type WordUsage } from '@tech-matters/form-builder-shared';
 import { Provider } from 'react-redux';
 import type { Person } from '@tech-matters/form-builder-shared/flows/model';
@@ -63,7 +63,7 @@ const withFailingSaves = (client: DraftClient, failingSaves?: { remaining: numbe
     : client;
 
 export const createHarness = () => {
-  const store = new MemoryDraftStore();
+  const store = newMemoryDraftStore();
   const context: ApiContext = {
     formDefinitionsDir,
     helplinesConfigDir,

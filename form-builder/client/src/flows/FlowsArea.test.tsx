@@ -23,11 +23,15 @@ import { afterEach, beforeAll, beforeEach, describe, expect, test, jest } from '
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
-import { MemoryBoardStore } from '@tech-matters/form-builder-server/boards';
-import { MemoryPeopleStore } from '@tech-matters/form-builder-server/people';
-import { MemoryRecordingFiles, MemoryRecordingLogStore } from '@tech-matters/form-builder-server/recordingStores';
-import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
-import { MemoryRoutingStore } from '@tech-matters/form-builder-server/routingStore';
+import { BoardStore, newMemoryBoardStore } from '@tech-matters/form-builder-server/boards';
+import { newMemoryPeopleStore, PeopleStore } from '@tech-matters/form-builder-server/people';
+import {
+  newMemoryRecordingFiles,
+  MemoryRecordingFiles,
+  newMemoryRecordingLogStore,
+} from '@tech-matters/form-builder-server/recordingStores';
+import { newMemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import { newMemoryRoutingStore } from '@tech-matters/form-builder-server/routingStore';
 import { emptyRouting } from '@tech-matters/form-builder-shared/routing/model';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
 import { emptyBoard, type FlowObject } from '@tech-matters/form-builder-shared/flows/model';
@@ -85,8 +89,8 @@ beforeAll(() => {
 const staff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
 const usnmStaff: ApiUser = { name: 'NAMI person', role: 'helpline-staff', helplines: ['usnm'] };
 
-let boards: MemoryBoardStore;
-let people: MemoryPeopleStore;
+let boards: BoardStore;
+let people: PeopleStore;
 let recordingFiles: MemoryRecordingFiles;
 let context: ApiContext;
 
@@ -111,18 +115,18 @@ const clientAs = (user: ApiUser) =>
 
 beforeEach(() => {
   window.history.replaceState(null, '', '/?area=flows');
-  boards = new MemoryBoardStore();
-  people = new MemoryPeopleStore();
-  recordingFiles = new MemoryRecordingFiles();
+  boards = newMemoryBoardStore();
+  people = newMemoryPeopleStore();
+  recordingFiles = newMemoryRecordingFiles();
   context = {
     formDefinitionsDir: '/nowhere',
-    drafts: new MemoryDraftStore(),
+    drafts: newMemoryDraftStore(),
     boards,
     people,
-    routing: new MemoryRoutingStore(),
+    routing: newMemoryRoutingStore(),
     recordings: {
       files: recordingFiles,
-      log: new MemoryRecordingLogStore(),
+      log: newMemoryRecordingLogStore(),
       fetchSource: async (url: string) => new TextEncoder().encode(`audio from ${url}`),
     },
     // The repo's twilio-iac/helplines, for importing a live helpline

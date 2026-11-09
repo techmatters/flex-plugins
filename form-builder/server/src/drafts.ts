@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Drafts: work in progress on a helpline's definitions, kept apart from the real files until
@@ -25,7 +24,7 @@
  *   <root>/<code>/<version>/draft.json          metadata
  *   <root>/<code>/<version>/files/<path>.json   one per changed file
  *
- * LocalDraftStore keeps them in a folder (form-builder/drafts, gitignored) for local use; the
+ * newLocalDraftStore keeps them in a folder (form-builder/drafts, gitignored) for local use; the
  * deployed version uses the same layout in a private, versioned S3 bucket.
  */
 import { promises as fs } from 'fs';
@@ -83,16 +82,14 @@ const listFiles = async (dir: string): Promise<string[]> => {
   return nested.flat();
 };
 
-export class LocalDraftStore implements DraftStore {
-  constructor(private readonly rootDir: string) {}
-
-  private draftDir(code: string, version: string) {
+export const newLocalDraftStore = (rootDir: string): DraftStore => {
+  const draftDir = (code: string, version: string) => {
     if (!isValidDraftKey(code, version)) throw new Error(`Invalid draft ${code}/${version}`);
-    return path.join(this.rootDir, code, version);
-  }
+    return path.join(rootDir, code, version);
+  };
 
-  async get(code: string, version: string): Promise<Draft | undefined> {
-    const dir = this.draftDir(code, version);
+  const get = async (code: string, version: string): Promise<Draft | undefined> => {
+    const dir = draftDir(code, version);
     const meta = await readJson<DraftMeta>(path.join(dir, 'draft.json'));
     if (!meta) return undefined;
     const filesDir = path.join(dir, 'files');
@@ -102,10 +99,10 @@ export class LocalDraftStore implements DraftStore {
       files[relative] = await readJson(filePath);
     }
     return { code, version, meta, files };
-  }
+  };
 
-  async put({ code, version, meta, files }: Draft): Promise<void> {
-    const dir = this.draftDir(code, version);
+  const put = async ({ code, version, meta, files }: Draft): Promise<void> => {
+    const dir = draftDir(code, version);
     Object.keys(files).forEach(filePath => {
       if (!isValidDraftFilePath(filePath)) throw new Error(`Invalid file path ${filePath}`);
     });
@@ -118,22 +115,20 @@ export class LocalDraftStore implements DraftStore {
     }
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(path.join(dir, 'draft.json'), `${JSON.stringify(meta, null, 2)}\n`);
-  }
+  };
 
-  async remove(code: string, version: string): Promise<void> {
-    await fs.rm(this.draftDir(code, version), { recursive: true, force: true });
-  }
+  const remove = async (code: string, version: string): Promise<void> => {
+    await fs.rm(draftDir(code, version), { recursive: true, force: true });
+  };
 
-  async list(): Promise<DraftSummary[]> {
+  const list = async (): Promise<DraftSummary[]> => {
     const summaries: DraftSummary[] = [];
-    const codes = await fs.readdir(this.rootDir, { withFileTypes: true }).catch(() => []);
+    const codes = await fs.readdir(rootDir, { withFileTypes: true }).catch(() => []);
     for (const codeEntry of codes.filter(entry => entry.isDirectory())) {
-      const versions = await fs
-        .readdir(path.join(this.rootDir, codeEntry.name), { withFileTypes: true })
-        .catch(() => []);
+      const versions = await fs.readdir(path.join(rootDir, codeEntry.name), { withFileTypes: true }).catch(() => []);
       for (const versionEntry of versions.filter(entry => entry.isDirectory())) {
         if (!isValidDraftKey(codeEntry.name, versionEntry.name)) continue;
-        const draft = await this.get(codeEntry.name, versionEntry.name);
+        const draft = await get(codeEntry.name, versionEntry.name);
         if (draft) {
           summaries.push({
             code: draft.code,
@@ -145,34 +140,38 @@ export class LocalDraftStore implements DraftStore {
       }
     }
     return summaries;
-  }
-}
+  };
+
+  return { get, put, remove, list };
+};
 
 /**
  * Keeps drafts in memory; used by tests.
  */
-export class MemoryDraftStore implements DraftStore {
-  private drafts = new Map<string, Draft>();
+export const newMemoryDraftStore = (): DraftStore => {
+  const drafts = new Map<string, Draft>();
 
-  async get(code: string, version: string) {
-    const draft = this.drafts.get(`${code}/${version}`);
+  const get = async (code: string, version: string) => {
+    const draft = drafts.get(`${code}/${version}`);
     return draft ? structuredClone(draft) : undefined;
-  }
+  };
 
-  async put(draft: Draft) {
-    this.drafts.set(`${draft.code}/${draft.version}`, structuredClone(draft));
-  }
+  const put = async (draft: Draft) => {
+    drafts.set(`${draft.code}/${draft.version}`, structuredClone(draft));
+  };
 
-  async remove(code: string, version: string) {
-    this.drafts.delete(`${code}/${version}`);
-  }
+  const remove = async (code: string, version: string) => {
+    drafts.delete(`${code}/${version}`);
+  };
 
-  async list() {
-    return [...this.drafts.values()].map(({ code, version, meta, files }) => ({
+  const list = async () => {
+    return [...drafts.values()].map(({ code, version, meta, files }) => ({
       code,
       version,
       meta,
       changedFiles: Object.keys(files).sort(),
     }));
-  }
-}
+  };
+
+  return { get, put, remove, list };
+};

@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-/* eslint-disable max-classes-per-file -- the two places the rules are read from, side by side */
 
 /**
  * A helpline's HRM permissions, which live in the hrm repo (hrm-domain/hrm-core/permission-rules/
@@ -42,45 +41,46 @@ const NAME_PATTERN = /^[a-z0-9]+$/;
 const CODE_PATTERN = /^[a-z0-9]+$/;
 
 // A local hrm checkout's permission-rules folder
-export class LocalPermissionRules implements PermissionRulesSource {
-  constructor(private readonly dir: string, readonly description = 'your local hrm checkout') {}
-
-  async read(name: string) {
+export const newLocalPermissionRules = (
+  dir: string,
+  description = 'your local hrm checkout',
+): PermissionRulesSource => {
+  const read = async (name: string) => {
     if (!NAME_PATTERN.test(name)) return undefined;
-    return fs.readFile(path.join(this.dir, `${name}.json`), 'utf8').catch(() => undefined);
-  }
-}
+    return fs.readFile(path.join(dir, `${name}.json`), 'utf8').catch(() => undefined);
+  };
+
+  return { description, read };
+};
 
 // The public hrm repo on GitHub, each file kept for a few minutes
-export class GitHubPermissionRules implements PermissionRulesSource {
-  private readonly cache = new Map<string, { at: number; text: string | undefined }>();
+export const newGitHubPermissionRules = (
+  ownerAndRepo = 'techmatters/hrm',
+  branch = 'master',
+  fetchImpl: typeof fetch = fetch,
+  maxAgeMs = 5 * 60 * 1000,
+  now = () => Date.now(),
+): PermissionRulesSource => {
+  const cache = new Map<string, { at: number; text: string | undefined }>();
 
-  readonly description: string;
+  const description = `${ownerAndRepo} (${branch})`;
 
-  constructor(
-    private readonly ownerAndRepo = 'techmatters/hrm',
-    private readonly branch = 'master',
-    private readonly fetchImpl: typeof fetch = fetch,
-    private readonly maxAgeMs = 5 * 60 * 1000,
-    private readonly now = () => Date.now(),
-  ) {
-    this.description = `${ownerAndRepo} (${branch})`;
-  }
-
-  async read(name: string) {
+  const read = async (name: string) => {
     if (!NAME_PATTERN.test(name)) return undefined;
-    const cached = this.cache.get(name);
-    if (cached && this.now() - cached.at < this.maxAgeMs) return cached.text;
-    const url = `https://raw.githubusercontent.com/${this.ownerAndRepo}/${this.branch}/${REPO_HRM_PERMISSION_RULES_DIR}/${name}.json`;
-    const response = await this.fetchImpl(url, { headers: { 'User-Agent': 'aselo-form-builder' } });
+    const cached = cache.get(name);
+    if (cached && now() - cached.at < maxAgeMs) return cached.text;
+    const url = `https://raw.githubusercontent.com/${ownerAndRepo}/${branch}/${REPO_HRM_PERMISSION_RULES_DIR}/${name}.json`;
+    const response = await fetchImpl(url, { headers: { 'User-Agent': 'aselo-form-builder' } });
     if (!response.ok && response.status !== 404) {
-      throw new Error(`Could not read ${name}.json from ${this.description} (${response.status})`);
+      throw new Error(`Could not read ${name}.json from ${description} (${response.status})`);
     }
     const text = response.ok ? await response.text() : undefined;
-    this.cache.set(name, { at: this.now(), text });
+    cache.set(name, { at: now(), text });
     return text;
-  }
-}
+  };
+
+  return { description, read };
+};
 
 const HCL_FILES = ['common', 'staging', 'production', 'development'] as const;
 const PERMISSION_CONFIG_PATTERN = /^\s*permission_config\s*=\s*"([a-z0-9]+)"/m;

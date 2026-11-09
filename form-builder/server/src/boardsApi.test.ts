@@ -29,10 +29,10 @@ import {
 } from '@tech-matters/form-builder-shared/flows/model';
 
 import { ApiContext, ApiUser, handleApiRequest } from './api';
-import { LocalBoardStore, MemoryBoardStore } from './boards';
-import { MemoryPeopleStore } from './people';
-import { MemoryDraftStore } from './drafts';
-import { S3BoardStore } from './s3BoardStore';
+import { newLocalBoardStore, newMemoryBoardStore } from './boards';
+import { newMemoryPeopleStore } from './people';
+import { newMemoryDraftStore } from './drafts';
+import { newS3BoardStore } from './s3BoardStore';
 
 const formDefinitionsDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -60,9 +60,9 @@ const withFrame = (content: BoardContent): BoardContent => ({
 beforeEach(() => {
   context = {
     formDefinitionsDir,
-    drafts: new MemoryDraftStore(),
-    boards: new MemoryBoardStore(),
-    people: new MemoryPeopleStore(),
+    drafts: newMemoryDraftStore(),
+    boards: newMemoryBoardStore(),
+    people: newMemoryPeopleStore(),
     notifier: { draftSubmitted: jest.fn(async () => undefined) },
     now: () => new Date('2026-10-28T12:00:00Z'),
   };
@@ -274,7 +274,7 @@ describe('board stores', () => {
   test('S3: boards/<code>/<id>.json, next to the drafts', async () => {
     const s3 = fakeS3();
     s3.objects.set('drafts/usnm/v1/draft.json', '{}');
-    const store = new S3BoardStore('bucket', s3);
+    const store = newS3BoardStore('bucket', s3);
     await store.put(boardOf('usnm', 'abcd1234'));
     await store.put(boardOf('_templates', 'tmpl0001'));
     expect([...s3.objects.keys()].sort()).toEqual([
@@ -292,7 +292,7 @@ describe('board stores', () => {
   test('local: a folder per helpline', async () => {
     const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'boards-'));
     try {
-      const store = new LocalBoardStore(dir);
+      const store = newLocalBoardStore(dir);
       await store.put(boardOf('usnm', 'abcd1234'));
       expect(await fs.readdir(path.join(dir, 'usnm'))).toEqual(['abcd1234.json']);
       expect((await store.list()).map(summary => summary.id)).toEqual(['abcd1234']);

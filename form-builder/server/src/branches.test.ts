@@ -20,10 +20,10 @@ import { fileURLToPath } from 'url';
 import { describe, expect, test } from '@jest/globals';
 
 import { type ApiContext, type ApiUser, handleApiRequest } from './api';
-import { type BranchSource, GitHubBranches, isValidBranch } from './branches';
-import { MemoryChatbotStore } from './chatbotApi';
-import { MemoryDraftStore } from './drafts';
-import { MemoryRoutingStore } from './routingStore';
+import { type BranchSource, newGitHubBranches, isValidBranch } from './branches';
+import { newMemoryChatbotStore } from './chatbotApi';
+import { newMemoryDraftStore } from './drafts';
+import { newMemoryRoutingStore } from './routingStore';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const SHA = 'a'.repeat(40);
@@ -42,12 +42,12 @@ const fakeFetch = (async () => new Response(refList)) as unknown as typeof fetch
 
 describe('branches', () => {
   test('the choices: the default first, then every branch with a safe name', async () => {
-    const deployed = new GitHubBranches('/nowhere', 'master', 'techmatters/flex-plugins', fakeFetch);
+    const deployed = newGitHubBranches('/nowhere', 'master', 'techmatters/flex-plugins', fakeFetch);
     expect(await deployed.choices()).toEqual([
       { value: '', label: 'master' },
       { value: 'alejandro-c/usvc/update_1029', label: 'alejandro-c/usvc/update_1029' },
     ]);
-    const local = new GitHubBranches('/nowhere', 'This checkout (local files)', 'techmatters/flex-plugins', fakeFetch);
+    const local = newGitHubBranches('/nowhere', 'This checkout (local files)', 'techmatters/flex-plugins', fakeFetch);
     expect((await local.choices()).map(choice => choice.value)).toEqual(['', 'alejandro-c/usvc/update_1029', 'master']);
     expect(isValidBranch('alejandro-c/usnm/update_0929')).toBe(true);
     expect(isValidBranch('../etc')).toBe(false);
@@ -72,9 +72,9 @@ describe('branches', () => {
     const context: ApiContext = {
       // Without a branch, imports read nothing here
       formDefinitionsDir: '/nowhere',
-      drafts: new MemoryDraftStore(),
-      chatbots: new MemoryChatbotStore(),
-      routing: new MemoryRoutingStore(),
+      drafts: newMemoryDraftStore(),
+      chatbots: newMemoryChatbotStore(),
+      routing: newMemoryRoutingStore(),
       branches,
       notifier: { draftSubmitted: async () => undefined },
     };
@@ -195,7 +195,7 @@ describe('branches', () => {
       const masterContext: ApiContext = {
         ...context,
         formDefinitionsDir: path.join(repoRoot, 'lambdas/packages/hrm-form-definitions/form-definitions'),
-        drafts: new MemoryDraftStore(),
+        drafts: newMemoryDraftStore(),
       };
       const callMaster = (user: ApiUser, method: string, apiPath: string, body?: unknown) =>
         handleApiRequest(masterContext, { method, path: apiPath, body, user });

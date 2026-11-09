@@ -20,7 +20,7 @@ import { describe, expect, test, jest } from '@jest/globals';
 import { OPERATING_INFO_FILE, repoPathOf } from '@tech-matters/form-builder-shared';
 
 import { ApiContext, ApiUser, handleApiRequest } from './api';
-import { MemoryDraftStore } from './drafts';
+import { newMemoryDraftStore } from './drafts';
 import { findOperatingHoursUsage, operatingHoursChoices } from './operatingHoursApi';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -32,7 +32,7 @@ const usnmStaff: ApiUser = { name: 'NAMI person', role: 'helpline-staff', helpli
 const context = (): ApiContext => ({
   formDefinitionsDir,
   helplinesConfigDir,
-  drafts: new MemoryDraftStore(),
+  drafts: newMemoryDraftStore(),
   notifier: { draftSubmitted: jest.fn(async () => undefined) },
 });
 

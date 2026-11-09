@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Reads the HCL in twilio-iac: the helplines' Terragrunt files (common.hcl, staging.hcl...) and
@@ -48,263 +47,262 @@ class HclError extends Error {}
 const IDENT = /[A-Za-z_][A-Za-z0-9_-]*/y;
 const NUMBER = /-?\d+(\.\d+)?([eE][+-]?\d+)?/y;
 
-class Parser {
-  private at = 0;
+const newParser = (text: string) => {
+  let at = 0;
 
-  constructor(private readonly text: string) {}
-
-  private fail(message: string): never {
-    const line = this.text.slice(0, this.at).split('\n').length;
+  // A declaration, not an arrow function, so TypeScript knows nothing runs after a call
+  function fail(message: string): never {
+    const line = text.slice(0, at).split('\n').length;
     throw new HclError(`${message} (line ${line})`);
   }
 
-  private peek(offset = 0) {
-    return this.text[this.at + offset];
-  }
+  const peek = (offset = 0) => {
+    return text[at + offset];
+  };
 
-  private startsWith(token: string) {
-    return this.text.startsWith(token, this.at);
-  }
+  const startsWith = (token: string) => {
+    return text.startsWith(token, at);
+  };
 
   // Spaces, comments and (unless inline) newlines
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  private skip(newlines = true) {
+  const skip = (newlines = true) => {
     for (;;) {
-      const char = this.peek();
+      const char = peek();
       if (char === ' ' || char === '\t' || char === '\r' || (newlines && char === '\n')) {
-        this.at += 1;
-      } else if (char === '#' || this.startsWith('//')) {
-        while (this.at < this.text.length && this.peek() !== '\n') this.at += 1;
-      } else if (this.startsWith('/*')) {
-        const end = this.text.indexOf('*/', this.at + 2);
-        this.at = end < 0 ? this.text.length : end + 2;
+        at += 1;
+      } else if (char === '#' || startsWith('//')) {
+        while (at < text.length && peek() !== '\n') at += 1;
+      } else if (startsWith('/*')) {
+        const end = text.indexOf('*/', at + 2);
+        at = end < 0 ? text.length : end + 2;
       } else {
         return;
       }
     }
-  }
+  };
 
-  private match(pattern: RegExp) {
-    pattern.lastIndex = this.at;
-    const found = pattern.exec(this.text);
+  const match = (pattern: RegExp) => {
+    pattern.lastIndex = at;
+    const found = pattern.exec(text);
     if (!found) return undefined;
-    this.at += found[0].length;
+    at += found[0].length;
     return found[0];
-  }
+  };
 
-  private expect(char: string) {
-    this.skip();
-    if (this.peek() !== char) this.fail(`Expected ${char}`);
-    this.at += 1;
-  }
+  const expect = (char: string) => {
+    skip();
+    if (peek() !== char) fail(`Expected ${char}`);
+    at += 1;
+  };
 
   // A body: attributes (name = value) and blocks (name "label" { ... }), until } or the end
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  parseBody(end?: string): HclBody {
+  const parseBody = (end?: string): HclBody => {
     const body: HclBody = { attributes: {}, blocks: [] };
     for (;;) {
-      this.skip();
-      if (this.at >= this.text.length || (end && this.peek() === end)) return body;
-      const name = this.peek() === '"' ? this.parseString() : this.match(IDENT);
-      if (name === undefined) this.fail('Expected an attribute or a block');
-      this.skip(false);
-      if (this.peek() === '=' && this.peek(1) !== '=') {
-        this.at += 1;
-        body.attributes[name] = this.parseExpression();
+      skip();
+      if (at >= text.length || (end && peek() === end)) return body;
+      const name = peek() === '"' ? parseString() : match(IDENT);
+      if (name === undefined) fail('Expected an attribute or a block');
+      skip(false);
+      if (peek() === '=' && peek(1) !== '=') {
+        at += 1;
+        body.attributes[name] = parseExpression();
         continue;
       }
       const labels: string[] = [];
       for (;;) {
-        this.skip(false);
-        if (this.peek() === '{') break;
-        const label = this.peek() === '"' ? this.parseString() : this.match(IDENT);
-        if (label === undefined) this.fail(`Expected = or a block after ${name}`);
+        skip(false);
+        if (peek() === '{') break;
+        const label = peek() === '"' ? parseString() : match(IDENT);
+        if (label === undefined) fail(`Expected = or a block after ${name}`);
         labels.push(label);
       }
-      this.at += 1;
-      const blockBody = this.parseBody('}');
-      this.expect('}');
+      at += 1;
+      const blockBody = parseBody('}');
+      expect('}');
       body.blocks.push({ type: name, labels, body: blockBody });
     }
-  }
+  };
 
-  parseExpression(): HclValue {
-    this.skip();
-    const start = this.at;
-    const value = this.parsePrimary();
+  const parseExpression = (): HclValue => {
+    skip();
+    const start = at;
+    const value = parsePrimary();
     // Anything after a value on the same line (an operator, an attribute access...) makes it an
     // expression we don't evaluate
-    const afterValue = this.at;
-    this.skip(false);
-    const next = this.peek();
-    if (next !== undefined && !',}])\n'.includes(next) && !this.startsWith('//') && next !== '#') {
-      this.at = start;
-      return { expression: this.rawExpression() };
+    const afterValue = at;
+    skip(false);
+    const next = peek();
+    if (next !== undefined && !',}])\n'.includes(next) && !startsWith('//') && next !== '#') {
+      at = start;
+      return { expression: rawExpression() };
     }
-    this.at = afterValue;
+    at = afterValue;
     return value;
-  }
+  };
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  private parsePrimary(): HclValue {
-    const char = this.peek();
-    if (char === '{') return this.parseObject();
-    if (char === '[') return this.parseList();
-    if (char === '"') return this.parseString();
-    if (this.startsWith('<<')) return this.parseHeredoc();
-    if (char === '$' && this.peek(1) === '{') {
+  const parsePrimary = (): HclValue => {
+    const char = peek();
+    if (char === '{') return parseObject();
+    if (char === '[') return parseList();
+    if (char === '"') return parseString();
+    if (startsWith('<<')) return parseHeredoc();
+    if (char === '$' && peek(1) === '{') {
       // A bare interpolation (`${ jsonencode({...}) }`, as templates are written)
-      const raw = this.rawInterpolation();
+      const raw = rawInterpolation();
       const inner = raw.slice(2, -1);
-      const nested = new Parser(inner);
+      const nested = newParser(inner);
       try {
         const value = nested.parseExpression();
         nested.skip();
-        if (nested.at >= inner.length) return value;
+        if (nested.position() >= inner.length) return value;
       } catch {
         // Not something we read
       }
       return { expression: raw };
     }
-    const number = this.match(NUMBER);
+    const number = match(NUMBER);
     if (number !== undefined) return Number(number);
-    const start = this.at;
-    const ident = this.match(/[A-Za-z_][A-Za-z0-9_]*/y);
+    const start = at;
+    const ident = match(/[A-Za-z_][A-Za-z0-9_]*/y);
     if (ident === 'true' || ident === 'false') return ident === 'true';
     if (ident === 'null') return null;
-    if (ident === 'jsonencode' && this.peek() === '(') {
-      this.at += 1;
-      const value = this.parseExpression();
-      this.expect(')');
+    if (ident === 'jsonencode' && peek() === '(') {
+      at += 1;
+      const value = parseExpression();
+      expect(')');
       return value;
     }
-    this.at = start;
-    return { expression: this.rawExpression() };
-  }
+    at = start;
+    return { expression: rawExpression() };
+  };
 
-  private parseObject(): HclObject {
-    this.at += 1;
+  const parseObject = (): HclObject => {
+    at += 1;
     const object: HclObject = {};
     for (;;) {
-      this.skip();
-      if (this.peek() === '}') {
-        this.at += 1;
+      skip();
+      if (peek() === '}') {
+        at += 1;
         return object;
       }
       let key: string | undefined;
-      if (this.peek() === '"') key = this.parseString();
-      else if (this.peek() === '(') key = this.rawExpression();
-      else key = this.match(IDENT);
-      if (key === undefined) this.fail('Expected a key');
-      this.skip(false);
-      if (this.peek() !== '=' && this.peek() !== ':') this.fail(`Expected = or : after ${key}`);
-      this.at += 1;
-      object[key] = this.parseExpression();
-      this.skip();
-      if (this.peek() === ',') this.at += 1;
+      if (peek() === '"') key = parseString();
+      else if (peek() === '(') key = rawExpression();
+      else key = match(IDENT);
+      if (key === undefined) fail('Expected a key');
+      skip(false);
+      if (peek() !== '=' && peek() !== ':') fail(`Expected = or : after ${key}`);
+      at += 1;
+      object[key] = parseExpression();
+      skip();
+      if (peek() === ',') at += 1;
     }
-  }
+  };
 
-  private parseList(): HclValue[] {
-    this.at += 1;
+  const parseList = (): HclValue[] => {
+    at += 1;
     const list: HclValue[] = [];
     for (;;) {
-      this.skip();
-      if (this.peek() === ']') {
-        this.at += 1;
+      skip();
+      if (peek() === ']') {
+        at += 1;
         return list;
       }
-      list.push(this.parseExpression());
-      this.skip();
-      if (this.peek() === ',') this.at += 1;
+      list.push(parseExpression());
+      skip();
+      if (peek() === ',') at += 1;
     }
-  }
+  };
 
   // A quoted string; interpolations (${...}, %{...}) are kept as they're written
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  parseString(): string {
-    this.at += 1;
+  const parseString = (): string => {
+    at += 1;
     let result = '';
     for (;;) {
-      const char = this.peek();
-      if (char === undefined) this.fail('Unterminated string');
+      const char = peek();
+      if (char === undefined) fail('Unterminated string');
       if (char === '"') {
-        this.at += 1;
+        at += 1;
         return result;
       }
       if (char === '\\') {
-        const escaped = this.peek(1);
-        this.at += 2;
+        const escaped = peek(1);
+        at += 2;
         if (escaped === 'n') result += '\n';
         else if (escaped === 't') result += '\t';
         else if (escaped === 'r') result += '\r';
         else if (escaped === 'u') {
-          result += String.fromCharCode(parseInt(this.text.slice(this.at, this.at + 4), 16));
-          this.at += 4;
+          result += String.fromCharCode(parseInt(text.slice(at, at + 4), 16));
+          at += 4;
         } else result += escaped;
-      } else if (this.startsWith('$${') || this.startsWith('%%{')) {
+      } else if (startsWith('$${') || startsWith('%%{')) {
         result += `${char}{`;
-        this.at += 3;
-      } else if ((char === '$' || char === '%') && this.peek(1) === '{') {
-        result += this.rawInterpolation();
+        at += 3;
+      } else if ((char === '$' || char === '%') && peek(1) === '{') {
+        result += rawInterpolation();
       } else {
         result += char;
-        this.at += 1;
+        at += 1;
       }
     }
-  }
+  };
 
   // ${ ... } with whatever is inside, braces and strings included
-  private rawInterpolation(): string {
-    const start = this.at;
-    this.at += 2;
+  const rawInterpolation = (): string => {
+    const start = at;
+    at += 2;
     let depth = 1;
     while (depth > 0) {
-      const char = this.peek();
-      if (char === undefined) this.fail('Unterminated interpolation');
+      const char = peek();
+      if (char === undefined) fail('Unterminated interpolation');
       if (char === '"') {
-        this.parseString();
+        parseString();
         continue;
       }
       if (char === '{') depth += 1;
       if (char === '}') depth -= 1;
-      this.at += 1;
+      at += 1;
     }
-    return this.text.slice(start, this.at);
-  }
+    return text.slice(start, at);
+  };
 
-  private parseHeredoc(): string {
-    const header = this.match(/<<-?([A-Za-z_][A-Za-z0-9_]*)[ \t]*\r?\n/y);
-    if (!header) this.fail('Invalid heredoc');
+  const parseHeredoc = (): string => {
+    const header = match(/<<-?([A-Za-z_][A-Za-z0-9_]*)[ \t]*\r?\n/y);
+    if (!header) fail('Invalid heredoc');
     const indented = header.startsWith('<<-');
     const marker = header.replace(/^<<-?/, '').trim();
     const lines: string[] = [];
     for (;;) {
-      const lineEnd = this.text.indexOf('\n', this.at);
-      const line = this.text.slice(this.at, lineEnd < 0 ? undefined : lineEnd).replace(/\r$/, '');
-      this.at = lineEnd < 0 ? this.text.length : lineEnd + 1;
+      const lineEnd = text.indexOf('\n', at);
+      const line = text.slice(at, lineEnd < 0 ? undefined : lineEnd).replace(/\r$/, '');
+      at = lineEnd < 0 ? text.length : lineEnd + 1;
       if (line.trim() === marker) break;
-      if (lineEnd < 0) this.fail('Unterminated heredoc');
+      if (lineEnd < 0) fail('Unterminated heredoc');
       lines.push(line);
     }
     if (!indented) return `${lines.join('\n')}\n`;
     const indent = Math.min(...lines.filter(line => line.trim()).map(line => line.match(/^\s*/)![0].length));
     return `${lines.map(line => line.slice(indent)).join('\n')}\n`;
-  }
+  };
 
   // An expression we don't read, as written: up to the end of the line (or a , } ] at depth 0)
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  private rawExpression(): string {
-    const start = this.at;
+  const rawExpression = (): string => {
+    const start = at;
     let depth = 0;
-    while (this.at < this.text.length) {
-      const char = this.peek();
+    while (at < text.length) {
+      const char = peek();
       if (char === '"') {
-        this.parseString();
+        parseString();
         continue;
       }
-      if (char === '$' && this.peek(1) === '{') {
-        this.rawInterpolation();
+      if (char === '$' && peek(1) === '{') {
+        rawInterpolation();
         continue;
       }
       if ('([{'.includes(char)) depth += 1;
@@ -313,19 +311,23 @@ class Parser {
         depth -= 1;
       }
       if (depth === 0 && (char === ',' || char === '\n')) break;
-      this.at += 1;
+      at += 1;
     }
-    return this.text.slice(start, this.at).trim();
-  }
+    return text.slice(start, at).trim();
+  };
 
-  atEnd() {
-    this.skip();
-    return this.at >= this.text.length;
-  }
-}
+  const atEnd = () => {
+    skip();
+    return at >= text.length;
+  };
+
+  const position = () => at;
+
+  return { parseBody, parseExpression, parseString, atEnd, skip, position };
+};
 
 export const parseHcl = (text: string): HclBody => {
-  const parser = new Parser(text);
+  const parser = newParser(text);
   const body = parser.parseBody();
   if (!parser.atEnd()) throw new HclError('Unexpected text at the end');
   return body;
@@ -336,7 +338,7 @@ export const parseHcl = (text: string): HclBody => {
  * interpolations in its strings.
  */
 export const parseTemplate = (text: string): HclValue => {
-  const parser = new Parser(text);
+  const parser = newParser(text);
   const value = parser.parseExpression();
   if (!parser.atEnd()) throw new HclError('Unexpected text after the flow');
   return value;

@@ -21,9 +21,9 @@ import { describe, expect, test, jest } from '@jest/globals';
 import { emptyBoard } from '@tech-matters/form-builder-shared/flows/model';
 
 import { ApiContext, ApiUser, handleApiRequest } from './api';
-import { MemoryDraftStore } from './drafts';
-import { MemoryBoardStore } from './boards';
-import { MemoryRoutingStore } from './routingStore';
+import { newMemoryDraftStore } from './drafts';
+import { newMemoryBoardStore } from './boards';
+import { newMemoryRoutingStore } from './routingStore';
 import type { PostFlowChoices } from './postStudioFlowChoices';
 
 const helplinesConfigDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../twilio-iac/helplines');
@@ -32,14 +32,14 @@ const helplineStaff: ApiUser = { name: 'NAMI person', role: 'helpline-staff', he
 
 describe('what postStudioFlows can point at', () => {
   test("the helpline's queues and post_call_survey_* flows, from its config and the builder", async () => {
-    const routing = new MemoryRoutingStore();
+    const routing = newMemoryRoutingStore();
     await routing.put({ code: 'usnm', design: { queues: [{ key: 'en_new', name: 'EN New' }] } } as never);
     const context: ApiContext = {
       formDefinitionsDir: '/nowhere',
       helplinesConfigDir,
-      drafts: new MemoryDraftStore(),
+      drafts: newMemoryDraftStore(),
       notifier: { draftSubmitted: jest.fn(async () => undefined) },
-      boards: new MemoryBoardStore(),
+      boards: newMemoryBoardStore(),
       routing,
     };
     const call = (user: ApiUser, method: string, apiPath: string, body?: unknown) =>

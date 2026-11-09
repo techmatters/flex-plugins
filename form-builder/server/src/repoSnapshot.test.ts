@@ -23,7 +23,7 @@ import { fileURLToPath } from 'url';
 import { afterAll, beforeAll, describe, expect, test, jest } from '@jest/globals';
 
 import { loadDefinitionFiles } from './definitionsApi';
-import { RepoSnapshots } from './repoSnapshot';
+import { newRepoSnapshots } from './repoSnapshot';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 
@@ -57,7 +57,7 @@ describe('snapshots of master', () => {
     'unpack only what the builder reads, and are read like a checkout',
     async () => {
       const source = { headSha: jest.fn(async () => 'sha1'), tarball: jest.fn(async () => tarball) };
-      const snapshot = await new RepoSnapshots(source, tempDir).latest();
+      const snapshot = await newRepoSnapshots(source, tempDir).latest();
 
       const definitions = await loadDefinitionFiles(
         snapshot.formDefinitionsDir,
@@ -80,7 +80,7 @@ describe('snapshots of master', () => {
       let time = 0;
       let sha = 'sha1';
       const source = { headSha: jest.fn(async () => sha), tarball: jest.fn(async () => tarball) };
-      const snapshots = new RepoSnapshots(source, path.join(tempDir, 'cache'), 30_000, () => time);
+      const snapshots = newRepoSnapshots(source, path.join(tempDir, 'cache'), 30_000, () => time);
 
       const [first, second] = await Promise.all([snapshots.latest(), snapshots.latest()]);
       expect(second).toBe(first);

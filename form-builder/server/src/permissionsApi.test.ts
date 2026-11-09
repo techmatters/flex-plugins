@@ -20,9 +20,9 @@ import { describe, expect, test, jest } from '@jest/globals';
 import { permissionRulesPath, repoPathOf } from '@tech-matters/form-builder-shared';
 
 import { ApiContext, ApiUser, handleApiRequest } from './api';
-import { MemoryDraftStore } from './drafts';
+import { newMemoryDraftStore } from './drafts';
 import {
-  GitHubPermissionRules,
+  newGitHubPermissionRules,
   loadPermissions,
   type PermissionRulesSource,
   readPermissionConfigs,
@@ -66,7 +66,7 @@ describe('permissions', () => {
 
   test('read from GitHub, kept for a while', async () => {
     const fetchImpl = jest.fn(async () => new Response('{"viewCase": []}', { status: 200 }));
-    const github = new GitHubPermissionRules('techmatters/hrm', 'master', fetchImpl as unknown as typeof fetch);
+    const github = newGitHubPermissionRules('techmatters/hrm', 'master', fetchImpl as unknown as typeof fetch);
     expect(await github.read('usnm')).toBe('{"viewCase": []}');
     await github.read('usnm');
     expect(fetchImpl).toHaveBeenCalledTimes(1);
@@ -81,7 +81,7 @@ describe('permissions', () => {
     const shared: ApiContext = {
       formDefinitionsDir,
       helplinesConfigDir,
-      drafts: new MemoryDraftStore(),
+      drafts: newMemoryDraftStore(),
       notifier: { draftSubmitted: jest.fn(async () => undefined) },
       permissionRules: rules,
       applier: { apply },

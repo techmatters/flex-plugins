@@ -32,8 +32,8 @@ import {
 } from '@tech-matters/form-builder-shared/flows/recordings';
 import { type HelplineImport, importHelpline } from '@tech-matters/form-builder-server/flowImport';
 import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
-import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
-import { MemoryRecordingFiles, MemoryRecordingLogStore } from '@tech-matters/form-builder-server/recordingStores';
+import { newMemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import { newMemoryRecordingFiles, newMemoryRecordingLogStore } from '@tech-matters/form-builder-server/recordingStores';
 
 import { toStudioFlows } from './studioTemplate';
 
@@ -190,11 +190,11 @@ describe('recordings with older names', () => {
   test('renaming in the library is a copy, in each environment the file is in, keeping who did what', async () => {
     const staff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
     const uschStaff: ApiUser = { name: 'Childhelp person', role: 'helpline-staff', helplines: ['usch'] };
-    const files = new MemoryRecordingFiles();
+    const files = newMemoryRecordingFiles();
     const context: ApiContext = {
       formDefinitionsDir: '/nowhere',
-      drafts: new MemoryDraftStore(),
-      recordings: { files, log: new MemoryRecordingLogStore() },
+      drafts: newMemoryDraftStore(),
+      recordings: { files, log: newMemoryRecordingLogStore() },
       notifier: { draftSubmitted: async () => undefined },
     };
     const call = (user: ApiUser, method: string, apiPath: string, body?: unknown) =>

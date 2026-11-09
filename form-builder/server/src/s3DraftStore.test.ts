@@ -18,7 +18,7 @@ import { DeleteObjectCommand, GetObjectCommand, ListObjectsV2Command, PutObjectC
 import { describe, expect, test } from '@jest/globals';
 
 import { Draft } from './drafts';
-import { S3DraftStore } from './s3DraftStore';
+import { newS3DraftStore } from './s3DraftStore';
 
 // Just enough of S3 for the store: objects in a map, listed one per page
 const fakeS3 = () => {
@@ -53,7 +53,7 @@ const draft = (code: string, files: Record<string, unknown>): Draft => ({
 describe('drafts in S3', () => {
   test('are saved, listed and removed', async () => {
     const s3 = fakeS3();
-    const store = new S3DraftStore('bucket', s3);
+    const store = newS3DraftStore('bucket', s3);
     expect(await store.get('usnm', 'v1')).toBeUndefined();
 
     await store.put(draft('usnm', { 'tabbedForms/CallerInformationTab.json': [] }));
@@ -72,7 +72,7 @@ describe('drafts in S3', () => {
   });
 
   test('refuse keys and paths outside a draft', async () => {
-    const store = new S3DraftStore('bucket', fakeS3());
+    const store = newS3DraftStore('bucket', fakeS3());
     await expect(store.get('../x', 'v1')).rejects.toThrow();
     await expect(store.put(draft('usnm', { '../secret.json': {} }))).rejects.toThrow();
   });

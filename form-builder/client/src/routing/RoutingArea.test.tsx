@@ -22,8 +22,8 @@ import { fileURLToPath } from 'url';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, jest } from '@jest/globals';
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
-import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
-import { MemoryRoutingStore } from '@tech-matters/form-builder-server/routingStore';
+import { newMemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import { newMemoryRoutingStore, RoutingStore } from '@tech-matters/form-builder-server/routingStore';
 import { Provider } from 'react-redux';
 import { readWho } from '@tech-matters/form-builder-shared/routing/expressions';
 import { emptyRouting } from '@tech-matters/form-builder-shared/routing/model';
@@ -62,7 +62,7 @@ beforeAll(() => {
 const staff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
 const usnmStaff: ApiUser = { name: 'NAMI person', role: 'helpline-staff', helplines: ['usnm'] };
 
-let store: MemoryRoutingStore;
+let store: RoutingStore;
 let context: ApiContext;
 const clientAs = (user: ApiUser) =>
   routingClientFor((method, apiPath, body) =>
@@ -70,10 +70,10 @@ const clientAs = (user: ApiUser) =>
   );
 
 beforeEach(() => {
-  store = new MemoryRoutingStore();
+  store = newMemoryRoutingStore();
   context = {
     formDefinitionsDir: '/nowhere',
-    drafts: new MemoryDraftStore(),
+    drafts: newMemoryDraftStore(),
     routing: store,
     helplinesConfigDir: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../twilio-iac/helplines'),
     notifier: { draftSubmitted: async () => undefined },

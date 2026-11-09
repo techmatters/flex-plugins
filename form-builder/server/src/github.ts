@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Talks to GitHub as the "Aselo Form Builder" GitHub App (see terraform/README.md): reads
@@ -50,20 +49,19 @@ class GitHubError extends Error {
   }
 }
 
-export class GitHubClient {
-  private token?: { value: string; expiresAt: number };
+// eslint-disable-next-line import/no-unused-modules -- wired in with the GitHub App Apply, after the proof of concept
+export const newGitHubClient = (
+  credentials: GitHubAppCredentials,
+  repo: GitHubRepo = FLEX_PLUGINS,
+  fetchImpl: typeof fetch = fetch,
+) => {
+  let token: { value: string; expiresAt: number } | undefined;
 
-  constructor(
-    private readonly credentials: GitHubAppCredentials,
-    readonly repo: GitHubRepo = FLEX_PLUGINS,
-    private readonly fetchImpl: typeof fetch = fetch,
-  ) {}
-
-  private async installationToken() {
+  const installationToken = async () => {
     // Renewed 5 minutes before it expires
-    if (this.token && this.token.expiresAt - 5 * 60 * 1000 > Date.now()) return this.token.value;
-    const { appId, installationId, privateKey } = this.credentials;
-    const response = await this.fetchImpl(`${API}/app/installations/${installationId}/access_tokens`, {
+    if (token && token.expiresAt - 5 * 60 * 1000 > Date.now()) return token.value;
+    const { appId, installationId, privateKey } = credentials;
+    const response = await fetchImpl(`${API}/app/installations/${installationId}/access_tokens`, {
       method: 'POST',
       headers: {
         Accept: 'application/vnd.github+json',
@@ -74,18 +72,18 @@ export class GitHubClient {
     if (!response.ok) throw new GitHubError(`GitHub sign-in failed (${response.status})`, response.status);
     // eslint-disable-next-line camelcase -- as the API spells it
     const body = (await response.json()) as { token: string; expires_at: string };
-    this.token = { value: body.token, expiresAt: Date.parse(body.expires_at) };
+    token = { value: body.token, expiresAt: Date.parse(body.expires_at) };
     return body.token;
-  }
+  };
 
   // A call to the repo's API, e.g. request('GET', '/commits/master'); returns the raw response
-  async raw(method: string, repoPath: string, body?: unknown, accept = 'application/vnd.github+json') {
-    const { owner, repo } = this.repo;
-    const response = await this.fetchImpl(`${API}/repos/${owner}/${repo}${repoPath}`, {
+  const raw = async (method: string, repoPath: string, body?: unknown, accept = 'application/vnd.github+json') => {
+    const { owner, repo: repoName } = repo;
+    const response = await fetchImpl(`${API}/repos/${owner}/${repoName}${repoPath}`, {
       method,
       headers: {
         Accept: accept,
-        Authorization: `Bearer ${await this.installationToken()}`,
+        Authorization: `Bearer ${await installationToken()}`,
         'User-Agent': 'aselo-form-builder',
         'X-GitHub-Api-Version': '2022-11-28',
         ...(body === undefined ? {} : { 'Content-Type': 'application/json' }),
@@ -100,20 +98,24 @@ export class GitHubClient {
       );
     }
     return response;
-  }
+  };
 
-  async request<T>(method: string, repoPath: string, body?: unknown): Promise<T> {
-    return (await (await this.raw(method, repoPath, body)).json()) as T;
-  }
+  const request = async <T>(method: string, repoPath: string, body?: unknown): Promise<T> => {
+    return (await (await raw(method, repoPath, body)).json()) as T;
+  };
 
   // The commit master points at now
-  async headSha(branch = 'master') {
-    const response = await this.raw('GET', `/commits/${branch}`, undefined, 'application/vnd.github.sha');
+  const headSha = async (branch = 'master') => {
+    const response = await raw('GET', `/commits/${branch}`, undefined, 'application/vnd.github.sha');
     return (await response.text()).trim();
-  }
+  };
 
   // The repo at a commit, as a .tar.gz
-  async tarball(sha: string) {
-    return Buffer.from(await (await this.raw('GET', `/tarball/${sha}`)).arrayBuffer());
-  }
-}
+  const tarball = async (sha: string) => {
+    return Buffer.from(await (await raw('GET', `/tarball/${sha}`)).arrayBuffer());
+  };
+
+  return { repo, raw, request, headSha, tarball };
+};
+
+export type GitHubClient = ReturnType<typeof newGitHubClient>;

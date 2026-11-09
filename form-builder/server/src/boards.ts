@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Flow designer boards (see docs/flow-designer.md), one JSON file each:
@@ -21,7 +20,7 @@
  *   <root>/<code>/<id>.json       a helpline's board
  *   <root>/_templates/<id>.json   an Aselo template
  *
- * LocalBoardStore keeps them in a folder (form-builder/boards, gitignored) for local use; the
+ * newLocalBoardStore keeps them in a folder (form-builder/boards, gitignored) for local use; the
  * deployed version uses the same layout under boards/ in the private, versioned drafts bucket.
  */
 import { promises as fs } from 'fs';
@@ -81,68 +80,70 @@ export const isBoardContent = (value: unknown): value is BoardContent => {
   );
 };
 
-export class LocalBoardStore implements BoardStore {
-  constructor(private readonly rootDir: string) {}
-
-  private file(code: string, id: string) {
+export const newLocalBoardStore = (rootDir: string): BoardStore => {
+  const fileOf = (code: string, id: string) => {
     if (!isValidBoardKey(code, id)) throw new Error(`Invalid board ${code}/${id}`);
-    return path.join(this.rootDir, code, `${id}.json`);
-  }
+    return path.join(rootDir, code, `${id}.json`);
+  };
 
-  async get(code: string, id: string): Promise<Board | undefined> {
+  const get = async (code: string, id: string): Promise<Board | undefined> => {
     try {
-      return JSON.parse(await fs.readFile(this.file(code, id), 'utf8')) as Board;
+      return JSON.parse(await fs.readFile(fileOf(code, id), 'utf8')) as Board;
     } catch {
       return undefined;
     }
-  }
+  };
 
-  async put(board: Board): Promise<void> {
-    const file = this.file(board.code, board.id);
+  const put = async (board: Board): Promise<void> => {
+    const file = fileOf(board.code, board.id);
     await fs.mkdir(path.dirname(file), { recursive: true });
     await fs.writeFile(file, `${JSON.stringify(board, null, 2)}\n`);
-  }
+  };
 
-  async remove(code: string, id: string): Promise<void> {
-    await fs.rm(this.file(code, id), { force: true });
-  }
+  const remove = async (code: string, id: string): Promise<void> => {
+    await fs.rm(fileOf(code, id), { force: true });
+  };
 
-  async list(): Promise<BoardSummary[]> {
+  const list = async (): Promise<BoardSummary[]> => {
     const summaries: BoardSummary[] = [];
-    const codes = await fs.readdir(this.rootDir, { withFileTypes: true }).catch(() => []);
+    const codes = await fs.readdir(rootDir, { withFileTypes: true }).catch(() => []);
     for (const codeEntry of codes.filter(entry => entry.isDirectory())) {
-      const files = await fs.readdir(path.join(this.rootDir, codeEntry.name)).catch(() => []);
+      const files = await fs.readdir(path.join(rootDir, codeEntry.name)).catch(() => []);
       for (const fileName of files.filter(name => name.endsWith('.json'))) {
         const id = fileName.slice(0, -'.json'.length);
         if (!isValidBoardKey(codeEntry.name, id)) continue;
-        const board = await this.get(codeEntry.name, id);
+        const board = await get(codeEntry.name, id);
         if (board) summaries.push(summaryOf(board));
       }
     }
     return summaries;
-  }
-}
+  };
+
+  return { get, put, remove, list };
+};
 
 /**
  * Keeps boards in memory; used by tests.
  */
-export class MemoryBoardStore implements BoardStore {
-  private boards = new Map<string, Board>();
+export const newMemoryBoardStore = (): BoardStore => {
+  const boards = new Map<string, Board>();
 
-  async get(code: string, id: string) {
-    const board = this.boards.get(`${code}/${id}`);
+  const get = async (code: string, id: string) => {
+    const board = boards.get(`${code}/${id}`);
     return board ? structuredClone(board) : undefined;
-  }
+  };
 
-  async put(board: Board) {
-    this.boards.set(`${board.code}/${board.id}`, structuredClone(board));
-  }
+  const put = async (board: Board) => {
+    boards.set(`${board.code}/${board.id}`, structuredClone(board));
+  };
 
-  async remove(code: string, id: string) {
-    this.boards.delete(`${code}/${id}`);
-  }
+  const remove = async (code: string, id: string) => {
+    boards.delete(`${code}/${id}`);
+  };
 
-  async list() {
-    return [...this.boards.values()].map(summaryOf);
-  }
-}
+  const list = async () => {
+    return [...boards.values()].map(summaryOf);
+  };
+
+  return { get, put, remove, list };
+};

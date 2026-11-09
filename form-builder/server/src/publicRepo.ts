@@ -37,23 +37,23 @@ export const readBranchHeads = async (
   return heads;
 };
 
-export class PublicRepoSource implements SnapshotSource {
-  constructor(
-    private readonly ownerAndRepo = 'techmatters/flex-plugins',
-    private readonly branch = 'master',
-    private readonly fetchImpl: typeof fetch = fetch,
-  ) {}
-
-  async headSha() {
-    const sha = (await readBranchHeads(this.ownerAndRepo, this.fetchImpl)).get(this.branch);
-    if (!sha) throw new Error(`${this.ownerAndRepo} has no ${this.branch} branch`);
+export const newPublicRepoSource = (
+  ownerAndRepo = 'techmatters/flex-plugins',
+  branch = 'master',
+  fetchImpl: typeof fetch = fetch,
+): SnapshotSource => {
+  const headSha = async () => {
+    const sha = (await readBranchHeads(ownerAndRepo, fetchImpl)).get(branch);
+    if (!sha) throw new Error(`${ownerAndRepo} has no ${branch} branch`);
     return sha;
-  }
+  };
 
-  async tarball(sha: string) {
-    const url = `https://codeload.github.com/${this.ownerAndRepo}/tar.gz/${sha}`;
-    const response = await this.fetchImpl(url, { headers: { 'User-Agent': 'aselo-form-builder' } });
-    if (!response.ok) throw new Error(`Could not download ${this.ownerAndRepo} from GitHub (${response.status})`);
+  const tarball = async (sha: string) => {
+    const url = `https://codeload.github.com/${ownerAndRepo}/tar.gz/${sha}`;
+    const response = await fetchImpl(url, { headers: { 'User-Agent': 'aselo-form-builder' } });
+    if (!response.ok) throw new Error(`Could not download ${ownerAndRepo} from GitHub (${response.status})`);
     return Buffer.from(await response.arrayBuffer());
-  }
-}
+  };
+
+  return { headSha, tarball };
+};

@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Where recordings are kept (see docs/flow-designer.md, "Where recordings are stored"):
@@ -124,24 +123,28 @@ const emptyFiles = (): StoredFiles => ({ staging: new Map(), production: new Map
 // ---------------------------------------------------------------------------------------------
 // Local
 
-export class LocalRecordingFiles implements RecordingFiles {
-  constructor(private readonly rootDir: string) {}
+type LocalRecordingFiles = RecordingFiles & {
+  // Called by the dev server when the browser sends the file, and to play it back
+  write: (code: string, fileName: string, content: Buffer) => Promise<void>;
+  read: (code: string, environment: RecordingEnvironment, fileName: string) => Promise<Buffer>;
+};
 
-  private file(code: string, environment: RecordingEnvironment, fileName: string) {
+export const newLocalRecordingFiles = (rootDir: string): LocalRecordingFiles => {
+  const file = (code: string, environment: RecordingEnvironment, fileName: string) => {
     check(code, fileName);
-    return path.join(this.rootDir, folderOf(code, environment), fileName);
-  }
+    return path.join(rootDir, folderOf(code, environment), fileName);
+  };
 
   // Played through the dev server (devApiPlugin.ts)
-  baseUrl(code: string, environment: RecordingEnvironment) {
+  const baseUrl = (code: string, environment: RecordingEnvironment) => {
     const [helpline, folder] = code.split('/');
     return `/api/recordings/${helpline}/local/${environment}${folder ? `/${folder}` : ''}`;
-  }
+  };
 
-  async list(code: string): Promise<StoredFiles> {
+  const list = async (code: string): Promise<StoredFiles> => {
     const files = emptyFiles();
     for (const environment of ENVIRONMENTS) {
-      const dir = path.join(this.rootDir, folderOf(code, environment));
+      const dir = path.join(rootDir, folderOf(code, environment));
       const names = await fs.readdir(dir).catch(() => [] as string[]);
       for (const fileName of names.filter(name => RECORDING_FILE_PATTERN.test(name))) {
         const full = path.join(dir, fileName);
@@ -150,97 +153,108 @@ export class LocalRecordingFiles implements RecordingFiles {
           etag: createHash('md5').update(content).digest('hex'),
           size: stats.size,
           lastModified: stats.mtime.toISOString(),
-          url: `${this.baseUrl(code, environment)}/${fileName}`,
+          url: `${baseUrl(code, environment)}/${fileName}`,
         });
       }
     }
     return files;
-  }
+  };
 
-  async uploadTarget(code: string, fileName: string, contentType: string): Promise<UploadTarget> {
+  const uploadTarget = async (code: string, fileName: string, contentType: string): Promise<UploadTarget> => {
     check(code, fileName);
     return {
-      url: `${this.baseUrl(code, 'staging')}/${fileName}`,
+      url: `${baseUrl(code, 'staging')}/${fileName}`,
       method: 'PUT',
       headers: { 'Content-Type': contentType },
     };
-  }
+  };
 
   // Called by the dev server when the browser sends the file
-  async write(code: string, fileName: string, content: Buffer) {
-    const target = this.file(code, 'staging', fileName);
+  const write = async (code: string, fileName: string, content: Buffer) => {
+    const target = file(code, 'staging', fileName);
     await fs.mkdir(path.dirname(target), { recursive: true });
     await fs.writeFile(target, content);
-  }
+  };
 
-  async read(code: string, environment: RecordingEnvironment, fileName: string) {
-    return fs.readFile(this.file(code, environment, fileName));
-  }
+  const read = async (code: string, environment: RecordingEnvironment, fileName: string) => {
+    return fs.readFile(file(code, environment, fileName));
+  };
 
-  async publish(code: string, fileName: string) {
-    const target = this.file(code, 'production', fileName);
+  const publish = async (code: string, fileName: string) => {
+    const target = file(code, 'production', fileName);
     await fs.mkdir(path.dirname(target), { recursive: true });
-    await fs.copyFile(this.file(code, 'staging', fileName), target);
-  }
+    await fs.copyFile(file(code, 'staging', fileName), target);
+  };
 
-  async remove(code: string, environment: RecordingEnvironment, fileName: string) {
-    await fs.rm(this.file(code, environment, fileName), { force: true });
-  }
+  const remove = async (code: string, environment: RecordingEnvironment, fileName: string) => {
+    await fs.rm(file(code, environment, fileName), { force: true });
+  };
 
-  async copy(code: string, environment: RecordingEnvironment, from: string, to: string) {
-    await fs.copyFile(this.file(code, environment, from), this.file(code, environment, to));
-  }
+  const copy = async (code: string, environment: RecordingEnvironment, from: string, to: string) => {
+    await fs.copyFile(file(code, environment, from), file(code, environment, to));
+  };
 
-  async store(code: string, environment: RecordingEnvironment, fileName: string, content: Uint8Array) {
-    const target = this.file(code, environment, fileName);
+  const store = async (code: string, environment: RecordingEnvironment, fileName: string, content: Uint8Array) => {
+    const target = file(code, environment, fileName);
     await fs.mkdir(path.dirname(target), { recursive: true });
     await fs.writeFile(target, content);
-  }
+  };
 
-  async refresh() {
+  const refresh = async () => {
     // Nothing cached locally
-  }
-}
+  };
 
-export class LocalRecordingLogStore implements RecordingLogStore {
-  constructor(private readonly rootDir: string) {}
+  return { baseUrl, list, uploadTarget, write, read, publish, remove, copy, store, refresh };
+};
 
-  private file(code: string) {
+export const newLocalRecordingLogStore = (rootDir: string): RecordingLogStore => {
+  const fileOf = (code: string) => {
     if (!RECORDING_LIBRARY_PATTERN.test(code)) throw new Error(`Invalid helpline ${code}`);
     const [helpline, folder] = code.split('/');
-    return path.join(this.rootDir, helpline, folder ? `log-${folder}.json` : 'log.json');
-  }
+    return path.join(rootDir, helpline, folder ? `log-${folder}.json` : 'log.json');
+  };
 
-  async get(code: string): Promise<RecordingLog> {
+  const get = async (code: string): Promise<RecordingLog> => {
     try {
-      return JSON.parse(await fs.readFile(this.file(code), 'utf8')) as RecordingLog;
+      return JSON.parse(await fs.readFile(fileOf(code), 'utf8')) as RecordingLog;
     } catch {
       return {};
     }
-  }
+  };
 
-  async put(code: string, log: RecordingLog) {
-    const file = this.file(code);
+  const put = async (code: string, log: RecordingLog) => {
+    const file = fileOf(code);
     await fs.mkdir(path.dirname(file), { recursive: true });
     await fs.writeFile(file, `${JSON.stringify(log, null, 2)}\n`);
-  }
-}
+  };
+
+  return { get, put };
+};
 
 // ---------------------------------------------------------------------------------------------
 // In memory, for tests
 
-export class MemoryRecordingFiles implements RecordingFiles {
-  readonly files = new Map<string, { content: string; at: string }>();
+export type MemoryRecordingFiles = RecordingFiles & {
+  // Every file, by key (<folder>/<fileName>), so tests can check them
+  files: Map<string, { content: string; at: string }>;
+  // The keys refresh was called for
+  refreshed: string[];
+  // What the browser's upload does
+  put: (code: string, fileName: string, content: string) => void;
+};
 
-  readonly refreshed: string[] = [];
+export const newMemoryRecordingFiles = (): MemoryRecordingFiles => {
+  const stored = new Map<string, { content: string; at: string }>();
 
-  baseUrl(code: string, environment: RecordingEnvironment) {
+  const refreshed: string[] = [];
+
+  const baseUrl = (code: string, environment: RecordingEnvironment) => {
     return `https://recordings.test/${folderOf(code, environment)}`;
-  }
+  };
 
-  async list(code: string) {
+  const list = async (code: string) => {
     const files = emptyFiles();
-    this.files.forEach(({ content, at }, key) => {
+    stored.forEach(({ content, at }, key) => {
       const environment = ENVIRONMENTS.find(candidate => key.startsWith(`${folderOf(code, candidate)}/`));
       const fileName = environment && key.slice(folderOf(code, environment).length + 1);
       if (!environment || !fileName || fileName.includes('/')) return;
@@ -248,100 +262,102 @@ export class MemoryRecordingFiles implements RecordingFiles {
         etag: createHash('md5').update(content).digest('hex'),
         size: content.length,
         lastModified: at,
-        url: `${this.baseUrl(code, environment as RecordingEnvironment)}/${fileName}`,
+        url: `${baseUrl(code, environment as RecordingEnvironment)}/${fileName}`,
       });
     });
     return files;
-  }
+  };
 
-  async uploadTarget(code: string, fileName: string, contentType: string): Promise<UploadTarget> {
+  const uploadTarget = async (code: string, fileName: string, contentType: string): Promise<UploadTarget> => {
     check(code, fileName);
     return {
       url: `https://upload.test/${folderOf(code, 'staging')}/${fileName}`,
       method: 'PUT',
       headers: { 'Content-Type': contentType },
     };
-  }
+  };
 
   // What the browser's upload does
-  put(code: string, fileName: string, content: string) {
-    this.files.set(`${folderOf(code, 'staging')}/${fileName}`, { content, at: new Date().toISOString() });
-  }
+  const put = (code: string, fileName: string, content: string) => {
+    stored.set(`${folderOf(code, 'staging')}/${fileName}`, { content, at: new Date().toISOString() });
+  };
 
-  async publish(code: string, fileName: string) {
-    const staging = this.files.get(`${folderOf(code, 'staging')}/${fileName}`);
+  const publish = async (code: string, fileName: string) => {
+    const staging = stored.get(`${folderOf(code, 'staging')}/${fileName}`);
     if (!staging) throw new Error('Nothing to publish');
-    this.files.set(`${folderOf(code, 'production')}/${fileName}`, { ...staging });
-  }
+    stored.set(`${folderOf(code, 'production')}/${fileName}`, { ...staging });
+  };
 
-  async remove(code: string, environment: RecordingEnvironment, fileName: string) {
-    this.files.delete(`${folderOf(code, environment)}/${fileName}`);
-  }
+  const remove = async (code: string, environment: RecordingEnvironment, fileName: string) => {
+    stored.delete(`${folderOf(code, environment)}/${fileName}`);
+  };
 
-  async copy(code: string, environment: RecordingEnvironment, from: string, to: string) {
+  const copy = async (code: string, environment: RecordingEnvironment, from: string, to: string) => {
     check(code, to);
-    const source = this.files.get(`${folderOf(code, environment)}/${from}`);
+    const source = stored.get(`${folderOf(code, environment)}/${from}`);
     if (!source) throw new Error(`No ${from} to copy`);
-    this.files.set(`${folderOf(code, environment)}/${to}`, { ...source });
-  }
+    stored.set(`${folderOf(code, environment)}/${to}`, { ...source });
+  };
 
-  async store(code: string, environment: RecordingEnvironment, fileName: string, content: Uint8Array) {
+  const store = async (code: string, environment: RecordingEnvironment, fileName: string, content: Uint8Array) => {
     check(code, fileName);
-    this.files.set(`${folderOf(code, environment)}/${fileName}`, {
+    stored.set(`${folderOf(code, environment)}/${fileName}`, {
       content: Buffer.from(content).toString(),
       at: new Date().toISOString(),
     });
-  }
+  };
 
-  async refresh(code: string, environment: RecordingEnvironment, fileName: string) {
-    this.refreshed.push(`${folderOf(code, environment)}/${fileName}`);
-  }
-}
+  const refresh = async (code: string, environment: RecordingEnvironment, fileName: string) => {
+    refreshed.push(`${folderOf(code, environment)}/${fileName}`);
+  };
 
-export class MemoryRecordingLogStore implements RecordingLogStore {
-  private logs = new Map<string, RecordingLog>();
+  return { files: stored, refreshed, baseUrl, list, uploadTarget, put, publish, remove, copy, store, refresh };
+};
 
-  async get(code: string) {
-    return structuredClone(this.logs.get(code) ?? {});
-  }
+export const newMemoryRecordingLogStore = (): RecordingLogStore => {
+  const logs = new Map<string, RecordingLog>();
 
-  async put(code: string, log: RecordingLog) {
-    this.logs.set(code, structuredClone(log));
-  }
-}
+  const get = async (code: string) => {
+    return structuredClone(logs.get(code) ?? {});
+  };
+
+  const put = async (code: string, log: RecordingLog) => {
+    logs.set(code, structuredClone(log));
+  };
+
+  return { get, put };
+};
 
 // ---------------------------------------------------------------------------------------------
 // Deployed
 
-export class S3RecordingFiles implements RecordingFiles {
-  constructor(
-    private readonly bucket: string,
-    // https://recordings.tl.techmatters.org
-    private readonly publicUrl: string,
-    // The recordings CloudFront distribution, to refresh replaced files
-    private readonly distributionId?: string,
-    private readonly s3: Pick<S3Client, 'send'> = new S3Client({}),
-    private readonly cloudFront: Pick<CloudFrontClient, 'send'> = new CloudFrontClient({}),
-    // Makes the browser's upload link (replaced in tests)
-    private readonly sign: (command: PutObjectCommand) => Promise<string> = command =>
-      getSignedUrl(s3 as S3Client, command, { expiresIn: 600 }),
-  ) {}
-
-  private key(code: string, environment: RecordingEnvironment, fileName: string) {
+export const newS3RecordingFiles = (
+  bucket: string,
+  // https://recordings.tl.techmatters.org
+  publicUrl: string,
+  // The recordings CloudFront distribution, to refresh replaced files
+  distributionId?: string,
+  s3: Pick<S3Client, 'send'> = new S3Client({}),
+  cloudFront: Pick<CloudFrontClient, 'send'> = new CloudFrontClient({}),
+  // Makes the browser's upload link (replaced in tests)
+  sign: (command: PutObjectCommand) => Promise<string> = command =>
+    getSignedUrl(s3 as S3Client, command, { expiresIn: 600 }),
+): RecordingFiles => {
+  const keyOf = (code: string, environment: RecordingEnvironment, fileName: string) => {
     check(code, fileName);
     return `${folderOf(code, environment)}/${fileName}`;
-  }
+  };
 
-  baseUrl(code: string, environment: RecordingEnvironment) {
-    return `${this.publicUrl}/${folderOf(code, environment)}`;
-  }
+  const baseUrl = (code: string, environment: RecordingEnvironment) => {
+    return `${publicUrl}/${folderOf(code, environment)}`;
+  };
 
-  async list(code: string): Promise<StoredFiles> {
+  const list = async (code: string): Promise<StoredFiles> => {
     const files = emptyFiles();
     let token: string | undefined;
     do {
-      const page: ListObjectsV2CommandOutput = await this.s3.send(
-        new ListObjectsV2Command({ Bucket: this.bucket, Prefix: `${code.split('/')[0]}/`, ContinuationToken: token }),
+      const page: ListObjectsV2CommandOutput = await s3.send(
+        new ListObjectsV2Command({ Bucket: bucket, Prefix: `${code.split('/')[0]}/`, ContinuationToken: token }),
       );
       (page.Contents ?? []).forEach(object => {
         // Only this library's files: not its sub-folders' (other flows'), nor the helpline's
@@ -355,106 +371,108 @@ export class S3RecordingFiles implements RecordingFiles {
           etag: (object.ETag ?? '').replace(/"/g, ''),
           size: object.Size ?? 0,
           lastModified: object.LastModified?.toISOString() ?? '',
-          url: `${this.baseUrl(code, environment as RecordingEnvironment)}/${fileName}`,
+          url: `${baseUrl(code, environment as RecordingEnvironment)}/${fileName}`,
         });
       });
       token = page.NextContinuationToken;
     } while (token);
     return files;
-  }
+  };
 
-  async uploadTarget(code: string, fileName: string, contentType: string): Promise<UploadTarget> {
-    const url = await this.sign(
-      new PutObjectCommand({ Bucket: this.bucket, Key: this.key(code, 'staging', fileName), ContentType: contentType }),
+  const uploadTarget = async (code: string, fileName: string, contentType: string): Promise<UploadTarget> => {
+    const url = await sign(
+      new PutObjectCommand({ Bucket: bucket, Key: keyOf(code, 'staging', fileName), ContentType: contentType }),
     );
     return { url, method: 'PUT', headers: { 'Content-Type': contentType } };
-  }
+  };
 
-  async publish(code: string, fileName: string) {
-    await this.s3.send(
+  const publish = async (code: string, fileName: string) => {
+    await s3.send(
       new CopyObjectCommand({
-        Bucket: this.bucket,
-        CopySource: `${this.bucket}/${this.key(code, 'staging', fileName)}`,
-        Key: this.key(code, 'production', fileName),
+        Bucket: bucket,
+        CopySource: `${bucket}/${keyOf(code, 'staging', fileName)}`,
+        Key: keyOf(code, 'production', fileName),
       }),
     );
-  }
+  };
 
-  async remove(code: string, environment: RecordingEnvironment, fileName: string) {
-    await this.s3.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: this.key(code, environment, fileName) }));
-  }
+  const remove = async (code: string, environment: RecordingEnvironment, fileName: string) => {
+    await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: keyOf(code, environment, fileName) }));
+  };
 
-  async copy(code: string, environment: RecordingEnvironment, from: string, to: string) {
-    await this.s3.send(
+  const copy = async (code: string, environment: RecordingEnvironment, from: string, to: string) => {
+    await s3.send(
       new CopyObjectCommand({
-        Bucket: this.bucket,
-        CopySource: `${this.bucket}/${this.key(code, environment, from)}`,
-        Key: this.key(code, environment, to),
+        Bucket: bucket,
+        CopySource: `${bucket}/${keyOf(code, environment, from)}`,
+        Key: keyOf(code, environment, to),
       }),
     );
-  }
+  };
 
-  async store(
+  const store = async (
     code: string,
     environment: RecordingEnvironment,
     fileName: string,
     content: Uint8Array,
     contentType: string,
-  ) {
-    await this.s3.send(
+  ) => {
+    await s3.send(
       new PutObjectCommand({
-        Bucket: this.bucket,
-        Key: this.key(code, environment, fileName),
+        Bucket: bucket,
+        Key: keyOf(code, environment, fileName),
         Body: content,
         ContentType: contentType,
       }),
     );
-  }
+  };
 
-  async refresh(code: string, environment: RecordingEnvironment, fileName: string) {
-    if (!this.distributionId) return;
-    await this.cloudFront.send(
+  const refresh = async (code: string, environment: RecordingEnvironment, fileName: string) => {
+    if (!distributionId) return;
+    await cloudFront.send(
       new CreateInvalidationCommand({
-        DistributionId: this.distributionId,
+        DistributionId: distributionId,
         InvalidationBatch: {
           CallerReference: randomUUID(),
-          Paths: { Quantity: 1, Items: [`/${this.key(code, environment, fileName)}`] },
+          Paths: { Quantity: 1, Items: [`/${keyOf(code, environment, fileName)}`] },
         },
       }),
     );
-  }
-}
+  };
 
-export class S3RecordingLogStore implements RecordingLogStore {
-  constructor(
-    // The private drafts bucket
-    private readonly bucket: string,
-    private readonly s3: Pick<S3Client, 'send'> = new S3Client({}),
-  ) {}
+  return { baseUrl, list, uploadTarget, publish, remove, copy, store, refresh };
+};
 
-  private key(code: string) {
+export const newS3RecordingLogStore = (
+  // The private drafts bucket
+  bucket: string,
+  s3: Pick<S3Client, 'send'> = new S3Client({}),
+): RecordingLogStore => {
+  const key = (code: string) => {
     if (!RECORDING_LIBRARY_PATTERN.test(code)) throw new Error(`Invalid helpline ${code}`);
     return `recordings/${code}.json`;
-  }
+  };
 
-  async get(code: string): Promise<RecordingLog> {
+  const get = async (code: string): Promise<RecordingLog> => {
     try {
-      const response = await this.s3.send(new GetObjectCommand({ Bucket: this.bucket, Key: this.key(code) }));
+      const response = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key(code) }));
       return JSON.parse(await response.Body!.transformToString()) as RecordingLog;
     } catch (err) {
       if ((err as Error).name === 'NoSuchKey') return {};
       throw err;
     }
-  }
+  };
 
-  async put(code: string, log: RecordingLog) {
-    await this.s3.send(
+  const put = async (code: string, log: RecordingLog) => {
+    await s3.send(
       new PutObjectCommand({
-        Bucket: this.bucket,
-        Key: this.key(code),
+        Bucket: bucket,
+        Key: key(code),
         Body: JSON.stringify(log),
         ContentType: 'application/json',
       }),
     );
-  }
-}
+  };
+
+  return { get, put };
+};

@@ -22,8 +22,8 @@ import { afterEach, describe, expect, test } from '@jest/globals';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
 import type { BranchSource } from '@tech-matters/form-builder-server/branches';
-import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
-import { MemoryBoardStore } from '@tech-matters/form-builder-server/boards';
+import { newMemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import { newMemoryBoardStore } from '@tech-matters/form-builder-server/boards';
 import { Provider } from 'react-redux';
 
 import { boardClientFor } from './boardClient';
@@ -59,8 +59,8 @@ describe('importing a helpline from a branch', () => {
       formDefinitionsDir: '/nowhere',
       // The default (master); the branch is read through branches
       helplinesConfigDir: path.join(repoRoot, 'twilio-iac/helplines'),
-      drafts: new MemoryDraftStore(),
-      boards: new MemoryBoardStore(),
+      drafts: newMemoryDraftStore(),
+      boards: newMemoryBoardStore(),
       branches,
       notifier: { draftSubmitted: async () => undefined },
     };

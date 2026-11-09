@@ -72,36 +72,34 @@ const snapshotOf = (sha: string, repoRoot: string): Snapshot => ({
   webchatConfigDir: path.join(repoRoot, REPO_WEBCHAT_CONFIG_DIR),
 });
 
-export class RepoSnapshots {
-  private current?: Snapshot;
+export const newRepoSnapshots = (
+  source: SnapshotSource,
+  rootDir: string,
+  // How long master is assumed unchanged between checks
+  maxAgeMs = 30_000,
+  now = () => Date.now(),
+) => {
+  let current: Snapshot | undefined;
 
-  private checkedAt = 0;
+  let checkedAt = 0;
 
-  private pending?: Promise<Snapshot>;
+  let pending: Promise<Snapshot> | undefined;
 
-  constructor(
-    private readonly source: SnapshotSource,
-    private readonly rootDir: string,
-    // How long master is assumed unchanged between checks
-    private readonly maxAgeMs = 30_000,
-    private readonly now = () => Date.now(),
-  ) {}
-
-  async latest(): Promise<Snapshot> {
-    if (this.current && this.now() - this.checkedAt < this.maxAgeMs) return this.current;
+  const latest = async (): Promise<Snapshot> => {
+    if (current && now() - checkedAt < maxAgeMs) return current;
     // Requests arriving together share one check (and one download)
-    this.pending ??= this.refresh().finally(() => {
-      this.pending = undefined;
+    pending ??= refresh().finally(() => {
+      pending = undefined;
     });
-    return this.pending;
-  }
+    return pending;
+  };
 
-  private async refresh(): Promise<Snapshot> {
-    const sha = await this.source.headSha();
-    this.checkedAt = this.now();
-    if (this.current?.sha === sha) return this.current;
+  const refresh = async (): Promise<Snapshot> => {
+    const sha = await source.headSha();
+    checkedAt = now();
+    if (current?.sha === sha) return current;
 
-    const repoRoot = path.join(this.rootDir, sha);
+    const repoRoot = path.join(rootDir, sha);
     const complete = path.join(repoRoot, '.complete');
     const alreadyThere = await fs.stat(complete).then(
       () => true,
@@ -109,15 +107,19 @@ export class RepoSnapshots {
     );
     if (!alreadyThere) {
       await fs.rm(repoRoot, { recursive: true, force: true });
-      await extractSnapshot(await this.source.tarball(sha), repoRoot);
+      await extractSnapshot(await source.tarball(sha), repoRoot);
       await fs.writeFile(complete, sha);
     }
 
     // Older snapshots aren't needed any more (a Lambda instance handles one request at a time,
     // so nothing is still reading them)
-    const previous = this.current;
-    this.current = snapshotOf(sha, repoRoot);
+    const previous = current;
+    current = snapshotOf(sha, repoRoot);
     if (previous) await fs.rm(previous.repoRoot, { recursive: true, force: true });
-    return this.current;
-  }
-}
+    return current;
+  };
+
+  return { latest };
+};
+
+export type RepoSnapshots = ReturnType<typeof newRepoSnapshots>;

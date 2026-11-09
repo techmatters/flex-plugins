@@ -13,7 +13,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-/* eslint-disable max-classes-per-file -- the errors it throws live with it */
 
 /**
  * Questions the help panel couldn't answer, sent to the Aselo team by the person who asked (they
@@ -45,57 +44,60 @@ const MONTH_PATTERN = /^\d{4}-\d{2}$/;
 const monthOf = (date: Date) => date.toISOString().slice(0, 7);
 const MAX_QUESTION_LENGTH = 500;
 
-export class LocalHelpQuestionStore implements HelpQuestionStore {
-  constructor(private readonly rootDir: string) {}
-
-  private file(month: string) {
+export const newLocalHelpQuestionStore = (rootDir: string): HelpQuestionStore => {
+  const file = (month: string) => {
     if (!MONTH_PATTERN.test(month)) throw new Error(`Invalid month ${month}`);
-    return path.join(this.rootDir, `${month}.json`);
-  }
+    return path.join(rootDir, `${month}.json`);
+  };
 
-  async get(month: string): Promise<HelpQuestion[]> {
+  const get = async (month: string): Promise<HelpQuestion[]> => {
     try {
-      return JSON.parse(await fs.readFile(this.file(month), 'utf8')) as HelpQuestion[];
+      return JSON.parse(await fs.readFile(file(month), 'utf8')) as HelpQuestion[];
     } catch {
       return [];
     }
-  }
+  };
 
-  async put(month: string, questions: HelpQuestion[]): Promise<void> {
-    await fs.mkdir(this.rootDir, { recursive: true });
-    await fs.writeFile(this.file(month), `${JSON.stringify(questions, null, 2)}\n`);
-  }
-}
+  const put = async (month: string, questions: HelpQuestion[]): Promise<void> => {
+    await fs.mkdir(rootDir, { recursive: true });
+    await fs.writeFile(file(month), `${JSON.stringify(questions, null, 2)}\n`);
+  };
 
-export class S3HelpQuestionStore implements HelpQuestionStore {
-  constructor(private readonly bucket: string, private readonly s3: Pick<S3Client, 'send'> = new S3Client({})) {}
+  return { get, put };
+};
 
-  private key(month: string) {
+export const newS3HelpQuestionStore = (
+  bucket: string,
+  s3: Pick<S3Client, 'send'> = new S3Client({}),
+): HelpQuestionStore => {
+  const key = (month: string) => {
     if (!MONTH_PATTERN.test(month)) throw new Error(`Invalid month ${month}`);
     return `help-questions/${month}.json`;
-  }
+  };
 
-  async get(month: string): Promise<HelpQuestion[]> {
+  const get = async (month: string): Promise<HelpQuestion[]> => {
     try {
-      const response = await this.s3.send(new GetObjectCommand({ Bucket: this.bucket, Key: this.key(month) }));
+      const response = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: key(month) }));
       return JSON.parse(await response.Body!.transformToString()) as HelpQuestion[];
     } catch (err) {
       if ((err as Error).name === 'NoSuchKey') return [];
       throw err;
     }
-  }
+  };
 
-  async put(month: string, questions: HelpQuestion[]): Promise<void> {
-    await this.s3.send(
+  const put = async (month: string, questions: HelpQuestion[]): Promise<void> => {
+    await s3.send(
       new PutObjectCommand({
-        Bucket: this.bucket,
-        Key: this.key(month),
+        Bucket: bucket,
+        Key: key(month),
         Body: JSON.stringify(questions),
         ContentType: 'application/json',
       }),
     );
-  }
-}
+  };
+
+  return { get, put };
+};
 
 export const handleHelpRequest = async (
   store: HelpQuestionStore | undefined,

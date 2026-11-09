@@ -28,8 +28,8 @@ import { boardChecks } from '@tech-matters/form-builder-shared/flows/checks';
 import { importHelpline } from '@tech-matters/form-builder-server/flowImport';
 import { parseTemplate } from '@tech-matters/form-builder-server/hcl';
 import { type ApiContext, type ApiUser, handleApiRequest } from '@tech-matters/form-builder-server/api';
-import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
-import { MemoryRecordingFiles, MemoryRecordingLogStore } from '@tech-matters/form-builder-server/recordingStores';
+import { newMemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import { newMemoryRecordingFiles, newMemoryRecordingLogStore } from '@tech-matters/form-builder-server/recordingStores';
 
 import { toStudioFlows } from './studioTemplate';
 import { toFlowExport } from './exports';
@@ -156,11 +156,11 @@ describe('flows sharing a template', () => {
 
 describe('recordings in a flow’s own folder', () => {
   const staff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
-  const files = new MemoryRecordingFiles();
+  const files = newMemoryRecordingFiles();
   const context: ApiContext = {
     formDefinitionsDir: '/nowhere',
-    drafts: new MemoryDraftStore(),
-    recordings: { files, log: new MemoryRecordingLogStore() },
+    drafts: newMemoryDraftStore(),
+    recordings: { files, log: newMemoryRecordingLogStore() },
     notifier: { draftSubmitted: async () => undefined },
   };
   const call = (method: string, apiPath: string, body?: unknown) =>

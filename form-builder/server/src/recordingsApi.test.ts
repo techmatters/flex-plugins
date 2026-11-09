@@ -26,12 +26,13 @@ import { CreateInvalidationCommand } from '@aws-sdk/client-cloudfront';
 import type { RecordingsList } from '@tech-matters/form-builder-shared/flows/recordings';
 
 import { ApiContext, ApiUser, handleApiRequest } from './api';
-import { MemoryDraftStore } from './drafts';
+import { newMemoryDraftStore } from './drafts';
 import {
+  newMemoryRecordingFiles,
   MemoryRecordingFiles,
-  MemoryRecordingLogStore,
-  S3RecordingFiles,
-  S3RecordingLogStore,
+  newMemoryRecordingLogStore,
+  newS3RecordingFiles,
+  newS3RecordingLogStore,
 } from './recordingStores';
 
 const staff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', helplines: 'all' };
@@ -53,11 +54,11 @@ const upload = async (user: ApiUser, content: string, fileName = FILE) => {
 };
 
 beforeEach(() => {
-  files = new MemoryRecordingFiles();
+  files = newMemoryRecordingFiles();
   context = {
     formDefinitionsDir: '/nowhere',
-    drafts: new MemoryDraftStore(),
-    recordings: { files, log: new MemoryRecordingLogStore() },
+    drafts: newMemoryDraftStore(),
+    recordings: { files, log: newMemoryRecordingLogStore() },
     notifier: { draftSubmitted: jest.fn(async () => undefined) },
     now: () => new Date('2026-10-28T12:00:00Z'),
   };
@@ -168,7 +169,7 @@ describe('recordings in S3', () => {
     };
     const cloudFront = { send: jest.fn(async () => ({})) };
     const sign = jest.fn(async () => 'https://signed.example/upload');
-    const store = new S3RecordingFiles(
+    const store = newS3RecordingFiles(
       'tl-aselo-recordings',
       'https://recordings.tl.techmatters.org',
       'E123',
@@ -229,7 +230,7 @@ describe('recordings in S3', () => {
         return {};
       },
     };
-    const log = new S3RecordingLogStore('tl-form-builder-drafts', s3 as any);
+    const log = newS3RecordingLogStore('tl-form-builder-drafts', s3 as any);
     expect(await log.get('usnm')).toEqual({});
     await log.put('usnm', { [FILE]: { uploadedBy: 'Ale' } });
     expect([...objects.keys()]).toEqual(['recordings/usnm.json']);

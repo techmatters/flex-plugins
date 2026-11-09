@@ -17,7 +17,7 @@
 import { describe, expect, test, jest } from '@jest/globals';
 
 import { userFromClaims } from './lambda';
-import { SlackNotifier } from './slackNotifier';
+import { newSlackNotifier } from './slackNotifier';
 
 describe('who is signed in, from the Okta token', () => {
   test('Aselo staff', () => {
@@ -48,7 +48,7 @@ describe('who is signed in, from the Okta token', () => {
 describe('Slack', () => {
   test('is told about a submitted draft', async () => {
     const fetchImpl = jest.fn(async () => new Response('ok'));
-    await new SlackNotifier(
+    await newSlackNotifier(
       'https://hooks.slack.com/x',
       'https://form-builder.tl.techmatters.org',
       fetchImpl,

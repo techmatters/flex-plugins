@@ -22,7 +22,7 @@ import { afterAll, beforeAll, describe, expect, test, jest } from '@jest/globals
 
 import type { Draft } from './drafts';
 import type { GitHubClient } from './github';
-import { branchNameFor, GitHubApplier } from './githubApplier';
+import { branchNameFor, newGitHubApplier } from './githubApplier';
 import type { RepoSnapshots } from './repoSnapshot';
 
 let repoRoot: string;
@@ -54,7 +54,7 @@ describe('applying through GitHub', () => {
       return {};
     });
     const snapshots = { latest: async () => ({ sha: 'master-sha', repoRoot }) } as unknown as RepoSnapshots;
-    const applier = new GitHubApplier(
+    const applier = newGitHubApplier(
       { request } as unknown as GitHubClient,
       snapshots,
       'master',

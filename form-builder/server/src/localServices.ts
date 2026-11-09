@@ -56,49 +56,50 @@ export const localUser = (env: Record<string, string | undefined> = process.env)
   };
 };
 
-export class LocalApplier implements DraftApplier {
-  constructor(
-    private readonly formDefinitionsDir: string,
-    private readonly repoRoot: string,
-    private readonly webchatConfigDir?: string,
-    // twilio-iac/helplines, for the service configuration files
-    private readonly helplinesConfigDir?: string,
-  ) {}
-
-  private targetOf(draft: Draft, filePath: string) {
+export const newLocalApplier = (
+  formDefinitionsDir: string,
+  repoRoot: string,
+  webchatConfigDir?: string,
+  // twilio-iac/helplines, for the service configuration files
+  helplinesConfigDir?: string,
+) => {
+  const targetOf = (draft: Draft, filePath: string) => {
     if (isOperatingInfoPath(filePath))
-      return path.join(this.repoRoot, ...repoPathOf(draft.code, draft.version, filePath).split('/'));
+      return path.join(repoRoot, ...repoPathOf(draft.code, draft.version, filePath).split('/'));
     if (isServiceConfigPath(filePath)) {
-      if (!this.helplinesConfigDir) throw new Error('No helplines config directory to write to');
+      if (!helplinesConfigDir) throw new Error('No helplines config directory to write to');
       const fileName = filePath.slice(SERVICE_CONFIG_PREFIX.length);
-      return path.join(this.helplinesConfigDir, draft.code, 'configs', 'service-configuration', fileName);
+      return path.join(helplinesConfigDir, draft.code, 'configs', 'service-configuration', fileName);
     }
     if (isWebchatTranslationsPath(filePath)) {
-      if (!this.webchatConfigDir) throw new Error('No webchat config directory to write to');
+      if (!webchatConfigDir) throw new Error('No webchat config directory to write to');
       const fileName = filePath.slice(WEBCHAT_TRANSLATIONS_PREFIX.length);
-      return path.join(this.webchatConfigDir, draft.code, 'translations', fileName);
+      return path.join(webchatConfigDir, draft.code, 'translations', fileName);
     }
-    return path.join(this.formDefinitionsDir, draft.code, draft.version, ...filePath.split('/'));
-  }
+    return path.join(formDefinitionsDir, draft.code, draft.version, ...filePath.split('/'));
+  };
 
-  async apply(draft: Draft): Promise<ApplyResult> {
+  const apply = async (draft: Draft): Promise<ApplyResult> => {
     const written: string[] = [];
     for (const [filePath, value] of Object.entries(draft.files)) {
       // Files for another repo (the HRM permissions) are downloaded for it, not written here
       if (isOtherRepoPath(filePath)) continue;
-      const target = this.targetOf(draft, filePath);
+      const target = targetOf(draft, filePath);
       const existingText = await fs.readFile(target, 'utf8').catch(() => undefined);
       await fs.mkdir(path.dirname(target), { recursive: true });
       await fs.writeFile(target, serializeLike(value, existingText));
-      written.push(path.relative(this.repoRoot, target).split(path.sep).join('/'));
+      written.push(path.relative(repoRoot, target).split(path.sep).join('/'));
     }
     return {
       description:
         'The changes were written to your local checkout. Review them with git diff, then commit and open a PR as usual.',
       written,
     };
-  }
-}
+  };
+
+  // Tests call apply with the draft alone
+  return { apply } satisfies DraftApplier;
+};
 
 export const localNotifier: Notifier = {
   async draftSubmitted(draft, user) {
