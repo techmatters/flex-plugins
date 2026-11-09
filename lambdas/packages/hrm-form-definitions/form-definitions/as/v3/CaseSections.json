@@ -1,0 +1,30 @@
+{
+  "household": {
+    "label": "Household Member",
+    "formPath": "caseForms/HouseholdForm.json"
+  },
+  "perpetrator": {
+    "label": "Alleged Perpetrator",
+    "formPath": "caseForms/PerpetratorForm.json"
+  },
+  "incident": {
+    "label": "Incident",
+    "formPath": "caseForms/IncidentForm.json"
+  },
+  "externalReport": {
+    "label": "External Report",
+    "formPath": "caseForms/ExternalReportForm.json"
+  },
+  "referral": {
+    "label": "Referral",
+    "formPath": "caseForms/ReferralForm.json"
+  },
+  "note": {
+    "label": "Note",
+    "formPath": "caseForms/NoteForm.json"
+  },
+  "document": {
+    "label": "Document",
+    "formPath": "caseForms/DocumentForm.json"
+  }
+}

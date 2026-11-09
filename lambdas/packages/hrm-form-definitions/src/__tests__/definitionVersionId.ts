@@ -17,6 +17,9 @@
 export enum DefinitionVersionId {
   demoV1 = 'demo-v1', // Demo v1
   asV1 = 'as-v1', // Demo v1
+  asV3 = 'as-v3', // Demo v3 - Child & Youth Helpline
+  asV4 = 'as-v4', // Demo v4 - Mental Health Support Line
+  asV5 = 'as-v5', // Demo v5 - Crisis & Emergency Response Line
   v1 = 'v1', // Zambia V1
   zmv1 = 'zm-v1', // Zambia V1
   brV1 = 'br-v1', // Safernet Brasil v1

@@ -1,0 +1,26 @@
+[
+  {
+    "label": "Welcome",
+    "text": "Thank you for reaching out to the Mental Health Support Line. My name is ___ and I am a specialist here. What would you like to talk about today?"
+  },
+  {
+    "label": "Validation",
+    "text": "That sounds really hard. It makes sense that you are feeling this way, and I am glad you reached out."
+  },
+  {
+    "label": "Asking about suicide",
+    "text": "Sometimes when people feel the way you are describing, they think about suicide. Are you having thoughts of suicide?"
+  },
+  {
+    "label": "Grounding exercise",
+    "text": "Let's try something together. Can you name five things you can see around you right now?"
+  },
+  {
+    "label": "Follow-up offer",
+    "text": "Would it help if we called you back in a few days to see how you are doing?"
+  },
+  {
+    "label": "Closing",
+    "text": "Thank you for talking with me today. Remember you can reach us again anytime."
+  }
+]

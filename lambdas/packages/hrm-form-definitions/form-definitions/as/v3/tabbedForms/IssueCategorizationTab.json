@@ -1,0 +1,173 @@
+{
+  "Child & Youth Helpline": {
+    "maxSelections": 3,
+    "categories": {
+      "Violence & Abuse": {
+        "color": "#e05d5d",
+        "subcategories": [
+          {
+            "label": "Physical abuse"
+          },
+          {
+            "label": "Emotional abuse"
+          },
+          {
+            "label": "Sexual abuse"
+          },
+          {
+            "label": "Neglect"
+          },
+          {
+            "label": "Domestic violence (witnessed)"
+          },
+          {
+            "label": "Bullying"
+          },
+          {
+            "label": "Exploitation / trafficking"
+          },
+          {
+            "label": "Child marriage"
+          }
+        ]
+      },
+      "Online Safety": {
+        "color": "#8b5cf6",
+        "subcategories": [
+          {
+            "label": "Cyberbullying"
+          },
+          {
+            "label": "Online grooming"
+          },
+          {
+            "label": "Sextortion"
+          },
+          {
+            "label": "Sharing of intimate images"
+          },
+          {
+            "label": "Harmful content"
+          }
+        ]
+      },
+      "Mental Health": {
+        "color": "#f2a93b",
+        "subcategories": [
+          {
+            "label": "Anxiety / stress"
+          },
+          {
+            "label": "Depression / low mood"
+          },
+          {
+            "label": "Suicidal thoughts"
+          },
+          {
+            "label": "Self-harm"
+          },
+          {
+            "label": "Eating concerns"
+          },
+          {
+            "label": "Grief / loss"
+          },
+          {
+            "label": "Substance use"
+          }
+        ]
+      },
+      "Family & Relationships": {
+        "color": "#4d92c2",
+        "subcategories": [
+          {
+            "label": "Conflict with parents"
+          },
+          {
+            "label": "Separation / divorce"
+          },
+          {
+            "label": "Peer relationships"
+          },
+          {
+            "label": "Romantic relationships"
+          },
+          {
+            "label": "Loneliness"
+          }
+        ]
+      },
+      "Education": {
+        "color": "#5bb381",
+        "subcategories": [
+          {
+            "label": "School performance"
+          },
+          {
+            "label": "Exams"
+          },
+          {
+            "label": "Problems with teachers"
+          },
+          {
+            "label": "Dropping out / access to school"
+          }
+        ]
+      },
+      "Sexual & Physical Health": {
+        "color": "#d36fa4",
+        "subcategories": [
+          {
+            "label": "Puberty / body changes"
+          },
+          {
+            "label": "Sexual health"
+          },
+          {
+            "label": "Pregnancy"
+          },
+          {
+            "label": "Gender identity / sexuality"
+          },
+          {
+            "label": "Physical health"
+          }
+        ]
+      },
+      "Basic Needs & Rights": {
+        "color": "#14919b",
+        "subcategories": [
+          {
+            "label": "Homelessness / running away"
+          },
+          {
+            "label": "Food insecurity"
+          },
+          {
+            "label": "Legal questions"
+          },
+          {
+            "label": "Discrimination"
+          },
+          {
+            "label": "Children's rights"
+          }
+        ]
+      },
+      "Information": {
+        "color": "#9aa5b1",
+        "subcategories": [
+          {
+            "label": "About the helpline"
+          },
+          {
+            "label": "Other services"
+          },
+          {
+            "label": "Other"
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,105 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToHelpSeeker",
+    "label": "Relationship to Help Seeker",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Parent / caregiver",
+        "label": "Parent / caregiver"
+      },
+      {
+        "value": "Partner / spouse",
+        "label": "Partner / spouse"
+      },
+      {
+        "value": "Child",
+        "label": "Child"
+      },
+      {
+        "value": "Other family member",
+        "label": "Other family member"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Professional",
+        "label": "Professional"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "genders"
+  },
+  {
+    "name": "ageGroup",
+    "label": "Age Group",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "ageGroups"
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "regions"
+  },
+  {
+    "name": "caregiverStrain",
+    "label": "How is the supporter coping?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Coping well",
+        "label": "Coping well"
+      },
+      {
+        "value": "Some strain",
+        "label": "Some strain"
+      },
+      {
+        "value": "Overwhelmed",
+        "label": "Overwhelmed"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  }
+]
