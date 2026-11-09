@@ -101,7 +101,8 @@
     "minimatch@^5.0.0": "5.1.7",
     "underscore": "1.13.8",
     "@svgr/webpack": "7.0.0",
-    "serialize-javascript": "7.1.4"
+    "serialize-javascript": "7.1.4",
+    "resolve-url-loader": "5.0.0"
   },
   "scripts": {
     "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build && cd ../hrm-types && npm ci && npm run build",
