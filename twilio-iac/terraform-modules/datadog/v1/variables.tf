@@ -31,3 +31,27 @@ variable "enable_datadog_monitoring" {
   type    = bool
   default = false
 }
+
+variable "enable_datadog_tagging" {
+  description = "Write this helpline's rows (account + Studio flows) to the Datadog Reference Table file in S3"
+  type        = bool
+  default     = false
+}
+
+variable "datadog_tags_bucket" {
+  description = "S3 bucket (us-east-1) holding the Datadog Reference Table files (aselo_twilio_accounts.csv, aselo_twilio_flows.csv) and the per-helpline files"
+  type        = string
+  default     = ""
+}
+
+variable "twilio_account_sid" {
+  description = "Twilio account SID of this helpline/environment, used to match its logs in Datadog"
+  type        = string
+  default     = ""
+}
+
+variable "studio_flow_sids" {
+  description = "Non-channel Studio flow SIDs (e.g. post surveys) by flow name, output of the studio-flows module"
+  type        = map(string)
+  default     = {}
+}
