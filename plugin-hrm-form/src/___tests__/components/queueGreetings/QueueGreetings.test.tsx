@@ -24,8 +24,7 @@ import '@testing-library/jest-dom/extend-expect';
 import QueueGreetingPill from '../../../components/queueGreetings/QueueGreetingPill';
 import QueueGreetingPopover from '../../../components/queueGreetings/QueueGreetingPopover';
 import { namespace } from '../../../states/storeNamespaces';
-import { newSetQueueGreetingDismissedAction } from '../../../states/routing/actions';
-import { standaloneTaskSid } from '../../../types/types';
+import { newSetQueueGreetingPopupDismissedAction } from '../../../states/taskScopedMetadata';
 
 jest.mock('@twilio/flex-ui', () => ({
   ...jest.requireActual('@twilio/flex-ui'),
@@ -48,16 +47,13 @@ const queueGreetings = {
 };
 
 const mockStore = configureMockStore([]);
-const createStore = ({ isQueueGreetingDismissed = false } = {}) =>
+const createStore = ({ dismissedPopup = false } = {}) =>
   mockStore({
     flex: { view: { selectedTaskSid: 'WR1' } },
     [namespace]: {
       configuration: { currentDefinitionVersion: { queueGreetings } },
-      routing: {
-        tasks: {
-          [standaloneTaskSid]: { routeStack: [{ route: 'agent-desktop' }] },
-          'task-WR1': { isQueueGreetingDismissed },
-        },
+      taskScopedMetadata: {
+        'task-WR1': { queueGreetings: { dismissedPopup } },
       },
     },
   });
@@ -95,7 +91,7 @@ describe('QueueGreetingPill', () => {
 
     screen.getByRole('button', { name: 'Greeted queue pill' }).click();
 
-    expect(store.getActions()).toStrictEqual([newSetQueueGreetingDismissedAction('task-WR2', false)]);
+    expect(store.getActions()).toStrictEqual([newSetQueueGreetingPopupDismissedAction('task-WR2', false)]);
     expect(Actions.invokeAction).toHaveBeenCalledWith('SelectTask', { sid: 'WR2' });
   });
 
@@ -116,11 +112,11 @@ describe('QueueGreetingPopover', () => {
 
     screen.getByTestId('Popover-CloseButton').click();
 
-    expect(store.getActions()).toStrictEqual([newSetQueueGreetingDismissedAction('task-WR1', true)]);
+    expect(store.getActions()).toStrictEqual([newSetQueueGreetingPopupDismissedAction('task-WR1', true)]);
   });
 
   test('renders nothing once the greeting was dismissed', () => {
-    const store = createStore({ isQueueGreetingDismissed: true });
+    const store = createStore({ dismissedPopup: true });
     renderWithStore(<QueueGreetingPopover task={taskFromQueue('WR1', 'greetedQueue')} />, store);
 
     expect(screen.queryByText('Greeted queue title')).not.toBeInTheDocument();

@@ -21,7 +21,7 @@ import { TaskListItemChildrenProps } from '@twilio/flex-ui/src/components/TaskLi
 
 import { RootState } from '../../states';
 import { selectQueueGreeting } from '../../states/configuration/selectDefinitions';
-import { newSetQueueGreetingDismissedAction } from '../../states/routing/actions';
+import { newSetQueueGreetingPopupDismissedAction } from '../../states/taskScopedMetadata';
 import { GreetingPill, GuidancePillContainer } from './styles';
 
 type Props = TaskListItemChildrenProps;
@@ -36,7 +36,7 @@ const QueueGreetingPill: React.FC<Props> = ({ task, selectedTaskSid, onSelected 
   };
 
   const reopenGreeting = () => {
-    dispatch(newSetQueueGreetingDismissedAction(task.taskSid, false));
+    dispatch(newSetQueueGreetingPopupDismissedAction(task.taskSid, false));
     Actions.invokeAction('SelectTask', { sid: task.sid });
   };
 

@@ -20,8 +20,10 @@ import { TaskCanvasChildrenProps, Template } from '@twilio/flex-ui';
 
 import { RootState } from '../../states';
 import { selectQueueGreeting } from '../../states/configuration/selectDefinitions';
-import { namespace } from '../../states/storeNamespaces';
-import { newSetQueueGreetingDismissedAction } from '../../states/routing/actions';
+import {
+  newSetQueueGreetingPopupDismissedAction,
+  selectIsQueueGreetingPopupDismissed,
+} from '../../states/taskScopedMetadata';
 import { Popover } from '../../design-system/popovers/Popover';
 import { GreetingPopoverAnchor } from './styles';
 
@@ -40,13 +42,11 @@ const QueueGreetingPopover: React.FC<Props> = ({ task }) => {
   const queueGreeting = useSelector((state: RootState) => selectQueueGreeting(state, task?.queueName));
   // Flex identifies the selected task by its reservation SID
   const isTaskSelected = useSelector((state: RootState) => state.flex.view.selectedTaskSid === task?.sid);
-  const isDismissed = useSelector((state: RootState) =>
-    Boolean(state[namespace].routing.tasks[task?.taskSid]?.isQueueGreetingDismissed),
-  );
+  const isDismissed = useSelector((state: RootState) => selectIsQueueGreetingPopupDismissed(state, task?.taskSid));
 
   if (!queueGreeting) return null;
 
-  const dismiss = () => dispatch(newSetQueueGreetingDismissedAction(task.taskSid, true));
+  const dismiss = () => dispatch(newSetQueueGreetingPopupDismissedAction(task.taskSid, true));
 
   return (
     <>
