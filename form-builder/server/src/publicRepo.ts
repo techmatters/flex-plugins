@@ -21,30 +21,30 @@
  */
 import type { SnapshotSource } from './repoSnapshot';
 
-export class PublicRepoSource implements SnapshotSource {
-  constructor(
-    private readonly ownerAndRepo = 'techmatters/flex-plugins',
-    private readonly branch = 'master',
-    private readonly fetchImpl: typeof fetch = fetch,
-  ) {}
-
-  async headSha() {
-    const url = `https://github.com/${this.ownerAndRepo}.git/info/refs?service=git-upload-pack`;
-    const response = await this.fetchImpl(url, { headers: { 'User-Agent': 'aselo-form-builder' } });
-    if (!response.ok) throw new Error(`Could not read ${this.ownerAndRepo} from GitHub (${response.status})`);
-    const branchRef = `refs/heads/${this.branch}`;
+export const newPublicRepoSource = (
+  ownerAndRepo = 'techmatters/flex-plugins',
+  branch = 'master',
+  fetchImpl: typeof fetch = fetch,
+): SnapshotSource => {
+  const headSha = async () => {
+    const url = `https://github.com/${ownerAndRepo}.git/info/refs?service=git-upload-pack`;
+    const response = await fetchImpl(url, { headers: { 'User-Agent': 'aselo-form-builder' } });
+    if (!response.ok) throw new Error(`Could not read ${ownerAndRepo} from GitHub (${response.status})`);
+    const branchRef = `refs/heads/${branch}`;
     const match = (await response.text())
       .split('\n')
       .map(line => line.match(/([0-9a-f]{40}) (\S+?)(\0|$)/))
       .find(found => found?.[2] === branchRef);
-    if (!match) throw new Error(`${this.ownerAndRepo} has no ${this.branch} branch`);
+    if (!match) throw new Error(`${ownerAndRepo} has no ${branch} branch`);
     return match[1];
-  }
+  };
 
-  async tarball(sha: string) {
-    const url = `https://codeload.github.com/${this.ownerAndRepo}/tar.gz/${sha}`;
-    const response = await this.fetchImpl(url, { headers: { 'User-Agent': 'aselo-form-builder' } });
-    if (!response.ok) throw new Error(`Could not download ${this.ownerAndRepo} from GitHub (${response.status})`);
+  const tarball = async (sha: string) => {
+    const url = `https://codeload.github.com/${ownerAndRepo}/tar.gz/${sha}`;
+    const response = await fetchImpl(url, { headers: { 'User-Agent': 'aselo-form-builder' } });
+    if (!response.ok) throw new Error(`Could not download ${ownerAndRepo} from GitHub (${response.status})`);
     return Buffer.from(await response.arrayBuffer());
-  }
-}
+  };
+
+  return { headSha, tarball };
+};

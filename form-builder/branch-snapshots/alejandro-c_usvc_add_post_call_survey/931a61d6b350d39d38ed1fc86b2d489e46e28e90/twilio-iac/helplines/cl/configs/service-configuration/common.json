@@ -1,0 +1,60 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "web"
+        ],
+        "definitionVersion": "cl-v1",
+        "external_recordings_enabled": true,
+        "enableExternalRecordings": true,
+        "enableConferencing": true,
+        "feature_flags": {
+            "enable_manual_pulling": false,
+            "enable_lex": true,
+            "enable_post_survey": true,
+            "enable_voice_recordings": true,
+            "enable_client_profiles":true,
+            "enable_conferencing": true,
+            "enable_lambda_post_survey_processing": true,
+            "enable_conference_status_event_handler": true,
+            "enable_hang_up_by_hrm_saving": true
+        },
+        "helplineLanguage": "es-CL",
+        "permissionConfig": "cl"
+    },
+    "ui_attributes": {
+        "colorTheme": {
+            "baseName": "GreyLight",
+            "overrides": {
+                "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                },
+                "SideNav": {
+                    "Button": {
+                        "background": "#FFFFFF"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                }
+            },
+            "preset": {
+                "id": "mono-light",
+                "name": "Simple Light"
+            }
+        },
+        "theme": null
+    }
+}

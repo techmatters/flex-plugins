@@ -1,0 +1,556 @@
+{
+  "code": "as",
+  "id": "e5a4abe3",
+  "meta": {
+    "revision": 114,
+    "createdAt": "2026-10-31T19:07:21.913Z",
+    "createdBy": "AlejandroRivera",
+    "updatedAt": "2026-10-31T19:47:45.257Z",
+    "updatedBy": "AlejandroRivera"
+  },
+  "content": {
+    "schemaVersion": 1,
+    "title": "Example board",
+    "frames": [],
+    "objects": [
+      {
+        "id": "o-00e07d88",
+        "type": "incoming",
+        "text": "Incoming call / message",
+        "x": 470,
+        "y": 58,
+        "width": 180,
+        "height": 64
+      },
+      {
+        "id": "o-e1d44c6c",
+        "type": "systemDown",
+        "text": "System down",
+        "studioName": "run_subflow_system_down",
+        "x": 300,
+        "y": 210,
+        "width": 180,
+        "height": 72
+      },
+      {
+        "id": "o-097a3b16",
+        "type": "checkOperatingHours",
+        "text": "Check operating hours",
+        "studioName": "f_operatingHours_aselo",
+        "x": 585,
+        "y": 334,
+        "width": 190,
+        "height": 72
+      },
+      {
+        "id": "o-02d5d082",
+        "type": "checkClientProfile",
+        "text": "Check client profile",
+        "studioName": "f_getProfileFlagsForIdentifier_profile",
+        "x": 220,
+        "y": 510,
+        "width": 190,
+        "height": 72
+      },
+      {
+        "id": "o-9501b8e8",
+        "type": "sendMessageAndClose",
+        "text": "Send message and close",
+        "studioName": "f_sendMessageAndRunJanitor_blocked",
+        "endedExits": [
+          "success",
+          "failed"
+        ],
+        "x": -80,
+        "y": 660,
+        "width": 230,
+        "height": 72
+      },
+      {
+        "id": "o-3b8d9409",
+        "type": "sendMessageAndClose",
+        "text": "Send message and close",
+        "studioName": "f_sendMessageAndRunJanitor_closed",
+        "endedExits": [
+          "success",
+          "failed"
+        ],
+        "x": 730,
+        "y": 560,
+        "width": 230,
+        "height": 72
+      },
+      {
+        "id": "o-1bfaa351",
+        "type": "sendMessageAndClose",
+        "text": "Send message and close",
+        "studioName": "f_sendMessageAndRunJanitor_holiday",
+        "endedExits": [
+          "success",
+          "failed"
+        ],
+        "x": 1020,
+        "y": 520,
+        "width": 230,
+        "height": 72
+      },
+      {
+        "id": "o-a4fc8a68",
+        "type": "notifyError",
+        "text": "Notify the Aselo team",
+        "endedExits": [
+          ""
+        ],
+        "studioName": "http_post_notify",
+        "x": -190,
+        "y": 800,
+        "width": 190,
+        "height": 64
+      },
+      {
+        "id": "o-be182c8c",
+        "type": "questionMessaging",
+        "text": "Service question",
+        "studioName": "send_wait_sms_en_service_menu",
+        "x": 500,
+        "y": 730,
+        "width": 220,
+        "height": 80
+      },
+      {
+        "id": "o-13fb3f7e",
+        "type": "decision",
+        "text": "Decision",
+        "exits": [
+          "Aselo",
+          "Emergency",
+          "noMatch"
+        ],
+        "studioName": "split_service_choice",
+        "x": 480,
+        "y": 940,
+        "width": 190,
+        "height": 110
+      },
+      {
+        "id": "o-87e4cae6",
+        "type": "repeat",
+        "text": "Repeat (counter)",
+        "settings": {
+          "maxRepeats": "2"
+        },
+        "studioName": "repeat_service_menu",
+        "x": 805,
+        "y": 838,
+        "width": 190,
+        "height": 64
+      },
+      {
+        "id": "o-3620ed9a",
+        "type": "sendMessageAndClose",
+        "text": "Send message and close",
+        "studioName": "f_sendMessageAndRunJanitor_max_retries",
+        "endedExits": [
+          "success",
+          "failed"
+        ],
+        "x": 1120,
+        "y": 940,
+        "width": 230,
+        "height": 72
+      },
+      {
+        "id": "o-dfb11ade",
+        "type": "sendToQueue",
+        "text": "Send to queue",
+        "studioName": "send_to_queue_aselo",
+        "endedExits": [
+          "callComplete",
+          "failedToEnqueue",
+          "callFailure"
+        ],
+        "x": 350,
+        "y": 1210,
+        "width": 150,
+        "height": 96
+      },
+      {
+        "id": "o-ef100a38",
+        "type": "sendToQueue",
+        "text": "Send to queue",
+        "studioName": "send_to_queue_emergency",
+        "endedExits": [
+          "callComplete",
+          "failedToEnqueue",
+          "callFailure"
+        ],
+        "x": 960,
+        "y": 1190,
+        "width": 150,
+        "height": 96
+      },
+      {
+        "id": "o-40c2895a",
+        "type": "checkQueueAvailability",
+        "text": "emergency worker available?",
+        "studioName": "f_isSkilledWorkerAvailable_emergency",
+        "x": 705,
+        "y": 1064,
+        "width": 210,
+        "height": 72
+      }
+    ],
+    "stickies": [
+      {
+        "id": "s-0a81a43b",
+        "text": "Pending scripts for closed and holiday",
+        "color": "pink",
+        "task": {
+          "status": "todo",
+          "assignee": "Alejandro Rivera"
+        },
+        "x": 1180,
+        "y": 370,
+        "width": 160,
+        "height": 120
+      },
+      {
+        "id": "s-d7ad81da",
+        "text": "Set emergency skill",
+        "color": "yellow",
+        "task": {
+          "status": "todo"
+        },
+        "x": 990,
+        "y": 1030,
+        "width": 160,
+        "height": 120
+      },
+      {
+        "id": "s-22006aef",
+        "text": "Create queues",
+        "color": "yellow",
+        "task": {
+          "status": "todo",
+          "assignee": "Alejandro Rivera"
+        },
+        "x": 1130,
+        "y": 1170,
+        "width": 160,
+        "height": 120
+      }
+    ],
+    "connections": [
+      {
+        "id": "c-d11c7e46",
+        "from": "o-00e07d88",
+        "to": "o-e1d44c6c",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-bf085e92",
+        "from": "o-e1d44c6c",
+        "to": "o-097a3b16",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-c3f47f97",
+        "from": "o-097a3b16",
+        "to": "o-02d5d082",
+        "exit": "open",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-930ca36f",
+        "from": "o-02d5d082",
+        "to": "o-9501b8e8",
+        "exit": "blocked",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-6f5caaa6",
+        "from": "o-097a3b16",
+        "to": "o-3b8d9409",
+        "exit": "closed",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-967b55e9",
+        "from": "o-097a3b16",
+        "to": "o-1bfaa351",
+        "exit": "holiday",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-a2cd3499",
+        "from": "o-097a3b16",
+        "to": "o-02d5d082",
+        "exit": "failed",
+        "fromSide": "bottom",
+        "toSide": "right"
+      },
+      {
+        "id": "c-c85f3ab1",
+        "from": "o-9501b8e8",
+        "to": "o-a4fc8a68",
+        "exit": "failed",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-f1d86968",
+        "from": "o-02d5d082",
+        "to": "o-be182c8c",
+        "exit": "not blocked",
+        "fromSide": "bottom",
+        "toSide": "left"
+      },
+      {
+        "id": "c-05d8c538",
+        "from": "o-02d5d082",
+        "to": "o-be182c8c",
+        "exit": "failed",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-7f84f9ba",
+        "from": "o-be182c8c",
+        "to": "o-13fb3f7e",
+        "exit": "reply",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-36feae5b",
+        "from": "o-be182c8c",
+        "to": "o-87e4cae6",
+        "exit": "timeout",
+        "fromSide": "bottom",
+        "toSide": "left"
+      },
+      {
+        "id": "c-da2175ca",
+        "from": "o-87e4cae6",
+        "to": "o-be182c8c",
+        "exit": "repeat",
+        "fromSide": "top",
+        "toSide": "right"
+      },
+      {
+        "id": "c-d5fb5e40",
+        "from": "o-87e4cae6",
+        "to": "o-3620ed9a",
+        "exit": "max reached",
+        "fromSide": "bottom",
+        "toSide": "left"
+      },
+      {
+        "id": "c-d2e226c5",
+        "from": "o-13fb3f7e",
+        "to": "o-dfb11ade",
+        "exit": "Aselo",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-18255fe8",
+        "from": "o-13fb3f7e",
+        "to": "o-dfb11ade",
+        "exit": "noMatch",
+        "fromSide": "bottom",
+        "toSide": "right"
+      },
+      {
+        "id": "c-651118a1",
+        "from": "o-13fb3f7e",
+        "to": "o-40c2895a",
+        "exit": "Emergency",
+        "fromSide": "right",
+        "toSide": "top"
+      },
+      {
+        "id": "c-afaab958",
+        "from": "o-40c2895a",
+        "to": "o-ef100a38",
+        "exit": "available",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-4c66519b",
+        "from": "o-40c2895a",
+        "to": "o-dfb11ade",
+        "exit": "not available",
+        "fromSide": "bottom",
+        "toSide": "right"
+      },
+      {
+        "id": "c-74cfdd42",
+        "from": "o-40c2895a",
+        "to": "o-dfb11ade",
+        "exit": "failed",
+        "fromSide": "bottom",
+        "toSide": "bottom"
+      }
+    ],
+    "status": "in-progress",
+    "flow": {
+      "naming": {
+        "channels": [
+          "sms"
+        ],
+        "languages": [
+          "en"
+        ]
+      }
+    },
+    "testedPaths": [
+      {
+        "id": "t-52f6f632",
+        "testedAt": "2026-10-31T19:46:33.359Z",
+        "testedBy": "AlejandroRivera",
+        "startId": "o-00e07d88",
+        "steps": [
+          {
+            "objectId": "o-00e07d88",
+            "exit": "",
+            "connectionId": "c-d11c7e46"
+          },
+          {
+            "objectId": "o-e1d44c6c",
+            "exit": "",
+            "connectionId": "c-bf085e92"
+          },
+          {
+            "objectId": "o-097a3b16",
+            "exit": "open",
+            "connectionId": "c-c3f47f97"
+          },
+          {
+            "objectId": "o-02d5d082",
+            "exit": "not blocked",
+            "connectionId": "c-f1d86968"
+          },
+          {
+            "objectId": "o-be182c8c",
+            "exit": "reply",
+            "connectionId": "c-7f84f9ba"
+          },
+          {
+            "objectId": "o-13fb3f7e",
+            "exit": "Aselo",
+            "connectionId": "c-d2e226c5"
+          },
+          {
+            "objectId": "o-dfb11ade",
+            "exit": "callComplete"
+          }
+        ],
+        "fingerprint": "1keh1pb"
+      },
+      {
+        "id": "t-3928d941",
+        "testedAt": "2026-10-31T19:47:31.306Z",
+        "testedBy": "AlejandroRivera",
+        "startId": "o-00e07d88",
+        "steps": [
+          {
+            "objectId": "o-00e07d88",
+            "exit": "",
+            "connectionId": "c-d11c7e46"
+          },
+          {
+            "objectId": "o-e1d44c6c",
+            "exit": "",
+            "connectionId": "c-bf085e92"
+          },
+          {
+            "objectId": "o-097a3b16",
+            "exit": "open",
+            "connectionId": "c-c3f47f97"
+          },
+          {
+            "objectId": "o-02d5d082",
+            "exit": "not blocked",
+            "connectionId": "c-f1d86968"
+          },
+          {
+            "objectId": "o-be182c8c",
+            "exit": "reply",
+            "connectionId": "c-7f84f9ba"
+          },
+          {
+            "objectId": "o-13fb3f7e",
+            "exit": "Emergency",
+            "connectionId": "c-651118a1"
+          },
+          {
+            "objectId": "o-40c2895a",
+            "exit": "available",
+            "connectionId": "c-afaab958"
+          },
+          {
+            "objectId": "o-ef100a38",
+            "exit": "callComplete"
+          }
+        ],
+        "fingerprint": "1kzuysn"
+      },
+      {
+        "id": "t-7341eeea",
+        "testedAt": "2026-10-31T19:47:44.018Z",
+        "testedBy": "AlejandroRivera",
+        "startId": "o-00e07d88",
+        "steps": [
+          {
+            "objectId": "o-00e07d88",
+            "exit": "",
+            "connectionId": "c-d11c7e46"
+          },
+          {
+            "objectId": "o-e1d44c6c",
+            "exit": "",
+            "connectionId": "c-bf085e92"
+          },
+          {
+            "objectId": "o-097a3b16",
+            "exit": "open",
+            "connectionId": "c-c3f47f97"
+          },
+          {
+            "objectId": "o-02d5d082",
+            "exit": "not blocked",
+            "connectionId": "c-f1d86968"
+          },
+          {
+            "objectId": "o-be182c8c",
+            "exit": "reply",
+            "connectionId": "c-7f84f9ba"
+          },
+          {
+            "objectId": "o-13fb3f7e",
+            "exit": "Emergency",
+            "connectionId": "c-651118a1"
+          },
+          {
+            "objectId": "o-40c2895a",
+            "exit": "available",
+            "connectionId": "c-afaab958"
+          },
+          {
+            "objectId": "o-ef100a38",
+            "exit": "callComplete"
+          }
+        ],
+        "fingerprint": "1kzuysn"
+      }
+    ]
+  }
+}

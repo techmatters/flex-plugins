@@ -1,0 +1,99 @@
+{
+    "slotTypeName": "counsellorGenderPreference",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Female"
+            },
+            "synonyms": [
+                {
+                    "value": "2"
+                },
+                {
+                    "value": "Girl"
+                },
+                {
+                    "value": "Lady"
+                },
+                {
+                    "value": "F"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "None"
+            },
+            "synonyms": [
+                {
+                    "value": "Don't matter"
+                },
+                {
+                    "value": "No preference"
+                },
+                {
+                    "value": "Any"
+                },
+                {
+                    "value": "Doesn't matter"
+                },
+                {
+                    "value": "X"
+                },
+                {
+                    "value": "4"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Male"
+            },
+            "synonyms": [
+                {
+                    "value": "1"
+                },
+                {
+                    "value": "Boy"
+                },
+                {
+                    "value": "M"
+                },
+                {
+                    "value": "Guy"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Non-binary"
+            },
+            "synonyms": [
+                {
+                    "value": "Lesbian"
+                },
+                {
+                    "value": "Questioning"
+                },
+                {
+                    "value": "Gay"
+                },
+                {
+                    "value": "3"
+                },
+                {
+                    "value": "Bisexual"
+                },
+                {
+                    "value": "Lgbtq"
+                },
+                {
+                    "value": "Transexual"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "survey":{
+   "age":[["CallerInformationTab.age","ChildInformationTab.age"]],
+   "genderInput":[["CallerInformationTab.genderInput","ChildInformationTab.genderInput"]],
+   "stateInput":[["CallerInformationTab.stateInput","ChildInformationTab.stateInput"]]
+  },
+  "preEngagement":{
+    "age": [["CallerInformationTab.age","ChildInformationTab.age"]],
+    "genderInput":[["CallerInformationTab.genderInput","ChildInformationTab.genderInput"]],
+    "state":[["CallerInformationTab.state","ChildInformationTab.state"]],
+    "howTheHelpseekerHeardAboutUs":"CaseInformationTab.howTheHelpseekerHeardAboutUs"
+  }
+}

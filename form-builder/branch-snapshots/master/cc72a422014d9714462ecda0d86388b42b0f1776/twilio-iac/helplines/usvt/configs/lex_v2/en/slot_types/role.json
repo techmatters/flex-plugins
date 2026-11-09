@@ -1,0 +1,94 @@
+{
+  "slotTypeName": "role",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "Parent"
+      },
+      "synonyms": [
+        {
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Caregiver"
+      },
+      "synonyms": [
+        {
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Pregnant or expecting parent"
+      },
+      "synonyms": [
+        {
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Family member"
+      },
+      "synonyms": [
+        {
+          "value": "4"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Professional/Service Provider"
+      },
+      "synonyms": [
+        {
+          "value": "5"
+        },
+        {
+          "value": "Professional"
+        },
+        {
+          "value": "Service Provider"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Community Member"
+      },
+      "synonyms": [
+        {
+          "value": "6"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Volunteer"
+      },
+      "synonyms": [
+        {
+          "value": "7"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Other"
+      },
+      "synonyms": [
+        {
+          "value": "8"
+        }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

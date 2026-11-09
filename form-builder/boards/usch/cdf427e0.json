@@ -1,0 +1,779 @@
+{
+  "code": "usch",
+  "id": "cdf427e0",
+  "meta": {
+    "revision": 5,
+    "createdAt": "2026-10-28T17:45:38.723Z",
+    "createdBy": "AlejandroRivera",
+    "updatedAt": "2026-10-31T01:42:05.123Z",
+    "updatedBy": "AlejandroRivera"
+  },
+  "content": {
+    "schemaVersion": 1,
+    "title": "USCH · [voice_childhelp] · voice-childhelp-sd",
+    "frames": [
+      {
+        "id": "f-3",
+        "title": "[voice_childhelp] · voice-childhelp-sd",
+        "channel": "voice",
+        "x": 0,
+        "y": 0,
+        "width": 1860,
+        "height": 1824
+      }
+    ],
+    "objects": [
+      {
+        "id": "o-3-1",
+        "type": "incoming",
+        "text": "Incoming voice",
+        "exits": [
+          "incomingCall"
+        ],
+        "studio": {
+          "name": "Trigger",
+          "type": "trigger",
+          "properties": {}
+        },
+        "message": {
+          "channel": "voice"
+        },
+        "x": 820,
+        "y": 80,
+        "width": 180,
+        "height": 64,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-2",
+        "type": "sendToQueue",
+        "text": "Childhelp spanish",
+        "studioName": "send_to_queue_childhelp_spanish",
+        "exits": [
+          "callComplete",
+          "failedToEnqueue",
+          "callFailure"
+        ],
+        "studio": {
+          "name": "send_to_queue_childhelp_spanish",
+          "type": "send-to-flex",
+          "properties": {
+            "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageSpanish",
+            "workflow": "${workflow_sids.master}",
+            "channel": "${task_channel_sids.voice}",
+            "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n \"service\":\"ChildHelp\",\n \"language\":\"en-CH\",\n\"counselingLanguage\": \"Spanish\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"ChildHelp Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
+            "waitUrlMethod": "GET"
+          }
+        },
+        "x": 670,
+        "y": 1485,
+        "width": 150,
+        "height": 96,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-3",
+        "type": "playMessage",
+        "text": "Childhelp voice welcome\nChildhelp voice welcome\nChildhelp voice welcome\nChildhelp voice welcome\nChildhelp voice welcome",
+        "studioName": "play_message_childhelp_voice_welcome",
+        "exits": [
+          "audioComplete"
+        ],
+        "studio": {
+          "name": "play_message_childhelp_voice_welcome",
+          "type": "say-play",
+          "properties": {
+            "play": "${flow_vars.serverless_usch_functions_url}/childhelp_voice_welcome_message.mp3",
+            "loop": 1
+          }
+        },
+        "message": {
+          "channel": "voice",
+          "recordingFile": "childhelp_voice_welcome_message.mp3",
+          "script": "Childhelp voice welcome"
+        },
+        "x": 720,
+        "y": 525,
+        "width": 220,
+        "height": 72,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-4",
+        "type": "notifyError",
+        "text": "Webhook notify failed to enqueue",
+        "studioName": "http_post_webhook_notify_failed_to_enqueue",
+        "exits": [
+          "success",
+          "failed"
+        ],
+        "studio": {
+          "name": "http_post_webhook_notify_failed_to_enqueue",
+          "type": "make-http-request",
+          "properties": {
+            "method": "POST",
+            "content_type": "application/json;charset=utf-8",
+            "add_twilio_auth": false,
+            "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+            "url": "${webhook_url_studio_errors}"
+          }
+        },
+        "x": 640,
+        "y": 1680,
+        "width": 190,
+        "height": 64,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-5",
+        "type": "menuVoice",
+        "text": "Childhelp voice spanish option",
+        "studioName": "gather_input_childhelp_voice_spanish_option",
+        "exits": [
+          "keypress",
+          "speech",
+          "timeout"
+        ],
+        "studio": {
+          "name": "gather_input_childhelp_voice_spanish_option",
+          "type": "gather-input-on-call",
+          "properties": {
+            "finish_on_key": "#",
+            "play": "${flow_vars.serverless_usch_functions_url}/childhelp_voice_spanish_option_message.mp3",
+            "stop_gather": false,
+            "speech_model": "default",
+            "profanity_filter": "true",
+            "timeout": 2,
+            "number_of_digits": 1,
+            "speech_timeout": "2",
+            "loop": 1,
+            "gather_language": "es-MX"
+          }
+        },
+        "message": {
+          "channel": "voice",
+          "recordingFile": "childhelp_voice_spanish_option_message.mp3"
+        },
+        "x": 900,
+        "y": 645,
+        "width": 220,
+        "height": 80,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-6",
+        "type": "decision",
+        "text": "Spanish option",
+        "studioName": "split_spanish_option",
+        "exits": [
+          "noMatch",
+          "2"
+        ],
+        "studio": {
+          "name": "split_spanish_option",
+          "type": "split-based-on",
+          "properties": {
+            "input": "{{widgets.gather_input_childhelp_voice_spanish_option.Digits}}"
+          }
+        },
+        "x": 540,
+        "y": 770,
+        "width": 190,
+        "height": 110,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-7",
+        "type": "menuVoice",
+        "text": "Childhelp voice english options",
+        "studioName": "gather_input_childhelp_voice_english_options",
+        "exits": [
+          "keypress",
+          "speech",
+          "timeout"
+        ],
+        "studio": {
+          "name": "gather_input_childhelp_voice_english_options",
+          "type": "gather-input-on-call",
+          "properties": {
+            "number_of_digits": 1,
+            "speech_timeout": "10",
+            "loop": 1,
+            "finish_on_key": "#",
+            "play": "${flow_vars.serverless_usch_functions_url}/childhelp_voice_english_options_message.mp3",
+            "stop_gather": false,
+            "gather_language": "en",
+            "speech_model": "default",
+            "timeout": 7
+          }
+        },
+        "message": {
+          "channel": "voice",
+          "recordingFile": "childhelp_voice_english_options_message.mp3"
+        },
+        "x": 1030,
+        "y": 905,
+        "width": 220,
+        "height": 80,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-8",
+        "type": "decision",
+        "text": "English options",
+        "studioName": "split_english_options",
+        "exits": [
+          "noMatch",
+          "1",
+          "2"
+        ],
+        "studio": {
+          "name": "split_english_options",
+          "type": "split-based-on",
+          "properties": {
+            "input": "{{widgets.gather_input_childhelp_voice_english_options.Digits}}"
+          }
+        },
+        "x": 1030,
+        "y": 1060,
+        "width": 190,
+        "height": 110,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-9",
+        "type": "checkQueueAvailability",
+        "text": "Is skilled worker available",
+        "studioName": "f_isSkilledWorkerAvailable",
+        "exits": [
+          "success",
+          "fail"
+        ],
+        "studio": {
+          "name": "f_isSkilledWorkerAvailable",
+          "type": "run-function",
+          "properties": {
+            "service_sid": "${flow_vars.usch_functions_serverless_service_id}",
+            "environment_sid": "${flow_vars.usch_functions_serverless_environement_id}",
+            "function_sid": "${flow_vars.is_skilled_worker_available_function_sid}",
+            "parameters": [
+              {
+                "value": "${flow_vars.workspace_sid}",
+                "key": "workspaceSid"
+              },
+              {
+                "value": "voice",
+                "key": "targetChannel"
+              },
+              {
+                "value": "Spanish,Phone",
+                "key": "targetSkills"
+              }
+            ],
+            "url": "${flow_vars.serverless_usch_functions_url}/isSkilledWorkerAvailable"
+          }
+        },
+        "x": 470,
+        "y": 1000,
+        "width": 210,
+        "height": 72,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-10",
+        "type": "decision",
+        "text": "Spanish counselor available",
+        "studioName": "split_spanish_counselor_available",
+        "exits": [
+          "noMatch",
+          "0",
+          "If value greater_than 0"
+        ],
+        "studio": {
+          "name": "split_spanish_counselor_available",
+          "type": "split-based-on",
+          "properties": {
+            "input": "{{widgets.f_isSkilledWorkerAvailable.parsed.totalAvailableWorkers}}"
+          }
+        },
+        "x": 320,
+        "y": 1165,
+        "width": 190,
+        "height": 110,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-11",
+        "type": "playMessage",
+        "text": "Childhelp voice no spanish counselor prequeue",
+        "studioName": "play_message_childhelp_voice_no_spanish_counselor_prequeue",
+        "exits": [
+          "audioComplete"
+        ],
+        "studio": {
+          "name": "play_message_childhelp_voice_no_spanish_counselor_prequeue",
+          "type": "say-play",
+          "properties": {
+            "loop": 1,
+            "play": "${flow_vars.serverless_usch_functions_url}/childhelp_voice_no_spanish_counselor_prequeue_message.mp3"
+          }
+        },
+        "message": {
+          "channel": "voice",
+          "recordingFile": "childhelp_voice_no_spanish_counselor_prequeue_message.mp3"
+        },
+        "x": 80,
+        "y": 1315,
+        "width": 220,
+        "height": 72,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-12",
+        "type": "sendToQueue",
+        "text": "No spanish",
+        "studioName": "send_to_queue_no_spanish",
+        "exits": [
+          "callComplete",
+          "failedToEnqueue",
+          "callFailure"
+        ],
+        "studio": {
+          "name": "send_to_queue_no_spanish",
+          "type": "send-to-flex",
+          "properties": {
+            "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageNoSpanish",
+            "workflow": "${workflow_sids.master}",
+            "channel": "${task_channel_sids.voice}",
+            "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n \"language\":\"en-CH\", \n \"service\":\"ChildHelp\",\n\"counselingLanguage\": \"Spanish\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"ChildHelp No Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
+            "waitUrlMethod": "GET"
+          }
+        },
+        "x": 250,
+        "y": 1490,
+        "width": 150,
+        "height": 96,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-13",
+        "type": "sendToQueue",
+        "text": "Childhelp english",
+        "studioName": "send_to_queue_childhelp_english",
+        "exits": [
+          "callComplete",
+          "failedToEnqueue",
+          "callFailure"
+        ],
+        "studio": {
+          "name": "send_to_queue_childhelp_english",
+          "type": "send-to-flex",
+          "properties": {
+            "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageEnglish",
+            "workflow": "${workflow_sids.master}",
+            "channel": "${task_channel_sids.voice}",
+            "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n \"language\":\"en-CH\", \n  \"service\":\"ChildHelp\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"ChildHelp English\",\n    \"hang_up_by\": \"Customer\"\n  }\n}",
+            "waitUrlMethod": "GET"
+          }
+        },
+        "x": 1110,
+        "y": 1490,
+        "width": 150,
+        "height": 96,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-14",
+        "type": "checkClientProfile",
+        "text": "Get profile flags for identifier",
+        "studioName": "f_getProfileFlagsForIdentifier",
+        "exits": [
+          "success",
+          "failed"
+        ],
+        "studio": {
+          "name": "f_getProfileFlagsForIdentifier",
+          "type": "make-http-request",
+          "properties": {
+            "method": "POST",
+            "content_type": "application/json;charset=utf-8",
+            "add_twilio_auth": false,
+            "body": "{ \"trigger\": {{trigger | to_json}}, \"channelType\": \"voice\"}",
+            "url": "${lambda_twilio_account_scoped_url}/getProfileFlagsForIdentifier"
+          }
+        },
+        "x": 730,
+        "y": 280,
+        "width": 190,
+        "height": 72,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-15",
+        "type": "decision",
+        "text": "Contact routing",
+        "studioName": "split_contact_routing",
+        "exits": [
+          "noMatch",
+          "blocked"
+        ],
+        "studio": {
+          "name": "split_contact_routing",
+          "type": "split-based-on",
+          "properties": {
+            "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+          }
+        },
+        "x": 1040,
+        "y": 395,
+        "width": 190,
+        "height": 110,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-16",
+        "type": "playMessage",
+        "text": "Blocked",
+        "studioName": "play_message_voice_blocked",
+        "exits": [
+          "audioComplete"
+        ],
+        "studio": {
+          "name": "play_message_voice_blocked",
+          "type": "say-play",
+          "properties": {
+            "loop": 1,
+            "play": "${flow_vars.serverless_usch_functions_url}/voice_blocked_client_message.mp3"
+          }
+        },
+        "message": {
+          "channel": "voice",
+          "recordingFile": "voice_blocked_client_message.mp3"
+        },
+        "x": 1560,
+        "y": 675,
+        "width": 220,
+        "height": 72,
+        "frameId": "f-3"
+      },
+      {
+        "id": "o-3-17",
+        "type": "systemDown",
+        "text": "System down",
+        "studioName": "run_subflow_system_down",
+        "exits": [
+          "completed",
+          "failed"
+        ],
+        "studio": {
+          "name": "run_subflow_system_down",
+          "type": "run-subflow",
+          "properties": {
+            "flow_sid": "${system_down_studio_subflow_sid}",
+            "flow_revision": "LatestPublished",
+            "parameters": [
+              {
+                "type": "string",
+                "value": "true",
+                "key": "system_down"
+              }
+            ]
+          }
+        },
+        "x": 460,
+        "y": 190,
+        "width": 180,
+        "height": 72,
+        "frameId": "f-3"
+      }
+    ],
+    "stickies": [],
+    "connections": [
+      {
+        "id": "c-o-3-1-2",
+        "from": "o-3-1",
+        "to": "o-3-17",
+        "exit": "incomingCall",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-2-2",
+        "from": "o-3-2",
+        "to": "o-3-4",
+        "exit": "failedToEnqueue",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-2-3",
+        "from": "o-3-2",
+        "to": "o-3-4",
+        "exit": "callFailure",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-3-1",
+        "from": "o-3-3",
+        "to": "o-3-5",
+        "exit": "audioComplete",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-5-1",
+        "from": "o-3-5",
+        "to": "o-3-6",
+        "exit": "keypress",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-5-3",
+        "from": "o-3-5",
+        "to": "o-3-7",
+        "exit": "timeout",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-6-1",
+        "from": "o-3-6",
+        "to": "o-3-7",
+        "exit": "noMatch",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-6-2",
+        "from": "o-3-6",
+        "to": "o-3-9",
+        "exit": "2",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-7-1",
+        "from": "o-3-7",
+        "to": "o-3-8",
+        "exit": "keypress",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-7-3",
+        "from": "o-3-7",
+        "to": "o-3-8",
+        "exit": "timeout",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-8-1",
+        "from": "o-3-8",
+        "to": "o-3-13",
+        "exit": "noMatch",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-8-2",
+        "from": "o-3-8",
+        "to": "o-3-13",
+        "exit": "1",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-8-3",
+        "from": "o-3-8",
+        "to": "o-3-9",
+        "exit": "2",
+        "fromSide": "left",
+        "toSide": "right"
+      },
+      {
+        "id": "c-o-3-9-1",
+        "from": "o-3-9",
+        "to": "o-3-10",
+        "exit": "success",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-10-1",
+        "from": "o-3-10",
+        "to": "o-3-11",
+        "exit": "noMatch",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-10-2",
+        "from": "o-3-10",
+        "to": "o-3-11",
+        "exit": "0",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-10-3",
+        "from": "o-3-10",
+        "to": "o-3-2",
+        "exit": "If value greater_than 0",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-11-1",
+        "from": "o-3-11",
+        "to": "o-3-12",
+        "exit": "audioComplete",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-12-2",
+        "from": "o-3-12",
+        "to": "o-3-4",
+        "exit": "failedToEnqueue",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-12-3",
+        "from": "o-3-12",
+        "to": "o-3-4",
+        "exit": "callFailure",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-13-2",
+        "from": "o-3-13",
+        "to": "o-3-4",
+        "exit": "failedToEnqueue",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-13-3",
+        "from": "o-3-13",
+        "to": "o-3-4",
+        "exit": "callFailure",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-14-1",
+        "from": "o-3-14",
+        "to": "o-3-15",
+        "exit": "success",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-14-2",
+        "from": "o-3-14",
+        "to": "o-3-15",
+        "exit": "failed",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-15-1",
+        "from": "o-3-15",
+        "to": "o-3-3",
+        "exit": "noMatch",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-15-2",
+        "from": "o-3-15",
+        "to": "o-3-16",
+        "exit": "blocked",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-17-1",
+        "from": "o-3-17",
+        "to": "o-3-14",
+        "exit": "completed",
+        "fromSide": "bottom",
+        "toSide": "top"
+      },
+      {
+        "id": "c-o-3-17-2",
+        "from": "o-3-17",
+        "to": "o-3-14",
+        "exit": "failed",
+        "fromSide": "bottom",
+        "toSide": "top"
+      }
+    ],
+    "status": "in-progress",
+    "testedPaths": [
+      {
+        "id": "t-96c8f109",
+        "testedAt": "2026-10-31T01:42:03.891Z",
+        "testedBy": "AlejandroRivera",
+        "startId": "o-3-1",
+        "steps": [
+          {
+            "objectId": "o-3-1",
+            "exit": "incomingCall",
+            "connectionId": "c-o-3-1-2"
+          },
+          {
+            "objectId": "o-3-17",
+            "exit": "completed",
+            "connectionId": "c-o-3-17-1"
+          },
+          {
+            "objectId": "o-3-14",
+            "exit": "success",
+            "connectionId": "c-o-3-14-1"
+          },
+          {
+            "objectId": "o-3-15",
+            "exit": "noMatch",
+            "connectionId": "c-o-3-15-1"
+          },
+          {
+            "objectId": "o-3-3",
+            "exit": "audioComplete",
+            "connectionId": "c-o-3-3-1"
+          },
+          {
+            "objectId": "o-3-5",
+            "exit": "keypress",
+            "connectionId": "c-o-3-5-1"
+          },
+          {
+            "objectId": "o-3-6",
+            "exit": "noMatch",
+            "connectionId": "c-o-3-6-1"
+          },
+          {
+            "objectId": "o-3-7",
+            "exit": "keypress",
+            "connectionId": "c-o-3-7-1"
+          },
+          {
+            "objectId": "o-3-8",
+            "exit": "1",
+            "connectionId": "c-o-3-8-2"
+          },
+          {
+            "objectId": "o-3-13",
+            "exit": "callComplete"
+          }
+        ],
+        "fingerprint": "1cjy5b0"
+      }
+    ]
+  }
+}

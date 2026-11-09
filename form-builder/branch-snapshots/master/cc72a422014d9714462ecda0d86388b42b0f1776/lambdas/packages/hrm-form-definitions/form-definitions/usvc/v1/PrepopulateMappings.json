@@ -1,0 +1,24 @@
+{
+  "formSelector": {
+    "selectorType": "serviceUserChoiceSelector",
+    "parameter": [
+      {
+        "form": "preEngagement",
+        "input": "startForm",
+        "aboutSelfValue": "HotlineInteractions"
+      },
+      {
+        "form": "survey",
+        "input": "startForm",
+        "aboutSelfValue": "HotlineInteractions"
+      }
+    ]
+  },
+  "survey": {
+  },
+  "preEngagement": {
+    "age": "ChildInformationTab.age",
+    "gender": "ChildInformationTab.gender",
+    "state": "ChildInformationTab.state"
+  }
+}

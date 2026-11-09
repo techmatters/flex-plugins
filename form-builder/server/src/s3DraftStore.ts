@@ -35,60 +35,60 @@ const KEY_PATTERN = /^drafts\/([a-z0-9]+)\/(v\d+)\/draft\.json$/;
 
 type StoredDraft = Pick<Draft, 'meta' | 'files'>;
 
-export class S3DraftStore implements DraftStore {
-  constructor(private readonly bucket: string, private readonly s3: Pick<S3Client, 'send'> = new S3Client({})) {}
-
-  private key(code: string, version: string) {
+export const newS3DraftStore = (bucket: string, s3: Pick<S3Client, 'send'> = new S3Client({})): DraftStore => {
+  const keyOf = (code: string, version: string) => {
     if (!isValidDraftKey(code, version)) throw new Error(`Invalid draft ${code}/${version}`);
     return `${PREFIX}${code}/${version}/draft.json`;
-  }
+  };
 
-  async get(code: string, version: string): Promise<Draft | undefined> {
+  const get = async (code: string, version: string): Promise<Draft | undefined> => {
     try {
-      const response = await this.s3.send(new GetObjectCommand({ Bucket: this.bucket, Key: this.key(code, version) }));
+      const response = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: keyOf(code, version) }));
       const stored = JSON.parse(await response.Body!.transformToString()) as StoredDraft;
       return { code, version, meta: stored.meta, files: stored.files };
     } catch (err) {
       if ((err as Error).name === 'NoSuchKey') return undefined;
       throw err;
     }
-  }
+  };
 
-  async put({ code, version, meta, files }: Draft): Promise<void> {
+  const put = async ({ code, version, meta, files }: Draft): Promise<void> => {
     Object.keys(files).forEach(filePath => {
       if (!isValidDraftFilePath(filePath)) throw new Error(`Invalid file path ${filePath}`);
     });
     const stored: StoredDraft = { meta, files };
-    await this.s3.send(
+    await s3.send(
       new PutObjectCommand({
-        Bucket: this.bucket,
-        Key: this.key(code, version),
+        Bucket: bucket,
+        Key: keyOf(code, version),
         Body: JSON.stringify(stored),
         ContentType: 'application/json',
       }),
     );
-  }
+  };
 
-  async remove(code: string, version: string): Promise<void> {
-    await this.s3.send(new DeleteObjectCommand({ Bucket: this.bucket, Key: this.key(code, version) }));
-  }
+  const remove = async (code: string, version: string): Promise<void> => {
+    await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: keyOf(code, version) }));
+  };
 
-  async list(): Promise<DraftSummary[]> {
+  const list = async (): Promise<DraftSummary[]> => {
     const keys: string[] = [];
     let token: string | undefined;
     do {
-      const page: ListObjectsV2CommandOutput = await this.s3.send(
-        new ListObjectsV2Command({ Bucket: this.bucket, Prefix: PREFIX, ContinuationToken: token }),
+      const page: ListObjectsV2CommandOutput = await s3.send(
+        new ListObjectsV2Command({ Bucket: bucket, Prefix: PREFIX, ContinuationToken: token }),
       );
       (page.Contents ?? []).forEach(object => object.Key && keys.push(object.Key));
       token = page.NextContinuationToken;
     } while (token);
 
     const drafts = await Promise.all(
-      keys.map(key => key.match(KEY_PATTERN)).flatMap(match => (match ? [this.get(match[1], match[2])] : [])),
+      keys.map(key => key.match(KEY_PATTERN)).flatMap(match => (match ? [get(match[1], match[2])] : [])),
     );
     return drafts
       .filter((draft): draft is Draft => draft !== undefined)
       .map(({ code, version, meta, files }) => ({ code, version, meta, changedFiles: Object.keys(files).sort() }));
-  }
-}
+  };
+
+  return { get, put, remove, list };
+};

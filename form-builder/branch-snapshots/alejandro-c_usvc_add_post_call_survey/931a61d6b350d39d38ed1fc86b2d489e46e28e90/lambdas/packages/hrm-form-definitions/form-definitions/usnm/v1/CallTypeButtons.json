@@ -1,0 +1,50 @@
+[
+  {
+    "name": "child",
+    "label": "Connection Details",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "silence",
+    "label": "Silence",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "hangup",
+    "label": "Hang up",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "wrongnumber",
+    "label": "Wrong Number",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "prank",
+    "label": "Prank",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "lioBehavior",
+    "label": "LIO Behavior",
+    "type": "button",
+    "category": "non-data"
+  },
+   {
+    "name": "test",
+    "label": "Test",
+    "type": "button",
+    "category": "non-data"
+  },
+   {
+    "name": "voicemail",
+    "label": "Complete Voicemail",
+    "type": "button",
+    "category": "non-data"
+  }
+]

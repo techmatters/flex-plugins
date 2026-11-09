@@ -1,0 +1,326 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relationship to child",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Caregiver",
+        "label": "Caregiver"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Grandparent",
+        "label": "Grandparent"
+      },
+      {
+        "value": "Neighbour",
+        "label": "Neighbour"
+      },
+      {
+        "value": "Parent",
+        "label": "Parent"
+      },
+      {
+        "value": "Partner",
+        "label": "Partner"
+      },
+      {
+        "value": "Person in a position of responsibility",
+        "label": "Person in a position of responsibility"
+      },
+      {
+        "value": "Sibling",
+        "label": "Sibling"
+      },
+      {
+        "value": "Stranger",
+        "label": "Stranger"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "city",
+    "label": "City",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Tigray",
+        "label": "Tigray"
+      },
+      {
+        "value": "Southern Nations Nationalities and People Region (SNNPR)",
+        "label": "Southern Nations Nationalities and People Region (SNNPR)"
+      },
+      {
+        "value": "Amhara",
+        "label": "Amhara"
+      },
+      {
+        "value": "Oromia",
+        "label": "Oromia"
+      },
+      {
+        "value": "Afar",
+        "label": "Afar"
+      },
+      {
+        "value": "Benishangul-Gumuz",
+        "label": "Benishangul-Gumuz"
+      },
+      {
+        "value": "Gambella",
+        "label": "Gambella"
+      },
+      {
+        "value": "Harari",
+        "label": "Harari"
+      },
+      {
+        "value": "Somali Sidama",
+        "label": "Somali Sidama"
+      },
+      {
+        "value": "Addis Ababa City",
+        "label": "Addis Ababa City"
+      },
+      {
+        "value": "Dire Dawa city",
+        "label": "Dire Dawa city"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "phone1",
+    "label": "Phone #1",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gender",
+    "label": "Sex",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      },
+      {
+        "value": "Non-Binary",
+        "label": "Non-Binary"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "01",
+        "label": "1"
+      },
+      {
+        "value": "02",
+        "label": "2"
+      },
+      {
+        "value": "03",
+        "label": "3"
+      },
+      {
+        "value": "04",
+        "label": "4"
+      },
+      {
+        "value": "05",
+        "label": "5"
+      },
+      {
+        "value": "06",
+        "label": "6"
+      },
+      {
+        "value": "07",
+        "label": "7"
+      },
+      {
+        "value": "08",
+        "label": "8"
+      },
+      {
+        "value": "09",
+        "label": "9"
+      },
+      {
+        "value": "10",
+        "label": "10"
+      },
+      {
+        "value": "11",
+        "label": "11"
+      },
+      {
+        "value": "12",
+        "label": "12"
+      },
+      {
+        "value": "13",
+        "label": "13"
+      },
+      {
+        "value": "14",
+        "label": "14"
+      },
+      {
+        "value": "15",
+        "label": "15"
+      },
+      {
+        "value": "16",
+        "label": "16"
+      },
+      {
+        "value": "17",
+        "label": "17"
+      },
+      {
+        "value": "18",
+        "label": "18"
+      },
+      {
+        "value": "19",
+        "label": "19"
+      },
+      {
+        "value": "20",
+        "label": "20"
+      },
+      {
+        "value": "21",
+        "label": "21"
+      },
+      {
+        "value": "22",
+        "label": "22"
+      },
+      {
+        "value": "23",
+        "label": "23"
+      },
+      {
+        "value": "24",
+        "label": "24"
+      },
+      {
+        "value": "25",
+        "label": "25"
+      },
+      {
+        "value": ">25",
+        "label": ">25"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "language",
+    "label": "Language",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Amharic",
+        "label": "Amharic"
+      },
+      {
+        "value": "Oromifa",
+        "label": "Oromifa"
+      }
+    ],
+    "isPII": false
+  }
+]

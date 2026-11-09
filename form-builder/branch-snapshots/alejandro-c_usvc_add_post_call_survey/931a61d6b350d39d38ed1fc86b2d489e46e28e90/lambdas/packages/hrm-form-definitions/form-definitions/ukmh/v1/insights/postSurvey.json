@@ -1,0 +1,16 @@
+[
+    {
+        "insightsObject": "conversations",
+        "attributeName": "preceded_by",
+        "questions": [
+            "mood"
+        ]
+    },
+    {
+        "insightsObject": "conversations",
+        "attributeName": "in_business_hours",
+        "questions": [
+            "was_helpful"
+        ]
+    }
+]

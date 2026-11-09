@@ -1,0 +1,48 @@
+{
+    "attributes": {
+        "feature_flags": {
+            "enable_lex": true,
+            "enable_voice_recordings": true,
+            "enable_csam_report": true,
+            "enable_post_survey": false,
+            "enable_lex_v2": true
+        },
+        "permissionConfig": "demo",
+        "resources_base_url": "https://hrm-production.tl.techmatters.org"
+    },
+    "ui_attributes": {
+        "colorTheme": {
+            "baseName": "GreyLight",
+            "overrides": {
+                "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                },
+                "SideNav": {
+                    "Button": {
+                        "background": "#FFFFFF"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                }
+            },
+            "preset": {
+                "id": "mono-light",
+                "name": "Simple Light"
+            }
+        },
+        "theme": null
+    }
+}

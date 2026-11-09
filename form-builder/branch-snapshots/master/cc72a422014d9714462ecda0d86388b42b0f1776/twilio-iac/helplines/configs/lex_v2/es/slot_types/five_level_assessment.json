@@ -1,0 +1,88 @@
+{
+  "slotTypeName": "five_level_assessment",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "Muy en desacuerdo"
+      },
+      "synonyms": [
+        {
+          "value": "1."
+        },
+        {
+          "value": "1!"
+        },
+        {
+          "value": "1"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "De acuerdo"
+      },
+      "synonyms": [
+        {
+          "value": "4"
+        },
+        {
+          "value": "4."
+        },
+        {
+          "value": "4!"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Ni en desacuerdo ni de acuerdo"
+      },
+      "synonyms": [
+        {
+          "value": "3."
+        },
+        {
+          "value": "3!"
+        },
+        {
+          "value": "3"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "En desacuerdo"
+      },
+      "synonyms": [
+        {
+          "value": "2."
+        },
+        {
+          "value": "2!"
+        },
+        {
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Muy de acuerdo"
+      },
+      "synonyms": [
+        {
+          "value": "5."
+        },
+        {
+          "value": "5!"
+        },
+        {
+          "value": "5"
+        }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

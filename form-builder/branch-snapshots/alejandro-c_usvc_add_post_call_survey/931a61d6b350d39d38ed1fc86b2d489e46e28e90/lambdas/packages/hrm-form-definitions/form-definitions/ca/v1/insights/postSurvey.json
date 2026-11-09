@@ -1,0 +1,37 @@
+[
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_10",
+    "questions": ["contactId"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "in_business_hours",
+    "questions": ["wasHelpful"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "followed_by",
+    "questions": ["feelBetter"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "preceded_by",
+    "questions": ["contactAgain"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_9",
+    "questions": ["wasRespected"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "language",
+    "questions": ["age"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "content",
+    "questions": ["identity"]
+  }
+]

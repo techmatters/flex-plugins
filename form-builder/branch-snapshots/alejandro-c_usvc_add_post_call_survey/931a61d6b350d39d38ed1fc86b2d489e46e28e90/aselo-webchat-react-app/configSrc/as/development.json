@@ -1,0 +1,5 @@
+{
+  "environment": "development",
+  "aseloBackendUrl": "https://hrm-development.tl.techmatters.org",
+  "definitionVersion": "as-v1"
+}

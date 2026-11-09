@@ -1,0 +1,204 @@
+[
+  {
+    "name": "beaconIncidentId",
+    "type": "input",
+    "label": "Beacon Incident ID",
+    "isPII": true
+  },
+  {
+    "name": "incidentNumber",
+    "type": "input",
+    "label": "Beacon Incident Number",
+    "isPII": true
+  },
+  {
+    "name": "incidentCreationTimestamp",
+    "type": "time-input",
+    "label": "Incident Creation Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "incidentType",
+    "label": "Incident Type",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Emergency",
+        "label": "Emergency"
+      },
+      {
+        "value": "Non-Emergency",
+        "label": "Non-Emergency"
+      },
+      {
+        "value": "Standby",
+        "label": "Standby"
+      },
+      {
+        "value": "Transfer",
+        "label": "Transfer"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "priority",
+    "label": "Priority / Response Code",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "1",
+        "label": "1 (Lights & Siren)"
+      },
+      {
+        "value": "2",
+        "label": "2 (Routine)"
+      },
+      {
+        "value": "3",
+        "label": "3 (Non-Transport)"
+      },
+      {
+        "value": "Transfer",
+        "label": "Transfer"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "responderFirstName",
+    "type": "input",
+    "label": "Responder First Name",
+    "isPII": true
+  },
+  {
+    "name": "responderLastName",
+    "type": "input",
+    "label": "Responder Last Name",
+    "isPII": true
+  },
+  {
+    "name": "fleetNumber",
+    "type": "input",
+    "label": "Call Sign/Fleet Number/Unit ID",
+    "isPII": true
+  },
+  {
+    "name": "mileage",
+    "type": "input",
+    "label": "Mileage",
+    "isPII": true
+  },
+  {
+    "name": "latitude",
+    "type": "input",
+    "label": "Location: Latitude",
+    "isPII": true
+  },
+  {
+    "name": "longitude",
+    "type": "input",
+    "label": "Location: Longitude",
+    "isPII": true
+  },
+  {
+    "name": "geolocation",
+    "type": "input",
+    "label": "Geolocation Address",
+    "isPII": true
+  },
+  {
+    "name": "street",
+    "type": "input",
+    "label": "Street",
+    "isPII": true
+  },
+  {
+    "name": "city",
+    "type": "input",
+    "label": "City",
+    "isPII": true
+  },
+    {
+    "name": "region",
+    "type": "input",
+    "label": "Region",
+    "isPII": true
+  },
+    {
+    "name": "postalCode",
+    "type": "input",
+    "label": "Postal Code",
+    "isPII": true
+  },
+  {
+    "name": "destination",
+    "type": "input",
+    "label": "Destination",
+    "isPII": true
+  },
+  {
+    "name": "destinationCityRegion",
+    "type": "input",
+    "label": "Destination City / Region",
+    "isPII": true
+  },
+  {
+    "name": "onDutyEMT",
+    "type": "input",
+    "label": "On Duty EMT",
+    "isPII": true
+  },
+  {
+    "name": "incidentActivationInterval",
+    "type": "numeric-input",
+    "label": "Incident Activation Interval",
+    "isPII": false
+  },
+  {
+    "name": "enrouteInterval",
+    "type": "numeric-input",
+    "label": "En Route Interval",
+    "isPII": false
+  },
+  {
+    "name": "sceneArrivalInterval",
+    "type": "numeric-input",
+    "label": "Scene Arrival Interval",
+    "isPII": false
+  },
+  {
+    "name": "triageInterval",
+    "type": "numeric-input",
+    "label": "Triage Interval",
+    "isPII": false
+  },
+  {
+    "name": "totalSceneInterval",
+    "type": "numeric-input",
+    "label": "Total Scene Interval",
+    "isPII": false
+  },
+  {
+    "name": "transportInterval",
+    "type": "numeric-input",
+    "label": "Transport Interval",
+    "isPII": false
+  },
+  {
+    "name": "totalIncidentTime",
+    "type": "numeric-input",
+    "label": "Total Incident Time",
+    "isPII": false
+  }
+]

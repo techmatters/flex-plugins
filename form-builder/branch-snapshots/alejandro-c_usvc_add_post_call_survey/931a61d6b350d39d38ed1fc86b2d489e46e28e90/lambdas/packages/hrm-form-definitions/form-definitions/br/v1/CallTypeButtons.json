@@ -1,0 +1,38 @@
+[
+    {
+        "name": "child",
+        "label": "Criança ou adolescentes pedindo ajuda para ela mesma",
+        "type": "button",
+        "category": "data"
+    },
+    {
+        "name": "caller",
+        "label": "Alguém buscando ajuda para outra criança",
+        "type": "button",
+        "category": "data"
+    },
+    {
+        "name": "silent",
+        "label": "Silencioso",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "joke",
+        "label": "Trote",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "test",
+        "label": "Teste",
+        "type": "button",
+        "category": "non-data"
+    },
+    {
+        "name": "abusive",
+        "label": "Abusivo",
+        "type": "button",
+        "category": "non-data"
+    }
+]

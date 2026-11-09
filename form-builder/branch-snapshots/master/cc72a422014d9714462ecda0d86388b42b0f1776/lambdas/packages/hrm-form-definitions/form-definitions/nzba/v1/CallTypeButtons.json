@@ -1,0 +1,50 @@
+[
+  {
+    "name": "child",
+    "label": "Client calling about self",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "caller",
+    "label": "Someone calling about a client",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "silent",
+    "label": "Silent",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "hangup",
+    "label": "Hang up",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "soft",
+    "label": "Soft - bored/chat/joke",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "hard",
+    "label": "Hard - sexual",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "hard",
+    "label": "Hard - general",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "connecting",
+    "label": "Connecting",
+    "type": "button",
+    "category": "non-data"
+  }
+]

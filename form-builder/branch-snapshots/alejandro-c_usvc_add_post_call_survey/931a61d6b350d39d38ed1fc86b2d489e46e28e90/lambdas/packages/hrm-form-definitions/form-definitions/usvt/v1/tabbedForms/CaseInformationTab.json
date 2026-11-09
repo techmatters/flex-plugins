@@ -1,0 +1,11 @@
+[
+  
+  {
+    "name": "callSummary",
+    "label": "Summary",
+    "type": "textarea",
+    "required": { "value": true, "message": "RequiredFieldError" },
+    "isPII": true,
+    "rows": "20"
+  }
+]

@@ -25,7 +25,7 @@ import { jest } from '@jest/globals';
 import { render } from '@testing-library/react';
 import type { ApiContext, ApiUser } from '@tech-matters/form-builder-server/api';
 import type { DefinitionFiles } from '@tech-matters/form-builder-server/definitionsApi';
-import { MemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
+import { newMemoryDraftStore } from '@tech-matters/form-builder-server/drafts';
 import { type Draft, repoPathOf } from '@tech-matters/form-builder-shared';
 import { Provider } from 'react-redux';
 
@@ -47,7 +47,7 @@ export const aseloStaff: ApiUser = { name: 'Aselo person', role: 'aselo-staff', 
 const WhenLoaded = () => (useAppSelector(selectDefinitions) ? <HelplineWorkspace /> : null);
 
 export const createHarness = () => {
-  const store = new MemoryDraftStore();
+  const store = newMemoryDraftStore();
   const context: ApiContext = {
     formDefinitionsDir,
     helplinesConfigDir,

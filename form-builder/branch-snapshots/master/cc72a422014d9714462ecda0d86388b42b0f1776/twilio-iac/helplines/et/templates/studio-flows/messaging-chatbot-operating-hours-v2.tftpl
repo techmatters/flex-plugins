@@ -1,0 +1,349 @@
+${
+  jsonencode(
+{
+  "description": flow_description,
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "event": "incomingCall"
+        },
+        {
+          "next": "getProfileFlagsForIdentifier",
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -160,
+          "y": -460
+        }
+      }
+    },
+    {
+      "name": "getProfileFlagsForIdentifier",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "contact_routing",
+          "event": "success"
+        },
+        {
+          "next": "check_operating_hours",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -350,
+          "y": -280
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "body": "{ \"trigger\": {{trigger | to_json}}}",
+        "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
+      }
+    },
+    {
+      "name": "send_blocked_message",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -640,
+          "y": 210
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": channel_flow_vars["widget_from"],
+        "to": "{{contact.channel.address}}",
+        "body":  channel_flow_vars["chat_blocked_message"]
+      }
+    },
+    {
+      "name": "contact_routing",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "check_operating_hours",
+          "event": "noMatch"
+        },
+        {
+          "next": "send_blocked_message",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains blocked",
+              "arguments": [
+                "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}"
+              ],
+              "type": "contains",
+              "value": "blocked"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.getProfileFlagsForIdentifier.parsed.flags}}",
+        "offset": {
+          "x": -690,
+          "y": -60
+        }
+      }
+    },
+    {
+      "name": "attributes",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 180,
+          "y": 1000
+        },
+        "workflow": workflow_sids["master"],
+        "channel": task_channel_sids["chat"],
+        "attributes": channel_attributes["default"]
+      }
+    },
+    {
+      "name": "check_operating_hours",
+      "type": "run-function",
+      "transitions": [
+        {
+          "next": "split_status",
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": 120,
+          "y": 390
+        },
+        "function_sid": flow_vars["operating_hours_function_sid"],
+        "parameters": [
+          {
+            "value": channel_name,
+            "key": "channel"
+          }
+        ],
+        "url": "${serverless_url}/operatingHours"
+      }
+    },
+    {
+      "name": "split_status",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "attributes",
+          "event": "noMatch"
+        },
+        {
+          "next": "attributes",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains open",
+              "arguments": [
+                "{{widgets.check_operating_hours.body}}"
+              ],
+              "type": "contains",
+              "value": "open"
+            }
+          ]
+        },
+        {
+          "next": "send_closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains closed",
+              "arguments": [
+                "{{widgets.check_operating_hours.body}}"
+              ],
+              "type": "contains",
+              "value": "closed"
+            }
+          ]
+        },
+        {
+          "next": "send_closed",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains holiday",
+              "arguments": [
+                "{{widgets.check_operating_hours.body}}"
+              ],
+              "type": "contains",
+              "value": "holiday"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{widgets.check_operating_hours.body}}",
+        "offset": {
+          "x": 240,
+          "y": 630
+        }
+      }
+    },
+    {
+      "name": "send_closed",
+      "type": "send-message",
+      "transitions": [
+        {
+          "event": "sent"
+        },
+        {
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 710,
+          "y": 990
+        },
+        "service": "{{trigger.conversation.InstanceSid}}",
+        "channel": "{{trigger.conversation.ChannelSid}}",
+        "from": "Bot",
+        "to": "{{contact.channel.address}}",
+        "body": "Thank you for contacting us. We are not here right now. Our services are available Monday - Saturday, from 8am to 6pm."
+      }
+    },
+    {
+      "name": "pre_survey_complete",
+      "type": "split-based-on",
+      "transitions": [
+        {
+          "next": "capture_channel_with_bot",
+          "event": "noMatch"
+        },
+        {
+          "next": "check_operating_hours",
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value equal_to true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}"
+              ],
+              "type": "equal_to",
+              "value": "true"
+            }
+          ]
+        }
+      ],
+      "properties": {
+        "input": "{{trigger.conversation.ChannelAttributes.preSurveyComplete}}",
+        "offset": {
+          "x": -30,
+          "y": 150
+        }
+      }
+    },
+    {
+      "name": "capture_channel_with_bot",
+      "type": "run-function",
+      "transitions": [
+        {
+          "event": "success"
+        },
+        {
+          "event": "fail"
+        }
+      ],
+      "properties": {
+        "service_sid": flow_vars["service_sid"],
+        "environment_sid": flow_vars["environment_sid"],
+        "offset": {
+          "x": -270,
+          "y": 380
+        },
+        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "trigger_pre_survey",
+            "key": "message"
+          },
+          {
+            "value": "{{flow.flow_sid}}",
+            "key": "studioFlowSid"
+          },
+          {
+            "value": "${flow_vars.bot_language}",
+            "key": "language"
+          },
+          {
+            "value": "pre_survey",
+            "key": "botSuffix"
+          },
+          {
+            "value": "withUserMessage",
+            "key": "triggerType"
+          },
+          {
+            "value": "triggerStudioFlow",
+            "key": "releaseType"
+          },
+          {
+            "value": "preSurveyComplete",
+            "key": "releaseFlag"
+          },
+          {
+            "value": "{{trigger.conversation.ChannelAttributes.channel_type | downcase}}",
+            "key": "channelType"
+          },
+          {
+            "value": "false",
+            "key": "isConversation"
+          }
+        ],
+        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}
+)
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "name": "relationshipToHelpSeeker",
+    "label": "Relationship to Help Seeker",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      { "value": "", "label": "" },
+      {
+        "value": "Family member/caregiver/other supporter",
+        "label": "Family member/caregiver/other supporter"
+      },
+      {
+        "value": "Prefer not to say/Did not disclose",
+        "label": "Prefer not to say/Did not disclose"
+      }
+    ],
+    "required": { "value": true, "message": "RequiredFieldError" }
+  }
+]

@@ -22,8 +22,8 @@ import { fileURLToPath } from 'url';
 import { describe, expect, test, jest } from '@jest/globals';
 
 import { ApiContext, ApiUser, handleApiRequest } from './api';
-import { Draft, MemoryDraftStore } from './drafts';
-import { LocalApplier } from './localServices';
+import { Draft, DraftStore, newMemoryDraftStore } from './drafts';
+import { newLocalApplier } from './localServices';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 const helplinesConfigDir = path.join(repoRoot, 'twilio-iac/helplines');
@@ -33,10 +33,10 @@ const helplineStaff: ApiUser = { name: 'Helpline person', role: 'helpline-staff'
 const COMMON = 'service-configuration/common.json';
 const CALLER_TAB = 'tabbedForms/CallerInformationTab.json';
 
-const createContext = (): ApiContext & { drafts: MemoryDraftStore } => ({
+const createContext = (): ApiContext & { drafts: DraftStore } => ({
   formDefinitionsDir: path.join(repoRoot, 'lambdas/packages/hrm-form-definitions/form-definitions'),
   helplinesConfigDir,
-  drafts: new MemoryDraftStore(),
+  drafts: newMemoryDraftStore(),
   applier: { apply: jest.fn(async () => ({ description: '', written: [] })) },
   notifier: { draftSubmitted: jest.fn(async () => undefined) },
 });
@@ -119,7 +119,7 @@ describe('the service configuration', () => {
     await fs.mkdir(dir, { recursive: true });
     await fs.writeFile(path.join(dir, 'common.json'), '﻿{\r\n    "attributes": {\r\n        "a": 1\r\n    }\r\n}\r\n');
 
-    const applier = new LocalApplier(path.join(tempDir, 'form-definitions'), tempDir, undefined, tempDir);
+    const applier = newLocalApplier(path.join(tempDir, 'form-definitions'), tempDir, undefined, tempDir);
     const result = await applier.apply({
       code: 'xx',
       version: 'v1',

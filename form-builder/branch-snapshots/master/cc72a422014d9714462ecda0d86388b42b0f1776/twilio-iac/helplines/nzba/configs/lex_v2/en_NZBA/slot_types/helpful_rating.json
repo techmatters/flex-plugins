@@ -1,0 +1,155 @@
+{
+    "slotTypeName": "helpful_rating",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "1. I Feel Lighter/Calmer"
+            },
+            "synonyms": [
+                {
+                    "value": "one"
+                },
+                {
+                    "value": "1"
+                },
+                {
+                    "value": "lighter"
+                },
+                {
+                    "value": "calmer"
+                },
+                {
+                    "value": "I feel lighter"
+                },
+                {
+                    "value": "I feel calmer"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "2. I Felt Heard and Understood"
+            },
+            "synonyms": [
+                {
+                    "value": "two"
+                },
+                {
+                    "value": "2"
+                },
+                {
+                    "value": "heard"
+                },
+                {
+                    "value": "understood"
+                },
+                {
+                    "value": "I felt heard"
+                },
+                {
+                    "value": "I felt understood"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "3. I Understand My Situation Better"
+            },
+            "synonyms": [
+                {
+                    "value": "three"
+                },
+                {
+                    "value": "3"
+                },
+                {
+                    "value": "better understanding"
+                },
+                {
+                    "value": "understand better"
+                },
+                {
+                    "value": "more clarity"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "4. I Have Some Information/Options"
+            },
+            "synonyms": [
+                {
+                    "value": "four"
+                },
+                {
+                    "value": "4"
+                },
+                {
+                    "value": "some information"
+                },
+                {
+                    "value": "some options"
+                },
+                {
+                    "value": "got options"
+                },
+                {
+                    "value": "got information"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "5. I Have a Plan/Next Steps"
+            },
+            "synonyms": [
+                {
+                    "value": "five"
+                },
+                {
+                    "value": "5"
+                },
+                {
+                    "value": "have a plan"
+                },
+                {
+                    "value": "next steps"
+                },
+                {
+                    "value": "I have a plan"
+                },
+                {
+                    "value": "know what to do"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "6. Nothing"
+            },
+            "synonyms": [
+                {
+                    "value": "six"
+                },
+                {
+                    "value": "6"
+                },
+                {
+                    "value": "nothing"
+                },
+                {
+                    "value": "not helpful"
+                },
+                {
+                    "value": "didn't help"
+                },
+                {
+                    "value": "no change"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

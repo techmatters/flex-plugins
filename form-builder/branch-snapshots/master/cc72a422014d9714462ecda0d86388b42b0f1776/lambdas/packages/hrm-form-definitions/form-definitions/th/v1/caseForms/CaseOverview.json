@@ -1,0 +1,29 @@
+[
+  {
+    "name": "status",
+    "label": "สถานะเคส",
+    "type": "select",
+    "isPII": false
+  },
+  {
+    "name": "childIsAtRisk",
+    "label": "เด็กอยู่ในภาวะเสี่ยง",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "followUpDate",
+    "label": "กำหนดติดตาม",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "summary",
+    "label": "สาระสำคัญของเคส",
+    "placeholder": "- ไม่มีสาระสำคัญของเคส -",
+    "type": "textarea",
+    "rows": 5,
+    "width": 300,
+    "isPII": true
+  }
+]

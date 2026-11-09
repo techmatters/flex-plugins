@@ -1,0 +1,22 @@
+{
+  "note": {
+    "label": "Note",
+    "formPath": "caseForms/NoteForm.json"
+  },
+  "referral": {
+    "label": "Referral",
+    "formPath": "caseForms/ReferralForm.json"
+  },
+  "incident": {
+    "label": "Incident",
+    "formPath": "caseForms/IncidentForm.json"
+  },
+  "safeguarding": {
+    "label": "Safeguarding",
+    "formPath": "caseForms/SafeguardingForm.json"
+  },
+  "document": {
+    "label": "Document",
+    "formPath": "caseForms/DocumentForm.json"
+  }
+}

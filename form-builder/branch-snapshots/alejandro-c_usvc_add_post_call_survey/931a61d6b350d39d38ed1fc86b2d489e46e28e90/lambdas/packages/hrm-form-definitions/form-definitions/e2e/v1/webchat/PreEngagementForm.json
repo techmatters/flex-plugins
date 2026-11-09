@@ -1,0 +1,13 @@
+{
+  "description": "PreEngagementDescription",
+  "submitLabel": "Lets Chat",
+  "fields": [
+    {
+      "type": "input",
+      "name": "nickname",
+      "label": "LabelNickname",
+      "placeholder": "Guest",
+      "required": true
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "web",
+            "whatsapp",
+            "facebook",
+            "instagram"
+        ],
+        "definitionVersion": "jm-v1",
+        "feature_flags": {
+            "enable_lex": true,
+            "enable_llm_summary": true,
+            "enable_lex_v2": true,
+            "enable_configurable_max_categories": true
+        },
+        "helplineLanguage": "en-JM",
+        "permissionConfig": "jm"
+    },
+    "ui_attributes": {
+        "colorTheme": {
+            "baseName": "GreyLight",
+            "overrides": {
+                "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                },
+                "SideNav": {
+                    "Button": {
+                        "background": "#FFFFFF"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                }
+            },
+            "preset": {
+                "id": "mono-light",
+                "name": "Simple Light"
+            }
+        },
+        "theme": null
+    }
+}

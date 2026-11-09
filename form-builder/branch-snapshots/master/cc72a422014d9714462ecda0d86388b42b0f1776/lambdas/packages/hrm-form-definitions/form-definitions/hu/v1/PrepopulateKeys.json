@@ -1,0 +1,11 @@
+{
+  "survey":{
+    "ChildInformationTab":["geolocation"],
+    "CallerInformationTab":["geolocation"]
+  },
+  "preEngagement":{
+    "ChildInformationTab":[],
+    "CallerInformationTab":[],
+    "CaseInformationTab":[]
+  }
+}

@@ -32,10 +32,10 @@ import type { APIGatewayProxyEventV2WithJWTAuthorizer, APIGatewayProxyResultV2 }
 
 import { ApiContext, ApiUser, handleApiRequest } from './api';
 import { localNotifier } from './localServices';
-import { PublicRepoSource } from './publicRepo';
-import { RepoSnapshots } from './repoSnapshot';
-import { S3DraftStore } from './s3DraftStore';
-import { SlackNotifier } from './slackNotifier';
+import { newPublicRepoSource } from './publicRepo';
+import { newRepoSnapshots, RepoSnapshots } from './repoSnapshot';
+import { newS3DraftStore } from './s3DraftStore';
+import { newSlackNotifier } from './slackNotifier';
 
 const ASELO_STAFF_GROUP = 'form-builder-aselo-staff';
 const HELPLINE_GROUP_PATTERN = /^form-builder-([a-z0-9]+)$/;
@@ -73,11 +73,11 @@ const loadServices = async (): Promise<Services> => {
   const slackWebhookUrl = Parameters.find(parameter => parameter.Name === `${prefix}/slack_webhook_url`)?.Value;
 
   return {
-    snapshots: new RepoSnapshots(new PublicRepoSource(), '/tmp/flex-plugins'),
-    drafts: new S3DraftStore(process.env.DRAFTS_BUCKET!),
+    snapshots: newRepoSnapshots(newPublicRepoSource(), '/tmp/flex-plugins'),
+    drafts: newS3DraftStore(process.env.DRAFTS_BUCKET!),
     // Until the Slack webhook is set up, submissions are only logged
     notifier: slackWebhookUrl
-      ? new SlackNotifier(slackWebhookUrl, process.env.APP_URL ?? 'https://form-builder.tl.techmatters.org')
+      ? newSlackNotifier(slackWebhookUrl, process.env.APP_URL ?? 'https://form-builder.tl.techmatters.org')
       : localNotifier,
   };
 };

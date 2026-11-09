@@ -1,0 +1,82 @@
+{
+    "intentName": "pre_survey",
+    "description": "Helpline Specific ph/configs/lex_v2/en_PH/bots Pre Survey Intent Survey intentPre Survey bot",
+    "sampleUtterances": [
+        {
+            "utterance": "trigger_pre_survey"
+        },
+        {
+            "utterance": "Incoming webchat contact"
+        }
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [
+        {
+            "priority": 1,
+            "slotName": "aboutSelf"
+        },
+        {
+            "priority": 2,
+            "slotName": "csam"
+        },
+        {
+            "priority": 3,
+            "slotName": "age"
+        },
+        {
+            "priority": 4,
+            "slotName": "gender"
+        },
+        {
+            "priority": 5,
+            "slotName": "counsellorGenderPreference"
+        }
+    ],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "We'll transfer you now. Please hold for a counsellor."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    }
+}

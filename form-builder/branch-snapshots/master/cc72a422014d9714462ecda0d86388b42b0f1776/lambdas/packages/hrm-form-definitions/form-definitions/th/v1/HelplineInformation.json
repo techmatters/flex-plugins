@@ -1,0 +1,15 @@
+{
+  "label": "แผนก",
+  "helplines": [
+    {
+      "label": "มูลนิธิสายเด็ก 1387",
+      "value": "มูลนิธิสายเด็ก 1387",
+      "default": true,
+      "manager": {
+        "name": "Jinda Chaipon",
+        "phone": "+66 93 614 1654",
+        "email": "jinda@childlinethailand.org "
+      }
+    }
+  ]
+}

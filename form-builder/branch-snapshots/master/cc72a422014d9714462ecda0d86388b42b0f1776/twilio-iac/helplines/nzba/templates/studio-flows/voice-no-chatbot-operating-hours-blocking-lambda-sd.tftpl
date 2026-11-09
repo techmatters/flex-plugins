@@ -1,0 +1,497 @@
+${
+  jsonencode({
+  "description": "Voice Studio Flow",
+    "states": [
+      {
+        "name": "Trigger",
+        "properties": {
+          "offset": {
+            "x": 397,
+            "y": 0
+          }
+        },
+        "transitions": [
+          {
+            "event": "incomingMessage"
+          },
+          {
+            "event": "incomingCall",
+            "next": "run_subflow_system_down"
+          },
+          {
+            "event": "incomingConversationMessage"
+          },
+          {
+            "event": "incomingRequest"
+          },
+          {
+            "event": "incomingParent"
+          }
+        ],
+        "type": "trigger"
+      },
+      {
+        "name": "run_subflow_system_down",
+        "properties": {
+          "flow_revision": "LatestPublished",
+          "flow_sid": "${system_down_studio_subflow_sid}",
+          "offset": {
+            "x": 523,
+            "y": 146
+          },
+          "parameters": [
+            {
+              "key": "system_down",
+              "type": "string",
+              "value": "true"
+            }
+          ]
+        },
+        "transitions": [
+          {
+            "event": "completed",
+            "next": "f_operatingHours"
+          },
+          {
+            "event": "failed",
+            "next": "f_operatingHours"
+          }
+        ],
+        "type": "run-subflow"
+      },
+      {
+        "name": "f_getProfileFlagsForIdentifier",
+        "properties": {
+          "add_twilio_auth": false,
+          "body": "{ \"trigger\": {{trigger | to_json}}}",
+          "content_type": "application/json;charset=utf-8",
+          "method": "POST",
+          "offset": {
+            "x": 457,
+            "y": 736
+          },
+          "url": "${get_profile_flags_for_identifier_base_url}/getProfileFlagsForIdentifier"
+        },
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_contact_routing"
+          },
+          {
+            "event": "failed",
+            "next": "play_message_voice_welcome"
+          }
+        ],
+        "type": "make-http-request"
+      },
+      {
+        "name": "split_contact_routing",
+        "properties": {
+          "input": "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}",
+          "offset": {
+            "x": 307,
+            "y": 914
+          }
+        },
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "play_message_voice_welcome"
+          },
+          {
+            "conditions": [
+              {
+                "arguments": [
+                  "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+                ],
+                "friendly_name": "If value contains blocked",
+                "type": "contains",
+                "value": "blocked"
+              }
+            ],
+            "event": "match",
+            "next": "play_message_voice_blocked"
+          },
+          {
+            "conditions": [
+              {
+                "arguments": [
+                  "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
+                ],
+                "friendly_name": "If value contains Regular",
+                "type": "contains",
+                "value": "Regular"
+              }
+            ],
+            "event": "match",
+            "next": "play_message_voice_welcome_regular"
+          }
+        ],
+        "type": "split-based-on"
+      },
+      {
+        "name": "play_message_voice_blocked",
+        "properties": {
+          "language": "${channel_flow_vars.voice_ivr_language}",
+          "loop": 1,
+          "offset": {
+            "x": 37,
+            "y": 1159
+          },
+          "play": "${channel_flow_vars.voice_blocked_message_url}",
+          "voice": "Polly.Mia-Neural"
+        },
+        "transitions": [
+          {
+            "event": "audioComplete"
+          }
+        ],
+        "type": "say-play"
+      },
+      {
+        "name": "send_to_queue",
+        "properties": {
+          "attributes": "${channel_attributes.default}",
+          "channel": "${task_channel_sids.voice}",
+          "offset": {
+            "x": 551,
+            "y": 2089
+          },
+          "priority": "0",
+          "timeout": "3600",
+          "workflow": "${workflow_sids.master}"
+        },
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          }
+        ],
+        "type": "send-to-flex"
+      },
+      {
+        "name": "play_message_voice_prequeue",
+        "properties": {
+          "language": "en-US",
+          "loop": 1,
+          "offset": {
+            "x": 569,
+            "y": 1891
+          },
+          "play": "${channel_flow_vars.voice_prequeue_message_url}"
+        },
+        "transitions": [
+          {
+            "event": "audioComplete",
+            "next": "send_to_queue"
+          }
+        ],
+        "type": "say-play"
+      },
+      {
+        "name": "http_post_webhook_notify_failed_to_enqueue",
+        "properties": {
+          "add_twilio_auth": false,
+          "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+          "content_type": "application/json;charset=utf-8",
+          "method": "POST",
+          "offset": {
+            "x": 569,
+            "y": 2287
+          },
+          "url": "${webhook_url_studio_errors}"
+        },
+        "transitions": [
+          {
+            "event": "success"
+          },
+          {
+            "event": "failed"
+          }
+        ],
+        "type": "make-http-request"
+      },
+      {
+        "name": "gather_input",
+        "properties": {
+          "finish_on_key": "#",
+          "gather_language": "en",
+          "loop": 1,
+          "number_of_digits": 1,
+          "offset": {
+            "x": 702,
+            "y": 1313
+          },
+          "play": "${channel_flow_vars.voice_risk_question_url}",
+          "speech_model": "default",
+          "speech_timeout": "5",
+          "stop_gather": false,
+          "timeout": 1
+        },
+        "transitions": [
+          {
+            "event": "keypress",
+            "next": "split_high_risk"
+          },
+          {
+            "event": "speech"
+          },
+          {
+            "event": "timeout"
+          }
+        ],
+        "type": "gather-input-on-call"
+      },
+      {
+        "name": "split_high_risk",
+        "properties": {
+          "input": "{{widgets.gather_input.Digits}}",
+          "offset": {
+            "x": 677,
+            "y": 1535
+          }
+        },
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "set_var_normal"
+          },
+          {
+            "conditions": [
+              {
+                "arguments": [
+                  "{{widgets.gather_input.Digits}}"
+                ],
+                "friendly_name": "If value equal_to 1",
+                "type": "equal_to",
+                "value": "1"
+              }
+            ],
+            "event": "match",
+            "next": "set_var_risk"
+          },
+          {
+            "conditions": [
+              {
+                "arguments": [
+                  "{{widgets.gather_input.Digits}}"
+                ],
+                "friendly_name": "If value equal_to 2",
+                "type": "equal_to",
+                "value": "2"
+              }
+            ],
+            "event": "match",
+            "next": "set_var_normal"
+          }
+        ],
+        "type": "split-based-on"
+      },
+      {
+        "name": "set_var_risk",
+        "properties": {
+          "offset": {
+            "x": 911,
+            "y": 1713
+          },
+          "variables": [
+            {
+              "key": "clientType",
+              "type": "string",
+              "value": "high risk"
+            }
+          ]
+        },
+        "transitions": [
+          {
+            "event": "next",
+            "next": "play_message_voice_prequeue"
+          }
+        ],
+        "type": "set-variables"
+      },
+      {
+        "name": "set_var_normal",
+        "properties": {
+          "offset": {
+            "x": 569,
+            "y": 1713
+          },
+          "variables": [
+            {
+              "key": "clientType",
+              "type": "string",
+              "value": "normal"
+            }
+          ]
+        },
+        "transitions": [
+          {
+            "event": "next",
+            "next": "play_message_voice_prequeue"
+          }
+        ],
+        "type": "set-variables"
+      },
+      {
+        "name": "set_var_regular",
+        "properties": {
+          "offset": {
+            "x": 227,
+            "y": 1713
+          },
+          "variables": [
+            {
+              "key": "clientType",
+              "type": "string",
+              "value": "regular"
+            }
+          ]
+        },
+        "transitions": [
+          {
+            "event": "next",
+            "next": "play_message_voice_prequeue"
+          }
+        ],
+        "type": "set-variables"
+      },
+      {
+        "name": "play_message_voice_welcome",
+        "properties": {
+          "language": "en-US",
+          "loop": 1,
+          "offset": {
+            "x": 1207,
+            "y": 1149
+          },
+          "play": "${channel_flow_vars.voice_welcome_message_url}"
+        },
+        "transitions": [
+          {
+            "event": "audioComplete",
+            "next": "gather_input"
+          }
+        ],
+        "type": "say-play"
+      },
+      {
+        "name": "play_message_voice_welcome_regular",
+        "properties": {
+          "language": "en-US",
+          "loop": 1,
+          "offset": {
+            "x": -63,
+            "y": 1577
+          },
+          "play": "${channel_flow_vars.voice_welcome_message_url}"
+        },
+        "transitions": [
+          {
+            "event": "audioComplete",
+            "next": "set_var_regular"
+          }
+        ],
+        "type": "say-play"
+      },
+      {
+        "name": "f_operatingHours",
+        "properties": {
+          "add_twilio_auth": false,
+          "body": "{\"channel\": \"voice\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-NZBA\"}",
+          "content_type": "application/json;charset=utf-8",
+          "method": "POST",
+          "offset": {
+            "x": 487,
+            "y": 351
+          },
+          "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
+        },
+        "transitions": [
+          {
+            "event": "success",
+            "next": "split_status"
+          },
+          {
+            "event": "failed",
+            "next": "split_status"
+          }
+        ],
+        "type": "make-http-request"
+      },
+      {
+        "name": "split_status",
+        "properties": {
+          "input": "{{widgets.f_operatingHours.parsed.status}}",
+          "offset": {
+            "x": 365,
+            "y": 544
+          }
+        },
+        "transitions": [
+          {
+            "event": "noMatch",
+            "next": "f_getProfileFlagsForIdentifier"
+          },
+          {
+            "conditions": [
+              {
+                "arguments": [
+                  "{{widgets.f_operatingHours.parsed.status}}"
+                ],
+                "friendly_name": "If value equal_to open",
+                "type": "equal_to",
+                "value": "open"
+              }
+            ],
+            "event": "match",
+            "next": "f_getProfileFlagsForIdentifier"
+          },
+          {
+            "conditions": [
+              {
+                "arguments": [
+                  "{{widgets.f_operatingHours.parsed.status}}"
+                ],
+                "friendly_name": "If value equal_to closed",
+                "type": "equal_to",
+                "value": "closed"
+              }
+            ],
+            "event": "match",
+            "next": "play_message_voice_closed"
+          }
+        ],
+        "type": "split-based-on"
+      },
+      {
+        "name": "play_message_voice_closed",
+        "properties": {
+          "loop": 1,
+          "offset": {
+            "x": 929,
+            "y": 737
+          },
+          "play": "${channel_flow_vars.voice_closed_message_url}"
+        },
+        "transitions": [
+          {
+            "event": "audioComplete"
+          }
+        ],
+        "type": "say-play"
+      }
+    ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+})
+}

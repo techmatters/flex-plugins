@@ -1,0 +1,57 @@
+[
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_1",
+    "questions": ["first_contact"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_2",
+    "questions": ["needs_met"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_3",
+    "questions": ["feel_supported"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_4",
+    "questions": ["next_step"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_5",
+    "questions": ["nps_scale"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_6",
+    "questions": ["family_caregiver"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_7",
+    "questions": ["open_response"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_8",
+    "questions": ["demo_age"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_9",
+    "questions": ["demo_race"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "conversation_attribute_10",
+    "questions": ["demo_gender"]
+  },
+  {
+    "insightsObject": "conversations",
+    "attributeName": "in_business_hours",
+    "questions": ["demo_zip"]
+  }
+]

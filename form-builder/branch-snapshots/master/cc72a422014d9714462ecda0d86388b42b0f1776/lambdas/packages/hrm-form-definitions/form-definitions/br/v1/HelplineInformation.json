@@ -1,0 +1,15 @@
+{
+    "label": "Helpline",
+    "helplines": [
+      {
+        "label": "SaferNet",
+        "value": "SaferNet",
+        "default": true,
+        "manager": {
+          "name": "Juliana Cunha",
+          "phone": "+20000000",
+          "email": "julianacunha@safernet.org.br"
+        }
+      }
+    ]
+  }

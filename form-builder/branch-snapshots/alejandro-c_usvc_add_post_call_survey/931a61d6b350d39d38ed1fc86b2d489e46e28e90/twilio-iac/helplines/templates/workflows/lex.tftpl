@@ -1,0 +1,15 @@
+{
+  "task_routing": {
+    "filters": [
+      {
+        "filter_friendly_name": "CaptureChannel",
+        "expression": "isChatCaptureControl==true",
+        "targets": [
+          {
+            "queue": "${task_queues.survey}"
+          }
+        ]
+      }
+    ]
+  }
+}

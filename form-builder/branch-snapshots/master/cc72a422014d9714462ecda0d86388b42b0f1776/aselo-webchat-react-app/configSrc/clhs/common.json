@@ -1,0 +1,16 @@
+{
+  "fileAttachment": {
+    "enabled": false
+  },
+  "emojiPicker": {
+    "enabled": true,
+    "blockedEmojis": []
+  },
+  "widgetAlwaysOpen": false,
+  "defaultLocale": "es-CL",
+  "definitionVersion": "clhs-v1",
+  "helplineCode": "clhs",
+  "enableRecaptcha": false,
+  "captureIp": false,
+  "contactIdentifierField": "email"
+}

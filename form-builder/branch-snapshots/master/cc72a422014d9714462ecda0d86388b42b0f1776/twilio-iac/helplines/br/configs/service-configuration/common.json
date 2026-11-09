@@ -1,0 +1,26 @@
+{
+    "attributes": {
+        "configuredLanguage": "pt-BR",
+        "contacts_waiting_channels": [
+            "facebook"
+        ],
+        "definitionVersion": "br-v1",
+        "feature_flags": {
+            "enable_dual_write": true,
+            "enable_lex": true,
+            "enable_lex_v2": true       
+        },
+        "helplineLanguage": "pt-BR",
+        "multipleOfficeSupport": true,
+        "pdfImagesSource": "https://tl-public-chat-br-prod.s3.amazonaws.com",
+        "permissionConfig": "br",
+        "previous_ui_version": {
+            "date": "2022-12-15T10:15:23.862Z",
+            "semver": "~1.31.2",
+            "version": "1.31.2"
+        }
+    },
+    "ui_attributes": {
+        "theme": null
+    }
+}

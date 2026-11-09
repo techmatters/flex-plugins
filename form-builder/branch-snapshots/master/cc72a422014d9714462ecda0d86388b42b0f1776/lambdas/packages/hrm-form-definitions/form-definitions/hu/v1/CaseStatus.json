@@ -1,0 +1,14 @@
+{
+  "open": { 
+    "value": "open", 
+    "label": "Folyamatban", 
+    "color": "green", 
+    "transitions": ["closed"] 
+  },
+  "closed": { 
+    "value": "closed", 
+    "label": "Lezárt", 
+    "color": "red", 
+    "transitions": [] 
+  }
+}

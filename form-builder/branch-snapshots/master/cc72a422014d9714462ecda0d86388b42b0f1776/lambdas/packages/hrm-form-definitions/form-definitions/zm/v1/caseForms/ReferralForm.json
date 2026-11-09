@@ -1,0 +1,95 @@
+[
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Date",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    },
+    "isPII": false
+  },
+  {
+    "name": "referredTo",
+    "label": "Referred To",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "OSC",
+        "label": "OSC"
+      },
+      {
+        "value": "DREAMS",
+        "label": "DREAMS"
+      },
+      {
+        "value": "Clinic",
+        "label": "Clinic"
+      },
+      {
+        "value": "Hospital",
+        "label": "Hospital"
+      },
+      {
+        "value": "Social Welfare",
+        "label": "Social Welfare"
+      },
+      {
+        "value": "National Prosecutions Authority",
+        "label": "National Prosecutions Authority"
+      },
+      {
+        "value": "Police (CPU)",
+        "label": "Police (CPU)"
+      },
+      {
+        "value": "Police (VSU)",
+        "label": "Police (VSU)"
+      },
+      {
+        "value": "Chief/Head man",
+        "label": "Chief/Head man"
+      },
+      {
+        "value": "Legal aid",
+        "label": "Legal Aid"
+      },
+      {
+        "value": "Head teacher",
+        "label": "Head teacher"
+      },
+      {
+        "value": "Religious leader",
+        "label": "Religious leader"
+      },
+      {
+        "value": "electionRelatedService",
+        "label": "Election Related Service"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "rows": 25,
+    "width": 300,
+    "isPII": true
+  }
+]

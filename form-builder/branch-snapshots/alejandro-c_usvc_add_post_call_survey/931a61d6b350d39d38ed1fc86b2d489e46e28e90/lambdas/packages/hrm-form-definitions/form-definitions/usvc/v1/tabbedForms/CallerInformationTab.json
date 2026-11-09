@@ -1,0 +1,440 @@
+[
+  {
+    "name": "hotlineIntakeCollaboration",
+    "label": "Hotline Intake Collaboration",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Dispatch (SAVRAA Advocacy/Forensic Exams) (if selected dispatch fields apply)",
+        "label": "Dispatch (SAVRAA Advocacy/Forensic Exams) (if selected dispatch fields apply)"
+      },
+      {
+        "value": "DC SAFE CRL (OCAP)",
+        "label": "DC SAFE CRL (OCAP)"
+      },
+      {
+        "value": "MSP",
+        "label": "MSP"
+      },
+      {
+        "value": "PREA",
+        "label": "PREA"
+      },
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "victimFirstInitial",
+    "label": "Victim First Initial",
+    "type": "input",
+    "isPII": true,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "victimLastInitial",
+    "label": "Victim Last Initial",
+    "type": "input",
+    "isPII": true,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "victimDateOfBirth",
+    "type": "date-input",
+    "isPII": true,
+    "label": "Victim Date of Birth",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "firstDispatchCase",
+    "label": "First Dispatch Case",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "typeOfCase",
+    "label": "Type of Case",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Sexual Assault",
+        "label": "Sexual Assault"
+      },
+      {
+        "value": "IPV",
+        "label": "IPV"
+      },
+      {
+        "value": "Family Violence",
+        "label": "Family Violence"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "primaryServiceRequested",
+    "label": "Primary Service Requested",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Advocacy: Forensic Exam/SANE",
+        "label": "Advocacy: Forensic Exam/SANE"
+      },
+      {
+        "value": "Advocacy: Hospital Non-SANE Advocacy",
+        "label": "Advocacy: Hospital Non-SANE Advocacy"
+      },
+      {
+        "value": "Advocacy: Law Enforcement Reporting + Interviews",
+        "label": "Advocacy: Law Enforcement Reporting + Interviews"
+      },
+      {
+        "value": "Advocacy, setting not specified",
+        "label": "Advocacy, setting not specified"
+      },
+      {
+        "value": "Forensic Nurse, no advocacy",
+        "label": "Forensic Nurse, no advocacy"
+      },
+      {
+        "value": "Law Enforcement, no advocacy",
+        "label": "Law Enforcement, no advocacy"
+      },
+      {
+        "value": "Other Qualifying Service",
+        "label": "Other Qualifying Service"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "requestor",
+    "label": "Requestor",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "MPD SAU",
+        "label": "MPD SAU"
+      },
+      {
+        "value": "MPD YFSD",
+        "label": "MPD YFSD"
+      },
+      {
+        "value": "Dept of Corrections (DOC)",
+        "label": "Dept of Corrections (DOC)"
+      },
+      {
+        "value": "Other Law Enforcement Professional",
+        "label": "Other Law Enforcement Professional"
+      },
+      {
+        "value": "MedStar Dispatch",
+        "label": "MedStar Dispatch"
+      },
+      {
+        "value": "SANE Nurse",
+        "label": "SANE Nurse"
+      },
+      {
+        "value": "Other Medical Professional",
+        "label": "Other Medical Professional"
+      },
+      {
+        "value": "SAVRAA Advocate",
+        "label": "SAVRAA Advocate"
+      },
+      {
+        "value": "Other Community Professional",
+        "label": "Other Community Professional"
+      },
+      {
+        "value": "Victim",
+        "label": "Victim"
+      },
+      {
+        "value": "Friend or Family of Victim",
+        "label": "Friend or Family of Victim"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "requestorInformation",
+    "label": "Requestor Information",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "nameOfRequestorIfProfessional",
+    "label": "Name of Requestor (If Professional)",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "agencyOfRequestorProfessional",
+    "label": "Agency of Requestor (Professional)",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "dispatchInformation",
+    "label": "Dispatch Information",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "locationOfDispatch",
+    "label": "Location of Dispatch",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "victimInformation",
+    "label": "Victim Information",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "typeOfAdvocacy",
+    "label": "Type of Advocacy",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Hospital (acute)",
+        "label": "Hospital (acute)"
+      },
+      {
+        "value": "Community (acute)",
+        "label": "Community (acute)"
+      },
+      {
+        "value": "Long-Term Case Management (no dispatch)",
+        "label": "Long-Term Case Management (no dispatch)"
+      },
+      {
+        "value": "Emotional Crisis (no dispatch)",
+        "label": "Emotional Crisis (no dispatch)"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "organizationDispatched",
+    "label": "Organization Dispatched",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "DCRCC",
+        "label": "DCRCC"
+      },
+      {
+        "value": "Volare",
+        "label": "Volare"
+      },
+      {
+        "value": "Safe Shores",
+        "label": "Safe Shores"
+      },
+      {
+        "value": "MPD SAU",
+        "label": "MPD SAU"
+      },
+      {
+        "value": "MPD YFSD",
+        "label": "MPD YFSD"
+      },
+      {
+        "value": "DCFNE",
+        "label": "DCFNE"
+      },
+      {
+        "value": "None",
+        "label": "None"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "timeAdvocateCalled",
+    "label": "Time Advocate Called",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "individualDispatched",
+    "label": "Individual Dispatched",
+    "type": "input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "warmTransferComplete",
+    "label": "Warm Transfer Complete",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "adminContacted",
+    "label": "Admin Contacted",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "caseNotes",
+    "label": "Case Notes",
+    "type": "textarea",
+    "isPII": false,
+    "rows": 10,
+    "width": 250,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  }
+]

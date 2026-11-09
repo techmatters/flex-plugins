@@ -1,0 +1,33 @@
+[
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Data",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    },
+    "isPII": false
+  },
+  {
+    "name": "referredTo",
+    "label": "Referente a",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "comments",
+    "label": "Comentários",
+    "type": "textarea",
+    "rows": 25,
+    "width": 300,
+    "isPII": true
+  }
+]

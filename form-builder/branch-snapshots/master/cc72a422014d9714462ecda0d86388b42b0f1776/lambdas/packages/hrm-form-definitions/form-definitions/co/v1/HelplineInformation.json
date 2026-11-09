@@ -1,0 +1,15 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Te Guío",
+      "value": "Te Guío",
+      "default": true,
+      "manager": {
+        "name": "Juan Felipe Urrea",
+        "phone": "+57 1756 3689",
+        "email": "teguio@redpapaz.org"
+      }
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+[
+  {
+    "name": "date",
+    "type": "date-input",
+    "label": "Date of Incident",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "duration",
+    "label": "Duration",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "อยู่ในระหว่างดำเนินการ",
+        "label": "อยู่ในระหว่างดำเนินการ"
+      },
+      {
+        "value": "เป็นครั้งเดียว",
+        "label": "เป็นครั้งเดียว"
+      },
+      {
+        "value": "อื่น ๆ",
+        "label": "อื่น ๆ"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "location",
+    "label": "Location",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "บ้าน (ของตนเอง)",
+        "label": "บ้าน (ของตนเอง)"
+      },
+      {
+        "value": "บ้าน (ของคนอื่น)",
+        "label": "บ้าน (ของคนอื่น)"
+      },
+      {
+        "value": "สถานศึกษา",
+        "label": "สถานศึกษา"
+      },
+      {
+        "value": "สถานประกอบการ",
+        "label": "สถานประกอบการ"
+      },
+      {
+        "value": "สถานที่สาธารณะ",
+        "label": "สถานที่สาธารณะ"
+      },
+      {
+        "value": "ออนไลน์",
+        "label": "ออนไลน์"
+      },
+      {
+        "value": "อื่น ๆ",
+        "label": "อื่น ๆ"
+      },
+      {
+        "value": "ไม่ทราบ",
+        "label": "ไม่ทราบ"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "isCaregiverAware",
+    "label": "Is caregiver aware?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "incidentWitnessed",
+    "label": "Was the incident witnessed by anyone?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "abuseReportedElsewhere",
+    "label": "Has abuse been reported elsewhere?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "whereElseBeenReported",
+    "label": "รายงานต่อ...",
+    "type": "select",
+    "unknownOption": "",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "สาธารณสุข",
+        "label": "สาธารณสุข"
+      },
+      {
+        "value": "สถานีตำรวจ",
+        "label": "สถานีตำรวจ"
+      },
+      {
+        "value": "กระทรวงพัฒนาสังคม",
+        "label": "กระทรวงพัฒนาสังคม"
+      },
+      {
+        "value": "กรมการปกครองส่วนท้องถิ่น",
+        "label": "กรมการปกครองส่วนท้องถิ่น"
+      }
+    ],
+    "isPII": false
+  }
+]

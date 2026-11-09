@@ -1,0 +1,11 @@
+{
+  "type": "inbound",
+  "name": "{{trigger.call.From | replace: 'sip:', '' | split: '@' | first}}",
+  "ignoreAgent": "",
+  "helpline":"${helpline}",
+  "transferTargetType": "",
+  "channelType": "voice",
+  "conversations": {
+    "hang_up_by": "Customer"
+  }
+}

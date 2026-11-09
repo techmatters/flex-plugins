@@ -1,0 +1,32 @@
+{
+  "slotTypeName": "howTheHelpseekerHeardAboutUs",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "Internet/Website"
+      },
+      "synonyms": [{ "value": "1" }]
+    },
+    {
+      "sampleValue": {
+        "value": "Google"
+      },
+      "synonyms": [{ "value": "2" }]
+    },
+    {
+      "sampleValue": {
+        "value": "Chat GPT/AI"
+      },
+      "synonyms": [{ "value": "3" }]
+    },
+    {
+      "sampleValue": {
+        "value": "Other"
+      },
+      "synonyms": [{ "value": "4" }]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

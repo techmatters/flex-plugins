@@ -1,0 +1,96 @@
+{
+  "slotTypeName": "four_level_assessment",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "Excellent"
+      },
+      "synonyms": [
+        {
+          "value": "1."
+        },
+        {
+          "value": "1!"
+        },
+        {
+          "value": "1"
+        },
+        {
+          "value": "🥰"
+        },
+        {
+          "value": ":)"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Good"
+      },
+      "synonyms": [
+        {
+          "value": "2."
+        },
+        {
+          "value": "2!"
+        },
+        {
+          "value": "2"
+        },
+        {
+          "value": "😊"
+        },
+        {
+          "value": ":|"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Fair"
+      },
+      "synonyms": [
+        {
+          "value": "3."
+        },
+        {
+          "value": "3!"
+        },
+        {
+          "value": "3"
+        },
+        {
+          "value": "😒"
+        },
+        {
+          "value": ":/"
+        }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Poor"
+      },
+      "synonyms": [
+        {
+          "value": "4"
+        },
+        {
+          "value": "4."
+        },
+        {
+          "value": "4!"
+        },
+        {
+          "value": "😡"
+        },
+        {
+          "value": ":("
+        }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

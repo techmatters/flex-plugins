@@ -1,0 +1,382 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "sex",
+    "label": "Sex",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "ageUnit",
+    "label": "Age Unit",
+    "type": "select",
+    "options": [
+      {
+        "value": "Years",
+        "label": "Years"
+      },
+      {
+        "value": "Months",
+        "label": "Months"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "dateOfBirth",
+    "label": "Date of Birth",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "number",
+    "label": "National Identification Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "idType",
+    "label": "Identification Type ",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Driver's License",
+        "label": "Driver's License"
+      },
+      {
+        "value": "Passport",
+        "label": "Passport"
+      },
+      {
+        "value": "Government ID",
+        "label": "Government ID"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "telephone",
+    "label": "Telephone",
+    "type": "input",
+    "isPII": true
+  },
+{
+    "name": "street",
+    "label": "Street",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "city",
+    "label": "City",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "state",
+    "label": "State",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "postalCode",
+    "label": "Postal Code",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "nokFirstName",
+    "label": "Next of Kin First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "nokLastName",
+    "label": "Next of Kin Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationship",
+    "label": "Next of Kin Relationship",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Spouse",
+        "label": "Spouse"
+      },
+      {
+        "value": "Guardian",
+        "label": "Guardian"
+      },
+      {
+        "value": "Son",
+        "label": "Son"
+      },
+      {
+        "value": "Daughter",
+        "label": "Daughter"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "relationshipOther",
+    "label": "Relationship (If Other)",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "nokTelephone",
+    "label": "NOK Telephone",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "workRelatedInjury",
+    "label": "Work-Related Injury?",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "employer",
+    "label": "Employer (Only If Work-Related)",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "employerTelephone",
+    "label": "Employer Telephone",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gender",
+    "label": "Select Gender",
+    "type": "select",
+    "unknownOption": "Unknown",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "genderOther",
+    "label": "For Other, Document Here",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "weight",
+    "label": "Weight",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "weightUnit",
+    "label": "Weight Unit",
+    "type": "select",
+    "options": [
+      {
+        "value": "Kg",
+        "label": "Kg"
+      },
+      {
+        "value": "Lbs",
+        "label": "Lbs"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "insuranceProvider",
+    "label": "Insurance Provider",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "insurancePolicyNumber",
+    "label": "Insurance Policy Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "income",
+    "label": "Income",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "incomeFrequency",
+    "label": "Frequency",
+    "type": "select",
+    "options": [
+      {
+        "value": "Annual",
+        "label": "Annual"
+      },
+      {
+        "value": "Monthly",
+        "label": "Monthly"
+      }
+    ],
+    "isPII": false
+  },
+{
+    "name": "medicalHistory",
+    "label": "Medical History",
+    "type": "textarea",
+    "rows": 4,
+    "isPII": true
+  },
+  {
+    "name": "surgicalHistory",
+    "label": "Surgical History",
+    "type": "textarea",
+    "rows": 4,
+    "isPII": true
+  },
+  {
+    "name": "currentMedicines",
+    "label": "Current Medicines",
+    "type": "textarea",
+    "rows": 4,
+    "isPII": true
+  },
+  {
+    "name": "allergies",
+    "label": "Allergies",
+    "type": "textarea",
+    "rows": 4,
+    "isPII": true
+  },
+  {
+    "name": "commonConditions",
+    "label": "Common Conditions",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Hypertension",
+        "label": "Hypertension"
+      },
+      {
+        "value": "Diabetes",
+        "label": "Diabetes"
+      },
+      {
+        "value": "Cardiac",
+        "label": "Cardiac"
+      },
+      {
+        "value": "COPD",
+        "label": "COPD"
+      },
+      {
+        "value": "Asthma",
+        "label": "Asthma"
+      },
+      {
+        "value": "Stroke",
+        "label": "Stroke"
+      },
+      {
+        "value": "Seizures",
+        "label": "Seizures"
+      },
+      {
+        "value": "Renal",
+        "label": "Renal"
+      },
+      {
+        "value": "Pregnancy",
+        "label": "Pregnancy"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "commonConditionsOther",
+    "label": "If Other Common Conditions:",
+    "type": "input",
+    "isPII": true
+  }
+]

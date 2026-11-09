@@ -1,0 +1,23 @@
+{
+  "description": "",
+  "submitLabel": "StartChat",
+  "fields": [
+    {
+      "type": "select",
+      "name": "language",
+      "label": "Language",
+      "defaultValue": "ukr-HU",
+      "required": true,
+      "options": [
+        {
+          "value": "ukr-HU",
+          "label": "Українська"
+        },
+        {
+          "value": "ru-HU",
+          "label": "Русский"
+        }
+      ]
+    }
+  ]
+}

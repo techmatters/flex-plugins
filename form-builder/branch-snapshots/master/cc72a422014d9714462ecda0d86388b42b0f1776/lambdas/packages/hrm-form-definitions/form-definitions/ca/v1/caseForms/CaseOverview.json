@@ -1,0 +1,33 @@
+[
+  {
+    "name": "status",
+    "label": "Case Status",
+    "type": "select",
+    "isPII": false
+  },
+  {
+    "name": "childIsAtRisk",
+    "label": "LegalHold",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "followUpDate",
+    "label": "Follow Up Date",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "summary",
+    "label": "NatureofCrisis",
+    "type": "textarea",
+    "placeholder": "NoCaseSummary",
+    "rows": 5,
+    "width": 300,
+    "description": {
+      "title": "Nature of Crisis - Title",
+      "content": "Nature of Crisis - Description"
+    },
+    "isPII": true
+  }
+]

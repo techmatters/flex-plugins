@@ -1,0 +1,385 @@
+[
+  {
+    "name": "firstName",
+    "label": "Nome",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Sobrenome",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "gender",
+    "label": "Gênero",
+    "type": "select",
+    "unknownOption": "Desconhecido",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Menino/Garoto/Homem",
+        "label": "Menino/Garoto/Homem"
+      },
+      {
+        "value": "Menina/Garota/Mulher",
+        "label": "Menina/Garota/Mulher"
+      },
+      {
+        "value": "Não-binário",
+        "label": "Não-binário"
+      },
+      {
+        "value": "Desconhecido",
+        "label": "Desconhecido"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Idade",
+    "type": "select",
+    "unknownOption": "Desconhecido",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "00",
+        "label": "0"
+      },
+      {
+        "value": "01",
+        "label": "1"
+      },
+      {
+        "value": "02",
+        "label": "2"
+      },
+      {
+        "value": "03",
+        "label": "3"
+      },
+      {
+        "value": "04",
+        "label": "4"
+      },
+      {
+        "value": "05",
+        "label": "5"
+      },
+      {
+        "value": "06",
+        "label": "6"
+      },
+      {
+        "value": "07",
+        "label": "7"
+      },
+      {
+        "value": "08",
+        "label": "8"
+      },
+      {
+        "value": "09",
+        "label": "9"
+      },
+      {
+        "value": "10",
+        "label": "10"
+      },
+      {
+        "value": "11",
+        "label": "11"
+      },
+      {
+        "value": "12",
+        "label": "12"
+      },
+      {
+        "value": "13",
+        "label": "13"
+      },
+      {
+        "value": "14",
+        "label": "14"
+      },
+      {
+        "value": "15",
+        "label": "15"
+      },
+      {
+        "value": "16",
+        "label": "16"
+      },
+      {
+        "value": "17",
+        "label": "17"
+      },
+      {
+        "value": "18",
+        "label": "18"
+      },
+      {
+        "value": "19",
+        "label": "19"
+      },
+      {
+        "value": "20",
+        "label": "20"
+      },
+      {
+        "value": "21",
+        "label": "21"
+      },
+      {
+        "value": "22",
+        "label": "22"
+      },
+      {
+        "value": "23",
+        "label": "23"
+      },
+      {
+        "value": "24",
+        "label": "24"
+      },
+      {
+        "value": "25",
+        "label": "25"
+      },
+      {
+        "value": ">25",
+        "label": ">25"
+      },
+      {
+        "value": "Desconhecido",
+        "label": "Desconhecido"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relacionamento com a criança",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Cuidador(a)",
+        "label": "Cuidador(a)"
+      },
+      {
+        "value": "Par/amigo(a)",
+        "label": "Par/amigo(a)"
+      },
+      {
+        "value": "Avô(ó)",
+        "label": "Avô(ó)"
+      },
+      {
+        "value": "Vizinho(a)",
+        "label": "Vizinho(a)"
+      },
+      {
+        "value": "Pai/mãe",
+        "label": "Pai/mãe"
+      },
+      {
+        "value": "Outro adulto não relacionado",
+        "label": "Outro adulto não relacionado"
+      },
+      {
+        "value": "Companheiro(a)",
+        "label": "Companheiro(a)"
+      },
+      {
+        "value": "Responsável",
+        "label": "Responsável"
+      },
+      {
+        "value": "Irmã(o)",
+        "label": "Irmã(o)"
+      },
+      {
+        "value": "Estranho",
+        "label": "Estranho"
+      },
+      {
+        "value": "Outros",
+        "label": "Outros"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "state",
+    "label": "Estado/País",
+    "type": "select",
+    "unknownOption": "Desconhecido",
+    "options": [
+      {
+        "value": "Desconhecido",
+        "label": ""
+      },
+      {
+        "value": "Acre",
+        "label": "Acre"
+      },
+      {
+        "value": "Alagoas",
+        "label": "Alagoas"
+      },
+      {
+        "value": "Amazonas",
+        "label": "Amazonas"
+      },
+      {
+        "value": "Amapá",
+        "label": "Amapá"
+      },
+      {
+        "value": "Bahia",
+        "label": "Bahia"
+      },
+      {
+        "value": "Ceará",
+        "label": "Ceará"
+      },
+      {
+        "value": "Distrito Federal",
+        "label": "Distrito Federal"
+      },
+      {
+        "value": "Espírito Santo",
+        "label": "Espírito Santo"
+      },
+      {
+        "value": "Goiás",
+        "label": "Goiás"
+      },
+      {
+        "value": "Maranhão",
+        "label": "Maranhão"
+      },
+      {
+        "value": "Minas Gerais",
+        "label": "Minas Gerais"
+      },
+      {
+        "value": "Mato Grosso do Sul",
+        "label": "Mato Grosso do Sul"
+      },
+      {
+        "value": "Mato Grosso",
+        "label": "Mato Grosso"
+      },
+      {
+        "value": "Pará",
+        "label": "Pará"
+      },
+      {
+        "value": "Paraíba",
+        "label": "Paraíba"
+      },
+      {
+        "value": "Pernambuco",
+        "label": "Pernambuco"
+      },
+      {
+        "value": "Piauí",
+        "label": "Piauí"
+      },
+      {
+        "value": "Paraná",
+        "label": "Paraná"
+      },
+      {
+        "value": "Rio de Janeiro",
+        "label": "Rio de Janeiro"
+      },
+      {
+        "value": "Rio Grande do Norte",
+        "label": "Rio Grande do Norte"
+      },
+      {
+        "value": "Rondônia",
+        "label": "Rondônia"
+      },
+      {
+        "value": "Roraima",
+        "label": "Roraima"
+      },
+      {
+        "value": "Rio Grande do Sul",
+        "label": "Rio Grande do Sul"
+      },
+      {
+        "value": "Santa Catarina",
+        "label": "Santa Catarina"
+      },
+      {
+        "value": "Sergipe",
+        "label": "Sergipe"
+      },
+      {
+        "value": "São Paulo",
+        "label": "São Paulo"
+      },
+      {
+        "value": "Tocantins",
+        "label": "Tocantins"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "city",
+    "label": "Cidade",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "phone1",
+    "label": "Telefone #1",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "phone2",
+    "label": "Telefone #2",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "email",
+    "label": "Endereço de email",
+    "type": "input",
+    "isPII": true
+  }
+]

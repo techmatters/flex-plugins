@@ -1,0 +1,58 @@
+{
+  "Guyana 913": {
+    "maxSelections": 1,
+    "categories": {
+      "Emergency": {
+        "color": "#085f63",
+        "subcategories": [
+          {
+            "label": "Emergency"
+          }
+        ]
+      },
+      "Non-Emergency": {
+        "color": "#14919b",
+        "subcategories": [
+          {
+            "label": "Non-Emergency"
+          }
+        ]
+      },
+      "Standby": {
+        "color": "#fac05e",
+        "subcategories": [
+          {
+            "label": "Standby"
+          }
+        ]
+      },
+      "Transfer": {
+        "color": "#f79d8f",
+        "subcategories": [
+          {
+            "label": "Transfer"
+          }
+        ]
+      },
+      "Declined Incident": {
+        "color": "#767777",
+        "subcategories": [
+          {
+            "label": "Declined Incident - Out of Scope"
+          },
+          {
+            "label": "Cancelled"
+          }
+        ]
+      },
+      "Additional Information": {
+        "color": "#767777",
+        "subcategories": [
+          {
+            "label": "Additional Information Requested"
+          }
+        ]
+      }
+    }
+  }
+}

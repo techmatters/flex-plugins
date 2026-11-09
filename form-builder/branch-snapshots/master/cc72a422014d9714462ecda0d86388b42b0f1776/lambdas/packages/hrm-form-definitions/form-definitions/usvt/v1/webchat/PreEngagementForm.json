@@ -1,0 +1,20 @@
+{
+  "description": "PreEngagementDescription",
+  "submitLabel": "LetsChat",
+  "fields": [
+    {
+      "type": "input",
+      "name": "friendlyName",
+      "label": "Nickname",
+      "placeholder": "Enter Your Name",
+      "required": true
+    },
+    {
+      "type": "email",
+      "name": "email",
+      "label": "Email Address",
+      "required": true,
+      "placeholder": "Enter Your Email Address"
+    }
+  ]
+}

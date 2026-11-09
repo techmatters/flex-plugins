@@ -1,0 +1,106 @@
+[
+    {
+        "label": "Greeting",
+        "text": "Good afternoon, my name is XXX and I am one of the counsellors here at SafeSpot. Thank you for reaching out to us and for also being brave in sharing this information with me."
+    },
+    {
+        "label": "Data Collection: Age and Parish",
+        "text": "For me to better assist you, can you please provide me with your name, age and the parish you are in."
+    },
+    {
+        "label": "Data Collection: Share how you came to know about SafeSpot",
+        "text": "Before we continue, can you please share with me how you came to know about SafeSpot?"
+    },
+    {
+        "label": "Data Collection: how did you learn about SafeSpot?",
+        "text": "If you don’t mind me asking, how did you learn about SafeSpot?"
+    },
+    {
+        "label": "Mandate",
+        "text": "SafeSpot is a 24/7 counselling helpline that provides free professional counselling and psychosocial support to children and teens under the age of 18 years."
+    },
+    {
+        "label": "Safeguarding Children & Confidentiality",
+        "text": "Before we continue though, I would love for you to know that this is a safe space for you to just talk and share the challenges that you are having. Everything you say here will remain here except in cases where you indicate that you are being harmed by someone (meaning any form of abuse), that you want to harm yourself (meaning suicide) or you want to harm someone. In any of these cases, I would have to inform my supervisor and inform the relevant authorities. Do you understand this?"
+    },
+    {
+        "label": "Conversation: What's on your mind?",
+        "text": "What's on your mind?"
+    },
+    {
+        "label": "Conversation: We can talk about anything you would like to talk about at any time.",
+        "text": "We can talk about anything you would like to talk about at any time."
+    },
+    {
+        "label": "Conversation: I am sorry to hear that.",
+        "text": "Oh no. I am sorry to hear that you are having this experience, however I am happy that you chose to contact us here at SafeSpot."
+    },
+    {
+        "label": "Conversation: We are always here for you.",
+        "text": "We are always here for you."
+    },
+    {
+        "label": "Conversation: Would you like to share some more about this with me?",
+        "text": "Would you like to share some more about this with me?"
+    },
+    {
+        "label": "Adult",
+        "text": "We appreciate your concern; we would love to help. Can you ask the young person to contact us on our toll free number at 1-888-723-3776 or message us on our Whatsapp number which is 876-439-5199? This way we can provide them with the help they need."
+    },
+    {
+        "label": "Probing Questions: So how did that make you feel?",
+        "text": "So how did that make you feel?"
+    },
+    {
+        "label": "Probing Questions: Who do you live with currently?",
+        "text": "Who do you live with currently?"
+    },
+    {
+        "label": "Probing Questions: How often does this happen?",
+        "text": "How often does this happen?"
+    },
+    {
+        "label": "Probing Questions: What would be the main thing that is causing you to feel uncomfortable?",
+        "text": "What would be the main thing that is causing you to feel uncomfortable?"
+    },
+    {
+        "label": "Probing Questions: Have you spoken to anyone about this before now?",
+        "text": "Have you spoken to anyone about this before now?"
+    },
+    {
+        "label": "Probing Questions: Have you ever tried sharing how you feel with your parent?",
+        "text": "Have you ever tried sharing how you feel with your parent?"
+    },
+    {
+        "label": "Affirmation: It is completely natural to feel the way you do",
+        "text": "It is completely natural to feel the way you do."
+    },
+    {
+        "label": "Affirmation: There are a lot of young persons experiencing the same thing.",
+        "text": "There are a lot of young persons in the world that are experiencing the same thing that you are right now."
+    },
+    {
+        "label": "Affirmation: I am so sorry that you had to experience this.",
+        "text": "I am so sorry that you had to experience this. No child should be made to feel this way."
+    },
+    {
+        "label": "Affirmation: Please remember that adults make mistakes too.",
+        "text": "Please remember that adults make mistakes too and don’t always get it right at times."
+    },
+    {
+        "label": "Affirmation: Thank you for sharing this with me.",
+        "text": "Thank you for sharing this with me."
+    },
+    {
+        "label": "Apologies: Calls on WhatsApp line",
+        "text": "Currently we are not able to accept calls on our Whatsapp line, however, please feel free to contact us on our toll free number at 1-888-723-3776 instead."
+    },
+    {
+        "label": "Apologies: Thank you for your patience",
+        "text": "Thank you for your patience."
+    },
+    {
+        "label": "Apologies: Technical difficulties",
+        "text": "I must apologize for the delay in response. It appears that we might be experiencing some technical difficulties."
+    }
+]

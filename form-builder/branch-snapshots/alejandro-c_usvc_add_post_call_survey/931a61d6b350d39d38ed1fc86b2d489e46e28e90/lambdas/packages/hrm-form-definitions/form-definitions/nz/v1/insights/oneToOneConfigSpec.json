@@ -1,0 +1,70 @@
+{
+    "caseForm": {
+        "topLevel": [
+            {
+                "name": "id",
+                "insights": [
+                    "conversations",
+                    "case"
+                ]
+            },
+            {
+                "name": "status",
+                "insights": [
+                    "customers",
+                    "acquisition_date"
+                ]
+            }
+        ],
+        "incident": [
+            {
+                "name": "expressedThoughts",
+                "insights": [
+                    "customers",
+                    "acquisition_date"
+                ]
+            }
+        ],
+        "referral": [
+            {
+                "name": "referredTo",
+                "insights": [
+                    "customers",
+                    "customer_manager"
+                ]
+            },
+            {
+                "name": "haveConsent",
+                "insights": [
+                    "customers",
+                    "market_segment"
+                ]
+            }
+        ],
+        "household": [
+            {
+                "name": "relationshipToChild",
+                "insights": [
+                    "customers",
+                    "organization"
+                ]
+            },
+            {
+                "name": "selfHarmThoughts",
+                "insights": [
+                    "customers",
+                    "area"
+                ]
+            }
+        ],
+        "perpetrator": [
+            {
+                "name": "relationshipToChild",
+                "insights": [
+                    "customers",
+                    "category"
+                ]
+            }
+        ]
+    }
+}

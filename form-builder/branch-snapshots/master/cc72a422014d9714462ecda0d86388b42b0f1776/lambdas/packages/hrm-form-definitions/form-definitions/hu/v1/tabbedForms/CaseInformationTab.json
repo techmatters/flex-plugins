@@ -1,0 +1,92 @@
+[
+  {
+    "name": "callSummary",
+    "label": "Rövid összegzés",
+    "type": "textarea",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "actionTaken",
+    "label": "Intézkedések",
+    "type": "listbox-multiselect",
+    "options": [
+      {
+        "value": "Segítő beszélgetés",
+        "label": "Segítő beszélgetés"
+      },
+      {
+        "value": "Kapcsolatfelvétel iskolával",
+        "label": "Kapcsolatfelvétel iskolával"
+      },
+      {
+        "value": "Jelzés gyermekjóléti szolgálatnak",
+        "label": "Jelzés gyermekjóléti szolgálatnak"
+      },
+      {
+        "value": "Jelzés a rendőrségnek",
+        "label": "Jelzés a rendőrségnek"
+      },
+      {
+        "value": "Jelzés egészségügynek",
+        "label": "Jelzés egészségügynek"
+      },
+      {
+        "value": "Továbbítás másik szervezetnek",
+        "label": "Továbbítás másik szervezetnek"
+      },
+      {
+        "value": "Direkt intervenció (mentő)",
+        "label": "Direkt intervenció (mentő)"
+      },
+      {
+        "value": "Egyéb",
+        "label": "Egyéb"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "howDidYouKnowAboutOurLine",
+    "label": "Honnan hallott a Kék Vonalról?",
+    "type": "select",
+    "unknownOption": "Nem derült ki",
+    "options": [
+      {
+        "value": "",
+        "label": "Nem derült ki"
+      },
+      {
+        "value": "Szájhagyomány",
+        "label": "Szájhagyomány"
+      },
+      {
+        "value": "Közösségi média",
+        "label": "Közösségi média"
+      },
+      {
+        "value": "Barát, ismerős",
+        "label": "Barát, ismerős"
+      },
+      {
+        "value": "Iskola",
+        "label": "Iskola"
+      },
+      {
+        "value": "Egyéb",
+        "label": "Egyéb"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "keepConfidential",
+    "label": "Anonim szeretne maradni",
+    "type": "mixed-checkbox",
+    "initialChecked": true,
+    "isPII": false
+  }
+]

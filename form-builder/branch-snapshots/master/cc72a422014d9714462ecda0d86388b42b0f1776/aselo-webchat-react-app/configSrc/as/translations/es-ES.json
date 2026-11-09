@@ -1,0 +1,33 @@
+{
+    "WhatIsYourHelpline": "¿Cuál es su línea de ayuda?",
+    "SelectHelpline": "Seleccione la línea de ayuda",
+    "FakeHelpline": "Línea de ayuda falsa",
+    "LetsChat": "Hablemos!",
+    
+    "EntryPointTagline": "Chatea con nosotros",
+    "MessageCanvasTrayButton": "EMPEZAR NUEVO CHAT",
+    "InvalidPreEngagementMessage":
+      "Los formularios previos al compromiso no se han establecido y son necesarios para iniciar el chat web. Por favor configúrelos ahora en la configuración.",
+    "InvalidPreEngagementButton": "Aprende más",
+    "PredefinedChatMessageAuthorName": "Bot",
+    "PredefinedChatMessageBody": "¡Hola! ¿Cómo podemos ayudarte hoy?",
+    "InputPlaceHolder": "Escribe un mensaje",
+    "TypingIndicator": "{0} está escribiendo ... ",
+    "Read": "Visto",
+    "MessageSendingDisabled": "El envío de mensajes ha sido desactivado",
+    "Today": "HOY",
+    "Yesterday": "AYER",
+    "Save": "GUARDAR",
+    "Reset": "RESETEAR",
+    "MessageCharacterCountStatus": "{{currentCharCount}} / {{maxCharCount}}",
+    "SendMessageTooltip": "Enviar Mensaje",
+    "FieldValidationRequiredField": "Campo requerido",
+    "FieldValidationInvalidEmail": "Por favor provea una dirección válida de email",
+
+    "PreEngagementDescription": "Comencemos",
+
+    "BotGreeting": "¿Cómo puedo ayudar?",
+    "WelcomeMessage": "¡Bienvenido a Aselo!",
+    "MessageCanvasTrayContent": "",
+    "AutoFirstMessage": ""
+}

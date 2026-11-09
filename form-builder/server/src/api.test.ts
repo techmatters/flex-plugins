@@ -22,8 +22,8 @@ import { fileURLToPath } from 'url';
 import { beforeEach, describe, expect, test, jest } from '@jest/globals';
 
 import { ApiContext, ApiUser, handleApiRequest } from './api';
-import { LocalDraftStore, MemoryDraftStore } from './drafts';
-import { LocalApplier, localUser } from './localServices';
+import { newLocalDraftStore, newMemoryDraftStore } from './drafts';
+import { newLocalApplier, localUser } from './localServices';
 
 const formDefinitionsDir = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -47,7 +47,7 @@ const saveBody = (expectedRevision: number) => ({
 beforeEach(() => {
   context = {
     formDefinitionsDir,
-    drafts: new MemoryDraftStore(),
+    drafts: newMemoryDraftStore(),
     applier: { apply: jest.fn(async () => ({ description: 'Applied', written: ['x.json'] })) },
     notifier: { draftSubmitted: jest.fn(async () => undefined) },
     now: () => new Date('2026-10-26T12:00:00Z'),
@@ -121,9 +121,9 @@ describe('drafts', () => {
 });
 
 describe('local services', () => {
-  test('LocalDraftStore keeps drafts in a folder, and LocalApplier writes them into the checkout', async () => {
+  test('the local draft store keeps drafts in a folder, and the local applier writes them into the checkout', async () => {
     const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'form-builder-'));
-    const store = new LocalDraftStore(path.join(tempDir, 'drafts'));
+    const store = newLocalDraftStore(path.join(tempDir, 'drafts'));
     const draft = {
       code: 'usnm',
       version: 'v1',
@@ -137,7 +137,7 @@ describe('local services', () => {
     ]);
 
     const definitionsDir = path.join(tempDir, 'form-definitions');
-    const result = await new LocalApplier(definitionsDir, tempDir).apply(draft);
+    const result = await newLocalApplier(definitionsDir, tempDir).apply(draft);
     expect(result.written).toEqual(['form-definitions/usnm/v1/tabbedForms/CallerInformationTab.json']);
     expect(
       JSON.parse(await fs.readFile(path.join(definitionsDir, 'usnm/v1/tabbedForms/CallerInformationTab.json'), 'utf8')),
@@ -148,14 +148,14 @@ describe('local services', () => {
     await fs.rm(tempDir, { recursive: true, force: true });
   });
 
-  test('LocalApplier writes webchat texts into the webchat app, in the style of the file it replaces', async () => {
+  test('the local applier writes webchat texts into the webchat app, in the style of the file it replaces', async () => {
     const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'form-builder-'));
     const webchatDir = path.join(tempDir, 'configSrc');
     const translationsFile = path.join(webchatDir, 'ca/translations/fr-CA.json');
     await fs.mkdir(path.dirname(translationsFile), { recursive: true });
     await fs.writeFile(translationsFile, '{\r\n    "StartChat": "Démarrer"\r\n}\r\n');
 
-    const result = await new LocalApplier(path.join(tempDir, 'form-definitions'), tempDir, webchatDir).apply({
+    const result = await newLocalApplier(path.join(tempDir, 'form-definitions'), tempDir, webchatDir).apply({
       code: 'ca',
       version: 'v1',
       files: { 'webchat-app/translations/fr-CA.json': { StartChat: 'Commencer', Title: 'Bonjour' } },

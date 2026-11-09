@@ -1,0 +1,47 @@
+{
+  "slotTypeName": "ethnicity",
+  "slotTypeValues": [
+    {
+      "sampleValue": {
+        "value": "Hispanic/Latino"
+      },
+      "synonyms": [
+        { "value": "1" },
+        { "value": "Hispanic/Latino" },
+        { "value": "Hispanic" },
+        { "value": "Latino" },
+        { "value": "Latina" },
+        { "value": "Latinx" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Not Hispanic or Latino"
+      },
+      "synonyms": [
+        { "value": "2" },
+        { "value": "Not Hispanic/Latino" },
+        { "value": "Non-Hispanic" },
+        { "value": "Non Latino" },
+        { "value": "Not Latino" }
+      ]
+    },
+    {
+      "sampleValue": {
+        "value": "Unknown"
+      },
+      "synonyms": [
+        { "value": "0" },
+        { "value": "Unknown" },
+        { "value": "Prefer not to say" },
+        { "value": "Rather not say" },
+        { "value": "Prefer not to answer" },
+        { "value": "X" },
+        { "value": "x" }
+      ]
+    }
+  ],
+  "valueSelectionSetting": {
+    "resolutionStrategy": "TopResolution"
+  }
+}

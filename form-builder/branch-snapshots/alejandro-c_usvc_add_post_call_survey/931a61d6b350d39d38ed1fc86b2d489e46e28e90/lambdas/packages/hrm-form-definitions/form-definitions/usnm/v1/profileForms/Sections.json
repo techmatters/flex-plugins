@@ -1,0 +1,12 @@
+[
+  {
+    "name": "behaviouralPlan",
+    "label": "Behavioural Plan",
+    "editLabel": "Edit Summary",
+    "type": "textarea",
+    "rows": 50,
+    "width": 550,
+    "placeholder": "Enter a behavioural plan for the help seeker",
+    "isPII": true
+  }
+]

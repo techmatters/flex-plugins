@@ -1,0 +1,1779 @@
+[
+  {
+    "name": "user",
+    "label": "User",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Community member",
+        "label": "Community member"
+      },
+      {
+        "value": "Family member of victim",
+        "label": "Family member of victim"
+      },
+      {
+        "value": "Friend of victim",
+        "label": "Friend of victim"
+      },
+      {
+        "value": "Professional",
+        "label": "Professional"
+      },
+      {
+        "value": "Victim (self)",
+        "label": "Victim (self)"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "frequencyOfAccess",
+    "label": "Frequency of Access",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "1st time user",
+        "label": "1st time user"
+      },
+      {
+        "value": "Return User",
+        "label": "Return User"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "typeOfVictim",
+    "label": "Type of Victim",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Primary Victim",
+        "label": "Primary Victim"
+      },
+      {
+        "value": "Secondary Victim",
+        "label": "Secondary Victim"
+      },
+      {
+        "value": "N/A",
+        "label": "N/A"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "gender",
+    "label": "Sex of Visitor",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "Male",
+        "label": "Male"
+      },
+      {
+        "value": "Female",
+        "label": "Female"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      },
+      {
+        "value": "00",
+        "label": "0"
+      },
+      {
+        "value": "01",
+        "label": "1"
+      },
+      {
+        "value": "02",
+        "label": "2"
+      },
+      {
+        "value": "03",
+        "label": "3"
+      },
+      {
+        "value": "04",
+        "label": "4"
+      },
+      {
+        "value": "05",
+        "label": "5"
+      },
+      {
+        "value": "06",
+        "label": "6"
+      },
+      {
+        "value": "07",
+        "label": "7"
+      },
+      {
+        "value": "08",
+        "label": "8"
+      },
+      {
+        "value": "09",
+        "label": "9"
+      },
+      {
+        "value": "10",
+        "label": "10"
+      },
+      {
+        "value": "11",
+        "label": "11"
+      },
+      {
+        "value": "12",
+        "label": "12"
+      },
+      {
+        "value": "13",
+        "label": "13"
+      },
+      {
+        "value": "14",
+        "label": "14"
+      },
+      {
+        "value": "15",
+        "label": "15"
+      },
+      {
+        "value": "16",
+        "label": "16"
+      },
+      {
+        "value": "17",
+        "label": "17"
+      },
+      {
+        "value": "18",
+        "label": "18"
+      },
+      {
+        "value": "19",
+        "label": "19"
+      },
+      {
+        "value": "20",
+        "label": "20"
+      },
+      {
+        "value": "21",
+        "label": "21"
+      },
+      {
+        "value": "22",
+        "label": "22"
+      },
+      {
+        "value": "23",
+        "label": "23"
+      },
+      {
+        "value": "24",
+        "label": "24"
+      },
+      {
+        "value": "25",
+        "label": "25"
+      },
+      {
+        "value": "26",
+        "label": "26"
+      },
+      {
+        "value": "27",
+        "label": "27"
+      },
+      {
+        "value": "28",
+        "label": "28"
+      },
+      {
+        "value": "29",
+        "label": "29"
+      },
+      {
+        "value": "30",
+        "label": "30"
+      },
+      {
+        "value": "31",
+        "label": "31"
+      },
+      {
+        "value": "32",
+        "label": "32"
+      },
+      {
+        "value": "33",
+        "label": "33"
+      },
+      {
+        "value": "34",
+        "label": "34"
+      },
+      {
+        "value": "35",
+        "label": "35"
+      },
+      {
+        "value": "36",
+        "label": "36"
+      },
+      {
+        "value": "37",
+        "label": "37"
+      },
+      {
+        "value": "38",
+        "label": "38"
+      },
+      {
+        "value": "39",
+        "label": "39"
+      },
+      {
+        "value": "40",
+        "label": "40"
+      },
+      {
+        "value": "41",
+        "label": "41"
+      },
+      {
+        "value": "42",
+        "label": "42"
+      },
+      {
+        "value": "43",
+        "label": "43"
+      },
+      {
+        "value": "44",
+        "label": "44"
+      },
+      {
+        "value": "45",
+        "label": "45"
+      },
+      {
+        "value": "46",
+        "label": "46"
+      },
+      {
+        "value": "47",
+        "label": "47"
+      },
+      {
+        "value": "48",
+        "label": "48"
+      },
+      {
+        "value": "49",
+        "label": "49"
+      },
+      {
+        "value": "50",
+        "label": "50"
+      },
+      {
+        "value": "51",
+        "label": "51"
+      },
+      {
+        "value": "52",
+        "label": "52"
+      },
+      {
+        "value": "53",
+        "label": "53"
+      },
+      {
+        "value": "54",
+        "label": "54"
+      },
+      {
+        "value": "55",
+        "label": "55"
+      },
+      {
+        "value": "56",
+        "label": "56"
+      },
+      {
+        "value": "57",
+        "label": "57"
+      },
+      {
+        "value": "58",
+        "label": "58"
+      },
+      {
+        "value": "59",
+        "label": "59"
+      },
+      {
+        "value": "60",
+        "label": "60"
+      },
+      {
+        "value": "61",
+        "label": "61"
+      },
+      {
+        "value": "62",
+        "label": "62"
+      },
+      {
+        "value": "63",
+        "label": "63"
+      },
+      {
+        "value": "64",
+        "label": "64"
+      },
+      {
+        "value": "65",
+        "label": "65"
+      },
+      {
+        "value": "66",
+        "label": "66"
+      },
+      {
+        "value": "67",
+        "label": "67"
+      },
+      {
+        "value": "68",
+        "label": "68"
+      },
+      {
+        "value": "69",
+        "label": "69"
+      },
+      {
+        "value": "70",
+        "label": "70"
+      },
+      {
+        "value": "71",
+        "label": "71"
+      },
+      {
+        "value": "72",
+        "label": "72"
+      },
+      {
+        "value": "73",
+        "label": "73"
+      },
+      {
+        "value": "74",
+        "label": "74"
+      },
+      {
+        "value": "75",
+        "label": "75"
+      },
+      {
+        "value": "76",
+        "label": "76"
+      },
+      {
+        "value": "77",
+        "label": "77"
+      },
+      {
+        "value": "78",
+        "label": "78"
+      },
+      {
+        "value": "79",
+        "label": "79"
+      },
+      {
+        "value": "80",
+        "label": "80"
+      },
+      {
+        "value": "81",
+        "label": "81"
+      },
+      {
+        "value": "82",
+        "label": "82"
+      },
+      {
+        "value": "83",
+        "label": "83"
+      },
+      {
+        "value": "84",
+        "label": "84"
+      },
+      {
+        "value": "85",
+        "label": "85"
+      },
+      {
+        "value": "86",
+        "label": "86"
+      },
+      {
+        "value": "87",
+        "label": "87"
+      },
+      {
+        "value": "88",
+        "label": "88"
+      },
+      {
+        "value": "89",
+        "label": "89"
+      },
+      {
+        "value": "90",
+        "label": "90"
+      },
+      {
+        "value": "91",
+        "label": "91"
+      },
+      {
+        "value": "92",
+        "label": "92"
+      },
+      {
+        "value": "93",
+        "label": "93"
+      },
+      {
+        "value": "94",
+        "label": "94"
+      },
+      {
+        "value": "95",
+        "label": "95"
+      },
+      {
+        "value": "96",
+        "label": "96"
+      },
+      {
+        "value": "97",
+        "label": "97"
+      },
+      {
+        "value": "98",
+        "label": "98"
+      },
+      {
+        "value": "99",
+        "label": "99"
+      },
+      {
+        "value": "100",
+        "label": "100"
+      },
+      {
+        "value": "101",
+        "label": "101"
+      },
+      {
+        "value": "102",
+        "label": "102"
+      },
+      {
+        "value": "103",
+        "label": "103"
+      },
+      {
+        "value": "104",
+        "label": "104"
+      },
+      {
+        "value": "105",
+        "label": "105"
+      },
+      {
+        "value": "106",
+        "label": "106"
+      },
+      {
+        "value": "107",
+        "label": "107"
+      },
+      {
+        "value": "108",
+        "label": "108"
+      },
+      {
+        "value": "109",
+        "label": "109"
+      },
+      {
+        "value": "110",
+        "label": "110"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "race",
+    "label": "Race",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "American Indian/Alaska Native",
+        "label": "American Indian/Alaska Native"
+      },
+      {
+        "value": "Asian",
+        "label": "Asian"
+      },
+      {
+        "value": "African ",
+        "label": "African "
+      },
+      {
+        "value": "Black/African American",
+        "label": "Black/African American"
+      },
+      {
+        "value": "Hispanic/Latinx",
+        "label": "Hispanic/Latinx"
+      },
+      {
+        "value": "Native Hawaiian or Other Pacific Islander",
+        "label": "Native Hawaiian or Other Pacific Islander"
+      },
+      {
+        "value": "White non-latinx/Caucasian",
+        "label": "White non-latinx/Caucasian"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Two or more races",
+        "label": "Two or more races"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "englishProficiency",
+    "label": "English Proficiency",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "English",
+        "label": "English"
+      },
+      {
+        "value": "Limited English Proficient (LEP) individuals",
+        "label": "Limited English Proficient (LEP) individuals"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "otherLanguage",
+    "label": "Other Language",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "englishProficiency",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "English": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Limited English Proficient (LEP) individuals": [
+        {
+          "value": "Spanish",
+          "label": "Spanish"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        },
+        {
+          "value": "Amharic",
+          "label": "Amharic"
+        },
+        {
+          "value": "Arabic",
+          "label": "Arabic"
+        },
+        {
+          "value": "Bengali",
+          "label": "Bengali"
+        },
+        {
+          "value": "Chinese",
+          "label": "Chinese"
+        },
+        {
+          "value": "Chinese Cantonese",
+          "label": "Chinese Cantonese"
+        },
+        {
+          "value": "Chinese Mandarin",
+          "label": "Chinese Mandarin"
+        },
+        {
+          "value": "Farsi",
+          "label": "Farsi"
+        },
+        {
+          "value": "French",
+          "label": "French"
+        },
+        {
+          "value": "Haitian Creole",
+          "label": "Haitian Creole"
+        },
+        {
+          "value": "Hindi",
+          "label": "Hindi"
+        },
+        {
+          "value": "Indonesian",
+          "label": "Indonesian"
+        },
+        {
+          "value": "Japanese",
+          "label": "Japanese"
+        },
+        {
+          "value": "Korean",
+          "label": "Korean"
+        },
+        {
+          "value": "Kru",
+          "label": "Kru"
+        },
+        {
+          "value": "Lingala",
+          "label": "Lingala"
+        },
+        {
+          "value": "Nepali",
+          "label": "Nepali"
+        },
+        {
+          "value": "Oromo",
+          "label": "Oromo"
+        },
+        {
+          "value": "Persian",
+          "label": "Persian"
+        },
+        {
+          "value": "Portuguese",
+          "label": "Portuguese"
+        },
+        {
+          "value": "Russian",
+          "label": "Russian"
+        },
+        {
+          "value": "Tagalog",
+          "label": "Tagalog"
+        },
+        {
+          "value": "Thai",
+          "label": "Thai"
+        },
+        {
+          "value": "Tigrinya",
+          "label": "Tigrinya"
+        },
+        {
+          "value": "Turkish",
+          "label": "Turkish"
+        },
+        {
+          "value": "Urdu",
+          "label": "Urdu"
+        },
+        {
+          "value": "Vietnamese",
+          "label": "Vietnamese"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "languageServiceUsed",
+    "label": "Language Service Used",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "otherLanguage",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "N/A": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Spanish": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Other": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Amharic": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Arabic": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Bengali": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Chinese": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Chinese Cantonese": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Chinese Mandarin": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Farsi": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "French": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Haitian Creole": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Hindi": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Indonesian": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Japanese": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Korean": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Kru": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Lingala": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Nepali": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Oromo": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Persian": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Portuguese": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Russian": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Tagalog": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Thai": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Tigrinya": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Turkish": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Urdu": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ],
+      "Vietnamese": [
+        {
+          "value": "Bilingual services",
+          "label": "Bilingual services"
+        },
+        {
+          "value": "Interpreter accessed",
+          "label": "Interpreter accessed"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "state",
+    "label": "Location",
+    "type": "select",
+    "isPII": false,
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Alabama",
+        "label": "Alabama"
+      },
+      {
+        "value": "Alaska",
+        "label": "Alaska"
+      },
+      {
+        "value": "Arizona",
+        "label": "Arizona"
+      },
+      {
+        "value": "Arkansas",
+        "label": "Arkansas"
+      },
+      {
+        "value": "California",
+        "label": "California"
+      },
+      {
+        "value": "Colorado",
+        "label": "Colorado"
+      },
+      {
+        "value": "Connecticut",
+        "label": "Connecticut"
+      },
+      {
+        "value": "Delaware",
+        "label": "Delaware"
+      },
+      {
+        "value": "Florida",
+        "label": "Florida"
+      },
+      {
+        "value": "Georgia",
+        "label": "Georgia"
+      },
+      {
+        "value": "Hawaii",
+        "label": "Hawaii"
+      },
+      {
+        "value": "Idaho",
+        "label": "Idaho"
+      },
+      {
+        "value": "Illinois",
+        "label": "Illinois"
+      },
+      {
+        "value": "Indiana",
+        "label": "Indiana"
+      },
+      {
+        "value": "Iowa",
+        "label": "Iowa"
+      },
+      {
+        "value": "Kansas",
+        "label": "Kansas"
+      },
+      {
+        "value": "Kentucky",
+        "label": "Kentucky"
+      },
+      {
+        "value": "Louisiana",
+        "label": "Louisiana"
+      },
+      {
+        "value": "Maine",
+        "label": "Maine"
+      },
+      {
+        "value": "Maryland",
+        "label": "Maryland"
+      },
+      {
+        "value": "Massachusetts",
+        "label": "Massachusetts"
+      },
+      {
+        "value": "Michigan",
+        "label": "Michigan"
+      },
+      {
+        "value": "Minnesota",
+        "label": "Minnesota"
+      },
+      {
+        "value": "Mississippi",
+        "label": "Mississippi"
+      },
+      {
+        "value": "Missouri",
+        "label": "Missouri"
+      },
+      {
+        "value": "Montana",
+        "label": "Montana"
+      },
+      {
+        "value": "Nebraska",
+        "label": "Nebraska"
+      },
+      {
+        "value": "Nevada",
+        "label": "Nevada"
+      },
+      {
+        "value": "New Hampshire",
+        "label": "New Hampshire"
+      },
+      {
+        "value": "New Jersey",
+        "label": "New Jersey"
+      },
+      {
+        "value": "New Mexico",
+        "label": "New Mexico"
+      },
+      {
+        "value": "New York",
+        "label": "New York"
+      },
+      {
+        "value": "North Carolina",
+        "label": "North Carolina"
+      },
+      {
+        "value": "North Dakota",
+        "label": "North Dakota"
+      },
+      {
+        "value": "Ohio",
+        "label": "Ohio"
+      },
+      {
+        "value": "Oklahoma",
+        "label": "Oklahoma"
+      },
+      {
+        "value": "Oregon",
+        "label": "Oregon"
+      },
+      {
+        "value": "Pennsylvania",
+        "label": "Pennsylvania"
+      },
+      {
+        "value": "Rhode Island",
+        "label": "Rhode Island"
+      },
+      {
+        "value": "South Carolina",
+        "label": "South Carolina"
+      },
+      {
+        "value": "South Dakota",
+        "label": "South Dakota"
+      },
+      {
+        "value": "Tennessee",
+        "label": "Tennessee"
+      },
+      {
+        "value": "Texas",
+        "label": "Texas"
+      },
+      {
+        "value": "Utah",
+        "label": "Utah"
+      },
+      {
+        "value": "Vermont",
+        "label": "Vermont"
+      },
+      {
+        "value": "Virginia",
+        "label": "Virginia"
+      },
+      {
+        "value": "Washington",
+        "label": "Washington"
+      },
+      {
+        "value": "Washington D.C.",
+        "label": "Washington D.C."
+      },
+      {
+        "value": "West Virginia",
+        "label": "West Virginia"
+      },
+      {
+        "value": "Wisconsin",
+        "label": "Wisconsin"
+      },
+      {
+        "value": "Wyoming",
+        "label": "Wyoming"
+      },
+      {
+        "value": "U.S. Territory - American Somoa",
+        "label": "U.S. Territory - American Somoa"
+      },
+      {
+        "value": "U.S. Territory - Guam",
+        "label": "U.S. Territory - Guam"
+      },
+      {
+        "value": "U.S Territory - Northern Mariana Islands",
+        "label": "U.S Territory - Northern Mariana Islands"
+      },
+      {
+        "value": "U.S Territory - Puerto Rico",
+        "label": "U.S Territory - Puerto Rico"
+      },
+      {
+        "value": "U.S Territory - U.S. Virgin Islands",
+        "label": "U.S Territory - U.S. Virgin Islands"
+      },
+      {
+        "value": "U.S Territory - Other",
+        "label": "U.S Territory - Other"
+      },
+      {
+        "value": "International",
+        "label": "International"
+      },
+      {
+        "value": "Unknown - USA State/Territory",
+        "label": "Unknown - USA State/Territory"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "dcquadrant",
+    "label": "Dc Quadrant",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "state",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Alabama": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Alaska": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Arizona": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Arkansas": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "California": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Colorado": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Connecticut": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Delaware": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Florida": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Georgia": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Hawaii": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Idaho": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Illinois": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Indiana": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Iowa": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Kansas": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Kentucky": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Louisiana": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Maine": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Maryland": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Massachusetts": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Michigan": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Minnesota": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Mississippi": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Missouri": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Montana": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Nebraska": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Nevada": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "New Hampshire": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "New Jersey": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "New Mexico": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "New York": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "North Carolina": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "North Dakota": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Ohio": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Oklahoma": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Oregon": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Pennsylvania": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Rhode Island": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "South Carolina": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "South Dakota": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Tennessee": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Texas": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Utah": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Vermont": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Virginia": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Washington": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Washington D.C.": [
+        {
+          "value": "NE",
+          "label": "NE"
+        },
+        {
+          "value": "SE",
+          "label": "SE"
+        },
+        {
+          "value": "NW",
+          "label": "NW"
+        },
+        {
+          "value": "SW",
+          "label": "SW"
+        },
+        {
+          "value": "No fixed address",
+          "label": "No fixed address"
+        },
+        {
+          "value": "Out of the District - International",
+          "label": "Out of the District - International"
+        },
+        {
+          "value": "Out of the District -USA",
+          "label": "Out of the District -USA"
+        },
+        {
+          "value": "Other DC ",
+          "label": "Other DC "
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "West Virginia": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Wisconsin": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Wyoming": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S. Territory - American Somoa": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S. Territory - Guam": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S Territory - Northern Mariana Islands": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S Territory - Puerto Rico": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S Territory - U.S. Virgin Islands": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "U.S Territory - Other": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "International": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Unknown - USA State/Territory": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ],
+      "Unknown": [
+        {
+          "value": "N/A",
+          "label": "N/A"
+        }
+      ]
+    },
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "type": "inbound",
+  "name": "{{trigger.call.From}}",
+  "ignoreAgent": "",
+  "helpline":"${helpline}",
+  "transferTargetType": "",
+  "channelType": "voice",
+  "clinical":  "{{flow.variables.clinical}}" ,
+  "conversations": {"hang_up_by": "Customer"}
+}

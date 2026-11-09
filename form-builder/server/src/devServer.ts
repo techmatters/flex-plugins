@@ -27,8 +27,8 @@ import { createServer, IncomingMessage, ServerResponse } from 'http';
 import path from 'path';
 
 import { ApiContext, handleApiRequest } from './api';
-import { LocalDraftStore } from './drafts';
-import { LocalApplier, localNotifier, localUser } from './localServices';
+import { newLocalDraftStore } from './drafts';
+import { newLocalApplier, localNotifier, localUser } from './localServices';
 
 const builderDir = path.resolve(process.cwd(), '..');
 const repoDir = path.resolve(builderDir, '..');
@@ -47,8 +47,8 @@ const context: ApiContext = {
   helplinesConfigDir,
   webchatConfigDir,
   // Work in progress, kept out of git; deployed, drafts live in a private S3 bucket
-  drafts: new LocalDraftStore(process.env.FORM_BUILDER_DRAFTS_DIR ?? path.resolve(builderDir, 'drafts')),
-  applier: new LocalApplier(formDefinitionsDir, repoDir, webchatConfigDir, helplinesConfigDir),
+  drafts: newLocalDraftStore(process.env.FORM_BUILDER_DRAFTS_DIR ?? path.resolve(builderDir, 'drafts')),
+  applier: newLocalApplier(formDefinitionsDir, repoDir, webchatConfigDir, helplinesConfigDir),
   notifier: localNotifier,
 };
 

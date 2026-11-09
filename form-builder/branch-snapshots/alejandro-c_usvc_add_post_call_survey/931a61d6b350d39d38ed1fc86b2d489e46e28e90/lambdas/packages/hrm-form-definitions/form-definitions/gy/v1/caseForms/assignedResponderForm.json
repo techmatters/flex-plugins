@@ -1,0 +1,74 @@
+[
+  {
+    "name": "unitFirstName",
+    "type": "input",
+    "label": "Unit Number - First Name",
+    "isPII": true
+  },
+ {
+    "name": "unitLastName",
+    "type": "input",
+    "label": "Unit Number - Last Name",
+    "isPII": true
+  },
+{
+    "name": "callReceivedTimestamp",
+    "type": "time-input",
+    "label": "Call Received Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "dispatchedTimestamp",
+    "type": "numeric-input",
+    "label": "Dispatched (Activation) Timestamp",
+    "isPII": false
+  },
+  {
+    "name": "enrouteTimestamp",
+    "type": "time-input",
+    "label": "En Route Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "arrivedSceneTimestamp",
+    "type": "time-input",
+    "label": "Arrived Scene Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "patientContactTimestamp",
+    "type": "time-input",
+    "label": "Patient Contact Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "departedSceneTimestamp",
+    "type": "time-input",
+    "label": "Departed Scene Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "arrivedHospitalTimestamp",
+    "type": "time-input",
+    "label": "Arrived Hospital Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "transferOfCareTimestamp",
+    "type": "time-input",
+    "label": "Transfer of Care Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "departedHospitalTimestamp",
+    "type": "time-input",
+    "label": "Departed Hospital Timestamp",
+    "isPII": true
+  },
+  {
+    "name": "inServiceTimestamp",
+    "type": "time-input",
+    "label": "In Service Timestamp",
+    "isPII": true
+  }
+]

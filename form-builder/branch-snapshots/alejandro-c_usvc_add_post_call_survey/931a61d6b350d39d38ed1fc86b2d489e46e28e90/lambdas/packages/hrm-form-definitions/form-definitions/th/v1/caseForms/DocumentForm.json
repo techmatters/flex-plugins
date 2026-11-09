@@ -1,0 +1,22 @@
+[
+  {
+    "name": "fileName",
+    "type": "file-upload",
+    "label": "Document",
+    "description": "สามารถโหลดไฟล์ Word, PDF หรือ JPG.\n โดยขนาดไฟล์ไม่เกิน 5 MB",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "placeholder": "",
+    "rows": 20,
+    "width": 289,
+    "isPII": true
+  }
+]

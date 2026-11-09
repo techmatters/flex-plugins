@@ -1,0 +1,86 @@
+[
+  {
+    "name": "child",
+    "label": "Child calling about self",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "caller",
+    "label": "Someone calling about a child",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "disconnected",
+    "label": "Disconnected Number",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "noanswer",
+    "label": "No Answer",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "droped",
+    "label": "Untentional Hangup",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "hangup",
+    "label": "Intentional Hangup",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "wrongnumber",
+    "label": "Wrong Number",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "abusive",
+    "label": "Abusive",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "network",
+    "label": "Network Challenges",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "information",
+    "label": "Other Information",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "test",
+    "label": "Caller Testing Services",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "thanks",
+    "label": "Thank You Childline",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "playing",
+    "label": "Playing with Phone",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "silent",
+    "label": "Inaudible",
+    "type": "button",
+    "category": "non-data"
+  }
+]

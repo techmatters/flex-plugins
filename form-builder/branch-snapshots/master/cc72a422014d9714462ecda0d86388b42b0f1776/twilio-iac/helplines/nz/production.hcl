@@ -1,0 +1,138 @@
+locals {
+  common_config_hcl = read_terragrunt_config("common.hcl")
+  common_config     = local.common_config_hcl.locals.config
+  config            = merge(local.common_config, local.local_config)
+
+  local_config = {
+    enable_datadog_monitoring = true
+    #Studio flow
+    flow_vars = {
+      send_message_run_janitor_sid          = "ZH5e37c056ae0dfea42f8febd19d7bbd52"
+      blocked_message                       = "Kia ora, you've been blocked from accessing Youthline's helpline and we are not able to read or receive further messages from you. If you think this is a mistake, please email complaints@youthline.co.nz with your name and contact details for this to be reviewed. If you are unsafe or require urgent support, please call 111 now."
+      outside_country_message               = "Kia ora, only numbers or contacts from NZ can reach Youthline's helpline. We are not able to read or receive further messages from you. If you this is an error, please email complaints@youthline.co.nz with your name and contact details. If you are in NZ and feel unsafe or require urgent support, please call 111 now.  Outside of NZ please refer to www.findahelpline.com."
+      ip_location_finder_url                = "https://hrm-production.tl.techmatters.org/lambda/ipLocationFinder"
+    }
+    //Serverless -- to allow enabling the operating hours check on this staging account.
+    ui_editable = true
+
+    #Task router
+    phone_numbers = {
+      youthline : ["+6498865633", "0800376633"],
+      clinical : ["+6498867045"]
+    }
+
+    #Channels
+    channels = {
+      webchat : {
+        channel_type     = "web"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-no-lex-op-hours-flags-routing-v2-lambda-sd.tftpl"
+        channel_flow_vars = {
+          chat_greeting_message       = "Kia ora, we'll connect you with someone soon. Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We'll let you know if that becomes necessary."
+          widget_from                 = "Youthline"
+          allowed_shortcode_locations = "NZ"
+        }
+        enable_datadog_monitor = false
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
+            timezone = "Pacific/Auckland"
+          }
+        }
+        chatbot_unique_names = []
+      },
+      chat : {
+        messaging_mode       = "conversations"
+        channel_type         = "chat"
+        contact_identity     = ""
+        templatefile         = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-no-lex-op-hours-flags-routing-v2-lambda-sd-v2.tftpl"
+        channel_flow_vars    = {
+          chat_greeting_message       = "Kia ora, we'll connect you with someone soon. Your conversation is confidential, but if we feel that you or someone else is at serious risk of harm, we may have to link in with other services. We'll let you know if that becomes necessary."
+          widget_from                 = "Youthline"
+          allowed_shortcode_locations = "NZ"
+        }
+        chatbot_unique_names = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
+            timezone = "Pacific/Auckland"
+          }
+        }
+      },
+      voice : {
+        channel_type     = "voice"
+        contact_identity = ""
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/voice-lambda-sd.tftpl"
+        channel_flow_vars = {
+          wait_url                   = "https://nz-assets-6577.twil.io/busyLine"
+          blocked_url                = "https://nz-assets-6577.twil.io/blocked_number.mp3"
+          initial_message_url        = "https://nz-assets-6577.twil.io/initial_message.mp3"
+          external_parties_number    = "+6498867045"
+          regex_allowed_test_numbers = "\\+(country_code_here)\\d{6,20}"
+        }
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
+            timezone = "Pacific/Auckland"
+          }
+        }
+        chatbot_unique_names = []
+      },
+      modica : {
+        messaging_mode   = "conversations"
+        channel_type     = "custom"
+        contact_identity = "modica"
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda-sd.tftpl"
+        channel_flow_vars = {
+          regex_allowed_test_numbers = "modica:\\+(<SHORTCODE_HERE>)\\d{1,20}"
+        }
+        chatbot_unique_names   = []
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_24h):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
+            timezone = "Pacific/Auckland"
+          }
+        }
+      },
+      whatsapp : {
+        messaging_mode   = "conversations"
+        channel_type     = "whatsapp"
+        contact_identity = "whatsapp:+6498865696"
+        templatefile     = "/app/twilio-iac/helplines/nz/templates/studio-flows/messaging-lex-priority-v3-lambda-sd.tftpl"
+        channel_flow_vars = {
+          regex_allowed_test_numbers = "whatsapp:\\+(<SHORTCODE_HERE>)\\d{6,20}"
+        }
+        enable_datadog_monitor = true
+        custom_monitor = {
+          query = "sum(last_2d):sum:<metric>{*}.as_count() == 0"
+          custom_schedule = {
+            rrule    = "FREQ=DAILY;INTERVAL=1;BYHOUR=4;BYMINUTE=0"
+            timezone = "Pacific/Auckland"
+          }
+        }
+        chatbot_unique_names = []
+      }
+    }
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
+    #System Down Configuration
+    system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
+    enable_system_down       = true
+    system_down_flow_vars = {
+      is_system_down                   = "false"
+      message                          = "We're sorry, the helpline is experiencing technical difficulties with our chat system. If this is an emergency, please call 111 or reach out to 1737. We apologize for the inconvenience and are working to be up and running shortly"
+      voice_message                    = "We're sorry, the helpline is experiencing technical difficulties with our chat system. If this is an emergency, please call 111 or reach out to 1737. We apologize for the inconvenience and are working to be up and running shortly"
+      send_studio_message_function_sid = "ZH8b62b0622a2350b932fa5d0efe0b3b14"
+      call_action                      = "message"
+      forward_number                   = " +123"
+      recording_url                    = "https://<place_holder>.mp3"
+
+    }
+  }
+}

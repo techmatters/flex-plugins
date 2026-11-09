@@ -1,0 +1,11 @@
+{
+  "en": {
+    "WelcomeMsg": "Hi, this is the youth responder. How can I help you?",
+    "GoodbyeMsg": "The youth responder has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  },
+  "tl": {
+    "WelcomeMsg": "Magandang Araw! Ano'ng maitutulong ko sa iyo?",
+    "GoodbyeMsg": " Ang youth responder ay umalis na sa chat. Salamat sa iyong pakikipag-ugnayan. Mag mensahe lamang muli kung kinakailangan mo ng tulong"
+  }
+}

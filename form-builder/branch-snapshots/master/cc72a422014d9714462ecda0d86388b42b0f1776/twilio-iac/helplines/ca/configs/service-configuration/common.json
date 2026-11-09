@@ -1,0 +1,68 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "web"
+        ],
+        "definitionVersion": "ca-v1",
+        "external_recordings_enabled": true,
+        "enableExternalRecordings": true,
+        "enableUnmaskingCalls": true,
+        "enableClientProfiles": false,
+        "enableConferencing": true,
+        "feature_flags": {
+            "enable_resouorces_updates": true,
+            "enable_switchboarding_move_tasks": true,
+            "enable_assigned_skill_teams_view_filters": true,
+            "enable_conference_status_event_handler": true,
+            "enable_conferencing": true,
+            "enable_client_profiles": false,
+            "enable_hang_up_by_hrm_saving": true,
+            "enable_language_selector": true,
+            "enable_manual_pulling": false,
+            "enable_previous_contacts": false,
+            "enable_resouorces_updates": true,
+            "enable_region_resource_search": true,
+            "enable_select_agents_teams_view": true,
+            "enable_switchboarding": true,
+            "enable_upload_documents": false,
+            "enable_voice_recordings": true
+        },
+        "helplineLanguage": "en-CA",
+        "permissionConfig": "ca"
+    },
+    "ui_attributes": {
+        "colorTheme": {
+            "baseName": "GreyLight",
+            "overrides": {
+                "MainHeader": {
+                    "Button": {
+                        "color": "#000000"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF",
+                        "color": "#000000"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                },
+                "SideNav": {
+                    "Button": {
+                        "background": "#FFFFFF"
+                    },
+                    "Container": {
+                        "background": "#FFFFFF"
+                    },
+                    "Icon": {
+                        "color": "#000000"
+                    }
+                }
+            },
+            "preset": {
+                "id": "mono-light",
+                "name": "Simple Light"
+            }
+        }
+    }
+}

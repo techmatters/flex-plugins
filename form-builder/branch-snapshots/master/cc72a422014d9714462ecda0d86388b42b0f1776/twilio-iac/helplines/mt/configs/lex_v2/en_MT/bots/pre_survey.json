@@ -1,0 +1,59 @@
+{
+  "pre_survey": {
+    "description": "Specific configs/lex_v2/en_MT/bots/pre_survey",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "staging_bot_alias_id":"D7NEKNXAYZ",
+    "production_bot_alias_id":"9S83DDSXZP",
+    "type": "Bot",
+    "intents": {
+      "pre_survey_intent": {
+        "utterances": [
+          {
+            "utterance": "trigger_pre_survey"
+          },
+          {
+            "utterance": "Hi"
+          },
+          {
+            "utterance": "Hello"
+          }
+        ],
+        "initial_response": {
+          "message": "Hello, You have reached Kellimni.",
+          "slot_to_elicit": "aboutSelf"
+        },
+        "closing_response": {
+          "message": "Thank you for reaching out. We are currently assisting other clients, but we will do our utmost to respond to you shortly. Kindly wait for assistance. If this is an emergency, please contact 112, until we are in a position to assist you."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "aboutSelf",
+            "slot_type_name": "yes_no",
+            "slot_question": "Are you calling about yourself? Please answer Yes or No.",
+            "failure_response": "We are having trouble understanding your response."
+          },
+          "2": {
+            "slot_name": "age",
+            "slot_type_name": "age",
+            "slot_question": "How old are you?",
+            "failure_response": "We are having trouble understanding your response."
+          },
+          "3": {
+            "slot_name": "gender",
+            "slot_type_name": "gender",
+            "slot_question": "What is your gender? \n 1. Female \n 2. Male \n 3. Others \n 4. Rather not say",
+            "failure_response": "We are having trouble understanding your response."
+          },
+          "4": {
+            "slot_name": "feeling",
+            "slot_type_name": "feeling",
+            "slot_question": "How are you feeling? You can write the number or word of your choice. \n 1. Happy \n 2. Confused \n 3. Angry \n 4. Shocked \n 5. Scared \n 6. Uncertain ",
+            "failure_response": "We are having trouble understanding your response."
+          }
+        }
+      }
+    }
+  }
+}

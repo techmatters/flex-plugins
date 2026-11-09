@@ -1,0 +1,34 @@
+[
+  {
+    "name": "seventhListCaseSectionConfig",
+    "label": "Here is how this is configured",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
+    "name": "seventhListCaseSectionTranslations",
+    "label": "Here are the translations",
+    "type": "textarea",
+    "rows": 20,
+    "width": 289
+  },
+  {
+    "name": "printFormatTabularColumn1",
+    "label": "printFormatTabularColumn1",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "printFormatTabularColumn2",
+    "label": "printFormatTabularColumn2",
+    "type": "input",
+    "isPII": true
+  }
+]
+
+
+
+
+
+

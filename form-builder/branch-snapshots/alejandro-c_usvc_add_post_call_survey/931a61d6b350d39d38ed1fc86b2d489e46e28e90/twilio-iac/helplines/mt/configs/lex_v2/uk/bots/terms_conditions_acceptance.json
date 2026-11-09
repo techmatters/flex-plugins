@@ -1,0 +1,35 @@
+{
+  "terms_conditions_acceptance": {
+    "description": "Specific configs/lex_v2/uk/bots/terms_conditions_acceptance",
+    "locale": "en_US",
+    "child_directed": true,
+    "idle_session_ttl_in_seconds": "600",
+    "staging_bot_alias_id":"TSTALIASID",
+    "production_bot_alias_id":"HIICPLFWE9",
+    "type": "Bot",
+    "intents": {
+      "terms_conditions_acceptance": {
+        "utterances": [
+          {
+            "utterance": "trigger_terms_conditions_acceptance"
+          }
+        ],
+        "initial_response": {
+          "message": "Ви приймаєте наші умови? https://kellimni.com/chat-terms/ .",
+          "slot_to_elicit": "terms_conditions_response"
+        },
+        "closing_response": {
+          "message": "Дякую."
+        },
+        "slot_priorities": {
+          "1": {
+            "slot_name": "terms_conditions_response",
+            "slot_type_name": "yes_no",
+            "slot_question": "Будь ласка, дайте відповідь цифрою: \n1. Так, я приймаю умови. \n2. Ні, я не приймаю умови.",
+            "failure_response": "Вибачте, наразі я не можу допомогти."
+          }
+        }
+      }
+    }
+  }
+}

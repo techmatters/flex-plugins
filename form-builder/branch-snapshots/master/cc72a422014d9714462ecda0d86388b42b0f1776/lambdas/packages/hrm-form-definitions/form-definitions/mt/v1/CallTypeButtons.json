@@ -1,0 +1,44 @@
+[
+  {
+    "name": "child",
+    "label": "Client calling about self",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "caller",
+    "label": "Someone calling about a client",
+    "type": "button",
+    "category": "data"
+  },
+  {
+    "name": "chatDisconnected",
+    "label": "Chat Disconnected",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "chatDidNotStart",
+    "label": "Chat Did Not Start",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "joke",
+    "label": "Joke",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "abusive",
+    "label": "Abusive",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "test",
+    "label": "Test",
+    "type": "button",
+    "category": "non-data"
+  }
+]

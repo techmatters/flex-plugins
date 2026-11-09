@@ -1,0 +1,15 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Meri Trustline",
+      "value": "Meri Trustline",
+      "default": true,
+      "manager": {
+        "name": "Siddarth Pillai",
+        "phone": "+91 90826 40268",
+        "email": "siddharth@ratifoundation.org"
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "e2eTestMode": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}",
+  "name": "{{trigger.conversation.ChannelAttributes.from}}",
+  "ip": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}",
+  "firstName": "{{trigger.conversation.ChannelAttributes.from}}",
+  "channelType": "{{trigger.conversation.ChannelAttributes.channel_type}}",
+  "channelSid": "{{trigger.conversation.ChannelSid}}",
+  "helpline": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}",
+  "language":"${task_language}",
+  "ignoreAgent": "",
+  "transferTargetType": "",
+  "preEngagementData": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},
+  "memory": {{trigger.conversation.ChannelAttributes.memory | to_json}}
+}

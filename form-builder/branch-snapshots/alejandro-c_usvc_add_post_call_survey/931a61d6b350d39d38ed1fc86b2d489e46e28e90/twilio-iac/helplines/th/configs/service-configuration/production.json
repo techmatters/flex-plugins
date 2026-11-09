@@ -1,0 +1,7 @@
+{
+    "attributes": {
+        "feature_flags": {
+        },
+        "pdfImagesSource": "https://tl-public-chat-th-prod.s3.amazonaws.com"
+    }
+}

@@ -1,0 +1,62 @@
+{
+  "childhelp_voice_welcome_message.mp3": {
+    "importedFrom": {
+      "production": "https://usch-functions-7406.twil.io/childhelp_voice_welcome_message.mp3",
+      "staging": "https://usch-functions-6913.twil.io/childhelp_voice_welcome_message.mp3"
+    },
+    "publishedBy": "AlejandroRivera",
+    "publishedAt": "2026-10-28T17:45:38.762Z",
+    "uploadedBy": "AlejandroRivera",
+    "uploadedAt": "2026-10-28T17:45:39.797Z"
+  },
+  "childhelp_voice_spanish_option_message.mp3": {
+    "importedFrom": {
+      "production": "https://usch-functions-7406.twil.io/childhelp_voice_spanish_option_message.mp3",
+      "staging": "https://usch-functions-6913.twil.io/childhelp_voice_spanish_option_message.mp3"
+    },
+    "publishedBy": "AlejandroRivera",
+    "publishedAt": "2026-10-28T17:45:40.813Z",
+    "uploadedBy": "AlejandroRivera",
+    "uploadedAt": "2026-10-28T17:45:41.586Z"
+  },
+  "childhelp_voice_english_options_message.mp3": {
+    "importedFrom": {
+      "production": "https://usch-functions-7406.twil.io/childhelp_voice_english_options_message.mp3",
+      "staging": "https://usch-functions-6913.twil.io/childhelp_voice_english_options_message.mp3"
+    },
+    "publishedBy": "AlejandroRivera",
+    "publishedAt": "2026-10-28T17:45:42.379Z",
+    "uploadedBy": "AlejandroRivera",
+    "uploadedAt": "2026-10-28T17:45:43.000Z"
+  },
+  "childhelp_voice_no_spanish_counselor_prequeue_message.mp3": {
+    "importedFrom": {
+      "production": "https://usch-functions-7406.twil.io/childhelp_voice_no_spanish_counselor_prequeue_message.mp3",
+      "staging": "https://usch-functions-6913.twil.io/childhelp_voice_no_spanish_counselor_prequeue_message.mp3"
+    },
+    "publishedBy": "AlejandroRivera",
+    "publishedAt": "2026-10-28T17:45:43.594Z",
+    "uploadedBy": "AlejandroRivera",
+    "uploadedAt": "2026-10-28T17:45:44.688Z"
+  },
+  "voice_blocked_client_message.mp3": {
+    "importedFrom": {
+      "production": "https://usch-functions-7406.twil.io/voice_blocked_client_message.mp3",
+      "staging": "https://usch-functions-6913.twil.io/voice_blocked_client_message.mp3"
+    },
+    "publishedBy": "AlejandroRivera",
+    "publishedAt": "2026-10-28T17:45:45.760Z",
+    "uploadedBy": "AlejandroRivera",
+    "uploadedAt": "2026-10-28T17:45:46.130Z"
+  },
+  "courage_first_voice_welcome_message.mp3": {
+    "importedFrom": {
+      "production": "https://usch-functions-7406.twil.io/courage_first_voice_welcome_message.mp3",
+      "staging": "https://usch-functions-6913.twil.io/courage_first_voice_welcome_message.mp3"
+    },
+    "publishedBy": "AlejandroRivera",
+    "publishedAt": "2026-10-28T16:31:23.797Z",
+    "uploadedBy": "AlejandroRivera",
+    "uploadedAt": "2026-10-28T16:31:24.876Z"
+  }
+}

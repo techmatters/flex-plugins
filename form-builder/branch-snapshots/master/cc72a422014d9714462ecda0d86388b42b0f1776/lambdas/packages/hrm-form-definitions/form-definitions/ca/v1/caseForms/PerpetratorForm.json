@@ -1,0 +1,252 @@
+[
+  {
+    "name": "firstName",
+    "label": "firstName",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "lastName",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "dateofBirth",
+    "label": "dateofBirth",
+    "type": "date-input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "phone",
+    "label": "Phone",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "streetAddress",
+    "label": "Address/Location",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "city",
+    "label": "City",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "schoolName",
+    "label": "schoolName",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "religion",
+    "label": "Culture/Religion",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "callerName",
+    "label": "callerName",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "type": "select",
+    "label": "referralSourceRelationship",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Peer",
+        "label": "Peer"
+      },
+      {
+        "value": "Caregiver",
+        "label": "Caregiver"
+      },
+      {
+        "value": "Partner",
+        "label": "Partner"
+      },
+      {
+        "value": "OtherAdultKnownToChild",
+        "label": "Other adult known to the child"
+      },
+      {
+        "value": "Sibling",
+        "label": "Sibling(s)"
+      },
+      {
+        "value": "Stranger",
+        "label": "Stranger"
+      },
+      {
+        "value": "Person in a position of responsibility",
+        "label": "Person in a position of responsibility"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "callerAddress",
+    "label": "callerAddress",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "callerProvince",
+    "label": "callerProvince",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Alberta",
+        "label": "Alberta"
+      },
+      {
+        "value": "British Columbia",
+        "label": "British Columbia"
+      },
+      {
+        "value": "Inuvialuit",
+        "label": "Inuvialuit"
+      },
+      {
+        "value": "Manitoba",
+        "label": "Manitoba"
+      },
+      {
+        "value": "New Brunswick",
+        "label": "New Brunswick"
+      },
+      {
+        "value": "Newfoundland and Labrador",
+        "label": "Newfoundland and Labrador"
+      },
+      {
+        "value": "Northwest Territories",
+        "label": "Northwest Territories"
+      },
+      {
+        "value": "Nova Scotia",
+        "label": "Nova Scotia"
+      },
+      {
+        "value": "Nunavat",
+        "label": "Nunavat"
+      },
+      {
+        "value": "Nunavik",
+        "label": "Nunavik"
+      },
+      {
+        "value": "Nunatsiavut",
+        "label": "Nunatsiavut"
+      },
+      {
+        "value": "Ontario",
+        "label": "Ontario"
+      },
+      {
+        "value": "Prince Edward Island",
+        "label": "Prince Edward Island"
+      },
+      {
+        "value": "Québec",
+        "label": "Québec"
+      },
+      {
+        "value": "Saskatchewan",
+        "label": "Saskatchewan"
+      },
+      {
+        "value": "Yukon",
+        "label": "Yukon"
+      },
+      {
+        "value": "Contacting us from outside of Canada",
+        "label": "Contacting us from outside of Canada"
+      },
+      {
+        "value": "Did not disclose/Did not ask",
+        "label": "Did not disclose/Did not ask"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "callerPhone",
+    "label": "callerPhone",
+    "type": "input",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  }
+]
