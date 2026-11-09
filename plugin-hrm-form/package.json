@@ -77,7 +77,8 @@
     "@react-pdf/layout": "3.6.4",
     "@react-pdf/textkit": "4.3.0",
     "@react-pdf/image": "2.2.2",
-    "@react-pdf/pdfkit": "3.1.2"
+    "@react-pdf/pdfkit": "3.1.2",
+    "tar": "7.5.22"
   },
   "devDependencies": {
     "@actions/core": "^1.9.0",
