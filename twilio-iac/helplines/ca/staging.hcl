@@ -5,8 +5,6 @@ locals {
 
   local_config = {
     operating_hours_enforced_override = false
-    # Datadog: publish this helpline's account + Studio flow SIDs to the Reference Tables (log tagging)
-    enable_datadog_tagging = true
     #Studio flow
     flow_vars = {
       service_sid                       = "ZSb631f562c8306085ceb8329349fdd60b"
