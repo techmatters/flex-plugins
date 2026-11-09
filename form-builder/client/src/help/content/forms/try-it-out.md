@@ -9,6 +9,10 @@ questions:
   - can I test the form
   - try it out
 keywords: preview, try, test, see, counselor screen, try it out in aselo, look
+tour:
+  - button:Try it out in Aselo | Click **Try it out in Aselo**. The form opens full-screen, as counselors see it. | Open a form first from the left menu, e.g. **Service user information**.
+  - css:.flex-preview-bar select | Choose a **Task** (chat or call) and a **Language**, to see the form as it is for each. | Click **Try it out in Aselo** first.
+  - button:Back to editing | Fill it in as a counselor would, then click **Back to editing**. Nothing you type is saved. | Click **Try it out in Aselo** first.
 ---
 
 You can fill in the draft form exactly as counselors would, before anything is published.

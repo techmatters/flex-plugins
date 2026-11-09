@@ -8,6 +8,11 @@ questions:
   - flows for claude json
   - mark a board ready for claude
 keywords: export, json, claude, ready, status, implemented, skill, studio, studio-flow-from-board
+tour:
+  - button:Check | Go through the **Check** tab with the helpline until there are no errors. | Open a board first, from the Contact flows page.
+  - label:Board status | Set the status to **Ready for Claude**. After it's applied and tested, set it to **Implemented**. | Open a board first.
+  - button:Export | Click **Export**. | Open a board first.
+  - button:Flows for Claude (JSON) | Choose **Flows for Claude (JSON)** and give it to Claude with the studio-flow-from-board skill, staging first. | Click **Export** first.
 ---
 
 1. Go through the **Check** tab with the helpline until there are no errors and the warnings left are agreed.

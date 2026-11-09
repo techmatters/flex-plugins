@@ -14,6 +14,12 @@ questions:
   - fix the spelling of an option
   - upload an excel list of answers
 keywords: answer, option, dropdown, list, paste, several, spreadsheet, rename, remove, saved value, typo, spelling, excel, upload
+tour:
+  - css:.editor-settings | Click the dropdown's field: its **Field settings** open here. | Open a form first from the left menu, then click a dropdown field.
+  - text:Answers | Change any answer's text here. Drag answers to change their order; remove one with its ×. | Click a dropdown field to see its answers.
+  - button:+ Add an answer | Click **+ Add an answer** to add one at the bottom. | Click a dropdown field to see its answers.
+  - button:Paste several at once | Or paste many at once, one per line. Two columns from a spreadsheet work too. | Click a dropdown field to see its answers.
+  - button:Try it out in Aselo | Check it with **Try it out in Aselo**. | Open a form first.
 ---
 
 A dropdown's answers are edited in its **Field settings**.

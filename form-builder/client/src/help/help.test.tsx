@@ -305,7 +305,23 @@ describe('“Show me” tours', () => {
   test('each tour step points at something, says something, and its kind is one Tour knows', () => {
     const tours = HELP_ARTICLES.filter(article => article.tour);
     expect(tours.map(article => article.slug).sort()).toEqual(
-      ['add-a-question', 'flag-or-comment', 'flows-add-and-connect-steps', 'submit-for-review'].sort(),
+      [
+        'add-a-question',
+        'approve-for-your-helpline',
+        'aselo-flows-ready-and-export',
+        'change-a-chatbot',
+        'dropdown-answers',
+        'flag-or-comment',
+        'flows-add-and-connect-steps',
+        'flows-comments-and-tasks',
+        'flows-test-a-flow',
+        'remove-a-field',
+        'routing-change-a-rule',
+        'routing-test-a-contact',
+        'submit-for-review',
+        'try-it-out',
+        'undo-a-mistake',
+      ].sort(),
     );
     tours.forEach(article =>
       article.tour!.forEach(step => {

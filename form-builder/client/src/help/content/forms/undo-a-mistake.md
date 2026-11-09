@@ -12,6 +12,8 @@ questions:
   - is it safe to try things
   - will I break something
 keywords: undo, mistake, wrong, revert, discard, start again, reset, broke, safe, break, try
+tour:
+  - button:Discard draft | To start over, **Discard draft** throws away all the draft's changes, for everyone at your helpline. Check with your team first. | There's no draft to discard: nothing has been changed yet.
 ---
 
 Don't worry: nothing reaches counselors until the Aselo team publishes it.

@@ -10,6 +10,11 @@ questions:
   - what do the blue and green ticks mean
   - grey dot on a form
 keywords: approve, approval, sign off, ready, tick, check, blue, green, grey, agree
+tour:
+  - button:Try it out in Aselo | Read the form through, or fill it in with **Try it out in Aselo**. | Open a form first from the left menu.
+  - css:.review-panel | This is the form's **Review** box: who has approved it, and its comments. | Open a form first from the left menu.
+  - button:Approve form | Click **Approve form** for your helpline. It gets a **blue ✓**. | It's already approved by your helpline, or you're not signed in for it.
+  - css:.editor-settings .review-panel | To approve just one field, click it: its Review box is above its settings. | Click a field to see its Review box.
 ---
 
 Each contact form tab and case form is approved by two sides: **your helpline** (is this what we want counselors to see?) and **Aselo** (is it technically right?). Anyone at your helpline can approve for it.

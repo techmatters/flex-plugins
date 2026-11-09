@@ -11,6 +11,13 @@ questions:
   - try the chatbot
   - which answers does the chatbot understand
 keywords: chatbot, question, text, wording, goodbye, answers, preview, phone, conversation, add, remove, order
+tour:
+  - label:Chatbots | Choose your helpline's chatbot here. Each language is its own chatbot. | Open the Chatbots page and your helpline first.
+  - css:.chatbot-script | The whole chat, in order. Click any text to change it, and move, add or remove questions. | Choose a chatbot first, on its **Conversation** tab.
+  - css:.chatbot-form-fields | **Fills in on the contact form** says which contact form field the answer goes into. | Choose a chatbot first.
+  - button:Answers | The **Answers** tab: a list, a pattern, or a ready-made kind for each question. | Choose a chatbot first.
+  - label:Preview | Try it here: tap or type answers, and see what the counselor would get at the end. | Choose a chatbot first.
+  - button:Check | **Check** lists anything missing, e.g. a question without text. | Choose a chatbot first.
 ---
 
 1. Open the Chatbots page and choose your helpline's chatbot on the left (each language is its own chatbot).

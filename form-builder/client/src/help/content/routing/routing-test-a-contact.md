@@ -9,6 +9,11 @@ questions:
   - which queue does a spanish chat go to
   - why does a contact go to the wrong queue
 keywords: test, task, contact, where, queue, which counselors, spanish, chat, call, check
+tour:
+  - button:Test a task | Click **Test a task**. | Open Routing and your helpline first.
+  - css:.routing-test-choices | Click what the contact looks like: its channel, its service, its language. | Click **Test a task** first.
+  - css:.routing-test-more | More details, like transfers, are here. | This workflow doesn't look at transfers or offline contacts.
+  - css:.routing-test-result | Read what happens: the rule that takes it, the queue, which counselors, and why the rules before it didn't. | Click **Test a task** first.
 ---
 
 **Test a task** shows where a contact would go, without anyone getting in touch.

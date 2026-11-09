@@ -13,6 +13,12 @@ questions:
   - where are the tasks
   - sticky note
 keywords: comment, note, sticky, task, tasks, assign, someone, colleague, due date, to do, done, question, discuss, flag
+tour:
+  - css:.react-flow__node | Select a step on the board. | Open a board first, from the Contact flows page.
+  - css:.flow-sidebar textarea[aria-label="New comment"] | Write your comment here and click **Comment**. Replies go in the same place. | Select a step first.
+  - button:Sticky note | Drag a **Sticky note** onto the board, or click it, and write on it. | Open a board first.
+  - button:Make it a task | Select the note and click **Make it a task**: choose who it's for, its status and a due date. | Select a sticky note first.
+  - button:Tasks | The **Tasks** tab lists them all. Click one to jump to its note. | Open a board first.
 ---
 
 There are two ways to discuss a board: **comments** on a step, and **sticky notes** anywhere.

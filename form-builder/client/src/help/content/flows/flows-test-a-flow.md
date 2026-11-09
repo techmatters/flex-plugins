@@ -10,6 +10,13 @@ questions:
   - what does marked as tested mean
   - green paths
 keywords: test, try, simulate, run, path, tested, green, dialpad, reply, walk through
+tour:
+  - css:.flow-mode [role="tab"]:nth-child(3) | Click **Test**. The board can't be changed while testing. | Open a board first, from the Contact flows page.
+  - button:Play | Click **Play** to start the flow from its beginning. | Click **Test** first.
+  - label:What happens next | At each question, choose or type the answer, as the contact would. | Click **Play** first.
+  - button:Back | **Back** goes back one answer, e.g. to take another way at a split. | It shows once you've answered something.
+  - button:Mark path as tested | When the run ends well, click **Mark path as tested**. | It shows when a run reaches the end of the flow.
+  - text:Show tested paths (green) | Tick this to see the paths already tested in green, and what's left to test. | Click **Test** first.
 ---
 
 **Test** mode walks through a flow as a contact would, without calling or texting anyone. It checks the flow's paths, not its live messages.
