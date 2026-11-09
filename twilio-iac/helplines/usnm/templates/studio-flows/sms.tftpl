@@ -363,7 +363,7 @@ ${
         "channel": "${task_channel_sids.chat}",
         "attributes": "{\n  \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"sms\",\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\", \n    \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}\n",
         "priority": "0",
-        "timeout": "3600"
+        "timeout": "14400"
       }
     },
     {
@@ -1370,7 +1370,7 @@ ${
         "channel": "${task_channel_sids.chat}",
         "attributes": "{\n  \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"sms\",\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\", \n    \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}\n",
         "priority": "0",
-        "timeout": "3600"
+        "timeout": "14400"
       }
     },
     {
@@ -1398,7 +1398,7 @@ ${
         "channel": "${task_channel_sids.chat}",
         "attributes": "{\n  \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"fcg\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"sms\",\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\", \n    \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}\n",
         "priority": "0",
-        "timeout": "3600"
+        "timeout": "14400"
       }
     },
     {
@@ -1715,7 +1715,7 @@ ${
         "function_sid": "${flow_vars.conversation_time_delay_function_sid}",
         "parameters": [
           {
-            "value": "60",
+            "value": "240",
             "key": "maxWaitSeconds"
           },
           {
@@ -1798,7 +1798,7 @@ ${
         "function_sid": "${flow_vars.conversation_time_delay_function_sid}",
         "parameters": [
           {
-            "value": "60",
+            "value": "240",
             "key": "maxWaitSeconds"
           },
           {

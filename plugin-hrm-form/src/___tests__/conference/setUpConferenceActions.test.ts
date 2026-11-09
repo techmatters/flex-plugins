@@ -96,6 +96,24 @@ describe('setUpConferenceActions', () => {
       );
       expect(conferenceOptions.conferenceStatusCallbackMethod).toBe('POST');
       expect(conferenceOptions.conferenceStatusCallbackEvent).toBe(['leave', 'join'].toString());
+      expect(conferenceOptions.endConferenceOnExit).toBeUndefined();
+      expect(conferenceOptions.endConferenceOnCustomerExit).toBeUndefined();
+    });
+
+    test('sets conferenceOptions and disables endConferenceOnExit when use_twilio_lambda_for_conference_ending flag is enabled', async () => {
+      mockGetAseloFeatureFlags.mockReturnValue({ use_twilio_lambda_for_conference_ending: true } as any);
+      setUpConferenceActions();
+
+      const conferenceOptions: Record<string, any> = {};
+      await triggerListener('beforeAcceptTask', { conferenceOptions });
+
+      expect(conferenceOptions.conferenceStatusCallback).toBe(
+        'https://lambda.example.com/conference/conferenceStatusCallback',
+      );
+      expect(conferenceOptions.conferenceStatusCallbackMethod).toBe('POST');
+      expect(conferenceOptions.conferenceStatusCallbackEvent).toBe(['leave', 'join'].toString());
+      expect(conferenceOptions.endConferenceOnExit).toBe(false);
+      expect(conferenceOptions.endConferenceOnCustomerExit).toBe(false);
     });
 
     test('does not throw and does nothing when feature flag is enabled but conferenceOptions is undefined (non-call task)', async () => {
@@ -176,6 +194,25 @@ describe('setUpConferenceActions', () => {
 
       expect(abortFunction).toHaveBeenCalled();
       expect(mockShowNotificationSingle).toHaveBeenCalledWith('ConferenceNotifications_UnholdParticipantsNotification');
+    });
+
+    test('does not call abortFunction for participants on hold when use_twilio_lambda_for_conference_ending flag is enabled', async () => {
+      mockGetAseloFeatureFlags.mockReturnValue({ use_twilio_lambda_for_conference_ending: true } as any);
+      setUpConferenceActions();
+      hasTaskControl.mockReturnValue(true);
+      const task = {
+        conference: {
+          participants: [
+            { status: 'joined', onHold: false },
+            { status: 'joined', onHold: false },
+            { status: 'joined', onHold: true },
+          ],
+        },
+      };
+
+      await triggerListener('beforeHangupCall', { task }, abortFunction);
+
+      expect(abortFunction).not.toHaveBeenCalled();
     });
 
     test('does not call abortFunction when conference is present with no issues', async () => {

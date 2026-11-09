@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/node14/tsconfig.json",
+  "extends": "@tsconfig/node24/tsconfig.json",
   "compilerOptions": {
     "target": "es2019",
     "strict": true,
@@ -9,6 +9,7 @@
     "allowJs": true,
     "checkJs": true,
     "resolveJsonModule": true,
+    "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "./dist",
     "rootDir": "./src"

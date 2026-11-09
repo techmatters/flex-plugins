@@ -14,9 +14,9 @@
     "@aws-sdk/client-s3": "^3.1045.0"
   },
   "devDependencies": {
-    "@tsconfig/node22": "^22.0.0",
+    "@tsconfig/node24": "^24.0.0",
     "@types/aws-lambda": "^8.10.108",
     "ts-node": "^10.9.1",
-    "@types/node": "^22.13.11"
+    "@types/node": "^24.19.2"
   }
 }

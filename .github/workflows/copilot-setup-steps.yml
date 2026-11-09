@@ -24,7 +24,6 @@ on:
       - .github/workflows/copilot-setup-steps.yml
 jobs:
   copilot-setup-steps:
-
     runs-on: ubuntu-latest
     environment: copilot
     permissions:
@@ -36,7 +35,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "npm"
           # For monorepos with multiple lockfiles:
           cache-dependency-path: |

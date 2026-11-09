@@ -14,16 +14,18 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import { Close } from '@material-ui/icons';
 import { Template, Manager, Notifications, NotificationType } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
+import { CircularProgress } from '@material-ui/core';
 
 import InfoIcon from '../caseMergingBanners/InfoIcon';
 import {
   BannerAction,
   BannerContainer,
   BannerText,
+  Box,
   Flex,
   HeaderCloseButton,
   HiddenText,
@@ -37,7 +39,7 @@ import {
 } from '../../states/contacts/saveContact';
 import { RootState } from '../../states';
 import selectContactStateByContactId from '../../states/contacts/selectContactStateByContactId';
-import { checkTaskAssignment } from '../../services/twilioTaskService';
+import { checkTaskAssignment, getTaskAndReservations } from '../../services/twilioTaskService';
 import { isOfflineContact } from '../../types/types';
 import { ConfirmDialog } from '../../design-system/modals/ConfirmDialog';
 import asyncDispatch from '../../states/asyncDispatch';
@@ -47,7 +49,8 @@ type ContactBannersProps = {
 };
 
 const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) => {
-  const savedContact = useSelector((state: RootState) => selectContactStateByContactId(state, contactId)?.savedContact);
+  const { savedContact, metadata } =
+    useSelector((state: RootState) => selectContactStateByContactId(state, contactId)) || {};
   const finalizeError = useSelector(
     (state: RootState) => selectContactStateByContactId(state, contactId)?.metadata?.finalizeStatus?.error,
   );
@@ -55,6 +58,9 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
   const [isFinalizeContactDialogOpen, setIsFinalizeContactDialogOpen] = useState(false);
   const [isRemoveTaskDialogOpen, setIsRemoveTaskDialogOpen] = useState(false);
   const [finalizeRequested, setFinalizeRequested] = useState(false);
+  const contactLoadingStatus = metadata?.loadingStatus === 'loading';
+  // State updates are async, so a ref is used to block clicks made before the re-render disables the buttons
+  const finalizeInProgressRef = useRef(false);
   const asyncDispatcher = asyncDispatch(useDispatch());
   const workerRoles = Manager.getInstance().workerClient.attributes.roles;
   const isDraftContact = savedContact.finalizedAt;
@@ -101,44 +107,81 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
    * @param removeTask - will try to cancel the task rather than complete it, and failing that, remove it. Used when attempting to complete has already failed
    */
   const updateTaskAndFinalizeContact = async (removeTask = false) => {
-    const updatedContact = {
-      ...savedContact,
-      rawJson: {
-        callType: 'Uncategorized',
-        ...savedContact.rawJson,
-      },
-    };
     try {
-      await asyncDispatcher(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact, removeTask));
       setFinalizeRequested(true);
+
+      const updatedContact = {
+        ...savedContact,
+        rawJson: {
+          callType: 'Uncategorized',
+          ...savedContact.rawJson,
+        },
+      };
+
+      await asyncDispatcher(newSubmitAndFinalizeContactFromOutsideTaskContextAsyncAction(updatedContact, removeTask));
     } catch (error) {
       console.error('Failed to save and finalize contact:', error);
     }
   };
 
-  const handleSaveAndEnd = async () => {
-    const { isAssigned } = await checkTaskAssignment(savedContact.taskId);
-
-    if (isAssigned === true) {
-      setIsFinalizeContactDialogOpen(true);
-    } else {
-      await updateTaskAndFinalizeContact();
+  /**
+   * Runs the action unless another one is already in progress, disabling the finalize buttons meanwhile
+   */
+  const runWhileFinalizeNotInProgress = async (action: () => Promise<void>) => {
+    if (finalizeInProgressRef.current) {
+      return;
+    }
+    finalizeInProgressRef.current = true;
+    try {
+      await action();
+    } finally {
+      finalizeInProgressRef.current = false;
     }
   };
 
-  const handleFinalizeContactConfirm = async () => {
-    await updateTaskAndFinalizeContact();
-    setIsFinalizeContactDialogOpen(false);
-  };
+  const handleSaveAndEnd = () =>
+    runWhileFinalizeNotInProgress(async () => {
+      try {
+        const { isAssigned } = await checkTaskAssignment(savedContact.taskId);
 
-  const handleRemoveTaskConfirm = async () => {
-    await updateTaskAndFinalizeContact(true);
-    setIsRemoveTaskDialogOpen(false);
-  };
+        if (isAssigned === true) {
+          setIsFinalizeContactDialogOpen(true);
+        } else {
+          const taskResponse = await getTaskAndReservations(savedContact.taskId);
+
+          if (!taskResponse) {
+            await updateTaskAndFinalizeContact();
+            return;
+          }
+
+          if (taskResponse?.task?.status === 'completed') {
+            setIsFinalizeContactDialogOpen(true);
+          } else {
+            // If the task isn't in an assigned state, trying to complete it is futile
+            setIsRemoveTaskDialogOpen(true);
+          }
+        }
+      } catch (error) {
+        console.error('Failed handleSaveAndEnd:', error);
+      }
+    });
+
+  const handleFinalizeContactConfirm = () =>
+    runWhileFinalizeNotInProgress(async () => {
+      await updateTaskAndFinalizeContact();
+      setIsFinalizeContactDialogOpen(false);
+    });
+
+  const handleRemoveTaskConfirm = () =>
+    runWhileFinalizeNotInProgress(async () => {
+      await updateTaskAndFinalizeContact(true);
+      setIsRemoveTaskDialogOpen(false);
+    });
 
   const handleCancel = () => {
     setIsFinalizeContactDialogOpen(false);
     setIsRemoveTaskDialogOpen(false);
+    setFinalizeRequested(false);
   };
 
   return (
@@ -151,11 +194,12 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
               <Template code="Contact-DraftStatus" />
             </BannerText>
             {canEditContact() && (
-              <BannerAction alignRight={true} onClick={handleSaveAndEnd}>
-                <DestructiveButton>
+              <Box marginLeft="auto">
+                <DestructiveButton onClick={handleSaveAndEnd} disabled={contactLoadingStatus}>
                   <Template code="BottomBar-SaveAndEnd" />
+                  {contactLoadingStatus ? <CircularProgress size={12} /> : null}
                 </DestructiveButton>
-              </BannerAction>
+              </Box>
             )}
           </Flex>
         </BannerContainer>
@@ -180,7 +224,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
       <ConfirmDialog
         openDialog={isFinalizeContactDialogOpen}
         actionComponent={
-          <PrimaryButton onClick={handleFinalizeContactConfirm}>
+          <PrimaryButton onClick={handleFinalizeContactConfirm} disabled={contactLoadingStatus}>
             <Template code="Contact-ConfirmFinalizeContactDialog-ConfirmButton" />
           </PrimaryButton>
         }
@@ -191,7 +235,7 @@ const ContactInProgressBanners: React.FC<ContactBannersProps> = ({ contactId }) 
       <ConfirmDialog
         openDialog={isRemoveTaskDialogOpen}
         actionComponent={
-          <DestructiveButton onClick={handleRemoveTaskConfirm}>
+          <DestructiveButton onClick={handleRemoveTaskConfirm} disabled={contactLoadingStatus}>
             <Template code="Contact-ConfirmRemoveTaskDialog-ConfirmButton" />
           </DestructiveButton>
         }

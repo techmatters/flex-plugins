@@ -85,11 +85,11 @@ export const lambdaAlbFetch = async (
   );
   const responseHeaderEntries = [
     ...Object.entries((albResponse.headers || {}) as Record<string, string>).map(
-      ([k, v]) => [k, v.toString()],
+      ([k, v]): [string, string] => [k, v.toString()],
     ),
     ...Object.entries(
       (albResponse.multiValueHeaders || {}) as Record<string, string[]>,
-    ).map(([k, v]) => [k, v.join(', ')]),
+    ).map(([k, v]): [string, string] => [k, v.join(', ')]),
   ];
   return {
     status: albResponse.statusCode,
@@ -113,6 +113,9 @@ export const lambdaAlbFetch = async (
       throw new Error('Not implemented');
     },
     blob: async () => {
+      throw new Error('Not implemented');
+    },
+    bytes: async () => {
       throw new Error('Not implemented');
     },
   };

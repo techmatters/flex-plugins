@@ -44,6 +44,7 @@ import { checkBlockListHandler } from './conversation/checkBlockList';
 import { transitionAgentParticipantsHandler } from './conversation/transitionAgentParticipants';
 import { conferenceStatusCallbackHandler } from './conference/conferenceStatusCallback';
 import './conference/stopRecordingWhenLastAgentLeaves';
+import './conference/endConferenceOnParticipantLeave';
 import { instagramToFlexHandler } from './customChannels/instagram/instagramToFlex';
 import { flexToInstagramHandler } from './customChannels/instagram/flexToInstagram';
 import { telegramToFlexHandler } from './customChannels/telegram/telegramToFlex';
@@ -71,6 +72,7 @@ import { pullTaskHandler } from './worker/pullTask';
 import { sendSystemMessageHandler } from './conversation/sendSystemMessage';
 import { sendStudioMessageHandler } from './conversation/sendStudioMessage';
 import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRunJanitor';
+import { setFlowMemoryHandler } from './conversation/setFlowMemory';
 import { issueSyncTokenHandler } from './issueSyncToken';
 import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
 import { getMediaUrlHandler } from './conversation/getMediaUrl';
@@ -393,6 +395,10 @@ const ACCOUNTSID_ROUTES: Record<
   'conversation/sendMessageAndRunJanitor': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: sendMessageAndRunJanitorHandler,
+  }),
+  'conversation/setFlowMemory': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: setFlowMemoryHandler,
   }),
   'voicemail/recordingCompleteCallback': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],

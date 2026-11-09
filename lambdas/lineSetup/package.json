@@ -10,13 +10,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@tsconfig/node22": "^22.0.0",
-    "@types/node": "^22.13.11",
+    "@tsconfig/node24": "^24.0.0",
+    "@types/node": "^24.19.2",
     "@types/aws-lambda": "^8.10.108",
     "ts-node": "^10.9.1"
   },
   "dependencies": {
-    "zod": "^3.22.3",
+    "zod": "^4.6.6",
     "@aws-sdk/client-ssm": "^3.1045.0",
     "@aws-sdk/client-s3": "^3.1045.0"
   }

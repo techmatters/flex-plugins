@@ -1,1 +1,30 @@
-[]
+[
+  {
+    "name": "transferredTo988",
+    "label": "Was this connection transferred to 988 Suicide & Crisis Lifeline?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "description": {
+      "title": "",
+      "content": "Applies to all connection types: SMS and Calls"
+    }
+  }
+]

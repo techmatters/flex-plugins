@@ -12,8 +12,6 @@ class Question(TypedDict):
 class Secrets(TypedDict):
     twilio_account_sid: str
     twilio_auth_token: str
-    datadog_app_id: str
-    datadog_access_token: str
 
 
 questions: list[Question] = [
@@ -29,20 +27,6 @@ questions: list[Question] = [
         'question': 'Twilio Auth Token',
         'value': None,
         'regex': r'^[a-z0-9]{32}$',
-        'obfuscate': True
-    },
-    {
-        'tfvar': 'datadog_app_id',
-        'question': 'Datadog App ID',
-        'value': None,
-        'regex': r'^[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$',
-        'obfuscate': False
-    },
-    {
-        'tfvar': 'datadog_access_token',
-        'question': 'Datadog Access Token',
-        'value': None,
-        'regex': r'pub[a-z0-9]{32}$',
         'obfuscate': True
     },
 ]

@@ -5,7 +5,7 @@ export const setEnvFromSsm = async (keyIdentifier: String): Promise<void> => {
   try {
     const result = await getSSMParameter(`/terraform/twilio-iac/${keyIdentifier}/secrets.json`);
 
-    if (!result.Parameter?.Value) {
+    if (!result?.Parameter?.Value) {
       logWarning('No secrets found');
       return;
     }

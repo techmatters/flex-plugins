@@ -31,11 +31,10 @@
     "dotenv": "^16.3.1"
   },
   "devDependencies": {
-    "@tsconfig/node18": "^18.2.1",
-    "@tsconfig/node22": "^22.0.0",
+    "@tsconfig/node24": "^24.0.0",
     "@types/aws-lambda": "^8.10.119",
     "@types/jest": "^26.0.24",
-    "@types/node": "^18.16.2",
+    "@types/node": "^24.19.2",
     "@types/node-fetch": "^2.5.10",
     "@types/redis": "^4.0.10",
     "@types/ws": "8.5.4",

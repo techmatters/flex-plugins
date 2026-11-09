@@ -39,9 +39,9 @@ runs:
   using: "composite"
   steps:
     - name: Use Node.js
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v7
       with:
-        node-version: '22.x'
+        node-version: '24.x'
 
     # Get latest tag for this version
     - name: Get latest tag

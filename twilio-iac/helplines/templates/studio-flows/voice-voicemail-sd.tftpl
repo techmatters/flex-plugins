@@ -119,14 +119,14 @@ ${
       "name": "f_recordingCompleteCallback",
       "properties": {
         "add_twilio_auth": false,
-        "body": "{\"accountSid\":\"{\n  \"accountSid\": \"{{widgets.recordVoicemail.AccountSid}}\",\n  \"callSid\": \"{{widgets.recordVoicemail.CallSid}}\",\n  \"callStatus\": \"{{widgets.recordVoicemail.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"maxCallbackAttempts\": 2,\n  \"routingAttributes\": \"{}\"}",
+        "body": "{\n  \"accountSid\": \"{{widgets.recordVoicemail.AccountSid}}\",\n  \"callSid\": \"{{widgets.recordVoicemail.CallSid}}\",\n  \"callStatus\": \"{{widgets.recordVoicemail.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"maxCallbackAttempts\": 2,\n  \"routingAttributes\": {}\n}",
         "content_type": "application/json;charset=utf-8",
         "method": "POST",
         "offset": {
           "x": -269,
           "y": 627
         },
-        "url": "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/AC1ca120bc71593bbe9ca78e2232a31e0d/voicemail/recordingCompleteCallback"
+        "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
       },
       "transitions": [
         {

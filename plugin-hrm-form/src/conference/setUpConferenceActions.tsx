@@ -64,21 +64,31 @@ export const setUpConferenceActions = () => {
       abortFunction();
     }
 
-    if (someParticipantIsOnHold && hasTaskControl(payload.task)) {
+    // When conference ending is handled by the backend webhook, remaining participants are taken off hold there, so the agent can hang up with participants on hold
+    if (
+      !getAseloFeatureFlags().use_twilio_lambda_for_conference_ending &&
+      someParticipantIsOnHold &&
+      hasTaskControl(payload.task)
+    ) {
       Notifications.showNotificationSingle(ConferenceNotifications.UnholdParticipantsNotification);
       abortFunction();
     }
   });
 
   Flex.Actions.addListener('beforeAcceptTask', (payload: { conferenceOptions: any }) => {
-    if (getAseloFeatureFlags().enable_conference_status_event_handler) {
+    const featureFlags = getAseloFeatureFlags();
+    const { conferenceOptions } = payload;
+    if (!conferenceOptions) return;
+    if (featureFlags.enable_conference_status_event_handler || featureFlags.use_twilio_lambda_for_conference_ending) {
       const { accountScopedLambdaBaseUrl } = getHrmConfig();
-      const { conferenceOptions } = payload;
-      if (conferenceOptions) {
-        conferenceOptions.conferenceStatusCallback = `${accountScopedLambdaBaseUrl}/conference/conferenceStatusCallback`;
-        conferenceOptions.conferenceStatusCallbackMethod = 'POST';
-        conferenceOptions.conferenceStatusCallbackEvent = ['leave', 'join'].toString();
-      }
+      conferenceOptions.conferenceStatusCallback = `${accountScopedLambdaBaseUrl}/conference/conferenceStatusCallback`;
+      conferenceOptions.conferenceStatusCallbackMethod = 'POST';
+      conferenceOptions.conferenceStatusCallbackEvent = ['leave', 'join'].toString();
+    }
+    if (featureFlags.use_twilio_lambda_for_conference_ending) {
+      // Conference ending is managed in the backend webhook handler, so no participant should ever end the conference on exit
+      conferenceOptions.endConferenceOnExit = false;
+      conferenceOptions.endConferenceOnCustomerExit = false;
     }
   });
 };
