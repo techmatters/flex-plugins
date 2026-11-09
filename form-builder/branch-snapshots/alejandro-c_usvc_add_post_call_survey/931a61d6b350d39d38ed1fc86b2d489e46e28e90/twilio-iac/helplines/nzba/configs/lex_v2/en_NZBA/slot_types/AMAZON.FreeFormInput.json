@@ -1,7 +1,0 @@
-{
-    "slotTypeName": "AMAZON.FreeFormInput",
-    "slotTypeValues": [],
-    "valueSelectionSetting": {
-        "resolutionStrategy": "TopResolution"
-    }
-}

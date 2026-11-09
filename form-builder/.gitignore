@@ -3,3 +3,10 @@ dist/
 /drafts/
 dist-lambda/
 dist-dev/
+/boards/
+/people/
+/recordings/
+/routing/
+/chatbots-designs/
+/help-questions/
+/branch-snapshots/
