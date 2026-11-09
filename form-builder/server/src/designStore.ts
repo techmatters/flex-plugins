@@ -31,12 +31,12 @@ import {
   S3Client,
 } from '@aws-sdk/client-s3';
 
-export interface DesignStore<T extends { code: string }> {
+export type DesignStore<T extends { code: string }> = {
   get(code: string): Promise<T | undefined>;
   put(design: T): Promise<void>;
   // The helplines that have a design
   list(): Promise<string[]>;
-}
+};
 
 export const isValidDesignCode = (code: string) => /^[a-z0-9]+$/.test(code);
 

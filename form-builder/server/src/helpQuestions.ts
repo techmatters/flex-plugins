@@ -35,10 +35,10 @@ import type { ApiResponse, ApiUser } from './api';
 
 export type { HelpQuestion };
 
-export interface HelpQuestionStore {
+export type HelpQuestionStore = {
   get(month: string): Promise<HelpQuestion[]>;
   put(month: string, questions: HelpQuestion[]): Promise<void>;
-}
+};
 
 const MONTH_PATTERN = /^\d{4}-\d{2}$/;
 const monthOf = (date: Date) => date.toISOString().slice(0, 7);

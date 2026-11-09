@@ -30,10 +30,10 @@ import { ASELO_PEOPLE_CODE, type Person } from '@tech-matters/form-builder-share
 
 export { ASELO_PEOPLE_CODE };
 
-export interface PeopleStore {
+export type PeopleStore = {
   get(code: string): Promise<Person[]>;
   put(code: string, people: Person[]): Promise<void>;
-}
+};
 
 export const isValidPeopleCode = (code: string) => code === ASELO_PEOPLE_CODE || /^[a-z0-9]+$/.test(code);
 

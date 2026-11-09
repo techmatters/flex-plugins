@@ -93,13 +93,13 @@ type ApiRequest = {
 
 export type ApiResponse = { status: number; body: unknown };
 
-export interface DraftApplier {
+export type DraftApplier = {
   apply(draft: Draft, user: ApiUser, details?: ApplyDetails): Promise<ApplyResult>;
-}
+};
 
-export interface Notifier {
+export type Notifier = {
   draftSubmitted(draft: Draft, user: ApiUser): Promise<void>;
-}
+};
 
 export type ApiContext = {
   formDefinitionsDir: string;

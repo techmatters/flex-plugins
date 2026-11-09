@@ -34,12 +34,12 @@ import type { DraftMeta, Draft, DraftSummary } from '@tech-matters/form-builder-
 
 export type { DraftMeta, Draft, DraftSummary } from '@tech-matters/form-builder-shared';
 
-export interface DraftStore {
+export type DraftStore = {
   get(code: string, version: string): Promise<Draft | undefined>;
   put(draft: Draft): Promise<void>;
   remove(code: string, version: string): Promise<void>;
   list(): Promise<DraftSummary[]>;
-}
+};
 
 const CODE_PATTERN = /^[a-z0-9]+$/;
 const VERSION_PATTERN = /^v\d+$/;

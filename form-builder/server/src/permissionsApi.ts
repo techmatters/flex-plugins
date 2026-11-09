@@ -30,12 +30,12 @@ import {
   REPO_HRM_PERMISSION_RULES_DIR,
 } from '@tech-matters/form-builder-shared';
 
-export interface PermissionRulesSource {
+export type PermissionRulesSource = {
   // Shown with the rules, e.g. 'techmatters/hrm (master)'
   readonly description: string;
   // The file's text, or undefined when there's no such file
   read(name: string): Promise<string | undefined>;
-}
+};
 
 const NAME_PATTERN = /^[a-z0-9]+$/;
 const CODE_PATTERN = /^[a-z0-9]+$/;

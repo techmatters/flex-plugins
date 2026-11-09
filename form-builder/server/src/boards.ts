@@ -36,12 +36,12 @@ import {
 } from '@tech-matters/form-builder-shared/flows/model';
 import { isDesignStatus } from '@tech-matters/form-builder-shared/designStatus';
 
-export interface BoardStore {
+export type BoardStore = {
   get(code: string, id: string): Promise<Board | undefined>;
   put(board: Board): Promise<void>;
   remove(code: string, id: string): Promise<void>;
   list(): Promise<BoardSummary[]>;
-}
+};
 
 const CODE_PATTERN = /^[a-z0-9]+$/;
 const ID_PATTERN = /^[a-z0-9-]{4,40}$/;

@@ -58,7 +58,7 @@ type UploadTarget = { url: string; method: 'PUT'; headers: Record<string, string
 
 type StoredFiles = Record<RecordingEnvironment, Map<string, StoredRecording>>;
 
-export interface RecordingFiles {
+export type RecordingFiles = {
   // The folder Studio plays from: the recordings URL variable for that environment
   baseUrl(code: string, environment: RecordingEnvironment): string;
   list(code: string): Promise<StoredFiles>;
@@ -78,7 +78,7 @@ export interface RecordingFiles {
   ): Promise<void>;
   // So a replaced file is served straight away, not after the cache expires
   refresh(code: string, environment: RecordingEnvironment, fileName: string): Promise<void>;
-}
+};
 
 type RecordingLogEntry = {
   uploadedBy?: string;
@@ -97,10 +97,10 @@ type RecordingLogEntry = {
 
 export type RecordingLog = Record<string, RecordingLogEntry>;
 
-export interface RecordingLogStore {
+export type RecordingLogStore = {
   get(code: string): Promise<RecordingLog>;
   put(code: string, log: RecordingLog): Promise<void>;
-}
+};
 
 // A library: the helpline ("usvc"), or one of its flows' folders ("usvc/post_call_survey_es")
 const RECORDING_LIBRARY_PATTERN = /^[a-z0-9]+(\/[a-z0-9_]+)?$/;
