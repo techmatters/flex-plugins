@@ -148,7 +148,8 @@ type TransferChatStartBody = {
 type TransferChatStartReturn = { closed: string; kept: string };
 
 export const transferChatStart = async (body: TransferChatStartBody): Promise<TransferChatStartReturn> => {
-  const { use_twilio_lambda_transfers: useTwilioLambda } = getAseloFeatureFlags();
+  // const { use_twilio_lambda_transfers: useTwilioLambda } = getAseloFeatureFlags();
+  const useTwilioLambda = false;
   const path = useTwilioLambda ? '/transfer/transferStart' : '/transferChatStart';
   try {
     return await fetchProtectedApi(path, body, useTwilioLambda ? { useTwilioLambda: true } : undefined);
