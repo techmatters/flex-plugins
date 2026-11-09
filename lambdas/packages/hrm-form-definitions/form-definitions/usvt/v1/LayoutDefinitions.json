@@ -11,7 +11,7 @@
   },
   "case": {
     "sectionTypes": {
-      "household": {
+      "familySupport": {
         "splitFormAt": 6,
         "caseHomeOrder": 1,
         "printOrder": 1,
@@ -32,54 +32,6 @@
             "widthRatio": 2
           }
         }
-      },
-      "perpetrator": {
-        "splitFormAt": 7,
-        "caseHomeOrder": 2,
-        "printOrder": 2,
-        "previewFields": [
-          "name",
-          "gender",
-          "age",
-          "relationshipToChild"
-        ],
-        "layout": {
-          "name": {
-            "labelTemplateCode": "Case-PerpetratorName",
-            "valueTemplateCode": "Case-SectionList-PreviewNameValue"
-          },
-          "age": {
-            "labelTemplateCode": "Case-PerpetratorAge"
-          },
-          "gender": {
-            "labelTemplateCode": "Case-PerpetratorGender"
-          },
-          "relationshipToChild": {
-            "labelTemplateCode": "Case-PerpetratorRelationship"
-          }
-        }
-      },
-      "incident": {
-        "previewFields": [
-          "date",
-          "duration",
-          "location"
-        ],
-        "layout": {
-          "date": {
-            "includeLabel": false,
-            "format": "date"
-          },
-          "duration": {
-            "includeLabel": true
-          },
-          "location": {
-            "includeLabel": true
-          }
-        },
-        "caseHomeOrder": 3,
-        "printOrder": 3,
-        "splitFormAt": 3
       },
       "referral": {
         "previewFields": [
@@ -125,20 +77,6 @@
         "layout": {
           "note": {}
         }
-      },
-      "chicken": {
-        "previewFields": [
-          "boc"
-        ],
-        "layout": {
-          "boc": {
-            "includeLabel": true
-          }
-        },
-        "caseHomeOrder": 2,
-        "splitFormAt": 2,
-        "printOrder": 0,
-        "printFormat": "list"
       }
     }
   }

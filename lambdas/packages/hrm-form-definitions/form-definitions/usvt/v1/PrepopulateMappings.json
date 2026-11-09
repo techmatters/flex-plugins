@@ -1,0 +1,18 @@
+{
+  "formSelector": {
+    "selectorType": "staticSelector",
+    "parameter": {
+      "availableTabs": ["ChildInformationTab"],
+      "callType": "Child calling about self"
+    }
+  },
+  "survey":{
+    "role": "ChildInformationTab.role",
+    "town": "ChildInformationTab.town",
+    "howHeardAboutUs": "ChildInformationTab.howHeardAboutUs",
+    "menuOption": "ChildInformationTab.menuOption"
+  },
+  "preEngagement":{
+    "email": "ChildInformationTab.email"
+  }
+}
