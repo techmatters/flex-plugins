@@ -14,16 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import {
-  AppRoutes,
-  CHANGE_ROUTE,
-  ChangeRouteMode,
-  CLOSE_MODAL,
-  GO_BACK,
-  OPEN_MODAL,
-  RoutingActionType,
-  SET_QUEUE_GREETING_DISMISSED,
-} from './types';
+import { AppRoutes, CHANGE_ROUTE, ChangeRouteMode, CLOSE_MODAL, GO_BACK, OPEN_MODAL, RoutingActionType } from './types';
 
 // Action creators
 export const changeRoute = (
@@ -60,9 +51,3 @@ export const newGoBackAction = (taskId: string): RoutingActionType => {
     taskId,
   };
 };
-
-export const newSetQueueGreetingDismissedAction = (taskId: string, dismissed: boolean): RoutingActionType => ({
-  type: SET_QUEUE_GREETING_DISMISSED,
-  taskId,
-  dismissed,
-});

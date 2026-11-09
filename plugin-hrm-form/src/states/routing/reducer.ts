@@ -28,8 +28,6 @@ import {
   OPEN_MODAL,
   RoutingActionType,
   RoutingState,
-  SET_QUEUE_GREETING_DISMISSED,
-  TaskRoutingState,
 } from './types';
 import { REMOVE_CONTACT_STATE, RemoveContactStateAction } from '../types';
 import { standaloneTaskSid } from '../../types/types';
@@ -50,36 +48,11 @@ export const getPathFromUrl = (url: Location) => {
 
 export const initialState: RoutingState = {
   tasks: {
-    [standaloneTaskSid]: {
-      routeStack: [{ route: getPathFromUrl(window.location) as any, subroute: getPathFromUrl(window.location) as any }],
-    },
+    [standaloneTaskSid]: [
+      { route: getPathFromUrl(window.location) as any, subroute: getPathFromUrl(window.location) as any },
+    ],
   },
 };
-
-/**
- * Updates the routing state of a single task
- */
-const updateTaskState = (
-  state: RoutingState,
-  taskId: string,
-  update: (taskState: TaskRoutingState | undefined) => TaskRoutingState,
-): RoutingState => ({
-  ...state,
-  tasks: {
-    ...state.tasks,
-    [taskId]: update(state.tasks[taskId]),
-  },
-});
-
-/**
- * Replaces the route stack of a task, keeping the rest of its routing state
- */
-const updateTaskRouteStack = (
-  state: RoutingState,
-  taskId: string,
-  update: (routeStack: AppRoutes[] | undefined) => AppRoutes[],
-): RoutingState =>
-  updateTaskState(state, taskId, taskState => ({ ...taskState, routeStack: update(taskState?.routeStack) }));
 
 const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingAction): RoutingState => {
   const recreated =
@@ -110,9 +83,16 @@ const contactUpdatingReducer = (state: RoutingState, action: ContactUpdatingActi
       subroute: 'callerInformation',
     };
   }
-  return updateTaskRouteStack(stateWithoutPreviousContact, taskId, routeStack =>
-    recreated && routeStack ? routeStack : [initialEntry],
-  );
+  return {
+    ...stateWithoutPreviousContact,
+    tasks: {
+      ...stateWithoutPreviousContact.tasks,
+      [taskId]:
+        recreated && stateWithoutPreviousContact.tasks[taskId]
+          ? stateWithoutPreviousContact.tasks[taskId]
+          : [initialEntry],
+    },
+  };
 };
 
 const removeEmptyModalStack = (routeStack: AppRoutes[]): AppRoutes[] => {
@@ -246,26 +226,42 @@ export function reduce(
       };
     case CHANGE_ROUTE: {
       const { routing, mode, taskId } = action;
-      return updateTaskRouteStack(state, taskId, routeStack =>
-        mode === ChangeRouteMode.ResetRoute ? [routing] : updateTopmostRoute(routeStack, routing, mode),
-      );
+      const updatedRoute =
+        mode === ChangeRouteMode.ResetRoute ? [routing] : updateTopmostRoute(state.tasks[action.taskId], routing, mode);
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [taskId]: updatedRoute,
+        },
+      };
     }
     case GO_BACK: {
-      return updateTaskRouteStack(state, action.taskId, routeStack =>
-        removeEmptyModalStack(popTopmostRoute(routeStack)),
-      );
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: removeEmptyModalStack(popTopmostRoute(state.tasks[action.taskId])),
+        },
+      };
     }
     case OPEN_MODAL: {
-      return updateTaskRouteStack(state, action.taskId, routeStack => openModalOnTop(routeStack, action.routing));
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: openModalOnTop(state.tasks[action.taskId], action.routing),
+        },
+      };
     }
     case CLOSE_MODAL: {
-      return updateTaskRouteStack(state, action.taskId, routeStack => closeTopModal(routeStack, action.topRoute));
-    }
-    case SET_QUEUE_GREETING_DISMISSED: {
-      return updateTaskState(state, action.taskId, taskState => ({
-        ...taskState,
-        isQueueGreetingDismissed: action.dismissed,
-      }));
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [action.taskId]: closeTopModal(state.tasks[action.taskId], action.topRoute),
+        },
+      };
     }
     default:
       return state;

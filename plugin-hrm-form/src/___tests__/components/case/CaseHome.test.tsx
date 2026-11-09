@@ -177,15 +177,13 @@ describe('useState mocked', () => {
       },
       routing: {
         tasks: {
-          [TASK_SID]: {
-            routeStack: [
-              {
-                route: 'tabbed-forms',
-                subroute: 'categories',
-                activeModal: [{ route: 'case', subroute: 'home', caseId: 'case123' }],
-              },
-            ],
-          },
+          [TASK_SID]: [
+            {
+              route: 'tabbed-forms',
+              subroute: 'categories',
+              activeModal: [{ route: 'case', subroute: 'home', caseId: 'case123' }],
+            },
+          ],
         },
       },
     });
@@ -411,14 +409,12 @@ describe('useState mocked', () => {
         ...initialState[namespace],
         routing: {
           tasks: {
-            [TASK_SID]: {
-              routeStack: [
-                {
-                  ...initialState[namespace].routing.tasks[TASK_SID].routeStack[0],
-                  activeModal: [{ route: 'case', subroute: 'home', caseId: 'case123', isCreating }],
-                },
-              ],
-            },
+            [TASK_SID]: [
+              {
+                ...initialState[namespace].routing.tasks[TASK_SID][0],
+                activeModal: [{ route: 'case', subroute: 'home', caseId: 'case123', isCreating }],
+              },
+            ],
           },
         },
       },

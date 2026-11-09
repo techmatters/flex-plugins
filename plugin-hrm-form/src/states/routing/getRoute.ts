@@ -29,10 +29,10 @@ const getCurrentTopmostRouteStack = (baseRouteStack: AppRoutes[]): AppRoutes[] |
 };
 
 export const getCurrentTopmostRouteStackForTask = (state: RoutingState, taskSid: string): AppRoutes[] =>
-  getCurrentTopmostRouteStack(state.tasks[taskSid]?.routeStack);
+  getCurrentTopmostRouteStack(state.tasks[taskSid]);
 
 export const getCurrentTopmostRouteForTask = (state: RoutingState, taskSid: string): AppRoutes | undefined => {
-  const topStack = getCurrentTopmostRouteStack(state.tasks[taskSid]?.routeStack);
+  const topStack = getCurrentTopmostRouteStack(state.tasks[taskSid]);
   return topStack?.length ? topStack[topStack.length - 1] : undefined;
 };
 
@@ -40,7 +40,7 @@ export const selectCurrentTopmostRouteForTask = (state: RootState, taskSid: stri
   getCurrentTopmostRouteForTask(state[namespace].routing, taskSid);
 
 export const getCurrentBaseRoute = (state: RoutingState, taskSid: string): AppRoutes | undefined => {
-  const baseRouteStack = state.tasks[taskSid]?.routeStack;
+  const baseRouteStack = state.tasks[taskSid];
   return baseRouteStack?.length ? baseRouteStack[baseRouteStack.length - 1] : undefined;
 };
 

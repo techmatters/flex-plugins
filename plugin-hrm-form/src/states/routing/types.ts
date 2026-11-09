@@ -21,7 +21,6 @@ export const CHANGE_ROUTE = 'routing/change-route';
 export const OPEN_MODAL = 'routing/open-modal';
 export const CLOSE_MODAL = 'routing/close-modal';
 export const GO_BACK = 'routing/go-back';
-export const SET_QUEUE_GREETING_DISMISSED = 'routing/set-queue-greeting-dismissed';
 
 export type TabbedFormSubroutes =
   | 'contactlessTask'
@@ -299,27 +298,9 @@ type CloseModalAction = {
   topRoute?: AppRoutes['route'];
 };
 
-type SetQueueGreetingDismissedAction = {
-  type: typeof SET_QUEUE_GREETING_DISMISSED;
-  taskId: string;
-  dismissed: boolean;
-};
-
-export type RoutingActionType =
-  | ChangeRouteAction
-  | GoBackAction
-  | OpenModalAction
-  | CloseModalAction
-  | SetQueueGreetingDismissedAction;
-// Routing state that belongs to a single task
-export type TaskRoutingState = {
-  // Not set yet for a task whose contact hasn't been created, e.g. while it's ringing
-  routeStack?: AppRoutes[];
-  isQueueGreetingDismissed?: boolean;
-};
-
+export type RoutingActionType = ChangeRouteAction | GoBackAction | OpenModalAction | CloseModalAction;
 export type RoutingState = {
   tasks: {
-    [taskId in TaskSID]?: TaskRoutingState;
+    [taskId in TaskSID]?: AppRoutes[];
   };
 };

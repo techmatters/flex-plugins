@@ -172,9 +172,7 @@ describe('useState mocked', () => {
       connectedCase: {
         cases: {},
       },
-      routing: {
-        tasks: { [standaloneTaskSid]: { routeStack: [{ route: 'case', subroute: 'home', caseId: 'case1' }] } },
-      },
+      routing: { tasks: { [standaloneTaskSid]: [{ route: 'case', subroute: 'home', caseId: 'case1' }] } },
     });
 
     ownProps = {

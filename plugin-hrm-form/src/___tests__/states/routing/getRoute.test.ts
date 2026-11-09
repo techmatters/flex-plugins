@@ -33,7 +33,7 @@ type TestCase<T extends AppRoutes | AppRoutes[]> = {
 
 const stateWithRouteStack = (baseRoutes: AppRoutes[]): RoutingState => ({
   tasks: {
-    1: { routeStack: baseRoutes },
+    1: baseRoutes,
     [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
   },
 });

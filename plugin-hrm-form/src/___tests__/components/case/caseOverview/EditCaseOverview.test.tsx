@@ -91,20 +91,18 @@ const state: RecursivePartial<RootState> = {
     },
     routing: {
       tasks: {
-        task1: {
-          routeStack: [
-            {
-              route: 'case',
-              subroute: 'home',
-              caseId: 'case1',
-            },
-            {
-              route: 'case',
-              subroute: 'caseSummary',
-              caseId: 'case1',
-            },
-          ],
-        },
+        task1: [
+          {
+            route: 'case',
+            subroute: 'home',
+            caseId: 'case1',
+          },
+          {
+            route: 'case',
+            subroute: 'caseSummary',
+            caseId: 'case1',
+          },
+        ],
       },
     },
   },

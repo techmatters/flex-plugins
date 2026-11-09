@@ -61,7 +61,7 @@ beforeEach(() => {
 describe('test reducer (specific actions)', () => {
   const stateWithTask: RoutingState = {
     tasks: {
-      'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
+      'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
       [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
     },
   };
@@ -76,7 +76,7 @@ describe('test reducer (specific actions)', () => {
   test('should handle CREATE_CONTACT_ACTION_FULFILLED', async () => {
     const expected = {
       tasks: {
-        'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
+        'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
     };
@@ -108,7 +108,7 @@ describe('test reducer (specific actions)', () => {
 
   const stateWithRouteStack = (baseRoutes: AppRoutes[]): RoutingState => ({
     tasks: {
-      'WT-task1': { routeStack: baseRoutes },
+      'WT-task1': baseRoutes,
       [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
     },
   });
@@ -154,15 +154,13 @@ describe('test reducer (specific actions)', () => {
     describe('When modal is open', () => {
       const stateWithModal = (modalRoutes: AppRoutes[]): RoutingState => ({
         tasks: {
-          'WT-task1': {
-            routeStack: [
-              {
-                route: 'tabbed-forms',
-                subroute: 'childInformation',
-                activeModal: modalRoutes,
-              },
-            ],
-          },
+          'WT-task1': [
+            {
+              route: 'tabbed-forms',
+              subroute: 'childInformation',
+              activeModal: modalRoutes,
+            },
+          ],
           [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
         },
       });
@@ -581,7 +579,7 @@ describe('test reducer (specific actions)', () => {
   test('should handle LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED and recreate the state as loaded', async () => {
     const expected = {
       tasks: {
-        'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
+        'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
     };
@@ -599,7 +597,7 @@ describe('test reducer (specific actions)', () => {
   test('should handle LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED and do nothing', async () => {
     const expected = {
       tasks: {
-        'WT-task1': { routeStack: [{ route: 'case', subroute: 'home', caseId: '' }] },
+        'WT-task1': [{ route: 'case', subroute: 'home', caseId: '' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
     };
@@ -622,11 +620,9 @@ describe('test reducer (specific actions)', () => {
   test('should handle LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED and change isAddingOfflineContact to true', async () => {
     const expected = {
       tasks: {
-        'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
+        'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
-        [offlineContactTaskSid]: {
-          routeStack: [{ ...newTaskEntry, route: 'tabbed-forms', subroute: 'childInformation' }],
-        },
+        [offlineContactTaskSid]: [{ ...newTaskEntry, route: 'tabbed-forms', subroute: 'childInformation' }],
       },
     };
 
@@ -653,7 +649,7 @@ describe('test reducer (specific actions)', () => {
   test('should handle REMOVE_CONTACT_STATE', async () => {
     const expected = {
       tasks: {
-        'WT-task1': { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
+        'WT-task1': [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         [standaloneTaskSid]: initialState.tasks[standaloneTaskSid],
       },
     };
@@ -662,50 +658,11 @@ describe('test reducer (specific actions)', () => {
       {
         tasks: {
           ...stateWithTask.tasks,
-          [offlineContactTaskSid]: { routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }] },
+          [offlineContactTaskSid]: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
         },
       },
       GeneralActions.removeContactState(offlineContactTaskSid, ''),
     );
     expect(result).toStrictEqual(expected);
-  });
-});
-
-describe('SET_QUEUE_GREETING_DISMISSED action', () => {
-  const taskId = 'WT1';
-
-  test('dismisses and reopens the queue greeting of a task, keeping its route stack', () => {
-    const stateWithTask = reduce(initialState, actions.changeRoute({ route: 'select-call-type' }, taskId));
-
-    const dismissed = reduce(stateWithTask, actions.newSetQueueGreetingDismissedAction(taskId, true));
-    expect(dismissed.tasks[taskId]).toStrictEqual({
-      routeStack: [{ route: 'select-call-type' }],
-      isQueueGreetingDismissed: true,
-    });
-
-    const reopened = reduce(dismissed, actions.newSetQueueGreetingDismissedAction(taskId, false));
-    expect(reopened.tasks[taskId].isQueueGreetingDismissed).toBe(false);
-  });
-
-  test('a greeting dismissed before the contact is created stays dismissed once it is created', () => {
-    const dismissed = reduce(initialState, actions.newSetQueueGreetingDismissedAction(taskId, true));
-
-    const result = reduce(dismissed, {
-      type: CREATE_CONTACT_ACTION_FULFILLED,
-      payload: { contact: { ...VALID_EMPTY_CONTACT, taskId }, metadata: VALID_EMPTY_METADATA },
-    } as any);
-
-    expect(result.tasks[taskId]).toStrictEqual({
-      routeStack: [{ route: 'tabbed-forms', subroute: 'childInformation' }],
-      isQueueGreetingDismissed: true,
-    });
-  });
-
-  test('REMOVE_CONTACT_STATE forgets the queue greeting state of the task', () => {
-    const dismissed = reduce(initialState, actions.newSetQueueGreetingDismissedAction(taskId, true));
-
-    const result = reduce(dismissed, GeneralActions.removeContactState(taskId, ''));
-
-    expect(result.tasks[taskId]).toBeUndefined();
   });
 });
