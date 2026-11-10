@@ -123,6 +123,9 @@ const colors = {
   userUnavailableColor: '#999999',
 };
 
+export const selectedTaskListItemBorderWidth = '2px';
+export const selectedTaskListItemBorder = `${selectedTaskListItemBorderWidth} solid ${colors.selectedItemBorderColor}`;
+
 type ThemeOverrides = DeepPartial<Omit<Theme, 'tokens' | 'isLight'>>;
 
 // eslint-disable-next-line import/no-unused-modules
@@ -160,7 +163,7 @@ export const overrides: ThemeOverrides = {
       },
       SelectedContainer: {
         background: colors.base1,
-        border: `2px solid ${colors.selectedItemBorderColor}`,
+        border: selectedTaskListItemBorder,
       },
     },
   },

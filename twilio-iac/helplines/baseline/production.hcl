@@ -13,5 +13,12 @@ locals {
       widget_from          = "<helpline name>"
       chat_blocked_message = "Sorry, you're not able to contact <helpline name> from this device or account"
     }
+
+    # Okta SAML app for this environment (okta-app stage). See twilio-iac/docs/okta.md
+    okta_app = {
+      # New attribute statements (federated claims): the standard for new helplines (tested on ASOP)
+      attribute_statements_mode = "federated"
+      # optional_attribute_sets = ["labels", "team"]
+    }
   }
 }
