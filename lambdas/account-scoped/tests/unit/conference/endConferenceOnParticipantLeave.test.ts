@@ -241,22 +241,29 @@ describe('endConferenceOnParticipantLeaveHandler', () => {
     expect(mockConferenceUpdate).toHaveBeenCalledWith({ status: 'completed' });
   });
 
-  test('agent leaves with only the customer remaining during a transfer - leaves the conference and holds untouched', async () => {
+  test.each(['pending', 'accepted'])(
+    'agent leaves with only the customer remaining and %s reservation - leaves the conference and holds untouched',
+    async reservationStatus => {
+      const client = newMockClient();
+      const customer = newMockParticipant(CUSTOMER_CALL_SID);
+      mockParticipantsList.mockResolvedValue([customer]);
+      mockListReservations.mockResolvedValue([{ reservationStatus }]);
+
+      await endConferenceOnParticipantLeaveHandler(
+        newParticipantLeaveEvent(AGENT_CALL_SID),
+        TEST_ACCOUNT_SID,
+        client,
+      );
+
+      expect(mockConferenceUpdate).not.toHaveBeenCalled();
+      expect(customer.update).not.toHaveBeenCalled();
+    },
+  );
+
+  test('agent leaves with only the customer remaining and a rejected reservation - ends the conference', async () => {
     const client = newMockClient();
-    const customer = newMockParticipant(CUSTOMER_CALL_SID);
-    mockParticipantsList.mockResolvedValue([customer]);
-    // Task is mid transfer: transferMeta set but the reservation with task control doesn't exist
-    mockFetchTask.mockResolvedValue({
-      attributes: JSON.stringify({
-        transferMeta: {
-          mode: 'COLD',
-          transferStatus: 'accepted',
-          sidWithTaskControl: 'WR00000000000000000000000000000000',
-        },
-      }),
-      taskQueueSid: TEST_TASK_QUEUE_SID,
-      taskChannelUniqueName: 'voice',
-    });
+    mockParticipantsList.mockResolvedValue([newMockParticipant(CUSTOMER_CALL_SID)]);
+    mockListReservations.mockResolvedValue([{ reservationStatus: 'rejected' }]);
 
     await endConferenceOnParticipantLeaveHandler(
       newParticipantLeaveEvent(AGENT_CALL_SID),
@@ -264,8 +271,7 @@ describe('endConferenceOnParticipantLeaveHandler', () => {
       client,
     );
 
-    expect(mockConferenceUpdate).not.toHaveBeenCalled();
-    expect(customer.update).not.toHaveBeenCalled();
+    expect(mockConferenceUpdate).toHaveBeenCalledWith({ status: 'completed' });
   });
 
   test('agent leaves with the customer and an external party remaining - keeps the conference and takes both off hold & mute', async () => {
