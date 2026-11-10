@@ -25,6 +25,7 @@ import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
+import { acquireLock, DynamoCacheTable } from '@tech-matters/dynamo-cache';
 
 export type Body = {
   taskSid: TaskSID;
@@ -35,6 +36,11 @@ export type Body = {
 };
 
 const DUMMY_RESERVATION_SID = 'WR00000000000000000000000000000000';
+const TRANSFER_START_LOCK_SECONDS = 60;
+const TRANSFER_START_LOCK_TABLE: DynamoCacheTable = {
+  tableName: 'AccountScoped-TransferStartLocks',
+  keyName: 'id',
+};
 
 // Only used for direct transfers of conversations, not programmable chat channels
 const DIRECT_TRANSFER_QUEUE_FRIENDLY_NAME = 'Everyone';
@@ -254,6 +260,21 @@ export const transferStartHandler: FlexValidatedHandler = async (
     transferStarted: true,
     transferMeta,
   };
+
+  let transferStartClaimed: boolean;
+  try {
+    transferStartClaimed = await acquireLock(
+      TRANSFER_START_LOCK_TABLE,
+      `transfer-start:${accountSid}:${taskSid}`,
+      TRANSFER_START_LOCK_SECONDS,
+    );
+  } catch (err) {
+    return newHttpErrorResult(err as Error, 500);
+  }
+  if (!transferStartClaimed) {
+    return newHttpErrorResult('A transfer is already active for this task', 409);
+  }
+
   await workspace.tasks
     .get(taskSid)
     .update({ attributes: JSON.stringify(attributesWithTransferMeta) });

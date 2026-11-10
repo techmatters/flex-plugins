@@ -26,12 +26,17 @@ import {
 } from '@tech-matters/twilio-configuration';
 import { TEST_ACCOUNT_SID, TEST_WORKSPACE_SID } from '../../testTwilioValues';
 import { HttpError } from '../../../src/httpTypes';
+import { acquireLock } from '@tech-matters/dynamo-cache';
 
 jest.mock('@tech-matters/twilio-configuration', () => ({
   getTwilioClient: jest.fn(),
   getWorkspaceSid: jest.fn(),
   getMasterWorkflowSid: jest.fn(),
   getConversationsTransferWorkflow: jest.fn(),
+}));
+
+jest.mock('@tech-matters/dynamo-cache', () => ({
+  acquireLock: jest.fn(),
 }));
 
 jest.mock('../../../src/conversation/adjustChatCapacity', () => ({
@@ -47,6 +52,7 @@ const mockGetWorkspaceSid = getWorkspaceSid as jest.MockedFunction<
 const mockGetMasterWorkflowSid = getMasterWorkflowSid as jest.MockedFunction<
   typeof getMasterWorkflowSid
 >;
+const mockAcquireLock = acquireLock as jest.MockedFunction<typeof acquireLock>;
 
 const TASK_SID = 'WToriginal';
 const ORIGINAL_WORKER_SID = 'WKoriginal';
@@ -150,6 +156,7 @@ describe('transferStartHandler', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockAcquireLock.mockResolvedValue(true);
     setUpMockClient(ORIGINAL_TASK_ATTRIBUTES);
   });
 
@@ -291,6 +298,33 @@ describe('transferStartHandler', () => {
     if (isErr(result)) {
       expect((result.error as HttpError).statusCode).toBe(400);
     }
+    expect(mockUpdateTask).not.toHaveBeenCalled();
+    expect(mockCreateTask).not.toHaveBeenCalled();
+  });
+
+  test('rejects a transfer when another attempt already holds the task claim', async () => {
+    mockAcquireLock.mockResolvedValue(false);
+
+    const result = await transferStartHandler(
+      newRequest(
+        { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+        { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+      ),
+      TEST_ACCOUNT_SID,
+    );
+
+    expect(isErr(result)).toBe(true);
+    if (isErr(result)) {
+      expect((result.error as HttpError).statusCode).toBe(409);
+    }
+    expect(mockAcquireLock).toHaveBeenCalledWith(
+      {
+        tableName: 'AccountScoped-TransferStartLocks',
+        keyName: 'id',
+      },
+      `transfer-start:${TEST_ACCOUNT_SID}:${TASK_SID}`,
+      60,
+    );
     expect(mockUpdateTask).not.toHaveBeenCalled();
     expect(mockCreateTask).not.toHaveBeenCalled();
   });
