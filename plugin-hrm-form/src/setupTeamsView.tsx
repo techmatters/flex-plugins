@@ -19,11 +19,12 @@ import * as React from 'react';
 
 import TakeOverTaskButton from './components/teamsView/TakeOverTaskButton';
 import TeamsView from './components/teamsView';
+import { getAseloFeatureFlags } from './hrmConfig';
 
 export const setUpTeamsView = () => {
   TeamsView.setUpSelectAgentColumn();
   TeamsView.setUpAgentColumn();
-  if (!featureFlags.remove_custom_status_column) TeamsView.setUpStatusColumn();
+  if (!getAseloFeatureFlags().remove_custom_status_column) TeamsView.setUpStatusColumn();
   TeamsView.setUpSkillsColumn();
   TeamsView.setUpTeamsViewSorting();
   TeamsView.setUpTeamsViewFilters();
