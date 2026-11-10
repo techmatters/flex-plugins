@@ -146,8 +146,6 @@ jobs:
       - name: Fill secret.js
         run: |
           cat <<EOT >> ./src/private/secret.js
-          export const datadogAccessToken = 'x';
-          export const datadogApplicationID = 'x';
           export const fullStoryId = 'x';
           EOT
         working-directory: ./plugin-hrm-form
