@@ -182,12 +182,6 @@ variable "enable_datadog_monitoring" {
   default = false
 }
 
-variable "enable_datadog_tagging" {
-  description = "Publish this helpline's account and Studio flow SIDs to the Datadog Reference Table (S3) so its logs get tagged (account_short_code, account_env, flow_name)"
-  type        = bool
-  default     = false
-}
-
 variable "datadog_tags_bucket" {
   description = "S3 bucket for the Datadog Reference Table files (created manually for now, see the datadog/v1 module)"
   type        = string

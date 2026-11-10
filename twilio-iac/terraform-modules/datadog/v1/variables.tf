@@ -32,12 +32,6 @@ variable "enable_datadog_monitoring" {
   default = false
 }
 
-variable "enable_datadog_tagging" {
-  description = "Write this helpline's rows (account + Studio flows) to the Datadog Reference Table file in S3"
-  type        = bool
-  default     = false
-}
-
 variable "datadog_tags_bucket" {
   description = "S3 bucket (us-east-1) holding the Datadog Reference Table files (aselo_twilio_accounts.csv, aselo_twilio_flows.csv) and the per-helpline files"
   type        = string

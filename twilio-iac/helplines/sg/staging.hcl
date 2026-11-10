@@ -10,8 +10,6 @@ locals {
   local_config = {
     operating_hours_enforced_override     = false
     custom_task_routing_filter_expression = "channelType =='voice' OR channelType =='web'"
-    # Datadog: publish this helpline's account + Studio flow SIDs to the Reference Tables (log tagging)
-    enable_datadog_tagging                = true
     flow_vars = {
     }
 

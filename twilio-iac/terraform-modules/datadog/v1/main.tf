@@ -58,9 +58,10 @@ resource "datadog_monitor" "nr_of_executions_threshold" {
 }
 
 # Helpline tags for Datadog logs: this helpline's rows in the two Datadog Reference Tables that map
-# Twilio SIDs to helplines, written on every configure apply. Replaces the hand-maintained lists in the
-# Datadog pipelines "Adding Account Tags", "Adding Account Tags (accountSid)" and
-# "Studio Flows Sids to Labels", which miss new accounts and flows (MISSING_TAG / flow_name_missing).
+# Twilio SIDs to helplines, written on every configure apply of every helpline (there is no flag to turn
+# it off). Replaces the hand-maintained lists of the old Datadog pipelines "Adding Account Tags",
+# "Adding Account Tags (accountSid)" and "Studio Flows Sids to Labels". SIDs missing from the tables get
+# MISSING_ACCOUNT_SHORT_CODE / MISSING_ENV / MISSING_FLOW_NAME from the pipeline.
 #
 # How it fits together (bucket, Reference Tables and the global pipeline are set up outside this repo):
 #   s3://<bucket>/helpline-tags/<folder>/<code>_<env>.csv  this helpline's rows (other applies read them)
@@ -77,7 +78,7 @@ resource "datadog_monitor" "nr_of_executions_threshold" {
 #   accounts      account_sid, short_code (-> account_short_code, e.g. USNM), env (-> account_env, e.g. PROD)
 #   studio_flows  flow_sid, short_code, env, flow_name (-> flow_name, <code>_<env>_<flow key>, e.g. usnm_prod_sms)
 locals {
-  datadog_tagging_enabled = var.enable_datadog_tagging && var.twilio_account_sid != "" && var.datadog_tags_bucket != ""
+  datadog_tagging_enabled = var.twilio_account_sid != "" && var.datadog_tags_bucket != ""
   datadog_tags_prefix     = "helpline-tags"
   datadog_tags_own_file   = "${lower(var.short_helpline)}_${lower(var.short_environment)}.csv"
 
@@ -172,12 +173,19 @@ resource "aws_s3_object" "datadog_helpline_tags_own" {
   content_type = "text/csv"
 }
 
-# Shared files: every helpline's state writes them, so plans show a change here whenever another
-# helpline applied since. That's expected.
+# Shared files: every helpline's state writes them, so a plan shows a change here when another
+# helpline's rows changed since this helpline's last apply. That's expected (applying it rewrites the
+# same content).
+# prevent_destroy: the files are shared, so no single helpline may delete them. Decommissioning a
+# helpline needs a `removed { lifecycle { destroy = false } }` block for this resource first.
 resource "aws_s3_object" "datadog_helpline_tags_all" {
   for_each     = local.datadog_tagging_enabled ? toset(keys(local.datadog_tag_tables)) : toset([])
   bucket       = var.datadog_tags_bucket
   key          = local.datadog_tag_tables[each.key].merged_file
   content      = "${local.datadog_csv[each.key].all}\n"
   content_type = "text/csv"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }

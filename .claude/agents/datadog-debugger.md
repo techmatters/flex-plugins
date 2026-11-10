@@ -103,7 +103,8 @@ Raw ALB lines. Status codes appear as `" <elb_status> <target_status> "`.
   `lambdas/TwilioErrorReporter/index.ts` (production and staging maps), or find a
   `twilio-event-stream` event with the same `@data.account_sid`.
 - Unmapped (`MISSING_ACCOUNT_SHORT_CODE` / `MISSING_FLOW_NAME`) is itself a finding worth reporting: the
-  helpline needs `enable_datadog_tagging = true` in twilio-iac, or a row in the Reference Table seed.
+  helpline's configure stage hasn't been applied since tagging was added (every apply writes its rows),
+  or the account isn't managed by twilio-iac and needs a row in the Reference Table seed.
 
 ## Twilio error codes seen in Aselo (cheat-sheet)
 

@@ -8,8 +8,6 @@ locals {
     permission_config                     = "usnc"
     ui_editable                           = true
     enable_post_survey         = true
-    # Datadog: publish this helpline's account + Studio flow SIDs to the Reference Tables (log tagging)
-    enable_datadog_tagging     = true
 
     #Studio flow
     flow_vars = {
