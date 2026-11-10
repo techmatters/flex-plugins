@@ -53,7 +53,7 @@ module.exports = (_env, argv) => {
           use: {
             loader: 'ts-loader',
             options: {
-              transpileOnly: true,
+              transpileOnly: false,
               compilerOptions: { noEmit: false },
             },
           },
