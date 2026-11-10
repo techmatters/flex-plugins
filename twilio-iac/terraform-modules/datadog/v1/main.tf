@@ -127,13 +127,24 @@ locals {
     )
   }
 
+  # Row order in the CSV files: env, short code, flow name (flows only), then the SID so keys stay unique.
+  # The separator is a space, which sorts before letters and digits: "AS ..." comes before "ASOP ...".
+  datadog_row_order = {
+    for table, config in local.datadog_tag_tables : table => {
+      own = { for id, row in config.rows : "${row.env} ${row.short_code} ${lookup(row, "flow_name", "")} ${id}" => id }
+      all = { for id, row in local.datadog_all_rows[table] : "${row.env} ${row.short_code} ${lookup(row, "flow_name", "")} ${id}" => id }
+    }
+  }
+
   datadog_csv = {
     for table, config in local.datadog_tag_tables : table => {
       own = join("\n", concat([join(",", config.columns)], [
-        for id in sort(keys(config.rows)) : join(",", [for column in config.columns : config.rows[id][column]])
+        for key in sort(keys(local.datadog_row_order[table].own)) :
+        join(",", [for column in config.columns : config.rows[local.datadog_row_order[table].own[key]][column]])
       ]))
       all = join("\n", concat([join(",", config.columns)], [
-        for id in sort(keys(local.datadog_all_rows[table])) : join(",", [for column in config.columns : local.datadog_all_rows[table][id][column]])
+        for key in sort(keys(local.datadog_row_order[table].all)) :
+        join(",", [for column in config.columns : local.datadog_all_rows[table][local.datadog_row_order[table].all[key]][column]])
       ]))
     }
   }

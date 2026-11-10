@@ -37,11 +37,11 @@ Structured Twilio Event Streams (CloudEvents). Every event carries:
 
 | Attribute | Meaning |
 |---|---|
-| `@account_short_code` | Helpline: `USNM`, `ZM`, … (`MISSING_TAG` = unmapped account) |
-| `@account_env` | `PROD`, `STG`, `DEV` (`MISSING ENV` = unmapped account) |
+| `@account_short_code` | Helpline: `USNM`, `ZM`, … (`MISSING_ACCOUNT_SHORT_CODE` = account SID not in the `aselo_twilio_accounts` Reference Table; `MISSING_TAG` in logs before 2026-11-10) |
+| `@account_env` | `PROD`, `STG`, `DEV` (`MISSING_ENV` = unmapped account; `MISSING ENV` before 2026-11-10) |
 | `@type` | Event type (see below) |
 | `@data.account_sid` | Twilio account SID |
-| `@flow_name` | Often `flow_name_missing` — use `@data.flow_sid` instead |
+| `@flow_name` | `<code>_<env>_<flow>`. `MISSING_FLOW_NAME` = flow SID not in `aselo_twilio_studio_flows` (`flow_name_missing` before 2026-11-10); `@data.flow_sid` always works |
 
 **Studio step events** — `@type:com.twilio.studio.flow.step.ended`
 
@@ -102,7 +102,8 @@ Raw ALB lines. Status codes appear as `" <elb_status> <target_status> "`.
 - For Lambda logs (which only carry the SID), look the SID up in
   `lambdas/TwilioErrorReporter/index.ts` (production and staging maps), or find a
   `twilio-event-stream` event with the same `@data.account_sid`.
-- Unmapped (`MISSING_TAG`) is itself a finding worth reporting.
+- Unmapped (`MISSING_ACCOUNT_SHORT_CODE` / `MISSING_FLOW_NAME`) is itself a finding worth reporting: the
+  helpline needs `enable_datadog_tagging = true` in twilio-iac, or a row in the Reference Table seed.
 
 ## Twilio error codes seen in Aselo (cheat-sheet)
 
