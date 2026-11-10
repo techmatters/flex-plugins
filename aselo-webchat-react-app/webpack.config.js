@@ -37,7 +37,7 @@ module.exports = (_env, argv) => {
     output: {
       path: path.resolve(__dirname, 'build'),
       filename: `static/js/${OUTPUT_FILENAME}`,
-      publicPath: '/',
+      publicPath: isProduction ? './' : '/',
       clean: true,
     },
     resolve: {
