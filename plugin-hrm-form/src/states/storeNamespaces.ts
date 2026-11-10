@@ -30,3 +30,4 @@ export const caseMergingBannersBase = 'caseMergingBanners';
 export const profileBase = 'profile';
 export const switchboardBase = 'switchboard';
 export const teamsViewBase = 'teamsView';
+export const taskScopedMetadataBase = 'taskScopedMetadata';

@@ -92,6 +92,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
+  Components.setUpQueueGreetings();
   Components.setUpAddButtons(featureFlags);
   Components.setUpNoTasksUI(featureFlags, setupObject);
   Components.setUpCustomCRMContainer();

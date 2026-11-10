@@ -10,20 +10,12 @@ locals {
 
 
     flow_vars = {
-      send_message_janitor_function_sid = "ZHb199d0023a1eb386f78b0ad778e93484"
       widget_from                       = "Childline Thailand"
       chat_blocked_message              = "Sorry, you're not able to contact Childline Thailand from this device or account"
 
     }
 
     channels = {
-      webchat : {
-        channel_type         = "web"
-        contact_identity     = ""
-        templatefile         = "/app/twilio-iac/helplines/templates/studio-flows/messaging-blocking-lambda.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
-      },
       facebook : {
         messaging_mode       = "conversations"
         channel_type         = "messenger"

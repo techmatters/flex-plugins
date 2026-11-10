@@ -19,7 +19,7 @@ import * as React from 'react';
 
 import TakeOverTaskButton from './components/teamsView/TakeOverTaskButton';
 import TeamsView from './components/teamsView';
-import { getAseloFeatureFlags } from './hrmConfig';
+import { getAseloFeatureFlags, getHrmConfig } from './hrmConfig';
 
 export const setUpTeamsView = () => {
   TeamsView.setUpSelectAgentColumn();
@@ -29,6 +29,7 @@ export const setUpTeamsView = () => {
   TeamsView.setUpTeamsViewSorting();
   TeamsView.setUpTeamsViewFilters();
   TeamsView.setUpWorkerDirectoryFilters();
-
-  Flex.Supervisor.TaskCanvasHeader.Content.add(<TakeOverTaskButton key="take-over-button" />);
+  if (getHrmConfig().enableChatTakeovers) {
+    Flex.Supervisor.TaskCanvasHeader.Content.add(<TakeOverTaskButton key="take-over-button" />);
+  }
 };

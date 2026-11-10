@@ -65,5 +65,12 @@ locals {
 
 
     phone_numbers = {}
+
+    # Okta: helpline-level, shared by staging and production apps (okta-org stage). See twilio-iac/docs/okta.md
+    okta = {
+      group_name            = "Kellimni (MT)"
+      group_rule      = { organizations = ["Kellimni"] }
+      import_existing       = true
+    }
   }
 }
