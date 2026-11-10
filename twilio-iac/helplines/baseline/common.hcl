@@ -13,6 +13,8 @@ locals {
     task_language              = "en-US"
     enable_post_survey         = false
     enable_external_recordings = true
+    # Datadog: publish this helpline's account + Studio flow SIDs to the Reference Tables (log tagging)
+    enable_datadog_tagging     = true
     permission_config          = "demo"
     # Baseline: 1 queue, a chat (webchat over Conversations) channel and a voice channel. Add more as the helpline needs.
     workflows = {
