@@ -34,7 +34,7 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   const isCreating = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
 
   useEffect(() => {
-    if (!contactState && !isCreating) {
+    if (task && !contactState && !isCreating) {
       asyncDispatcher(newLoadContactFromHrmByTaskSidAsyncAction(task.taskSid));
     }
   }, [asyncDispatcher, contactState, isCreating, task]);
