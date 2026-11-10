@@ -17,6 +17,7 @@
 export enum DefinitionVersionId {
   demoV1 = 'demo-v1', // Demo v1
   asV1 = 'as-v1', // Demo v1
+  asV3 = 'as-v3', // New helpline baseline (see as/v3/README.md)
   asV4 = 'as-v4', // Demo v4 - Child & Youth Helpline
   asV5 = 'as-v5', // Demo v5 - Mental Health Support Line
   asV6 = 'as-v6', // Demo v6 - Crisis & Emergency Response Line

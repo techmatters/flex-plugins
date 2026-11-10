@@ -14,7 +14,7 @@ these demos.
 | --- | --- | --- | --- |
 | [v1](v1/README.md) | Original generic child helpline (legacy demo) | Only for backwards compatibility. Prefer v4. | Default (Child, Caller, Counsellor, Case) |
 | [v2](v2/README.md) | **Case configuration showcase**: every case section shows one layout option | A technical audience, or an implementation workshop where the partner designs its own case forms | Default |
-| v3 | **New helpline baseline** (not a demo) | Starting point for new helpline implementations (see `v3/README.md`). Not used for demos | - |
+| [v3](v3/README.md) | **New helpline baseline** (not a demo) | Starting point for new helpline implementations. Not used for demos | - |
 | [v4](v4/README.md) | **Child & youth helpline** | A child helpline, youth line, child protection service, school or online-safety service | Child, Caller, Counselor, Case, Young Person Profile |
 | [v5](v5/README.md) | **Mental health support line / warmline** | A mental health line, warmline, peer-support line, or a family and caregiver support line | Help Seeker, Supporter, Specialist, Support Plan |
 | [v6](v6/README.md) | **Crisis & emergency response line** | A crisis line that dispatches help, a mobile crisis team, a disaster or emergency hotline, or a public safety partner | Person at Risk, Reporting Party, Responder, Incident |
