@@ -24,6 +24,7 @@ import {
   getMasterWorkflowSid,
   getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
+import { adjustChatCapacity } from '../../../src/conversation/adjustChatCapacity';
 import { TEST_ACCOUNT_SID, TEST_WORKSPACE_SID } from '../../testTwilioValues';
 import { HttpError } from '../../../src/httpTypes';
 
@@ -46,6 +47,9 @@ const mockGetWorkspaceSid = getWorkspaceSid as jest.MockedFunction<
 >;
 const mockGetMasterWorkflowSid = getMasterWorkflowSid as jest.MockedFunction<
   typeof getMasterWorkflowSid
+>;
+const mockAdjustChatCapacity = adjustChatCapacity as jest.MockedFunction<
+  typeof adjustChatCapacity
 >;
 
 const TASK_SID = 'WToriginal';
@@ -75,6 +79,7 @@ describe('transferStartHandler', () => {
   let mockUpdateTask: jest.Mock;
   let mockListReservations: jest.Mock;
   let mockCreateTask: jest.Mock;
+  let mockFetchWorkerChannel: jest.Mock;
   let workerFetchMocks: Record<string, jest.Mock>;
 
   const setUpMockClient = (originalTaskAttributes: Record<string, unknown>) => {
@@ -92,6 +97,10 @@ describe('transferStartHandler', () => {
       },
     ]);
     mockCreateTask = jest.fn().mockResolvedValue({ sid: NEW_TASK_SID });
+    mockFetchWorkerChannel = jest.fn().mockResolvedValue({
+      availableCapacityPercentage: 1,
+      configuredCapacity: 1,
+    });
     workerFetchMocks = {
       [ORIGINAL_WORKER_SID]: jest.fn().mockResolvedValue({
         sid: ORIGINAL_WORKER_SID,
@@ -129,10 +138,7 @@ describe('transferStartHandler', () => {
                   fetch: workerFetchMocks[workerSid],
                   workerChannels: {
                     get: () => ({
-                      fetch: jest.fn().mockResolvedValue({
-                        availableCapacityPercentage: 1,
-                        configuredCapacity: 1,
-                      }),
+                      fetch: mockFetchWorkerChannel,
                     }),
                   },
                 }),
@@ -316,5 +322,73 @@ describe('transferStartHandler', () => {
       mockUpdateTask.mock.calls[mockUpdateTask.mock.calls.length - 1][0].attributes,
     );
     expect(lastUpdateAttributes).toEqual(ORIGINAL_TASK_ATTRIBUTES);
+  });
+
+  test('cancels a created task before restoring original attributes when capacity adjustment fails', async () => {
+    workerFetchMocks[SUPERVISOR_WORKER_SID].mockResolvedValue({
+      sid: SUPERVISOR_WORKER_SID,
+      available: true,
+      attributes: JSON.stringify({ maxMessageCapacity: 2 }),
+    });
+    mockFetchWorkerChannel.mockResolvedValue({
+      availableCapacityPercentage: 0,
+      configuredCapacity: 1,
+    });
+    mockAdjustChatCapacity.mockRejectedValue(new Error('capacity adjustment failed'));
+
+    const result = await transferStartHandler(
+      newRequest(
+        { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+        { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+      ),
+      TEST_ACCOUNT_SID,
+    );
+
+    expect(isErr(result)).toBe(true);
+    if (isErr(result)) {
+      expect((result.error as HttpError).statusCode).toBe(500);
+    }
+    expect(mockUpdateTask.mock.calls[2][0]).toEqual({
+      assignmentStatus: 'canceled',
+      reason: 'transfer start failed',
+    });
+    expect(JSON.parse(mockUpdateTask.mock.calls[3][0].attributes)).toEqual(
+      ORIGINAL_TASK_ATTRIBUTES,
+    );
+    expect(mockUpdateTask.mock.invocationCallOrder[2]).toBeLessThan(
+      mockUpdateTask.mock.invocationCallOrder[3],
+    );
+  });
+
+  test('keeps the original task locked if it cannot cancel the created task', async () => {
+    workerFetchMocks[SUPERVISOR_WORKER_SID].mockResolvedValue({
+      sid: SUPERVISOR_WORKER_SID,
+      available: true,
+      attributes: JSON.stringify({ maxMessageCapacity: 2 }),
+    });
+    mockFetchWorkerChannel.mockResolvedValue({
+      availableCapacityPercentage: 0,
+      configuredCapacity: 1,
+    });
+    mockAdjustChatCapacity.mockRejectedValue(new Error('capacity adjustment failed'));
+    mockUpdateTask
+      .mockResolvedValueOnce({})
+      .mockResolvedValueOnce({})
+      .mockRejectedValueOnce(new Error('task cancellation failed'));
+
+    const result = await transferStartHandler(
+      newRequest(
+        { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+        { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+      ),
+      TEST_ACCOUNT_SID,
+    );
+
+    expect(isErr(result)).toBe(true);
+    expect(mockUpdateTask).toHaveBeenCalledTimes(3);
+    expect(mockUpdateTask.mock.calls[2][0]).toEqual({
+      assignmentStatus: 'canceled',
+      reason: 'transfer start failed',
+    });
   });
 });

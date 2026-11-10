@@ -414,7 +414,24 @@ export const transferStartHandler: FlexValidatedHandler = async (
       await increaseChatCapacity(accountSid, validationResult.data);
     }
   } catch (err) {
-    // Roll back the transfer metadata set on the original task above so it isn't left looking 'mid transfer'
+    // Cancel a created transfer task before unlocking the original task. If cancellation
+    // fails, keep the original task locked to avoid leaving two live tasks for the chat.
+    if (newTaskSid) {
+      try {
+        await workspace.tasks.get(newTaskSid).update({
+          assignmentStatus: 'canceled',
+          reason: 'transfer start failed',
+        });
+      } catch (compensationErr) {
+        console.error(
+          `Failed to cancel transfer task ${newTaskSid} after a failed transfer`,
+          compensationErr,
+        );
+        return newHttpErrorResult(err as Error, 500);
+      }
+    }
+
+    // Roll back transfer metadata only after the new task is safely canceled.
     try {
       await workspace.tasks
         .get(taskSid)
