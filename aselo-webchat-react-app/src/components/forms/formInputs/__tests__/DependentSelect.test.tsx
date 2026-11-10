@@ -38,6 +38,7 @@ describe('DependentSelect component', () => {
     type: FormInputType.DependentSelect as FormInputType.DependentSelect,
     label: 'State',
     dependsOn: 'country',
+    defaultOption: { value: '', label: '' },
     options: {
       US: [
         { value: 'CA', label: 'California' },

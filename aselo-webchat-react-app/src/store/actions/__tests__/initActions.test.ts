@@ -93,7 +93,7 @@ describe('Actions', () => {
   } as unknown as Conversation;
   const conversationsClient = {
     getConversationBySid: () => conversation,
-    onWithReplay: (_event, handler) => {
+    onWithReplay: (_event: string, handler: (state: string) => void) => {
       handler('connected');
     },
     user: { identity: 'test-identity' },

@@ -45,6 +45,9 @@ const TEST_CONFIG_STATE: ConfigState = {
   aseloBackendUrl: 'http://mock-aselo-backend',
   deploymentKey: '',
   helplineCode: 'xx',
+  definitionVersion: '',
+  environment: '',
+  preEngagementFormDefinition: null,
   translations: {},
   defaultLocale: 'en-US',
 };

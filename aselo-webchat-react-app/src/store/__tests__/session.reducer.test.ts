@@ -36,7 +36,6 @@ describe('Session Reducer', () => {
   };
 
   it('should return initial state', () => {
-    // @ts-expect-error This should never happen on practice
     expect(SessionReducer(undefined, {} as AnyAction)).toEqual(initialState);
   });
 

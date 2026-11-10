@@ -1,7 +1,6 @@
 {
   "include": [
     "./src/**/*",
-    "./cypress/**/*",
     "./server/*",
     "./shared/*"
   ],
@@ -24,10 +23,6 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "noEmit": true,
-    "types": [
-      "cypress",
-      "cypress-file-upload"
-    ],
     "isolatedModules": true
   }
 }
