@@ -649,6 +649,7 @@ describe('Pre Engagement Form Phase - validation', () => {
           type: FormInputType.DependentSelect,
           label: dependentLabel,
           dependsOn: 'country',
+          defaultOption: { value: '', label: '' },
           options: {
             US: [
               { value: 'CA', label: 'California' },

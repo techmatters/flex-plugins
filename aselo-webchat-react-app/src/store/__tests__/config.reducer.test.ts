@@ -16,6 +16,7 @@
 
 import 'react-redux';
 import '@testing-library/jest-dom';
+import { AnyAction } from 'redux';
 
 import { ConfigReducer } from '../config.reducer';
 import { ConfigState } from '../definitions';
@@ -24,23 +25,20 @@ import { store } from '../store';
 
 describe('Config Reducer', () => {
   store.getState();
-  let configState: ConfigState = {};
+  let configState: ConfigState;
 
   beforeEach(() => {
-    configState = {};
+    configState = ConfigReducer(undefined, { type: 'init' } as AnyAction);
   });
 
   it('updates config state when ACTION_LOAD_CONFIG is dispatched', async () => {
-    expect(configState.serverUrl).toBeUndefined();
-    const newState: ConfigState = ConfigReducer(
-      {},
-      {
-        type: ACTION_LOAD_CONFIG_SUCCESS,
-        payload: {
-          serverUrl: 'test-endpoint-1',
-        },
+    expect(configState.aseloBackendUrl).toBe('');
+    const newState: ConfigState = ConfigReducer(configState, {
+      type: ACTION_LOAD_CONFIG_SUCCESS,
+      payload: {
+        aseloBackendUrl: 'test-endpoint-1',
       },
-    );
-    expect(newState.serverUrl).toEqual('test-endpoint-1');
+    });
+    expect(newState.aseloBackendUrl).toEqual('test-endpoint-1');
   });
 });
