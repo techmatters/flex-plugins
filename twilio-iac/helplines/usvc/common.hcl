@@ -122,5 +122,10 @@ locals {
     }
     hrm_transcript_retention_days_override = 180
 
+    # Okta: helpline-level, shared by staging and production apps (okta-org stage). See twilio-iac/docs/okta.md
+    okta = {
+      group_name      = "NCVC (USVC)"
+      import_existing = true
+    }
   }
 }

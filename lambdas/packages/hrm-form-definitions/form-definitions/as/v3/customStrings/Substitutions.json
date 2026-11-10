@@ -1,0 +1,23 @@
+{
+  "en": {
+    "CallSummary-CallerName": "Help Seeker Name",
+    "CallType-child": "Help seeker contacting about self",
+    "CallType-caller": "Someone contacting about a help seeker",
+    "ConnectDialog-Child": "Copy help seeker information from this record to new contact?",
+    "CaseHeader-CopyChildInfo": "Copy Help Seeker Information into Current Contact",
+    "TabbedForms-AddCallerInfoTab": "Contacting On Behalf",
+    "TabbedForms-AddChildInfoTab": "Help Seeker",
+    "TabbedForms-CategoriesTab": "Categories",
+    "TabbedForms-AddCaseInfoTab": "Summary",
+    "TabbedForms-ReportsChildLink": "Create link for help seeker",
+    "Case-CaseDetailsChildName": "Help Seeker Name",
+    "Case-ChildIsAtRisk": "Help seeker is at risk",
+    "Case-PerpetratorRelationship": "Relationship to help seeker: ",
+    "CaseList-THChildName": "Help Seeker",
+    "CallerForm-RelationshipToChild": "Relationship to Help Seeker",
+    "CallerSection-RelationshipToChild": "Relationship to Help Seeker",
+    "ContactDetails-GeneralDetails-ChildHearAboutUs": "How did the help seeker hear about us?",
+    "SectionName-ChildInformation": "Help Seeker Information {{sectionNo}} of {{sectionCount}}",
+    "Contact-EditChild": "Edit Help Seeker Information"
+  }
+}
