@@ -1,62 +1,65 @@
 {
-  "Mental Health Support Line": {
-    "maxSelections": 5,
+  "Child & Youth Helpline": {
+    "maxSelections": 3,
     "categories": {
-      "Emotional Wellbeing": {
-        "color": "#4d92c2",
+      "Violence & Abuse": {
+        "color": "#e05d5d",
         "subcategories": [
           {
-            "label": "Stress"
+            "label": "Physical abuse"
           },
           {
-            "label": "Loneliness / isolation"
+            "label": "Emotional abuse"
           },
           {
-            "label": "Grief / loss"
+            "label": "Sexual abuse"
           },
           {
-            "label": "Low self-esteem"
+            "label": "Neglect"
           },
           {
-            "label": "Life transitions"
+            "label": "Domestic violence (witnessed)"
           },
           {
-            "label": "Hope and reassurance"
+            "label": "Bullying"
+          },
+          {
+            "label": "Exploitation / trafficking"
+          },
+          {
+            "label": "Child marriage"
           }
         ]
       },
-      "Mental Health Conditions": {
+      "Online Safety": {
+        "color": "#8b5cf6",
+        "subcategories": [
+          {
+            "label": "Cyberbullying"
+          },
+          {
+            "label": "Online grooming"
+          },
+          {
+            "label": "Sextortion"
+          },
+          {
+            "label": "Sharing of intimate images"
+          },
+          {
+            "label": "Harmful content"
+          }
+        ]
+      },
+      "Mental Health": {
         "color": "#f2a93b",
         "subcategories": [
           {
-            "label": "Anxiety / panic"
+            "label": "Anxiety / stress"
           },
           {
-            "label": "Depression"
+            "label": "Depression / low mood"
           },
-          {
-            "label": "Bipolar disorder"
-          },
-          {
-            "label": "Psychosis"
-          },
-          {
-            "label": "Trauma / PTSD"
-          },
-          {
-            "label": "Eating disorders"
-          },
-          {
-            "label": "OCD"
-          },
-          {
-            "label": "Other diagnosis"
-          }
-        ]
-      },
-      "Suicide & Self-harm": {
-        "color": "#e05d5d",
-        "subcategories": [
           {
             "label": "Suicidal thoughts"
           },
@@ -64,87 +67,90 @@
             "label": "Self-harm"
           },
           {
-            "label": "Concern for someone else"
+            "label": "Eating concerns"
           },
           {
-            "label": "Bereaved by suicide"
+            "label": "Grief / loss"
+          },
+          {
+            "label": "Substance use"
           }
         ]
       },
-      "Substance Use": {
-        "color": "#8b5cf6",
+      "Family & Relationships": {
+        "color": "#4d92c2",
         "subcategories": [
           {
-            "label": "Alcohol"
+            "label": "Conflict with parents"
           },
           {
-            "label": "Drugs"
+            "label": "Separation / divorce"
           },
           {
-            "label": "Gambling / other addictive behaviours"
+            "label": "Peer relationships"
           },
           {
-            "label": "Recovery support"
+            "label": "Romantic relationships"
+          },
+          {
+            "label": "Loneliness"
           }
         ]
       },
-      "Relationships & Family": {
-        "color": "#d36fa4",
-        "subcategories": [
-          {
-            "label": "Family conflict"
-          },
-          {
-            "label": "Relationship problems"
-          },
-          {
-            "label": "Domestic abuse"
-          },
-          {
-            "label": "Supporting a loved one"
-          },
-          {
-            "label": "Caregiver burnout"
-          }
-        ]
-      },
-      "Treatment & Services": {
+      "Education": {
         "color": "#5bb381",
         "subcategories": [
           {
-            "label": "Finding a provider"
+            "label": "School performance"
           },
           {
-            "label": "Medication questions"
+            "label": "Exams"
           },
           {
-            "label": "After hospital discharge"
+            "label": "Problems with teachers"
           },
           {
-            "label": "Affordability / insurance"
-          },
-          {
-            "label": "Complaints about services"
+            "label": "Dropping out / access to school"
           }
         ]
       },
-      "Practical Needs": {
+      "Sexual & Physical Health": {
+        "color": "#d36fa4",
+        "subcategories": [
+          {
+            "label": "Puberty / body changes"
+          },
+          {
+            "label": "Sexual health"
+          },
+          {
+            "label": "Pregnancy"
+          },
+          {
+            "label": "Gender identity / sexuality"
+          },
+          {
+            "label": "Physical health"
+          }
+        ]
+      },
+      "Basic Needs & Rights": {
         "color": "#14919b",
         "subcategories": [
           {
-            "label": "Housing"
+            "label": "Homelessness / running away"
           },
           {
-            "label": "Employment"
+            "label": "Food insecurity"
           },
           {
-            "label": "Financial hardship"
+            "label": "Legal questions"
           },
           {
-            "label": "Legal"
+            "label": "Discrimination"
           },
           {
-            "label": "Food"
+            "label": "Children's rights"
           }
         ]
       },
@@ -155,7 +161,7 @@
             "label": "About the helpline"
           },
           {
-            "label": "Mental health education"
+            "label": "Other services"
           },
           {
             "label": "Other"

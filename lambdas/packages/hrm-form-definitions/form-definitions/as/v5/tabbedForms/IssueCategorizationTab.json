@@ -1,134 +1,161 @@
 {
-  "Crisis Response Line": {
-    "maxSelections": 3,
+  "Mental Health Support Line": {
+    "maxSelections": 5,
     "categories": {
+      "Emotional Wellbeing": {
+        "color": "#4d92c2",
+        "subcategories": [
+          {
+            "label": "Stress"
+          },
+          {
+            "label": "Loneliness / isolation"
+          },
+          {
+            "label": "Grief / loss"
+          },
+          {
+            "label": "Low self-esteem"
+          },
+          {
+            "label": "Life transitions"
+          },
+          {
+            "label": "Hope and reassurance"
+          }
+        ]
+      },
+      "Mental Health Conditions": {
+        "color": "#f2a93b",
+        "subcategories": [
+          {
+            "label": "Anxiety / panic"
+          },
+          {
+            "label": "Depression"
+          },
+          {
+            "label": "Bipolar disorder"
+          },
+          {
+            "label": "Psychosis"
+          },
+          {
+            "label": "Trauma / PTSD"
+          },
+          {
+            "label": "Eating disorders"
+          },
+          {
+            "label": "OCD"
+          },
+          {
+            "label": "Other diagnosis"
+          }
+        ]
+      },
       "Suicide & Self-harm": {
         "color": "#e05d5d",
         "subcategories": [
           {
-            "label": "Attempt in progress"
-          },
-          {
-            "label": "Active suicidal ideation"
+            "label": "Suicidal thoughts"
           },
           {
             "label": "Self-harm"
           },
           {
-            "label": "Third-party concern"
+            "label": "Concern for someone else"
+          },
+          {
+            "label": "Bereaved by suicide"
           }
         ]
       },
-      "Mental Health Crisis": {
-        "color": "#f2a93b",
-        "subcategories": [
-          {
-            "label": "Psychosis"
-          },
-          {
-            "label": "Severe anxiety / panic"
-          },
-          {
-            "label": "Agitation / aggression"
-          },
-          {
-            "label": "Disorientation / confusion"
-          }
-        ]
-      },
-      "Medical": {
-        "color": "#d36fa4",
-        "subcategories": [
-          {
-            "label": "Overdose / poisoning"
-          },
-          {
-            "label": "Injury"
-          },
-          {
-            "label": "Medical emergency"
-          },
-          {
-            "label": "Medication crisis"
-          }
-        ]
-      },
-      "Violence & Safety": {
+      "Substance Use": {
         "color": "#8b5cf6",
         "subcategories": [
           {
-            "label": "Domestic violence"
+            "label": "Alcohol"
           },
           {
-            "label": "Child at risk"
+            "label": "Drugs"
           },
           {
-            "label": "Elder at risk"
+            "label": "Gambling / other addictive behaviours"
           },
           {
-            "label": "Threat to others"
-          },
-          {
-            "label": "Sexual assault"
+            "label": "Recovery support"
           }
         ]
       },
-      "Missing Persons": {
-        "color": "#4d92c2",
+      "Relationships & Family": {
+        "color": "#d36fa4",
         "subcategories": [
           {
-            "label": "Missing adult"
+            "label": "Family conflict"
           },
           {
-            "label": "Missing child"
+            "label": "Relationship problems"
           },
           {
-            "label": "Wandering (dementia)"
+            "label": "Domestic abuse"
+          },
+          {
+            "label": "Supporting a loved one"
+          },
+          {
+            "label": "Caregiver burnout"
           }
         ]
       },
-      "Disaster & Major Incidents": {
-        "color": "#14919b",
-        "subcategories": [
-          {
-            "label": "Evacuation"
-          },
-          {
-            "label": "Shelter needs"
-          },
-          {
-            "label": "Locating family"
-          },
-          {
-            "label": "Trauma after an incident"
-          }
-        ]
-      },
-      "Basic Needs": {
+      "Treatment & Services": {
         "color": "#5bb381",
         "subcategories": [
           {
-            "label": "Unsafe housing / homelessness"
+            "label": "Finding a provider"
           },
           {
-            "label": "Food"
+            "label": "Medication questions"
           },
           {
-            "label": "Utilities shut-off"
+            "label": "After hospital discharge"
           },
           {
-            "label": "Transportation"
+            "label": "Affordability / insurance"
+          },
+          {
+            "label": "Complaints about services"
           }
         ]
       },
-      "Information & Referral": {
+      "Practical Needs": {
+        "color": "#14919b",
+        "subcategories": [
+          {
+            "label": "Housing"
+          },
+          {
+            "label": "Employment"
+          },
+          {
+            "label": "Financial hardship"
+          },
+          {
+            "label": "Legal"
+          },
+          {
+            "label": "Food"
+          }
+        ]
+      },
+      "Information": {
         "color": "#9aa5b1",
         "subcategories": [
           {
-            "label": "Service information"
+            "label": "About the helpline"
           },
           {
-            "label": "Follow-up on a previous incident"
+            "label": "Mental health education"
           },
           {
             "label": "Other"

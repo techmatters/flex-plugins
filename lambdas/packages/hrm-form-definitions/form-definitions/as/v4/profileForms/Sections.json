@@ -6,37 +6,27 @@
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Background and support history",
+    "placeholder": "Who is this young person and what support have they had?",
     "isPII": true
   },
   {
-    "name": "whatHelps",
-    "label": "What Helps",
-    "editLabel": "Edit What Helps",
+    "name": "safetyConsiderations",
+    "label": "Safety Considerations",
+    "editLabel": "Edit Safety Considerations",
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Approaches, topics or coping strategies that work for this person",
+    "placeholder": "Known risks, safe adults, things to check on every contact",
     "isPII": true
   },
   {
-    "name": "thingsToAvoid",
-    "label": "Things to Avoid",
-    "editLabel": "Edit Things to Avoid",
+    "name": "recommendedApproach",
+    "label": "Recommended Approach",
+    "editLabel": "Edit Recommended Approach",
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Known triggers or approaches that do not help",
-    "isPII": true
-  },
-  {
-    "name": "contactAgreement",
-    "label": "Contact Agreement",
-    "editLabel": "Edit Contact Agreement",
-    "type": "textarea",
-    "rows": 20,
-    "width": 500,
-    "placeholder": "For frequent contacts: agreed call length, frequency and boundaries",
+    "placeholder": "What works well when supporting this young person",
     "isPII": true
   }
 ]

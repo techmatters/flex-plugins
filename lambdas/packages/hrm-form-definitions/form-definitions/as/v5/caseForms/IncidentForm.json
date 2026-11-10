@@ -13,14 +13,8 @@
     }
   },
   {
-    "name": "time",
-    "label": "Time",
-    "type": "time-input",
-    "isPII": false
-  },
-  {
-    "name": "updateType",
-    "label": "Update Type",
+    "name": "type",
+    "label": "Type of Crisis",
     "type": "select",
     "isPII": false,
     "options": [
@@ -29,20 +23,28 @@
         "label": ""
       },
       {
-        "value": "Situation escalated",
-        "label": "Situation escalated"
+        "value": "Suicidal crisis",
+        "label": "Suicidal crisis"
       },
       {
-        "value": "Situation stabilised",
-        "label": "Situation stabilised"
+        "value": "Self-harm",
+        "label": "Self-harm"
       },
       {
-        "value": "New information received",
-        "label": "New information received"
+        "value": "Psychotic episode",
+        "label": "Psychotic episode"
       },
       {
-        "value": "Handover to another team",
-        "label": "Handover to another team"
+        "value": "Panic / severe anxiety",
+        "label": "Panic / severe anxiety"
+      },
+      {
+        "value": "Substance-related",
+        "label": "Substance-related"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
       }
     ],
     "required": {
@@ -51,8 +53,8 @@
     }
   },
   {
-    "name": "source",
-    "label": "Source",
+    "name": "resolution",
+    "label": "Resolution",
     "type": "select",
     "isPII": false,
     "options": [
@@ -61,24 +63,28 @@
         "label": ""
       },
       {
-        "value": "Person at risk",
-        "label": "Person at risk"
+        "value": "De-escalated on the call",
+        "label": "De-escalated on the call"
       },
       {
-        "value": "Reporting party",
-        "label": "Reporting party"
+        "value": "Transferred to crisis line",
+        "label": "Transferred to crisis line"
+      },
+      {
+        "value": "Mobile crisis team",
+        "label": "Mobile crisis team"
       },
       {
         "value": "Emergency services",
         "label": "Emergency services"
       },
       {
-        "value": "Partner agency",
-        "label": "Partner agency"
+        "value": "Hospital",
+        "label": "Hospital"
       },
       {
-        "value": "Other",
-        "label": "Other"
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {

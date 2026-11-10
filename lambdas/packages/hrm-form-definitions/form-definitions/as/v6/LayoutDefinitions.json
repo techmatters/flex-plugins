@@ -1,7 +1,7 @@
 {
   "contact": {
     "callerInformation": {
-      "splitFormAt": 4
+      "splitFormAt": 3
     },
     "childInformation": {
       "splitFormAt": 7
@@ -12,95 +12,58 @@
   },
   "case": {
     "sectionTypes": {
-      "household": {
+      "dispatch": {
         "caseHomeOrder": 1,
         "printOrder": 1,
-        "splitFormAt": 5,
-        "previewFields": [
-          "firstName",
-          "relationshipToChild",
-          "isSafeContact"
-        ],
-        "layout": {
-          "firstName": {
-            "includeLabel": true
-          },
-          "relationshipToChild": {
-            "includeLabel": true
-          },
-          "isSafeContact": {
-            "includeLabel": true
-          }
-        }
-      },
-      "perpetrator": {
-        "caseHomeOrder": 2,
-        "printOrder": 2,
         "splitFormAt": 4,
-        "previewFields": [
-          "firstName",
-          "relationshipToChild",
-          "hasAccessToChild"
-        ],
-        "layout": {
-          "firstName": {
-            "includeLabel": true
-          },
-          "relationshipToChild": {
-            "includeLabel": true
-          },
-          "hasAccessToChild": {
-            "includeLabel": true
-          }
-        }
-      },
-      "incident": {
-        "caseHomeOrder": 3,
-        "printOrder": 3,
-        "splitFormAt": 3,
+        "printFormat": "tabular",
         "previewFields": [
           "date",
-          "duration",
-          "location"
+          "service",
+          "referenceNumber",
+          "dispatchOutcome"
         ],
         "layout": {
           "date": {
             "includeLabel": false,
             "format": "date"
           },
-          "duration": {
-            "includeLabel": true
-          },
-          "location": {
-            "includeLabel": true
-          }
-        }
-      },
-      "externalReport": {
-        "caseHomeOrder": 4,
-        "printOrder": 4,
-        "splitFormAt": 6,
-        "printFormat": "tabular",
-        "previewFields": [
-          "reportDate",
-          "agencyNotified",
-          "referenceNumber"
-        ],
-        "layout": {
-          "reportDate": {
-            "includeLabel": false,
-            "format": "date"
-          },
-          "agencyNotified": {
+          "service": {
             "includeLabel": true
           },
           "referenceNumber": {
+            "includeLabel": true
+          },
+          "dispatchOutcome": {
+            "includeLabel": true,
+            "widthRatio": 1.5
+          }
+        }
+      },
+      "welfareCheck": {
+        "caseHomeOrder": 2,
+        "printOrder": 2,
+        "splitFormAt": 3,
+        "previewFields": [
+          "date",
+          "requestedFrom",
+          "result"
+        ],
+        "layout": {
+          "date": {
+            "includeLabel": false,
+            "format": "date"
+          },
+          "requestedFrom": {
+            "includeLabel": true
+          },
+          "result": {
             "includeLabel": true
           }
         }
       },
       "document": {
-        "caseHomeOrder": 5,
+        "caseHomeOrder": 3,
         "splitFormAt": 1,
         "printFormat": "hidden",
         "previewFields": [
@@ -124,6 +87,41 @@
             "includeLabel": false,
             "labelTemplateCode": "Case-DocumentComments",
             "widthRatio": 2
+          }
+        }
+      },
+      "incident": {
+        "caseHomeLocation": "timeline",
+        "printOrder": 3,
+        "splitFormAt": 3,
+        "printFormat": "list",
+        "previewFields": [
+          "updateType",
+          "source"
+        ],
+        "layout": {
+          "updateType": {
+            "includeLabel": false
+          },
+          "source": {
+            "includeLabel": true
+          }
+        }
+      },
+      "followUp": {
+        "caseHomeLocation": "timeline",
+        "printOrder": 4,
+        "splitFormAt": 2,
+        "previewFields": [
+          "outcome",
+          "riskNow"
+        ],
+        "layout": {
+          "outcome": {
+            "includeLabel": false
+          },
+          "riskNow": {
+            "includeLabel": true
           }
         }
       },

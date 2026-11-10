@@ -1,19 +1,19 @@
 {
-  "dispatch": {
-    "label": "Emergency Dispatch",
-    "formPath": "caseForms/DispatchForm.json"
-  },
-  "welfareCheck": {
-    "label": "Welfare Check",
-    "formPath": "caseForms/WelfareCheckForm.json"
-  },
-  "incident": {
-    "label": "Situation Update",
-    "formPath": "caseForms/IncidentForm.json"
+  "safetyPlan": {
+    "label": "Safety Plan",
+    "formPath": "caseForms/SafetyPlanForm.json"
   },
   "followUp": {
-    "label": "Follow-up",
+    "label": "Follow-up Call",
     "formPath": "caseForms/FollowUpForm.json"
+  },
+  "incident": {
+    "label": "Crisis Episode",
+    "formPath": "caseForms/IncidentForm.json"
+  },
+  "household": {
+    "label": "Support Network",
+    "formPath": "caseForms/HouseholdForm.json"
   },
   "referral": {
     "label": "Referral",

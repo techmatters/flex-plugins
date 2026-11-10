@@ -2,8 +2,8 @@
   "label": "Helpline",
   "helplines": [
     {
-      "label": "Mental Health Support Line",
-      "value": "Mental Health Support Line",
+      "label": "Child & Youth Helpline",
+      "value": "Child & Youth Helpline",
       "default": true,
       "manager": {
         "name": "Helpline Manager",

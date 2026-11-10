@@ -23,40 +23,36 @@
         "label": ""
       },
       {
-        "value": "Crisis line",
-        "label": "Crisis line"
+        "value": "Child protection services",
+        "label": "Child protection services"
       },
       {
-        "value": "Community mental health service",
-        "label": "Community mental health service"
+        "value": "Police",
+        "label": "Police"
       },
       {
-        "value": "Therapist / counselling",
-        "label": "Therapist / counselling"
+        "value": "Health clinic / hospital",
+        "label": "Health clinic / hospital"
       },
       {
-        "value": "Psychiatrist",
-        "label": "Psychiatrist"
+        "value": "Mental health service",
+        "label": "Mental health service"
       },
       {
-        "value": "Peer support group",
-        "label": "Peer support group"
+        "value": "School counsellor",
+        "label": "School counsellor"
       },
       {
-        "value": "Substance use service",
-        "label": "Substance use service"
+        "value": "Legal aid",
+        "label": "Legal aid"
       },
       {
-        "value": "Primary care doctor",
-        "label": "Primary care doctor"
+        "value": "Shelter / safe house",
+        "label": "Shelter / safe house"
       },
       {
-        "value": "Housing support",
-        "label": "Housing support"
-      },
-      {
-        "value": "Financial / benefits support",
-        "label": "Financial / benefits support"
+        "value": "Social welfare",
+        "label": "Social welfare"
       },
       {
         "value": "Other",
@@ -83,16 +79,16 @@
         "label": "Pending"
       },
       {
-        "value": "Connected",
-        "label": "Connected"
-      },
-      {
-        "value": "Waitlisted",
-        "label": "Waitlisted"
+        "value": "Accepted",
+        "label": "Accepted"
       },
       {
         "value": "Declined",
         "label": "Declined"
+      },
+      {
+        "value": "Completed",
+        "label": "Completed"
       }
     ]
   },

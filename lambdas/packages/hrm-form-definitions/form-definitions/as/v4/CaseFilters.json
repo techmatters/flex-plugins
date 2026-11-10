@@ -7,7 +7,7 @@
     "component": "generate-counselor-filter",
     "position": "left"
   },
-  "checkInFrequency": {
+  "priority": {
     "type": "multi-select",
     "position": "left"
   },

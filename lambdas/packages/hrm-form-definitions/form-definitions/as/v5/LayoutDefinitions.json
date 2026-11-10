@@ -7,63 +7,76 @@
       "splitFormAt": 7
     },
     "caseInformation": {
-      "splitFormAt": 5
+      "splitFormAt": 4
     }
   },
   "case": {
     "sectionTypes": {
-      "dispatch": {
+      "safetyPlan": {
         "caseHomeOrder": 1,
         "printOrder": 1,
         "splitFormAt": 4,
-        "printFormat": "tabular",
+        "printFormat": "list",
         "previewFields": [
           "date",
-          "service",
-          "referenceNumber",
-          "dispatchOutcome"
+          "warningSigns"
         ],
         "layout": {
           "date": {
             "includeLabel": false,
             "format": "date"
           },
-          "service": {
-            "includeLabel": true
-          },
-          "referenceNumber": {
-            "includeLabel": true
-          },
-          "dispatchOutcome": {
+          "warningSigns": {
             "includeLabel": true,
-            "widthRatio": 1.5
+            "widthRatio": 3
           }
         }
       },
-      "welfareCheck": {
+      "household": {
         "caseHomeOrder": 2,
         "printOrder": 2,
         "splitFormAt": 3,
         "previewFields": [
+          "firstName",
+          "relationshipToChild",
+          "okToContact"
+        ],
+        "layout": {
+          "firstName": {
+            "includeLabel": false
+          },
+          "relationshipToChild": {
+            "includeLabel": true
+          },
+          "okToContact": {
+            "includeLabel": true
+          }
+        }
+      },
+      "incident": {
+        "caseHomeOrder": 3,
+        "printOrder": 3,
+        "splitFormAt": 2,
+        "previewFields": [
           "date",
-          "requestedFrom",
-          "result"
+          "type",
+          "resolution"
         ],
         "layout": {
           "date": {
             "includeLabel": false,
             "format": "date"
           },
-          "requestedFrom": {
+          "type": {
             "includeLabel": true
           },
-          "result": {
+          "resolution": {
             "includeLabel": true
           }
         }
       },
       "document": {
-        "caseHomeOrder": 3,
+        "caseHomeOrder": 4,
         "splitFormAt": 1,
         "printFormat": "hidden",
         "previewFields": [
@@ -90,37 +103,19 @@
           }
         }
       },
-      "incident": {
-        "caseHomeLocation": "timeline",
-        "printOrder": 3,
-        "splitFormAt": 3,
-        "printFormat": "list",
-        "previewFields": [
-          "updateType",
-          "source"
-        ],
-        "layout": {
-          "updateType": {
-            "includeLabel": false
-          },
-          "source": {
-            "includeLabel": true
-          }
-        }
-      },
       "followUp": {
         "caseHomeLocation": "timeline",
         "printOrder": 4,
-        "splitFormAt": 2,
+        "splitFormAt": 3,
         "previewFields": [
           "outcome",
-          "riskNow"
+          "riskLevel"
         ],
         "layout": {
           "outcome": {
             "includeLabel": false
           },
-          "riskNow": {
+          "riskLevel": {
             "includeLabel": true
           }
         }

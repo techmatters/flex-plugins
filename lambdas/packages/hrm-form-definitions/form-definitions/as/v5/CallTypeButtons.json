@@ -1,19 +1,19 @@
 [
   {
     "name": "child",
-    "label": "Person at risk calling about self",
+    "label": "Help seeker contacting about self",
     "type": "button",
     "category": "data"
   },
   {
     "name": "caller",
-    "label": "Reporting on behalf of someone else",
+    "label": "Someone contacting about a loved one",
     "type": "button",
     "category": "data"
   },
   {
     "name": "silent",
-    "label": "Silent / Open Line",
+    "label": "Silent",
     "type": "button",
     "category": "non-data"
   },
@@ -30,20 +30,20 @@
     "category": "non-data"
   },
   {
-    "name": "hoax",
-    "label": "Hoax / Prank",
+    "name": "prank",
+    "label": "Prank",
     "type": "button",
     "category": "non-data"
   },
   {
-    "name": "duplicateReport",
-    "label": "Duplicate Report (already in progress)",
+    "name": "frequentContact",
+    "label": "Frequent Contact - Brief Check-in",
     "type": "button",
     "category": "non-data"
   },
   {
-    "name": "informationOnly",
-    "label": "Information Only",
+    "name": "voicemail",
+    "label": "Voicemail Completed",
     "type": "button",
     "category": "non-data"
   },

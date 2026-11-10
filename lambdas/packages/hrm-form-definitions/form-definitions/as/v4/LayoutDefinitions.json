@@ -1,54 +1,55 @@
 {
   "contact": {
     "callerInformation": {
-      "splitFormAt": 3
+      "splitFormAt": 4
     },
     "childInformation": {
       "splitFormAt": 7
     },
     "caseInformation": {
-      "splitFormAt": 4
+      "splitFormAt": 5
     }
   },
   "case": {
     "sectionTypes": {
-      "safetyPlan": {
+      "household": {
         "caseHomeOrder": 1,
         "printOrder": 1,
-        "splitFormAt": 4,
-        "printFormat": "list",
-        "previewFields": [
-          "date",
-          "warningSigns"
-        ],
-        "layout": {
-          "date": {
-            "includeLabel": false,
-            "format": "date"
-          },
-          "warningSigns": {
-            "includeLabel": true,
-            "widthRatio": 3
-          }
-        }
-      },
-      "household": {
-        "caseHomeOrder": 2,
-        "printOrder": 2,
-        "splitFormAt": 3,
+        "splitFormAt": 5,
         "previewFields": [
           "firstName",
           "relationshipToChild",
-          "okToContact"
+          "isSafeContact"
         ],
         "layout": {
           "firstName": {
-            "includeLabel": false
+            "includeLabel": true
           },
           "relationshipToChild": {
             "includeLabel": true
           },
-          "okToContact": {
+          "isSafeContact": {
+            "includeLabel": true
+          }
+        }
+      },
+      "perpetrator": {
+        "caseHomeOrder": 2,
+        "printOrder": 2,
+        "splitFormAt": 4,
+        "previewFields": [
+          "firstName",
+          "relationshipToChild",
+          "hasAccessToChild"
+        ],
+        "layout": {
+          "firstName": {
+            "includeLabel": true
+          },
+          "relationshipToChild": {
+            "includeLabel": true
+          },
+          "hasAccessToChild": {
             "includeLabel": true
           }
         }
@@ -56,27 +57,50 @@
       "incident": {
         "caseHomeOrder": 3,
         "printOrder": 3,
-        "splitFormAt": 2,
+        "splitFormAt": 3,
         "previewFields": [
           "date",
-          "type",
-          "resolution"
+          "duration",
+          "location"
         ],
         "layout": {
           "date": {
             "includeLabel": false,
             "format": "date"
           },
-          "type": {
+          "duration": {
             "includeLabel": true
           },
-          "resolution": {
+          "location": {
+            "includeLabel": true
+          }
+        }
+      },
+      "externalReport": {
+        "caseHomeOrder": 4,
+        "printOrder": 4,
+        "splitFormAt": 6,
+        "printFormat": "tabular",
+        "previewFields": [
+          "reportDate",
+          "agencyNotified",
+          "referenceNumber"
+        ],
+        "layout": {
+          "reportDate": {
+            "includeLabel": false,
+            "format": "date"
+          },
+          "agencyNotified": {
+            "includeLabel": true
+          },
+          "referenceNumber": {
             "includeLabel": true
           }
         }
       },
       "document": {
-        "caseHomeOrder": 4,
+        "caseHomeOrder": 5,
         "splitFormAt": 1,
         "printFormat": "hidden",
         "previewFields": [
@@ -100,23 +124,6 @@
             "includeLabel": false,
             "labelTemplateCode": "Case-DocumentComments",
             "widthRatio": 2
-          }
-        }
-      },
-      "followUp": {
-        "caseHomeLocation": "timeline",
-        "printOrder": 4,
-        "splitFormAt": 3,
-        "previewFields": [
-          "outcome",
-          "riskLevel"
-        ],
-        "layout": {
-          "outcome": {
-            "includeLabel": false
-          },
-          "riskLevel": {
-            "includeLabel": true
           }
         }
       },

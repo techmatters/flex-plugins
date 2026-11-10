@@ -1,39 +1,24 @@
-# as-v4: Mental Health Support Line
+# as-v4: Child & Youth Helpline
 
-A generic adult mental-health support line (warmline / support line), modelled on how
-mental-health organisations use Aselo but with nothing specific to any one organisation.
-Activate it with `"definitionVersion": "as-v4"` (see the [demo index](../README.md)).
+A generic child and youth helpline, modelled on the way child helplines use Aselo but
+with nothing specific to any one organisation. Activate it with
+`"definitionVersion": "as-v4"` (see the [demo index](../README.md)).
 
-**Best for:** mental health support lines and warmlines, peer-support lines, family and
-caregiver support lines, student wellbeing services, and suicide prevention
-organisations that do follow-up calls.
-
-## Helpline terms
-
-This version shows how far terminology can be customised. With no code changes, the
-whole UI uses:
-
-| Default word | In v4 |
-| --- | --- |
-| Child | **Help Seeker** |
-| Caller | **Supporter** (family member or friend contacting on someone's behalf) |
-| Counsellor | **Specialist** |
-| Case | **Support Plan** |
-| Client profile | **Help Seeker Profile** |
-| Categories tab / Summary tab | **Needs** / **Summary** |
+**Best for:** child helplines, youth lines, child protection services, school-based
+support services, online-safety and child-exploitation reporting lines.
 
 ## What is configured
 
 | Area | Highlights |
 | --- | --- |
-| Call types | About self, About a loved one, plus Silent, Hang up, Wrong Number, Prank, Frequent Contact - Brief Check-in, Voicemail Completed, Test |
-| Supporter tab | Name, relationship, gender, age group, region, how the supporter is coping |
-| Help Seeker tab | Name/nickname, age group, gender, region, language, populations, currently in care, 6-question risk screening, assessed risk level |
-| Needs (categories) | 8 categories (emotional wellbeing, conditions, suicide & self-harm, substance use, relationships, treatment & services, practical needs, information); max 5 |
-| Summary tab | Support provided, crisis-line transfer, emergency services, felt supported, follow-up requested, how they heard about us, resources shared, summary |
-| Support Plan sections | Safety Plan, Support Network, Crisis Episode (lists); Follow-up Call, Referral, Note (timeline); Document (not printed) |
-| Statuses | Open → Active Follow-up ↔ Paused → Closed |
-| Overview & filters | Help seeker at risk, next check-in, check-in frequency (filterable), summary |
-| Profile | Summary, What Helps, Things to Avoid, Contact Agreement; 24 h and 30 day blocks |
-| Pre-survey prefill | Off (the demo chatbot asks child-helpline questions) |
+| Call types | Child about self, Someone about a child, plus Silent, Hang up, Wrong Number, Prank, Information Request Only, Test |
+| Caller tab | Name, relationship to child, gender, age group, phone, email, region |
+| Child tab | Name, age, gender, region, language, living situation, school, vulnerable groups, safety concern → immediate danger, risk level |
+| Categories | 8 child-helpline categories (abuse, online safety, mental health, family, education, sexual & physical health, basic needs & rights, information); max 3 per contact |
+| Summary tab | Urgency, interventions, safety plan, report to authorities, how they heard about us, repeat caller, did the child feel helped, resources shared, summary |
+| Case sections | Household Member, Alleged Perpetrator, Incident, External Report (lists); Referral, Note (timeline); Document (not printed) |
+| Case overview | Status (Open → In Progress → Closed), child at risk, follow-up date, priority, summary |
+| Case filters | Status, counsellor, priority, created/updated/follow-up date |
+| Client profile | "Young Person Profile": Summary, Safety Considerations, Recommended Approach; 24 h and 1 year blocks |
+| Helpline terms | Mostly the default child-helpline wording; US spelling "Counselor"; profile renamed to "Young Person Profile" |
 | Insights | None |

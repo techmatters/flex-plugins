@@ -1,29 +1,37 @@
 [
   {
-    "name": "triagePriority",
-    "label": "Triage Priority",
-    "type": "select",
+    "name": "supportProvided",
+    "label": "Support Provided",
+    "type": "listbox-multiselect",
     "isPII": false,
     "options": [
       {
-        "value": "",
-        "label": ""
+        "value": "Active listening / emotional support",
+        "label": "Active listening / emotional support"
       },
       {
-        "value": "P1 - Imminent risk to life",
-        "label": "P1 - Imminent risk to life"
+        "value": "Coping strategies",
+        "label": "Coping strategies"
       },
       {
-        "value": "P2 - Urgent, needs response within the hour",
-        "label": "P2 - Urgent, needs response within the hour"
+        "value": "Psychoeducation",
+        "label": "Psychoeducation"
       },
       {
-        "value": "P3 - Needs follow-up within 24 hours",
-        "label": "P3 - Needs follow-up within 24 hours"
+        "value": "Safety planning",
+        "label": "Safety planning"
       },
       {
-        "value": "P4 - No immediate risk",
-        "label": "P4 - No immediate risk"
+        "value": "Resource navigation",
+        "label": "Resource navigation"
+      },
+      {
+        "value": "Warm transfer",
+        "label": "Warm transfer"
+      },
+      {
+        "value": "Crisis de-escalation",
+        "label": "Crisis de-escalation"
       }
     ],
     "required": {
@@ -32,42 +40,22 @@
     }
   },
   {
-    "name": "responseActions",
-    "label": "Response Actions",
-    "type": "listbox-multiselect",
+    "name": "transferredToCrisisLine",
+    "label": "Transferred to a crisis line?",
+    "type": "select",
     "isPII": false,
     "options": [
       {
-        "value": "De-escalation",
-        "label": "De-escalation"
+        "value": "",
+        "label": ""
       },
       {
-        "value": "Safety plan created",
-        "label": "Safety plan created"
+        "value": "Yes",
+        "label": "Yes"
       },
       {
-        "value": "Emergency services dispatched",
-        "label": "Emergency services dispatched"
-      },
-      {
-        "value": "Mobile crisis team dispatched",
-        "label": "Mobile crisis team dispatched"
-      },
-      {
-        "value": "Welfare check requested",
-        "label": "Welfare check requested"
-      },
-      {
-        "value": "Stayed on the line until help arrived",
-        "label": "Stayed on the line until help arrived"
-      },
-      {
-        "value": "Warm transfer",
-        "label": "Warm transfer"
-      },
-      {
-        "value": "Information / instructions given",
-        "label": "Information / instructions given"
+        "value": "No",
+        "label": "No"
       }
     ],
     "required": {
@@ -77,68 +65,97 @@
   },
   {
     "name": "emergencyServicesContacted",
-    "label": "Emergency Service Contacted",
-    "type": "select",
-    "isPII": false,
-    "optionsReferenceKey": "emergencyServices"
-  },
-  {
-    "name": "dispatchReference",
-    "label": "Dispatch Reference Number",
-    "type": "input",
-    "isPII": false
-  },
-  {
-    "name": "outcome",
-    "label": "Outcome",
+    "label": "Emergency services contacted?",
     "type": "select",
     "isPII": false,
     "options": [
       {
-        "value": "",
+        "value": "Unknown",
         "label": ""
       },
       {
-        "value": "Resolved on the call",
-        "label": "Resolved on the call"
+        "value": "No",
+        "label": "No"
       },
       {
-        "value": "Emergency response on scene",
-        "label": "Emergency response on scene"
+        "value": "Yes - with consent",
+        "label": "Yes - with consent"
       },
       {
-        "value": "Transported to hospital",
-        "label": "Transported to hospital"
-      },
-      {
-        "value": "Transferred to another service",
-        "label": "Transferred to another service"
-      },
-      {
-        "value": "Disconnected - follow-up needed",
-        "label": "Disconnected - follow-up needed"
-      },
-      {
-        "value": "Referred for follow-up",
-        "label": "Referred for follow-up"
+        "value": "Yes - without consent",
+        "label": "Yes - without consent"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
+    ]
   },
   {
-    "name": "followUpRequired",
-    "label": "Follow-up required",
+    "name": "helpSeekerFeltSupported",
+    "label": "Did the help seeker feel supported?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "Somewhat",
+        "label": "Somewhat"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Not asked",
+        "label": "Not asked"
+      }
+    ]
+  },
+  {
+    "name": "followUpRequested",
+    "label": "Follow-up call requested",
     "type": "checkbox",
     "isPII": false
   },
   {
-    "name": "supervisorNotified",
-    "label": "Supervisor notified",
-    "type": "checkbox",
-    "isPII": false
+    "name": "howDidYouHearAboutUs",
+    "label": "How did they hear about us?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Search engine",
+        "label": "Search engine"
+      },
+      {
+        "value": "Social media",
+        "label": "Social media"
+      },
+      {
+        "value": "Health professional",
+        "label": "Health professional"
+      },
+      {
+        "value": "Friend / family",
+        "label": "Friend / family"
+      },
+      {
+        "value": "Community organisation",
+        "label": "Community organisation"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
   },
   {
     "name": "referrals",
@@ -150,7 +167,7 @@
   },
   {
     "name": "callSummary",
-    "label": "Call Summary",
+    "label": "Conversation Summary",
     "type": "textarea",
     "isPII": true,
     "rows": 10,

@@ -6,7 +6,7 @@
   },
   {
     "flag": "blocked",
-    "label": "Block (30 Days)",
-    "durationInHours": "720"
+    "label": "Long Term Block (1 Year)",
+    "durationInHours": "8766"
   }
 ]

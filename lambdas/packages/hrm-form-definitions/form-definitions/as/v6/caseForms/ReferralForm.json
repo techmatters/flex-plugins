@@ -23,36 +23,32 @@
         "label": ""
       },
       {
-        "value": "Child protection services",
-        "label": "Child protection services"
+        "value": "Crisis stabilisation unit",
+        "label": "Crisis stabilisation unit"
       },
       {
-        "value": "Police",
-        "label": "Police"
+        "value": "Community mental health service",
+        "label": "Community mental health service"
       },
       {
-        "value": "Health clinic / hospital",
-        "label": "Health clinic / hospital"
+        "value": "Domestic violence service",
+        "label": "Domestic violence service"
       },
       {
-        "value": "Mental health service",
-        "label": "Mental health service"
+        "value": "Shelter / emergency housing",
+        "label": "Shelter / emergency housing"
       },
       {
-        "value": "School counsellor",
-        "label": "School counsellor"
+        "value": "Substance use service",
+        "label": "Substance use service"
       },
       {
-        "value": "Legal aid",
-        "label": "Legal aid"
+        "value": "Victim support",
+        "label": "Victim support"
       },
       {
-        "value": "Shelter / safe house",
-        "label": "Shelter / safe house"
-      },
-      {
-        "value": "Social welfare",
-        "label": "Social welfare"
+        "value": "Disaster relief agency",
+        "label": "Disaster relief agency"
       },
       {
         "value": "Other",

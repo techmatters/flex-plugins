@@ -23,32 +23,40 @@
         "label": ""
       },
       {
-        "value": "Crisis stabilisation unit",
-        "label": "Crisis stabilisation unit"
+        "value": "Crisis line",
+        "label": "Crisis line"
       },
       {
         "value": "Community mental health service",
         "label": "Community mental health service"
       },
       {
-        "value": "Domestic violence service",
-        "label": "Domestic violence service"
+        "value": "Therapist / counselling",
+        "label": "Therapist / counselling"
       },
       {
-        "value": "Shelter / emergency housing",
-        "label": "Shelter / emergency housing"
+        "value": "Psychiatrist",
+        "label": "Psychiatrist"
+      },
+      {
+        "value": "Peer support group",
+        "label": "Peer support group"
       },
       {
         "value": "Substance use service",
         "label": "Substance use service"
       },
       {
-        "value": "Victim support",
-        "label": "Victim support"
+        "value": "Primary care doctor",
+        "label": "Primary care doctor"
       },
       {
-        "value": "Disaster relief agency",
-        "label": "Disaster relief agency"
+        "value": "Housing support",
+        "label": "Housing support"
+      },
+      {
+        "value": "Financial / benefits support",
+        "label": "Financial / benefits support"
       },
       {
         "value": "Other",
@@ -75,16 +83,16 @@
         "label": "Pending"
       },
       {
-        "value": "Accepted",
-        "label": "Accepted"
+        "value": "Connected",
+        "label": "Connected"
+      },
+      {
+        "value": "Waitlisted",
+        "label": "Waitlisted"
       },
       {
         "value": "Declined",
         "label": "Declined"
-      },
-      {
-        "value": "Completed",
-        "label": "Completed"
       }
     ]
   },

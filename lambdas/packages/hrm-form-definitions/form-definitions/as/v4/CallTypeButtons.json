@@ -1,13 +1,13 @@
 [
   {
     "name": "child",
-    "label": "Help seeker contacting about self",
+    "label": "Child calling about self",
     "type": "button",
     "category": "data"
   },
   {
     "name": "caller",
-    "label": "Someone contacting about a loved one",
+    "label": "Someone calling about a child",
     "type": "button",
     "category": "data"
   },
@@ -36,14 +36,8 @@
     "category": "non-data"
   },
   {
-    "name": "frequentContact",
-    "label": "Frequent Contact - Brief Check-in",
-    "type": "button",
-    "category": "non-data"
-  },
-  {
-    "name": "voicemail",
-    "label": "Voicemail Completed",
+    "name": "informationOnly",
+    "label": "Information Request Only",
     "type": "button",
     "category": "non-data"
   },

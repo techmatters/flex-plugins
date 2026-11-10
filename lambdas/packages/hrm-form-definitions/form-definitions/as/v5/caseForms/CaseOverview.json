@@ -1,86 +1,54 @@
 [
   {
     "name": "status",
-    "label": "Incident Status",
+    "label": "Support Plan Status",
     "type": "select",
     "isPII": false
   },
   {
     "name": "childIsAtRisk",
-    "label": "Person is at immediate risk",
+    "label": "Help seeker is at risk",
     "type": "checkbox",
     "isPII": false
   },
   {
-    "name": "priority",
-    "label": "Priority",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "P1",
-        "label": "P1"
-      },
-      {
-        "value": "P2",
-        "label": "P2"
-      },
-      {
-        "value": "P3",
-        "label": "P3"
-      },
-      {
-        "value": "P4",
-        "label": "P4"
-      }
-    ]
-  },
-  {
-    "name": "responseArea",
-    "label": "Response Area",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "North",
-        "label": "North"
-      },
-      {
-        "value": "South",
-        "label": "South"
-      },
-      {
-        "value": "East",
-        "label": "East"
-      },
-      {
-        "value": "West",
-        "label": "West"
-      },
-      {
-        "value": "Central",
-        "label": "Central"
-      }
-    ]
-  },
-  {
     "name": "followUpDate",
-    "label": "Follow Up Date",
+    "label": "Next Check-in",
     "type": "date-input",
     "isPII": false,
     "allowFutureDates": true
   },
   {
+    "name": "checkInFrequency",
+    "label": "Check-in Frequency",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Single follow-up",
+        "label": "Single follow-up"
+      },
+      {
+        "value": "Weekly",
+        "label": "Weekly"
+      },
+      {
+        "value": "Every 2 weeks",
+        "label": "Every 2 weeks"
+      },
+      {
+        "value": "Monthly",
+        "label": "Monthly"
+      }
+    ]
+  },
+  {
     "name": "summary",
-    "label": "Incident Summary",
+    "label": "Support Plan Summary",
     "type": "textarea",
     "isPII": true,
     "rows": 5,

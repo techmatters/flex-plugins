@@ -1,19 +1,19 @@
 {
-  "safetyPlan": {
-    "label": "Safety Plan",
-    "formPath": "caseForms/SafetyPlanForm.json"
+  "household": {
+    "label": "Household Member",
+    "formPath": "caseForms/HouseholdForm.json"
   },
-  "followUp": {
-    "label": "Follow-up Call",
-    "formPath": "caseForms/FollowUpForm.json"
+  "perpetrator": {
+    "label": "Alleged Perpetrator",
+    "formPath": "caseForms/PerpetratorForm.json"
   },
   "incident": {
-    "label": "Crisis Episode",
+    "label": "Incident",
     "formPath": "caseForms/IncidentForm.json"
   },
-  "household": {
-    "label": "Support Network",
-    "formPath": "caseForms/HouseholdForm.json"
+  "externalReport": {
+    "label": "External Report",
+    "formPath": "caseForms/ExternalReportForm.json"
   },
   "referral": {
     "label": "Referral",

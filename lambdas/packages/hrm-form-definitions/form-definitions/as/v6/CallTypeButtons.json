@@ -1,19 +1,19 @@
 [
   {
     "name": "child",
-    "label": "Child calling about self",
+    "label": "Person at risk calling about self",
     "type": "button",
     "category": "data"
   },
   {
     "name": "caller",
-    "label": "Someone calling about a child",
+    "label": "Reporting on behalf of someone else",
     "type": "button",
     "category": "data"
   },
   {
     "name": "silent",
-    "label": "Silent",
+    "label": "Silent / Open Line",
     "type": "button",
     "category": "non-data"
   },
@@ -30,14 +30,20 @@
     "category": "non-data"
   },
   {
-    "name": "prank",
-    "label": "Prank",
+    "name": "hoax",
+    "label": "Hoax / Prank",
+    "type": "button",
+    "category": "non-data"
+  },
+  {
+    "name": "duplicateReport",
+    "label": "Duplicate Report (already in progress)",
     "type": "button",
     "category": "non-data"
   },
   {
     "name": "informationOnly",
-    "label": "Information Request Only",
+    "label": "Information Only",
     "type": "button",
     "category": "non-data"
   },

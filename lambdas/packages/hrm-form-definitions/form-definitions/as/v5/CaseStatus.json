@@ -4,35 +4,34 @@
     "label": "Open",
     "color": "green",
     "transitions": [
-      "responding",
-      "monitoring",
+      "active",
       "closed"
     ]
   },
-  "responding": {
-    "value": "responding",
-    "label": "Responding",
-    "color": "red",
+  "active": {
+    "value": "active",
+    "label": "Active Follow-up",
+    "color": "blue",
     "transitions": [
-      "monitoring",
+      "paused",
       "closed"
     ]
   },
-  "monitoring": {
-    "value": "monitoring",
-    "label": "Monitoring",
+  "paused": {
+    "value": "paused",
+    "label": "Paused",
     "color": "orange",
     "transitions": [
-      "responding",
+      "active",
       "closed"
     ]
   },
   "closed": {
     "value": "closed",
     "label": "Closed",
-    "color": "grey",
+    "color": "red",
     "transitions": [
-      "monitoring"
+      "active"
     ]
   }
 }

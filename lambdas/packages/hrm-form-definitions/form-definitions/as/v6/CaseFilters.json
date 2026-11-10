@@ -11,6 +11,11 @@
     "type": "multi-select",
     "position": "left"
   },
+  "responseArea": {
+    "type": "multi-select",
+    "searchable": true,
+    "position": "left"
+  },
   "createdDate": {
     "component": "generate-created-date-filter",
     "position": "right"

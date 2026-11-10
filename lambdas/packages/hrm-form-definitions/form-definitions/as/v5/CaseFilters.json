@@ -7,13 +7,8 @@
     "component": "generate-counselor-filter",
     "position": "left"
   },
-  "priority": {
+  "checkInFrequency": {
     "type": "multi-select",
-    "position": "left"
-  },
-  "responseArea": {
-    "type": "multi-select",
-    "searchable": true,
     "position": "left"
   },
   "createdDate": {

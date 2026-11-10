@@ -23,12 +23,20 @@
         "label": ""
       },
       {
-        "value": "Reached - safe",
-        "label": "Reached - safe"
+        "value": "Reached - doing better",
+        "label": "Reached - doing better"
       },
       {
-        "value": "Reached - needs more support",
-        "label": "Reached - needs more support"
+        "value": "Reached - same",
+        "label": "Reached - same"
+      },
+      {
+        "value": "Reached - worse",
+        "label": "Reached - worse"
+      },
+      {
+        "value": "No answer - message left",
+        "label": "No answer - message left"
       },
       {
         "value": "No answer",
@@ -45,8 +53,8 @@
     }
   },
   {
-    "name": "riskNow",
-    "label": "Current Risk",
+    "name": "riskLevel",
+    "label": "Risk Level at Follow-up",
     "type": "select",
     "isPII": false,
     "options": [
@@ -55,16 +63,52 @@
         "label": ""
       },
       {
-        "value": "No immediate risk",
-        "label": "No immediate risk"
+        "value": "No identified risk",
+        "label": "No identified risk"
       },
       {
-        "value": "Ongoing risk",
-        "label": "Ongoing risk"
+        "value": "Low",
+        "label": "Low"
       },
       {
-        "value": "Escalated",
-        "label": "Escalated"
+        "value": "Moderate",
+        "label": "Moderate"
+      },
+      {
+        "value": "High",
+        "label": "High"
+      },
+      {
+        "value": "Imminent",
+        "label": "Imminent"
+      }
+    ]
+  },
+  {
+    "name": "connectedToCare",
+    "label": "Connected to ongoing care?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "In progress",
+        "label": "In progress"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Not applicable",
+        "label": "Not applicable"
       }
     ]
   },

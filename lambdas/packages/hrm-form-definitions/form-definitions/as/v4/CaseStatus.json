@@ -4,25 +4,15 @@
     "label": "Open",
     "color": "green",
     "transitions": [
-      "active",
+      "inProgress",
       "closed"
     ]
   },
-  "active": {
-    "value": "active",
-    "label": "Active Follow-up",
+  "inProgress": {
+    "value": "inProgress",
+    "label": "In Progress",
     "color": "blue",
     "transitions": [
-      "paused",
-      "closed"
-    ]
-  },
-  "paused": {
-    "value": "paused",
-    "label": "Paused",
-    "color": "orange",
-    "transitions": [
-      "active",
       "closed"
     ]
   },
@@ -31,7 +21,7 @@
     "label": "Closed",
     "color": "red",
     "transitions": [
-      "active"
+      "inProgress"
     ]
   }
 }

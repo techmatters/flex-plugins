@@ -6,8 +6,14 @@
     "isPII": true
   },
   {
-    "name": "relationshipToHelpSeeker",
-    "label": "Relationship to Help Seeker",
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relationship to Child",
     "type": "select",
     "isPII": false,
     "options": [
@@ -16,36 +22,52 @@
         "label": ""
       },
       {
-        "value": "Parent / caregiver",
-        "label": "Parent / caregiver"
+        "value": "Parent",
+        "label": "Parent"
       },
       {
-        "value": "Partner / spouse",
-        "label": "Partner / spouse"
+        "value": "Grandparent",
+        "label": "Grandparent"
       },
       {
-        "value": "Child",
-        "label": "Child"
+        "value": "Other relative",
+        "label": "Other relative"
       },
       {
-        "value": "Other family member",
-        "label": "Other family member"
+        "value": "Foster parent / carer",
+        "label": "Foster parent / carer"
+      },
+      {
+        "value": "Sibling",
+        "label": "Sibling"
       },
       {
         "value": "Friend",
         "label": "Friend"
       },
       {
-        "value": "Professional",
-        "label": "Professional"
+        "value": "Teacher / school staff",
+        "label": "Teacher / school staff"
+      },
+      {
+        "value": "Health professional",
+        "label": "Health professional"
+      },
+      {
+        "value": "Social worker",
+        "label": "Social worker"
+      },
+      {
+        "value": "Neighbour",
+        "label": "Neighbour"
       },
       {
         "value": "Other",
         "label": "Other"
       },
       {
-        "value": "Prefer not to say",
-        "label": "Prefer not to say"
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
@@ -65,7 +87,48 @@
     "label": "Age Group",
     "type": "select",
     "isPII": false,
-    "optionsReferenceKey": "ageGroups"
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Under 18",
+        "label": "Under 18"
+      },
+      {
+        "value": "18-24",
+        "label": "18-24"
+      },
+      {
+        "value": "25-39",
+        "label": "25-39"
+      },
+      {
+        "value": "40-59",
+        "label": "40-59"
+      },
+      {
+        "value": "60+",
+        "label": "60+"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "phone",
+    "label": "Phone Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "email",
+    "label": "Email",
+    "type": "input",
+    "isPII": true
   },
   {
     "name": "region",
@@ -73,33 +136,5 @@
     "type": "select",
     "isPII": false,
     "optionsReferenceKey": "regions"
-  },
-  {
-    "name": "caregiverStrain",
-    "label": "How is the supporter coping?",
-    "type": "select",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Unknown",
-        "label": ""
-      },
-      {
-        "value": "Coping well",
-        "label": "Coping well"
-      },
-      {
-        "value": "Some strain",
-        "label": "Some strain"
-      },
-      {
-        "value": "Overwhelmed",
-        "label": "Overwhelmed"
-      },
-      {
-        "value": "Unknown",
-        "label": "Unknown"
-      }
-    ]
   }
 ]

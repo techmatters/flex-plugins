@@ -5,7 +5,7 @@ case section demonstrates one thing you can configure, so a partner can see the 
 side by side and decide how they want their own cases to look.
 
 Use it for technical audiences and implementation workshops ("how should your case page
-look?"). For a sales demo of a realistic helpline, use v3, v4 or v5 (see the
+look?"). For a sales demo of a realistic helpline, use v4, v5 or v6 (see the
 [demo index](../README.md)).
 
 Contact forms, call types and categories in v2 are a generic child helpline (the same
@@ -64,8 +64,8 @@ configuration that produced it on the same screen.
    quickest way to show that small layout choices change how readable a case is.
 4. **Bring the conversation back to their data**: once they've seen the options, ask
    which records they track per case (people involved, referrals, follow-ups,
-   documents…). That becomes their real case design, and v3–v5 are good examples of
+   documents…). That becomes their real case design, and v4–v6 are good examples of
    finished designs.
 5. Terminology is not customised in v2, so it uses the default wording (Child, Caller,
-   Counsellor, Case). Use v4 or v5 to show renaming.
+   Counsellor, Case). Use v5 or v6 to show renaming.
 

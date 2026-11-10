@@ -1,9 +1,8 @@
 {
   "offlineChannels": [
+    "Radio",
     "Walk-in",
-    "Email",
-    "Letter",
-    "Outreach event",
+    "Partner agency",
     "Other"
   ]
 }

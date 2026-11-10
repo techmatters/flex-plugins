@@ -1,8 +1,9 @@
 {
   "offlineChannels": [
-    "Email",
     "Walk-in",
-    "Support group",
+    "Email",
+    "Letter",
+    "Outreach event",
     "Other"
   ]
 }

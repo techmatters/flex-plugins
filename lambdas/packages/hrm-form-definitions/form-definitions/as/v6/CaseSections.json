@@ -1,19 +1,19 @@
 {
-  "household": {
-    "label": "Household Member",
-    "formPath": "caseForms/HouseholdForm.json"
+  "dispatch": {
+    "label": "Emergency Dispatch",
+    "formPath": "caseForms/DispatchForm.json"
   },
-  "perpetrator": {
-    "label": "Alleged Perpetrator",
-    "formPath": "caseForms/PerpetratorForm.json"
+  "welfareCheck": {
+    "label": "Welfare Check",
+    "formPath": "caseForms/WelfareCheckForm.json"
   },
   "incident": {
-    "label": "Incident",
+    "label": "Situation Update",
     "formPath": "caseForms/IncidentForm.json"
   },
-  "externalReport": {
-    "label": "External Report",
-    "formPath": "caseForms/ExternalReportForm.json"
+  "followUp": {
+    "label": "Follow-up",
+    "formPath": "caseForms/FollowUpForm.json"
   },
   "referral": {
     "label": "Referral",

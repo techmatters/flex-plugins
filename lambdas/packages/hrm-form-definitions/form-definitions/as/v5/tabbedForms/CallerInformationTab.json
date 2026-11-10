@@ -6,20 +6,8 @@
     "isPII": true
   },
   {
-    "name": "lastName",
-    "label": "Last Name",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "callbackNumber",
-    "label": "Callback Number",
-    "type": "input",
-    "isPII": true
-  },
-  {
-    "name": "relationshipToPerson",
-    "label": "Relationship to Person at Risk",
+    "name": "relationshipToHelpSeeker",
+    "label": "Relationship to Help Seeker",
     "type": "select",
     "isPII": false,
     "options": [
@@ -28,40 +16,36 @@
         "label": ""
       },
       {
-        "value": "Family member",
-        "label": "Family member"
+        "value": "Parent / caregiver",
+        "label": "Parent / caregiver"
       },
       {
-        "value": "Partner",
-        "label": "Partner"
+        "value": "Partner / spouse",
+        "label": "Partner / spouse"
+      },
+      {
+        "value": "Child",
+        "label": "Child"
+      },
+      {
+        "value": "Other family member",
+        "label": "Other family member"
       },
       {
         "value": "Friend",
         "label": "Friend"
       },
       {
-        "value": "Neighbour",
-        "label": "Neighbour"
-      },
-      {
-        "value": "Bystander / passer-by",
-        "label": "Bystander / passer-by"
-      },
-      {
-        "value": "Colleague",
-        "label": "Colleague"
-      },
-      {
-        "value": "Health / social care professional",
-        "label": "Health / social care professional"
-      },
-      {
-        "value": "First responder",
-        "label": "First responder"
+        "value": "Professional",
+        "label": "Professional"
       },
       {
         "value": "Other",
         "label": "Other"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
       }
     ],
     "required": {
@@ -70,37 +54,52 @@
     }
   },
   {
-    "name": "onScene",
-    "label": "Is the reporting party with the person now?",
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "genders"
+  },
+  {
+    "name": "ageGroup",
+    "label": "Age Group",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "ageGroups"
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "regions"
+  },
+  {
+    "name": "caregiverStrain",
+    "label": "How is the supporter coping?",
     "type": "select",
     "isPII": false,
     "options": [
       {
-        "value": "",
+        "value": "Unknown",
         "label": ""
       },
       {
-        "value": "Yes",
-        "label": "Yes"
+        "value": "Coping well",
+        "label": "Coping well"
       },
       {
-        "value": "No",
-        "label": "No"
+        "value": "Some strain",
+        "label": "Some strain"
+      },
+      {
+        "value": "Overwhelmed",
+        "label": "Overwhelmed"
       },
       {
         "value": "Unknown",
         "label": "Unknown"
       }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "wantsToStayAnonymous",
-    "label": "Wants to stay anonymous",
-    "type": "checkbox",
-    "isPII": false
+    ]
   }
 ]

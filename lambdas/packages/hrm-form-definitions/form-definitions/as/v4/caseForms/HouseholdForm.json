@@ -1,13 +1,19 @@
 [
   {
     "name": "firstName",
-    "label": "Name",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
     "type": "input",
     "isPII": true
   },
   {
     "name": "relationshipToChild",
-    "label": "Relationship to Help Seeker",
+    "label": "Relationship to Child",
     "type": "select",
     "isPII": false,
     "options": [
@@ -20,36 +26,52 @@
         "label": "Parent"
       },
       {
-        "value": "Partner / spouse",
-        "label": "Partner / spouse"
+        "value": "Step-parent",
+        "label": "Step-parent"
       },
       {
-        "value": "Child",
-        "label": "Child"
+        "value": "Grandparent",
+        "label": "Grandparent"
+      },
+      {
+        "value": "Other relative",
+        "label": "Other relative"
       },
       {
         "value": "Sibling",
         "label": "Sibling"
       },
       {
-        "value": "Friend",
-        "label": "Friend"
+        "value": "Carer",
+        "label": "Carer"
       },
       {
-        "value": "Therapist / doctor",
-        "label": "Therapist / doctor"
+        "value": "Teacher / school staff",
+        "label": "Teacher / school staff"
       },
       {
-        "value": "Case worker",
-        "label": "Case worker"
+        "value": "Friend / peer",
+        "label": "Friend / peer"
       },
       {
-        "value": "Peer supporter",
-        "label": "Peer supporter"
+        "value": "Partner",
+        "label": "Partner"
+      },
+      {
+        "value": "Online contact",
+        "label": "Online contact"
+      },
+      {
+        "value": "Stranger",
+        "label": "Stranger"
       },
       {
         "value": "Other",
         "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
       }
     ],
     "required": {
@@ -58,23 +80,71 @@
     }
   },
   {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "genders"
+  },
+  {
+    "name": "ageGroup",
+    "label": "Age Group",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Under 18",
+        "label": "Under 18"
+      },
+      {
+        "value": "18-24",
+        "label": "18-24"
+      },
+      {
+        "value": "25-39",
+        "label": "25-39"
+      },
+      {
+        "value": "40-59",
+        "label": "40-59"
+      },
+      {
+        "value": "60+",
+        "label": "60+"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  },
+  {
     "name": "phone",
     "label": "Phone Number",
     "type": "input",
     "isPII": true
   },
   {
-    "name": "okToContact",
-    "label": "Help seeker consents to us contacting this person",
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "regions"
+  },
+  {
+    "name": "livesWithChild",
+    "label": "Lives with the child",
     "type": "checkbox",
     "isPII": false
   },
   {
-    "name": "notes",
-    "label": "Notes",
-    "type": "textarea",
-    "isPII": true,
-    "rows": 4,
-    "width": 300
+    "name": "isSafeContact",
+    "label": "Safe contact for the child",
+    "type": "checkbox",
+    "isPII": false
   }
 ]

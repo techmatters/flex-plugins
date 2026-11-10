@@ -1,26 +1,22 @@
 [
   {
     "label": "Welcome",
-    "text": "Thank you for reaching out to the Mental Health Support Line. My name is ___ and I am a specialist here. What would you like to talk about today?"
+    "text": "Hi, thank you for contacting the Child & Youth Helpline. My name is ___ and I am a counselor here. What would you like to talk about today?"
   },
   {
-    "label": "Validation",
-    "text": "That sounds really hard. It makes sense that you are feeling this way, and I am glad you reached out."
+    "label": "Confidentiality",
+    "text": "What you share here stays between us, unless you tell me that you or someone else is in danger. If that happens, I may need to involve people who can keep you safe, and I will tell you before I do. Is that okay?"
   },
   {
-    "label": "Asking about suicide",
-    "text": "Sometimes when people feel the way you are describing, they think about suicide. Are you having thoughts of suicide?"
+    "label": "Are you safe right now?",
+    "text": "Before we continue, I want to check: are you safe right now?"
   },
   {
-    "label": "Grounding exercise",
-    "text": "Let's try something together. Can you name five things you can see around you right now?"
-  },
-  {
-    "label": "Follow-up offer",
-    "text": "Would it help if we called you back in a few days to see how you are doing?"
+    "label": "Taking a moment",
+    "text": "Thank you for sharing that with me. Take your time, I am here and I am listening."
   },
   {
     "label": "Closing",
-    "text": "Thank you for talking with me today. Remember you can reach us again anytime."
+    "text": "Thank you for reaching out today. You can contact us again anytime, day or night."
   }
 ]

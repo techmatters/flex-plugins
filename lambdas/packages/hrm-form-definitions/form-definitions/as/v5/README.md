@@ -1,37 +1,39 @@
-# as-v5: Crisis & Emergency Response Line
+# as-v5: Mental Health Support Line
 
-A generic crisis and emergency response line: a line that has to triage quickly, find out
-where the person is, get help to them (emergency services, mobile crisis team, welfare
-check) and follow up afterwards. Activate it with `"definitionVersion": "as-v5"` (see
-the [demo index](../README.md)).
+A generic adult mental-health support line (warmline / support line), modelled on how
+mental-health organisations use Aselo but with nothing specific to any one organisation.
+Activate it with `"definitionVersion": "as-v5"` (see the [demo index](../README.md)).
 
-**Best for:** crisis lines that dispatch help, mobile crisis teams, disaster and
-emergency hotlines, public-safety or emergency-service partners, and violence
-response lines that work closely with police.
+**Best for:** mental health support lines and warmlines, peer-support lines, family and
+caregiver support lines, student wellbeing services, and suicide prevention
+organisations that do follow-up calls.
 
 ## Helpline terms
 
+This version shows how far terminology can be customised. With no code changes, the
+whole UI uses:
+
 | Default word | In v5 |
 | --- | --- |
-| Child | **Person at Risk** |
-| Caller | **Reporting Party** |
-| Counsellor | **Responder** |
-| Case | **Incident** |
-| Client profile | **Caller History** |
-| Categories tab / Summary tab | **Emergency Type** / **Response** |
+| Child | **Help Seeker** |
+| Caller | **Supporter** (family member or friend contacting on someone's behalf) |
+| Counsellor | **Specialist** |
+| Case | **Support Plan** |
+| Client profile | **Help Seeker Profile** |
+| Categories tab / Summary tab | **Needs** / **Summary** |
 
 ## What is configured
 
 | Area | Highlights |
 | --- | --- |
-| Call types | Person at risk about self, Reporting on behalf of someone, plus Silent / Open Line, Hang up, Wrong Number, Hoax / Prank, Duplicate Report, Information Only, Test |
-| Reporting Party tab | Name, callback number, relationship, on scene?, wants to stay anonymous |
-| Person at Risk tab | Name, age group, gender, current location, location type, region, emergency type (with follow-up questions for overdose and disaster), immediate danger, access to means, substances, injuries |
-| Emergency Type (categories) | 8 categories (suicide & self-harm, mental health crisis, medical, violence & safety, missing persons, disaster, basic needs, information); max 3 |
-| Response tab | Triage priority P1–P4, response actions, emergency service contacted, dispatch reference, outcome, follow-up required, supervisor notified, resources shared, call summary |
-| Incident sections | Emergency Dispatch (table in the PDF), Welfare Check (lists); Situation Update, Follow-up, Referral, Note (timeline); Document (not printed) |
-| Statuses | Open → Responding ↔ Monitoring → Closed |
-| Overview & filters | Person at immediate risk, priority, response area (both filterable), follow-up date, summary |
-| Profile | Summary, Safety Alerts, Known Locations, Emergency Contacts; 2 h and 24 h blocks (for hoax callers) |
-| Pre-survey prefill | Off |
+| Call types | About self, About a loved one, plus Silent, Hang up, Wrong Number, Prank, Frequent Contact - Brief Check-in, Voicemail Completed, Test |
+| Supporter tab | Name, relationship, gender, age group, region, how the supporter is coping |
+| Help Seeker tab | Name/nickname, age group, gender, region, language, populations, currently in care, 6-question risk screening, assessed risk level |
+| Needs (categories) | 8 categories (emotional wellbeing, conditions, suicide & self-harm, substance use, relationships, treatment & services, practical needs, information); max 5 |
+| Summary tab | Support provided, crisis-line transfer, emergency services, felt supported, follow-up requested, how they heard about us, resources shared, summary |
+| Support Plan sections | Safety Plan, Support Network, Crisis Episode (lists); Follow-up Call, Referral, Note (timeline); Document (not printed) |
+| Statuses | Open → Active Follow-up ↔ Paused → Closed |
+| Overview & filters | Help seeker at risk, next check-in, check-in frequency (filterable), summary |
+| Profile | Summary, What Helps, Things to Avoid, Contact Agreement; 24 h and 30 day blocks |
+| Pre-survey prefill | Off (the demo chatbot asks child-helpline questions) |
 | Insights | None |

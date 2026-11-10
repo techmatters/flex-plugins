@@ -2,11 +2,11 @@
   "label": "Helpline",
   "helplines": [
     {
-      "label": "Crisis Response Line",
-      "value": "Crisis Response Line",
+      "label": "Mental Health Support Line",
+      "value": "Mental Health Support Line",
       "default": true,
       "manager": {
-        "name": "Shift Supervisor",
+        "name": "Helpline Manager",
         "phone": "+123 45 678",
         "email": "supervisor@helpline.org"
       }

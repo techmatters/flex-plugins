@@ -1,26 +1,26 @@
 [
   {
     "name": "status",
-    "label": "Support Plan Status",
+    "label": "Case Status",
     "type": "select",
     "isPII": false
   },
   {
     "name": "childIsAtRisk",
-    "label": "Help seeker is at risk",
+    "label": "Child is at risk",
     "type": "checkbox",
     "isPII": false
   },
   {
     "name": "followUpDate",
-    "label": "Next Check-in",
+    "label": "Follow Up Date",
     "type": "date-input",
     "isPII": false,
     "allowFutureDates": true
   },
   {
-    "name": "checkInFrequency",
-    "label": "Check-in Frequency",
+    "name": "priority",
+    "label": "Priority",
     "type": "select",
     "isPII": false,
     "options": [
@@ -29,26 +29,22 @@
         "label": ""
       },
       {
-        "value": "Single follow-up",
-        "label": "Single follow-up"
+        "value": "High",
+        "label": "High"
       },
       {
-        "value": "Weekly",
-        "label": "Weekly"
+        "value": "Medium",
+        "label": "Medium"
       },
       {
-        "value": "Every 2 weeks",
-        "label": "Every 2 weeks"
-      },
-      {
-        "value": "Monthly",
-        "label": "Monthly"
+        "value": "Low",
+        "label": "Low"
       }
     ]
   },
   {
     "name": "summary",
-    "label": "Support Plan Summary",
+    "label": "Case Summary",
     "type": "textarea",
     "isPII": true,
     "rows": 5,

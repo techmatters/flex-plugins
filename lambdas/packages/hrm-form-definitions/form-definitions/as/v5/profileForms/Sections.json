@@ -6,37 +6,37 @@
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Previous incidents and what happened",
+    "placeholder": "Background and support history",
     "isPII": true
   },
   {
-    "name": "safetyAlerts",
-    "label": "Safety Alerts",
-    "editLabel": "Edit Safety Alerts",
+    "name": "whatHelps",
+    "label": "What Helps",
+    "editLabel": "Edit What Helps",
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Risks for responders (e.g. weapons in the home, dogs, history of violence)",
+    "placeholder": "Approaches, topics or coping strategies that work for this person",
     "isPII": true
   },
   {
-    "name": "knownAddresses",
-    "label": "Known Locations",
-    "editLabel": "Edit Known Locations",
+    "name": "thingsToAvoid",
+    "label": "Things to Avoid",
+    "editLabel": "Edit Things to Avoid",
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "Addresses or places this person is usually found",
+    "placeholder": "Known triggers or approaches that do not help",
     "isPII": true
   },
   {
-    "name": "emergencyContacts",
-    "label": "Emergency Contacts",
-    "editLabel": "Edit Emergency Contacts",
+    "name": "contactAgreement",
+    "label": "Contact Agreement",
+    "editLabel": "Edit Contact Agreement",
     "type": "textarea",
     "rows": 20,
     "width": 500,
-    "placeholder": "People to contact in an emergency (with consent)",
+    "placeholder": "For frequent contacts: agreed call length, frequency and boundaries",
     "isPII": true
   }
 ]

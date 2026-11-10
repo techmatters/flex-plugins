@@ -39,16 +39,16 @@
       "label": ""
     },
     {
-      "value": "Woman",
-      "label": "Woman"
+      "value": "Girl",
+      "label": "Girl"
     },
     {
-      "value": "Man",
-      "label": "Man"
+      "value": "Boy",
+      "label": "Boy"
     },
     {
-      "value": "Non-binary / gender diverse",
-      "label": "Non-binary / gender diverse"
+      "value": "Non-binary",
+      "label": "Non-binary"
     },
     {
       "value": "Prefer not to say",
@@ -59,38 +59,34 @@
       "label": "Unknown"
     }
   ],
-  "ageGroups": [
+  "languages": [
     {
       "value": "Unknown",
       "label": ""
     },
     {
-      "value": "Under 18",
-      "label": "Under 18"
+      "value": "English",
+      "label": "English"
     },
     {
-      "value": "18-24",
-      "label": "18-24"
+      "value": "Spanish",
+      "label": "Spanish"
     },
     {
-      "value": "25-34",
-      "label": "25-34"
+      "value": "French",
+      "label": "French"
     },
     {
-      "value": "35-44",
-      "label": "35-44"
+      "value": "Arabic",
+      "label": "Arabic"
     },
     {
-      "value": "45-54",
-      "label": "45-54"
+      "value": "Sign language",
+      "label": "Sign language"
     },
     {
-      "value": "55-64",
-      "label": "55-64"
-    },
-    {
-      "value": "65+",
-      "label": "65+"
+      "value": "Other",
+      "label": "Other"
     },
     {
       "value": "Unknown",

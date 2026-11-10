@@ -1,0 +1,89 @@
+[
+  {
+    "name": "status",
+    "label": "Incident Status",
+    "type": "select",
+    "isPII": false
+  },
+  {
+    "name": "childIsAtRisk",
+    "label": "Person is at immediate risk",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "priority",
+    "label": "Priority",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "P1",
+        "label": "P1"
+      },
+      {
+        "value": "P2",
+        "label": "P2"
+      },
+      {
+        "value": "P3",
+        "label": "P3"
+      },
+      {
+        "value": "P4",
+        "label": "P4"
+      }
+    ]
+  },
+  {
+    "name": "responseArea",
+    "label": "Response Area",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "North",
+        "label": "North"
+      },
+      {
+        "value": "South",
+        "label": "South"
+      },
+      {
+        "value": "East",
+        "label": "East"
+      },
+      {
+        "value": "West",
+        "label": "West"
+      },
+      {
+        "value": "Central",
+        "label": "Central"
+      }
+    ]
+  },
+  {
+    "name": "followUpDate",
+    "label": "Follow Up Date",
+    "type": "date-input",
+    "isPII": false,
+    "allowFutureDates": true
+  },
+  {
+    "name": "summary",
+    "label": "Incident Summary",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 5,
+    "width": 300
+  }
+]

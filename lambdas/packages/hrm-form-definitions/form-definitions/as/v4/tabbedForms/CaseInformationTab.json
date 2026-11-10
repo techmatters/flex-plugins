@@ -1,47 +1,7 @@
 [
   {
-    "name": "supportProvided",
-    "label": "Support Provided",
-    "type": "listbox-multiselect",
-    "isPII": false,
-    "options": [
-      {
-        "value": "Active listening / emotional support",
-        "label": "Active listening / emotional support"
-      },
-      {
-        "value": "Coping strategies",
-        "label": "Coping strategies"
-      },
-      {
-        "value": "Psychoeducation",
-        "label": "Psychoeducation"
-      },
-      {
-        "value": "Safety planning",
-        "label": "Safety planning"
-      },
-      {
-        "value": "Resource navigation",
-        "label": "Resource navigation"
-      },
-      {
-        "value": "Warm transfer",
-        "label": "Warm transfer"
-      },
-      {
-        "value": "Crisis de-escalation",
-        "label": "Crisis de-escalation"
-      }
-    ],
-    "required": {
-      "value": true,
-      "message": "RequiredFieldError"
-    }
-  },
-  {
-    "name": "transferredToCrisisLine",
-    "label": "Transferred to a crisis line?",
+    "name": "urgencyLevel",
+    "label": "Urgency Level",
     "type": "select",
     "isPII": false,
     "options": [
@@ -50,12 +10,16 @@
         "label": ""
       },
       {
-        "value": "Yes",
-        "label": "Yes"
+        "value": "Critical",
+        "label": "Critical"
       },
       {
-        "value": "No",
-        "label": "No"
+        "value": "Urgent",
+        "label": "Urgent"
+      },
+      {
+        "value": "Non-urgent",
+        "label": "Non-urgent"
       }
     ],
     "required": {
@@ -64,32 +28,52 @@
     }
   },
   {
-    "name": "emergencyServicesContacted",
-    "label": "Emergency services contacted?",
-    "type": "select",
+    "name": "interventions",
+    "label": "Interventions",
+    "type": "listbox-multiselect",
     "isPII": false,
     "options": [
       {
-        "value": "Unknown",
-        "label": ""
+        "value": "Active listening / emotional support",
+        "label": "Active listening / emotional support"
       },
       {
-        "value": "No",
-        "label": "No"
+        "value": "Information provided",
+        "label": "Information provided"
       },
       {
-        "value": "Yes - with consent",
-        "label": "Yes - with consent"
+        "value": "Problem solving",
+        "label": "Problem solving"
       },
       {
-        "value": "Yes - without consent",
-        "label": "Yes - without consent"
+        "value": "Safety planning",
+        "label": "Safety planning"
+      },
+      {
+        "value": "Crisis intervention",
+        "label": "Crisis intervention"
+      },
+      {
+        "value": "Referral to services",
+        "label": "Referral to services"
+      },
+      {
+        "value": "Report to child protection",
+        "label": "Report to child protection"
+      },
+      {
+        "value": "Emergency services contacted",
+        "label": "Emergency services contacted"
       }
-    ]
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
   },
   {
-    "name": "helpSeekerFeltSupported",
-    "label": "Did the help seeker feel supported?",
+    "name": "safetyPlanCreated",
+    "label": "Was a safety plan created?",
     "type": "select",
     "isPII": false,
     "options": [
@@ -102,28 +86,14 @@
         "label": "Yes"
       },
       {
-        "value": "Somewhat",
-        "label": "Somewhat"
-      },
-      {
         "value": "No",
         "label": "No"
-      },
-      {
-        "value": "Not asked",
-        "label": "Not asked"
       }
     ]
   },
   {
-    "name": "followUpRequested",
-    "label": "Follow-up call requested",
-    "type": "checkbox",
-    "isPII": false
-  },
-  {
-    "name": "howDidYouHearAboutUs",
-    "label": "How did they hear about us?",
+    "name": "reportedToAuthorities",
+    "label": "Was a report made to child protection or police?",
     "type": "select",
     "isPII": false,
     "options": [
@@ -132,30 +102,78 @@
         "label": ""
       },
       {
-        "value": "Search engine",
-        "label": "Search engine"
+        "value": "No",
+        "label": "No"
       },
       {
-        "value": "Social media",
-        "label": "Social media"
+        "value": "Child protection",
+        "label": "Child protection"
       },
       {
-        "value": "Health professional",
-        "label": "Health professional"
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Both",
+        "label": "Both"
+      }
+    ]
+  },
+  {
+    "name": "howDidYouHearAboutUs",
+    "label": "How did the child hear about us?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "School",
+        "label": "School"
       },
       {
         "value": "Friend / family",
         "label": "Friend / family"
       },
       {
-        "value": "Community organisation",
-        "label": "Community organisation"
+        "value": "Social media",
+        "label": "Social media"
+      },
+      {
+        "value": "Internet search",
+        "label": "Internet search"
+      },
+      {
+        "value": "Poster / leaflet",
+        "label": "Poster / leaflet"
+      },
+      {
+        "value": "TV / radio",
+        "label": "TV / radio"
+      },
+      {
+        "value": "Professional",
+        "label": "Professional"
       },
       {
         "value": "Other",
         "label": "Other"
       }
     ]
+  },
+  {
+    "name": "repeatCaller",
+    "label": "Repeat caller?",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "didTheChildFeelWeSolvedTheirProblem",
+    "label": "Did the child feel helped?",
+    "type": "mixed-checkbox",
+    "isPII": false
   },
   {
     "name": "referrals",
@@ -167,7 +185,7 @@
   },
   {
     "name": "callSummary",
-    "label": "Conversation Summary",
+    "label": "Contact Summary",
     "type": "textarea",
     "isPII": true,
     "rows": 10,
