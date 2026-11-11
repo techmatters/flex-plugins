@@ -57,8 +57,8 @@ ${
           "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\": \"ChildHelp\",\n  \"language\": \"es-CH\",\n  \"counselingLanguage\": \"Spanish\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"ChildHelp Spanish\",\n    \"hang_up_by\": \"Customer\"\n  }\n}",
           "waitUrlMethod": "GET",
           "offset": {
-            "x": -150,
-            "y": 2480
+            "x": -130,
+            "y": 2460
           }
         }
       },
@@ -98,8 +98,8 @@ ${
           "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
           "url": "${webhook_url_studio_errors}",
           "offset": {
-            "x": -150,
-            "y": 2900
+            "x": 190,
+            "y": 3380
           }
         }
       },
@@ -117,7 +117,7 @@ ${
           "play": "${flow_vars.recordings_url}/play_message_voice_es_childhelp_no_spanish_counselor_prequeue.mp3",
           "offset": {
             "x": -640,
-            "y": 2200
+            "y": 1810
           }
         }
       },
@@ -141,11 +141,11 @@ ${
           "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageNoSpanish",
           "workflow": "${workflow_sids.master}",
           "channel": "${task_channel_sids.voice}",
-          "attributes": "{\n \"type\": \"inbound\",\n \"name\": \"{{trigger.call.From}}\",\n \"ignoreAgent\": \"\",\n \"language\":\"en-CH\", \n \"service\":\"ChildHelp\",\n\"counselingLanguage\": \"English\",\n \"transferTargetType\": \"\",\n \"channelType\": \"voice\",\n \"conversations\": {\n   \"ivr_path\": \"ChildHelp No Spanish\",\n   \"hang_up_by\": \"Customer\"\n }\n}",
+          "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"language\": \"en-CH\",\n  \"service\": \"ChildHelp\",\n  \"counselingLanguage\": \"English\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"ChildHelp No Spanish\",\n    \"hang_up_by\": \"Customer\"\n  }\n}",
           "waitUrlMethod": "GET",
           "offset": {
-            "x": -640,
-            "y": 2480
+            "x": -700,
+            "y": 2160
           }
         }
       },
@@ -274,8 +274,8 @@ ${
         ],
         "properties": {
           "offset": {
-            "x": 250,
-            "y": 3020
+            "x": 520,
+            "y": 3080
           },
           "workflow": "${workflow_sids.master}",
           "channel": "${task_channel_sids.voice}",
@@ -421,12 +421,12 @@ ${
             "event": "match",
             "conditions": [
               {
-                "friendly_name": "If value matches_any_of 2,4",
+                "friendly_name": "If value equal_to 2",
                 "arguments": [
                   "{{widgets.gather_input_voice_en_childhelp_service_menu.Digits}}"
                 ],
-                "type": "matches_any_of",
-                "value": "2,4"
+                "type": "equal_to",
+                "value": "2"
               }
             ],
             "next": "f_isSkilledWorkerLoggedIn_logged"
@@ -444,6 +444,20 @@ ${
               }
             ],
             "next": "send_to_queue_childhelp_english"
+          },
+          {
+            "event": "match",
+            "conditions": [
+              {
+                "friendly_name": "If value equal_to 4",
+                "arguments": [
+                  "{{widgets.gather_input_voice_en_childhelp_service_menu.Digits}}"
+                ],
+                "type": "equal_to",
+                "value": "4"
+              }
+            ],
+            "next": "send_to_queue_authorities"
           }
         ],
         "properties": {
@@ -525,7 +539,7 @@ ${
         ],
         "properties": {
           "offset": {
-            "x": 700,
+            "x": 760,
             "y": 2320
           },
           "method": "POST",
@@ -561,9 +575,38 @@ ${
         "properties": {
           "input": "{{widgets.f_isSkilledWorkerLoggedIn_logged.parsed.totalLoggedInWorkers}}",
           "offset": {
-            "x": 700,
+            "x": 760,
             "y": 2560
           }
+        }
+      },
+      {
+        "name": "send_to_queue_authorities",
+        "type": "send-to-flex",
+        "transitions": [
+          {
+            "event": "callComplete"
+          },
+          {
+            "event": "failedToEnqueue",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          },
+          {
+            "event": "callFailure",
+            "next": "http_post_webhook_notify_failed_to_enqueue"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 190,
+            "y": 3060
+          },
+          "workflow": "${workflow_sids.master}",
+          "channel": "${task_channel_sids.voice}",
+          "timeout": "3600",
+          "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageEnglish",
+          "waitUrlMethod": "GET",
+          "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\": \"Authorities\",\n  \"language\": \"en-CH\",\n  \"counselingLanguage\": \"English\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"Authorities\",\n    \"hang_up_by\": \"Customer\"\n  }\n}"
         }
       }
     ]

@@ -14,6 +14,16 @@
         ]
       },
       {
+        "filter_friendly_name": "Authorities",
+        "expression": "service == 'Authorities' AND channelType == 'voice'",
+        "targets": [
+          {
+            "queue": "${task_queues.authorities}",
+            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ('Authorities' IN worker.routing.skills) AND (worker.roles HAS 'supervisor') AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)))"
+          }
+        ]
+      },
+      {
         "filter_friendly_name": "Advocate Line - ChatText",
         "expression": "(channelType IN ['web', 'sms'] AND service == 'AdvocateLine') OR (channelType IN ['sms', 'web'] AND targetSid == '${task_queues.advocate_line}')",
         "targets": [

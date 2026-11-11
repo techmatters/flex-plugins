@@ -65,6 +65,10 @@ locals {
       advocate_line : {
         "target_workers" = "routing.skills HAS 'Advocate'",
         "friendly_name"  = "Advocate Line"
+      },
+      authorities : {
+        "target_workers" = "routing.skills HAS 'Authorities'",
+        "friendly_name"  = "Authorities"
       }
     }
 

@@ -59,7 +59,7 @@ locals {
       recordings_url = "https://recordings.tl.techmatters.org/usch/staging"
       # Courage First -  Voice
       # ChildHelp -  Voice
-      gather_input_voice_en_childhelp_service_menu = "If this is a life-threatening emergency, hang up and call 911. For terms of service or more information about the hotline, visit childhelphotline.org. Please listen to all options before making a selection. For Spanish, press 1. To speak to an advocate about resources or reporting information press 2. To speak with a crisis counselor, press 3. If you are law enforcement following-up on a previous report, press 4. Calls may be monitored for quality assurance. "
+      gather_input_voice_en_childhelp_service_menu = "If this is a life-threatening emergency, hang up and call 911. For terms of service or more information about the hotline, visit childhelphotline.org. Please listen to all options before making a selection. For Spanish, press 1. To speak to an advocate about resources or reporting information press 2. To speak with a crisis counselor, press 3. If you are law enforcement or CPS following-up on a previous report, press 4. Calls may be monitored for quality assurance. "
 
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
