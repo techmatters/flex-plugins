@@ -21,7 +21,7 @@ import { RecursivePartial } from '../RecursivePartial';
 import { isErr, isOk } from '@tech-matters/result-type';
 import {
   getTwilioClient,
-  getMasterWorkflowSid,
+  getConversationsTransferWorkflow,
   getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
 import { TEST_ACCOUNT_SID, TEST_WORKSPACE_SID } from '../../testTwilioValues';
@@ -31,16 +31,11 @@ import { patchTaskAttributes } from '../../../src/task/patchTaskAttributes';
 jest.mock('@tech-matters/twilio-configuration', () => ({
   getTwilioClient: jest.fn(),
   getWorkspaceSid: jest.fn(),
-  getMasterWorkflowSid: jest.fn(),
   getConversationsTransferWorkflow: jest.fn(),
 }));
 
 jest.mock('../../../src/task/patchTaskAttributes', () => ({
   patchTaskAttributes: jest.fn(),
-}));
-
-jest.mock('../../../src/conversation/adjustChatCapacity', () => ({
-  adjustChatCapacity: jest.fn(),
 }));
 
 const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<
@@ -49,12 +44,13 @@ const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<
 const mockGetWorkspaceSid = getWorkspaceSid as jest.MockedFunction<
   typeof getWorkspaceSid
 >;
-const mockGetMasterWorkflowSid = getMasterWorkflowSid as jest.MockedFunction<
-  typeof getMasterWorkflowSid
->;
 const mockPatchTaskAttributes = patchTaskAttributes as jest.MockedFunction<
   typeof patchTaskAttributes
 >;
+const mockGetConversationsTransferWorkflow =
+  getConversationsTransferWorkflow as jest.MockedFunction<
+    typeof getConversationsTransferWorkflow
+  >;
 
 const TASK_SID = 'WToriginal';
 const ORIGINAL_WORKER_SID = 'WKoriginal';
@@ -67,6 +63,9 @@ const DUMMY_RESERVATION_SID = 'WR00000000000000000000000000000000';
 const ORIGINAL_TASK_ATTRIBUTES = {
   channelSid: CHANNEL_SID,
   channelType: 'web',
+  conversations: { conversation_id: 'CHoriginal' },
+  flexInteractionSid: 'KDinteraction',
+  flexInteractionChannelSid: 'UOchannel',
 };
 
 const newRequest = (
@@ -82,10 +81,12 @@ describe('transferStartHandler', () => {
   let mockFetchTask: jest.Mock;
   let mockUpdateTask: jest.Mock;
   let mockListReservations: jest.Mock;
-  let mockCreateTask: jest.Mock;
+  let mockCreateInvite: jest.Mock;
   let workerFetchMocks: Record<string, jest.Mock>;
+  let currentTaskAttributes: Record<string, unknown>;
 
   const setUpMockClient = (originalTaskAttributes: Record<string, unknown>) => {
+    currentTaskAttributes = originalTaskAttributes;
     mockFetchTask = jest.fn().mockResolvedValue({
       sid: TASK_SID,
       attributes: JSON.stringify(originalTaskAttributes),
@@ -99,7 +100,9 @@ describe('transferStartHandler', () => {
         workerSid: ORIGINAL_WORKER_SID,
       },
     ]);
-    mockCreateTask = jest.fn().mockResolvedValue({ sid: NEW_TASK_SID });
+    mockCreateInvite = jest.fn().mockResolvedValue({
+      routing: { properties: { sid: NEW_TASK_SID } },
+    });
     workerFetchMocks = {
       [ORIGINAL_WORKER_SID]: jest.fn().mockResolvedValue({
         sid: ORIGINAL_WORKER_SID,
@@ -120,11 +123,9 @@ describe('transferStartHandler', () => {
         list: mockListReservations,
       },
     };
-    // Support both tasks.get(sid) and tasks(sid) call styles used in the handler
-    const tasks = Object.assign(() => taskContext, {
+    const tasks = {
       get: () => taskContext,
-      create: mockCreateTask,
-    });
+    };
 
     const mockClient: RecursivePartial<twilio.Twilio> = {
       taskrouter: {
@@ -132,6 +133,11 @@ describe('transferStartHandler', () => {
           workspaces: {
             get: () => ({
               tasks,
+              taskQueues: {
+                list: jest
+                  .fn()
+                  .mockResolvedValue([{ sid: 'WQdirect', friendlyName: 'Everyone' }]),
+              },
               workers: {
                 get: (workerSid: string) => ({
                   fetch: workerFetchMocks[workerSid],
@@ -149,19 +155,41 @@ describe('transferStartHandler', () => {
           },
         },
       },
+      flexApi: {
+        v1: {
+          interaction: {
+            get: () => ({
+              channels: {
+                get: () => ({
+                  participants: {
+                    list: jest
+                      .fn()
+                      .mockResolvedValue([
+                        { type: 'agent', sid: 'UOoriginalParticipant' },
+                      ]),
+                  },
+                  invites: {
+                    create: mockCreateInvite,
+                  },
+                }),
+              },
+            }),
+          },
+        },
+      },
     };
 
     mockGetTwilioClient.mockResolvedValue(mockClient as twilio.Twilio);
     mockGetWorkspaceSid.mockResolvedValue(TEST_WORKSPACE_SID);
-    mockGetMasterWorkflowSid.mockResolvedValue('WWmaster');
+    mockGetConversationsTransferWorkflow.mockResolvedValue('WWconversations');
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
     mockPatchTaskAttributes.mockImplementation(async (_accountSid, _taskSid, update) => {
-      await mockUpdateTask({
-        attributes: JSON.stringify(update(ORIGINAL_TASK_ATTRIBUTES)),
-      });
+      const updatedAttributes = update(currentTaskAttributes);
+      currentTaskAttributes = updatedAttributes;
+      await mockUpdateTask({ attributes: JSON.stringify(updatedAttributes) });
       return { type: 'ok', data: undefined } as any;
     });
     setUpMockClient(ORIGINAL_TASK_ATTRIBUTES);
@@ -181,7 +209,7 @@ describe('transferStartHandler', () => {
       expect((result.error as HttpError).statusCode).toBe(403);
     }
     expect(mockUpdateTask).not.toHaveBeenCalled();
-    expect(mockCreateTask).not.toHaveBeenCalled();
+    expect(mockCreateInvite).not.toHaveBeenCalled();
   });
 
   test('supervisor take over sets transfer meta on the original task and ignores the originally assigned worker', async () => {
@@ -225,7 +253,8 @@ describe('transferStartHandler', () => {
     });
 
     // New task carries the transfer meta and ignores the original worker, not the supervisor
-    const createdAttributes = JSON.parse(mockCreateTask.mock.calls[0][0].attributes);
+    const createdInvite = mockCreateInvite.mock.calls[0][0];
+    const createdAttributes = createdInvite.routing.properties.attributes;
     expect(createdAttributes).toEqual(
       expect.objectContaining({
         transferStarted: true,
@@ -233,6 +262,15 @@ describe('transferStartHandler', () => {
         ignoreAgent: ORIGINAL_WORKER_SID,
         targetSid: SUPERVISOR_WORKER_SID,
         transferTargetType: 'worker',
+        originalParticipantSid: 'UOoriginalParticipant',
+      }),
+    );
+    expect(createdInvite.routing.properties).toEqual(
+      expect.objectContaining({
+        queue_sid: 'WQdirect',
+        worker_sid: SUPERVISOR_WORKER_SID,
+        workflow_sid: 'WWconversations',
+        workspace_sid: TEST_WORKSPACE_SID,
       }),
     );
   });
@@ -247,7 +285,7 @@ describe('transferStartHandler', () => {
     );
 
     expect(isOk(result)).toBe(true);
-    expect(mockCreateTask).toHaveBeenCalled();
+    expect(mockCreateInvite).toHaveBeenCalled();
   });
 
   test('rebuilds stale transfer meta left by a previously rejected transfer', async () => {
@@ -286,7 +324,8 @@ describe('transferStartHandler', () => {
       sidWithTaskControl: DUMMY_RESERVATION_SID,
       transferStatus: 'accepted',
     });
-    const createdAttributes = JSON.parse(mockCreateTask.mock.calls[0][0].attributes);
+    const createdAttributes =
+      mockCreateInvite.mock.calls[0][0].routing.properties.attributes;
     expect(createdAttributes.transferMeta).toEqual(firstUpdateAttributes.transferMeta);
   });
 
@@ -306,13 +345,13 @@ describe('transferStartHandler', () => {
       expect((result.error as HttpError).statusCode).toBe(400);
     }
     expect(mockUpdateTask).not.toHaveBeenCalled();
-    expect(mockCreateTask).not.toHaveBeenCalled();
+    expect(mockCreateInvite).not.toHaveBeenCalled();
   });
 
   test('rejects a transfer when another attempt is already active', async () => {
     mockPatchTaskAttributes.mockImplementation(async (_accountSid, _taskSid, update) => {
       update({
-        ...ORIGINAL_TASK_ATTRIBUTES,
+        ...currentTaskAttributes,
         transferStarted: true,
         transferMeta: { transferStatus: 'accepted' },
       });
@@ -338,11 +377,30 @@ describe('transferStartHandler', () => {
       { requireEtag: true },
     );
     expect(mockUpdateTask).not.toHaveBeenCalled();
-    expect(mockCreateTask).not.toHaveBeenCalled();
+    expect(mockCreateInvite).not.toHaveBeenCalled();
   });
 
-  test('rolls back transfer meta on the original task if creating the new task fails', async () => {
-    mockCreateTask.mockRejectedValue(new Error('boom'));
+  test('rejects tasks without Conversations identifiers before changing their attributes', async () => {
+    setUpMockClient({ channelSid: CHANNEL_SID, channelType: 'web' });
+
+    const result = await transferStartHandler(
+      newRequest(
+        { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+        { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+      ),
+      TEST_ACCOUNT_SID,
+    );
+
+    expect(isErr(result)).toBe(true);
+    if (isErr(result)) {
+      expect((result.error as HttpError).statusCode).toBe(400);
+    }
+    expect(mockUpdateTask).not.toHaveBeenCalled();
+    expect(mockCreateInvite).not.toHaveBeenCalled();
+  });
+
+  test('rolls back transfer meta on the original task if creating the invite fails', async () => {
+    mockCreateInvite.mockRejectedValue(new Error('boom'));
 
     const result = await transferStartHandler(
       newRequest(

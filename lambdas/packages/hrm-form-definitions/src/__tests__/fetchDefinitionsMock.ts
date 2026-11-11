@@ -59,6 +59,7 @@ const files = [
   'customStrings/postSurveyMessages.json',
   'FlexUiLocales.json',
   'CustomLinks.json',
+  'QueueGreetings.json',
 ];
 
 const getDefinitionVersionId = (formDefinitionsBaseUrl: string) =>
