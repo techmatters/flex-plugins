@@ -37,6 +37,7 @@ import { reactivateAseloListeners } from '../conversationListeners';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { ContactState } from '../states/contacts/existingContacts';
 import { saveFormSharedState } from './formDataTransfer';
+import { TAKEOVER_SUCCESS_NOTIFICATION_ID, acceptSelfInitiatedTakeover } from './takeoverReservation';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
@@ -52,6 +53,11 @@ const setUpTransfersNotifications = () => {
     id: TransfersNotifications.CantHangTransferInProgressNotification,
     type: NotificationType.error,
     content: <Template code="Transfer-Notifications-CantHangTransferInProgress" />,
+  });
+  Notifications.registerNotification({
+    id: TAKEOVER_SUCCESS_NOTIFICATION_ID,
+    type: NotificationType.success,
+    content: <Template code="TakeOver-Succeeded-Notification" />,
   });
 };
 
@@ -176,4 +182,9 @@ export const setUpTransferActions = (setupObject: SetupObject) => {
   setUpTransfersNotifications();
   Flex.Actions.replaceAction('TransferTask', customTransferTask(setupObject));
   Flex.Actions.addListener('afterCancelTransfer', afterCancelTransfer);
+  Manager.getInstance().workerClient.on('reservationCreated', reservation => {
+    acceptSelfInitiatedTakeover(reservation).catch(error => {
+      console.error('Failed to accept self-initiated takeover', error);
+    });
+  });
 };
