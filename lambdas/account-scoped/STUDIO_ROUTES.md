@@ -17,7 +17,6 @@ custom-channel callbacks) are intentionally not listed here.
 | [`channelCapture/captureChannelWithBot`](#channelcapturecapturechannelwithbot) | Hand the conversation to a Lex bot |
 | [`channelCapture/chatbotCallbackCleanup`](#channelcapturechatbotcallbackcleanup) | Force-release a conversation captured by a bot |
 | [`channelCapture/startPostSurveyChatbot`](#channelcapturestartpostsurveychatbot) | Start the post-survey Lex bot on a conversation |
-| [`hrm/savePostSurvey`](#hrmsavepostsurvey) | Save voice (IVR) post-survey answers to HRM and Insights |
 | [`postSurvey/recordAnswers`](#postsurveyrecordanswers) | Record voice (IVR) post-survey answers as they are given |
 | [`conversation/sendMessageAndRunJanitor`](#conversationsendmessageandrunjanitor) | Send a final message and close the conversation |
 | [`conversation/sendStudioMessage`](#conversationsendstudiomessage) | Detach Studio and send a system message (system-down flow) |
@@ -466,43 +465,6 @@ used by the usnm post-call SMS survey flows, after a `start-conversation` widget
 **Good to know:** this route returns `200` even when starting the bot fails, because those
 errors are only logged, so `failed` won't catch them. Check the lambda logs if surveys don't
 start.
-
----
-
-## hrm/savePostSurvey
-
-Saves the answers from a **voice** (IVR) post-call survey to HRM and to Flex Insights. It does
-this through a short-lived `survey` task, which it creates and cancels itself.
-
-**URL:** `${lambda_twilio_account_scoped_url}/hrm/savePostSurvey`
-
-| Param | Required | Example | Notes |
-|---|---|---|---|
-| `contactId` | yes | `{{trigger.call.contactId}}` | HRM contact ID |
-| `contactTaskSid` | yes | `{{trigger.call.taskSid}}` | Original contact's task |
-| `postSurveyAnswers` | yes | see below | Object. Keys must match the questions in the helpline's form definitions `insights/postSurvey` spec. Send it as JSON, not form parameters. |
-
-**Example body:**
-
-```json
-{
-  "contactId": "{{trigger.call.contactId}}",
-  "contactTaskSid": "{{trigger.call.taskSid}}",
-  "postSurveyAnswers": {
-    "feel_supported": "{{flow.variables.feel_supported}}",
-    "beginning_interaction": "{{flow.variables.beginning_interaction}}",
-    "end_interaction": "{{flow.variables.end_interaction}}"
-  }
-}
-```
-
-**Response:**
-
-```json
-{ "message": "[Post Survey Studio Flow - AC.../WT...]: Saved post survey to contact 123 with contact task SID WT...." }
-```
-
-**Good to know:** HRM or Insights save errors are only logged, and the route still returns `200`.
 
 ---
 
