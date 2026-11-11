@@ -5,28 +5,14 @@
     {
       "type": "input",
       "name": "friendlyName",
-      "label": "Nickname",
+      "label": "First name",
       "placeholder": "GuestName",
       "required": true
     },
     {
-      "type": "input",
-      "name": "firstName",
-      "label": "First Name",
-      "placeholder": "GuestName",
-      "required": true
-    },
-    {
-      "type": "email",
-      "name": "contactIdentifier",
-      "label": "Email",
-      "required": true,
-      "placeholder": "Email"
-    },
-    {
-      "label": "Age",
       "type": "select",
-      "name": "age",
+      "name": "myselfOrOther",
+      "label": "Who are you contacting us about?",
       "required": true,
       "defaultValue": "",
       "options": [
@@ -35,47 +21,64 @@
           "label": ""
         },
         {
-          "value": "Unborn",
-          "label": "Unborn"
+          "value": "myself",
+          "label": "Myself"
         },
         {
-          "value": "00",
+          "value": "someoneElse",
+          "label": "Someone else"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "name": "age",
+      "label": "Your age",
+      "required": false,
+      "defaultValue": "",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "0",
           "label": "0"
         },
         {
-          "value": "01",
+          "value": "1",
           "label": "1"
         },
         {
-          "value": "02",
+          "value": "2",
           "label": "2"
         },
         {
-          "value": "03",
+          "value": "3",
           "label": "3"
         },
         {
-          "value": "04",
+          "value": "4",
           "label": "4"
         },
         {
-          "value": "05",
+          "value": "5",
           "label": "5"
         },
         {
-          "value": "06",
+          "value": "6",
           "label": "6"
         },
         {
-          "value": "07",
+          "value": "7",
           "label": "7"
         },
         {
-          "value": "08",
+          "value": "8",
           "label": "8"
         },
         {
-          "value": "09",
+          "value": "9",
           "label": "9"
         },
         {
@@ -139,48 +142,315 @@
           "label": "24"
         },
         {
-          "value": ">25",
-          "label": ">25"
+          "value": "25",
+          "label": "25"
         },
         {
-          "value": "Unknown",
-          "label": "Unknown"
+          "value": "26",
+          "label": "26"
+        },
+        {
+          "value": "27",
+          "label": "27"
+        },
+        {
+          "value": "28",
+          "label": "28"
+        },
+        {
+          "value": "29",
+          "label": "29"
+        },
+        {
+          "value": "30",
+          "label": "30"
+        },
+        {
+          "value": "31",
+          "label": "31"
+        },
+        {
+          "value": "32",
+          "label": "32"
+        },
+        {
+          "value": "33",
+          "label": "33"
+        },
+        {
+          "value": "34",
+          "label": "34"
+        },
+        {
+          "value": "35",
+          "label": "35"
+        },
+        {
+          "value": "36",
+          "label": "36"
+        },
+        {
+          "value": "37",
+          "label": "37"
+        },
+        {
+          "value": "38",
+          "label": "38"
+        },
+        {
+          "value": "39",
+          "label": "39"
+        },
+        {
+          "value": "40",
+          "label": "40"
+        },
+        {
+          "value": "41",
+          "label": "41"
+        },
+        {
+          "value": "42",
+          "label": "42"
+        },
+        {
+          "value": "43",
+          "label": "43"
+        },
+        {
+          "value": "44",
+          "label": "44"
+        },
+        {
+          "value": "45",
+          "label": "45"
+        },
+        {
+          "value": "46",
+          "label": "46"
+        },
+        {
+          "value": "47",
+          "label": "47"
+        },
+        {
+          "value": "48",
+          "label": "48"
+        },
+        {
+          "value": "49",
+          "label": "49"
+        },
+        {
+          "value": "50",
+          "label": "50"
+        },
+        {
+          "value": "51",
+          "label": "51"
+        },
+        {
+          "value": "52",
+          "label": "52"
+        },
+        {
+          "value": "53",
+          "label": "53"
+        },
+        {
+          "value": "54",
+          "label": "54"
+        },
+        {
+          "value": "55",
+          "label": "55"
+        },
+        {
+          "value": "56",
+          "label": "56"
+        },
+        {
+          "value": "57",
+          "label": "57"
+        },
+        {
+          "value": "58",
+          "label": "58"
+        },
+        {
+          "value": "59",
+          "label": "59"
+        },
+        {
+          "value": "60",
+          "label": "60"
+        },
+        {
+          "value": "61",
+          "label": "61"
+        },
+        {
+          "value": "62",
+          "label": "62"
+        },
+        {
+          "value": "63",
+          "label": "63"
+        },
+        {
+          "value": "64",
+          "label": "64"
+        },
+        {
+          "value": "65",
+          "label": "65"
+        },
+        {
+          "value": "66",
+          "label": "66"
+        },
+        {
+          "value": "67",
+          "label": "67"
+        },
+        {
+          "value": "68",
+          "label": "68"
+        },
+        {
+          "value": "69",
+          "label": "69"
+        },
+        {
+          "value": "70",
+          "label": "70"
+        },
+        {
+          "value": "71",
+          "label": "71"
+        },
+        {
+          "value": "72",
+          "label": "72"
+        },
+        {
+          "value": "73",
+          "label": "73"
+        },
+        {
+          "value": "74",
+          "label": "74"
+        },
+        {
+          "value": "75",
+          "label": "75"
+        },
+        {
+          "value": "76",
+          "label": "76"
+        },
+        {
+          "value": "77",
+          "label": "77"
+        },
+        {
+          "value": "78",
+          "label": "78"
+        },
+        {
+          "value": "79",
+          "label": "79"
+        },
+        {
+          "value": "80",
+          "label": "80"
+        },
+        {
+          "value": "81",
+          "label": "81"
+        },
+        {
+          "value": "82",
+          "label": "82"
+        },
+        {
+          "value": "83",
+          "label": "83"
+        },
+        {
+          "value": "84",
+          "label": "84"
+        },
+        {
+          "value": "85",
+          "label": "85"
+        },
+        {
+          "value": "86",
+          "label": "86"
+        },
+        {
+          "value": "87",
+          "label": "87"
+        },
+        {
+          "value": "88",
+          "label": "88"
+        },
+        {
+          "value": "89",
+          "label": "89"
+        },
+        {
+          "value": "90",
+          "label": "90"
+        },
+        {
+          "value": "91",
+          "label": "91"
+        },
+        {
+          "value": "92",
+          "label": "92"
+        },
+        {
+          "value": "93",
+          "label": "93"
+        },
+        {
+          "value": "94",
+          "label": "94"
+        },
+        {
+          "value": "95",
+          "label": "95"
+        },
+        {
+          "value": "96",
+          "label": "96"
+        },
+        {
+          "value": "97",
+          "label": "97"
+        },
+        {
+          "value": "98",
+          "label": "98"
+        },
+        {
+          "value": "99",
+          "label": "99"
+        },
+        {
+          "value": "100",
+          "label": "100"
         }
       ]
     },
     {
-      "label": "Gender",
       "type": "select",
       "name": "gender",
-      "required": true,
-      "defaultValue": "",
-      "options": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Girl",
-          "label": "Girl"
-        },
-        {
-          "value": "Boy",
-          "label": "Boy"
-        },
-        {
-          "value": "Non-Binary",
-          "label": "Non-Binary"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ]
-    },
-    {
-      "type": "select",
-      "name": "province",
-      "label": "Province",
+      "label": "Your gender",
       "required": false,
       "defaultValue": "",
       "options": [
@@ -189,136 +459,338 @@
           "label": ""
         },
         {
-          "value": "Northern",
-          "label": "Northern"
+          "value": "Male",
+          "label": "Male"
         },
         {
-          "value": "Eastern",
-          "label": "Eastern"
+          "value": "Female",
+          "label": "Female"
         },
         {
-          "value": "Western",
-          "label": "Western"
-        },
-        {
-          "value": "Southern",
-          "label": "Southern"
-        },
-        {
-          "value": "Unknown",
-          "label": "Unknown"
-        }
-      ]
-    },
-    {
-      "name": "district",
-      "label": "District",
-      "type": "dependent-select",
-      "dependsOn": "province",
-      "required": false,
-      "options": {
-        "Northern": [
-          {
-            "value": "District A",
-            "label": "District A"
-          },
-          {
-            "value": "District B",
-            "label": "District B"
-          },
-          {
-            "value": "District C",
-            "label": "District C"
-          },
-          {
-            "value": "Unknown",
-            "label": "Unknown"
-          }
-        ],
-        "Eastern": [
-          {
-            "value": "District A",
-            "label": "District A"
-          },
-          {
-            "value": "District B",
-            "label": "District B"
-          },
-          {
-            "value": "District C",
-            "label": "District C"
-          },
-          {
-            "value": "Unknown",
-            "label": "Unknown"
-          }
-        ],
-        "Western": [
-          {
-            "value": "District A",
-            "label": "District A"
-          },
-          {
-            "value": "District B",
-            "label": "District B"
-          },
-          {
-            "value": "District C",
-            "label": "District C"
-          },
-          {
-            "value": "Unknown",
-            "label": "Unknown"
-          }
-        ],
-        "Southern": [
-          {
-            "value": "District A",
-            "label": "District A"
-          },
-          {
-            "value": "District B",
-            "label": "District B"
-          },
-          {
-            "value": "District C",
-            "label": "District C"
-          },
-          {
-            "value": "Unknown",
-            "label": "Unknown"
-          }
-        ]
-      }
-    },
-    {
-      "label": "How urgent is your situation?",
-      "type": "select",
-      "name": "urgencyLevel",
-      "required": false,
-      "defaultValue": "",
-      "options": [
-        {
-          "value": "",
-          "label": ""
-        },
-        {
-          "value": "Urgent",
-          "label": "Urgent"
-        },
-        {
-          "value": "Critical",
-          "label": "Critical"
-        },
-        {
-          "value": "Non-critical",
-          "label": "Non-critical"
+          "value": "Prefer not to say",
+          "label": "Prefer not to say"
         },
         {
           "value": "Other",
           "label": "Other"
         }
       ]
+    },
+    {
+      "type": "select",
+      "name": "state",
+      "label": "Your state",
+      "required": false,
+      "defaultValue": "",
+      "options": [
+        {
+          "value": "",
+          "label": ""
+        },
+        {
+          "value": "Alabama",
+          "label": "Alabama"
+        },
+        {
+          "value": "Alaska",
+          "label": "Alaska"
+        },
+        {
+          "value": "Arizona",
+          "label": "Arizona"
+        },
+        {
+          "value": "Arkansas",
+          "label": "Arkansas"
+        },
+        {
+          "value": "California",
+          "label": "California"
+        },
+        {
+          "value": "Colorado",
+          "label": "Colorado"
+        },
+        {
+          "value": "Connecticut",
+          "label": "Connecticut"
+        },
+        {
+          "value": "Delaware",
+          "label": "Delaware"
+        },
+        {
+          "value": "Florida",
+          "label": "Florida"
+        },
+        {
+          "value": "Georgia",
+          "label": "Georgia"
+        },
+        {
+          "value": "Hawaii",
+          "label": "Hawaii"
+        },
+        {
+          "value": "Idaho",
+          "label": "Idaho"
+        },
+        {
+          "value": "Illinois",
+          "label": "Illinois"
+        },
+        {
+          "value": "Indiana",
+          "label": "Indiana"
+        },
+        {
+          "value": "Iowa",
+          "label": "Iowa"
+        },
+        {
+          "value": "Kansas",
+          "label": "Kansas"
+        },
+        {
+          "value": "Kentucky",
+          "label": "Kentucky"
+        },
+        {
+          "value": "Louisiana",
+          "label": "Louisiana"
+        },
+        {
+          "value": "Maine",
+          "label": "Maine"
+        },
+        {
+          "value": "Maryland",
+          "label": "Maryland"
+        },
+        {
+          "value": "Massachusetts",
+          "label": "Massachusetts"
+        },
+        {
+          "value": "Michigan",
+          "label": "Michigan"
+        },
+        {
+          "value": "Minnesota",
+          "label": "Minnesota"
+        },
+        {
+          "value": "Mississippi",
+          "label": "Mississippi"
+        },
+        {
+          "value": "Missouri",
+          "label": "Missouri"
+        },
+        {
+          "value": "Montana",
+          "label": "Montana"
+        },
+        {
+          "value": "Nebraska",
+          "label": "Nebraska"
+        },
+        {
+          "value": "Nevada",
+          "label": "Nevada"
+        },
+        {
+          "value": "New Hampshire",
+          "label": "New Hampshire"
+        },
+        {
+          "value": "New Jersey",
+          "label": "New Jersey"
+        },
+        {
+          "value": "New Mexico",
+          "label": "New Mexico"
+        },
+        {
+          "value": "New York",
+          "label": "New York"
+        },
+        {
+          "value": "North Carolina",
+          "label": "North Carolina"
+        },
+        {
+          "value": "North Dakota",
+          "label": "North Dakota"
+        },
+        {
+          "value": "Ohio",
+          "label": "Ohio"
+        },
+        {
+          "value": "Oklahoma",
+          "label": "Oklahoma"
+        },
+        {
+          "value": "Oregon",
+          "label": "Oregon"
+        },
+        {
+          "value": "Pennsylvania",
+          "label": "Pennsylvania"
+        },
+        {
+          "value": "Rhode Island",
+          "label": "Rhode Island"
+        },
+        {
+          "value": "South Carolina",
+          "label": "South Carolina"
+        },
+        {
+          "value": "South Dakota",
+          "label": "South Dakota"
+        },
+        {
+          "value": "Tennessee",
+          "label": "Tennessee"
+        },
+        {
+          "value": "Texas",
+          "label": "Texas"
+        },
+        {
+          "value": "Utah",
+          "label": "Utah"
+        },
+        {
+          "value": "Vermont",
+          "label": "Vermont"
+        },
+        {
+          "value": "Virginia",
+          "label": "Virginia"
+        },
+        {
+          "value": "Washington",
+          "label": "Washington"
+        },
+        {
+          "value": "West Virginia",
+          "label": "West Virginia"
+        },
+        {
+          "value": "Wisconsin",
+          "label": "Wisconsin"
+        },
+        {
+          "value": "Wyoming",
+          "label": "Wyoming"
+        },
+        {
+          "value": "Other State",
+          "label": "Other"
+        }
+      ]
+    },
+    {
+      "type": "dependent-select",
+      "name": "county",
+      "label": "Your county",
+      "dependsOn": "state",
+      "required": false,
+      "options": {
+        "New Jersey": [
+          {
+            "value": "",
+            "label": ""
+          },
+          {
+            "value": "Atlantic County",
+            "label": "Atlantic County"
+          },
+          {
+            "value": "Bergen County",
+            "label": "Bergen County"
+          },
+          {
+            "value": "Burlington County",
+            "label": "Burlington County"
+          },
+          {
+            "value": "Camden County",
+            "label": "Camden County"
+          },
+          {
+            "value": "Cape May County",
+            "label": "Cape May County"
+          },
+          {
+            "value": "Cumberland County",
+            "label": "Cumberland County"
+          },
+          {
+            "value": "Essex County",
+            "label": "Essex County"
+          },
+          {
+            "value": "Gloucester County",
+            "label": "Gloucester County"
+          },
+          {
+            "value": "Hudson County",
+            "label": "Hudson County"
+          },
+          {
+            "value": "Hunterdon County",
+            "label": "Hunterdon County"
+          },
+          {
+            "value": "Mercer County",
+            "label": "Mercer County"
+          },
+          {
+            "value": "Middlesex County",
+            "label": "Middlesex County"
+          },
+          {
+            "value": "Monmouth County",
+            "label": "Monmouth County"
+          },
+          {
+            "value": "Morris County",
+            "label": "Morris County"
+          },
+          {
+            "value": "Ocean County",
+            "label": "Ocean County"
+          },
+          {
+            "value": "Passaic County",
+            "label": "Passaic County"
+          },
+          {
+            "value": "Salem County",
+            "label": "Salem County"
+          },
+          {
+            "value": "Somerset County",
+            "label": "Somerset County"
+          },
+          {
+            "value": "Sussex County",
+            "label": "Sussex County"
+          },
+          {
+            "value": "Union County",
+            "label": "Union County"
+          },
+          {
+            "value": "Warren County",
+            "label": "Warren County"
+          }
+        ]
+      }
     },
     {
       "type": "checkbox",

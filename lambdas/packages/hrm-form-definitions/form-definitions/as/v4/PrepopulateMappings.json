@@ -1,25 +1,32 @@
 {
   "formSelector": {
     "selectorType": "serviceUserChoiceSelector",
-    "parameter": [{
-      "form": "preEngagement",
-      "input": "myselfOrOther",
-      "aboutSelfValue": "myself"
-    }, {
-      "form": "survey",
-      "input": "aboutSelf"
-    }]
+    "parameter": [
+      {
+        "form": "preEngagement",
+        "input": "myselfOrOther",
+        "aboutSelfValue": "myself"
+      },
+      {
+        "form": "survey",
+        "input": "aboutSelf"
+      }
+    ]
   },
-  "survey":{
+  "survey": {
     "age": "ChildInformationTab.age",
     "gender": "ChildInformationTab.gender"
   },
-  "preEngagement":{
+  "preEngagement": {
+    "friendlyName": [
+      [
+        "CallerInformationTab.firstName",
+        "ChildInformationTab.firstName"
+      ]
+    ],
     "age": "ChildInformationTab.age",
     "gender": "ChildInformationTab.gender",
-    "firstName": "ChildInformationTab.firstName",
-    "province": "CallerInformationTab.province",
-    "district": "CallerInformationTab.district",
-    "urgencyLevel": "CaseInformationTab.urgencyLevel"
+    "state": "ChildInformationTab.state",
+    "county": "ChildInformationTab.county"
   }
 }

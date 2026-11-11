@@ -1,11 +1,21 @@
 {
-  "survey":{
-    "ChildInformationTab":["age", "gender"],
-    "CallerInformationTab":[]
+  "survey": {
+    "ChildInformationTab": [
+      "age",
+      "gender"
+    ],
+    "CallerInformationTab": []
   },
-  "preEngagement":{
-    "ChildInformationTab":["age", "gender", "firstName"],
-    "CallerInformationTab":["province","district"],
-    "CaseInformationTab":["urgencyLevel"]
+  "preEngagement": {
+    "ChildInformationTab": [
+      "firstName",
+      "age",
+      "gender",
+      "state",
+      "county"
+    ],
+    "CallerInformationTab": [
+      "firstName"
+    ]
   }
 }

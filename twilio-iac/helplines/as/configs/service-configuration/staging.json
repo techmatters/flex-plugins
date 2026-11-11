@@ -1,5 +1,16 @@
 {
     "attributes": {
+        "contacts_waiting_channels": [
+            "voice",
+            "sms",
+            "web",
+            "whatsapp",
+            "facebook",
+            "instagram",
+            "line",
+            "telegram",
+            "voicemail"
+        ],
         "voicemail_schedule_retry_later_minutes": 5,
         "system_down" : false,
         "feature_flags": {

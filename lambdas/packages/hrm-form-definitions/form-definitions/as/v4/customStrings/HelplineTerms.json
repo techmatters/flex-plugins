@@ -1,0 +1,53 @@
+{
+  "terms": {
+    "child": {
+      "singular": "gambler",
+      "plural": "gamblers"
+    },
+    "counselor": {
+      "singular": "supporter",
+      "plural": "supporters"
+    }
+  },
+  "generated": {
+    "CallSummary-Counselor": "Supporter: ",
+    "CallType-child": "Gambler calling about self",
+    "CallType-caller": "Someone calling about a gambler",
+    "ConnectDialog-Child": "Copy gambler information from this record to new contact?",
+    "GeneralizedSearchForm-Counselor": "Supporter",
+    "SearchForm-Counselor": "Supporter",
+    "SearchResults-CounselorName": "Supporter Name:",
+    "CaseHeader-CopyChildInfo": "Copy Gambler Information into Current Contact",
+    "CaseHeader-Counsellor": "Supporter",
+    "SharedStateLoadFormError": "The information stored in the form by previous supporter couldn't be retrieved. Starting current task with clear contact form.",
+    "TabbedForms-AddChildInfoTab": "Gambler",
+    "TabbedForms-ReportsCounselorReport": "Report as supporter",
+    "Case-CaseDetailsChildName": "Gambler Name",
+    "Case-CaseDetailsOwner": "Supporter",
+    "Case-ActionHeaderCounselor": "Supporter:",
+    "Case-PerpetratorRelationship": "Relationship to gambler: ",
+    "Case-Counsellor": "Supporter",
+    "Case-ChildIsAtRisk": "Gambler is at risk",
+    "CaseList-THChildName": "Gambler",
+    "CaseList-THCounselor": "Supporter",
+    "CaseList-Filters-Counselor": "Supporter",
+    "CaseList-Filters-SearchForCounselor": "Search for supporter by name",
+    "CallerForm-RelationshipToChild": "Relationship to Gambler",
+    "CallerSection-RelationshipToChild": "Relationship to Gambler",
+    "ContactDetails-GeneralDetails-Counselor": "Supporter",
+    "ContactDetails-GeneralDetails-HangUpBy/Agent": "Supporter",
+    "ContactDetails-GeneralDetails-HangUpBy/Consult": "Consulting Supporter",
+    "ContactDetails-GeneralDetails-ChildHearAboutUs": "How did the gambler hear about us?",
+    "ContactDetails-GeneralDetails-DiscussRights": "Did you discuss rights with the gambler?",
+    "ContactDetails-GeneralDetails-SolvedProblem": "Did the gambler feel we solved their problem?",
+    "ContactDetails-GeneralDetails-WouldRecommend": "Would the gambler recommend us to a friend?",
+    "SectionName-ChildInformation": "Gambler Information {{sectionNo}} of {{sectionCount}}",
+    "Contact-EditChild": "Edit Gambler Information",
+    "Contact-ConfirmRemoveTaskDialog-Content": "An error occurred trying to complete the task associated with this contact. Do you want to try to remove the task instead? This will clear the task from the supporters list but the data for this contact will not get stored in the insights reporting system if you do.",
+    "Resources-View-PrivateInformationWarning": "This information is private. Do not share with gambler.",
+    "Conference-Wrapping-HangupBy/Agent": "Call Ended by Supporter",
+    "Conference-Wrapping-HangupBy/Consult": "Call Ended by Consulting Supporter",
+    "TeamsView-Counsellor": "supporter",
+    "TeamsView-Counsellors": "supporters"
+  }
+}
