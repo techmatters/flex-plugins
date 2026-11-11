@@ -142,7 +142,7 @@ export const describeQueueWorkers = (workers: QueueWorkers): string => {
   if (workers.kind === 'nobody') return 'Nobody (a holding queue)';
   if (workers.kind === 'custom') return `Custom: ${workers.expression}`;
   if (workers.allOf.length === 0) return 'Everyone';
-  return `Counselors with ${list(workers.allOf.map(group => list(group, 'or')))}`;
+  return `Workers (agents/supervisors) with ${list(workers.allOf.map(group => list(group, 'or')))}`;
 };
 
 export const queueName = (design: RoutingDesign, key: string) =>

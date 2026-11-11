@@ -198,7 +198,7 @@ describe('routing designer', () => {
     expect(screen.queryByRole('button', { name: /Export for Claude/ })).toBeNull();
     // A queue's workers, in plain words
     fireEvent.click(screen.getByRole('tab', { name: /^Queues/ }));
-    expect(screen.getByText('Counselors with Calls or SMS, TYA and Spanish')).toBeTruthy();
+    expect(screen.getByText('Workers (agents/supervisors) with Calls or SMS, TYA and Spanish')).toBeTruthy();
   });
 });
 

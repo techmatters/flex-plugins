@@ -127,7 +127,7 @@ const WorkersEditor = ({
           aria-label="Who can work in it"
           onChange={e => onChange(e.target.value === 'skills' ? { kind: 'skills', allOf: [] } : { kind: 'nobody' })}
         >
-          <option value="skills">Counselors with skills</option>
+          <option value="skills">Workers (agents/supervisors) with skills</option>
           <option value="nobody">Nobody (a holding queue)</option>
           {workers.kind === 'custom' && <option value="custom">Custom (as written)</option>}
         </select>
@@ -158,7 +158,7 @@ const WorkersEditor = ({
         aria-label="Who can work in it"
         onChange={e => onChange(e.target.value === 'nobody' ? { kind: 'nobody' } : workers)}
       >
-        <option value="skills">Counselors with</option>
+        <option value="skills">Workers (agents/supervisors) with</option>
         <option value="nobody">Nobody (a holding queue)</option>
       </select>
       {workers.allOf.map((group, index) => (
