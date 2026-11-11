@@ -4,9 +4,8 @@
   "fields": [
     {
       "type": "input",
-      "name": "friendlyName",
+      "name": "firstName",
       "label": "First name",
-      "placeholder": "GuestName",
       "required": true
     },
     {
@@ -700,6 +699,180 @@
       "dependsOn": "state",
       "required": false,
       "options": {
+        "Alabama": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Alaska": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Arizona": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Arkansas": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "California": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Colorado": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Connecticut": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Delaware": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Florida": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Georgia": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Hawaii": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Idaho": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Illinois": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Indiana": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Iowa": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Kansas": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Kentucky": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Louisiana": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Maine": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Maryland": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Massachusetts": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Michigan": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Minnesota": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Mississippi": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Missouri": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Montana": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Nebraska": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Nevada": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "New Hampshire": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
         "New Jersey": [
           {
             "value": "",
@@ -788,6 +961,132 @@
           {
             "value": "Warren County",
             "label": "Warren County"
+          }
+        ],
+        "New Mexico": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "New York": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "North Carolina": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "North Dakota": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Ohio": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Oklahoma": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Oregon": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Pennsylvania": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Rhode Island": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "South Carolina": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "South Dakota": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Tennessee": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Texas": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Utah": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Vermont": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Virginia": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Washington": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "West Virginia": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Wisconsin": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Wyoming": [
+          {
+            "value": "N/A",
+            "label": "N/A"
+          }
+        ],
+        "Other State": [
+          {
+            "value": "N/A",
+            "label": "N/A"
           }
         ]
       }

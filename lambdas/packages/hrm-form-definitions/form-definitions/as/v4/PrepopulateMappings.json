@@ -18,7 +18,7 @@
     "gender": "ChildInformationTab.gender"
   },
   "preEngagement": {
-    "friendlyName": [
+    "firstName": [
       [
         "CallerInformationTab.firstName",
         "ChildInformationTab.firstName"
