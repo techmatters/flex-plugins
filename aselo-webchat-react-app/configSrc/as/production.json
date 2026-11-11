@@ -1,5 +1,6 @@
 {
   "environment": "production",
   "aseloBackendUrl": "https://hrm-production.tl.techmatters.org",
-  "definitionVersion": "as-v4"
+  "definitionVersion": "as-v4",
+  "checkOpenHours": false
 }
