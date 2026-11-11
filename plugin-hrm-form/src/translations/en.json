@@ -644,6 +644,7 @@
   "TeamsView-Level": "level",
   "TeamsView-CancelDialogHeader": "Discard changes?",
   "TeamsView-CancelDialogContent": "Your changes will be discarded.",
+  "MonitorTaskCanvas-Header-TakeoverButtonLabel": "Take Over",
 
   "MainHeader-Translator-RefreshRequiredNotification": "Refresh page to apply",
   "MainHeader-Translator-SelectionNotification": "You have selected {{localeSelection}}",

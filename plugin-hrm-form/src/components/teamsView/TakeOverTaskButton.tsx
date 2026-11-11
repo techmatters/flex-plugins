@@ -18,7 +18,7 @@ import React, { useEffect } from 'react';
 import { Actions, Template, withTaskContext, TaskHelper } from '@twilio/flex-ui';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TransferButton as TransferButtonStyled } from '../../styles/buttons';
+import { DestructiveButton } from '../../styles/buttons';
 import { getHrmConfig } from '../../hrmConfig';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import type { RootState } from '../../states';
@@ -45,13 +45,13 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   }
 
   return (
-    <TransferButtonStyled
+    <DestructiveButton
       onClick={() => Actions.invokeAction('TransferTask', { task, targetSid: workerSid, options: { mode: 'COLD' } })}
       data-fs-id="Task-TakeOver-Button"
       disabled={hasTransferStarted(task)}
     >
       <Template code="MonitorTaskCanvas-Header-TransferButtonLabel" />
-    </TransferButtonStyled>
+    </DestructiveButton>
   );
 };
 
