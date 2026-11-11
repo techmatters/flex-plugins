@@ -42,6 +42,10 @@ import { getTranslation } from '../translations/translationLookup';
 import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
 import { newOk } from '@tech-matters/result-type';
 import { AccountScopedHandler } from '../httpTypes';
+import {
+  buildPostSurveyControlTaskAttributes,
+  POST_SURVEY_CONTROL_TASK_TTL_SECONDS,
+} from '../postSurvey/postSurveyControlTask';
 
 const GLOBAL_DEFAULT_LANGUAGE = 'en-US';
 
@@ -127,14 +131,14 @@ const postSurveyInitHandler = async ({
     releaseType: 'postSurveyComplete',
     memoryAttribute: 'postSurvey',
     releaseFlag: 'postSuveyComplete',
-    additionControlTaskAttributes: JSON.stringify({
-      isSurveyTask: true,
-      contactTaskId: taskSid,
-      conversations: { conversation_id: taskSid },
-      language: taskLanguage, // if there's a task language, attach it to the post survey task
-      contactId,
-    }),
-    controlTaskTTL: 3600,
+    additionControlTaskAttributes: JSON.stringify(
+      buildPostSurveyControlTaskAttributes({
+        contactTaskSid: taskSid,
+        contactId,
+        language: taskLanguage,
+      }),
+    ),
+    controlTaskTTL: POST_SURVEY_CONTROL_TASK_TTL_SECONDS,
     channelType,
     chatServiceSid,
     environment,
