@@ -1027,8 +1027,21 @@ const ObjectSettings = ({ node, props }: { node: ObjectNode; props: InspectorPro
     : undefined;
   const recordingList = props.recordings.list?.recordings;
   // Renamed, a message keeps playing its recording until the file is copied to the new name
-  const rename = (studioName: string | undefined) =>
-    onNodeData(node.id, { object: withStudioName(object, studioName, recordingList) });
+  const rename = (studioName: string | undefined) => {
+    const renamed = withStudioName(object, studioName, recordingList);
+    // The language chosen in the name is the message's (the language check compares them); a voice menu's
+    // speech recognition language with a region (es-MX) is its own setting and stays
+    const named = info.studioPrefix && studioName ? nameParts(studioName, info.studioPrefix, choices) : undefined;
+    const language = named?.language;
+    const current = renamed.message?.language;
+    const follows = object.type !== 'menuVoice' || !current?.includes('-');
+    onNodeData(node.id, {
+      object:
+        renamed.message && language && language !== current && follows
+          ? { ...renamed, message: { ...renamed.message, language } }
+          : renamed,
+    });
+  };
   // The name it should have: messages' by parts, others' with their kind's start
   const standard = isNamedByParts(object.type)
     ? standardStudioName(object, details, choices)

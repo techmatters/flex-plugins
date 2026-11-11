@@ -521,6 +521,34 @@ describe('flow designer', () => {
     ]);
   });
 
+  test("the language chosen in a message's name is the message's language", async () => {
+    const board = await openNewBoard('Languages');
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    cleanup();
+    renderArea(staff);
+    await screen.findByRole('heading', { name: 'Languages' });
+    fireEvent.change(settings().getByRole('combobox', { name: 'Add channels' }), { target: { value: 'voice' } });
+    const addLanguage = () => settings().getByRole('combobox', { name: 'Add languages' });
+    fireEvent.change(addLanguage(), { target: { value: 'en' } });
+    fireEvent.change(addLanguage(), { target: { value: 'es' } });
+
+    fireEvent.click(palette().getByRole('button', { name: /^Play message/ }));
+    fireEvent.change(settings().getByRole('textbox', { name: 'What it is' }), { target: { value: 'welcome' } });
+    fireEvent.change(settings().getByRole('textbox', { name: 'Script' }), { target: { value: 'Bienvenido' } });
+    const language = () => settings().getByRole('combobox', { name: "Name's language" });
+    fireEvent.change(language(), { target: { value: 'en' } });
+    // Changed in the name (as after copying an English message), the message follows: no warning
+    fireEvent.change(language(), { target: { value: 'es' } });
+    expect(settings().getByText('play_message_voice_es_welcome')).toBeTruthy();
+    expect(settings().queryByText(/but its Studio name doesn't say so/)).toBeNull();
+
+    await waitFor(() => expect(screen.getByRole('status').textContent).toBe('All changes saved'), { timeout: 4000 });
+    expect((await boards.get('usnm', board.id))?.content.objects[0]).toMatchObject({
+      studioName: 'play_message_voice_es_welcome',
+      message: { language: 'es' },
+    });
+  });
+
   test('the skilled worker checks hold their route settings and are named after the route', async () => {
     const board = await openNewBoard('Skills');
     fireEvent.click(palette().getByRole('button', { name: /^Skilled worker available/ }));
