@@ -14,6 +14,13 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
+import { Twilio } from 'twilio';
+import { AccountSID } from '@tech-matters/twilio-types';
+import {
+  getSurveyWorkflowSid,
+  getWorkspaceSid,
+} from '@tech-matters/twilio-configuration';
+
 // How long a post survey control task lives before TaskRouter cancels it
 export const POST_SURVEY_CONTROL_TASK_TTL_SECONDS = 3600;
 
@@ -36,3 +43,31 @@ export const buildPostSurveyControlTaskAttributes = ({
   language, // if there's a task language, attach it to the post survey task
   contactId,
 });
+
+type PostSurveyContact = Parameters<typeof buildPostSurveyControlTaskAttributes>[0];
+
+export const createPostSurveyControlTask = async (
+  client: Twilio,
+  accountSid: AccountSID,
+  contact: PostSurveyContact,
+) =>
+  client.taskrouter.v1.workspaces(await getWorkspaceSid(accountSid)).tasks.create({
+    workflowSid: await getSurveyWorkflowSid(accountSid),
+    taskChannel: 'survey',
+    attributes: JSON.stringify(buildPostSurveyControlTaskAttributes(contact)),
+    timeout: POST_SURVEY_CONTROL_TASK_TTL_SECONDS,
+  });
+
+/**
+ * Survey tasks are never assigned to a worker, so they stay pending. A pending task can't be completed,
+ * so we cancel it, which also makes the answers in its attributes final for Flex Insights.
+ */
+export const cancelPostSurveyControlTask = async (
+  client: Twilio,
+  accountSid: AccountSID,
+  controlTaskSid: string,
+) =>
+  client.taskrouter.v1
+    .workspaces(await getWorkspaceSid(accountSid))
+    .tasks(controlTaskSid)
+    .update({ assignmentStatus: 'canceled' });
