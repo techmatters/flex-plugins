@@ -265,7 +265,132 @@ ${
       }
     },
     {
-      "name": "save_post_survey",
+      "name": "f_recordAnswers_e_Helpful_Main_v1",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "gather_2",
+          "event": "success"
+        },
+        {
+          "next": "gather_2",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -700,
+          "y": 377
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"e_Helpful_Main_v1\": \"{{widgets.gather_1.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
+        "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
+      }
+    },
+    {
+      "name": "f_recordAnswers_e_feelBetter_Main_v1",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "gather_3",
+          "event": "success"
+        },
+        {
+          "next": "gather_3",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -700,
+          "y": 616
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"e_feelBetter_Main_v1\": \"{{widgets.gather_2.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
+        "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
+      }
+    },
+    {
+      "name": "f_recordAnswers_e_contactAgain_Main_v1",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "gather_4",
+          "event": "success"
+        },
+        {
+          "next": "gather_4",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -700,
+          "y": 859
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"e_contactAgain_Main_v1\": \"{{widgets.gather_3.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
+        "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
+      }
+    },
+    {
+      "name": "f_recordAnswers_e_Respected_Main_v1",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "gather_5",
+          "event": "success"
+        },
+        {
+          "next": "gather_5",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -700,
+          "y": 1069
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"e_Respected_Main_v1\": \"{{widgets.gather_4.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
+        "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
+      }
+    },
+    {
+      "name": "f_recordAnswers_e_Age_Main_v1",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "gather_6",
+          "event": "success"
+        },
+        {
+          "next": "gather_6",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -700,
+          "y": 1374
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"e_Age_Main_v1\": \"{{widgets.gather_5.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
+        "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
+      }
+    },
+    {
+      "name": "f_recordAnswers_e_Identity_Main_v1",
       "type": "make-http-request",
       "transitions": [
         {
@@ -273,7 +398,32 @@ ${
           "event": "success"
         },
         {
-          "next": "say_play_3",
+          "next": "say_play_2",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 97,
+          "y": 2000
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"e_Identity_Main_v1\": \"{{widgets.gather_6.Digits}}\"\n  },\n  \"surveyComplete\": true\n}",
+        "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
+      }
+    },
+    {
+      "name": "f_recordAnswers_surveyComplete",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "say_play_2",
+          "event": "success"
+        },
+        {
+          "next": "say_play_2",
           "event": "failed"
         }
       ],
@@ -285,8 +435,8 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{  \"contactId\": \"{{trigger.call.contactId}}\",   \"contactTaskSid\": \"{{trigger.call.taskSid}}\",  \"postSurveyAnswers\": {     \"e_Helpful_Main_v1\": \"{{widgets.gather_1.Digits}}\",     \"e_feelBetter_Main_v1\": \"{{widgets.gather_2.Digits}}\",     \"e_contactAgain_Main_v1\": \"{{widgets.gather_3.Digits}}\" , \"e_Respected_Main_v1\": \"{{widgets.gather_4.Digits}}\",     \"e_Age_Main_v1\": \"{{widgets.gather_5.Digits}}\",     \"e_Identity_Main_v1\": \"{{widgets.gather_6.Digits}}\"   }}",
-        "url": "${lambda_twilio_account_scoped_url}/hrm/savePostSurvey"
+        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {},\n  \"surveyComplete\": true\n}",
+        "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
       }
     },
     {
@@ -316,7 +466,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "gather_2",
+          "next": "f_recordAnswers_e_Helpful_Main_v1",
           "event": "match",
           "conditions": [
             {
@@ -399,7 +549,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "gather_3",
+          "next": "f_recordAnswers_e_feelBetter_Main_v1",
           "event": "match",
           "conditions": [
             {
@@ -444,7 +594,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "gather_4",
+          "next": "f_recordAnswers_e_contactAgain_Main_v1",
           "event": "match",
           "conditions": [
             {
@@ -508,7 +658,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "gather_5",
+          "next": "f_recordAnswers_e_Respected_Main_v1",
           "event": "match",
           "conditions": [
             {
@@ -572,7 +722,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "gather_6",
+          "next": "f_recordAnswers_e_Age_Main_v1",
           "event": "match",
           "conditions": [
             {
@@ -636,7 +786,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "save_post_survey",
+          "next": "f_recordAnswers_e_Identity_Main_v1",
           "event": "match",
           "conditions": [
             {
@@ -773,7 +923,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "save_post_survey",
+          "next": "f_recordAnswers_surveyComplete",
           "event": "noMatch"
         },
         {
@@ -827,7 +977,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "save_post_survey",
+          "next": "f_recordAnswers_surveyComplete",
           "event": "noMatch"
         },
         {
@@ -881,7 +1031,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "save_post_survey",
+          "next": "f_recordAnswers_surveyComplete",
           "event": "noMatch"
         },
         {
@@ -935,7 +1085,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "save_post_survey",
+          "next": "f_recordAnswers_surveyComplete",
           "event": "noMatch"
         },
         {
@@ -989,7 +1139,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "save_post_survey",
+          "next": "f_recordAnswers_surveyComplete",
           "event": "noMatch"
         },
         {
