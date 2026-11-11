@@ -26,7 +26,7 @@ import {
 } from '@tech-matters/twilio-configuration';
 import { TEST_ACCOUNT_SID, TEST_WORKSPACE_SID } from '../../testTwilioValues';
 import { HttpError } from '../../../src/httpTypes';
-import { acquireLock } from '@tech-matters/dynamo-cache';
+import { patchTaskAttributes } from '../../../src/task/patchTaskAttributes';
 
 jest.mock('@tech-matters/twilio-configuration', () => ({
   getTwilioClient: jest.fn(),
@@ -35,8 +35,8 @@ jest.mock('@tech-matters/twilio-configuration', () => ({
   getConversationsTransferWorkflow: jest.fn(),
 }));
 
-jest.mock('@tech-matters/dynamo-cache', () => ({
-  acquireLock: jest.fn(),
+jest.mock('../../../src/task/patchTaskAttributes', () => ({
+  patchTaskAttributes: jest.fn(),
 }));
 
 jest.mock('../../../src/conversation/adjustChatCapacity', () => ({
@@ -52,7 +52,9 @@ const mockGetWorkspaceSid = getWorkspaceSid as jest.MockedFunction<
 const mockGetMasterWorkflowSid = getMasterWorkflowSid as jest.MockedFunction<
   typeof getMasterWorkflowSid
 >;
-const mockAcquireLock = acquireLock as jest.MockedFunction<typeof acquireLock>;
+const mockPatchTaskAttributes = patchTaskAttributes as jest.MockedFunction<
+  typeof patchTaskAttributes
+>;
 
 const TASK_SID = 'WToriginal';
 const ORIGINAL_WORKER_SID = 'WKoriginal';
@@ -156,7 +158,12 @@ describe('transferStartHandler', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mockAcquireLock.mockResolvedValue(true);
+    mockPatchTaskAttributes.mockImplementation(async (_accountSid, _taskSid, update) => {
+      await mockUpdateTask({
+        attributes: JSON.stringify(update(ORIGINAL_TASK_ATTRIBUTES)),
+      });
+      return { type: 'ok', data: undefined } as any;
+    });
     setUpMockClient(ORIGINAL_TASK_ATTRIBUTES);
   });
 
@@ -302,8 +309,15 @@ describe('transferStartHandler', () => {
     expect(mockCreateTask).not.toHaveBeenCalled();
   });
 
-  test('rejects a transfer when another attempt already holds the task claim', async () => {
-    mockAcquireLock.mockResolvedValue(false);
+  test('rejects a transfer when another attempt is already active', async () => {
+    mockPatchTaskAttributes.mockImplementation(async (_accountSid, _taskSid, update) => {
+      update({
+        ...ORIGINAL_TASK_ATTRIBUTES,
+        transferStarted: true,
+        transferMeta: { transferStatus: 'accepted' },
+      });
+      return { type: 'ok', data: undefined } as any;
+    });
 
     const result = await transferStartHandler(
       newRequest(
@@ -317,13 +331,11 @@ describe('transferStartHandler', () => {
     if (isErr(result)) {
       expect((result.error as HttpError).statusCode).toBe(409);
     }
-    expect(mockAcquireLock).toHaveBeenCalledWith(
-      {
-        tableName: 'AccountScoped-TransferStartLocks',
-        keyName: 'id',
-      },
-      `transfer-start:${TEST_ACCOUNT_SID}:${TASK_SID}`,
-      60,
+    expect(mockPatchTaskAttributes).toHaveBeenCalledWith(
+      TEST_ACCOUNT_SID,
+      TASK_SID,
+      expect.any(Function),
+      { requireEtag: true },
     );
     expect(mockUpdateTask).not.toHaveBeenCalled();
     expect(mockCreateTask).not.toHaveBeenCalled();

@@ -21,6 +21,11 @@ import { ErrorResult, newErr, newOk, Result } from '@tech-matters/result-type';
 
 const MAX_ATTEMPTS = 10;
 
+type PatchTaskAttributesOptions = {
+  attemptsAlreadyMade?: number;
+  requireEtag?: boolean;
+};
+
 type ErrorResultPayload = {
   accountSid: AccountSID;
   taskSid: TaskSID;
@@ -68,7 +73,7 @@ export const patchTaskAttributes = async (
   updatedAttributesGenerator: (
     originalTaskAttributes: Record<string, any>,
   ) => Record<string, any>,
-  attemptsAlreadyMade = 0,
+  { attemptsAlreadyMade = 0, requireEtag = false }: PatchTaskAttributesOptions = {},
 ): Promise<
   Result<
     | ErrorResultPayload
@@ -123,6 +128,16 @@ export const patchTaskAttributes = async (
     }
   }
 
+  if (requireEtag && !version) {
+    return newErrorResult({
+      accountSid,
+      taskSid,
+      etag: version,
+      step: 'update',
+      errorInstance: new Error('Task update requires an ETag for optimistic locking'),
+    });
+  }
+
   const taskAttributes = JSON.parse(task.attributes);
 
   const newAttributes = updatedAttributesGenerator(taskAttributes);
@@ -148,7 +163,7 @@ export const patchTaskAttributes = async (
             accountSid,
             taskSid,
             updatedAttributesGenerator,
-            attemptsAlreadyMade + 1,
+            { attemptsAlreadyMade: attemptsAlreadyMade + 1, requireEtag },
           );
         }
         return newErrorResult({

@@ -138,6 +138,22 @@ describe('patchTaskAttributes', () => {
       );
     });
 
+    it('should fail without updating when an ETag is required but missing', async () => {
+      mockClient.httpClient.lastResponse = {
+        headers: { 'Content-Type': 'application/json' },
+      };
+
+      const result = await patchTaskAttributes(
+        TEST_ACCOUNT_SID,
+        TEST_TASK_SID,
+        attributesGenerator,
+        { requireEtag: true },
+      );
+
+      expect(isErr(result)).toBe(true);
+      expect(mockUpdate).not.toHaveBeenCalled();
+    });
+
     it('should fetch the task from the correct workspace', async () => {
       await patchTaskAttributes(TEST_ACCOUNT_SID, TEST_TASK_SID, attributesGenerator);
 
@@ -261,6 +277,38 @@ describe('patchTaskAttributes', () => {
   });
 
   describe('optimistic locking - 412 retry mechanism', () => {
+    it('rechecks the latest attributes after a concurrent update before retrying', async () => {
+      const activeTransferError = new Error('transfer already active');
+      mockFetch
+        .mockResolvedValueOnce({ attributes: JSON.stringify(ORIGINAL_ATTRIBUTES) })
+        .mockResolvedValueOnce({
+          attributes: JSON.stringify({
+            ...ORIGINAL_ATTRIBUTES,
+            transferMeta: { transferStatus: 'accepted' },
+          }),
+        });
+      mockUpdate.mockRejectedValueOnce(makeRestException(412));
+      const guardAttributes = jest.fn(attributes => {
+        if (attributes.transferMeta?.transferStatus === 'accepted') {
+          throw activeTransferError;
+        }
+        return UPDATED_ATTRIBUTES;
+      });
+
+      await expect(
+        patchTaskAttributes(
+          TEST_ACCOUNT_SID,
+          TEST_TASK_SID,
+          guardAttributes,
+          { requireEtag: true },
+        ),
+      ).rejects.toBe(activeTransferError);
+
+      expect(mockFetch).toHaveBeenCalledTimes(2);
+      expect(mockUpdate).toHaveBeenCalledTimes(1);
+      expect(guardAttributes).toHaveBeenCalledTimes(2);
+    });
+
     it('should retry once when update returns 412 and succeed on second attempt', async () => {
       mockUpdate.mockRejectedValueOnce(makeRestException(412)).mockResolvedValueOnce({});
 
