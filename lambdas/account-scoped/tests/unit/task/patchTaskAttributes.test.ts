@@ -296,12 +296,9 @@ describe('patchTaskAttributes', () => {
       });
 
       await expect(
-        patchTaskAttributes(
-          TEST_ACCOUNT_SID,
-          TEST_TASK_SID,
-          guardAttributes,
-          { requireEtag: true },
-        ),
+        patchTaskAttributes(TEST_ACCOUNT_SID, TEST_TASK_SID, guardAttributes, {
+          requireEtag: true,
+        }),
       ).rejects.toBe(activeTransferError);
 
       expect(mockFetch).toHaveBeenCalledTimes(2);

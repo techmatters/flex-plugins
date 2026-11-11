@@ -159,12 +159,10 @@ export const patchTaskAttributes = async (
           console.warn(
             `Error 412 thrown, this usually indicates a mismatch in the ETag from the fetched task (${version}) and the one being updated, retry attempt ${attemptsAlreadyMade + 1} / ${MAX_ATTEMPTS}`,
           );
-          return patchTaskAttributes(
-            accountSid,
-            taskSid,
-            updatedAttributesGenerator,
-            { attemptsAlreadyMade: attemptsAlreadyMade + 1, requireEtag },
-          );
+          return patchTaskAttributes(accountSid, taskSid, updatedAttributesGenerator, {
+            attemptsAlreadyMade: attemptsAlreadyMade + 1,
+            requireEtag,
+          });
         }
         return newErrorResult({
           accountSid,
