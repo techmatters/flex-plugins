@@ -462,6 +462,35 @@ test('worker checks need skills (set on the board, or in the live body), and a h
   expect(check('sendToQueue', { settings: { waitMusic: 'recording' } })).toEqual([]);
 });
 
+test("a question's unexpected answer is asked again, not sent on to an option", () => {
+  const objects = [
+    named('q', 'menuVoice', undefined, { text: 'Menu', studioName: 'gather_input_voice_menu' }),
+    named('r', 'repeat', undefined, { text: 'Again' }),
+    named('d', 'decision', undefined, { text: 'Which' }),
+    named('e', 'sendToQueue', undefined, { text: 'English queue' }),
+  ];
+  const check = (noMatchTo: string, input?: string) =>
+    messagesOf({
+      frames: [],
+      objects: objects.map(object => (object.id === 'd' && input ? { ...object, settings: { input } } : object)),
+      connections: [
+        connect('q', 'd', 'keypress'),
+        connect('q', 'r', 'timeout'),
+        connect('r', 'q', 'repeat'),
+        connect('d', 'e', '1'),
+        connect('d', noMatchTo, 'noMatch'),
+      ],
+    }).filter(text => text.includes("isn't an option"));
+  expect(check('e')).toEqual([
+    "“Which”: an answer that isn't an option goes to “English queue” instead of asking “Menu” again (lead its noMatch to the question's Repeat, as its timeout does).",
+  ]);
+  expect(check('r')).toEqual([]);
+  expect(check('q')).toEqual([]);
+  // Splitting on something else (a form field): not this question's answer
+  expect(check('e', '{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}')).toEqual([]);
+  expect(check('e', '{{widgets.gather_input_voice_menu.Digits}}')).toHaveLength(1);
+});
+
 test("Check operating hours asks about a channel and office in the helpline's operating hours", () => {
   const hours = { hasOperatingHours: true, channels: ['sms', 'voice'], offices: ['preClosing'] };
   const check = (settings?: Record<string, string>, extra: Partial<FlowObject> = {}, operatingHours = hours) =>

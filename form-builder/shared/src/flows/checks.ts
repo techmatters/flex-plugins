@@ -411,6 +411,37 @@ export const boardChecks = (
         'noWaitUrl',
       );
     }
+    // A question's answer that isn't an option is asked again: the Decision's noMatch goes back to the
+    // question, or to the Repeat its timeout uses, not on to an option (or a goodbye)
+    if (object.type === 'decision') {
+      const noMatch = outgoing(objectId).find(connection => connection.exit === 'noMatch')?.to;
+      const input = object.settings?.input ?? object.studio?.properties?.input;
+      content.connections
+        .filter(connection => connection.to === objectId)
+        .map(connection => ({ connection, question: byId.get(connection.from) }))
+        .filter(
+          ({ connection, question }) =>
+            (question?.type === 'menuVoice' && connection.exit === 'keypress') ||
+            (question?.type === 'questionMessaging' && connection.exit === 'reply'),
+        )
+        .forEach(({ question }) => {
+          // Splitting on something other than this question's answer (a form field, a flag)
+          if (typeof input === 'string' && question!.studioName && !input.includes(question!.studioName)) return;
+          const timeout = outgoing(question!.id).find(connection => connection.exit === 'timeout')?.to;
+          const target = noMatch ? byId.get(noMatch) : undefined;
+          if (!target || target.id === question!.id || target.id === timeout || target.type === 'repeat') return;
+          add(
+            {
+              severity: 'warning',
+              message: `${name}: an answer that isn't an option goes to ${nameOf(target)} instead of asking ${nameOf(
+                question!,
+              )} again (lead its noMatch to the question's Repeat, as its timeout does).`,
+              objectId,
+            },
+            'noMatchNotAskedAgain',
+          );
+        });
+    }
     // What a Set variable sets: something, with keys Studio takes
     if (
       (object.type === 'setVariable' || object.type === 'setFlowMemory') &&
@@ -696,7 +727,7 @@ export const splitIgnored = (issues: Issue[], ignoredKeys: string[] = []) => {
 // What a sketch (Sketch mode) leaves for later: scripts, recordings, languages, the names' standard
 // parts, call settings, variables and task attributes
 const DETAIL_CHECKS =
-  /^(nameStandard|noFrom|noScript|recording|scriptApproval|language|oldRecordingName|taskAttributes|noUrl|noVariables|noInput|noChatbot|field-.*|required-.*|taskChannel|naming-.*|variable-.*|hours.*)$/;
+  /^(nameStandard|noFrom|noScript|recording|scriptApproval|language|oldRecordingName|taskAttributes|noUrl|noSkills|noWaitUrl|noVariables|noInput|noChatbot|field-.*|required-.*|taskChannel|naming-.*|variable-.*|hours.*)$/;
 
 /** The issues that matter in a sketch: the flow's shape (ways out, names, what's unreachable...). */
 export const sketchIssues = (issues: Issue[]) => issues.filter(issue => !DETAIL_CHECKS.test(issue.key.split('|')[1]));
