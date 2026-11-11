@@ -196,11 +196,17 @@ Don't start new helplines on `voice-basic*.tftpl`, `messaging-blocking-lambda*.t
 Whenever you add or change a post-survey (voice post-call survey or chatbot post-survey), check all of
 these. A gap here fails silently: the caller still hears the normal goodbye, but the answers are lost.
 
+- **Voice surveys record each answer as it is given.** The flow calls `postSurvey/recordAnswers`
+  (widgets `f_recordAnswers_*`) after every question, sending `surveyComplete: true` on the last call. The
+  answers go to a control task the lambda creates before redirecting the call into the flow, only when the
+  `postStudioFlows` entry has `"createSurveyControlTask": true` (read as `{{trigger.call.controlTaskSid}}`).
+- **The flag and the flow are applied separately.** The flag is service configuration
+  (`make service-config-apply`), the flow is the `configure` apply. Order: lambdas deployed → flag → flows.
 - **The survey workflow must use `templates/workflows/survey.tftpl`, not `lex.tftpl`.** The voice
-  post-survey (`/hrm/savePostSurvey`, widget `f_savePostSurvey`) creates its task with only
-  `isSurveyTask: true`. `survey.tftpl` has both filters: `isSurveyTask==true` (Post Survey Filter) and
-  `isChatCaptureControl==true` (Pre Survey Filter). `lex.tftpl` only has `isChatCaptureControl==true`, so
-  chat/SMS surveys keep working but every voice save fails with `Couldn't match task to queue`.
+  post-survey control task has only `isSurveyTask: true`. `survey.tftpl` has both filters:
+  `isSurveyTask==true` (Post Survey Filter) and `isChatCaptureControl==true` (Pre Survey Filter).
+  `lex.tftpl` only has `isChatCaptureControl==true`, so chat/SMS surveys keep working but every voice
+  survey fails with `Couldn't match task to queue`.
 - **The workflow lives in the `provision` stage, not `configure`.** Adding a post-call survey flow
   (configure) without applying provision leaves the deployed workflow on the old filters. Run the provision
   plan for **every environment** and confirm `workflow["survey"]` has both filters (or shows no change).
@@ -209,5 +215,5 @@ these. A gap here fails silently: the caller still hears the normal goodbye, but
 - **The `survey` task queue and task channel exist** in `common.hcl` (`task_queues.survey` with
   `target_workers = "1==0"`, and `task_channels.survey`).
 - **Verify with a real test call:** opt in and answer every question, then check in Datadog that
-  `f_savePostSurvey` ended with `success` and that there is no
+  every `f_recordAnswers_*` widget ended with `success` and that there is no
   `service:twilio-lambda status:error "Couldn't match task to queue" <AccountSID>` error for the account.
