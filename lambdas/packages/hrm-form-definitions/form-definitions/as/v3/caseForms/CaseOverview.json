@@ -1,0 +1,53 @@
+[
+  {
+    "name": "status",
+    "label": "Case Status",
+    "type": "select",
+    "isPII": false
+  },
+  {
+    "name": "childIsAtRisk",
+    "label": "Help seeker is at risk",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "followUpDate",
+    "label": "Follow Up Date",
+    "type": "date-input",
+    "isPII": false
+  },
+  {
+    "name": "priority",
+    "label": "Priority",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "High",
+        "label": "High"
+      },
+      {
+        "value": "Medium",
+        "label": "Medium"
+      },
+      {
+        "value": "Low",
+        "label": "Low"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "summary",
+    "label": "Case Summary",
+    "type": "textarea",
+    "placeholder": "No case summary",
+    "rows": 5,
+    "width": 300,
+    "isPII": true
+  }
+]

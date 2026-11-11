@@ -142,7 +142,7 @@ locals {
         }
       }
     }
-    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
+    get_profile_flags_for_identifier_base_url = "https://hrm-production.tl.techmatters.org/lambda/twilio/account-scoped"
     #System Down Configuration
     system_down_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/system-down.tftpl"
     enable_system_down       = true
@@ -156,5 +156,11 @@ locals {
       recording_url                    = "https://<place_holder>.mp3"
     }
     debug_mode = "widget_failures"
+
+    # Okta SAML app for this environment (okta-app stage). See twilio-iac/docs/okta.md
+    okta_app = {
+      import_existing         = true
+      optional_attribute_sets = ["labels", "team"]
+    }
   }
 }

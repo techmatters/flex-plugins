@@ -166,6 +166,11 @@ locals {
     lex_v2_bot_languages = {
       en_USCH : ["pre_survey", "post_survey"]
       es_USCH : ["pre_survey", "post_survey"]
+    # Okta SAML app for this environment (okta-app stage). See twilio-iac/docs/okta.md
+    okta_app = {
+      import_existing         = true
+      label                   = "STG_Childhelp (USCH)"
+      optional_attribute_sets = ["labels", "team"]
     }
  }
 }

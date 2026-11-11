@@ -20,6 +20,7 @@ custom-channel callbacks) are intentionally not listed here.
 | [`hrm/savePostSurvey`](#hrmsavepostsurvey) | Save voice (IVR) post-survey answers to HRM and Insights |
 | [`conversation/sendMessageAndRunJanitor`](#conversationsendmessageandrunjanitor) | Send a final message and close the conversation |
 | [`conversation/sendStudioMessage`](#conversationsendstudiomessage) | Detach Studio and send a system message (system-down flow) |
+| [`conversation/setFlowMemory`](#conversationsetflowmemory) | Keep values on the conversation for later executions (e.g. after a chatbot) |
 | [`voicemail/recordingCompleteCallback`](#voicemailrecordingcompletecallback) | Create a voicemail task after a recording |
 
 ---
@@ -575,6 +576,56 @@ sends a system message. It is used by the shared `system-down.tftpl`.
 ```
 
 **Response:** the Twilio message that was sent. Nothing to read.
+
+---
+
+## conversation/setFlowMemory
+
+Keeps values for the rest of the conversation's Studio executions. Studio variables
+(`flow.variables`) end with the execution, and a chatbot handing the conversation back
+(`captureChannelWithBot` with `releaseType: triggerStudioFlow`) starts a new one. The
+conversation's attributes outlive both: this route merges the values into its `flowMemory`
+attribute. **Conversations only.**
+
+**URL:** `${lambda_twilio_account_scoped_url}/conversation/setFlowMemory`
+
+| Param | Required | Example | Notes |
+|---|---|---|---|
+| `conversationSid` | yes | `{{flow.channel.address}}` | A Conversations SID (`CH...`) |
+| `flowMemory` | yes | `{"entryPoint": "sms_redirect"}` | **Object** of the values to keep (a JSON string also works, e.g. in form parameters). Keys: letters, numbers and underscores, not starting with a number. |
+
+**Example body:**
+
+```json
+{
+  "conversationSid": "{{flow.channel.address}}",
+  "flowMemory": {
+    "entryPoint": "sms_redirect",
+    "menuChoice": "{{widgets.send_wait_sms_en_menu.inbound.Body}}"
+  }
+}
+```
+
+**Response:** the whole flow memory after the change:
+
+```json
+{ "flowMemory": { "entryPoint": "sms_redirect", "menuChoice": "2" } }
+```
+
+**Use the result:** later executions read the values from the trigger,
+`{{trigger.conversation.ChannelAttributes.flowMemory.entryPoint}}` (e.g. in a split at the top of
+the flow, after a chatbot hands the conversation back). The same execution can read
+`{{widgets.f_setFlowMemory.parsed.flowMemory.entryPoint}}`. Send `failed` to an error notification.
+
+**Good to know:**
+
+- Each call adds to what's kept: a key set again takes the new value, the others stay. Values
+  are set as Studio has them when the widget runs (`{{...}}` filled in), and stay strings.
+- Only `flowMemory` is written. The bots' memories (`memory`, or their `memoryAttribute`), release
+  flags and the capture's own attributes aren't touched; don't use `flowMemory` as a bot's
+  `memoryAttribute`, or the bot's answers replace it when it hands the conversation back.
+- Conversation attributes are limited in size by Twilio (16 KB in all): keep short values, not
+  whole messages or JSON documents.
 
 ---
 
