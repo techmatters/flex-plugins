@@ -194,6 +194,7 @@ export const transferStartHandler: FlexValidatedHandler = async (
     .fetch();
   const originalWorkerAttributes = JSON.parse(originalWorker.attributes);
   const transferMeta = {
+    initiatingWorkerSid: tokenResult.worker_sid,
     originalTask: taskSid,
     originalReservation: acceptedReservation.sid,
     originalCounselor: acceptedReservation.workerSid,

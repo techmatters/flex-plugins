@@ -233,6 +233,7 @@ describe('transferStartHandler', () => {
     }
 
     const expectedTransferMeta = {
+      initiatingWorkerSid: SUPERVISOR_WORKER_SID,
       originalTask: TASK_SID,
       originalReservation: ORIGINAL_RESERVATION_SID,
       originalCounselor: ORIGINAL_WORKER_SID,
@@ -286,6 +287,10 @@ describe('transferStartHandler', () => {
 
     expect(isOk(result)).toBe(true);
     expect(mockCreateInvite).toHaveBeenCalled();
+    expect(
+      mockCreateInvite.mock.calls[0][0].routing.properties.attributes.transferMeta
+        .initiatingWorkerSid,
+    ).toBe(ORIGINAL_WORKER_SID);
   });
 
   test('rebuilds stale transfer meta left by a previously rejected transfer', async () => {
@@ -320,6 +325,7 @@ describe('transferStartHandler', () => {
     const firstUpdateAttributes = JSON.parse(mockUpdateTask.mock.calls[0][0].attributes);
     expect(firstUpdateAttributes.transferMeta).toEqual({
       ...staleTransferMeta,
+      initiatingWorkerSid: ORIGINAL_WORKER_SID,
       originalReservation: ORIGINAL_RESERVATION_SID,
       sidWithTaskControl: DUMMY_RESERVATION_SID,
       transferStatus: 'accepted',
