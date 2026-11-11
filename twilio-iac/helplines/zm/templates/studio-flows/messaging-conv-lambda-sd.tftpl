@@ -100,28 +100,24 @@ ${
     },
     {
       "name": "no_img_msg",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${serverless_service_sid}",
-        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": 340,
           "y": 690
         },
-        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
         "parameters": [
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
-          },
           {
             "value": "{{flow.channel.address}}",
             "key": "conversationSid"
@@ -135,7 +131,7 @@ ${
             "key": "from"
           }
         ],
-        "url": "${serverless_url}/sendMessageAndRunJanitor"
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
@@ -623,28 +619,24 @@ ${
     },
     {
       "name": "send_message_run_janitor",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${serverless_service_sid}",
-        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": 1450,
           "y": 1030
         },
-        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
         "parameters": [
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
-          },
           {
             "value": "{{flow.channel.address}}",
             "key": "conversationSid"
@@ -658,7 +650,7 @@ ${
             "key": "from"
           }
         ],
-        "url": "${serverless_url}/sendMessageAndRunJanitor"
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
