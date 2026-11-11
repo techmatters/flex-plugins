@@ -192,6 +192,18 @@ export type Issue = {
 // Objects that don't need anything leading to them
 const STARTS = new Set<FlowObject['type']>(['incoming', 'text']);
 
+// A value in an imported widget's request body as it is live (e.g. its targetSkills)
+const studioBodyValue = (object: FlowObject, key: string): string | undefined => {
+  const body = object.studio?.properties?.body;
+  if (typeof body !== 'string') return undefined;
+  try {
+    const value = JSON.parse(body)[key];
+    return typeof value === 'string' ? value : undefined;
+  } catch {
+    return undefined;
+  }
+};
+
 /**
  * Everything worth fixing on the board, errors first. Errors are mistakes (names that break the
  * standards or repeat, a way out leading to two places); warnings are what's still missing in a
@@ -373,6 +385,31 @@ export const boardChecks = (
     }
     if (object.type === 'function' && !object.studio && !object.settings?.url?.trim()) {
       add({ severity: 'warning', message: `${name} has no address (URL) to call yet.`, objectId }, 'noUrl');
+    }
+    // A worker check with no skills counts every worker (imported ones may have them in Studio's body)
+    if (
+      (object.type === 'checkQueueAvailability' || object.type === 'checkWorkerLoggedIn') &&
+      !(object.settings?.targetSkills ?? studioBodyValue(object, 'targetSkills'))?.trim()
+    ) {
+      add(
+        {
+          severity: 'warning',
+          message: `${name} has no skills: it counts every worker, whatever they're set up for.`,
+          objectId,
+        },
+        'noSkills',
+      );
+    }
+    // Hold music from an address, but none given
+    if (object.type === 'sendToQueue' && object.settings?.waitMusic === 'address' && !object.settings.waitUrl?.trim()) {
+      add(
+        {
+          severity: 'warning',
+          message: `${name} plays an address while callers wait, but no address (waitUrl) is set.`,
+          objectId,
+        },
+        'noWaitUrl',
+      );
     }
     // What a Set variable sets: something, with keys Studio takes
     if (

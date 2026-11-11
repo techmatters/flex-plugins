@@ -440,6 +440,28 @@ test("a message's Studio name says its language", () => {
   expect(check('play_message_voice_en_closed')).toEqual(["“Closed” is in “es”, but its Studio name doesn't say so."]);
 });
 
+test('worker checks need skills (set on the board, or in the live body), and a hold address needs its URL', () => {
+  const check = (type: FlowObject['type'], extra: Partial<FlowObject>) =>
+    messagesOf({
+      frames: [],
+      objects: [named('w', type, undefined, { text: 'Who', ...extra })],
+      connections: [],
+    }).filter(text => /no skills|no address \(waitUrl\)/.test(text));
+  const noSkills = ["“Who” has no skills: it counts every worker, whatever they're set up for."];
+  expect(check('checkWorkerLoggedIn', {})).toEqual(noSkills);
+  expect(check('checkQueueAvailability', { settings: { targetSkills: ' ' } })).toEqual(noSkills);
+  expect(check('checkWorkerLoggedIn', { settings: { targetSkills: 'Phone,Advocate' } })).toEqual([]);
+  const live = (body: string) =>
+    ({ name: 'f_x', type: 'make-http-request', properties: { body } } as unknown as FlowObject['studio']);
+  expect(check('checkQueueAvailability', { studio: live('{"targetSkills": "Phone,Spanish"}') })).toEqual([]);
+  expect(check('checkQueueAvailability', { studio: live('{}') })).toEqual(noSkills);
+
+  const noUrl = ['“Who” plays an address while callers wait, but no address (waitUrl) is set.'];
+  expect(check('sendToQueue', { settings: { waitMusic: 'address' } })).toEqual(noUrl);
+  expect(check('sendToQueue', { settings: { waitMusic: 'address', waitUrl: 'https://x/hold' } })).toEqual([]);
+  expect(check('sendToQueue', { settings: { waitMusic: 'recording' } })).toEqual([]);
+});
+
 test("Check operating hours asks about a channel and office in the helpline's operating hours", () => {
   const hours = { hasOperatingHours: true, channels: ['sms', 'voice'], offices: ['preClosing'] };
   const check = (settings?: Record<string, string>, extra: Partial<FlowObject> = {}, operatingHours = hours) =>
