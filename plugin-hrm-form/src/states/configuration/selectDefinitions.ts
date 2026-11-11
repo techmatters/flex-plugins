@@ -32,3 +32,6 @@ export const selectDefinitionVersionForContact = ({ [namespace]: { configuration
   configuration.definitionVersions[contact?.definitionVersion ?? ''] ??
   configuration.definitionVersions[contact?.rawJson?.definitionVersion ?? ''] ??
   configuration.currentDefinitionVersion;
+
+export const selectQueueGreeting = (state: RootState, queueName: string | undefined) =>
+  queueName ? selectCurrentDefinitionVersion(state)?.queueGreetings?.[queueName] : undefined;

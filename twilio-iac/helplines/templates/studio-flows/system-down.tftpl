@@ -290,9 +290,26 @@ ${
           "y": 1470
         },
         "method": "POST",
-        "content_type": "application/json;charset=utf-8",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"conversationSid\": \"{{flow.channel.address}}\",\n  \"channelSid\": \"{{flow.channel.address}}\",\n  \"message\": \"${system_down_flow_vars.message}\",\n  \"from\": \"${helpline}\"\n}",
+        "parameters": [
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "conversationSid"
+          },
+          {
+            "value": "{{flow.channel.address}}",
+            "key": "channelSid"
+          },
+          {
+            "value": "${system_down_flow_vars.message}",
+            "key": "message"
+          },
+          {
+            "value": "${helpline}",
+            "key": "from"
+          }
+        ],
         "url": "${lambda_twilio_account_scoped_url}/conversation/sendStudioMessage"
       }
     },

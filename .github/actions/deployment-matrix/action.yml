@@ -13,7 +13,7 @@
 # along with this program.  If not, see https://www.gnu.org/licenses/.
 
 # Auxiliary Github Action to add deploys to google sheets
-name: 'deployment-matrix-action'
+name: "deployment-matrix-action"
 description: Add deployment tag to Google Sheets to update matrix
 inputs:
   aws-access-key-id:
@@ -63,7 +63,7 @@ runs:
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.8'
+        python-version: "3.14"
     - name: Install dependencies
       shell: bash
       run: |

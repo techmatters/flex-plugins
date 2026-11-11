@@ -42,6 +42,9 @@ In order to set up the Aselo Terraform project:
 
 ## Running on a new environment
 
+For the complete process (Twilio, deployments, who does what, tracking checklist) see
+[docs/new-account-provisioning.md](docs/new-account-provisioning.md). This section covers the Terraform part.
+
 There are currently some gotchas which mean that, unfortunately, it's not a simple as running `make apply` when provisioning an environment for the first time (but hopefully should be good after that).
 
 The process for a first run is as follows:
@@ -81,10 +84,6 @@ The process for a first run is as follows:
 > *Twilio Account SID* - this is the account SID for the Twilio account you are working on. You can find this in the Twilio console, under the "Project Info" section.
 >
 > *Twilio Auth Token* - this is the auth token for the Twilio account you are working on. You can find this in the Twilio console, under the "Project Info" section.
->
-> *Datadog App ID* - this is the Datadog App ID for the Datadog account you are working on. You can find this in the Datadog console, under the "API" section.
->
-> *Datadog Access Token* - this is the Datadog Access Token for the Datadog account you are working on. You can find this in the Datadog console, under the "API" section.
 
 6. Run `make HL=<helpline_short_code> HL_ENV=<environment> plan` from the `/twilio-iac/stages/provision` directory and verify that the plan looks correct. Modify the helpline configuration in `common.hcl` and `<environment>.hcl` if necessary. If the plan looks correct then run `make HL=<helpline_short_code> HL_ENV=<environment> apply` from the same directory.
 
@@ -117,8 +116,7 @@ This Terraform project is currently incomplete, this is what isn't covered and n
 ### What it should do but doesn't
 
 * HRM process.env - not currently updated. Terraform isn't great at provisioning parts of files, refactoring this code to use SSM parameters which could be managed as terraform resources .
-* Okta - doesn't set up anything in Twilio or Okta for this right now. No sign of any support for setting up single sign on in the Twilio provider, but there is an Okta provider.
-* DataDog - it puts the keys you provide via tfvars in the AWS Parameter Store, but it won't provision the application in DataDog for you (but it could!).
+* Okta - the Okta side (helpline groups, Flex SAML apps) is covered by the `okta-org` and `okta-app` stages, see [docs/okta.md](docs/okta.md). The Twilio side (Flex SSO page) is still manual: there is no SSO support in the Twilio provider or documented API, so `scripts/python_tools/oktaSso.py flex-sso-handoff` prints the values to enter.
 * Default Studio Flows - it doesn't clean up the original 'Messaging Flow', because it's never under control of terraform. Could be removed with a provisioner possibly, but this might result in unexpected behaviour if somebody duplicates the terraform managed Messaging Flow to test with and then terraform goes and deletes it...
 ...
 

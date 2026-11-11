@@ -77,10 +77,17 @@
     "@react-pdf/layout": "3.6.4",
     "@react-pdf/textkit": "4.3.0",
     "@react-pdf/image": "2.2.2",
-    "@react-pdf/pdfkit": "3.1.2"
+    "@react-pdf/pdfkit": "3.1.2",
+    "tar": "7.5.22",
+    "serialize-javascript": "7.1.4",
+    "lodash": "^4.18.0",
+    "adm-zip": "0.6.1",
+    "webpack-dev-middleware": "7.4.6",
+    "@graphql-tools/merge": "9.2.8",
+    "@graphql-tools/utils": "12.1.0"
   },
   "devDependencies": {
-    "@actions/core": "^1.9.0",
+    "@actions/core": "^3.0.1",
     "@babel/core": "^7.29.6",
     "@babel/plugin-transform-runtime": "^7.16.4",
     "@babel/preset-typescript": "^7.18.6",

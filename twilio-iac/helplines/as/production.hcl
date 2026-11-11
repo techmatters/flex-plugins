@@ -9,7 +9,6 @@ locals {
     permission_config                     = "demo"
     custom_task_routing_filter_expression = "channelType IN ['instagram','messenger','web','whatsapp','telegram','line','voice', 'modica'] OR  twilioNumber == 'messenger:105642325869250', 'instagram:17841459369720372' "
     flow_vars = {
-      send_message_janitor_function_sid     = "ZHdfbbef84918d1e31fab54ab0cab8d0f7"
       bot_language                          = "en-US"
       widget_from                           = "Aselo"
       chat_blocked_message                  = "Sorry, you're not able to contact SafeSpot from this device or account"
