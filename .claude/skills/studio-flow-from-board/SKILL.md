@@ -47,7 +47,7 @@ A `<helpline>-<board>.flows.json` file. What matters here:
 | `board.status` | Where the design is: `ready` (Ready for Claude) is the one to implement; also `in-progress`, `imported`, `implemented`. `board.isNew`: not imported from the live config |
 | `studioTemplates[]` | One per frame: `text` is the `.tftpl` already written; `template` is where it lives (when the frame was imported from a live helpline); `channels` the channels using it; `variables` the texts to set in the `.hcl` files; `taskAttributes` the Send to queue task attributes that are new or changed (see step 4b); `todo` what it couldn't fill in |
 | `flows[].naming` | The flow's channels, languages and services: message widgets are named `<prefix><channel>_<language>_<service>_<what it is>` (e.g. `gather_input_voice_en_childhelp_service_menu`), each part optional. Name new message widgets this way |
-| `flows[].objects[]` | Each widget as designed: `studioName`, `kind`, `message` (script, language, `recordingFile`, `status`), `call` (route and body), `exits` (where each way out leads), `taskAttributes` (Send to queue: the task attributes as JSON and where they're kept), `currentStudioWidget` (the widget as it is live, for imported ones) |
+| `flows[].objects[]` | Each widget as designed: `studioName`, `kind`, `message` (script, language, `recordingFile`, `status`), `call` (route and body), `exits` (where each way out leads), `taskAttributes` (Send to queue: the task attributes as JSON and where they're kept), `currentStudioWidget` (the widget as it is live, for imported ones), `currentStudioSplit` (an imported check or Repeat shown as one object: the split after it, as live; `studioTemplates` writes both widgets back) |
 | `forClaude` | Sticky notes (`from: "note"`) and open widget comments (`from: "comment"`, with `author`) that mention `@claude`: requests from the team. `objectId` is the note or the widget it's on (find it in `flows[].objects[]`, or `layout` for a note), `frame` the note's frame |
 | `checks` | What the design still lacks (errors first) |
 | `recordingsBaseUrl` | The recordings bucket folders for staging and production |
@@ -137,6 +137,28 @@ should have flagged itself (like an open end it missed), say so too, so a check 
 7. **Decisions.** Each condition compares with what the widget before it really gives (an option's
    value, a key pressed, the chatbot's release flag), with the right case and operator, and
    `noMatch` goes somewhere that makes sense for an unexpected answer.
+8. **Unexpected answers are asked again.** After a Question (SMS, webchat) or a voice Menu, the
+   Decision's `noMatch` (something typed or pressed that isn't an option) goes to that question's
+   Repeat counter (`set_var_<name>_counter`, the one its `timeout` already uses), so the contact is
+   asked again and the flow moves on only at `max reached`. Flag a `noMatch` that silently picks an
+   option (USCH's SMS language menu took any reply as English, its voice menu sent any key to the
+   English queue) or ends the contact (a "please call" and close). If the question has no counter,
+   say so: one is added on the board, not by hand. Check every channel's flow, not only the one
+   being changed. Not for Decisions on values nobody types (pre-engagement form fields, a
+   chatbot's results, a route's response), or when the board says the default is intended. Also
+   read the `max reached` message: when the counter counts wrong answers as well as timeouts, a
+   closing text like "We haven't heard back from you" is wrong for someone who did answer.
+9. **SMS reply timeouts are 5 minutes.** Every Send and Wait for Reply in an SMS flow has
+   `"timeout": "300"` unless the board sets another value on purpose. The builder writes 300 for
+   new questions, but imported ones keep what they have live, often `3600`: an hour per try, so a
+   counter of 3 leaves the contact waiting 3 hours before the flow closes it. Set those to `300` and
+   list them in the hand-off. (Send to queue `timeout`, the time in the queue, stays 3600.)
+10. **Skilled worker available? sends `targetChannel`.** Every call to
+    `worker/isSkilledWorkerAvailable` has `targetChannel` in its body (`voice` in a voice flow,
+    `chat` in SMS and webchat), imported widgets included. Without it the route answers HTTP 400
+    and the widget always takes `failed`, which can look right (USCH's SMS staging flow sent every
+    Spanish contact to "wait for a counselor" this way, found by helpseeker-sim on 2026-11-06).
+    `isSkilledWorkerLoggedIn` takes no channel.
 
 **Keep adding to this list**: when a review (yours or the team's) finds a kind of problem that isn't
 here, add it as a new item, one short paragraph: what to check, where, and why it matters.
@@ -198,7 +220,9 @@ Kinds that become more than one widget, as the board writes them:
   `{% if flow.variables.<name>_counter %}{{flow.variables.<name>_counter | plus: 1}}{% else %}1{% endif %}`,
   then a `split-based-on` (`split_<name>`) on `{{flow.variables.<name>_counter}}`: `noMatch` goes
   back round (`repeat`), `greater_than` the times to repeat goes on (`max reached`). Used for
-  unrecognised input and timeouts (usnm's older `set_var_en_service_counter` / `split_end_cycle_en_service`).
+  unrecognised input and timeouts (usnm's older `set_var_en_service_counter` / `split_end_cycle_en_service`):
+  both the Question's `timeout` and its Decision's `noMatch` lead to `set_var_<name>_counter`
+  (step 1b, item 8).
 - **Messages' `from`** (Send message, Question, Send message and close): the board's From, always
   set (`${helpline}`, `Bot` or the text chosen; `message.from` in the export, and `text` already
   writes it). An empty one is an error in `checks`: fixed on the board, not here. Send Message /
@@ -206,7 +230,10 @@ Kinds that become more than one widget, as the board writes them:
   `to: "{{contact.channel.address}}"`.
 - **Messages' ways out**: a Send Message's `failed` goes where `sent` goes; a Send and Wait for
   Reply's `deliveryFailure` goes where `timeout` goes. The Decision after a Question splits on
-  `{{widgets.<name>.inbound.Body}}`. `text` already has all of this: don't change it.
+  `{{widgets.<name>.inbound.Body}}`. A Question waits `timeout` seconds for the reply: the board's
+  value, 300 (5 minutes) when not set. `text` already has all of this: don't change it. Exception:
+  imported Questions keep their live `timeout`, often `3600`; in SMS flows set those to `300`
+  (step 1b, item 9).
 - **Messages' `service` and `channel`** (Send Message, Send and Wait for Reply): always
   `{{trigger.conversation.InstanceSid}}` / `{{trigger.conversation.ChannelSid}}` (all new flows are
   Conversations). `text` already does this for new widgets and for imported ones changed on the
@@ -428,10 +455,21 @@ didn't touch, a whole flow being replaced), the environment is running something
 stop and tell them before they apply. Then hand over: they review, open the PR, apply, and test
 a call or message in staging.
 
+### 8. Test plan (helpseeker-sim)
+
+**Every flow change updates the helpline's test plan in the same piece of work**
+(`private-tools/helpseeker-sim/plans/<code>-staging.json`, rules in the `helpseeker-testing` skill):
+new tests (new IDs) for new options, queues and widgets, `expect` fixed for changed paths, removed
+paths' tests removed (their IDs never reused), `version`/`updated`/`notes` bumped. Once the change
+is applied in staging, **run every test of the changed flow** (all tests with its `endpoint`, via
+`--only`), not only the new ones: a change can break the paths next to it. Report the run in the
+standard format.
+
 ## Hand-off
 
 End with what was changed (files, uncommitted unless they asked), what the plan shows, what the
-review (step 1b) found and what was done about each, the live widgets renamed, a staging copy made (question 1), anything done before provision or chatbots were
+review (step 1b) found and what was done about each (`noMatch` re-asks and SMS timeouts changed by
+hand included: the board only has them once the helpline is imported again), the live widgets renamed, a staging copy made (question 1), anything done before provision or chatbots were
 ready, what was done for each `forClaude` request (or why not), what's left for the person
 (commit and push, apply, PR, publishing recordings, production),
 and any design warnings they chose to keep. Remind them to resolve the comments and remove the

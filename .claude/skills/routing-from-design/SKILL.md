@@ -112,6 +112,15 @@ design removed. Whitespace-only changes to workflows are harmless; say so. If it
 design didn't, the environment is running something else (question 2): stop and tell them before
 they apply.
 
+### 6. Test plan (helpseeker-sim)
+
+**Every routing change updates the helpline's test plan in the same piece of work**
+(`private-tools/helpseeker-sim/plans/<code>-staging.json`, rules in the `helpseeker-testing` skill):
+a test per new or changed queue/filter (`expect.queue`, `expect.filter`), `expect` fixed where a
+path now lands elsewhere, `version`/`updated`/`notes` bumped. Once applied in staging, **run every
+test of each flow that sends tasks to the changed workflow** (all tests with those endpoints, via
+`--only`), not only the new ones.
+
 ## Hand-off
 
 End with the files changed (uncommitted unless they asked), what the plan shows, and what's left

@@ -148,6 +148,13 @@ it that way.
    it changes bots the design didn't, the environment is running something else (question 2): stop
    and tell them before they apply.
 
+**Test plan (helpseeker-sim).** Every chatbot change updates the helpline's test plan in the same
+piece of work (`private-tools/helpseeker-sim/plans/<code>-staging.json`, rules in the
+`helpseeker-testing` skill): `messages` and `replies` fixed for changed or added questions and
+answers, the full-answers and all-`X` tests kept working, `version`/`updated`/`notes` bumped. Once
+applied in staging, **run every test of each flow that uses the bot** (all tests with those
+endpoints, via `--only`), not only the changed ones.
+
 ## Hand-off
 
 End with the files changed (uncommitted unless they asked), what the plan shows, and what's left
