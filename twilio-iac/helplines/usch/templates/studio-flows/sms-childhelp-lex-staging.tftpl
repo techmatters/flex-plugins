@@ -950,7 +950,7 @@ ${
                 "value": "0"
               }
             ],
-            "next": "send_to_queue_childhelp_spanish"
+            "next": "send_message_sms_es_childhelp_prequeue"
           }
         ],
         "properties": {
@@ -982,7 +982,7 @@ ${
           "channel": "${task_channel_sids.chat}",
           "attributes": "{\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"sms\",\n  \"customChannelType\": \"sms\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\": \"${helpline}\",\n  \"service\": \"ChildHelp\",\n  \"counselingLanguage\": \"Spanish\",\n  \"language\": \"es-USCH\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}",
           "offset": {
-            "x": 2780,
+            "x": 3120,
             "y": 920
           }
         }
@@ -1037,7 +1037,7 @@ ${
                 "value": "Yes,1,Sí,sí,Si,si,SI"
               }
             ],
-            "next": "send_to_queue_childhelp_spanish"
+            "next": "send_message_sms_es_childhelp_prequeue"
           },
           {
             "event": "match",
@@ -1283,6 +1283,32 @@ ${
           "message_type": "custom",
           "to": "{{contact.channel.address}}",
           "body": "${flow_vars.send_message_sms_en_childhelp_prequeue}"
+        }
+      },
+      {
+        "name": "send_message_sms_es_childhelp_prequeue",
+        "type": "send-message",
+        "transitions": [
+          {
+            "event": "sent",
+            "next": "send_to_queue_childhelp_spanish"
+          },
+          {
+            "event": "failed",
+            "next": "send_to_queue_childhelp_spanish"
+          }
+        ],
+        "properties": {
+          "offset": {
+            "x": 2780,
+            "y": 920
+          },
+          "service": "{{trigger.conversation.InstanceSid}}",
+          "channel": "{{trigger.conversation.ChannelSid}}",
+          "from": "${helpline}",
+          "message_type": "custom",
+          "to": "{{contact.channel.address}}",
+          "body": "${flow_vars.send_message_sms_es_childhelp_prequeue}"
         }
       },
       {
