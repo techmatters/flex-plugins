@@ -20,6 +20,8 @@ import type { StudioFlowSID } from '@tech-matters/twilio-types';
 export type PostSurveyConfiguration = {
   studioFlowSid: StudioFlowSID;
   flowTrigger: 'rest' | 'inProgressCall';
+  // Create the post survey control task before triggering the flow, and pass its SID to the flow as controlTaskSid
+  createSurveyControlTask?: boolean;
 };
 
 type SurveyConfigurationAttributes = Record<string, any> & {
