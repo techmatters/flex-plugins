@@ -157,6 +157,10 @@ ${
           {
             "value": channel_name,
             "key": "channel"
+          },
+          {
+            "value": "{{trigger.conversation.From}}",
+            "key": "from"
           }
         ],
         "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
