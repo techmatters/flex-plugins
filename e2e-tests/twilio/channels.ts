@@ -74,9 +74,6 @@ export const deleteSmsConversations = async (): Promise<void> => {
   const serviceAccountSid = getConfigValue('twilioAccountSid') as string;
   const serviceAuthToken = getConfigValue('twilioAuthToken') as string;
   const serviceSmsNumber = getConfigValue('smsPhoneNumber') as string;
-
-  const senderAccountSid = getConfigValue('clientTwilioAccountSid') as string;
-  const senderAuthToken = getConfigValue('clientTwilioAuthToken') as string;
   const senderSmsNumber = getConfigValue('clientSmsPhoneNumber') as string;
 
   // Delete conversations from service Twilio account
@@ -85,14 +82,6 @@ export const deleteSmsConversations = async (): Promise<void> => {
     serviceAuthToken,
     senderSmsNumber,
     serviceSmsNumber,
-  );
-
-  // Delete conversations from sender Twilio account
-  await deleteSmsConversationFromOneEnd(
-    senderAccountSid,
-    senderAuthToken,
-    serviceSmsNumber,
-    senderSmsNumber,
   );
 };
 
