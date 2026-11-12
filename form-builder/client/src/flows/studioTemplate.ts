@@ -1241,7 +1241,7 @@ export const toStudioFlow = (
               workflow: workflow ? `\${workflow_sids.${workflow}}` : TODO,
               channel: taskChannel ? `\${task_channel_sids.${taskChannel}}` : TODO,
               ...waitSettingsOf(object, name),
-              timeout: object.settings?.timeout || '3600',
+              timeout: object.settings?.timeout || '86400',
               attributes: attributes ? attributesJson : TODO,
             },
           },

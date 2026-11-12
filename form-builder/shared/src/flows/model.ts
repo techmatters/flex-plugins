@@ -1080,8 +1080,8 @@ export const OBJECT_TYPES: Record<FlowObjectType, ObjectTypeInfo> = {
         key: 'timeout',
         label: 'Timeout (seconds)',
         kind: 'number',
-        placeholder: '3600',
-        hint: 'How long it can wait in the queue. 3600 (an hour) when not set.',
+        placeholder: '86400',
+        hint: 'How long it can wait in the queue. 86400 (24 hours) when not set.',
       },
       // What callers hear while they wait (waitUrl)
       {

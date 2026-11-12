@@ -271,8 +271,8 @@ describe('menus, repeats and chatbots', () => {
         board('voice', [object('queue', 'sendToQueue', { studioName: 'send_to_queue_en_std', settings })], []),
         { id: 'f', title: 'Flow', x: 0, y: 0, width: 900, height: 600, channel: 'voice' },
       );
-    // Twilio's music: no waitUrl; an hour unless set
-    expect(queue({}).flow.states[0].properties).toMatchObject({ timeout: '3600' });
+    // Twilio's music: no waitUrl; 24 hours unless set
+    expect(queue({}).flow.states[0].properties).toMatchObject({ timeout: '86400' });
     expect(queue({}).flow.states[0].properties.waitUrl).toBeUndefined();
     expect(
       queue({
