@@ -23,6 +23,7 @@ import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
+import { patchTaskAttributes } from '../task/patchTaskAttributes';
 
 export type Body = {
   taskSid: TaskSID;
@@ -33,6 +34,8 @@ export type Body = {
 };
 
 const DUMMY_RESERVATION_SID = 'WR00000000000000000000000000000000';
+
+class ActiveTransferError extends Error {}
 
 const DIRECT_TRANSFER_QUEUE_FRIENDLY_NAME = 'Everyone';
 
@@ -191,6 +194,7 @@ export const transferStartHandler: FlexValidatedHandler = async (
     .fetch();
   const originalWorkerAttributes = JSON.parse(originalWorker.attributes);
   const transferMeta = {
+    initiatingWorkerSid: tokenResult.worker_sid,
     originalTask: taskSid,
     originalReservation: acceptedReservation.sid,
     originalCounselor: acceptedReservation.workerSid,
@@ -205,18 +209,50 @@ export const transferStartHandler: FlexValidatedHandler = async (
     mode,
     targetType: transferTargetType,
   };
-  const attributesWithTransferMeta = {
+  let attributesWithTransferMeta: Record<string, any> = {
     ...originalAttributes,
     transferStarted: true,
     transferMeta,
   };
-  await workspace.tasks
-    .get(taskSid)
-    .update({ attributes: JSON.stringify(attributesWithTransferMeta) });
+  try {
+    const patchResult = await patchTaskAttributes(
+      accountSid,
+      taskSid,
+      currentAttributes => {
+        const status = currentAttributes.transferMeta?.transferStatus;
+        if (
+          currentAttributes.transferMeta?.originalTask === taskSid &&
+          (status === 'transferring' || status === 'accepted')
+        ) {
+          throw new ActiveTransferError();
+        }
 
-  const newAttributes = {
+        attributesWithTransferMeta = {
+          ...currentAttributes,
+          transferStarted: true,
+          transferMeta: {
+            ...transferMeta,
+            originalConversationSid:
+              currentAttributes.conversationSid || currentAttributes.channelSid,
+          },
+        };
+        return attributesWithTransferMeta;
+      },
+      { requireEtag: true },
+    );
+    if (isErr(patchResult)) {
+      return newHttpErrorResult(patchResult.message, 500);
+    }
+  } catch (err) {
+    if (err instanceof ActiveTransferError) {
+      return newHttpErrorResult('A transfer is already active for this task', 409);
+    }
+    return newHttpErrorResult(err as Error, 500);
+  }
+
+  const newAttributes: Record<string, any> = {
     ...attributesWithTransferMeta,
-    conversations: originalAttributes.conversations, // link the new task to the original in Flex Insights
+    conversations: attributesWithTransferMeta.conversations, // link the new task to the original in Flex Insights
     ignoreAgent, // update task attributes to ignore the agent who transferred the task
     targetSid, // update task attributes to include the required targetSid on the task (workerSid or a queueSid)
     transferTargetType,
