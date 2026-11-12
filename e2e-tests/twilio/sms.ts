@@ -68,7 +68,13 @@ export const checkForMessageOnClient = async (messageText: string): Promise<bool
       dateSentAfter: sessionStartTime,
     });
     console.debug(`${messages.length} messages since session started:`, messages);
-    if (messages.find(({ body }) => body === messageText)) {
+    const earliestMessageTime = Math.floor(sessionStartTime.getTime() / 1000) * 1000;
+    if (
+      messages.some(
+        ({ body, dateSent }) =>
+          body === messageText && dateSent && dateSent.getTime() >= earliestMessageTime,
+      )
+    ) {
       return true;
     }
     await delay(1000);
