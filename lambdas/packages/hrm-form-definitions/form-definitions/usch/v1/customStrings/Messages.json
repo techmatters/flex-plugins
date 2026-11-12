@@ -6,5 +6,13 @@
     "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
     "ClosedHolidays": "The helpline is closed due to a holiday.",
     "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  },
+  "es": {
+    "WelcomeMsg": "¡Hola! Soy un consejero. Esta línea de chat no recibe reportes de abuso, pero estamos aquí para escucharte y ayudarte brindándote información, recursos y apoyo emocional. ¿Cómo puedo ayudarte hoy?",
+    "GoodbyeMsg": "El consejero ha salido del chat. Gracias por comunicarte con nosotros. Por favor, vuelve a contactarnos si necesitas más ayuda.",
+    "EndChatMsg": "Terminaste el chat. Gracias por comunicarte con nosotros. Por favor, vuelve a contactarnos si necesitas más ayuda.",
+    "ClosedOutOfShift": "La línea de ayuda está fuera de horario. Por favor, comunícate con nosotros más tarde.",
+    "ClosedHolidays": "La línea de ayuda está cerrada por un día festivo.",
+    "UnsupportedMediaErrorMsg": "Lo sentimos, el mensaje que acabas de enviar no es compatible y no se pudo entregar."
   }
 }
