@@ -53,6 +53,7 @@ ${
         "properties": {
           "workflow": "${workflow_sids.master}",
           "channel": "${task_channel_sids.chat}",
+          "timeout": "86400",
           "attributes": "${channel_attributes.default}",
           "offset": {
             "x": 400,
@@ -980,6 +981,7 @@ ${
         "properties": {
           "workflow": "${workflow_sids.master}",
           "channel": "${task_channel_sids.chat}",
+          "timeout": "86400",
           "attributes": "{\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"sms\",\n  \"customChannelType\": \"sms\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\": \"${helpline}\",\n  \"service\": \"ChildHelp\",\n  \"counselingLanguage\": \"Spanish\",\n  \"language\": \"es-USCH\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}",
           "offset": {
             "x": 3120,
@@ -1255,7 +1257,7 @@ ${
           },
           "workflow": "${workflow_sids.master}",
           "channel": "${task_channel_sids.chat}",
-          "timeout": "3600",
+          "timeout": "86400",
           "attributes": "{\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"sms\",\n  \"customChannelType\": \"sms\", \n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"service\":\"ChildHelp\",\n  \"language\":\"en-USCH\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}"
         }
       },
@@ -1415,7 +1417,7 @@ ${
           },
           "workflow": "${workflow_sids.master}",
           "channel": "${task_channel_sids.chat}",
-          "timeout": "3600",
+          "timeout": "86400",
           "attributes": "{\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"sms\",\n  \"customChannelType\": \"sms\", \n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"twilioNumber\": \"{{trigger.conversation.ChannelAttributes.twilioNumber}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"${helpline}\",\n  \"service\":\"AdvocateLine\",\n  \"language\":\"en-USCH\",\n  \"transferTargetType\": \"\",\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}"
         }
       },
