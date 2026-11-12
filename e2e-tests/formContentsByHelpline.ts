@@ -60,7 +60,9 @@ export const formContentsByHelpline = {
     categories: {
       Education: ['Disability Rights for Education'],
     },
-    caseInformation: {},
+    caseInformation: {
+      transferredTo988: 'No',
+    },
     callType: 'child',
   },
 };
