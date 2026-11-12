@@ -13,73 +13,32 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { adjustChatCapacity } from '../conversation/adjustChatCapacity';
-import { AccountScopedHandler, HttpRequest } from '../httpTypes';
 import { AccountSID, TaskSID, WorkerSID } from '@tech-matters/twilio-types';
 import {
   getConversationsTransferWorkflow,
-  getMasterWorkflowSid,
   getTwilioClient,
   getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
-import { newMissingParameterResult } from '../httpErrors';
+import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
+import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
 
 export type Body = {
   taskSid: TaskSID;
   targetSid: string;
-  ignoreAgent: WorkerSID;
+  // Sent by older clients - the lambda derives the agent to ignore from the task's accepted reservation instead
+  ignoreAgent?: WorkerSID;
   mode: 'COLD' | 'WARM';
 };
 
-// Only used for direct transfers of conversations, not programmable chat channels
+const DUMMY_RESERVATION_SID = 'WR00000000000000000000000000000000';
+
 const DIRECT_TRANSFER_QUEUE_FRIENDLY_NAME = 'Everyone';
 
-async function setDummyChannelToTask(
-  accountSid: AccountSID,
-  sid: string,
-  taskToCloseAttributes: any,
-) {
-  const client = await getTwilioClient(accountSid);
-  const workspaceSid = await getWorkspaceSid(accountSid);
-  // set the channelSid to a dummy value. This keeps the session alive
-  const attributesWithDummyChannel = {
-    ...taskToCloseAttributes,
-    channelSid: 'CH00000000000000000000000000000000',
-  };
+type ValidationResult = { type: 'worker'; worker: WorkerInstance } | { type: 'queue' };
 
-  return client.taskrouter.v1.workspaces
-    .get(workspaceSid)
-    .tasks(sid)
-    .update({ attributes: JSON.stringify(attributesWithDummyChannel) });
-}
-
-async function setDummyChannel(
-  accountSid: AccountSID,
-  body: Required<Pick<Body, 'taskSid' | 'targetSid' | 'ignoreAgent' | 'mode'>>,
-) {
-  if (body.mode !== 'COLD') return null;
-
-  const client = await getTwilioClient(accountSid);
-  const workspaceSid = await getWorkspaceSid(accountSid);
-
-  // retrieve attributes of the task to close
-  const taskToClose = await client.taskrouter.v1.workspaces
-    .get(workspaceSid)
-    .tasks.get(body.taskSid)
-    .fetch();
-
-  const taskToCloseAttributes = JSON.parse(taskToClose.attributes);
-
-  return setDummyChannelToTask(accountSid, body.taskSid, taskToCloseAttributes);
-}
-
-type ValidationResult =
-  | { type: 'worker'; worker: WorkerInstance; shouldIncrease: boolean }
-  | { type: 'queue' };
-
-// if transfer targets a worker, validates that it can be effectively transferred, and if the worker's chat capacity needs to increase
+// If the transfer targets a worker, validate that the worker is online and has capacity.
 async function validateChannelIfWorker(
   accountSid: AccountSID,
   targetSid: string,
@@ -111,7 +70,6 @@ async function validateChannelIfWorker(
 
   const unavailableVoice =
     channelType === 'voice' && !workerChannel.availableCapacityPercentage;
-  // if maxMessageCapacity is not set, just use configuredCapacity without adjustChatCapacity
   const unavailableChat = workerAttr.maxMessageCapacity
     ? channelType !== 'voice' &&
       !workerChannel.availableCapacityPercentage &&
@@ -125,37 +83,16 @@ async function validateChannelIfWorker(
     });
   }
 
-  const shouldIncrease =
-    workerAttr.maxMessageCapacity &&
-    channelType !== 'voice' &&
-    !workerChannel.availableCapacityPercentage &&
-    workerChannel.configuredCapacity < workerAttr.maxMessageCapacity;
-
-  return newOk({ type: 'worker', worker, shouldIncrease });
+  return newOk({ type: 'worker', worker });
 }
 
-async function increaseChatCapacity(
-  accountSid: AccountSID,
-  validationResult: ValidationResult,
-) {
-  // once created the task, increase worker chat capacity if needed
-  if (validationResult.type === 'worker' && validationResult.shouldIncrease) {
-    const { worker } = validationResult;
-
-    await adjustChatCapacity(accountSid, {
-      workerSid: worker?.sid as WorkerSID,
-      adjustment: 'increaseUntilCapacityAvailable',
-    });
-  }
-}
-
-export const transferStartHandler: AccountScopedHandler = async (
-  { body: event }: HttpRequest,
+export const transferStartHandler: FlexValidatedHandler = async (
+  { body: event, tokenResult },
   accountSid: AccountSID,
 ) => {
   console.info('===== transferStart invocation =====');
 
-  const { taskSid, targetSid, ignoreAgent, mode } = event;
+  const { taskSid, targetSid, mode } = event as Body;
 
   if (taskSid === undefined) {
     return newMissingParameterResult('taskSid');
@@ -163,22 +100,51 @@ export const transferStartHandler: AccountScopedHandler = async (
   if (targetSid === undefined) {
     return newMissingParameterResult('targetSid');
   }
-  if (ignoreAgent === undefined) {
-    return newMissingParameterResult('ignoreAgent');
-  }
   if (mode === undefined) {
     return newMissingParameterResult('mode');
   }
   const client = await getTwilioClient(accountSid);
   const workspaceSid = await getWorkspaceSid(accountSid);
+  const workspace = client.taskrouter.v1.workspaces.get(workspaceSid);
 
   // retrieve attributes of the original task
-  const originalTask = await client.taskrouter.v1.workspaces
-    .get(workspaceSid)
-    .tasks.get(taskSid)
-    .fetch();
+  const originalTask = await workspace.tasks.get(taskSid).fetch();
   console.debug('Original task fetched', originalTask);
   const originalAttributes = JSON.parse(originalTask.attributes);
+  const { flexInteractionSid, flexInteractionChannelSid } = originalAttributes;
+
+  // Look up the reservation currently assigned the task so the transfer can be started by a worker other than the one assigned the task (i.e. a supervisor taking the task over)
+  const reservations = await workspace.tasks.get(taskSid).reservations.list();
+  const acceptedReservation = reservations.find(
+    reservation => reservation.reservationStatus === 'accepted',
+  );
+
+  if (
+    !isSupervisor(tokenResult) &&
+    acceptedReservation?.workerSid !== tokenResult.worker_sid
+  ) {
+    return newHttpErrorResult(
+      'Unauthorized: only a supervisor or the worker currently assigned the task can start a transfer',
+      403,
+    );
+  }
+
+  if (!acceptedReservation) {
+    return newHttpErrorResult(
+      `Cannot start a transfer for task ${taskSid}: no accepted reservation found`,
+      400,
+    );
+  }
+
+  if (!flexInteractionSid || !flexInteractionChannelSid) {
+    return newHttpErrorResult(
+      `Cannot transfer task ${taskSid}: only Conversations tasks are supported`,
+      400,
+    );
+  }
+
+  // The agent the task is being transferred away from - derived server side so takeovers started by a supervisor don't ignore the supervisor
+  const ignoreAgent = acceptedReservation.workerSid;
 
   const transferTargetType = targetSid.startsWith('WK') ? 'worker' : 'queue';
 
@@ -197,55 +163,68 @@ export const transferStartHandler: AccountScopedHandler = async (
     });
   }
 
-  /**
-   * Conversations comes with attributes.conversations filled in.
-   * The code below can be simplified after all channels are moved to conversations.
-   */
-  const originalConversations = originalAttributes.conversations;
-  let conversations;
+  let originalParticipantSid: string | undefined;
+  try {
+    const interactionChannelParticipants = await client.flexApi.v1.interaction
+      .get(flexInteractionSid)
+      .channels.get(flexInteractionChannelSid)
+      .participants.list();
 
-  if (originalConversations) {
-    conversations = originalConversations;
-  } else if (originalAttributes.conversation) {
-    conversations = originalAttributes.conversation;
-  } else {
-    conversations = { conversation_id: taskSid };
+    originalParticipantSid = interactionChannelParticipants.find(
+      p => p.type === 'agent',
+    )?.sid;
+  } catch (err) {
+    return newHttpErrorResult(err as Error, 500);
   }
 
-  const newAttributes = {
+  /**
+   * Replicates TransferHelpers.setTransferMeta from the Flex plugin.
+   * Setting the transfer metadata server side (rather than via task.setAttributes in Flex)
+   * allows a supervisor to start a transfer of a task assigned to another worker ('take over').
+   * It is always rebuilt from the task's accepted reservation, so stale metadata left by a
+   * previously rejected transfer can't leave the original worker in control of the task.
+   * Updating the original task's attributes here is also what locks the form for the
+   * original worker while the reservation is offered to the transfer target.
+   */
+  const originalWorker = await workspace.workers
+    .get(acceptedReservation.workerSid)
+    .fetch();
+  const originalWorkerAttributes = JSON.parse(originalWorker.attributes);
+  const transferMeta = {
+    originalTask: taskSid,
+    originalReservation: acceptedReservation.sid,
+    originalCounselor: acceptedReservation.workerSid,
+    originalCounselorName:
+      originalWorkerAttributes.full_name ?? originalWorker.friendlyName,
+    // save the original conversation sid, so we can cleanup the listeners if transferred successfully
+    originalConversationSid:
+      originalAttributes.conversationSid || originalAttributes.channelSid,
+    // if cold, set control to dummy value so Task Janitor completes this one
+    sidWithTaskControl: mode === 'WARM' ? '' : DUMMY_RESERVATION_SID,
+    transferStatus: mode === 'WARM' ? 'transferring' : 'accepted',
+    mode,
+    targetType: transferTargetType,
+  };
+  const attributesWithTransferMeta = {
     ...originalAttributes,
-    conversations, // set up attributes of the new task to link them to the original task in Flex Insights
+    transferStarted: true,
+    transferMeta,
+  };
+  await workspace.tasks
+    .get(taskSid)
+    .update({ attributes: JSON.stringify(attributesWithTransferMeta) });
+
+  const newAttributes = {
+    ...attributesWithTransferMeta,
+    conversations: originalAttributes.conversations, // link the new task to the original in Flex Insights
     ignoreAgent, // update task attributes to ignore the agent who transferred the task
     targetSid, // update task attributes to include the required targetSid on the task (workerSid or a queueSid)
     transferTargetType,
+    originalParticipantSid,
   };
 
-  /**
-   * Check if is transfering a conversation.
-   * It might be better to accept an `isConversation` parameter.
-   * But for now, we can check if a conversation exists given a conversationId.
-   */
-
-  const { flexInteractionSid, flexInteractionChannelSid } = originalAttributes;
-
-  let isConversation = Boolean(flexInteractionSid && flexInteractionChannelSid);
-  if (flexInteractionSid) {
-    try {
-      const interactionChannelParticipants = await client.flexApi.v1.interaction
-        .get(flexInteractionSid)
-        .channels.get(flexInteractionChannelSid)
-        .participants.list();
-
-      newAttributes.originalParticipantSid = interactionChannelParticipants.find(
-        p => p.type === 'agent',
-      )?.sid;
-    } catch (err) {
-      isConversation = false;
-    }
-  }
-
   let newTaskSid;
-  if (isConversation) {
+  try {
     const conversationsTransferWorkflowSid =
       await getConversationsTransferWorkflow(accountSid);
     if (transferTargetType === 'worker') {
@@ -327,28 +306,19 @@ export const transferStartHandler: AccountScopedHandler = async (
         error: { statusCode: 400 },
       });
     }
-  } else {
-    const programmableChatTransferWorkflowSid = await getMasterWorkflowSid(accountSid);
-    // Edit channel attributes so that original task won't cause issues with the transferred one
-    await setDummyChannel(accountSid, {
-      mode,
-      ignoreAgent,
-      targetSid,
-      taskSid,
-    });
-
-    // create New task
-    const newTask = await client.taskrouter.v1.workspaces.get(workspaceSid).tasks.create({
-      workflowSid: programmableChatTransferWorkflowSid,
-      taskChannel: originalTask.taskChannelUniqueName,
-      attributes: JSON.stringify(newAttributes),
-      priority: 100,
-    });
-
-    newTaskSid = newTask.sid;
-
-    // Increase the chat capacity for the target worker (if needed)
-    await increaseChatCapacity(accountSid, validationResult.data);
+  } catch (err) {
+    // Roll back the transfer metadata set on the original task above so it isn't left looking 'mid transfer'
+    try {
+      await workspace.tasks
+        .get(taskSid)
+        .update({ attributes: JSON.stringify(originalAttributes) });
+    } catch (rollbackErr) {
+      console.error(
+        `Failed to roll back transfer metadata on task ${taskSid} after a failed transfer`,
+        rollbackErr,
+      );
+    }
+    return newHttpErrorResult(err as Error, 500);
   }
 
   return newOk({ taskSid: newTaskSid });

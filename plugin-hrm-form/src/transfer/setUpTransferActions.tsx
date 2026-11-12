@@ -71,6 +71,33 @@ const getStateContactForms = (taskSid: string): ContactState => {
 };
 
 /**
+ * Temporary Fix:
+ * - Sometimes a call task comes without the conference object set in its attributes.
+ * - The code below updates the task attributes to include the conference information
+ *   if it is missing.
+ */
+const ensureConferenceAttributes = async (task: ITask): Promise<void> => {
+  const { conferenceSid } = task.conference || {};
+  const conferenceSidFromAttributes = task.attributes?.conference?.sid;
+  if (!conferenceSid && !conferenceSidFromAttributes) {
+    console.warn('Could not find any conferenceSid', task.taskSid);
+  } else if (conferenceSid && !conferenceSidFromAttributes) {
+    console.warn('Updating task attributes with conferenceSid', task.taskSid, conferenceSid);
+    // const customer = task.conference?.participants.find(p => p.participantType === 'customer').participantSid;
+    await task.setAttributes({
+      ...task.attributes,
+      conference: {
+        sid: conferenceSid,
+        // TODO: Do we need to set any participants as well?
+        // participants: {
+        //   customer,
+        // },
+      },
+    });
+  }
+};
+
+/**
  * Custom override for TransferTask action. Saves the form to share with another counselor (if possible) and then starts the transfer
  */
 const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction => async (
@@ -89,7 +116,7 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
     return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
   }
 
-  const { workerSid, counselorName } = setupObject;
+  const { workerSid } = setupObject;
 
   // save current form state (if there is a form)
   const contact = getStateContactForms(payload.task.taskSid);
@@ -97,52 +124,34 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
 
   await saveFormSharedState(contact, payload.task);
 
-  // set metadata for the transfer
-  await TransferHelpers.setTransferMeta(payload, counselorName);
-
   if (TaskHelper.isCallTask(payload.task)) {
-    /**
-     * Temporary Fix:
-     * - Sometimes a call task comes without the conference object set in its attributes.
-     * - The code below updates the task attributes to include the conference information
-     *   if it is missing.
-     */
-    const { conferenceSid } = payload.task.conference || {};
-    const conferenceSidFromAttributes = payload.task.attributes?.conference?.sid;
-    if (!conferenceSid && !conferenceSidFromAttributes) {
-      console.warn('Could not find any conferenceSid', payload.task.taskSid);
-    } else if (conferenceSid && !conferenceSidFromAttributes) {
-      console.warn('Updating task attributes with conferenceSid', payload.task.taskSid, conferenceSid);
-      // const customer = payload.task.conference?.participants.find(p => p.participantType === 'customer').participantSid;
-      await payload.task.setAttributes({
-        ...payload.task.attributes,
-        conference: {
-          sid: conferenceSid,
-          // TODO: Do we need to set any participants as well?
-          // participants: {
-          //   customer,
-          // },
-        },
-      });
-    }
+    // set metadata for the transfer - chat transfers have it set server side by the lambda transferStart endpoint,
+    // which supports supervisors 'taking over' tasks assigned to other workers (task.setAttributes only works on the current worker's own tasks)
+    await TransferHelpers.setTransferMeta(payload, setupObject.counselorName);
+    await ensureConferenceAttributes(payload.task);
 
     const disableTransfer = !TransferHelpers.canTransferConference(payload.task);
 
     if (disableTransfer) {
       window.alert(Manager.getInstance().strings['Transfer-CannotTransferTooManyParticipants']);
-    } else {
-      return safeTransfer(() => original(payload), payload.task);
+      return undefined;
     }
+    return safeTransfer(() => original(payload), payload.task);
   }
 
   const body = {
     mode,
     taskSid: payload.task.taskSid,
     targetSid: payload.targetSid,
+    // The lambda endpoint derives the agent to ignore from the task's accepted reservation, so this is only used by the legacy serverless endpoint
     ignoreAgent: workerSid,
   };
 
-  return safeTransfer(() => transferChatStart(body), payload.task);
+  /*
+   * The lambda transferStart endpoint manages the transfer metadata on the original task server side,
+   * rolling it back itself if the transfer fails - a supervisor taking over a task couldn't clear attributes on a task they don't own anyway.
+   */
+  return transferChatStart(body);
 };
 
 const afterCancelTransfer = (payload: ActionPayload) => TransferHelpers.clearTransferMeta(payload.task);
