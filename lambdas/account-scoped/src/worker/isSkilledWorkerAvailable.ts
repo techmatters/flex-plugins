@@ -30,6 +30,8 @@ type WorkerAttributes = {
 type WorkerChannelSummary = {
   taskChannelUniqueName: string;
   assignedTasks: number;
+  available: boolean;
+  availableCapacityPercentage: number;
 };
 
 type AvailableWorkerSummary = {
@@ -50,7 +52,19 @@ export const hasRequiredSkills = (
 };
 
 /**
- * Determines whether a worker can receive another task.
+ * assignedTasks doesn't count tasks in wrap-up, but TaskRouter keeps their capacity until they are
+ * completed, so availableCapacityPercentage is what says whether a channel is in use:
+ * 100 = nothing assigned or in wrap-up, 0 = configuredCapacity reached.
+ */
+const isChannelEmpty = (channel?: WorkerChannelSummary): boolean =>
+  channel?.availableCapacityPercentage === 100;
+
+// TaskRouter only reserves a task on a channel the worker has enabled and has capacity left on
+const canTakeTask = (channel?: WorkerChannelSummary): boolean =>
+  Boolean(channel?.available) && (channel?.availableCapacityPercentage ?? 0) > 0;
+
+/**
+ * Determines whether TaskRouter would reserve a task of the target channel to the worker now.
  */
 const isWorkerAvailable = (
   worker: AvailableWorkerSummary,
@@ -63,18 +77,16 @@ const isWorkerAvailable = (
   const chatChannel = worker.workerChannelTasks.find(
     c => c.taskChannelUniqueName === 'chat',
   );
-  //This part has important logic, for voice we need both channels to have 0 assigned tasks
+  // for voice both channels must be empty (nothing assigned or in wrap-up)
   if (targetChannel === 'voice') {
     return (
-      (voiceChannel?.assignedTasks ?? -1) === 0 &&
-      (chatChannel?.assignedTasks ?? -1) === 0
+      Boolean(voiceChannel?.available) &&
+      isChannelEmpty(voiceChannel) &&
+      isChannelEmpty(chatChannel)
     );
   }
-  //for chat we need voice to have 0 assigned tasks and chat to have less than maxMessageCapacity
-  return (
-    (voiceChannel?.assignedTasks ?? -1) === 0 &&
-    (chatChannel?.assignedTasks ?? Number.MAX_SAFE_INTEGER) < worker.maxMessageCapacity
-  );
+  // for chat nothing on voice (no chats while on a call) and capacity left on the chat channel
+  return isChannelEmpty(voiceChannel) && canTakeTask(chatChannel);
 };
 
 export const isSkilledWorkerAvailableHandler: AccountScopedHandler = async (
@@ -208,6 +220,8 @@ export const isSkilledWorkerAvailableHandler: AccountScopedHandler = async (
       const workerChannelTasks: WorkerChannelSummary[] = workerChannels.map(channel => ({
         taskChannelUniqueName: channel.taskChannelUniqueName,
         assignedTasks: channel.assignedTasks,
+        available: channel.available,
+        availableCapacityPercentage: channel.availableCapacityPercentage,
       }));
 
       return {
@@ -241,6 +255,7 @@ export const isSkilledWorkerAvailableHandler: AccountScopedHandler = async (
         accountSid,
         workerSid: worker.sid,
         workerName: worker.friendlyName,
+        workerChannelTasks: worker.workerChannelTasks,
       });
     }
 
