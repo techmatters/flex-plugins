@@ -360,7 +360,7 @@ describe('transferStartHandler', () => {
       update({
         ...currentTaskAttributes,
         transferStarted: true,
-        transferMeta: { transferStatus: 'accepted' },
+        transferMeta: { originalTask: TASK_SID, transferStatus: 'accepted' },
       });
       return { type: 'ok', data: undefined } as any;
     });
@@ -385,6 +385,25 @@ describe('transferStartHandler', () => {
     );
     expect(mockUpdateTask).not.toHaveBeenCalled();
     expect(mockCreateInvite).not.toHaveBeenCalled();
+  });
+
+  test('allows a received task to be transferred again', async () => {
+    setUpMockClient({
+      ...ORIGINAL_TASK_ATTRIBUTES,
+      transferStarted: true,
+      transferMeta: { originalTask: 'WTprevious', transferStatus: 'accepted' },
+    });
+
+    const result = await transferStartHandler(
+      newRequest(
+        { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+        { worker_sid: ORIGINAL_WORKER_SID, roles: ['agent'] },
+      ),
+      TEST_ACCOUNT_SID,
+    );
+
+    expect(isOk(result)).toBe(true);
+    expect(mockCreateInvite).toHaveBeenCalled();
   });
 
   test('rejects tasks without Conversations identifiers before changing their attributes', async () => {
