@@ -220,7 +220,10 @@ export const transferStartHandler: FlexValidatedHandler = async (
       taskSid,
       currentAttributes => {
         const status = currentAttributes.transferMeta?.transferStatus;
-        if (status === 'transferring' || status === 'accepted') {
+        if (
+          currentAttributes.transferMeta?.originalTask === taskSid &&
+          (status === 'transferring' || status === 'accepted')
+        ) {
           throw new ActiveTransferError();
         }
 
