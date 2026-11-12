@@ -17,7 +17,7 @@
 import { isSkilledWorkerAvailableHandler } from '../../../src/worker/isSkilledWorkerAvailable';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { isErr, isOk } from '@tech-matters/result-type';
-import { HttpRequest } from '../../../src/httpTypes';
+import type { HttpRequest } from '../../../src/httpTypes';
 import { TEST_ACCOUNT_SID, TEST_WORKSPACE_SID } from '../../testTwilioValues';
 
 jest.mock('@tech-matters/twilio-configuration', () => ({

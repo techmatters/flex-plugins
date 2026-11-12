@@ -59,7 +59,9 @@ export const hasRequiredSkills = (
 const isChannelEmpty = (channel?: WorkerChannelSummary): boolean =>
   channel?.availableCapacityPercentage === 100;
 
-// TaskRouter only reserves a task on a channel the worker has enabled and has capacity left on
+/**
+ * TaskRouter only reserves a task on a channel the worker has enabled and has capacity left on
+ */
 const canTakeTask = (channel?: WorkerChannelSummary): boolean =>
   Boolean(channel?.available) && (channel?.availableCapacityPercentage ?? 0) > 0;
 
