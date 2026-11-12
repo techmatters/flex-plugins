@@ -23,8 +23,6 @@ import { ChatStatement, ChatStatementOrigin } from '../chatModel';
 // Tracks the start of the current SMS test session so we only check messages received after this time
 let sessionStartTime: Date | undefined;
 
-let clientConversationSid: string;
-
 export const sendSmsToService = async (messageText: string) => {
   if (!sessionStartTime) {
     sessionStartTime = new Date();
@@ -32,24 +30,14 @@ export const sendSmsToService = async (messageText: string) => {
   const clientAccountSid = getConfigValue('clientTwilioAccountSid') as string;
   const authToken = getConfigValue('clientTwilioAuthToken') as string;
   const from = getConfigValue('clientSmsPhoneNumber') as string;
-  const serviceAccountSid = getConfigValue('twilioAccountSid') as string;
   const to = getConfigValue('smsPhoneNumber') as string;
 
   const client = twilio(clientAccountSid, authToken);
-  if (!clientConversationSid) {
-    const clientConversation = await client.conversations.v1.conversations.create({
-      friendlyName: `E2E test conversation with ${serviceAccountSid}, ${new Date().toISOString()}`,
-    });
-    await clientConversation.participants().create({
-      'messagingBinding.address': to,
-      'messagingBinding.proxyAddress': from,
-      'messagingBinding.type': 'sms',
-    } as any);
-    clientConversationSid = clientConversation.sid;
-  }
-  await client.conversations.v1.conversations
-    .get(clientConversationSid)
-    .messages.create({ author: from, body: messageText });
+  await client.messages.create({
+    from,
+    to,
+    body: messageText,
+  });
   console.debug(`Sent SMS message to service: '${messageText}'`);
 };
 
@@ -61,7 +49,7 @@ const MAX_CHECKS = 10;
  * Uses the service Twilio account to list outbound messages to the client number.
  */
 export const checkForMessageOnClient = async (messageText: string): Promise<boolean> => {
-  if (!clientConversationSid) {
+  if (!sessionStartTime) {
     throw new AssertionError({
       message: "You cannot verify incoming messages until you've sent one and started a session",
     });
@@ -69,15 +57,18 @@ export const checkForMessageOnClient = async (messageText: string): Promise<bool
   const accountSid = getConfigValue('clientTwilioAccountSid') as string;
   const authToken = getConfigValue('clientTwilioAuthToken') as string;
   const to = getConfigValue('clientSmsPhoneNumber') as string;
+  const from = getConfigValue('smsPhoneNumber') as string;
 
   const client = twilio(accountSid, authToken);
   const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
   for (let i = 0; i < MAX_CHECKS; i++) {
-    const messages = await client.conversations.v1.conversations
-      .get(clientConversationSid)
-      .messages.list();
-    //client.conversations.v1.roles.l
-    if (messages.find((m) => m.body === messageText && m.author !== to)) {
+    const messages = await client.messages.list({
+      from,
+      to,
+      dateSentAfter: sessionStartTime,
+    });
+    console.debug(`${messages.length} messages since session started:`, messages);
+    if (messages.find(({ body }) => body === messageText)) {
       return true;
     }
     await delay(1000);
