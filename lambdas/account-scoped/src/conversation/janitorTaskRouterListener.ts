@@ -173,7 +173,11 @@ const janitorHandler: TaskRouterEventHandler = async (
     if (
       !(await isHandledByOtherListener(client, workspaceSid, taskSid, taskAttributes))
     ) {
-      if (featureFlags.enable_post_survey) {
+      // TaskRouter can only cancel a task before it is assigned, so a canceled chat task was never
+      // accepted: it never wraps up and the post survey never starts, so the janitor must close it
+      const isCanceledChatTask =
+        eventType === TASK_CANCELED && taskChannelUniqueName === 'chat';
+      if (featureFlags.enable_post_survey && !isCanceledChatTask) {
         const definition = await getCurrentDefinitionVersion({ accountSid });
         const postSurveyConfigSpecs = definition?.insights?.postSurveySpecs;
         // prevent janitor from cleanup if post survey is enabled and definition is valid
