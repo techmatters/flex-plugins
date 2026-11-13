@@ -1,21 +1,10 @@
 import json
 import sys
-from argparse import ArgumentParser, ArgumentTypeError
+from argparse import ArgumentParser
 
+from ..environments import ENVIRONMENT_HELP, parse_environment
 from .forms import new_helpline_forms
 from .status import onboarding_status, print_status
-
-ENVIRONMENTS = {
-    'dev': 'development', 'stg': 'staging', 'prod': 'production',
-    'development': 'development', 'staging': 'staging', 'production': 'production',
-}
-
-
-def _environment(env: str) -> str:
-    if env.lower() not in ENVIRONMENTS:
-        raise ArgumentTypeError(f'unknown environment "{env}" (development, staging or production)')
-    return ENVIRONMENTS[env.lower()]
-
 
 def _build_parser() -> ArgumentParser:
     parser = ArgumentParser(
@@ -42,8 +31,8 @@ def _build_parser() -> ArgumentParser:
                     'docs/new-account-provisioning.md as done, missing, or to be confirmed by a person. Read-only.',
     )
     status.add_argument('--hl', required=True, type=str.lower, help='helpline short code, e.g. jm')
-    status.add_argument('--env', required=True, type=_environment,
-                        help='development | staging | production (dev / stg / prod also accepted)')
+    status.add_argument('--env', required=True, type=parse_environment,
+                        help=ENVIRONMENT_HELP)
     status.add_argument('--account-sid', help='Twilio account SID (otherwise --accounts-file or AWS SSM)')
     status.add_argument('--accounts-file',
                         help='private JSON { "<code>": { "development": "AC...", "staging": "AC...", "production": "AC..." } }')
