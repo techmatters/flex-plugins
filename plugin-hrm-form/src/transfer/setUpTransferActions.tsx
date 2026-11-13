@@ -37,6 +37,12 @@ import { reactivateAseloListeners } from '../conversationListeners';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { ContactState } from '../states/contacts/existingContacts';
 import { saveFormSharedState } from './formDataTransfer';
+import {
+  TAKEOVER_SUCCESS_NOTIFICATION_ID,
+  SUPERVISOR_TAKEOVER_NOTIFICATION_ID,
+  acceptSelfInitiatedTakeover,
+} from './takeoverReservation';
+import { newSetFlexTransferActionInProgressAction } from '../states/taskScopedMetadata';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
@@ -52,6 +58,18 @@ const setUpTransfersNotifications = () => {
     id: TransfersNotifications.CantHangTransferInProgressNotification,
     type: NotificationType.error,
     content: <Template code="Transfer-Notifications-CantHangTransferInProgress" />,
+  });
+  Notifications.registerNotification({
+    id: TAKEOVER_SUCCESS_NOTIFICATION_ID,
+    type: NotificationType.success,
+    content: <Template code="TakeOver-Succeeded-Notification" />,
+  });
+  Notifications.registerNotification({
+    id: SUPERVISOR_TAKEOVER_NOTIFICATION_ID,
+    closeButton: true,
+    timeout: 0,
+    type: NotificationType.warning,
+    content: <Template code="TakeOver-OriginalCounselor-Notification" />,
   });
 };
 
@@ -104,54 +122,61 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
   payload: ActionPayloadWithOptions,
   original: ActionFunction,
 ) => {
-  const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
+  const { taskSid } = payload.task;
+  const { store } = Manager.getInstance();
+  store.dispatch(newSetFlexTransferActionInProgressAction(taskSid, true));
+  try {
+    const mode = payload.options.mode || DEFAULT_TRANSFER_MODE;
 
-  /*
-   * Currently (as of 2 Dec 2020) warm text transfers are not supported.
-   * We shortcut the rest of the function to save extra time and unnecessary visual changes.
-   */
-  if (!TaskHelper.isCallTask(payload.task) && mode === transferModes.warm) {
-    recordEvent('Transfer Warm Chat Blocked', { taskSid: payload.task?.taskSid });
-    window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
-    return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
-  }
-
-  const { workerSid } = setupObject;
-
-  // save current form state (if there is a form)
-  const contact = getStateContactForms(payload.task.taskSid);
-  if (!contact) return original(payload);
-
-  await saveFormSharedState(contact, payload.task);
-
-  if (TaskHelper.isCallTask(payload.task)) {
-    // set metadata for the transfer - chat transfers have it set server side by the lambda transferStart endpoint,
-    // which supports supervisors 'taking over' tasks assigned to other workers (task.setAttributes only works on the current worker's own tasks)
-    await TransferHelpers.setTransferMeta(payload, setupObject.counselorName);
-    await ensureConferenceAttributes(payload.task);
-
-    const disableTransfer = !TransferHelpers.canTransferConference(payload.task);
-
-    if (disableTransfer) {
-      window.alert(Manager.getInstance().strings['Transfer-CannotTransferTooManyParticipants']);
-      return undefined;
+    /*
+     * Currently (as of 2 Dec 2020) warm text transfers are not supported.
+     * We shortcut the rest of the function to save extra time and unnecessary visual changes.
+     */
+    if (!TaskHelper.isCallTask(payload.task) && mode === transferModes.warm) {
+      recordEvent('Transfer Warm Chat Blocked', { taskSid: payload.task?.taskSid });
+      window.alert(Manager.getInstance().strings['Transfer-ChatWarmNotAllowed']);
+      return () => undefined; // Not calling original(payload) prevents the additional "Task cannot be transferred" notification
     }
-    return safeTransfer(() => original(payload), payload.task);
+
+    const { workerSid } = setupObject;
+
+    // save current form state (if there is a form)
+    const contact = getStateContactForms(payload.task.taskSid);
+    if (!contact) return await original(payload);
+
+    await saveFormSharedState(contact, payload.task);
+
+    if (TaskHelper.isCallTask(payload.task)) {
+      // set metadata for the transfer - chat transfers have it set server side by the lambda transferStart endpoint,
+      // which supports supervisors 'taking over' tasks assigned to other workers (task.setAttributes only works on the current worker's own tasks)
+      await TransferHelpers.setTransferMeta(payload, setupObject.counselorName);
+      await ensureConferenceAttributes(payload.task);
+
+      const disableTransfer = !TransferHelpers.canTransferConference(payload.task);
+
+      if (disableTransfer) {
+        window.alert(Manager.getInstance().strings['Transfer-CannotTransferTooManyParticipants']);
+        return undefined;
+      }
+      return await safeTransfer(() => original(payload), payload.task);
+    }
+
+    const body = {
+      mode,
+      taskSid: payload.task.taskSid,
+      targetSid: payload.targetSid,
+      // The lambda endpoint derives the agent to ignore from the task's accepted reservation, so this is only used by the legacy serverless endpoint
+      ignoreAgent: workerSid,
+    };
+
+    /*
+     * The lambda transferStart endpoint manages the transfer metadata on the original task server side,
+     * rolling it back itself if the transfer fails - a supervisor taking over a task couldn't clear attributes on a task they don't own anyway.
+     */
+    return await transferChatStart(body);
+  } finally {
+    store.dispatch(newSetFlexTransferActionInProgressAction(taskSid, false));
   }
-
-  const body = {
-    mode,
-    taskSid: payload.task.taskSid,
-    targetSid: payload.targetSid,
-    // The lambda endpoint derives the agent to ignore from the task's accepted reservation, so this is only used by the legacy serverless endpoint
-    ignoreAgent: workerSid,
-  };
-
-  /*
-   * The lambda transferStart endpoint manages the transfer metadata on the original task server side,
-   * rolling it back itself if the transfer fails - a supervisor taking over a task couldn't clear attributes on a task they don't own anyway.
-   */
-  return transferChatStart(body);
 };
 
 const afterCancelTransfer = (payload: ActionPayload) => TransferHelpers.clearTransferMeta(payload.task);
@@ -176,4 +201,9 @@ export const setUpTransferActions = (setupObject: SetupObject) => {
   setUpTransfersNotifications();
   Flex.Actions.replaceAction('TransferTask', customTransferTask(setupObject));
   Flex.Actions.addListener('afterCancelTransfer', afterCancelTransfer);
+  Manager.getInstance().workerClient.on('reservationCreated', reservation => {
+    acceptSelfInitiatedTakeover(reservation).catch(error => {
+      console.error('Failed to accept self-initiated takeover', error);
+    });
+  });
 };

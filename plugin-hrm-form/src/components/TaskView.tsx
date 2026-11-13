@@ -15,7 +15,7 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TaskHelper } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
@@ -49,14 +49,20 @@ import { LoadingStatus } from '../states/contacts/types';
 import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
 import { rerenderAgentDesktop } from '../rerenderView';
 import { TaskSID } from '../types/twilio';
+import { selectIsFlexTransferActionInProgress } from '../states/taskScopedMetadata';
+import { notifySupervisorTakeoverIfNeeded } from '../transfer/takeoverReservation';
 
 type Props = {
   task: CustomITask;
 };
 
+const isTaskFormLocked = (task: CustomITask, flexTransferActionInProgress: boolean) =>
+  !hasTaskControl(task) || flexTransferActionInProgress;
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskView: React.FC<Props> = ({ task }) => {
   const { workerSid } = getHrmConfig();
+  const takeoverNotificationShownForTask = useRef(new Set<TaskSID>());
   const taskContactId = (task?.attributes as any)?.contactId;
   const currentDefinitionVersion = useSelector((state: RootState) => selectCurrentDefinitionVersion(state));
   // Check if the entry for this task exists in each reducer
@@ -68,6 +74,9 @@ const TaskView: React.FC<Props> = ({ task }) => {
   );
   const unsavedContact = getUnsavedContact(savedContact, draftContact);
   const currentRoute = useSelector((state: RootState) => selectCurrentBaseRoute(state, task?.taskSid));
+  const flexTransferActionInProgress = useSelector((state: RootState) =>
+    selectIsFlexTransferActionInProgress(state, task.taskSid),
+  );
   const isModalOpen = currentRoute && isRouteModal(currentRoute);
   const contactIsLoading = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
   const shouldRecreateState =
@@ -87,6 +96,10 @@ const TaskView: React.FC<Props> = ({ task }) => {
   );
   const updateHelpline = (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline }));
   const { transferMeta } = isOfflineContactTask(task) ? { transferMeta: undefined } : task.attributes;
+  React.useEffect(() => {
+    notifySupervisorTakeoverIfNeeded(transferMeta, task.taskSid, workerSid, takeoverNotificationShownForTask.current);
+  }, [task.taskSid, transferMeta, workerSid]);
+
   const sidWithTaskControl = transferMeta?.sidWithTaskControl;
   React.useEffect(() => {
     if (shouldRecreateState && !isOfflineContactTask(task) && taskContactId) {
@@ -170,7 +183,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
   }
 
   const featureFlags = getAseloFeatureFlags();
-  const isFormLocked = !hasTaskControl(task);
+  const isFormLocked = isTaskFormLocked(task, flexTransferActionInProgress);
 
   return (
     <Flex flexDirection="column" style={{ pointerEvents: isFormLocked ? 'none' : 'auto', height: '100%' }}>

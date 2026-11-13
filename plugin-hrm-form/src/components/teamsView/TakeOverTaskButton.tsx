@@ -14,17 +14,19 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Actions, Template, withTaskContext, TaskHelper } from '@twilio/flex-ui';
+import Tooltip from '@material-ui/core/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { TransferButton as TransferButtonStyled } from '../../styles/buttons';
+import { DestructiveButton } from '../../styles/buttons';
+import { ConfirmDialog } from '../../design-system/modals/ConfirmDialog';
 import { getHrmConfig } from '../../hrmConfig';
 import selectContactByTaskSid from '../../states/contacts/selectContactByTaskSid';
 import type { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
 import { newLoadContactFromHrmByTaskSidAsyncAction } from '../../states/contacts/saveContact';
-import { hasTransferStarted } from '../../transfer/transferTaskState';
+import { isTransferring } from '../../transfer/transferTaskState';
 import { selectIsContactCreating } from '../../states/contacts/selectContactSaveStatus';
 
 const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
@@ -32,6 +34,9 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   const asyncDispatcher = asyncDispatch(useDispatch());
   const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task?.taskSid));
   const isCreating = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
+  const activityName = useSelector((state: RootState) => state.flex.worker.worker.activityName);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [pendingTakeoverTaskSid, setPendingTakeoverTaskSid] = useState<string | null>(null);
 
   useEffect(() => {
     if (task && !contactState && !isCreating) {
@@ -39,19 +44,80 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
     }
   }, [asyncDispatcher, contactState, isCreating, task]);
 
+  useEffect(() => {
+    if (task && isTransferring(task) && pendingTakeoverTaskSid === task.taskSid) {
+      setPendingTakeoverTaskSid(null);
+    }
+  }, [pendingTakeoverTaskSid, task]);
+
   // Takeovers are only supported for chat tasks via the lambda transferStart endpoint, which sets the transfer metadata server side
-  if (!task || !workerSid || !isSupervisor || !contactState || TaskHelper.isCallTask(task)) {
+  if (!task || !workerSid || !contactState || TaskHelper.isCallTask(task)) {
     return null;
   }
 
+  const transferInProgress = isTransferring(task);
+  const isPending = pendingTakeoverTaskSid === task.taskSid;
+  const isOnline = Boolean(activityName && activityName !== 'Offline');
+  let disabledReason: string | undefined;
+  if (isSupervisor) {
+    if (isOnline) {
+      if (transferInProgress || isPending) {
+        disabledReason = 'TakeOver-Disabled-TransferInProgress';
+      }
+    } else {
+      disabledReason = 'TakeOver-Disabled-Offline';
+    }
+  } else {
+    disabledReason = 'TakeOver-Disabled-NotSupervisor';
+  }
+
+  const startTakeover = async () => {
+    setIsConfirmationOpen(false);
+    setPendingTakeoverTaskSid(task.taskSid);
+    try {
+      if (activityName !== 'Available') {
+        await Actions.invokeAction('SetActivity', { activityName: 'Available' });
+      }
+      await Actions.invokeAction('TransferTask', {
+        task,
+        targetSid: workerSid,
+        options: { mode: 'COLD' },
+      });
+    } catch (error) {
+      setPendingTakeoverTaskSid(null);
+      console.error('Failed to take over task', error);
+    }
+  };
+
   return (
-    <TransferButtonStyled
-      onClick={() => Actions.invokeAction('TransferTask', { task, targetSid: workerSid, options: { mode: 'COLD' } })}
-      data-fs-id="Task-TakeOver-Button"
-      disabled={hasTransferStarted(task)}
-    >
-      <Template code="MonitorTaskCanvas-Header-TransferButtonLabel" />
-    </TransferButtonStyled>
+    <>
+      <Tooltip title={disabledReason ? <Template code={disabledReason} /> : ''}>
+        <DestructiveButton
+          onClick={() => setIsConfirmationOpen(true)}
+          data-fs-id="Task-TakeOver-Button"
+          disabled={Boolean(disabledReason)}
+          // This positions the button to the right of the status indicator rather than underneath it
+          style={{
+            alignSelf: 'end',
+            marginTop: '-30px',
+            marginRight: '18px',
+          }}
+        >
+          <Template code="MonitorTaskCanvas-Header-TakeoverButtonLabel" />
+        </DestructiveButton>
+      </Tooltip>
+      <ConfirmDialog
+        openDialog={isConfirmationOpen}
+        dialogHeader="TakeOver-Confirm-Header"
+        dialogContent="TakeOver-Confirm-Content"
+        actionComponent={
+          <DestructiveButton buttonSize="small" onClick={startTakeover}>
+            <Template code="TakeOver-Confirm-Button" />
+          </DestructiveButton>
+        }
+        onCloseDialog={() => setIsConfirmationOpen(false)}
+      />
+    </>
   );
 };
 

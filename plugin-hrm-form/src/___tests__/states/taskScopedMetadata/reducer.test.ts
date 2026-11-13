@@ -14,7 +14,11 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { newSetQueueGreetingPopupDismissedAction, reduce } from '../../../states/taskScopedMetadata';
+import {
+  newSetFlexTransferActionInProgressAction,
+  newSetQueueGreetingPopupDismissedAction,
+  reduce,
+} from '../../../states/taskScopedMetadata';
 import { REMOVE_CONTACT_STATE } from '../../../states/types';
 
 const taskId = 'WT123';
@@ -31,6 +35,21 @@ describe('taskScopedMetadata reducer', () => {
   test('SET_QUEUE_GREETING_POPUP_DISMISSED - leaves other tasks untouched', () => {
     const otherTask = { queueGreetings: { dismissedPopup: true } };
     const state = reduce({ WT456: otherTask }, newSetQueueGreetingPopupDismissedAction(taskId, true));
+
+    expect(state.WT456).toBe(otherTask);
+  });
+
+  test('SET_FLEX_TRANSFER_ACTION_IN_PROGRESS - sets and clears transfer state for a task', () => {
+    const inProgress = reduce({}, newSetFlexTransferActionInProgressAction(taskId, true));
+    expect(inProgress).toStrictEqual({ [taskId]: { flexTransferActionInProgress: true } });
+
+    const finished = reduce(inProgress, newSetFlexTransferActionInProgressAction(taskId, false));
+    expect(finished).toStrictEqual({ [taskId]: { flexTransferActionInProgress: false } });
+  });
+
+  test('SET_FLEX_TRANSFER_ACTION_IN_PROGRESS - leaves other tasks untouched', () => {
+    const otherTask = { queueGreetings: { dismissedPopup: true } };
+    const state = reduce({ WT456: otherTask }, newSetFlexTransferActionInProgressAction(taskId, true));
 
     expect(state.WT456).toBe(otherTask);
   });
