@@ -195,6 +195,8 @@ export default class HrmFormPlugin extends FlexPlugin {
    * Use this to modify any UI components or attach to the actions framework
    */
   async init(flex: typeof Flex, manager: Flex.Manager) {
+    // Twilio's hosted Flex page sets the browser tab title to 'Twilio Flex'; brand it as Aselo instead
+    document.title = 'Aselo';
     loadCSS('https://use.fontawesome.com/releases/v5.15.4/css/solid.css');
 
     setUpFullStory(manager.workerClient, manager.serviceConfiguration);
