@@ -133,7 +133,7 @@ ${
         "speech_timeout": "5",
         "offset": {
           "x": -329,
-          "y": 1367
+          "y": 1667
         },
         "loop": 1,
         "finish_on_key": "#",
@@ -165,7 +165,7 @@ ${
         "speech_timeout": "5",
         "offset": {
           "x": -179,
-          "y": 2396
+          "y": 2996
         },
         "loop": 1,
         "finish_on_key": "#",
@@ -219,13 +219,63 @@ ${
         "play": "${flow_vars.usnc_assets_url}/play_message_voice_post_survey_complete.mp3",
         "offset": {
           "x": 2774,
-          "y": 3526
+          "y": 4126
         },
         "loop": 1
       }
     },
     {
-      "name": "f_savePostSurvey",
+      "name": "f_recordAnswers_feel_supported",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "gather_input_voice_beginning_interaction",
+          "event": "success"
+        },
+        {
+          "next": "gather_input_voice_beginning_interaction",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -329,
+          "y": 1420
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"feel_supported\": \"{{flow.variables.feel_supported}}\"\n  },\n  \"surveyComplete\": false\n}",
+        "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
+      }
+    },
+    {
+      "name": "f_recordAnswers_beginning_interaction",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "gather_input_voice_end_interaction",
+          "event": "success"
+        },
+        {
+          "next": "gather_input_voice_end_interaction",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": -179,
+          "y": 2550
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"beginning_interaction\": \"{{flow.variables.beginning_interaction}}\"\n  },\n  \"surveyComplete\": false\n}",
+        "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
+      }
+    },
+    {
+      "name": "f_recordAnswers_end_interaction",
       "type": "make-http-request",
       "transitions": [
         {
@@ -239,14 +289,14 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 432,
-          "y": 3473
+          "x": -179,
+          "y": 3950
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"contactId\": \"{{trigger.call.contactId}}\",\n  \"contactTaskSid\": \"{{trigger.call.taskSid}}\",\n  \"postSurveyAnswers\": {\n    \"feel_supported\": \"{{flow.variables.feel_supported}}\",\n    \"beginning_interaction\": \"{{flow.variables.beginning_interaction}}\",\n    \"end_interaction\": \"{{flow.variables.end_interaction}}\"\n  }\n}",
-        "url": "${lambda_twilio_account_scoped_url}/hrm/savePostSurvey"
+        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"end_interaction\": \"{{flow.variables.end_interaction}}\"\n  },\n  \"surveyComplete\": true\n}",
+        "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
       }
     },
     {
@@ -254,7 +304,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "gather_input_voice_beginning_interaction",
+          "next": "f_recordAnswers_feel_supported",
           "event": "next"
         }
       ],
@@ -322,7 +372,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "gather_input_voice_beginning_interaction",
+          "next": "f_recordAnswers_feel_supported",
           "event": "next"
         }
       ],
@@ -345,7 +395,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "gather_input_voice_beginning_interaction",
+          "next": "f_recordAnswers_feel_supported",
           "event": "next"
         }
       ],
@@ -446,7 +496,7 @@ ${
         "input": "{{widgets.gather_input_voice_beginning_interaction.Digits}}",
         "offset": {
           "x": -326,
-          "y": 1653
+          "y": 1953
         }
       }
     },
@@ -455,7 +505,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "gather_input_voice_end_interaction",
+          "next": "f_recordAnswers_beginning_interaction",
           "event": "next"
         }
       ],
@@ -469,7 +519,7 @@ ${
         ],
         "offset": {
           "x": -916,
-          "y": 1903
+          "y": 2203
         }
       }
     },
@@ -478,7 +528,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "gather_input_voice_end_interaction",
+          "next": "f_recordAnswers_beginning_interaction",
           "event": "next"
         }
       ],
@@ -492,7 +542,7 @@ ${
         ],
         "offset": {
           "x": -534,
-          "y": 1922
+          "y": 2222
         }
       }
     },
@@ -501,7 +551,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "gather_input_voice_end_interaction",
+          "next": "f_recordAnswers_beginning_interaction",
           "event": "next"
         }
       ],
@@ -515,7 +565,7 @@ ${
         ],
         "offset": {
           "x": -218,
-          "y": 1918
+          "y": 2218
         }
       }
     },
@@ -524,7 +574,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "gather_input_voice_end_interaction",
+          "next": "f_recordAnswers_beginning_interaction",
           "event": "next"
         }
       ],
@@ -538,7 +588,7 @@ ${
         ],
         "offset": {
           "x": 82,
-          "y": 1925
+          "y": 2225
         }
       }
     },
@@ -547,7 +597,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "gather_input_voice_end_interaction",
+          "next": "f_recordAnswers_beginning_interaction",
           "event": "next"
         }
       ],
@@ -561,7 +611,7 @@ ${
         ],
         "offset": {
           "x": 385,
-          "y": 1925
+          "y": 2225
         }
       }
     },
@@ -570,7 +620,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "gather_input_voice_end_interaction",
+          "next": "f_recordAnswers_beginning_interaction",
           "event": "next"
         }
       ],
@@ -584,7 +634,7 @@ ${
         ],
         "offset": {
           "x": 690,
-          "y": 1926
+          "y": 2226
         }
       }
     },
@@ -671,7 +721,7 @@ ${
         "input": "{{widgets.gather_input_voice_end_interaction.Digits}}",
         "offset": {
           "x": -319,
-          "y": 2777
+          "y": 3377
         }
       }
     },
@@ -680,7 +730,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "f_savePostSurvey",
+          "next": "f_recordAnswers_end_interaction",
           "event": "next"
         }
       ],
@@ -694,7 +744,7 @@ ${
         ],
         "offset": {
           "x": -891,
-          "y": 3052
+          "y": 3652
         }
       }
     },
@@ -703,7 +753,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "f_savePostSurvey",
+          "next": "f_recordAnswers_end_interaction",
           "event": "next"
         }
       ],
@@ -717,7 +767,7 @@ ${
         ],
         "offset": {
           "x": -527,
-          "y": 3046
+          "y": 3646
         }
       }
     },
@@ -726,7 +776,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "f_savePostSurvey",
+          "next": "f_recordAnswers_end_interaction",
           "event": "next"
         }
       ],
@@ -740,7 +790,7 @@ ${
         ],
         "offset": {
           "x": -211,
-          "y": 3043
+          "y": 3643
         }
       }
     },
@@ -749,7 +799,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "f_savePostSurvey",
+          "next": "f_recordAnswers_end_interaction",
           "event": "next"
         }
       ],
@@ -763,7 +813,7 @@ ${
         ],
         "offset": {
           "x": 89,
-          "y": 3050
+          "y": 3650
         }
       }
     },
@@ -772,7 +822,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "f_savePostSurvey",
+          "next": "f_recordAnswers_end_interaction",
           "event": "next"
         }
       ],
@@ -786,7 +836,7 @@ ${
         ],
         "offset": {
           "x": 393,
-          "y": 3050
+          "y": 3650
         }
       }
     },
@@ -795,7 +845,7 @@ ${
       "type": "set-variables",
       "transitions": [
         {
-          "next": "f_savePostSurvey",
+          "next": "f_recordAnswers_end_interaction",
           "event": "next"
         }
       ],
@@ -809,7 +859,7 @@ ${
         ],
         "offset": {
           "x": 698,
-          "y": 3050
+          "y": 3650
         }
       }
     }
