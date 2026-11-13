@@ -22,7 +22,7 @@
       "enable_lex_v2": true,
       "enable_hang_up_by_hrm_saving": true,
       "enable_twilio_transcripts": true,
-      "use_twilio_lambda_for_conference_ending": true
+      "use_twilio_lambda_for_conference_ending": false
     },
     "contact_save_frequency": "onTabChange",
     "multipleOfficeSupport": true,
