@@ -1,84 +1,85 @@
 {
-    "attributes": {
-        "attributeUpdates": {
-            "assets_bucket_url": "https://assets-development.tl.techmatters.org"
-        },
-        "external_recordings_enabled": false,
-        "enableUnmaskingCalls": true,
-        "feature_flags": {
-            "enable_configurable_max_categories": true,
-            "enable_counselor_toolkits": true,
-            "enable_csam_clc_report": true,
-            "enable_csam_report": true,
-            "enable_client_profiles": true,
-            "enable_language_selector": true,
-            "enable_lex": true,
-            "enable_llm_summary": true,
-            "enable_post_survey": true,
-            "enable_save_in_progress_contacts": true,
-            "enable_save_insights": true,
-            "enable_voice_recordings": false,
-            "enable_lambda_post_survey_processing": true,
-            "enable_lex_v2": true,
-            "enable_hang_up_by_hrm_saving": true,
-            "enable_twilio_transcripts": true,
-            "use_twilio_lambda_for_conference_ending": true
-        },
-        "contact_save_frequency": "onTabChange",
-        "multipleOfficeSupport": true,
-        "permissionConfig": "dev",
-        "previous_ui_version": {
-            "date": "2023-08-01T10:04:57.028Z",
-            "semver": "2.n",
-            "version": "2.2.0"
-        },
-        "resources_base_url": "https://hrm-development.tl.techmatters.org",
-        "enforceZeroTranscriptRetention": false,
-        "postStudioFlows": {            "WQb4a3a7e8808c61d11d344e5b28fa53ef": {
-            "flowTrigger": "inProgressCall",
-            "createSurveyControlTask": true,
-            "studioFlowSid": "FW7345ce250648845e9869f59df2c9c961"
-        },
-            "voice": {
-                "flowTrigger": "rest",
-                "studioFlowSid": "FWd1cb5650c06befc2f9ffc4c14b59465b"
-            }
-        }
+  "attributes": {
+    "attributeUpdates": {
+      "assets_bucket_url": "https://assets-development.tl.techmatters.org"
     },
-    "ui_attributes": {
-        "colorTheme": {
-            "baseName": "GreyLight",
-            "overrides": {
-                "MainHeader": {
-                    "Button": {
-                        "color": "#000000"
-                    },
-                    "Container": {
-                        "background": "#FFFFFF",
-                        "color": "#000000"
-                    },
-                    "Icon": {
-                        "color": "#000000"
-                    }
-                },
-                "SideNav": {
-                    "Button": {
-                        "background": "#FFFFFF"
-                    },
-                    "Container": {
-                        "background": "#FFFFFF"
-                    },
-                    "Icon": {
-                        "color": "#000000"
-                    }
-                }
-            },
-            "preset": {
-                "id": "mono-light",
-                "name": "Simple Light"
-            }
-        },
-        "logLevel": "debug",
-        "showRealtimeQueuesStats": true
+    "external_recordings_enabled": false,
+    "enableUnmaskingCalls": true,
+    "feature_flags": {
+      "enable_configurable_max_categories": true,
+      "enable_counselor_toolkits": true,
+      "enable_csam_clc_report": true,
+      "enable_csam_report": true,
+      "enable_client_profiles": true,
+      "enable_language_selector": true,
+      "enable_lex": true,
+      "enable_llm_summary": true,
+      "enable_post_survey": true,
+      "enable_save_in_progress_contacts": true,
+      "enable_save_insights": true,
+      "enable_voice_recordings": false,
+      "enable_lambda_post_survey_processing": true,
+      "enable_lex_v2": true,
+      "enable_hang_up_by_hrm_saving": true,
+      "enable_twilio_transcripts": true,
+      "use_twilio_lambda_for_conference_ending": true
+    },
+    "contact_save_frequency": "onTabChange",
+    "multipleOfficeSupport": true,
+    "permissionConfig": "dev",
+    "previous_ui_version": {
+      "date": "2023-08-01T10:04:57.028Z",
+      "semver": "2.n",
+      "version": "2.2.0"
+    },
+    "resources_base_url": "https://hrm-development.tl.techmatters.org",
+    "enforceZeroTranscriptRetention": false,
+    "postStudioFlows": {
+      "WQb4a3a7e8808c61d11d344e5b28fa53ef": {
+        "createSurveyControlTask": true,
+        "flowTrigger": "inProgressCall",
+        "studioFlowSid": "FW7345ce250648845e9869f59df2c9c961"
+      },
+      "voice": {
+        "flowTrigger": "rest",
+        "studioFlowSid": "FWd1cb5650c06befc2f9ffc4c14b59465b"
+      }
     }
+  },
+  "ui_attributes": {
+    "colorTheme": {
+      "baseName": "GreyLight",
+      "overrides": {
+        "MainHeader": {
+          "Button": {
+            "color": "#000000"
+          },
+          "Container": {
+            "background": "#FFFFFF",
+            "color": "#000000"
+          },
+          "Icon": {
+            "color": "#000000"
+          }
+        },
+        "SideNav": {
+          "Button": {
+            "background": "#FFFFFF"
+          },
+          "Container": {
+            "background": "#FFFFFF"
+          },
+          "Icon": {
+            "color": "#000000"
+          }
+        }
+      },
+      "preset": {
+        "id": "mono-light",
+        "name": "Simple Light"
+      }
+    },
+    "logLevel": "debug",
+    "showRealtimeQueuesStats": true
+  }
 }
