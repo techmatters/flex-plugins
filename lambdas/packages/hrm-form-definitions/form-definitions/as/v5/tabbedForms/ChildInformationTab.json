@@ -1,0 +1,332 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name / Nickname",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "age",
+    "label": "Age Group",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "ageGroups",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "genders",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "regions"
+  },
+  {
+    "name": "preferredLanguage",
+    "label": "Preferred Language",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "English",
+        "label": "English"
+      },
+      {
+        "value": "Spanish",
+        "label": "Spanish"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "populations",
+    "label": "Member of the following populations",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Caregiver of someone with mental illness",
+        "label": "Caregiver of someone with mental illness"
+      },
+      {
+        "value": "Veteran / service member",
+        "label": "Veteran / service member"
+      },
+      {
+        "value": "LGBTQIA+",
+        "label": "LGBTQIA+"
+      },
+      {
+        "value": "Person with a disability",
+        "label": "Person with a disability"
+      },
+      {
+        "value": "Uninsured / underinsured",
+        "label": "Uninsured / underinsured"
+      },
+      {
+        "value": "Low income",
+        "label": "Low income"
+      },
+      {
+        "value": "Student",
+        "label": "Student"
+      },
+      {
+        "value": "Immigrant / refugee",
+        "label": "Immigrant / refugee"
+      },
+      {
+        "value": "Unhoused",
+        "label": "Unhoused"
+      },
+      {
+        "value": "Justice-involved",
+        "label": "Justice-involved"
+      }
+    ]
+  },
+  {
+    "name": "currentlyInTreatment",
+    "label": "Currently receiving mental health care?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "On a waitlist",
+        "label": "On a waitlist"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "suicideScreening",
+    "label": "Suicide risk screening",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Not needed",
+        "label": "Not needed"
+      },
+      {
+        "value": "Screening completed",
+        "label": "Screening completed"
+      },
+      {
+        "value": "Declined to answer",
+        "label": "Declined to answer"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "screenQ1",
+    "label": "In the past month, have you wished you were dead or wished you could go to sleep and not wake up?",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "suicideScreening",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Screening completed": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    }
+  },
+  {
+    "name": "screenQ2",
+    "label": "In the past month, have you had any actual thoughts of killing yourself?",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "screenQ1",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Yes": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    }
+  },
+  {
+    "name": "screenQ3",
+    "label": "Have you been thinking about how you might do this?",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "screenQ2",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Yes": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    }
+  },
+  {
+    "name": "screenQ4",
+    "label": "Have you had these thoughts and had some intention of acting on them?",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "screenQ3",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Yes": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    }
+  },
+  {
+    "name": "screenQ5",
+    "label": "Have you started to work out or worked out the details of how to do it? Do you intend to carry out this plan?",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "screenQ4",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Yes": [
+        {
+          "value": "Yes",
+          "label": "Yes"
+        },
+        {
+          "value": "No",
+          "label": "No"
+        }
+      ]
+    }
+  },
+  {
+    "name": "screenQ6",
+    "label": "Have you ever done anything, started to do anything, or prepared to do anything to end your life? (past 3 months)",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  },
+  {
+    "name": "riskLevel",
+    "label": "Assessed Risk Level",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "No identified risk",
+        "label": "No identified risk"
+      },
+      {
+        "value": "Low",
+        "label": "Low"
+      },
+      {
+        "value": "Moderate",
+        "label": "Moderate"
+      },
+      {
+        "value": "High",
+        "label": "High"
+      },
+      {
+        "value": "Imminent",
+        "label": "Imminent"
+      }
+    ]
+  }
+]

@@ -96,9 +96,18 @@ const mockFetchImplementationGivenSpy = async (
   jsonLoader: (jsonPath: string) => Promise<any>,
 ) => {
   const definitionVersionId = getDefinitionVersionId(formDefinitionsBaseUrl);
+  const { helplineCode: code, version: ver } = splitDefinitionVersion(definitionVersionId);
+  // Also serve any custom case section forms referenced from CaseSections.json
+  const caseSections = await jsonLoader(
+    `${FORM_DEFINITIONS_PATH}/${code}/${ver}/CaseSections.json`,
+  );
+  const caseSectionFiles: string[] = caseSections
+    ? Object.values(caseSections as Record<string, { formPath: string }>).map((s) => s.formPath)
+    : [];
+  const allFiles = [...new Set([...files, ...caseSectionFiles])];
   const map: { [remotePath: string]: MockResponse } = {};
-  for (let i = 0; i < files.length; i += 1) {
-    const file = files[i];
+  for (let i = 0; i < allFiles.length; i += 1) {
+    const file = allFiles[i];
     const remotePath = `${formDefinitionsBaseUrl}/${file}`;
     const { helplineCode, version } = splitDefinitionVersion(definitionVersionId);
     const localPath = `${FORM_DEFINITIONS_PATH}/${helplineCode}/${version}/${file}`;

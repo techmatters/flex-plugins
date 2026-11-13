@@ -1,0 +1,97 @@
+[
+  {
+    "name": "date",
+    "label": "Date",
+    "type": "date-input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    }
+  },
+  {
+    "name": "time",
+    "label": "Time",
+    "type": "time-input",
+    "isPII": false
+  },
+  {
+    "name": "updateType",
+    "label": "Update Type",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Situation escalated",
+        "label": "Situation escalated"
+      },
+      {
+        "value": "Situation stabilised",
+        "label": "Situation stabilised"
+      },
+      {
+        "value": "New information received",
+        "label": "New information received"
+      },
+      {
+        "value": "Handover to another team",
+        "label": "Handover to another team"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "source",
+    "label": "Source",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Person at risk",
+        "label": "Person at risk"
+      },
+      {
+        "value": "Reporting party",
+        "label": "Reporting party"
+      },
+      {
+        "value": "Emergency services",
+        "label": "Emergency services"
+      },
+      {
+        "value": "Partner agency",
+        "label": "Partner agency"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "description",
+    "label": "Description",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 8,
+    "width": 300
+  }
+]

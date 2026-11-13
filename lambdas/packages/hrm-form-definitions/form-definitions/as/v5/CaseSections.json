@@ -1,0 +1,30 @@
+{
+  "safetyPlan": {
+    "label": "Safety Plan",
+    "formPath": "caseForms/SafetyPlanForm.json"
+  },
+  "followUp": {
+    "label": "Follow-up Call",
+    "formPath": "caseForms/FollowUpForm.json"
+  },
+  "incident": {
+    "label": "Crisis Episode",
+    "formPath": "caseForms/IncidentForm.json"
+  },
+  "household": {
+    "label": "Support Network",
+    "formPath": "caseForms/HouseholdForm.json"
+  },
+  "referral": {
+    "label": "Referral",
+    "formPath": "caseForms/ReferralForm.json"
+  },
+  "note": {
+    "label": "Note",
+    "formPath": "caseForms/NoteForm.json"
+  },
+  "document": {
+    "label": "Document",
+    "formPath": "caseForms/DocumentForm.json"
+  }
+}

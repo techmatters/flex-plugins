@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Location first",
+    "text": "I want to make sure we can get help to you quickly. Where are you right now? Please share the address or a nearby landmark."
+  },
+  {
+    "label": "Are you safe?",
+    "text": "Are you safe right now? Is anyone with you?"
+  },
+  {
+    "label": "Help is on the way",
+    "text": "Help is on the way. I am going to stay with you until they arrive. Can you keep your phone close to you?"
+  },
+  {
+    "label": "Staying on the line",
+    "text": "You are not alone, I am right here with you. Let's take a slow breath together."
+  },
+  {
+    "label": "Follow-up consent",
+    "text": "Would it be okay for us to contact you tomorrow to check how you are doing?"
+  }
+]

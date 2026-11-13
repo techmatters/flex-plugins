@@ -1,0 +1,30 @@
+{
+  "dispatch": {
+    "label": "Emergency Dispatch",
+    "formPath": "caseForms/DispatchForm.json"
+  },
+  "welfareCheck": {
+    "label": "Welfare Check",
+    "formPath": "caseForms/WelfareCheckForm.json"
+  },
+  "incident": {
+    "label": "Situation Update",
+    "formPath": "caseForms/IncidentForm.json"
+  },
+  "followUp": {
+    "label": "Follow-up",
+    "formPath": "caseForms/FollowUpForm.json"
+  },
+  "referral": {
+    "label": "Referral",
+    "formPath": "caseForms/ReferralForm.json"
+  },
+  "note": {
+    "label": "Note",
+    "formPath": "caseForms/NoteForm.json"
+  },
+  "document": {
+    "label": "Document",
+    "formPath": "caseForms/DocumentForm.json"
+  }
+}

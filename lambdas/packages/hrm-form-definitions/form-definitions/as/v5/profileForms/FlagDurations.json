@@ -1,0 +1,12 @@
+[
+  {
+    "flag": "blocked",
+    "label": "Short Term Block (24 Hours)",
+    "durationInHours": "24"
+  },
+  {
+    "flag": "blocked",
+    "label": "Block (30 Days)",
+    "durationInHours": "720"
+  }
+]

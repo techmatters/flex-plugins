@@ -1,0 +1,103 @@
+[
+  {
+    "name": "date",
+    "label": "Date",
+    "type": "date-input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    }
+  },
+  {
+    "name": "referredTo",
+    "label": "Referred To",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Child protection services",
+        "label": "Child protection services"
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Health clinic / hospital",
+        "label": "Health clinic / hospital"
+      },
+      {
+        "value": "Mental health service",
+        "label": "Mental health service"
+      },
+      {
+        "value": "School counsellor",
+        "label": "School counsellor"
+      },
+      {
+        "value": "Legal aid",
+        "label": "Legal aid"
+      },
+      {
+        "value": "Shelter / safe house",
+        "label": "Shelter / safe house"
+      },
+      {
+        "value": "Social welfare",
+        "label": "Social welfare"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "referralStatus",
+    "label": "Referral Status",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Pending",
+        "label": "Pending"
+      },
+      {
+        "value": "Accepted",
+        "label": "Accepted"
+      },
+      {
+        "value": "Declined",
+        "label": "Declined"
+      },
+      {
+        "value": "Completed",
+        "label": "Completed"
+      }
+    ]
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 8,
+    "width": 300
+  }
+]

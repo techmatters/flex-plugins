@@ -1,0 +1,163 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relationship to Child",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Parent",
+        "label": "Parent"
+      },
+      {
+        "value": "Step-parent",
+        "label": "Step-parent"
+      },
+      {
+        "value": "Grandparent",
+        "label": "Grandparent"
+      },
+      {
+        "value": "Other relative",
+        "label": "Other relative"
+      },
+      {
+        "value": "Sibling",
+        "label": "Sibling"
+      },
+      {
+        "value": "Carer",
+        "label": "Carer"
+      },
+      {
+        "value": "Teacher / school staff",
+        "label": "Teacher / school staff"
+      },
+      {
+        "value": "Friend / peer",
+        "label": "Friend / peer"
+      },
+      {
+        "value": "Partner",
+        "label": "Partner"
+      },
+      {
+        "value": "Online contact",
+        "label": "Online contact"
+      },
+      {
+        "value": "Stranger",
+        "label": "Stranger"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "genders"
+  },
+  {
+    "name": "ageGroup",
+    "label": "Age Group",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Under 18",
+        "label": "Under 18"
+      },
+      {
+        "value": "18-24",
+        "label": "18-24"
+      },
+      {
+        "value": "25-39",
+        "label": "25-39"
+      },
+      {
+        "value": "40-59",
+        "label": "40-59"
+      },
+      {
+        "value": "60+",
+        "label": "60+"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "livesWithChild",
+    "label": "Lives with the child",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "hasAccessToChild",
+    "label": "Still has access to the child?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "description",
+    "label": "Description",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 5,
+    "width": 300
+  }
+]

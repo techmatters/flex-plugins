@@ -1,0 +1,122 @@
+{
+  "regions": [
+    {
+      "value": "Unknown",
+      "label": ""
+    },
+    {
+      "value": "North",
+      "label": "North"
+    },
+    {
+      "value": "South",
+      "label": "South"
+    },
+    {
+      "value": "East",
+      "label": "East"
+    },
+    {
+      "value": "West",
+      "label": "West"
+    },
+    {
+      "value": "Central",
+      "label": "Central"
+    },
+    {
+      "value": "Outside the service area",
+      "label": "Outside the service area"
+    },
+    {
+      "value": "Unknown",
+      "label": "Unknown"
+    }
+  ],
+  "genders": [
+    {
+      "value": "Unknown",
+      "label": ""
+    },
+    {
+      "value": "Woman",
+      "label": "Woman"
+    },
+    {
+      "value": "Man",
+      "label": "Man"
+    },
+    {
+      "value": "Non-binary / gender diverse",
+      "label": "Non-binary / gender diverse"
+    },
+    {
+      "value": "Unknown",
+      "label": "Unknown"
+    }
+  ],
+  "ageGroups": [
+    {
+      "value": "Unknown",
+      "label": ""
+    },
+    {
+      "value": "Under 12",
+      "label": "Under 12"
+    },
+    {
+      "value": "12-17",
+      "label": "12-17"
+    },
+    {
+      "value": "18-24",
+      "label": "18-24"
+    },
+    {
+      "value": "25-44",
+      "label": "25-44"
+    },
+    {
+      "value": "45-64",
+      "label": "45-64"
+    },
+    {
+      "value": "65+",
+      "label": "65+"
+    },
+    {
+      "value": "Unknown",
+      "label": "Unknown"
+    }
+  ],
+  "emergencyServices": [
+    {
+      "value": "Unknown",
+      "label": ""
+    },
+    {
+      "value": "Police",
+      "label": "Police"
+    },
+    {
+      "value": "Ambulance / EMS",
+      "label": "Ambulance / EMS"
+    },
+    {
+      "value": "Fire",
+      "label": "Fire"
+    },
+    {
+      "value": "Mobile crisis team",
+      "label": "Mobile crisis team"
+    },
+    {
+      "value": "Poison control",
+      "label": "Poison control"
+    },
+    {
+      "value": "Multiple services",
+      "label": "Multiple services"
+    }
+  ]
+}
