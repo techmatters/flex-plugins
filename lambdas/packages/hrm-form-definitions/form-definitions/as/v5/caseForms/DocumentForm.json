@@ -1,0 +1,21 @@
+[
+  {
+    "name": "fileName",
+    "type": "file-upload",
+    "label": "Document",
+    "description": "Accepted file formats: Word, PDFs, or JPGs.\nFile size not to exceed 5MB",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": true
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 10,
+    "width": 289
+  }
+]

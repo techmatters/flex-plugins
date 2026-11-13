@@ -1,0 +1,160 @@
+{
+  "contact": {
+    "callerInformation": {
+      "splitFormAt": 3
+    },
+    "childInformation": {
+      "splitFormAt": 7
+    },
+    "caseInformation": {
+      "splitFormAt": 5
+    }
+  },
+  "case": {
+    "sectionTypes": {
+      "dispatch": {
+        "caseHomeOrder": 1,
+        "printOrder": 1,
+        "splitFormAt": 4,
+        "printFormat": "tabular",
+        "previewFields": [
+          "date",
+          "service",
+          "referenceNumber",
+          "dispatchOutcome"
+        ],
+        "layout": {
+          "date": {
+            "includeLabel": false,
+            "format": "date"
+          },
+          "service": {
+            "includeLabel": true
+          },
+          "referenceNumber": {
+            "includeLabel": true
+          },
+          "dispatchOutcome": {
+            "includeLabel": true,
+            "widthRatio": 1.5
+          }
+        }
+      },
+      "welfareCheck": {
+        "caseHomeOrder": 2,
+        "printOrder": 2,
+        "splitFormAt": 3,
+        "previewFields": [
+          "date",
+          "requestedFrom",
+          "result"
+        ],
+        "layout": {
+          "date": {
+            "includeLabel": false,
+            "format": "date"
+          },
+          "requestedFrom": {
+            "includeLabel": true
+          },
+          "result": {
+            "includeLabel": true
+          }
+        }
+      },
+      "document": {
+        "caseHomeOrder": 3,
+        "splitFormAt": 1,
+        "printFormat": "hidden",
+        "previewFields": [
+          "createdAt",
+          "fileName",
+          "comments"
+        ],
+        "layout": {
+          "createdAt": {
+            "includeLabel": false,
+            "labelTemplateCode": "Case-DocumentDate",
+            "format": "date"
+          },
+          "fileName": {
+            "includeLabel": false,
+            "labelTemplateCode": "Case-DocumentFileName",
+            "format": "file",
+            "widthRatio": 2
+          },
+          "comments": {
+            "includeLabel": false,
+            "labelTemplateCode": "Case-DocumentComments",
+            "widthRatio": 2
+          }
+        }
+      },
+      "incident": {
+        "caseHomeLocation": "timeline",
+        "printOrder": 3,
+        "splitFormAt": 3,
+        "printFormat": "list",
+        "previewFields": [
+          "updateType",
+          "source"
+        ],
+        "layout": {
+          "updateType": {
+            "includeLabel": false
+          },
+          "source": {
+            "includeLabel": true
+          }
+        }
+      },
+      "followUp": {
+        "caseHomeLocation": "timeline",
+        "printOrder": 4,
+        "splitFormAt": 2,
+        "previewFields": [
+          "outcome",
+          "riskNow"
+        ],
+        "layout": {
+          "outcome": {
+            "includeLabel": false
+          },
+          "riskNow": {
+            "includeLabel": true
+          }
+        }
+      },
+      "referral": {
+        "caseHomeLocation": "timeline",
+        "printOrder": 5,
+        "splitFormAt": 2,
+        "previewFields": [
+          "referredTo",
+          "referralStatus"
+        ],
+        "layout": {
+          "referredTo": {
+            "includeLabel": false
+          },
+          "referralStatus": {
+            "includeLabel": true
+          }
+        }
+      },
+      "note": {
+        "caseHomeLocation": "timeline",
+        "printOrder": 6,
+        "printFormat": "list",
+        "previewFields": [
+          "note"
+        ],
+        "layout": {
+          "note": {
+            "includeLabel": false
+          }
+        }
+      }
+    }
+  }
+}

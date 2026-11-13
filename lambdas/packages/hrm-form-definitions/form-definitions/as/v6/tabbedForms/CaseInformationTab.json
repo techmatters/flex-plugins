@@ -1,0 +1,163 @@
+[
+  {
+    "name": "triagePriority",
+    "label": "Triage Priority",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "P1 - Imminent risk to life",
+        "label": "P1 - Imminent risk to life"
+      },
+      {
+        "value": "P2 - Urgent, needs response within the hour",
+        "label": "P2 - Urgent, needs response within the hour"
+      },
+      {
+        "value": "P3 - Needs follow-up within 24 hours",
+        "label": "P3 - Needs follow-up within 24 hours"
+      },
+      {
+        "value": "P4 - No immediate risk",
+        "label": "P4 - No immediate risk"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "responseActions",
+    "label": "Response Actions",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "De-escalation",
+        "label": "De-escalation"
+      },
+      {
+        "value": "Safety plan created",
+        "label": "Safety plan created"
+      },
+      {
+        "value": "Emergency services dispatched",
+        "label": "Emergency services dispatched"
+      },
+      {
+        "value": "Mobile crisis team dispatched",
+        "label": "Mobile crisis team dispatched"
+      },
+      {
+        "value": "Welfare check requested",
+        "label": "Welfare check requested"
+      },
+      {
+        "value": "Stayed on the line until help arrived",
+        "label": "Stayed on the line until help arrived"
+      },
+      {
+        "value": "Warm transfer",
+        "label": "Warm transfer"
+      },
+      {
+        "value": "Information / instructions given",
+        "label": "Information / instructions given"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "emergencyServicesContacted",
+    "label": "Emergency Service Contacted",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "emergencyServices"
+  },
+  {
+    "name": "dispatchReference",
+    "label": "Dispatch Reference Number",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "outcome",
+    "label": "Outcome",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Resolved on the call",
+        "label": "Resolved on the call"
+      },
+      {
+        "value": "Emergency response on scene",
+        "label": "Emergency response on scene"
+      },
+      {
+        "value": "Transported to hospital",
+        "label": "Transported to hospital"
+      },
+      {
+        "value": "Transferred to another service",
+        "label": "Transferred to another service"
+      },
+      {
+        "value": "Disconnected - follow-up needed",
+        "label": "Disconnected - follow-up needed"
+      },
+      {
+        "value": "Referred for follow-up",
+        "label": "Referred for follow-up"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "followUpRequired",
+    "label": "Follow-up required",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "supervisorNotified",
+    "label": "Supervisor notified",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "referrals",
+    "label": "Resources Shared",
+    "type": "custom-contact-component",
+    "component": "resource-referral-list",
+    "saveable": false,
+    "isPII": false
+  },
+  {
+    "name": "callSummary",
+    "label": "Call Summary",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 10,
+    "width": 300,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  }
+]

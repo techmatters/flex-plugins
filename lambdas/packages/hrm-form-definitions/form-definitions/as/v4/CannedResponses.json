@@ -1,0 +1,22 @@
+[
+  {
+    "label": "Welcome",
+    "text": "Hi, thank you for contacting the Child & Youth Helpline. My name is ___ and I am a counselor here. What would you like to talk about today?"
+  },
+  {
+    "label": "Confidentiality",
+    "text": "What you share here stays between us, unless you tell me that you or someone else is in danger. If that happens, I may need to involve people who can keep you safe, and I will tell you before I do. Is that okay?"
+  },
+  {
+    "label": "Are you safe right now?",
+    "text": "Before we continue, I want to check: are you safe right now?"
+  },
+  {
+    "label": "Taking a moment",
+    "text": "Thank you for sharing that with me. Take your time, I am here and I am listening."
+  },
+  {
+    "label": "Closing",
+    "text": "Thank you for reaching out today. You can contact us again anytime, day or night."
+  }
+]

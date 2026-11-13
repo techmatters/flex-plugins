@@ -1,0 +1,10 @@
+{
+  "en": {
+    "WelcomeMsg": "Hi, you are now connected with a specialist. Thank you for reaching out. What is on your mind today?",
+    "GoodbyeMsg": "The specialist has left the chat. Thank you for reaching out. You are welcome to contact us again anytime.",
+    "EndChatMsg": "You ended the chat. Thank you for reaching out. You are welcome to contact us again anytime.",
+    "ClosedOutOfShift": "We are closed right now. If you are in crisis, please call your local crisis line or emergency number.",
+    "ClosedHolidays": "We are closed for a holiday. If you are in crisis, please call your local crisis line or emergency number.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  }
+}

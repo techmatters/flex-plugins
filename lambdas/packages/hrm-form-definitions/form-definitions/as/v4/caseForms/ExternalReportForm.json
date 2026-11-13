@@ -1,0 +1,148 @@
+[
+  {
+    "name": "reportDate",
+    "label": "Date of Report",
+    "type": "date-input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    }
+  },
+  {
+    "name": "agencyNotified",
+    "label": "Agency Notified",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Child protection services",
+        "label": "Child protection services"
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Health services",
+        "label": "Health services"
+      },
+      {
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "policeUnit",
+    "label": "Police Unit",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "agencyNotified",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Police": [
+        {
+          "value": "Child protection unit",
+          "label": "Child protection unit"
+        },
+        {
+          "value": "Cybercrime unit",
+          "label": "Cybercrime unit"
+        },
+        {
+          "value": "Local station",
+          "label": "Local station"
+        },
+        {
+          "value": "Emergency line",
+          "label": "Emergency line"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        }
+      ]
+    }
+  },
+  {
+    "name": "referenceNumber",
+    "label": "Reference Number",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "nameOfOfficerOrWorker",
+    "label": "Name / ID of the officer or worker",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "supervisorConsulted",
+    "label": "Supervisor Consulted",
+    "type": "input",
+    "isPII": false
+  },
+  {
+    "name": "writtenReportSubmitted",
+    "label": "Written report submitted?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Not required",
+        "label": "Not required"
+      }
+    ]
+  },
+  {
+    "name": "reasonForReport",
+    "label": "Reason for the report",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 8,
+    "width": 300,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "agencyResponse",
+    "label": "Response from the agency",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 8,
+    "width": 300
+  }
+]

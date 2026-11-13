@@ -1,0 +1,180 @@
+[
+  {
+    "name": "supportProvided",
+    "label": "Support Provided",
+    "type": "listbox-multiselect",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Active listening / emotional support",
+        "label": "Active listening / emotional support"
+      },
+      {
+        "value": "Coping strategies",
+        "label": "Coping strategies"
+      },
+      {
+        "value": "Psychoeducation",
+        "label": "Psychoeducation"
+      },
+      {
+        "value": "Safety planning",
+        "label": "Safety planning"
+      },
+      {
+        "value": "Resource navigation",
+        "label": "Resource navigation"
+      },
+      {
+        "value": "Warm transfer",
+        "label": "Warm transfer"
+      },
+      {
+        "value": "Crisis de-escalation",
+        "label": "Crisis de-escalation"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "transferredToCrisisLine",
+    "label": "Transferred to a crisis line?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "emergencyServicesContacted",
+    "label": "Emergency services contacted?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Yes - with consent",
+        "label": "Yes - with consent"
+      },
+      {
+        "value": "Yes - without consent",
+        "label": "Yes - without consent"
+      }
+    ]
+  },
+  {
+    "name": "helpSeekerFeltSupported",
+    "label": "Did the help seeker feel supported?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "Somewhat",
+        "label": "Somewhat"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Not asked",
+        "label": "Not asked"
+      }
+    ]
+  },
+  {
+    "name": "followUpRequested",
+    "label": "Follow-up call requested",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "howDidYouHearAboutUs",
+    "label": "How did they hear about us?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Search engine",
+        "label": "Search engine"
+      },
+      {
+        "value": "Social media",
+        "label": "Social media"
+      },
+      {
+        "value": "Health professional",
+        "label": "Health professional"
+      },
+      {
+        "value": "Friend / family",
+        "label": "Friend / family"
+      },
+      {
+        "value": "Community organisation",
+        "label": "Community organisation"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ]
+  },
+  {
+    "name": "referrals",
+    "label": "Resources Shared",
+    "type": "custom-contact-component",
+    "component": "resource-referral-list",
+    "saveable": false,
+    "isPII": false
+  },
+  {
+    "name": "callSummary",
+    "label": "Conversation Summary",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 10,
+    "width": 300,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  }
+]

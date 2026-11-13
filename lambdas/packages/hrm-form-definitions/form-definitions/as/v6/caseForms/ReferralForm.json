@@ -1,0 +1,99 @@
+[
+  {
+    "name": "date",
+    "label": "Date",
+    "type": "date-input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    }
+  },
+  {
+    "name": "referredTo",
+    "label": "Referred To",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Crisis stabilisation unit",
+        "label": "Crisis stabilisation unit"
+      },
+      {
+        "value": "Community mental health service",
+        "label": "Community mental health service"
+      },
+      {
+        "value": "Domestic violence service",
+        "label": "Domestic violence service"
+      },
+      {
+        "value": "Shelter / emergency housing",
+        "label": "Shelter / emergency housing"
+      },
+      {
+        "value": "Substance use service",
+        "label": "Substance use service"
+      },
+      {
+        "value": "Victim support",
+        "label": "Victim support"
+      },
+      {
+        "value": "Disaster relief agency",
+        "label": "Disaster relief agency"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "referralStatus",
+    "label": "Referral Status",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Pending",
+        "label": "Pending"
+      },
+      {
+        "value": "Accepted",
+        "label": "Accepted"
+      },
+      {
+        "value": "Declined",
+        "label": "Declined"
+      },
+      {
+        "value": "Completed",
+        "label": "Completed"
+      }
+    ]
+  },
+  {
+    "name": "comments",
+    "label": "Comments",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 8,
+    "width": 300
+  }
+]

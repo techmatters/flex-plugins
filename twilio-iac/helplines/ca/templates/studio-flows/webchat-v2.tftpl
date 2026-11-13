@@ -1147,7 +1147,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-CA\"}",
+        "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-CA\", \"from\": \"{{trigger.conversation.From}}\"}",
         "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
       }
     },
@@ -1253,7 +1253,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\": \"true\", \"language\": \"fr-CA\"}",
+        "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\": \"true\", \"language\": \"fr-CA\", \"from\": \"{{trigger.conversation.From}}\"}",
         "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
       }
     },

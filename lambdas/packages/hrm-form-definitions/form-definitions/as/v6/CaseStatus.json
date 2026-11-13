@@ -1,0 +1,38 @@
+{
+  "open": {
+    "value": "open",
+    "label": "Open",
+    "color": "green",
+    "transitions": [
+      "responding",
+      "monitoring",
+      "closed"
+    ]
+  },
+  "responding": {
+    "value": "responding",
+    "label": "Responding",
+    "color": "red",
+    "transitions": [
+      "monitoring",
+      "closed"
+    ]
+  },
+  "monitoring": {
+    "value": "monitoring",
+    "label": "Monitoring",
+    "color": "orange",
+    "transitions": [
+      "responding",
+      "closed"
+    ]
+  },
+  "closed": {
+    "value": "closed",
+    "label": "Closed",
+    "color": "grey",
+    "transitions": [
+      "monitoring"
+    ]
+  }
+}
