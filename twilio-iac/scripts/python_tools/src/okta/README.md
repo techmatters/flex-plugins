@@ -48,7 +48,7 @@ Required scopes: `okta.apps.read`, `okta.groups.read`, `okta.policies.read`. Adm
 **Twilio account SIDs** (for the Flex connection check), first match wins:
 
 1. `--account-sid AC...`
-2. `--accounts-file <file>`: a private JSON file `{ "<code>": { "staging": "AC...", "production": "AC..." } }`
+2. `--accounts-file <file>`: a private JSON file `{ "<code>": { "development": "AC...", "staging": "AC...", "production": "AC..." } }`
 3. AWS SSM `/terraform/twilio-iac/<env>/<code>/secrets.json`, the same secret Terraform reads (needs AWS credentials; only `twilio_account_sid` is used)
 
 **Test user** (only for `verify-sso --login`): `OKTA_TEST_USERNAME` / `OKTA_TEST_PASSWORD`, an

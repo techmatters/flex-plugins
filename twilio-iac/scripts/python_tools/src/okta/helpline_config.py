@@ -156,7 +156,7 @@ def resolve_account_sid(
 ) -> str | None:
     '''
     Account SID for a helpline + environment. Order: --account-sid, --accounts-file (private JSON
-    { "<code>": { "staging": "AC...", "production": "AC..." } }), then AWS SSM (same secret Terraform reads).
+    { "<code>": { "development": "AC...", "staging": "AC...", "production": "AC..." } }), then AWS SSM (same secret Terraform reads).
     Only twilio_account_sid is taken from the SSM secret; nothing else is kept or printed.
     '''
     if account_sid:
