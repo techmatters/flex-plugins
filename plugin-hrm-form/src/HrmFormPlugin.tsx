@@ -185,6 +185,22 @@ const setUpActions = (
   if (featureFlags.enable_llm_summary) setupLlmNotifications();
 };
 
+const ASELO_FAVICON_URL = 'https://aselo-logo.s3.us-east-1.amazonaws.com/820-symbol-only-transparent-background.svg';
+
+/**
+ * Twilio's hosted Flex page brands the browser tab as 'Twilio Flex' with the Twilio icon; brand it as Aselo instead
+ */
+const setUpBrowserTabBranding = () => {
+  document.title = 'Aselo';
+  // Remove Twilio's icon links so the browser doesn't fall back to them
+  document.querySelectorAll("link[rel~='icon']").forEach(link => link.remove());
+  const favicon = document.createElement('link');
+  favicon.rel = 'icon';
+  favicon.type = 'image/svg+xml';
+  favicon.href = ASELO_FAVICON_URL;
+  document.head.appendChild(favicon);
+};
+
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
     super(PLUGIN_NAME);
@@ -195,6 +211,7 @@ export default class HrmFormPlugin extends FlexPlugin {
    * Use this to modify any UI components or attach to the actions framework
    */
   async init(flex: typeof Flex, manager: Flex.Manager) {
+    setUpBrowserTabBranding();
     loadCSS('https://use.fontawesome.com/releases/v5.15.4/css/solid.css');
 
     setUpFullStory(manager.workerClient, manager.serviceConfiguration);
