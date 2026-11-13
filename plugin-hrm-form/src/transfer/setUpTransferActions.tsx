@@ -131,7 +131,7 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
 
     // save current form state (if there is a form)
     const contact = getStateContactForms(payload.task.taskSid);
-    if (!contact) return original(payload);
+    if (!contact) return await original(payload);
 
     await saveFormSharedState(contact, payload.task);
 
@@ -147,7 +147,7 @@ const customTransferTask = (setupObject: SetupObject): ReplacedActionFunction =>
         window.alert(Manager.getInstance().strings['Transfer-CannotTransferTooManyParticipants']);
         return undefined;
       }
-      return safeTransfer(() => original(payload), payload.task);
+      return await safeTransfer(() => original(payload), payload.task);
     }
 
     const body = {
