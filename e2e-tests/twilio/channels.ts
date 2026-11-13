@@ -30,8 +30,9 @@ const encodeEmailToUnicode = (email: string) => {
     .join('');
 };
 
+let deleteCompleted = false;
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
-const ITERATION_DELAY = 2000;
+const ITERATION_DELAY = 2;
 const PAGE_SIZE = 40;
 
 const deleteSmsConversationFromOneEnd = async (
@@ -116,7 +117,7 @@ export const deleteChatConversations = async (): Promise<void> => {
     .get(matchingUser.sid)
     .userConversations.list();
 
-  console.debug(`Found ${userConversations.length} chat channels for user ${email}`);
+  console.debug(`Found ${userConversations.length} conversations for user ${email}`);
 
   for (const { conversationSid } of userConversations) {
     console.debug(`Removing chat channel ${conversationSid}`);
@@ -126,10 +127,16 @@ export const deleteChatConversations = async (): Promise<void> => {
 
 // Handle exit signals
 process.on('SIGINT', () => {
-  deleteChatConversations().catch((err) => console.error(err));
-  deleteSmsConversations().catch((err) => console.error(err));
+  if (!deleteCompleted) {
+    deleteChatConversations().catch((err) => console.error(err));
+    deleteSmsConversations().catch((err) => console.error(err));
+    deleteCompleted = true;
+  }
 });
 process.on('SIGTERM', () => {
-  deleteChatConversations().catch((err) => console.error(err));
-  deleteSmsConversations().catch((err) => console.error(err));
+  if (!deleteCompleted) {
+    deleteChatConversations().catch((err) => console.error(err));
+    deleteSmsConversations().catch((err) => console.error(err));
+    deleteCompleted = true;
+  }
 });
