@@ -405,7 +405,7 @@ ${
         "name": "f_operatingHours",
         "properties": {
           "add_twilio_auth": false,
-          "body": "{\"channel\": \"voice\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-NZBA\"}",
+          "body": "{\"channel\": \"voice\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-NZBA\", \"from\": \"{{trigger.call.From}}\"}",
           "content_type": "application/json;charset=utf-8",
           "method": "POST",
           "offset": {
