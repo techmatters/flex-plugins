@@ -1,0 +1,65 @@
+{
+    "pre_survey": {
+        "description": "Specific usch/configs/lex_v2/es_USCH/bots Spanish Pre Survey bot",
+        "locale": "en_US",
+        "child_directed": true,
+        "idle_session_ttl_in_seconds": "350",
+        "staging_bot_alias_id": "TSTALIASID",
+        "type": "Bot",
+        "intents": {
+            "pre_survey": {
+                "utterances": [
+                    {
+                        "utterance": "trigger_pre_survey"
+                    },
+                    {
+                        "utterance": "Incoming webchat contact"
+                    }
+                ],
+                "initial_response": {
+                    "message": "Si se trata de una emergencia que pone en riesgo la vida, comunícate con el 911. Para poder brindarte una mejor atención, responde las siguientes cinco preguntas breves. Luego te pondremos en contacto con un consejero o consejera. Puedes escribir X si prefieres no responder alguna pregunta.",
+                    "slot_to_elicit": "aboutSelf"
+                },
+                "closing_response": {
+                    "message": "Gracias. Un consejero o consejera se comunicará contigo en breve."
+                },
+                "slot_priorities": {
+                    "1": {
+                        "slot_name": "aboutSelf",
+                        "slot_type_name": "yes_no",
+                        "slot_question": "Si estás escribiendo sobre ti, responde 1. \nSi estás escribiendo sobre otra persona, responde 2.",
+                        "failure_response": "Estamos teniendo dificultades para entender tu respuesta."
+                    },
+                    "2": {
+                        "slot_name": "genderInput",
+                        "slot_type_name": "genderInput",
+                        "slot_question": "¿Cuál es tu identidad de género?",
+                        "variations": [
+                            "En una o dos palabras, ¿cuál es tu identidad de género?",
+                            "Solo con palabras, ¿cuál es tu identidad de género?"
+                        ],
+                        "failure_response": "Estamos teniendo dificultades para entender tu respuesta."
+                    },
+                    "3": {
+                        "slot_name": "ageRange",
+                        "slot_type_name": "ageRange",
+                        "slot_question": "¿Cuántos años tienes?",
+                        "failure_response": "Estamos teniendo dificultades para entender tu respuesta."
+                    },
+                    "4": {
+                        "slot_name": "stateInput",
+                        "slot_type_name": "AMAZON.State",
+                        "slot_question": "¿Desde qué estado nos escribes?",
+                        "failure_response": "Estamos teniendo dificultades para entender tu respuesta."
+                    },
+                    "5": {
+                        "slot_name": "howTheHelpseekerHeardAboutUs",
+                        "slot_type_name": "howTheHelpseekerHeardAboutUs",
+                        "slot_question": "¿Cómo te enteraste de esta línea de ayuda?\n1. Internet/Sitio web\n2. Google\n3. ChatGPT/Inteligencia artificial (IA)\n4. Otro",
+                        "failure_response": "Estamos teniendo dificultades para entender tu respuesta."
+                    }
+                }
+            }
+        }
+    }
+}

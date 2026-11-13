@@ -1,4 +1,10 @@
 {
-  "triggerMessage": "Before you go, would you like a one-time anonymous survey? Your answers help us better support others facing similar challenges.  Thanks for taking a moment to share. Reply 'Yes' to receive it or 'No' to skip.",
-  "postSurveyCompleteMessage": "Thank you for contacting the hotline.  Feel free to reach out again if you need additional support."
+  "en": {
+    "triggerMessage": "Before you go, would you like a one-time anonymous survey? Your answers help us better support others facing similar challenges.  Thanks for taking a moment to share. Reply 'Yes' to receive it or 'No' to skip.",
+    "postSurveyCompleteMessage": "Thank you for contacting the hotline.  Feel free to reach out again if you need additional support."
+  },
+  "es": {
+    "triggerMessage": "Antes de irte, ¿te gustaría responder una breve encuesta anónima? Tus respuestas nos ayudan a apoyar mejor a otras personas que enfrentan situaciones similares. Gracias por tomarte un momento para compartir. Responde 'Sí' para recibirla o 'No' para omitirla.",
+    "postSurveyCompleteMessage": "Gracias por comunicarte con la línea de ayuda. No dudes en volver a escribirnos si necesitas más apoyo."
+  }
 }

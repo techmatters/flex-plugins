@@ -137,11 +137,11 @@ ${
           "next": "play_message_voice_blocked",
           "conditions": [
             {
-              "friendly_name": "If value equal_to blocked",
+              "friendly_name": "If value contains blocked",
               "arguments": [
                 "{{widgets.f_getProfileFlagsForIdentifier.parsed.flags}}"
               ],
-              "type": "equal_to",
+              "type": "contains",
               "value": "blocked"
             }
           ]
