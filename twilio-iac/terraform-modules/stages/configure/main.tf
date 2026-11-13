@@ -112,9 +112,12 @@ module "channel" {
 module "datadog" {
   source = "../../datadog/v1"
   enable_datadog_monitoring = var.enable_datadog_monitoring
+  datadog_tags_bucket       = var.datadog_tags_bucket
   short_helpline    = upper(var.short_helpline)
   short_environment = var.short_environment
   channel_studio_flow_sids = module.channel.channel_studio_flows_sids
+  studio_flow_sids         = module.studio_flow.studio_flows_sids
+  twilio_account_sid       = nonsensitive(local.secrets.twilio_account_sid)
 }
 
 resource "aws_ssm_parameter" "permission_config" {

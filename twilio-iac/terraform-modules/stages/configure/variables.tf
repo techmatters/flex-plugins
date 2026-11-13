@@ -182,6 +182,12 @@ variable "enable_datadog_monitoring" {
   default = false
 }
 
+variable "datadog_tags_bucket" {
+  description = "S3 bucket for the Datadog Reference Table files (created manually for now, see the datadog/v1 module)"
+  type        = string
+  default     = "aselo-datadog-reference-tables"
+}
+
 variable "hrm_transcript_retention_days_override" {
   description = "Number of days to retain HRM Contact Job Cleanup logs"
   type        = number
