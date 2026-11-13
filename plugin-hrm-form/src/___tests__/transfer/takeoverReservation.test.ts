@@ -19,6 +19,8 @@ import type { Reservation } from 'twilio-taskrouter';
 import {
   acceptSelfInitiatedTakeover,
   isSupervisorTakeoverOfTask,
+  notifySupervisorTakeoverIfNeeded,
+  SUPERVISOR_TAKEOVER_NOTIFICATION_ID,
   TAKEOVER_SUCCESS_NOTIFICATION_ID,
 } from '../../transfer/takeoverReservation';
 
@@ -97,5 +99,18 @@ describe('isSupervisorTakeoverOfTask', () => {
     expect(
       isSupervisorTakeoverOfTask({ initiatingWorkerSid: counselorSid, originalTask: taskSid }, taskSid, counselorSid),
     ).toBe(false);
+  });
+});
+
+describe('notifySupervisorTakeoverIfNeeded', () => {
+  it('shows a single notification per task when another worker initiated its takeover', () => {
+    const notifiedTaskSids = new Set<string>();
+    const transferMeta = { initiatingWorkerSid: 'WK-supervisor', originalTask: 'WT-original-task' };
+
+    notifySupervisorTakeoverIfNeeded(transferMeta, 'WT-original-task', 'WK-counselor', notifiedTaskSids);
+    notifySupervisorTakeoverIfNeeded(transferMeta, 'WT-original-task', 'WK-counselor', notifiedTaskSids);
+
+    expect(mockShowNotificationSingle).toHaveBeenCalledTimes(1);
+    expect(mockShowNotificationSingle).toHaveBeenCalledWith(SUPERVISOR_TAKEOVER_NOTIFICATION_ID);
   });
 });

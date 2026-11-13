@@ -17,7 +17,7 @@
 /* eslint-disable react/prop-types */
 import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Notifications, TaskHelper } from '@twilio/flex-ui';
+import { TaskHelper } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import HrmForm from './HrmForm';
@@ -50,7 +50,7 @@ import selectContactStateByContactId from '../states/contacts/selectContactState
 import { rerenderAgentDesktop } from '../rerenderView';
 import { TaskSID } from '../types/twilio';
 import { selectIsFlexTransferActionInProgress } from '../states/taskScopedMetadata';
-import { isSupervisorTakeoverOfTask, SUPERVISOR_TAKEOVER_NOTIFICATION_ID } from '../transfer/takeoverReservation';
+import { notifySupervisorTakeoverIfNeeded } from '../transfer/takeoverReservation';
 
 type Props = {
   task: CustomITask;
@@ -97,13 +97,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
   const updateHelpline = (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline }));
   const { transferMeta } = isOfflineContactTask(task) ? { transferMeta: undefined } : task.attributes;
   React.useEffect(() => {
-    if (
-      !takeoverNotificationShownForTask.current.has(task.taskSid) &&
-      isSupervisorTakeoverOfTask(transferMeta, task.taskSid, workerSid)
-    ) {
-      takeoverNotificationShownForTask.current.add(task.taskSid);
-      Notifications.showNotificationSingle(SUPERVISOR_TAKEOVER_NOTIFICATION_ID);
-    }
+    notifySupervisorTakeoverIfNeeded(transferMeta, task.taskSid, workerSid, takeoverNotificationShownForTask.current);
   }, [task.taskSid, transferMeta, workerSid]);
 
   const sidWithTaskControl = transferMeta?.sidWithTaskControl;

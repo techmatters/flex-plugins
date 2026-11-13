@@ -37,6 +37,18 @@ export const isSupervisorTakeoverOfTask = (
   );
 };
 
+export const notifySupervisorTakeoverIfNeeded = (
+  transferMeta: TransferMetadata | undefined,
+  taskSid: string,
+  workerSid: string,
+  notifiedTaskSids: Set<string>,
+) => {
+  if (notifiedTaskSids.has(taskSid) || !isSupervisorTakeoverOfTask(transferMeta, taskSid, workerSid)) return;
+
+  notifiedTaskSids.add(taskSid);
+  Notifications.showNotificationSingle(SUPERVISOR_TAKEOVER_NOTIFICATION_ID);
+};
+
 export const acceptSelfInitiatedTakeover = async (reservation: Reservation) => {
   const { workerClient } = Manager.getInstance();
   if (reservation.task.attributes?.initiatedByWorker !== workerClient.sid) return;
