@@ -131,7 +131,6 @@ export const chatbotCallbackCleanup = async ({
         channelOrConversation: conversation ?? channel!,
         twilioClient,
         twilioWorkspaceSid,
-        memory,
       }),
   ]);
 };

@@ -22,7 +22,7 @@ import {
 } from '@tech-matters/twilio-configuration';
 
 // How long a post survey control task lives before TaskRouter cancels it
-export const POST_SURVEY_CONTROL_TASK_TTL_SECONDS = 3600;
+export const POST_SURVEY_CONTROL_TASK_TTL_SECONDS = 900;
 
 /**
  * Attributes for the 'survey' channel task that tracks a post survey.
