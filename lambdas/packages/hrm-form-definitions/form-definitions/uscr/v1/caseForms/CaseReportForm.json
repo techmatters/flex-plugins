@@ -14,40 +14,40 @@
         "label": ""
       },
       {
-        "value": "Gone on Arrival",
-        "label": "Gone on Arrival"
+        "value": "Gone On Arrival",
+        "label": "Gone On Arrival"
       },
       {
-        "value": "Engaged - Assisted",
-        "label": "Engaged - Assisted"
+        "value": "Engaged: Assisted",
+        "label": "Engaged: Assisted"
       },
       {
-        "value": "Engaged - Unable to assist",
-        "label": "Engaged - Unable to assist"
+        "value": "Engaged: Unable to Assist",
+        "label": "Engaged: Unable to Assist"
       },
       {
-        "value": "Engaged - Return to 911 - Reported issue unresolved",
-        "label": "Engaged - Return to 911 - Reported issue unresolved"
+        "value": "Returned to 911: Reported Issue Unresolved",
+        "label": "Returned to 911: Reported Issue Unresolved"
       },
       {
-        "value": "Engaged - [LAPD] Emergency Services Requested",
-        "label": "Engaged - [LAPD] Emergency Services Requested"
+        "value": "Emergency Services Requested: LAPD",
+        "label": "Emergency Services Requested: LAPD"
       },
       {
-        "value": "Engaged - [LAFD/EMS] Emergency Services Requested",
-        "label": "Engaged - [LAFD/EMS] Emergency Services Requested"
+        "value": "Emergency Services Requested: LAFD/EMS",
+        "label": "Emergency Services Requested: LAFD/EMS"
       },
       {
-        "value": "Engaged - [DMH] Emergency Services Requested",
-        "label": "Engaged - [DMH] Emergency Services Requested"
+        "value": "Emergency Services Requested: DMH",
+        "label": "Emergency Services Requested: DMH"
       },
       {
-        "value": "Returned to 911 - Out of Scope",
-        "label": "Returned to 911 - Out of Scope"
+        "value": "Returned to 911: Out of Scope",
+        "label": "Returned to 911: Out of Scope"
       },
       {
-        "value": "Returned to 911 - Out of Area",
-        "label": "Returned to 911 - Out of Area"
+        "value": "Returned to 911: Out of Area",
+        "label": "Returned to 911: Out of Area"
       }
     ],
     "isPII": false
@@ -106,8 +106,8 @@
         "label": "Narcan"
       },
       {
-        "value": "Transportation: CIRCLE Team Transport",
-        "label": "Transportation: CIRCLE Team Transport"
+        "value": "Transportation: CIRCLE Team Transport ",
+        "label": "Transportation: CIRCLE Team Transport "
       },
       {
         "value": "Transportation: Metro",
@@ -142,8 +142,8 @@
         "label": "DV Services"
       },
       {
-        "value": "Employment or Education Services",
-        "label": "Employment or Education Services"
+        "value": "Employment or Education Resources",
+        "label": "Employment or Education Resources"
       },
       {
         "value": "General Resources",
@@ -234,8 +234,8 @@
         "label": "Medical Provider"
       },
       {
-        "value": "Mental Health Provider: DMH Portal",
-        "label": "Mental Health Provider: DMH Portal"
+        "value": "Mental Health Provider: DMH",
+        "label": "Mental Health Provider: DMH"
       },
       {
         "value": "Mental Health Provider: Other",
@@ -310,24 +310,24 @@
         "label": "Basic Needs"
       },
       {
-        "value": "Employment/Education Enrollment Established",
-        "label": "Employment/Education Enrollment Established"
+        "value": "Established Employment",
+        "label": "Established Employment"
       },
       {
-        "value": "Established Benefits : CalFresh ",
-        "label": "Established Benefits : CalFresh "
+        "value": "Benefits Established: CalFresh",
+        "label": "Benefits Established: CalFresh"
       },
       {
-        "value": "Established Benefits : CalWorks ",
-        "label": "Established Benefits : CalWorks "
+        "value": "Benefits Established: General Relief",
+        "label": "Benefits Established: General Relief"
       },
       {
-        "value": "Established Benefits : GR ",
-        "label": "Established Benefits : GR "
+        "value": "Benefits Established: MediCal",
+        "label": "Benefits Established: MediCal"
       },
       {
-        "value": "Established Benefits : MediCal ",
-        "label": "Established Benefits : MediCal "
+        "value": "Benefits Established: Social Security Benefits (SSI/SSDI/SSA)",
+        "label": "Benefits Established: Social Security Benefits (SSI/SSDI/SSA)"
       },
       {
         "value": "Housing: Emergency Shelter Obtained",
@@ -378,8 +378,8 @@
         "label": "Medical Care: Urgent Care"
       },
       {
-        "value": "Mental Health Care ",
-        "label": "Mental Health Care "
+        "value": "Behavioral Health: Established mental health provider",
+        "label": "Behavioral Health: Established mental health provider"
       },
       {
         "value": "Mobile Hygiene Program (Mobile showers, laundry, or food bank/meal services)",
@@ -390,16 +390,16 @@
         "label": "Social Services"
       },
       {
-        "value": "SUD Treatment : Collaborative",
-        "label": "SUD Treatment : Collaborative"
+        "value": "SUD Treatment: Collaborative",
+        "label": "SUD Treatment: Collaborative"
       },
       {
-        "value": "SUD Treatment : Other",
-        "label": "SUD Treatment : Other"
+        "value": "SUD Treatment: Other",
+        "label": "SUD Treatment: Other"
       },
       {
-        "value": "Veterans Services/Benefits",
-        "label": "Veterans Services/Benefits"
+        "value": "Benefits Established: Veterans Services/Benefits",
+        "label": "Benefits Established: Veterans Services/Benefits"
       },
       {
         "value": "Vital Documents Obtained",
@@ -430,8 +430,8 @@
         "label": "Damage to or theft of CIRCLE equipment"
       },
       {
-        "value": "Deceased person discovered /Death witnessed",
-        "label": "Deceased person discovered /Death witnessed"
+        "value": "Deceased person discovered / Death witnessed",
+        "label": "Deceased person discovered / Death witnessed"
       },
       {
         "value": "Complaint or grievance regarding the actions of staff",
@@ -442,12 +442,12 @@
         "label": "On or off-duty arrest of a CIRCLE staff member"
       },
       {
-        "value": "Intervention request made to Child Protective Services.",
-        "label": "Intervention request made to Child Protective Services."
+        "value": "Intervention request made to Child Protective Services",
+        "label": "Intervention request made to Child Protective Services"
       },
       {
-        "value": "The filing of a police report;",
-        "label": "The filing of a police report;"
+        "value": "The filing of a police report",
+        "label": "The filing of a police report"
       }
     ],
     "isPII": false
