@@ -1,0 +1,188 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "placeholder": "First name or nickname",
+    "isPII": true,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relationship to Help Seeker",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Parent or caregiver",
+        "label": "Parent or caregiver"
+      },
+      {
+        "value": "Partner or spouse",
+        "label": "Partner or spouse"
+      },
+      {
+        "value": "Other family member",
+        "label": "Other family member"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Professional",
+        "label": "Professional"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Under 13",
+        "label": "Under 13"
+      },
+      {
+        "value": "13-17",
+        "label": "13-17"
+      },
+      {
+        "value": "18-24",
+        "label": "18-24"
+      },
+      {
+        "value": "25-34",
+        "label": "25-34"
+      },
+      {
+        "value": "35-44",
+        "label": "35-44"
+      },
+      {
+        "value": "45-54",
+        "label": "45-54"
+      },
+      {
+        "value": "55-64",
+        "label": "55-64"
+      },
+      {
+        "value": "65+",
+        "label": "65+"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Woman",
+        "label": "Woman"
+      },
+      {
+        "value": "Man",
+        "label": "Man"
+      },
+      {
+        "value": "Non-binary",
+        "label": "Non-binary"
+      },
+      {
+        "value": "Another gender",
+        "label": "Another gender"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "phone1",
+    "label": "Phone",
+    "type": "input",
+    "placeholder": "(555) 555-0100",
+    "maxLength": {
+      "value": 20,
+      "message": "Use 20 characters or fewer"
+    },
+    "isPII": true
+  },
+  {
+    "name": "state",
+    "label": "State",
+    "type": "select",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "usStates",
+    "isPII": false
+  },
+  {
+    "name": "county",
+    "label": "County",
+    "type": "dependent-select",
+    "dependsOn": "state",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "optionsReferenceKey": "usCountiesByState",
+    "isPII": false
+  },
+  {
+    "name": "notes",
+    "label": "Notes",
+    "type": "textarea",
+    "rows": 4,
+    "isPII": true
+  },
+  {
+    "name": "copyToHousehold",
+    "label": "This person is also a related person",
+    "type": "copy-to",
+    "initialChecked": false,
+    "target": "household",
+    "isPII": false
+  }
+]

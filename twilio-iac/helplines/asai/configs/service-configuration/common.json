@@ -1,0 +1,10 @@
+{
+    "attributes": {
+        "contacts_waiting_channels": [
+            "web"
+        ],
+        "definitionVersion": "asai-v1",
+        "helplineLanguage": "en-US",
+        "permissionConfig": "demo"
+    }
+}
