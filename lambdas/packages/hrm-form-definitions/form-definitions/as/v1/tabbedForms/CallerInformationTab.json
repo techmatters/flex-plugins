@@ -3,11 +3,7 @@
     "name": "firstName",
     "label": "First Name",
     "type": "input",
-    "isPII": true,
-    "description": {
-      "title": "AsV1-ChildInformationTab-FirstName-Title",
-      "content": "AsV1-ChildInformationTab-FirstName-Content"
-    }
+    "isPII": true
   },
   {
     "name": "lastName",
