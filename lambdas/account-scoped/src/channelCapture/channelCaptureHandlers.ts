@@ -17,12 +17,11 @@ import { ChannelInstance } from 'twilio/lib/rest/chat/v2/service/channel';
 import { ConversationInstance } from 'twilio/lib/rest/conversations/v1/conversation';
 import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 import type { MemberInstance } from 'twilio/lib/rest/ipMessaging/v2/service/channel/member';
-import { LexClient, LexMemory } from './lexClient';
+import { LexClient } from './lexClient';
 import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import { Twilio } from 'twilio';
 import { ROUTE_PREFIX } from '../router';
 import { AccountSID } from '@tech-matters/twilio-types';
-import { savePostSurvey } from '../hrm/savePostSurvey';
 import { ChannelType } from '@tech-matters/twilio-types';
 
 const triggerTypes = ['withUserMessage', 'withNextMessage'] as const;
@@ -614,7 +613,6 @@ export const handleChannelRelease = async ({
   accountSid,
   capturedChannelAttributes,
   channelOrConversation,
-  memory,
   twilioClient,
   twilioWorkspaceSid,
 }: {
@@ -622,7 +620,6 @@ export const handleChannelRelease = async ({
   twilioClient: Twilio;
   channelOrConversation: ChannelInstance | ConversationInstance;
   capturedChannelAttributes: CapturedChannelAttributes;
-  memory: LexMemory;
   twilioWorkspaceSid: string;
 }) => {
   try {
@@ -642,18 +639,13 @@ export const handleChannelRelease = async ({
     }
 
     if (capturedChannelAttributes.releaseType === 'postSurveyComplete') {
-      await savePostSurvey({
-        postSurveyAnswers: memory,
-        controlTask,
-        accountSid,
-        twilioClient,
-      });
+      // The answers were already recorded as they were given (see chatbotCallback), so only close the survey
       await controlTaskContext.update({ assignmentStatus: 'canceled' });
     }
 
     return newOk({});
   } catch (error) {
-    console.error('handeChannelRelease', error);
+    console.error(`[${accountSid}] handleChannelRelease failed`, error);
     return newErr({
       message: error instanceof Error ? error.message : String(error),
       error: error instanceof Error ? error : new Error(String(error)),

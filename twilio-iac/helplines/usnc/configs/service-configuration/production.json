@@ -11,6 +11,7 @@
         "postStudioFlows": {
             "WQ786294d1cfa50be47210db6f27fdcc67": {
                 "flowTrigger": "inProgressCall",
+                "createSurveyControlTask": true,
                 "studioFlowSid": "FW0927ae1b3a1b63a3ea18ce2c41496d10"
             }
         }
