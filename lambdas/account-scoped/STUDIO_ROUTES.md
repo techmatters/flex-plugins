@@ -18,6 +18,7 @@ custom-channel callbacks) are intentionally not listed here.
 | [`channelCapture/chatbotCallbackCleanup`](#channelcapturechatbotcallbackcleanup) | Force-release a conversation captured by a bot |
 | [`channelCapture/startPostSurveyChatbot`](#channelcapturestartpostsurveychatbot) | Start the post-survey Lex bot on a conversation |
 | [`hrm/savePostSurvey`](#hrmsavepostsurvey) | Save voice (IVR) post-survey answers to HRM and Insights |
+| [`postSurvey/recordAnswers`](#postsurveyrecordanswers) | Record voice (IVR) post-survey answers as they are given |
 | [`conversation/sendMessageAndRunJanitor`](#conversationsendmessageandrunjanitor) | Send a final message and close the conversation |
 | [`conversation/sendStudioMessage`](#conversationsendstudiomessage) | Detach Studio and send a system message (system-down flow) |
 | [`conversation/setFlowMemory`](#conversationsetflowmemory) | Keep values on the conversation for later executions (e.g. after a chatbot) |
@@ -514,6 +515,51 @@ this through a short-lived `survey` task, which it creates and cancels itself.
 ```
 
 **Good to know:** HRM or Insights save errors are only logged, and the route still returns `200`.
+
+---
+
+## postSurvey/recordAnswers
+
+Records **voice** (IVR) post-call survey answers as soon as they are given, so a caller who
+hangs up halfway still leaves the answers they gave. Each call stores the answers on the post
+survey control task (for Flex Insights) and saves all the answers so far to HRM.
+
+The control task is created by the lambda before the flow starts, when the flow's
+`postStudioFlows` entry in the service configuration has `"createSurveyControlTask": true`.
+Its SID reaches the flow as `{{trigger.call.controlTaskSid}}` (`inProgressCall` trigger) or
+`{{flow.data.controlTaskSid}}` (`rest` trigger).
+
+**URL:** `${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers`
+
+| Param | Required | Example | Notes |
+|---|---|---|---|
+| `controlTaskSid` | yes | `{{trigger.call.controlTaskSid}}` | Post survey control task |
+| `answers` | no | `{"feel_supported": "Yes"}` | Object. Keys must match the questions in the helpline's form definitions `insights/postSurvey` spec. Empty answers are ignored, so send only the question just answered. Send it as JSON, not form parameters. |
+| `surveyComplete` | no | `true` | Send `true` once, on the last call of a survey that reached its end. It closes the control task, after which no more answers can be recorded. |
+
+**Example body** (after the last question):
+
+```json
+{
+  "controlTaskSid": "{{trigger.call.controlTaskSid}}",
+  "answers": { "end_interaction": "{{flow.variables.end_interaction}}" },
+  "surveyComplete": true
+}
+```
+
+**Response:**
+
+```json
+{ "message": "Post survey answers recorded" }
+```
+
+**Good to know:**
+
+- If the caller hangs up, nothing else is needed: the control task expires after 15 minutes and
+  the answers already recorded are kept.
+- A failure returns `500` and fires `failed`. Always continue the survey from `failed`: the next
+  call sends all the answers so far to HRM again, so a single failure is recovered.
+- A survey with no answers saves nothing.
 
 ---
 

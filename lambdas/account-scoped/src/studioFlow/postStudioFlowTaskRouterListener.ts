@@ -22,7 +22,11 @@ import { AccountSID, CallSid, TaskQueueSID, TaskSID } from '@tech-matters/twilio
 import TwilioSDK from 'twilio';
 import { TASK_COMPLETED, TASK_WRAPUP } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
-import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
+import {
+  PostSurveyConfiguration,
+  retrieveServiceConfigurationAttributes,
+} from '../configuration/aseloConfiguration';
+import { createPostSurveyControlTask } from '../postSurvey/postSurveyControlTask';
 import { isChatCaptureControlTask } from '../channelCapture/channelCaptureHandlers';
 import VoiceResponse = TwilioSDK.twiml.VoiceResponse;
 import { patchTaskAttributes } from '../task/patchTaskAttributes';
@@ -47,6 +51,40 @@ const isTriggerPostStudioFlow = ({
   };
 }) =>
   !isChatCaptureControlTask(taskAttributes) && !taskAttributes.postStudioFlowTriggered;
+
+/**
+ * Creates the post survey control task if the post studio flow is configured to need one.
+ * A failure is logged rather than thrown, so the caller still gets the survey even if its answers can't be recorded.
+ */
+const createSurveyControlTaskIfConfigured = async ({
+  client,
+  accountSid,
+  studioFlowConfiguration,
+  taskSid,
+  taskAttributes,
+  logPrefix,
+}: {
+  client: TwilioSDK.Twilio;
+  accountSid: AccountSID;
+  studioFlowConfiguration: PostSurveyConfiguration;
+  taskSid: TaskSID;
+  taskAttributes: Record<string, any>;
+  logPrefix: string;
+}): Promise<string | undefined> => {
+  if (!studioFlowConfiguration.createSurveyControlTask) return undefined;
+  try {
+    const controlTask = await createPostSurveyControlTask(client, accountSid, {
+      contactTaskSid: taskSid,
+      contactId: taskAttributes.contactId,
+      language: taskAttributes.language,
+    });
+    console.debug(`${logPrefix} Created post survey control task ${controlTask.sid}`);
+    return controlTask.sid;
+  } catch (err) {
+    console.error(`${logPrefix} Failed to create post survey control task`, err);
+    return undefined;
+  }
+};
 
 const triggerPostStudioFlow = async ({
   accountSid,
@@ -102,9 +140,19 @@ const triggerPostStudioFlow = async ({
           if (targetParticipants.length === 1) {
             const [participant] = targetParticipants;
             try {
+              const controlTaskSid = await createSurveyControlTaskIfConfigured({
+                client,
+                accountSid,
+                studioFlowConfiguration: studioFlowIdentifier,
+                taskSid,
+                taskAttributes,
+                logPrefix,
+              });
               const twiml = new VoiceResponse();
               twiml.redirect(
-                `${studioWebhookUrl}?Trigger=inProgressCall&contactId=${contactId}&taskSid=${taskSid}`,
+                `${studioWebhookUrl}?Trigger=inProgressCall&contactId=${contactId}&taskSid=${taskSid}${
+                  controlTaskSid ? `&controlTaskSid=${controlTaskSid}` : ''
+                }`,
               );
               await client.calls.get(participant.callSid).update({
                 twiml,
@@ -139,6 +187,14 @@ const triggerPostStudioFlow = async ({
         console.debug(
           `${logPrefix} Initiating post studio flow ${studioFlowIdentifier} configured for ${taskChannelUniqueName} via REST API - contact ${contactId}, task: ${taskSid}`,
         );
+        const controlTaskSid = await createSurveyControlTaskIfConfigured({
+          client,
+          accountSid,
+          studioFlowConfiguration: studioFlowIdentifier,
+          taskSid,
+          taskAttributes,
+          logPrefix,
+        });
         await client.studio.v2.flows
           .get(studioFlowIdentifier.studioFlowSid)
           .executions.create({
@@ -148,6 +204,7 @@ const triggerPostStudioFlow = async ({
               contactTaskSid: taskSid,
               taskQueueSid,
               taskLanguage: taskAttributes.language ?? '',
+              ...(controlTaskSid && { controlTaskSid }),
             },
             to: isOutbound ? taskAttributes.outbound_to : taskAttributes.from,
           });
