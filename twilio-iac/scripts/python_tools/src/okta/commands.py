@@ -15,7 +15,10 @@ from .results import ICONS, has_errors, print_results, result, worst_severity
 from .saml_login import capture_saml_assertion
 from .standard import STANDARD_ATTRIBUTES, check_app, expected_attributes, find_connection_sid
 
-ENVIRONMENTS = {'stg': 'staging', 'prod': 'production', 'staging': 'staging', 'production': 'production'}
+ENVIRONMENTS = {
+    'dev': 'development', 'stg': 'staging', 'prod': 'production',
+    'development': 'development', 'staging': 'staging', 'production': 'production',
+}
 
 
 def _codes_filter(hl: str | None) -> list[str] | None:
@@ -371,21 +374,21 @@ ACCOUNT_SID_HELP = 'The account SID comes from --account-sid, --accounts-file or
 
 def _environment(env: str) -> str:
     if env.lower() not in ENVIRONMENTS:
-        raise ArgumentTypeError(f'unknown environment "{env}" (staging or production)')
+        raise ArgumentTypeError(f'unknown environment "{env}" (development, staging or production)')
     return ENVIRONMENTS[env.lower()]
 
 
 def _add_helpline_args(parser: ArgumentParser):
     parser.add_argument('--hl', required=True, type=str.lower, help='helpline short code, e.g. jm')
     parser.add_argument('--env', required=True, type=_environment,
-                        help='staging | production (stg / prod also accepted)')
+                        help='development | staging | production (dev / stg / prod also accepted)')
     parser.add_argument('--account-sid', help='Twilio account SID (otherwise --accounts-file or AWS SSM)')
     _add_accounts_file_arg(parser)
 
 
 def _add_accounts_file_arg(parser: ArgumentParser):
     parser.add_argument('--accounts-file',
-                        help='private JSON { "<code>": { "staging": "AC...", "production": "AC..." } }')
+                        help='private JSON { "<code>": { "development": "AC...", "staging": "AC...", "production": "AC..." } }')
 
 
 def _add_label_args(parser: ArgumentParser):
@@ -432,7 +435,7 @@ def _build_parser() -> ArgumentParser:
     command.add_argument('--json', action='store_true', help='machine-readable output')
 
     command = add_command('audit-sso-drift', audit_sso_drift,
-                          'Check every active Okta SAML app labelled "<name> (<CODE>)" / "STG_<name> (<CODE>)".\n'
+                          'Check every active Okta SAML app labelled "<name> (<CODE>)" / "STG_<name> (<CODE>)" / "DEV_<name> (<CODE>)".\n'
                           'Account SIDs (for the Flex connection check) come from --accounts-file or AWS SSM; without '
                           'them that check is skipped.')
     command.add_argument('--hl', help='only these helplines, comma separated (e.g. jm,mt)')

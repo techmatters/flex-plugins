@@ -31,9 +31,9 @@ Related docs: [Terragrunt in this repo](terragrunt.md) · [Service configuration
 |---|---|---|
 | Helpline display name | `SafeSpot` | `helpline` in `common.hcl`, form categories |
 | Short code (lower case) | `jm` | folder name, `HL=` |
-| Environment | `staging` first; `production` near launch | `HL_ENV=` |
-| Twilio account | created by an account owner, named `STG_<Name> (<CODE>)` / `<Name> (<CODE>)` | everything |
-| Helpline region | `us-east-1` / `eu-west-1` | `helpline_region` |
+| Environment | `staging` first; `production` near launch; `development` only for an internal dev account (see [Development environment](#development-environment)) | `HL_ENV=` |
+| Twilio account | created by an account owner, named `DEV_<Name> (<CODE>)` / `STG_<Name> (<CODE>)` / `<Name> (<CODE>)` | everything |
+| Helpline region | `us-east-1` / `eu-west-1` (development: `us-east-1` only) | `helpline_region` |
 | Channels and numbers | webchat, SMS, voice, WhatsApp… | `common.hcl` / env files |
 | Who should log in to Flex | helpline staff, by organization or email domain | step 1.5 (Okta SSO) |
 | Webchat needed? | yes/no | Phase 2 |
@@ -56,7 +56,8 @@ Related docs: [Terragrunt in this repo](terragrunt.md) · [Service configuration
 
 1. Branch from master: `alejandro-c/<code>/<task>` (or your own prefix).
 2. Create `twilio-iac/helplines/<code>/` by copying `helplines/baseline/` (`common.hcl`,
-   `staging.hcl`, `production.hcl`, `configs/`).
+   `staging.hcl`, `production.hcl`, `configs/`, and `development.hcl` only if the helpline gets a
+   development environment).
 3. Fill in `common.hcl`: `helpline`, `helpline_region`, channels, queues and workflows.
 4. Fill in `staging.hcl`: `flow_vars` and channel settings.
 5. Commit; the person pushes or opens the PR.
@@ -98,7 +99,8 @@ TwilioErrorReporter itself needs no change: it finds the helpline from the SSM p
 ### 1.5 Okta SSO 🧑
 
 Okta single sign-on is set up by hand in Okta and the Twilio Console, as for existing helplines:
-the helpline's Okta group and Flex SAML app (label `STG_<Name> (<CODE>)` / `<Name> (<CODE>)`), then
+the helpline's Okta group and Flex SAML app (label `DEV_<Name> (<CODE>)` / `STG_<Name> (<CODE>)` /
+`<Name> (<CODE>)`), then
 the app's values on Twilio Console › **Flex › Users and access › Single sign-on (SSO)**. Finish by
 logging in to Flex with **Login with SSO** and checking the worker attributes in TaskRouter.
 
@@ -139,7 +141,7 @@ Twilio Console › Account › **Manage users**: invite the engineers and soluti
 ### 2.2 Twilio lambdas 🧑
 
 Run *Deploy All Twilio Lambdas* ([twilio-lambda-deploy-all.yml](../../.github/workflows/twilio-lambda-deploy-all.yml))
-in this repo's GitHub Actions for the environment (`staging` / `production`). It deploys every
+in this repo's GitHub Actions for the environment (`development` / `staging` / `production`). It deploys every
 Twilio lambda (account-scoped, TwilioErrorReporter, …) for all helplines of that environment. Run it
 from master only: running it from the helpline's branch would deploy that branch's lambdas to every
 helpline.
@@ -199,6 +201,27 @@ Ask an AWS admin to add the `tl-aselo-docs-<code>-production` bucket to CloudTra
 
 Repeat with `HL_ENV=production`: 1.1 (`production.hcl`), 1.2, 1.3, 1.4, 1.5 (a production Okta
 app; the helpline group already exists), 1.6, 2.2–2.4, 2.6, 2.7, Phase 3.
+
+## Development environment
+
+An internal dev account follows the same steps as staging with `HL_ENV=development`
+(`development.hcl`, `configs/service-configuration/development.json`, `configSrc/<code>/development.json`
+for webchat). Everything is built from the environment name, so it uses the shared development
+resources: `hrm-development.tl.techmatters.org` (account-scoped lambdas, event streams, HRM),
+`assets-development.tl.techmatters.org` (Flex plugin, forms, webchat) and `/development/...` SSM
+parameters. The deploy workflows in Phase 2 all offer `development`.
+
+Differences from staging:
+
+- **Region: `us-east-1` only.** There is no `hrm-development-eu` / `hrm-development-ca` host, so a
+  development helpline in another region would get webhook URLs that don't resolve.
+- **Lex chatbots: not supported yet.** The lex stage writes the **production** bot alias for every
+  environment except staging (`terraform-modules/lex/v2/main.tf`, `bot_config`). Skip `stages/lex`
+  until that is changed.
+- **Operating hours are not enforced** (the lambdas only enforce them in production, and the
+  `operating_hours_enforced_override` parameter is only created in staging).
+- **Okta:** the app is labelled `DEV_<app_name> (<CODE>)` and gets the same groups as staging.
+- 2.7 CloudTrail is not needed.
 
 ---
 
