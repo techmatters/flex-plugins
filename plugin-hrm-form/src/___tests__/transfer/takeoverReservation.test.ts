@@ -49,6 +49,8 @@ describe('acceptSelfInitiatedTakeover', () => {
     await acceptSelfInitiatedTakeover(reservation(mockWorkerSid));
 
     expect(mockInvokeAction).toHaveBeenCalledWith('AcceptTask', { sid: 'WR-reservation' });
+    expect(mockInvokeAction).toHaveBeenCalledWith('SelectTask', { sid: 'WR-reservation' });
+    expect(mockInvokeAction.mock.invocationCallOrder[0]).toBeLessThan(mockInvokeAction.mock.invocationCallOrder[1]);
     expect(mockShowNotificationSingle).toHaveBeenCalledWith(TAKEOVER_SUCCESS_NOTIFICATION_ID);
   });
 
@@ -64,6 +66,13 @@ describe('acceptSelfInitiatedTakeover', () => {
 
     await expect(acceptSelfInitiatedTakeover(reservation(mockWorkerSid))).rejects.toThrow('accept failed');
     expect(mockShowNotificationSingle).not.toHaveBeenCalled();
+  });
+
+  it('still reports success if selecting the accepted task fails', async () => {
+    mockInvokeAction.mockResolvedValueOnce(undefined).mockRejectedValueOnce(new Error('select failed'));
+
+    await expect(acceptSelfInitiatedTakeover(reservation(mockWorkerSid))).rejects.toThrow('select failed');
+    expect(mockShowNotificationSingle).toHaveBeenCalledWith(TAKEOVER_SUCCESS_NOTIFICATION_ID);
   });
 });
 
@@ -103,6 +112,10 @@ describe('isSupervisorTakeoverOfTask', () => {
 });
 
 describe('notifySupervisorTakeoverIfNeeded', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('shows a single notification per task when another worker initiated its takeover', () => {
     const notifiedTaskSids = new Set<string>();
     const transferMeta = { initiatingWorkerSid: 'WK-supervisor', originalTask: 'WT-original-task' };

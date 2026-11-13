@@ -55,4 +55,5 @@ export const acceptSelfInitiatedTakeover = async (reservation: Reservation) => {
 
   await Actions.invokeAction('AcceptTask', { sid: reservation.sid });
   Notifications.showNotificationSingle(TAKEOVER_SUCCESS_NOTIFICATION_ID);
+  await Actions.invokeAction('SelectTask', { sid: reservation.sid });
 };
