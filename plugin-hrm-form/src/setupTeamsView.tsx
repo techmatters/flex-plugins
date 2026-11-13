@@ -30,6 +30,11 @@ export const setUpTeamsView = () => {
   TeamsView.setUpTeamsViewFilters();
   TeamsView.setUpWorkerDirectoryFilters();
   if (getHrmConfig().enableChatTakeovers) {
-    Flex.Supervisor.TaskCanvasHeader.Content.add(<TakeOverTaskButton key="take-over-button" />);
+    Flex.Supervisor.TaskCanvasHeader.Content.addWrapper(OriginalComponent => props => (
+      <>
+        <OriginalComponent {...props} />
+        <TakeOverTaskButton key="take-over-button" />
+      </>
+    ));
   }
 };

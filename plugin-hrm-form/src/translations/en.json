@@ -128,7 +128,7 @@
   "Transfer-CannotTransferTooManyParticipants": "Cannot transfer while there are 3 or more participants",
   "Transfer-Notifications-CantHangTransferInProgress": "Can't leave the call until the transfer is accepted or rejected.",
   "TakeOver-Confirm-Header": "Take over?",
-  "TakeOver-Confirm-Content": "This conversation will be transferred to you. The original counselor will be removed. Your status will be changed to Available if it’s not already in that state.",
+  "TakeOver-Confirm-Content": "This conversation will be transferred to you. The original counselor will be removed.",
   "TakeOver-Confirm-Button": "Take Over",
   "TakeOver-Disabled-NotSupervisor": "Only supervisors can take over conversations.",
   "TakeOver-Disabled-Offline": "You must be online to take over this conversation.",
