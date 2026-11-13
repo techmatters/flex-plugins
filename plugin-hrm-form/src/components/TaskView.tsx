@@ -15,9 +15,9 @@
  */
 
 /* eslint-disable react/prop-types */
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TaskHelper } from '@twilio/flex-ui';
+import { Notifications, TaskHelper } from '@twilio/flex-ui';
 import { DefinitionVersion } from 'hrm-form-definitions';
 
 import HrmForm from './HrmForm';
@@ -50,6 +50,7 @@ import selectContactStateByContactId from '../states/contacts/selectContactState
 import { rerenderAgentDesktop } from '../rerenderView';
 import { TaskSID } from '../types/twilio';
 import { selectIsFlexTransferActionInProgress } from '../states/taskScopedMetadata';
+import { isSupervisorTakeoverOfTask, SUPERVISOR_TAKEOVER_NOTIFICATION_ID } from '../transfer/takeoverReservation';
 
 type Props = {
   task: CustomITask;
@@ -61,6 +62,7 @@ const isTaskFormLocked = (task: CustomITask, flexTransferActionInProgress: boole
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskView: React.FC<Props> = ({ task }) => {
   const { workerSid } = getHrmConfig();
+  const takeoverNotificationShownForTask = useRef(new Set<TaskSID>());
   const taskContactId = (task?.attributes as any)?.contactId;
   const currentDefinitionVersion = useSelector((state: RootState) => selectCurrentDefinitionVersion(state));
   // Check if the entry for this task exists in each reducer
@@ -94,6 +96,16 @@ const TaskView: React.FC<Props> = ({ task }) => {
   );
   const updateHelpline = (contactId: string, helpline: string) => dispatch(updateDraft(contactId, { helpline }));
   const { transferMeta } = isOfflineContactTask(task) ? { transferMeta: undefined } : task.attributes;
+  React.useEffect(() => {
+    if (
+      !takeoverNotificationShownForTask.current.has(task.taskSid) &&
+      isSupervisorTakeoverOfTask(transferMeta, task.taskSid, workerSid)
+    ) {
+      takeoverNotificationShownForTask.current.add(task.taskSid);
+      Notifications.showNotificationSingle(SUPERVISOR_TAKEOVER_NOTIFICATION_ID);
+    }
+  }, [task.taskSid, transferMeta, workerSid]);
+
   const sidWithTaskControl = transferMeta?.sidWithTaskControl;
   React.useEffect(() => {
     if (shouldRecreateState && !isOfflineContactTask(task) && taskContactId) {

@@ -18,6 +18,24 @@ import { Actions, Manager, Notifications } from '@twilio/flex-ui';
 import type { Reservation } from 'twilio-taskrouter';
 
 export const TAKEOVER_SUCCESS_NOTIFICATION_ID = 'TakeOver_SucceededNotification';
+export const SUPERVISOR_TAKEOVER_NOTIFICATION_ID = 'Supervisor_TakeOver_Notification';
+
+type TransferMetadata = {
+  initiatingWorkerSid?: string;
+  originalTask?: string;
+  originalTaskSid?: string;
+};
+
+export const isSupervisorTakeoverOfTask = (
+  transferMeta: TransferMetadata | undefined,
+  taskSid: string,
+  workerSid: string,
+) => {
+  const originalTaskSid = transferMeta?.originalTaskSid ?? transferMeta?.originalTask;
+  return Boolean(
+    transferMeta?.initiatingWorkerSid && transferMeta.initiatingWorkerSid !== workerSid && originalTaskSid === taskSid,
+  );
+};
 
 export const acceptSelfInitiatedTakeover = async (reservation: Reservation) => {
   const { workerClient } = Manager.getInstance();

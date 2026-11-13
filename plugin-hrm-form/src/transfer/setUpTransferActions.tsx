@@ -37,7 +37,11 @@ import { reactivateAseloListeners } from '../conversationListeners';
 import selectContactByTaskSid from '../states/contacts/selectContactByTaskSid';
 import { ContactState } from '../states/contacts/existingContacts';
 import { saveFormSharedState } from './formDataTransfer';
-import { TAKEOVER_SUCCESS_NOTIFICATION_ID, acceptSelfInitiatedTakeover } from './takeoverReservation';
+import {
+  TAKEOVER_SUCCESS_NOTIFICATION_ID,
+  SUPERVISOR_TAKEOVER_NOTIFICATION_ID,
+  acceptSelfInitiatedTakeover,
+} from './takeoverReservation';
 import { newSetFlexTransferActionInProgressAction } from '../states/taskScopedMetadata';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
@@ -59,6 +63,13 @@ const setUpTransfersNotifications = () => {
     id: TAKEOVER_SUCCESS_NOTIFICATION_ID,
     type: NotificationType.success,
     content: <Template code="TakeOver-Succeeded-Notification" />,
+  });
+  Notifications.registerNotification({
+    id: SUPERVISOR_TAKEOVER_NOTIFICATION_ID,
+    closeButton: true,
+    timeout: 0,
+    type: NotificationType.warning,
+    content: <Template code="TakeOver-OriginalCounselor-Notification" />,
   });
 };
 

@@ -16,7 +16,11 @@
 
 import type { Reservation } from 'twilio-taskrouter';
 
-import { acceptSelfInitiatedTakeover, TAKEOVER_SUCCESS_NOTIFICATION_ID } from '../../transfer/takeoverReservation';
+import {
+  acceptSelfInitiatedTakeover,
+  isSupervisorTakeoverOfTask,
+  TAKEOVER_SUCCESS_NOTIFICATION_ID,
+} from '../../transfer/takeoverReservation';
 
 const mockInvokeAction = jest.fn().mockResolvedValue(undefined);
 const mockShowNotificationSingle = jest.fn();
@@ -58,5 +62,40 @@ describe('acceptSelfInitiatedTakeover', () => {
 
     await expect(acceptSelfInitiatedTakeover(reservation(mockWorkerSid))).rejects.toThrow('accept failed');
     expect(mockShowNotificationSingle).not.toHaveBeenCalled();
+  });
+});
+
+describe('isSupervisorTakeoverOfTask', () => {
+  const taskSid = 'WT-original-task';
+  const supervisorSid = 'WK-supervisor';
+  const counselorSid = 'WK-original-counselor';
+
+  it('matches metadata for the original counselor task', () => {
+    expect(
+      isSupervisorTakeoverOfTask({ initiatingWorkerSid: supervisorSid, originalTask: taskSid }, taskSid, counselorSid),
+    ).toBe(true);
+  });
+
+  it('supports an originalTaskSid metadata field', () => {
+    expect(
+      isSupervisorTakeoverOfTask(
+        { initiatingWorkerSid: supervisorSid, originalTaskSid: taskSid },
+        taskSid,
+        counselorSid,
+      ),
+    ).toBe(true);
+  });
+
+  it('does not match another task or the logged-in worker as initiator', () => {
+    expect(
+      isSupervisorTakeoverOfTask(
+        { initiatingWorkerSid: supervisorSid, originalTask: 'WT-another-task' },
+        taskSid,
+        counselorSid,
+      ),
+    ).toBe(false);
+    expect(
+      isSupervisorTakeoverOfTask({ initiatingWorkerSid: counselorSid, originalTask: taskSid }, taskSid, counselorSid),
+    ).toBe(false);
   });
 });

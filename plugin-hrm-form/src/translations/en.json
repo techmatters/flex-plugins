@@ -134,6 +134,7 @@
   "TakeOver-Disabled-Offline": "You must be online to take over this conversation.",
   "TakeOver-Disabled-TransferInProgress": "A transfer is already in progress for this conversation.",
   "TakeOver-Succeeded-Notification": "Takeover successful.",
+  "TakeOver-OriginalCounselor-Notification": "A supervisor took over your conversation.",
   "BottomBar-Next": "Next",
   "BottomBar-SaveAndAddToCase": "Save and Add to Case...",
   "BottomBar-SaveContact": "Save",
