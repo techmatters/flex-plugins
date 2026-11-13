@@ -1,6 +1,6 @@
 ---
 name: new-helpline
-description: Provision a new Aselo helpline environment end to end (Twilio Flex account config in twilio-iac, deployments) from the baseline, working together with a person who does the console and apply steps. Use when asked to set up, onboard or provision a new helpline or a new environment (staging/production) of an existing one, to continue an onboarding in progress, or to report its status.
+description: Provision a new Aselo helpline environment end to end (Twilio Flex account config in twilio-iac, deployments) from the baseline, working together with a person who does the console and apply steps. Use when asked to set up, onboard or provision a new helpline or a new environment (staging/production, or development for an internal dev account) of an existing one, to continue an onboarding in progress, or to report its status.
 ---
 
 # New helpline provisioning
@@ -18,7 +18,9 @@ numbers (0, 1.1 … 3). Configuration conventions: [twilio-iac/AGENTS.md](../../
 - Never ask for, print or commit secrets (auth tokens, keys). The repo is public: no account SIDs,
   Okta ids or internal URLs in committed files.
 - One helpline + environment at a time. Staging first; production only when the person says the
-  helpline is close to launch.
+  helpline is close to launch. A development environment (internal dev account) follows the staging
+  steps with `HL_ENV=development`; read the guide's "Development environment" section first
+  (us-east-1 only, no Lex yet).
 - Don't guess missing information: ask.
 
 ## Workflow
@@ -49,7 +51,8 @@ done. Never assign or reassign tasks without asking. If a template task disagree
 Collect, asking only for what is missing:
 
 - helpline display name, short code (lower case), environment
-- Twilio account name follows `STG_<Name> (<CODE>)` / `<Name> (<CODE>)` (the person creates the account)
+- Twilio account name follows `DEV_<Name> (<CODE>)` / `STG_<Name> (<CODE>)` / `<Name> (<CODE>)` (the
+  person creates the account)
 - helpline region (`us-east-1` / `eu-west-1`)
 - channels and phone numbers (baseline: chat (webchat over Conversations) + voice)
 - who should log in to Flex (for the Okta admin in step 1.5)
@@ -65,7 +68,8 @@ Later on this information may come from a tool that collects it from meetings; u
 - Branch from master (person's naming convention, e.g. `<prefix>/<code>/<task>`).
 - Copy `twilio-iac/helplines/baseline/` to `twilio-iac/helplines/<code>/` and fill in the
   placeholders: `common.hcl` (helpline, region, queue name, channels), `staging.hcl`
-  (`flow_vars`), service configuration JSON. Keep the baseline shape (1 queue, chat +
+  (`flow_vars`; `development.hcl` too for a development environment, otherwise delete it), service
+  configuration JSON. Keep the baseline shape (1 queue, chat +
   voice) unless the intake asks for more; follow AGENTS.md for anything extra. Never add a
   `channel_type = "web"` channel: its Flex Flow API is deprecated (404 on apply).
 - Studio flows: keep the baseline's shared templates, `messaging-blocking-conv-lambda-sd.tftpl` (chat)

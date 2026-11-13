@@ -39,10 +39,10 @@ variable "okta" {
 
 variable "okta_app" {
   description = <<-EOT
-    Environment-level Okta app settings (staging.hcl / production.hcl).
+    Environment-level Okta app settings (development.hcl / staging.hcl / production.hcl).
       import_existing            - assert that the app already exists (fails the plan if no active app has this label).
                                    An existing app is always adopted rather than duplicated, with or without this flag.
-      label                      - override the default label ("STG_<app_name> (<CODE>)" / "<app_name> (<CODE>)")
+      label                      - override the default label ("DEV_<app_name> (<CODE>)" / "STG_<app_name> (<CODE>)" / "<app_name> (<CODE>)")
       include_helpline_group     - assign the helpline group (set false to keep counsellors out of staging after launch)
       tech_matters_groups        - override the Tech Matters groups for this environment
       attribute_statements_mode  - "legacy" or "federated" (new attribute statements)

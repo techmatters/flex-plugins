@@ -28,14 +28,16 @@ locals {
 
   app_name = coalesce(var.okta.app_name, var.helpline)
   code     = upper(var.short_helpline)
+  # Label prefix per environment: development DEV_, staging STG_, production none
+  label_prefix = lookup({ "development" = "DEV_", "production" = "" }, var.environment, "STG_")
   label = coalesce(
     var.okta_app.label,
-    var.environment == "production" ? "${local.app_name} (${local.code})" : "STG_${local.app_name} (${local.code})",
+    "${local.label_prefix}${local.app_name} (${local.code})",
   )
 
   # Standard group assignments (see docs/okta.md):
-  #   production: <helpline group> + Tech Matters - Production
-  #   staging:    <helpline group> + Tech Matters - Staff + Tech Matters - Test Accounts
+  #   production:            <helpline group> + Tech Matters - Production
+  #   staging / development: <helpline group> + Tech Matters - Staff + Tech Matters - Test Accounts
   # The helpline group is optional on staging after launch, to keep counsellors out of the wrong environment.
   tech_matters_groups = coalesce(
     var.okta_app.tech_matters_groups,
