@@ -27,6 +27,7 @@ type QueueGreetingsMetadata = {
 // UI state that belongs to a single task, kept independently of its contact or route stack
 type TaskMetadata = {
   queueGreetings?: QueueGreetingsMetadata;
+  flexTransferActionInProgress?: boolean;
 };
 
 type TaskScopedMetadataState = {
@@ -36,10 +37,16 @@ type TaskScopedMetadataState = {
 const initialState: TaskScopedMetadataState = {};
 
 const SET_QUEUE_GREETING_POPUP_DISMISSED = 'taskScopedMetadata/set-queue-greeting-popup-dismissed';
+const SET_FLEX_TRANSFER_ACTION_IN_PROGRESS = 'taskScopedMetadata/set-flex-transfer-action-in-progress';
 type SetQueueGreetingPopupDismissedAction = {
   type: typeof SET_QUEUE_GREETING_POPUP_DISMISSED;
   taskId: string;
   dismissedPopup: boolean;
+};
+type SetFlexTransferActionInProgressAction = {
+  type: typeof SET_FLEX_TRANSFER_ACTION_IN_PROGRESS;
+  taskId: string;
+  inProgress: boolean;
 };
 export const newSetQueueGreetingPopupDismissedAction = (
   taskId: string,
@@ -50,10 +57,25 @@ export const newSetQueueGreetingPopupDismissedAction = (
   dismissedPopup,
 });
 
+export const newSetFlexTransferActionInProgressAction = (
+  taskId: string,
+  inProgress: boolean,
+): SetFlexTransferActionInProgressAction => ({
+  type: SET_FLEX_TRANSFER_ACTION_IN_PROGRESS,
+  taskId,
+  inProgress,
+});
+
 export const selectIsQueueGreetingPopupDismissed = (state: RootState, taskId: string): boolean =>
   Boolean(state[namespace].taskScopedMetadata[taskId]?.queueGreetings?.dismissedPopup);
 
-type TaskScopedMetadataAction = SetQueueGreetingPopupDismissedAction | RemoveContactStateAction;
+export const selectIsFlexTransferActionInProgress = (state: RootState, taskId: string): boolean =>
+  Boolean(state[namespace].taskScopedMetadata[taskId]?.flexTransferActionInProgress);
+
+type TaskScopedMetadataAction =
+  | SetQueueGreetingPopupDismissedAction
+  | SetFlexTransferActionInProgressAction
+  | RemoveContactStateAction;
 
 export const reduce = (state = initialState, action: TaskScopedMetadataAction): TaskScopedMetadataState => {
   switch (action.type) {
@@ -63,6 +85,15 @@ export const reduce = (state = initialState, action: TaskScopedMetadataAction): 
         [action.taskId]: {
           ...state[action.taskId],
           queueGreetings: { dismissedPopup: action.dismissedPopup },
+        },
+      };
+    }
+    case SET_FLEX_TRANSFER_ACTION_IN_PROGRESS: {
+      return {
+        ...state,
+        [action.taskId]: {
+          ...state[action.taskId],
+          flexTransferActionInProgress: action.inProgress,
         },
       };
     }

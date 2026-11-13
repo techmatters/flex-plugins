@@ -49,10 +49,14 @@ import { LoadingStatus } from '../states/contacts/types';
 import selectContactStateByContactId from '../states/contacts/selectContactStateByContactId';
 import { rerenderAgentDesktop } from '../rerenderView';
 import { TaskSID } from '../types/twilio';
+import { selectIsFlexTransferActionInProgress } from '../states/taskScopedMetadata';
 
 type Props = {
   task: CustomITask;
 };
+
+const isTaskFormLocked = (task: CustomITask, flexTransferActionInProgress: boolean) =>
+  !hasTaskControl(task) || flexTransferActionInProgress;
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const TaskView: React.FC<Props> = ({ task }) => {
@@ -68,6 +72,9 @@ const TaskView: React.FC<Props> = ({ task }) => {
   );
   const unsavedContact = getUnsavedContact(savedContact, draftContact);
   const currentRoute = useSelector((state: RootState) => selectCurrentBaseRoute(state, task?.taskSid));
+  const flexTransferActionInProgress = useSelector((state: RootState) =>
+    selectIsFlexTransferActionInProgress(state, task.taskSid),
+  );
   const isModalOpen = currentRoute && isRouteModal(currentRoute);
   const contactIsLoading = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
   const shouldRecreateState =
@@ -170,7 +177,7 @@ const TaskView: React.FC<Props> = ({ task }) => {
   }
 
   const featureFlags = getAseloFeatureFlags();
-  const isFormLocked = !hasTaskControl(task);
+  const isFormLocked = isTaskFormLocked(task, flexTransferActionInProgress);
 
   return (
     <Flex flexDirection="column" style={{ pointerEvents: isFormLocked ? 'none' : 'auto', height: '100%' }}>
