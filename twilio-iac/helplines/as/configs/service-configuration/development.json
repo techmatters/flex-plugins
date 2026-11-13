@@ -35,6 +35,7 @@
         "enforceZeroTranscriptRetention": false,
         "postStudioFlows": {            "WQb4a3a7e8808c61d11d344e5b28fa53ef": {
             "flowTrigger": "inProgressCall",
+            "createSurveyControlTask": true,
             "studioFlowSid": "FW7345ce250648845e9869f59df2c9c961"
         },
             "voice": {
