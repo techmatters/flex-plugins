@@ -30,6 +30,11 @@ const encodeEmailToUnicode = (email: string) => {
     .join('');
 };
 
+let deleteCompleted = false;
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+const ITERATION_DELAY = 2;
+const PAGE_SIZE = 40;
+
 const deleteSmsConversationFromOneEnd = async (
   accountSid: string,
   authToken: string,
@@ -41,42 +46,42 @@ const deleteSmsConversationFromOneEnd = async (
     state: 'active',
   });
   console.info(`${activeConversations.length} active conversations found.`);
-  await Promise.all(
-    activeConversations.map(async (conversation) => {
-      console.debug(`Checking conversation ${conversation.sid}`);
-      const participants = await conversation.participants().list();
-      console.debug(`[SENSITIVE][${conversation.sid}] participants:`, participants.length);
-      participants.map((participant, idx) =>
-        console.debug(
-          `[SENSITIVE][${conversation.sid}] participant index ${idx}: ${participant.messagingBinding?.address} -> ${participant.messagingBinding?.proxy_address}`,
-        ),
-      );
+  let iteration = 0;
+  for (const conversation of activeConversations) {
+    if (iteration % PAGE_SIZE === 0) {
+      await delay(ITERATION_DELAY);
+    }
+    console.debug(`Checking conversation ${conversation.sid}`);
+    const participants = await conversation.participants().list();
+    console.debug(`[SENSITIVE][${conversation.sid}] participants:`, participants.length);
+    // eslint-disable-next-line @typescript-eslint/no-loop-func
+    participants.map((participant, idx) =>
+      console.debug(
+        `[SENSITIVE][${conversation.sid}] participant index ${idx}: ${participant.messagingBinding?.address} -> ${participant.messagingBinding?.proxy_address}`,
+      ),
+    );
 
-      if (
-        // eslint-disable-next-line @typescript-eslint/no-loop-func
-        participants.some((participant) => {
-          return (
-            participant.messagingBinding?.address === fromNumber &&
-            participant.messagingBinding?.proxy_address === toNumber
-          );
-        })
-      ) {
-        console.info(
-          `Found a participant with the from SMS number address (${fromNumber}) and to SMS number proxy address (${toNumber}), attempting to close conversation ${conversation.sid} from ${accountSid}`,
+    if (
+      // eslint-disable-next-line @typescript-eslint/no-loop-func
+      participants.some((participant) => {
+        return (
+          participant.messagingBinding?.address === fromNumber &&
+          participant.messagingBinding?.proxy_address === toNumber
         );
-        await conversation.update({ state: 'closed' });
-      }
-    }),
-  );
+      })
+    ) {
+      console.info(
+        `Found a participant with the from SMS number address (${fromNumber}) and to SMS number proxy address (${toNumber}), attempting to close conversation ${conversation.sid} from ${accountSid}`,
+      );
+      await conversation.update({ state: 'closed' });
+    }
+  }
 };
 
 export const deleteSmsConversations = async (): Promise<void> => {
   const serviceAccountSid = getConfigValue('twilioAccountSid') as string;
   const serviceAuthToken = getConfigValue('twilioAuthToken') as string;
   const serviceSmsNumber = getConfigValue('smsPhoneNumber') as string;
-
-  const senderAccountSid = getConfigValue('clientTwilioAccountSid') as string;
-  const senderAuthToken = getConfigValue('clientTwilioAuthToken') as string;
   const senderSmsNumber = getConfigValue('clientSmsPhoneNumber') as string;
 
   // Delete conversations from service Twilio account
@@ -85,14 +90,6 @@ export const deleteSmsConversations = async (): Promise<void> => {
     serviceAuthToken,
     senderSmsNumber,
     serviceSmsNumber,
-  );
-
-  // Delete conversations from sender Twilio account
-  await deleteSmsConversationFromOneEnd(
-    senderAccountSid,
-    senderAuthToken,
-    serviceSmsNumber,
-    senderSmsNumber,
   );
 };
 
@@ -120,7 +117,7 @@ export const deleteChatConversations = async (): Promise<void> => {
     .get(matchingUser.sid)
     .userConversations.list();
 
-  console.debug(`Found ${userConversations.length} chat channels for user ${email}`);
+  console.debug(`Found ${userConversations.length} conversations for user ${email}`);
 
   for (const { conversationSid } of userConversations) {
     console.debug(`Removing chat channel ${conversationSid}`);
@@ -130,10 +127,16 @@ export const deleteChatConversations = async (): Promise<void> => {
 
 // Handle exit signals
 process.on('SIGINT', () => {
-  deleteChatConversations().catch((err) => console.error(err));
-  deleteSmsConversations().catch((err) => console.error(err));
+  if (!deleteCompleted) {
+    deleteChatConversations().catch((err) => console.error(err));
+    deleteSmsConversations().catch((err) => console.error(err));
+    deleteCompleted = true;
+  }
 });
 process.on('SIGTERM', () => {
-  deleteChatConversations().catch((err) => console.error(err));
-  deleteSmsConversations().catch((err) => console.error(err));
+  if (!deleteCompleted) {
+    deleteChatConversations().catch((err) => console.error(err));
+    deleteSmsConversations().catch((err) => console.error(err));
+    deleteCompleted = true;
+  }
 });
