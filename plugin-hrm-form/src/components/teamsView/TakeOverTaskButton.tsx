@@ -92,19 +92,25 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   return (
     <>
       <Tooltip title={disabledReason ? <Template code={disabledReason} /> : ''}>
-        <DestructiveButton
-          onClick={() => setIsConfirmationOpen(true)}
-          data-fs-id="Task-TakeOver-Button"
-          disabled={Boolean(disabledReason)}
+        <span
+          tabIndex={disabledReason ? 0 : undefined}
           // This positions the button to the right of the status indicator rather than underneath it
           style={{
+            display: 'inline-block',
             alignSelf: 'end',
             marginTop: '-30px',
             marginRight: '18px',
           }}
         >
-          <Template code="MonitorTaskCanvas-Header-TakeoverButtonLabel" />
-        </DestructiveButton>
+          <DestructiveButton
+            onClick={() => setIsConfirmationOpen(true)}
+            data-fs-id="Task-TakeOver-Button"
+            disabled={Boolean(disabledReason)}
+            style={{ pointerEvents: disabledReason ? 'none' : undefined }}
+          >
+            <Template code="MonitorTaskCanvas-Header-TakeoverButtonLabel" />
+          </DestructiveButton>
+        </span>
       </Tooltip>
       <ConfirmDialog
         openDialog={isConfirmationOpen}
