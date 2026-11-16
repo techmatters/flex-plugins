@@ -78,14 +78,6 @@ locals {
         }
         chatbot_unique_names = []
       },
-      sms : {
-        messaging_mode       = "conversations"
-        channel_type         = "sms"
-        contact_identity     = "+18773594183"
-        templatefile         = "/app/twilio-iac/helplines/usnm/templates/studio-flows/sms.tftpl"
-        channel_flow_vars    = {}
-        chatbot_unique_names = []
-      },
       sms_shortcode : {
         messaging_mode       = "conversations"
         channel_type         = "sms"
