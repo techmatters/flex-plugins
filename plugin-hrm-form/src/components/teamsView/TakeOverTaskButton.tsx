@@ -93,7 +93,6 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
     <>
       <Tooltip title={disabledReason ? <Template code={disabledReason} /> : ''}>
         <span
-          tabIndex={disabledReason ? 0 : undefined}
           // This positions the button to the right of the status indicator rather than underneath it
           style={{
             display: 'inline-block',
