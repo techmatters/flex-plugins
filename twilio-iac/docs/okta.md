@@ -67,6 +67,7 @@ existing Okta apps and groups are found by name.
 
 | Environment | Label |
 |---|---|
+| development | `DEV_<app_name> (<CODE>)` |
 | staging | `STG_<app_name> (<CODE>)` |
 | production | `<app_name> (<CODE>)` |
 
@@ -78,7 +79,7 @@ label in `okta_app.label`, for older apps whose label differs.
 | App | Groups |
 |---|---|
 | production | `<helpline group>` + `Tech Matters - Production` |
-| staging | `<helpline group>` + `Tech Matters - Staff` + `Tech Matters - Test Accounts` |
+| staging, development | `<helpline group>` + `Tech Matters - Staff` + `Tech Matters - Test Accounts` |
 
 **Helpline lifecycle.** A new helpline gets its group and **staging** app first, and those are used
 to configure and test everything. The **production** app is configured close to launch. After launch

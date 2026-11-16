@@ -54,6 +54,9 @@ person's Okta and AWS credentials. Before the first command:
    (needs `OKTA_TEST_USERNAME`/`OKTA_TEST_PASSWORD`; without them, run it without `--login`).
 6. Production repeats 1 and 3–5 with `production.hcl` / `HL_ENV=production`, only when the person
    says the helpline is close to launch.
+7. A development environment (internal dev account) repeats 1 and 3–5 with `development.hcl` /
+   `HL_ENV=development` / `--env development`: the app is labelled `DEV_<app_name> (<CODE>)` and gets
+   the staging groups.
 
 ### Adopt an existing helpline
 
