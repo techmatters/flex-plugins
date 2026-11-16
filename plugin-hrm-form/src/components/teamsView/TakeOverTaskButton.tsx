@@ -117,7 +117,7 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
         dialogHeader="TakeOver-Confirm-Header"
         dialogContent="TakeOver-Confirm-Content"
         actionComponent={
-          <DestructiveButton buttonSize="small" onClick={startTakeover}>
+          <DestructiveButton buttonSize="small" onClick={startTakeover} disabled={Boolean(disabledReason)}>
             <Template code="TakeOver-Confirm-Button" />
           </DestructiveButton>
         }
