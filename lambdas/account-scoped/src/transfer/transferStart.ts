@@ -42,7 +42,7 @@ const DIRECT_TRANSFER_QUEUE_FRIENDLY_NAME = 'Everyone';
 type ValidationResult = { type: 'worker'; worker: WorkerInstance } | { type: 'queue' };
 
 // If the transfer targets a worker, validate that the worker is online and has capacity.
-async function validateChannelIfWorker(
+export async function validateChannelIfWorker(
   accountSid: AccountSID,
   targetSid: string,
   transferTargetType: string,
