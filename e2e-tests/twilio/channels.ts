@@ -128,12 +128,18 @@ export const deleteChatConversations = async (): Promise<void> => {
   }
 };
 
+let cleanupCompleted = false;
+
+const cleanup = async () => {
+  if (!cleanupCompleted) {
+    await Promise.all([
+      deleteChatConversations().catch((err) => console.error(err)),
+      deleteSmsConversations().catch((err) => console.error(err)),
+    ]);
+    cleanupCompleted = true;
+  }
+};
+
 // Handle exit signals
-process.on('SIGINT', () => {
-  deleteChatConversations().catch((err) => console.error(err));
-  deleteSmsConversations().catch((err) => console.error(err));
-});
-process.on('SIGTERM', () => {
-  deleteChatConversations().catch((err) => console.error(err));
-  deleteSmsConversations().catch((err) => console.error(err));
-});
+process.on('SIGINT', cleanup);
+process.on('SIGTERM', cleanup);

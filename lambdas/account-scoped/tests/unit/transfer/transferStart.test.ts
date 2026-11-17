@@ -260,6 +260,7 @@ describe('transferStartHandler', () => {
       expect.objectContaining({
         transferStarted: true,
         transferMeta: expectedTransferMeta,
+        initiatedByWorker: SUPERVISOR_WORKER_SID,
         ignoreAgent: ORIGINAL_WORKER_SID,
         targetSid: SUPERVISOR_WORKER_SID,
         transferTargetType: 'worker',
