@@ -30,7 +30,7 @@ const encodeEmailToUnicode = (email: string) => {
     .join('');
 };
 
-let deleteCompleted = false;
+let cleanupCompleted = false;
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 const ITERATION_DELAY = 2;
 const PAGE_SIZE = 40;
@@ -125,18 +125,16 @@ export const deleteChatConversations = async (): Promise<void> => {
   }
 };
 
+const cleanup = async () => {
+  if (!cleanupCompleted) {
+    await Promise.all([
+      deleteChatConversations().catch((err) => console.error(err)),
+      deleteSmsConversations().catch((err) => console.error(err)),
+    ]);
+    cleanupCompleted = true;
+  }
+};
+
 // Handle exit signals
-process.on('SIGINT', () => {
-  if (!deleteCompleted) {
-    deleteChatConversations().catch((err) => console.error(err));
-    deleteSmsConversations().catch((err) => console.error(err));
-    deleteCompleted = true;
-  }
-});
-process.on('SIGTERM', () => {
-  if (!deleteCompleted) {
-    deleteChatConversations().catch((err) => console.error(err));
-    deleteSmsConversations().catch((err) => console.error(err));
-    deleteCompleted = true;
-  }
-});
+process.on('SIGINT', cleanup);
+process.on('SIGTERM', cleanup);
