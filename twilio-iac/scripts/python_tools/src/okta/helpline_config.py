@@ -12,6 +12,8 @@ from botocore.config import Config
 # src/okta -> src -> python_tools -> scripts -> twilio-iac
 TWILIO_IAC_DIR = Path(__file__).resolve().parents[4]
 HELPLINES_DIR = TWILIO_IAC_DIR / 'helplines'
+# Okta app label prefix per environment (same as terraform-modules/stages/okta-app/main.tf)
+LABEL_PREFIXES = {'development': 'DEV_', 'staging': 'STG_', 'production': ''}
 
 
 # ---- minimal HCL subset parser -------------------------------------------------------------
@@ -107,8 +109,7 @@ def get_expected_app(code: str, environment: str) -> dict | None:
     helpline = _read_string(common_file, 'helpline')
     app_name = okta.get('app_name') or helpline
     upper_code = code.upper()
-    label = okta_app.get('label') or (
-        f'{app_name} ({upper_code})' if environment == 'production' else f'STG_{app_name} ({upper_code})')
+    label = okta_app.get('label') or f'{LABEL_PREFIXES.get(environment, "STG_")}{app_name} ({upper_code})'
     tech_matters_groups = okta_app.get('tech_matters_groups') or (
         ['Tech Matters - Production'] if environment == 'production'
         else ['Tech Matters - Staff', 'Tech Matters - Test Accounts'])
@@ -135,11 +136,11 @@ def get_helpline_okta(code: str) -> dict | None:
 
 def parse_app_label(label: str) -> dict | None:
     '''Defaults for helplines not yet configured in Terraform: parsed from the Okta app label itself.'''
-    match = re.match(r'^(STG_)?(.*?)\s*\(([^)]+)\)\s*$', label)
+    match = re.match(r'^(DEV_|STG_)?(.*?)\s*\(([^)]+)\)\s*$', label)
     if not match:
         return None
     return {
-        'environment': 'staging' if match.group(1) else 'production',
+        'environment': {'DEV_': 'development', 'STG_': 'staging'}.get(match.group(1), 'production'),
         'app_name': match.group(2),
         'code': match.group(3).lower(),
     }
@@ -155,7 +156,7 @@ def resolve_account_sid(
 ) -> str | None:
     '''
     Account SID for a helpline + environment. Order: --account-sid, --accounts-file (private JSON
-    { "<code>": { "staging": "AC...", "production": "AC..." } }), then AWS SSM (same secret Terraform reads).
+    { "<code>": { "development": "AC...", "staging": "AC...", "production": "AC..." } }), then AWS SSM (same secret Terraform reads).
     Only twilio_account_sid is taken from the SSM secret; nothing else is kept or printed.
     '''
     if account_sid:

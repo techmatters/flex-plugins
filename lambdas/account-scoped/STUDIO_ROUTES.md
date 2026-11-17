@@ -231,11 +231,16 @@ specialised service or skip to a fallback. **Read-only.**
 | `targetSkills` | yes | `TYA,Calls` | Comma-separated. The worker must have every skill (`routing.skills`). |
 | `targetChannel` | yes | `voice` | `voice` or `chat` |
 
-What counts as free:
+What counts as free is what TaskRouter would actually reserve to the worker now, read from the
+worker's TaskRouter channels. A task in **wrap-up** still takes its channel's capacity until it is
+completed, so a counselor wrapping up the previous contact is **not** free.
 
-- **`voice`:** no tasks on the worker's voice channel **and** none on its chat channel.
-- **`chat`:** no voice task **and** fewer chat tasks than the worker's `maxMessageCapacity`
-  attribute. A worker without `maxMessageCapacity` is never chat-available.
+- **`voice`:** the voice channel is enabled (`available`), and both the voice and chat channels are
+  empty: `availableCapacityPercentage` 100, nothing assigned or in wrap-up.
+- **`chat`:** the voice channel is empty (no chats while on a call or wrapping one up), and the chat
+  channel is enabled with capacity left (`availableCapacityPercentage` > 0, i.e. fewer tasks,
+  wrap-up included, than its `configuredCapacity`). The worker's `maxMessageCapacity` attribute
+  isn't used: it's the ceiling the counselor can raise the channel capacity to, not the capacity.
 
 **Example body:**
 
@@ -264,7 +269,14 @@ In the `.tftpl`:
       "sid": "WKxxxxxxxx",
       "friendlyName": "Jane",
       "maxMessageCapacity": 2,
-      "workerChannelTasks": [{ "taskChannelUniqueName": "voice", "assignedTasks": 0 }]
+      "workerChannelTasks": [
+        {
+          "taskChannelUniqueName": "voice",
+          "assignedTasks": 0,
+          "available": true,
+          "availableCapacityPercentage": 100
+        }
+      ]
     }
   ]
 }

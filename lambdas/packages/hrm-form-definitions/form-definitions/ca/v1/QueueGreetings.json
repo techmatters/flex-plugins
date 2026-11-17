@@ -1,0 +1,12 @@
+{
+  "988 English": {
+    "pillText": "988 Greeting",
+    "popoverTitle": "988 Greeting",
+    "popoverContent": "“Hello, 9-8-8: Suicide Crisis Helpline.”"
+  },
+  "988 French": {
+    "pillText": "Rappel du message d’accueil du 9-8-8",
+    "popoverTitle": "Rappel du message d’accueil du 9-8-8",
+    "popoverContent": "Ligne d’aide en cas de crise de suicide, bonjour"
+  }
+}

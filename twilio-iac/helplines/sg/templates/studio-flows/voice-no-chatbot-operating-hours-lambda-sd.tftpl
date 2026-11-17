@@ -97,7 +97,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"channel\": \"voice\", \"includeMessageTextInResponse\": \"true\", \"language\": \"${task_language}\"}",
+        "body": "{\"channel\": \"voice\", \"includeMessageTextInResponse\": \"true\", \"language\": \"${task_language}\", \"from\": \"{{trigger.call.From}}\"}",
         "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
       }
     },

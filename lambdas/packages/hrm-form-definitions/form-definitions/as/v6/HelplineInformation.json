@@ -1,0 +1,15 @@
+{
+  "label": "Helpline",
+  "helplines": [
+    {
+      "label": "Crisis Response Line",
+      "value": "Crisis Response Line",
+      "default": true,
+      "manager": {
+        "name": "Shift Supervisor",
+        "phone": "+123 45 678",
+        "email": "supervisor@helpline.org"
+      }
+    }
+  ]
+}

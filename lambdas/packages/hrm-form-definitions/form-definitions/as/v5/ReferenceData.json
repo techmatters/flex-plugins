@@ -1,0 +1,100 @@
+{
+  "regions": [
+    {
+      "value": "Unknown",
+      "label": ""
+    },
+    {
+      "value": "North",
+      "label": "North"
+    },
+    {
+      "value": "South",
+      "label": "South"
+    },
+    {
+      "value": "East",
+      "label": "East"
+    },
+    {
+      "value": "West",
+      "label": "West"
+    },
+    {
+      "value": "Central",
+      "label": "Central"
+    },
+    {
+      "value": "Outside the country",
+      "label": "Outside the country"
+    },
+    {
+      "value": "Unknown",
+      "label": "Unknown"
+    }
+  ],
+  "genders": [
+    {
+      "value": "Unknown",
+      "label": ""
+    },
+    {
+      "value": "Woman",
+      "label": "Woman"
+    },
+    {
+      "value": "Man",
+      "label": "Man"
+    },
+    {
+      "value": "Non-binary / gender diverse",
+      "label": "Non-binary / gender diverse"
+    },
+    {
+      "value": "Prefer not to say",
+      "label": "Prefer not to say"
+    },
+    {
+      "value": "Unknown",
+      "label": "Unknown"
+    }
+  ],
+  "ageGroups": [
+    {
+      "value": "Unknown",
+      "label": ""
+    },
+    {
+      "value": "Under 18",
+      "label": "Under 18"
+    },
+    {
+      "value": "18-24",
+      "label": "18-24"
+    },
+    {
+      "value": "25-34",
+      "label": "25-34"
+    },
+    {
+      "value": "35-44",
+      "label": "35-44"
+    },
+    {
+      "value": "45-54",
+      "label": "45-54"
+    },
+    {
+      "value": "55-64",
+      "label": "55-64"
+    },
+    {
+      "value": "65+",
+      "label": "65+"
+    },
+    {
+      "value": "Unknown",
+      "label": "Unknown"
+    }
+  ]
+}

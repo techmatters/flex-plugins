@@ -80,6 +80,10 @@ ${
           {
             "value": "webchat",
             "key": "channel"
+          },
+          {
+            "value": "{{trigger.message.ChannelAttributes.from}}",
+            "key": "from"
           }
         ],
         "url": "${serverless_url}/operatingHours"
