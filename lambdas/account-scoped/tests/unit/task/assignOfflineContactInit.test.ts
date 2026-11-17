@@ -73,6 +73,7 @@ const createMockTask = (sid: string, attributes: string) => ({
 });
 
 const createMockWorker = (available: boolean, attributes: object) => ({
+  sid: TARGET_SID,
   activitySid: 'WA_OFFLINE',
   attributes: JSON.stringify(attributes),
   available,
@@ -101,6 +102,7 @@ describe('assignOfflineContactInitHandler', () => {
           workspaces: jest.fn().mockReturnValue({
             workers: jest.fn().mockReturnValue({
               fetch: jest.fn().mockResolvedValue(mockWorker),
+              update: mockWorker.update,
             }),
             tasks: {
               create: jest.fn().mockResolvedValue(mockTask),
@@ -192,6 +194,7 @@ describe('assignOfflineContactInitHandler', () => {
       list: jest.fn().mockResolvedValue([
         {
           workerSid: TARGET_SID,
+          reservationStatus: 'pending',
           update: jest.fn().mockResolvedValue({ reservationStatus: 'accepted' }),
         },
       ]),
@@ -220,5 +223,123 @@ describe('assignOfflineContactInitHandler', () => {
     await expect(
       assignOfflineContactInitHandler(request, TEST_ACCOUNT_SID),
     ).rejects.toThrow('Connection error');
+  });
+
+  it('rejects workers already waiting for a specific task before creating a task', async () => {
+    mockWorker.attributes = JSON.stringify({
+      helpline: 'test',
+      waitingForSpecificTask: true,
+    });
+    const result = await assignOfflineContactInitHandler(
+      createMockRequest({ targetSid: TARGET_SID, taskAttributes: TASK_ATTRIBUTES }),
+      TEST_ACCOUNT_SID,
+    );
+    expect(isErr(result)).toBe(true);
+    expect(mockClient.taskrouter.v1.workspaces().tasks.create).not.toHaveBeenCalled();
+  });
+
+  describe('offline workers', () => {
+    let accept: jest.Mock;
+    let listReservations: jest.Mock;
+    beforeEach(() => {
+      mockWorker.available = false;
+      mockWorker.update.mockImplementation(async (update: { attributes: string }) => {
+        mockWorker.attributes = update.attributes;
+      });
+      mockTask.update.mockResolvedValue(mockTask);
+      accept = jest.fn().mockImplementation(async () => {
+        mockWorker.attributes = JSON.stringify({
+          ...JSON.parse(mockWorker.attributes),
+          changedDuringAssignment: 'retained',
+        });
+        return { reservationStatus: 'accepted' };
+      });
+      listReservations = jest
+        .fn()
+        .mockResolvedValue([
+          { workerSid: TARGET_SID, reservationStatus: 'pending', update: accept },
+        ]);
+      mockTask.reservations.mockReturnValue({ list: listReservations });
+    });
+
+    const assign = () =>
+      assignOfflineContactInitHandler(
+        createMockRequest({ targetSid: TARGET_SID, taskAttributes: TASK_ATTRIBUTES }),
+        TEST_ACCOUNT_SID,
+      );
+
+    it('sets legacy and specific-task flags after creating the task, then restores', async () => {
+      expect(isOk(await assign())).toBe(true);
+      expect(JSON.parse(mockTask.update.mock.calls[0][0].attributes)).toMatchObject({
+        waitingForSpecificTaskSid: 'WT_NEW_TASK',
+        targetSid: TARGET_SID,
+      });
+      expect(mockWorker.update.mock.calls[0][0]).toEqual({
+        activitySid: 'WA_AVAILABLE',
+        attributes: JSON.stringify({
+          ...mockWorkerAttributes,
+          waitingOfflineContact: true,
+          waitingForSpecificTask: true,
+          waitingForSpecificTaskInfo: {
+            taskSid: 'WT_NEW_TASK',
+            reason: 'offline-contact',
+          },
+        }),
+      });
+      expect(mockTask.update.mock.invocationCallOrder[0]).toBeLessThan(
+        mockWorker.update.mock.invocationCallOrder[0],
+      );
+      expect(mockWorker.update).toHaveBeenLastCalledWith({
+        activitySid: 'WA_OFFLINE',
+        attributes: JSON.stringify({
+          ...mockWorkerAttributes,
+          changedDuringAssignment: 'retained',
+        }),
+        rejectPendingReservations: true,
+      });
+    });
+
+    it('restores activity and removes only temporary flags on acceptance failure', async () => {
+      accept.mockRejectedValue(new Error('accept failed'));
+      const result = await assign();
+      expect(isErr(result) && result.message).toBe('accept failed');
+      expect(mockWorker.update).toHaveBeenCalledTimes(2);
+      expect(mockWorker.update).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          activitySid: 'WA_OFFLINE',
+          attributes: JSON.stringify(mockWorkerAttributes),
+        }),
+      );
+      expect(mockTask.remove).toHaveBeenCalledTimes(1);
+    });
+
+    it('restores activity and removes the task after bounded reservation timeout', async () => {
+      listReservations.mockResolvedValue([]);
+      const result = await assign();
+      expect(isErr(result) && result.message).toContain(
+        'reservation for task not created',
+      );
+      expect(listReservations).toHaveBeenCalledTimes(9);
+      expect(mockWorker.update).toHaveBeenCalledTimes(2);
+      expect(mockTask.remove).toHaveBeenCalledTimes(1);
+    });
+
+    it('restores after activation errors and removes the unassigned task', async () => {
+      mockWorker.update.mockRejectedValueOnce(new Error('activation failed'));
+      const result = await assign();
+      expect(isErr(result) && result.message).toBe('activation failed');
+      expect(mockWorker.update).toHaveBeenCalledTimes(2);
+      expect(accept).not.toHaveBeenCalled();
+      expect(mockTask.remove).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not remove an accepted task if restoring the worker fails', async () => {
+      mockWorker.update
+        .mockResolvedValueOnce({})
+        .mockRejectedValueOnce(new Error('restore failed'));
+      await expect(assign()).rejects.toThrow('restore failed');
+      expect(accept).toHaveBeenCalled();
+      expect(mockTask.remove).not.toHaveBeenCalled();
+    });
   });
 });

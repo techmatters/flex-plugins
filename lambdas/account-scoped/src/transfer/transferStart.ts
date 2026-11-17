@@ -14,7 +14,7 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 import { adjustChatCapacity } from '../conversation/adjustChatCapacity';
-import { AccountScopedHandler, HttpRequest } from '../httpTypes';
+import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
 import { AccountSID, TaskSID, WorkerSID } from '@tech-matters/twilio-types';
 import {
   getConversationsTransferWorkflow,
@@ -25,16 +25,37 @@ import {
 import { newMissingParameterResult } from '../httpErrors';
 import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
+import {
+  acceptSpecificTask,
+  isWaitingForTask,
+  withAvailableWorkerForTask,
+} from '../task/assignSpecificTask';
+import { patchTaskAttributes } from '../task/patchTaskAttributes';
 
 export type Body = {
   taskSid: TaskSID;
   targetSid: string;
   ignoreAgent: WorkerSID;
   mode: 'COLD' | 'WARM';
+  /**
+   * Autoaccept a COLD Conversations transfer to the authenticated supervisor.
+   * ignoreAgent must own an accepted reservation on the original task.
+   * Omitted/false keeps normal transfer availability checks and manual acceptance.
+   */
+  isTakeover?: boolean;
 };
 
 // Only used for direct transfers of conversations, not programmable chat channels
 const DIRECT_TRANSFER_QUEUE_FRIENDLY_NAME = 'Everyone';
+
+const patchTransferAttributes = async (
+  accountSid: AccountSID,
+  taskSid: string,
+  update: Parameters<typeof patchTaskAttributes>[2],
+) => {
+  const result = await patchTaskAttributes(accountSid, taskSid as TaskSID, update);
+  if (isErr(result)) throw result.error.errorInstance;
+};
 
 async function setDummyChannelToTask(
   accountSid: AccountSID,
@@ -86,6 +107,7 @@ async function validateChannelIfWorker(
   transferTargetType: string,
   taskChannelUniqueName: string,
   channelType: string,
+  isTakeover: boolean,
 ): Promise<Result<Error, ValidationResult>> {
   const client = await getTwilioClient(accountSid);
   const workspaceSid = await getWorkspaceSid(accountSid);
@@ -100,7 +122,7 @@ async function validateChannelIfWorker(
       .fetch(),
   ]);
 
-  if (!worker.available) {
+  if (!worker.available && !isTakeover) {
     return newErr({
       message: `Can't transfer to an offline counselor`,
       error: new Error("Can't transfer to an offline counselor"),
@@ -108,6 +130,12 @@ async function validateChannelIfWorker(
   }
 
   const workerAttr = JSON.parse(worker.attributes);
+  if (isWaitingForTask(workerAttr)) {
+    return newErr({
+      message: 'Counselor is already waiting for a specific task',
+      error: new Error('Counselor is already waiting for a specific task'),
+    });
+  }
 
   const unavailableVoice =
     channelType === 'voice' && !workerChannel.availableCapacityPercentage;
@@ -149,13 +177,13 @@ async function increaseChatCapacity(
   }
 }
 
-export const transferStartHandler: AccountScopedHandler = async (
-  { body: event }: HttpRequest,
+export const transferStartHandler: FlexValidatedHandler = async (
+  { body: event, tokenResult },
   accountSid: AccountSID,
 ) => {
   console.info('===== transferStart invocation =====');
 
-  const { taskSid, targetSid, ignoreAgent, mode } = event;
+  const { taskSid, targetSid, ignoreAgent, mode, isTakeover = false } = event as Body;
 
   if (taskSid === undefined) {
     return newMissingParameterResult('taskSid');
@@ -169,6 +197,27 @@ export const transferStartHandler: AccountScopedHandler = async (
   if (mode === undefined) {
     return newMissingParameterResult('mode');
   }
+  if (typeof isTakeover !== 'boolean' || !['COLD', 'WARM'].includes(mode)) {
+    return newErr({ message: 'Invalid transfer mode', error: { statusCode: 400 } });
+  }
+  if (isTakeover && mode !== 'COLD') {
+    return newErr({
+      message: 'Takeover requires COLD transfer mode',
+      error: { statusCode: 400 },
+    });
+  }
+  if (
+    isTakeover &&
+    (!tokenResult ||
+      !isSupervisor(tokenResult) ||
+      !tokenResult.worker_sid?.startsWith('WK') ||
+      targetSid !== tokenResult.worker_sid)
+  ) {
+    return newErr({
+      message: 'Takeover requires a supervisor transferring to themselves',
+      error: { statusCode: 403 },
+    });
+  }
   const client = await getTwilioClient(accountSid);
   const workspaceSid = await getWorkspaceSid(accountSid);
 
@@ -179,6 +228,17 @@ export const transferStartHandler: AccountScopedHandler = async (
     .fetch();
   console.debug('Original task fetched', originalTask);
   const originalAttributes = JSON.parse(originalTask.attributes);
+  if (
+    isTakeover &&
+    (!originalAttributes.flexInteractionSid ||
+      !originalAttributes.flexInteractionChannelSid ||
+      originalTask.taskChannelUniqueName === 'voice')
+  ) {
+    return newErr({
+      message: 'Takeover is only supported for Conversations tasks',
+      error: { statusCode: 400 },
+    });
+  }
 
   const transferTargetType = targetSid.startsWith('WK') ? 'worker' : 'queue';
 
@@ -188,6 +248,7 @@ export const transferStartHandler: AccountScopedHandler = async (
     transferTargetType,
     originalTask.taskChannelUniqueName,
     originalAttributes.channelType,
+    isTakeover,
   );
 
   if (isErr(validationResult)) {
@@ -242,9 +303,45 @@ export const transferStartHandler: AccountScopedHandler = async (
     } catch (err) {
       isConversation = false;
     }
+    if (isTakeover && (!isConversation || !newAttributes.originalParticipantSid)) {
+      return newErr({
+        message: 'Takeover is only supported for Conversations tasks',
+        error: { statusCode: 400 },
+      });
+    }
+  }
+  if (isTakeover) {
+    const reservations = await originalTask.reservations().list({
+      reservationStatus: 'accepted',
+    });
+    const originalReservation = reservations.find(
+      reservation =>
+        reservation.reservationStatus === 'accepted' &&
+        reservation.workerSid === ignoreAgent,
+    );
+    if (!originalReservation || originalReservation.workerSid === targetSid) {
+      return newErr({
+        message:
+          'Takeover requires the original accepted reservation owner as ignoreAgent',
+        error: { statusCode: 400 },
+      });
+    }
+    newAttributes.transferStarted = true;
+    newAttributes.transferMeta = {
+      originalTask: taskSid,
+      originalReservation: originalReservation.sid,
+      originalCounselor: originalReservation.workerSid,
+      originalCounselorName: originalReservation.workerName,
+      originalConversationSid:
+        originalAttributes.conversationSid || originalAttributes.channelSid,
+      sidWithTaskControl: 'WR00000000000000000000000000000000',
+      transferStatus: 'accepted',
+      mode: 'COLD',
+      targetType: 'worker',
+    };
   }
 
-  let newTaskSid;
+  let newTaskSid: string;
   if (isConversation) {
     const conversationsTransferWorkflowSid =
       await getConversationsTransferWorkflow(accountSid);
@@ -265,23 +362,139 @@ export const transferStartHandler: AccountScopedHandler = async (
         `Transferring conversations task ${taskSid} to worker ${targetSid} via queue ${taskQueueSid} and workflow ${conversationsTransferWorkflowSid} by creating interaction invite.`,
       );
       // Create invite to target worker
-      const invite = await client.flexApi.v1.interaction
-        .get(flexInteractionSid)
-        .channels.get(flexInteractionChannelSid)
-        .invites.create({
-          routing: {
-            properties: {
-              queue_sid: taskQueueSid,
-              worker_sid: targetSid,
-              workflow_sid: conversationsTransferWorkflowSid,
-              workspace_sid: workspaceSid,
-              attributes: newAttributes,
-              task_channel_unique_name: originalTask.taskChannelUniqueName,
+      const createInvite = () =>
+        client.flexApi.v1.interaction
+          .get(flexInteractionSid)
+          .channels.get(flexInteractionChannelSid)
+          .invites.create({
+            routing: {
+              properties: {
+                queue_sid: taskQueueSid,
+                worker_sid: targetSid,
+                workflow_sid: conversationsTransferWorkflowSid,
+                workspace_sid: workspaceSid,
+                attributes: newAttributes,
+                task_channel_unique_name: originalTask.taskChannelUniqueName,
+              },
             },
-          },
-        });
+          });
 
-      newTaskSid = invite.routing.properties.sid;
+      if (isTakeover && validationResult.data.type === 'worker') {
+        let inviteTaskSid: string | undefined;
+        let accepted = false;
+        let previousTransferAttributes: Record<string, unknown> | undefined;
+        try {
+          await patchTransferAttributes(accountSid, taskSid, attributes => {
+            previousTransferAttributes = {};
+            for (const key of ['transferStarted', 'transferMeta']) {
+              if (Object.prototype.hasOwnProperty.call(attributes, key)) {
+                previousTransferAttributes[key] = attributes[key];
+              }
+            }
+            return {
+              ...attributes,
+              transferStarted: true,
+              transferMeta: newAttributes.transferMeta,
+            };
+          });
+          const invite = await createInvite();
+          newTaskSid = invite.routing.properties.sid;
+          inviteTaskSid = newTaskSid;
+          const newTask = client.taskrouter.v1.workspaces(workspaceSid).tasks(newTaskSid);
+          const reservableTask = {
+            sid: newTaskSid,
+            reservations: () => newTask.reservations,
+          };
+          const { worker } = validationResult.data;
+          await patchTransferAttributes(accountSid, newTaskSid, attributes => ({
+            ...attributes,
+            waitingForSpecificTaskSid: newTaskSid,
+          }));
+          await increaseChatCapacity(accountSid, validationResult.data);
+          const acceptTakeover = async () => {
+            await acceptSpecificTask(
+              targetSid,
+              reservableTask,
+              async (reservationSid, alreadyAccepted) => {
+                if (alreadyAccepted) accepted = true;
+                await patchTransferAttributes(
+                  accountSid,
+                  reservableTask.sid,
+                  attributes => ({
+                    ...attributes,
+                    transferMeta: {
+                      ...attributes.transferMeta,
+                      sidWithTaskControl: reservationSid,
+                    },
+                  }),
+                );
+              },
+            );
+            accepted = true;
+          };
+          if (worker.available) {
+            await acceptTakeover();
+          } else {
+            await withAvailableWorkerForTask(
+              accountSid,
+              worker,
+              { taskSid: newTaskSid, reason: 'takeover', originalTaskSid: taskSid },
+              acceptTakeover,
+            );
+          }
+        } catch (error) {
+          if (!accepted) {
+            if (inviteTaskSid) {
+              try {
+                // Prevent a cancellation event from starting transfer-rejection recovery.
+                await patchTransferAttributes(accountSid, inviteTaskSid, attributes => ({
+                  ...attributes,
+                  transferMeta: {
+                    ...attributes.transferMeta,
+                    transferStatus: 'rejected',
+                  },
+                }));
+              } catch (cleanupError) {
+                console.error(
+                  'Unable to mark failed takeover task as rejected',
+                  cleanupError,
+                );
+              }
+              try {
+                await client.taskrouter.v1
+                  .workspaces(workspaceSid)
+                  .tasks(inviteTaskSid)
+                  .remove();
+              } catch (cleanupError) {
+                console.error('Unable to remove failed takeover task', cleanupError);
+              }
+            }
+            if (previousTransferAttributes) {
+              try {
+                await patchTransferAttributes(accountSid, taskSid, attributes => {
+                  if (
+                    JSON.stringify(attributes.transferMeta) !==
+                    JSON.stringify(newAttributes.transferMeta)
+                  )
+                    return attributes;
+                  const { transferStarted, transferMeta, ...unrelatedAttributes } =
+                    attributes;
+                  return { ...unrelatedAttributes, ...previousTransferAttributes };
+                });
+              } catch (cleanupError) {
+                console.error(
+                  'Unable to restore original task transfer metadata',
+                  cleanupError,
+                );
+              }
+            }
+          }
+          throw error;
+        }
+      } else {
+        const invite = await createInvite();
+        newTaskSid = invite.routing.properties.sid;
+      }
       console.info(
         `Transferred conversations task ${taskSid} to worker ${targetSid} by creating interaction invite.`,
       );
