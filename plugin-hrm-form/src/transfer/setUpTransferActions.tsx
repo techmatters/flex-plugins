@@ -43,10 +43,14 @@ import {
   acceptSelfInitiatedTakeover,
 } from './takeoverReservation';
 import { newSetFlexTransferActionInProgressAction } from '../states/taskScopedMetadata';
+import { setUpCallTakeoverRequests } from './callTakeoverRequest';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
-type ActionPayloadWithOptions = ActionPayload & { options: { mode: string }; targetSid: string };
+type ActionPayloadWithOptions = ActionPayload & {
+  options: { mode: string; initiatingWorkerSid?: string };
+  targetSid: string;
+};
 const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 export const TransfersNotifications = {
@@ -206,4 +210,7 @@ export const setUpTransferActions = (setupObject: SetupObject) => {
       console.error('Failed to accept self-initiated takeover', error);
     });
   });
+  if (setupObject.enableCallTakeovers) {
+    setUpCallTakeoverRequests(Manager.getInstance().workerClient);
+  }
 };
