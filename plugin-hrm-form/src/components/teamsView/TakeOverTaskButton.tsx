@@ -75,9 +75,6 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
     setIsConfirmationOpen(false);
     setPendingTakeoverTaskSid(task.taskSid);
     try {
-      if (activityName !== 'Available') {
-        await Actions.invokeAction('SetActivity', { activityName: 'Available' });
-      }
       await Actions.invokeAction('TransferTask', {
         task,
         targetSid: workerSid,
