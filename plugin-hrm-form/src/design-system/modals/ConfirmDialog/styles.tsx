@@ -17,9 +17,10 @@ import React from 'react';
 import { styled } from '@twilio/flex-ui';
 import Dialog, { DialogProps } from '@material-ui/core/Dialog';
 
-export const ConfirmDialogHeader = styled('p')`
+export const ConfirmDialogHeader = styled('h2')`
   font-size: 20px;
   font-weight: 700;
+  margin: 0;
 `;
 
 export const ConfirmDialogContent = styled('p')`

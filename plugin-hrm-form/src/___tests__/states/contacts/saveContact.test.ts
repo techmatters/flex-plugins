@@ -23,7 +23,7 @@ import { Case, Contact, CustomITask } from '../../../types/types';
 import { ContactMetadata, ContactsState, LoadingStatus } from '../../../states/contacts/types';
 import {
   connectToCaseAsyncAction,
-  newLoadContactFromHrmForTaskAsyncAction,
+  newLoadContactFromHrmForIncomingTaskAsyncAction,
   saveContactReducer,
   submitContactFormAsyncAction,
   updateContactInHrmAsyncAction,
@@ -123,7 +123,10 @@ describe('actions', () => {
       };
       mockGetContactByTaskSid.mockResolvedValue(taskContact);
       const actionPromiseResult = (dispatch(
-        newLoadContactFromHrmForTaskAsyncAction({ taskSid: 'WT-load-me', attributes: {} } as CustomITask, 'mock-ref'),
+        newLoadContactFromHrmForIncomingTaskAsyncAction(
+          { taskSid: 'WT-load-me', attributes: {} } as CustomITask,
+          'mock-ref',
+        ),
       ) as unknown) as Promise<void>;
       const pendingState = getState();
       expect(pendingState.contactsBeingCreated.has('WT-load-me')).toBe(true);
