@@ -57,8 +57,8 @@ ${
           "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\": \"ChildHelp\",\n  \"language\": \"es-CH\",\n  \"counselingLanguage\": \"Spanish\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"ChildHelp Spanish\",\n    \"hang_up_by\": \"Customer\"\n  }\n}",
           "waitUrlMethod": "GET",
           "offset": {
-            "x": -130,
-            "y": 2460
+            "x": -1200,
+            "y": 1820
           }
         }
       },
@@ -75,8 +75,8 @@ ${
           "play": "${flow_vars.recordings_url}/play_message_voice_en_childhelp_voice_welcome.mp3",
           "loop": 1,
           "offset": {
-            "x": 0,
-            "y": 230
+            "x": 100,
+            "y": 280
           }
         }
       },
@@ -98,8 +98,8 @@ ${
           "body": "{ \"text\": \"Issue detected [Failed to Enqueue] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
           "url": "${webhook_url_studio_errors}",
           "offset": {
-            "x": 190,
-            "y": 3380
+            "x": -300,
+            "y": 2400
           }
         }
       },
@@ -109,15 +109,15 @@ ${
         "transitions": [
           {
             "event": "audioComplete",
-            "next": "send_to_queue_childhelp_no_spanish"
+            "next": "play_message_voice_es_childhelp_prequeue_childhelp"
           }
         ],
         "properties": {
           "loop": 1,
           "play": "${flow_vars.recordings_url}/play_message_voice_es_childhelp_no_spanish_counselor_prequeue.mp3",
           "offset": {
-            "x": -640,
-            "y": 1810
+            "x": -850,
+            "y": 1580
           }
         }
       },
@@ -144,8 +144,8 @@ ${
           "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"language\": \"en-CH\",\n  \"service\": \"ChildHelp\",\n  \"counselingLanguage\": \"English\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"ChildHelp No Spanish\",\n    \"hang_up_by\": \"Customer\"\n  }\n}",
           "waitUrlMethod": "GET",
           "offset": {
-            "x": -700,
-            "y": 2160
+            "x": -850,
+            "y": 2060
           }
         }
       },
@@ -172,8 +172,8 @@ ${
           "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n \"language\":\"en-CH\", \n  \"service\":\"ChildHelp\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"ChildHelp English\",\n    \"hang_up_by\": \"Customer\"\n  }\n}",
           "waitUrlMethod": "GET",
           "offset": {
-            "x": 390,
-            "y": 2160
+            "x": 250,
+            "y": 1820
           }
         }
       },
@@ -189,8 +189,8 @@ ${
           "loop": 1,
           "play": "${flow_vars.recordings_url}/play_message_voice_blocked.mp3",
           "offset": {
-            "x": 1200,
-            "y": 930
+            "x": 500,
+            "y": 40
           }
         }
       },
@@ -218,7 +218,7 @@ ${
             }
           ],
           "offset": {
-            "x": -260,
+            "x": 100,
             "y": -440
           }
         }
@@ -245,8 +245,8 @@ ${
           "number_of_digits": 1,
           "speech_timeout": "auto",
           "offset": {
-            "x": 920,
-            "y": 1300
+            "x": 100,
+            "y": 520
           },
           "loop": 1,
           "finish_on_key": "#",
@@ -274,12 +274,12 @@ ${
         ],
         "properties": {
           "offset": {
-            "x": 520,
-            "y": 3080
+            "x": -350,
+            "y": 1820
           },
           "workflow": "${workflow_sids.master}",
           "channel": "${task_channel_sids.voice}",
-          "timeout": "3600",
+          "timeout": "86400",
           "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageEnglish",
           "waitUrlMethod": "GET",
           "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\": \"AdvocateLine\",\n  \"language\": \"en-CH\",\n  \"counselingLanguage\": \"English\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"Advocate\",\n    \"hang_up_by\": \"Customer\"\n  }\n}"
@@ -303,8 +303,8 @@ ${
             }
           ],
           "offset": {
-            "x": 1200,
-            "y": 1480
+            "x": -170,
+            "y": 700
           }
         }
       },
@@ -328,14 +328,14 @@ ${
                 "value": "1"
               }
             ],
-            "next": "send_to_queue_childhelp_english"
+            "next": "play_message_voice_en_childhelp_prequeue"
           }
         ],
         "properties": {
           "input": "{{flow.variables.menu_counter}}",
           "offset": {
-            "x": 1200,
-            "y": 1720
+            "x": -250,
+            "y": 480
           }
         }
       },
@@ -354,8 +354,8 @@ ${
         ],
         "properties": {
           "offset": {
-            "x": -300,
-            "y": 1960
+            "x": -1000,
+            "y": 1100
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
@@ -384,14 +384,14 @@ ${
                 "value": "0"
               }
             ],
-            "next": "send_to_queue_childhelp_spanish"
+            "next": "play_message_voice_es_childhelp_prequeue"
           }
         ],
         "properties": {
           "input": "{{widgets.f_isSkilledWorkerAvailable_phone_spanish.parsed.totalAvailableWorkers}}",
           "offset": {
-            "x": -300,
-            "y": 2200
+            "x": -1000,
+            "y": 1340
           }
         }
       },
@@ -443,7 +443,7 @@ ${
                 "value": "3"
               }
             ],
-            "next": "send_to_queue_childhelp_english"
+            "next": "play_message_voice_en_childhelp_prequeue"
           },
           {
             "event": "match",
@@ -457,14 +457,14 @@ ${
                 "value": "4"
               }
             ],
-            "next": "send_to_queue_authorities"
+            "next": "play_message_voice_en_authorities_prequeue"
           }
         ],
         "properties": {
           "input": "{{widgets.gather_input_voice_en_childhelp_service_menu.Digits}}",
           "offset": {
-            "x": 350,
-            "y": 1660
+            "x": 200,
+            "y": 820
           }
         }
       },
@@ -483,8 +483,8 @@ ${
         ],
         "properties": {
           "offset": {
-            "x": 855,
-            "y": 688
+            "x": 100,
+            "y": -200
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
@@ -519,8 +519,8 @@ ${
         "properties": {
           "input": "{{widgets.f_getProfileFlagsForIdentifier_profile.parsed.flags}}",
           "offset": {
-            "x": 855,
-            "y": 928
+            "x": 100,
+            "y": 40
           }
         }
       },
@@ -534,18 +534,18 @@ ${
           },
           {
             "event": "failed",
-            "next": "send_to_queue_childhelp_english"
+            "next": "play_message_voice_en_childhelp_prequeue"
           }
         ],
         "properties": {
           "offset": {
-            "x": 760,
-            "y": 2320
+            "x": -200,
+            "y": 1100
           },
           "method": "POST",
           "content_type": "application/json;charset=utf-8",
           "add_twilio_auth": false,
-          "body": "{\n  \"targetSkills\": \"Phone,Advocate\"\n}",
+          "body": "{\n  \"targetSkills\": \"Advocate,Phone\"\n}",
           "url": "${lambda_twilio_account_scoped_url}/worker/isSkilledWorkerLoggedIn"
         }
       },
@@ -555,7 +555,7 @@ ${
         "transitions": [
           {
             "event": "noMatch",
-            "next": "send_to_queue_childhelp_english"
+            "next": "play_message_voice_en_childhelp_prequeue"
           },
           {
             "event": "match",
@@ -569,14 +569,14 @@ ${
                 "value": "0"
               }
             ],
-            "next": "send_to_queue_advocates"
+            "next": "play_message_voice_en_advocate_prequeue"
           }
         ],
         "properties": {
           "input": "{{widgets.f_isSkilledWorkerLoggedIn_logged.parsed.totalLoggedInWorkers}}",
           "offset": {
-            "x": 760,
-            "y": 2560
+            "x": -200,
+            "y": 1340
           }
         }
       },
@@ -598,15 +598,110 @@ ${
         ],
         "properties": {
           "offset": {
-            "x": 190,
-            "y": 3060
+            "x": 650,
+            "y": 1820
           },
           "workflow": "${workflow_sids.master}",
           "channel": "${task_channel_sids.voice}",
-          "timeout": "3600",
+          "timeout": "86400",
           "waitUrl": "${flow_vars.serverless_usch_functions_url}/holdMusicAndMessageEnglish",
           "waitUrlMethod": "GET",
-          "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\": \"Authorities\",\n  \"language\": \"en-CH\",\n  \"counselingLanguage\": \"English\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"Authorities\",\n    \"hang_up_by\": \"Customer\"\n  }\n}"
+          "attributes": "{\n  \"type\": \"inbound\",\n  \"name\": \"{{trigger.call.From}}\",\n  \"ignoreAgent\": \"\",\n  \"service\": \"Authorities\",\n  \"language\": \"en-CH\",\n  \"counselingLanguage\": \"English\",\n  \"transferTargetType\": \"\",\n  \"channelType\": \"voice\",\n  \"conversations\": {\n    \"ivr_path\": \"Advocate\",\n    \"hang_up_by\": \"Customer\"\n  }\n}"
+        }
+      },
+      {
+        "name": "play_message_voice_es_childhelp_prequeue_childhelp",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete",
+            "next": "send_to_queue_childhelp_no_spanish"
+          }
+        ],
+        "properties": {
+          "say": "${flow_vars.play_message_voice_es_childhelp_prequeue_childhelp}",
+          "language": "es-MX",
+          "loop": 1,
+          "offset": {
+            "x": -850,
+            "y": 1820
+          }
+        }
+      },
+      {
+        "name": "play_message_voice_es_childhelp_prequeue",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete",
+            "next": "send_to_queue_childhelp_spanish"
+          }
+        ],
+        "properties": {
+          "say": "${flow_vars.play_message_voice_es_childhelp_prequeue}",
+          "language": "es-MX",
+          "loop": 1,
+          "offset": {
+            "x": -1200,
+            "y": 1580
+          }
+        }
+      },
+      {
+        "name": "play_message_voice_en_authorities_prequeue",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete",
+            "next": "send_to_queue_authorities"
+          }
+        ],
+        "properties": {
+          "say": "${flow_vars.play_message_voice_en_authorities_prequeue}",
+          "language": "en-US",
+          "loop": 1,
+          "offset": {
+            "x": 650,
+            "y": 1580
+          }
+        }
+      },
+      {
+        "name": "play_message_voice_en_advocate_prequeue",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete",
+            "next": "send_to_queue_advocates"
+          }
+        ],
+        "properties": {
+          "say": "${flow_vars.play_message_voice_en_advocate_prequeue}",
+          "language": "en-US",
+          "loop": 1,
+          "offset": {
+            "x": -350,
+            "y": 1580
+          }
+        }
+      },
+      {
+        "name": "play_message_voice_en_childhelp_prequeue",
+        "type": "say-play",
+        "transitions": [
+          {
+            "event": "audioComplete",
+            "next": "send_to_queue_childhelp_english"
+          }
+        ],
+        "properties": {
+          "say": "${flow_vars.play_message_voice_en_childhelp_prequeue}",
+          "language": "en-US",
+          "loop": 1,
+          "offset": {
+            "x": 250,
+            "y": 1580
+          }
         }
       }
     ]

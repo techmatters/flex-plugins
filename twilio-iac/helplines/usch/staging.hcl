@@ -60,7 +60,12 @@ locals {
       recordings_url = "https://recordings.tl.techmatters.org/usch/staging"
       # Courage First -  Voice
       # ChildHelp -  Voice
-      gather_input_voice_en_childhelp_service_menu = "If this is a life-threatening emergency, hang up and call 911. For terms of service or more information about the hotline, visit childhelphotline.org. Please listen to all options before making a selection. For Spanish, press 1. To speak to an advocate about how to make a report or to get resources, press 2. To speak with a crisis counselor, press 3. If you are law enforcement or CPS following up on a previous report, press 4."
+      gather_input_voice_en_childhelp_service_menu       = "If this is a life-threatening emergency, hang up and call 911. For terms of service or more information about the hotline, visit childhelphotline.org. Please listen to all options before making a selection. For Spanish, press 1. To speak to an advocate about resources or reporting information press 2. To speak with a crisis counselor, press 3. If you are law enforcement or CPS following-up on a previous report, press 4. Calls may be monitored for quality assurance."
+      play_message_voice_en_childhelp_prequeue           = "Please hold, we will be with you shortly. Calls may be monitored for quality assurance."
+      play_message_voice_en_advocate_prequeue            = "Please hold, we will be with you shortly. Calls may be monitored for quality assurance."
+      play_message_voice_en_authorities_prequeue         = "Please hold, we will be with you shortly. Calls may be monitored for quality assurance."
+      play_message_voice_es_childhelp_prequeue           = "Por favor, permanezca en línea. En breve le atenderemos. Las llamadas pueden ser monitoreadas para garantizar la calidad del servicio."
+      play_message_voice_es_childhelp_prequeue_childhelp = "Por favor, permanezca en línea. En breve le atenderemos. Las llamadas pueden ser monitoreadas para garantizar la calidad del servicio."
 
     }
     //Serverless -- to allow enabling the operating hours check on this staging account.
