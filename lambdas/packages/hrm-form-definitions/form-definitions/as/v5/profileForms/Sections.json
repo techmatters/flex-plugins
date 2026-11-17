@@ -1,0 +1,42 @@
+[
+  {
+    "name": "summary",
+    "label": "Summary",
+    "editLabel": "Edit Summary",
+    "type": "textarea",
+    "rows": 20,
+    "width": 500,
+    "placeholder": "Background and support history",
+    "isPII": true
+  },
+  {
+    "name": "whatHelps",
+    "label": "What Helps",
+    "editLabel": "Edit What Helps",
+    "type": "textarea",
+    "rows": 20,
+    "width": 500,
+    "placeholder": "Approaches, topics or coping strategies that work for this person",
+    "isPII": true
+  },
+  {
+    "name": "thingsToAvoid",
+    "label": "Things to Avoid",
+    "editLabel": "Edit Things to Avoid",
+    "type": "textarea",
+    "rows": 20,
+    "width": 500,
+    "placeholder": "Known triggers or approaches that do not help",
+    "isPII": true
+  },
+  {
+    "name": "contactAgreement",
+    "label": "Contact Agreement",
+    "editLabel": "Edit Contact Agreement",
+    "type": "textarea",
+    "rows": 20,
+    "width": 500,
+    "placeholder": "For frequent contacts: agreed call length, frequency and boundaries",
+    "isPII": true
+  }
+]

@@ -104,7 +104,8 @@ def onboarding_status(
     sid = resolve_account_sid(code, environment, account_sid, accounts_file)
 
     # 1.3 Terraform stages: plans can only be confirmed on the devops node
-    add('1.3', 'provision / lex (if used) / system-down / configure applied '
+    lex_step = 'lex (not for development yet)' if environment == 'development' else 'lex (if used)'
+    add('1.3', f'provision / {lex_step} / system-down / configure applied '
         '(re-plan shows only the known whitespace drift)', 'manual',
         f'make plan HL={code} HL_ENV={environment} in each stage')
     add('1.3', 'Phone number points at the voice Studio flow', 'manual', 'Twilio Console › Phone Numbers')

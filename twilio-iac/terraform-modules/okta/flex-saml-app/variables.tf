@@ -1,5 +1,5 @@
 variable "label" {
-  description = "Okta app label, e.g. 'STG_SafeSpot (JM)' or 'SafeSpot (JM)'."
+  description = "Okta app label, e.g. 'DEV_SafeSpot (JM)', 'STG_SafeSpot (JM)' or 'SafeSpot (JM)'."
   type        = string
 }
 

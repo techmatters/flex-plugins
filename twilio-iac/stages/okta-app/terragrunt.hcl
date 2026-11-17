@@ -1,6 +1,6 @@
 /**
   * okta-app stage (Layer 2): the Okta SAML app for ONE helpline + environment.
-  * Usage: make plan HL=<short code> HL_ENV=<staging|production>
+  * Usage: make plan HL=<short code> HL_ENV=<development|staging|production>
   *
   * Requires the helpline group to exist first (okta-org stage) and the helpline config to have an
   * `okta` block in common.hcl and an `okta_app` block in the environment file. See twilio-iac/docs/okta.md.

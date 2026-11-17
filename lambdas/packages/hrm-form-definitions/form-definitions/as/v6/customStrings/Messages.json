@@ -1,0 +1,10 @@
+{
+  "en": {
+    "WelcomeMsg": "You are connected to the Crisis Response Line. A responder is here with you. Are you safe right now?",
+    "GoodbyeMsg": "The responder has left the chat. If the situation changes or you are in danger, contact us again or call your local emergency number.",
+    "EndChatMsg": "You ended the chat. If the situation changes or you are in danger, contact us again or call your local emergency number.",
+    "ClosedOutOfShift": "This line is temporarily unavailable. If you are in danger, call your local emergency number now.",
+    "ClosedHolidays": "This line is temporarily unavailable. If you are in danger, call your local emergency number now.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  }
+}

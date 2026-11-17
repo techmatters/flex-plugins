@@ -1,0 +1,106 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "callbackNumber",
+    "label": "Callback Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToPerson",
+    "label": "Relationship to Person at Risk",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Family member",
+        "label": "Family member"
+      },
+      {
+        "value": "Partner",
+        "label": "Partner"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Neighbour",
+        "label": "Neighbour"
+      },
+      {
+        "value": "Bystander / passer-by",
+        "label": "Bystander / passer-by"
+      },
+      {
+        "value": "Colleague",
+        "label": "Colleague"
+      },
+      {
+        "value": "Health / social care professional",
+        "label": "Health / social care professional"
+      },
+      {
+        "value": "First responder",
+        "label": "First responder"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "onScene",
+    "label": "Is the reporting party with the person now?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "wantsToStayAnonymous",
+    "label": "Wants to stay anonymous",
+    "type": "checkbox",
+    "isPII": false
+  }
+]

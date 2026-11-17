@@ -1,0 +1,37 @@
+{
+  "open": {
+    "value": "open",
+    "label": "Open",
+    "color": "green",
+    "transitions": [
+      "active",
+      "closed"
+    ]
+  },
+  "active": {
+    "value": "active",
+    "label": "Active Follow-up",
+    "color": "blue",
+    "transitions": [
+      "paused",
+      "closed"
+    ]
+  },
+  "paused": {
+    "value": "paused",
+    "label": "Paused",
+    "color": "orange",
+    "transitions": [
+      "active",
+      "closed"
+    ]
+  },
+  "closed": {
+    "value": "closed",
+    "label": "Closed",
+    "color": "red",
+    "transitions": [
+      "active"
+    ]
+  }
+}
