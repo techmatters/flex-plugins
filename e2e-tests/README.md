@@ -72,18 +72,20 @@ Sometimes you may want to run the e2e tests against local services instead of re
 
 ## Test Lambda Docker Image Locally
 
-To test the lambda docker image locally, you can use the following commands:
+To test the lambda docker image locally, you can use the following commands from the /lambdas directory of the repo:
 
 build the image:
 
 ```shell
-npm run docker:build
+npm run docker:build -w e2eTestRunner
 ```
 
 run the image:
 
 ```shell
+cd ./e2eTestRunner
 npm run docker:run
+cd ..
 ```
 
 send a test request to the image:

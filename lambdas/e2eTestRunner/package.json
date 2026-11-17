@@ -4,7 +4,8 @@
   "description": "Lambda for running Playwright E2E tests",
   "main": "index.js",
   "scripts": {
-    "docker:build": "docker build -t e2etestrunner -f Dockerfile ../../"
+    "docker:build": "docker build -t e2etestrunner -f Dockerfile ../../",
+    "docker:run": "docker run -it --rm --read-only --tmpfs /tmp:exec -e DEBUG=pw:browser -e AWS_DEFAULT_REGION -e AWS_SECRET_ACCESS_KEY -e AWS_ACCESS_KEY_ID -e LOAD_SSM_CONFIG=true -e HL_ENV=development -e HL=e2e -e TEST_IN_LAMBDA=true -e AWS_LAMBDA_FUNCTION_TIMEOUT=900 -p 9000:8080 e2etestrunner"
   },
   "author": "Tech Matters",
   "license": "AGPL",
