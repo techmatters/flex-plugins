@@ -30,9 +30,9 @@ import { canTransferConference } from './transferTaskState';
 import { SUPERVISOR_TAKEOVER_NOTIFICATION_ID } from './takeoverReservation';
 
 // Matches the lambda: the server rejects claims on older requests anyway, this just avoids the round trip
-const CALL_TAKEOVER_REQUEST_TTL_MS = 60 * 1000;
+export const CALL_TAKEOVER_REQUEST_TTL_MS = 60 * 1000;
 
-type CallTakeoverRequest = {
+export type CallTakeoverRequest = {
   requestedBy: string;
   requestedAt: string;
   originalReservation: string;
@@ -40,6 +40,12 @@ type CallTakeoverRequest = {
   status: 'requested' | 'started' | 'failed';
   reason?: string;
 };
+
+const isExpired = (request: CallTakeoverRequest, now: number) =>
+  now - Date.parse(request.requestedAt) > CALL_TAKEOVER_REQUEST_TTL_MS;
+
+export const isCallTakeoverInProgress = (request: CallTakeoverRequest | undefined, now: number): boolean =>
+  Boolean(request && request.status !== 'failed' && !isExpired(request, now));
 
 export const isCallTakeoverRequestForReservation = (
   reservation: Pick<Reservation, 'sid' | 'status' | 'workerSid' | 'task'>,
@@ -52,7 +58,7 @@ export const isCallTakeoverRequestForReservation = (
       reservation.status === 'accepted' &&
       request.originalReservation === reservation.sid &&
       request.requestedBy !== reservation.workerSid &&
-      now - Date.parse(request.requestedAt) <= CALL_TAKEOVER_REQUEST_TTL_MS,
+      !isExpired(request, now),
   );
 };
 

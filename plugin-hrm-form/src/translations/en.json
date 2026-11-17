@@ -135,6 +135,8 @@
   "TakeOver-Disabled-TransferInProgress": "A transfer is already in progress for this conversation.",
   "TakeOver-Succeeded-Notification": "Takeover successful.",
   "TakeOver-OriginalCounselor-Notification": "A supervisor took over your conversation.",
+  "TakeOver-Failed-Notification": "The take over could not be completed. Please try again.",
+  "TakeOver-Disabled-CallNotActive": "Only calls in progress can be taken over.",
   "BottomBar-Next": "Next",
   "BottomBar-SaveAndAddToCase": "Save and Add to Case...",
   "BottomBar-SaveContact": "Save",

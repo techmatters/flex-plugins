@@ -19,6 +19,7 @@ import { EventEmitter } from 'events';
 import type { Reservation, Worker } from 'twilio-taskrouter';
 
 import {
+  isCallTakeoverInProgress,
   isCallTakeoverRequestForReservation,
   setUpCallTakeoverRequests,
   startCallTakeoverIfRequested,
@@ -91,6 +92,18 @@ describe('isCallTakeoverRequestForReservation', () => {
   test('reservation not accepted (e.g. the supervisor reservation, same task) - false', () => {
     const reservation = { ...newReservation(), status: 'pending' } as Reservation;
     expect(isCallTakeoverRequestForReservation(reservation, NOW)).toBe(false);
+  });
+});
+
+describe('isCallTakeoverInProgress', () => {
+  test.each([
+    ['no request', undefined, false],
+    ['fresh requested', newRequest(), true],
+    ['fresh started', newRequest({ status: 'started' }), true],
+    ['failed', newRequest({ status: 'failed' }), false],
+    ['expired', newRequest({ requestedAt: new Date(NOW - 60 * 1000 - 1).toISOString() }), false],
+  ])('%s - %p', (_, request, expected) => {
+    expect(isCallTakeoverInProgress(request as any, NOW)).toBe(expected);
   });
 });
 

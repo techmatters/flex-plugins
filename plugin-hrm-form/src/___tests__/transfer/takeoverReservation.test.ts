@@ -20,6 +20,7 @@ import {
   acceptSelfInitiatedTakeover,
   isSupervisorTakeoverOfTask,
   notifySupervisorTakeoverIfNeeded,
+  stopMonitoringCall,
   SUPERVISOR_TAKEOVER_NOTIFICATION_ID,
   TAKEOVER_SUCCESS_NOTIFICATION_ID,
 } from '../../transfer/takeoverReservation';
@@ -27,10 +28,16 @@ import {
 const mockInvokeAction = jest.fn().mockResolvedValue(undefined);
 const mockShowNotificationSingle = jest.fn();
 const mockWorkerSid = 'WK-current-worker';
+let mockMonitoredTask: { taskSid: string } | null = null;
 
 jest.mock('@twilio/flex-ui', () => ({
   Actions: { invokeAction: (...args) => mockInvokeAction(...args) },
-  Manager: { getInstance: () => ({ workerClient: { sid: mockWorkerSid } }) },
+  Manager: {
+    getInstance: () => ({
+      workerClient: { sid: mockWorkerSid },
+      store: { getState: () => ({ flex: { supervisor: { callMonitoring: { task: mockMonitoredTask } } } }) },
+    }),
+  },
   Notifications: { showNotificationSingle: (...args) => mockShowNotificationSingle(...args) },
 }));
 
@@ -73,6 +80,65 @@ describe('acceptSelfInitiatedTakeover', () => {
 
     await expect(acceptSelfInitiatedTakeover(reservation(mockWorkerSid))).rejects.toThrow('select failed');
     expect(mockShowNotificationSingle).toHaveBeenCalledWith(TAKEOVER_SUCCESS_NOTIFICATION_ID);
+  });
+});
+
+describe('acceptSelfInitiatedTakeover - call take overs', () => {
+  const callReservation = (takeoverRequest: Record<string, unknown>, sid = 'WR-supervisor') =>
+    (({ sid, task: { attributes: { takeoverRequest } } } as unknown) as Reservation);
+  const startedRequest = {
+    requestedBy: mockWorkerSid,
+    status: 'started',
+    originalReservation: 'WR-counselor',
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockMonitoredTask = null;
+  });
+
+  it('accepts the reservation for a call take over this supervisor started', async () => {
+    await acceptSelfInitiatedTakeover(callReservation(startedRequest));
+
+    expect(mockInvokeAction).toHaveBeenCalledWith('AcceptTask', { sid: 'WR-supervisor' });
+    expect(mockShowNotificationSingle).toHaveBeenCalledWith(TAKEOVER_SUCCESS_NOTIFICATION_ID);
+  });
+
+  it('stops monitoring a call before accepting', async () => {
+    mockMonitoredTask = { taskSid: 'WT-monitored' };
+    await acceptSelfInitiatedTakeover(callReservation(startedRequest));
+
+    expect(mockInvokeAction.mock.calls[0]).toEqual(['StopMonitoringCall', { task: mockMonitoredTask }]);
+    expect(mockInvokeAction.mock.calls[1]).toEqual(['AcceptTask', { sid: 'WR-supervisor' }]);
+  });
+
+  it.each([
+    ['requested by another supervisor', { ...startedRequest, requestedBy: 'WK-another' }],
+    ['not started', { ...startedRequest, status: 'requested' }],
+    ['failed', { ...startedRequest, status: 'failed' }],
+  ])('does not accept a reservation for a take over %s', async (_, request) => {
+    await acceptSelfInitiatedTakeover(callReservation(request));
+
+    expect(mockInvokeAction).not.toHaveBeenCalled();
+  });
+
+  it('does not accept the original counselor reservation', async () => {
+    await acceptSelfInitiatedTakeover(callReservation(startedRequest, 'WR-counselor'));
+
+    expect(mockInvokeAction).not.toHaveBeenCalled();
+  });
+});
+
+describe('stopMonitoringCall', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('does nothing when no call is monitored', async () => {
+    mockMonitoredTask = null;
+    await stopMonitoringCall();
+
+    expect(mockInvokeAction).not.toHaveBeenCalled();
   });
 });
 

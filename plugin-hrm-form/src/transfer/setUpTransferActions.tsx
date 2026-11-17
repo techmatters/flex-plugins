@@ -40,6 +40,7 @@ import { saveFormSharedState } from './formDataTransfer';
 import {
   TAKEOVER_SUCCESS_NOTIFICATION_ID,
   SUPERVISOR_TAKEOVER_NOTIFICATION_ID,
+  TAKEOVER_FAILED_NOTIFICATION_ID,
   acceptSelfInitiatedTakeover,
 } from './takeoverReservation';
 import { newSetFlexTransferActionInProgressAction } from '../states/taskScopedMetadata';
@@ -74,6 +75,13 @@ const setUpTransfersNotifications = () => {
     timeout: 0,
     type: NotificationType.warning,
     content: <Template code="TakeOver-OriginalCounselor-Notification" />,
+  });
+  Notifications.registerNotification({
+    id: TAKEOVER_FAILED_NOTIFICATION_ID,
+    closeButton: true,
+    timeout: 0,
+    type: NotificationType.error,
+    content: <Template code="TakeOver-Failed-Notification" />,
   });
 };
 

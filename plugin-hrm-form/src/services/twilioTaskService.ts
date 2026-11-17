@@ -172,3 +172,9 @@ type UpdateCallTakeoverStatusBody = {
  */
 export const updateCallTakeoverStatus = (body: UpdateCallTakeoverStatusBody): Promise<void> =>
   fetchProtectedApi('/transfer/updateCallTakeoverStatus', body, { useTwilioLambda: true });
+
+/**
+ * Asks the counselor assigned a call task to transfer it to the current supervisor (take over)
+ */
+export const requestCallTakeover = (body: { taskSid: TaskSID }): Promise<void> =>
+  fetchProtectedApi('/transfer/requestCallTakeover', body, { useTwilioLambda: true });
