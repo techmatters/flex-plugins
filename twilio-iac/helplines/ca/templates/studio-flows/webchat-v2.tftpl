@@ -82,6 +82,33 @@ ${
       }
     },
     {
+      "name": "webAttributes_fr",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "next": "test_flag_queue",
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1018,
+          "y": 489
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "{\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\",\n  \"ip\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"firstName\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"helpline\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}\",\n  \"language\":\"fr-CA\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}",
+        "priority": "0",
+        "timeout": "3600"
+      }
+    },
+    {
       "name": "AdjustAttributes",
       "type": "split-based-on",
       "transitions": [
@@ -657,7 +684,7 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "AdjustAttributes",
+          "next": "webAttributes_fr",
           "event": "sent"
         },
         {
