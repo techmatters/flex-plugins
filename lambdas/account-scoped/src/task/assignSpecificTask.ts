@@ -13,10 +13,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import { AccountSID } from '@tech-matters/twilio-types';
+import { AccountSID, WorkerSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
+import { isErr } from '@tech-matters/result-type';
+import { patchWorker } from '../worker/patchWorker';
 
 type ReservableTask = Pick<TaskInstance, 'reservations' | 'sid'>;
 
@@ -96,15 +98,9 @@ export const withAvailableWorkerForTask = async <T>(
   info: WaitingForSpecificTaskInfo,
   assign: () => Promise<T>,
 ): Promise<T> => {
+  const workerSid = worker.sid as WorkerSID;
   const client = await getTwilioClient(accountSid);
   const workspaceSid = await getWorkspaceSid(accountSid);
-  const workerContext = client.taskrouter.v1.workspaces(workspaceSid).workers(worker.sid);
-  const currentWorker = await workerContext.fetch();
-  const previousActivitySid = currentWorker.activitySid;
-  const previousAttributes = JSON.parse(currentWorker.attributes);
-  if (isWaitingForTask(previousAttributes)) {
-    throw new Error(`Worker ${worker.sid} is already waiting for a specific task.`);
-  }
 
   const availableActivities = await client.taskrouter.v1
     .workspaces(workspaceSid)
@@ -119,6 +115,7 @@ export const withAvailableWorkerForTask = async <T>(
       `There are ${availableActivities.length} available worker activities for workspace ${workspaceSid}, but there should only be one.`,
     );
   }
+  const availableActivitySid = availableActivities[0].sid;
 
   const temporaryAttributes = {
     waitingForSpecificTask: true,
@@ -128,42 +125,79 @@ export const withAvailableWorkerForTask = async <T>(
   };
 
   console.info(
-    `Setting worker ${worker.sid} to available activity ${availableActivities[0].sid} to accept task ${info.taskSid} (reason: ${info.reason})`,
+    `Setting worker ${workerSid} to available activity ${availableActivitySid} to accept task ${info.taskSid} (reason: ${info.reason})`,
   );
-  await workerContext.update({
-    activitySid: availableActivities[0].sid,
-    attributes: JSON.stringify({ ...previousAttributes, ...temporaryAttributes }),
-  });
+
+  // patchWorker gives us the same ETag based optimistic concurrency protection as
+  // patchTaskAttributes, but for the worker's activitySid as well as its attributes - this
+  // guards against racing with another process that is also trying to change this worker's
+  // activity / waiting-for-task state at the same time.
+  const makeAvailableResult = await patchWorker(
+    accountSid,
+    workerSid,
+    ({ attributes }) => {
+      if (isWaitingForTask(attributes)) {
+        throw new Error(
+          `Worker ${workerSid} is already waiting for a specific task, so cannot also be set to wait for task ${info.taskSid} (reason: ${info.reason}${
+            info.originalTaskSid ? `, original task: ${info.originalTaskSid}` : ''
+          }).`,
+        );
+      }
+      return {
+        activitySid: availableActivitySid,
+        attributes: { ...attributes, ...temporaryAttributes },
+      };
+    },
+    { requireEtag: true },
+  );
+  if (isErr(makeAvailableResult)) {
+    throw new Error(makeAvailableResult.message);
+  }
+  const { previousActivitySid, previousAttributes } = makeAvailableResult.data;
 
   try {
     return await assign();
   } finally {
     console.info(
-      `Restoring worker ${worker.sid} to previous activity ${previousActivitySid} after specific task assignment`,
+      `Restoring worker ${workerSid} to previous activity ${previousActivitySid} after specific task assignment`,
     );
-    let attributesToRestore = previousAttributes;
-    try {
-      // Refetch so unrelated attribute changes made during assign() are retained.
-      const latestWorker = await workerContext.fetch();
-      const latestAttributes = JSON.parse(latestWorker.attributes);
-      attributesToRestore = { ...latestAttributes };
-      for (const key of Object.keys(temporaryAttributes)) {
-        if (Object.prototype.hasOwnProperty.call(previousAttributes, key)) {
-          attributesToRestore[key] = previousAttributes[key];
-        } else {
-          delete attributesToRestore[key];
+    // Refetch (inside patchWorker) so unrelated attribute changes made during assign() are retained.
+    const restoreResult = await patchWorker(
+      accountSid,
+      workerSid,
+      ({ attributes: latestAttributes }) => {
+        const attributesToRestore = { ...latestAttributes };
+        for (const key of Object.keys(temporaryAttributes)) {
+          if (Object.prototype.hasOwnProperty.call(previousAttributes, key)) {
+            attributesToRestore[key] = previousAttributes[key];
+          } else {
+            delete attributesToRestore[key];
+          }
         }
-      }
-    } catch (error) {
+        return {
+          activitySid: previousActivitySid,
+          attributes: attributesToRestore,
+          rejectPendingReservations: true,
+        };
+      },
+      { requireEtag: true },
+    );
+    if (isErr(restoreResult)) {
       console.error(
-        `Unable to refetch worker ${worker.sid} attributes for restoration; falling back to previous attributes`,
-        error,
+        `Unable to restore worker ${workerSid} to previous activity ${previousActivitySid} via patchWorker, falling back to a plain update using the pre-assign attributes`,
+        restoreResult.error,
       );
+      // Last resort fallback - no optimistic concurrency protection here, and any unrelated
+      // attribute changes made while assign() was running will be lost, but it's better than
+      // leaving the worker stuck in the temporary available/waiting state.
+      await client.taskrouter.v1
+        .workspaces(workspaceSid)
+        .workers(workerSid)
+        .update({
+          activitySid: previousActivitySid,
+          attributes: JSON.stringify(previousAttributes),
+          rejectPendingReservations: true,
+        });
     }
-    await workerContext.update({
-      activitySid: previousActivitySid,
-      attributes: JSON.stringify(attributesToRestore),
-      rejectPendingReservations: true,
-    });
   }
 };

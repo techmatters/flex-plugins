@@ -218,6 +218,11 @@ describe('transferStartHandler', () => {
           },
         },
       },
+      httpClient: {
+        lastResponse: {
+          headers: { etag: '"worker-etag"' },
+        },
+      } as any,
     };
 
     mockGetTwilioClient.mockResolvedValue(mockClient as twilio.Twilio);

@@ -111,6 +111,11 @@ describe('assignOfflineContactInitHandler', () => {
           }),
         },
       },
+      httpClient: {
+        lastResponse: {
+          headers: { etag: '"worker-etag"' },
+        },
+      },
     };
 
     mockGetTwilioClient.mockResolvedValue(mockClient as any);

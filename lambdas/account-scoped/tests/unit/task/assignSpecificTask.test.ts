@@ -153,6 +153,11 @@ describe('withAvailableWorkerForTask', () => {
           }),
         },
       },
+      httpClient: {
+        lastResponse: {
+          headers: { etag: '"worker-etag"' },
+        },
+      },
     };
     mockGetTwilioClient.mockResolvedValue(client as any);
     return client;
