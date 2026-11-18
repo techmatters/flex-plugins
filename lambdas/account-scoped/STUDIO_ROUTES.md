@@ -531,13 +531,15 @@ first widget of the survey flow, before any question.
 |---|---|---|---|
 | `contactTaskSid` | yes | `{{trigger.call.taskSid}}` | Task of the contact being surveyed. `rest` trigger: `{{flow.data.contactTaskSid}}` |
 | `contactId` | no | `{{trigger.call.contactId}}` | HRM contact. `rest` trigger: `{{flow.data.contactId}}` |
+| `language` | no | `{{trigger.call.taskLanguage}}` | Contact's language (the task's, else the helpline's), stored on the control task for Insights. `rest` trigger: `{{flow.data.taskLanguage}}` |
 
 **Example body:**
 
 ```json
 {
   "contactTaskSid": "{{trigger.call.taskSid}}",
-  "contactId": "{{trigger.call.contactId}}"
+  "contactId": "{{trigger.call.contactId}}",
+  "language": "{{trigger.call.taskLanguage}}"
 }
 ```
 

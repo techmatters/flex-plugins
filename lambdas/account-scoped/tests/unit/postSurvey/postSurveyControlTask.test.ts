@@ -58,7 +58,9 @@ describe('createPostSurveyControlTaskHandler', () => {
     mockCreateTask.mockResolvedValue({ sid: 'WTcontrol' });
 
     const result = await createPostSurveyControlTaskHandler(
-      { body: { contactTaskSid: 'WTcontact', contactId: '1234' } } as any,
+      {
+        body: { contactTaskSid: 'WTcontact', contactId: '1234', language: 'fr-CA' },
+      } as any,
       TEST_ACCOUNT_SID,
     );
 
@@ -72,6 +74,7 @@ describe('createPostSurveyControlTaskHandler', () => {
         buildPostSurveyControlTaskAttributes({
           contactTaskSid: 'WTcontact',
           contactId: '1234',
+          language: 'fr-CA',
         }),
       ),
       timeout: POST_SURVEY_CONTROL_TASK_TTL_SECONDS,
