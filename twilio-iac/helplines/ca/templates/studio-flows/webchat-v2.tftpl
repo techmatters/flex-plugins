@@ -1575,28 +1575,24 @@ ${
     },
     {
       "name": "f_send_no_counsellors_fr",
-     "type": "run-function",
+     "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${flow_vars.serverless_service_sid}",
-        "environment_sid": "${flow_vars.serverless_environment_sid}",
         "offset": {
           "x": 2570,
           "y": 800
         },
-        "function_sid": "${flow_vars.send_message_run_janitor_sid}",
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
         "parameters": [
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
-          },
           {
             "value": "{{flow.channel.address}}",
             "key": "conversationSid"
@@ -1610,7 +1606,7 @@ ${
             "key": "from"
           }
         ],
-        "url": "${flow_vars.send_message_run_janitor_url}"
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
