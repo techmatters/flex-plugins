@@ -207,6 +207,69 @@ describe('assignOfflineContactInitHandler', () => {
     if (isOk(result)) {
       expect(result.data).toBeDefined();
     }
+    const [{ attributes: mergedAttributesJson }] = mockTask.update.mock.calls[0];
+    const mergedAttributes = JSON.parse(mergedAttributesJson);
+    expect(mergedAttributes.waitingForSpecificTaskSid).toBe('WT_NEW_TASK');
+  });
+
+  it('should temporarily make an offline worker available, assign the task, then restore the worker', async () => {
+    const updatedTask = { ...mockTask, sid: 'WT_UPDATED' };
+    mockTask.update.mockResolvedValue(updatedTask);
+    mockTask.reservations.mockReturnValue({
+      list: jest.fn().mockResolvedValue([
+        {
+          workerSid: TARGET_SID,
+          update: jest.fn().mockResolvedValue({ reservationStatus: 'accepted' }),
+        },
+      ]),
+    });
+
+    mockWorker = createMockWorker(false, {
+      helpline: 'test-helpline',
+      waitingOfflineContact: false,
+    });
+    const workerContextUpdate = jest.fn().mockResolvedValue({});
+    const workerContextFetch = jest
+      .fn()
+      .mockResolvedValueOnce(mockWorker)
+      .mockResolvedValue(mockWorker);
+    mockClient.taskrouter.v1.workspaces.mockReturnValue({
+      workers: jest.fn().mockReturnValue({
+        fetch: workerContextFetch,
+        update: workerContextUpdate,
+      }),
+      tasks: {
+        create: jest.fn().mockResolvedValue(mockTask),
+      },
+      activities: {
+        list: jest.fn().mockResolvedValue([{ sid: 'WA_AVAILABLE' }]),
+      },
+    });
+
+    const request = createMockRequest({
+      targetSid: TARGET_SID,
+      taskAttributes: TASK_ATTRIBUTES,
+    });
+    const result = await assignOfflineContactInitHandler(request, TEST_ACCOUNT_SID);
+
+    expect(isOk(result)).toBe(true);
+
+    expect(workerContextUpdate).toHaveBeenCalledTimes(2);
+    const [[makeAvailableCall], [restoreCall]] = workerContextUpdate.mock.calls;
+    expect(makeAvailableCall.activitySid).toBe('WA_AVAILABLE');
+    const makeAvailableAttributes = JSON.parse(makeAvailableCall.attributes);
+    expect(makeAvailableAttributes.waitingForSpecificTask).toBe(true);
+    expect(makeAvailableAttributes.waitingOfflineContact).toBe(true);
+    expect(makeAvailableAttributes.waitingForSpecificTaskInfo).toEqual({
+      taskSid: 'WT_UPDATED',
+      reason: 'offline-contact',
+    });
+
+    expect(restoreCall.activitySid).toBe('WA_OFFLINE');
+    expect(restoreCall.rejectPendingReservations).toBe(true);
+    const restoredAttributes = JSON.parse(restoreCall.attributes);
+    expect(restoredAttributes.waitingForSpecificTask).toBeUndefined();
+    expect(restoredAttributes.waitingOfflineContact).toBe(false);
   });
 
   it('should throw when an unexpected error occurs', async () => {
