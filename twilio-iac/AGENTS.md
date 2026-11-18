@@ -196,12 +196,12 @@ Don't start new helplines on `voice-basic*.tftpl`, `messaging-blocking-lambda*.t
 Whenever you add or change a post-survey (voice post-call survey or chatbot post-survey), check all of
 these. A gap here fails silently: the caller still hears the normal goodbye, but the answers are lost.
 
-- **Voice surveys record each answer as it is given.** The flow calls `postSurvey/recordAnswers`
-  (widgets `f_recordAnswers_*`) after every question, sending `surveyComplete: true` on the last call. The
-  answers go to a control task the lambda creates before redirecting the call into the flow, only when the
-  `postStudioFlows` entry has `"createSurveyControlTask": true` (read as `{{trigger.call.controlTaskSid}}`).
-- **The flag and the flow are applied separately.** The flag is service configuration
-  (`make service-config-apply`), the flow is the `configure` apply. Order: lambdas deployed → flag → flows.
+- **Voice surveys record each answer as it is given.** The flow's first widget, `f_createControlTask`
+  (`postSurvey/createControlTask`), creates the control task before any question. The flow then calls
+  `postSurvey/recordAnswers` (widgets `f_recordAnswers_*`) after every question with
+  `{{widgets.f_createControlTask.parsed.controlTaskSid}}`, sending `surveyComplete: true` on the last call.
+  See `lambdas/account-scoped/STUDIO_ROUTES.md`.
+- **Deploy the lambdas before applying the flows**, so `postSurvey/*` exists when the new flow first runs.
 - **The survey workflow must use `templates/workflows/survey.tftpl`, not `lex.tftpl`.** The voice
   post-survey control task has only `isSurveyTask: true`. `survey.tftpl` has both filters:
   `isSurveyTask==true` (Post Survey Filter) and `isChatCaptureControl==true` (Pre Survey Filter).
@@ -215,5 +215,5 @@ these. A gap here fails silently: the caller still hears the normal goodbye, but
 - **The `survey` task queue and task channel exist** in `common.hcl` (`task_queues.survey` with
   `target_workers = "1==0"`, and `task_channels.survey`).
 - **Verify with a real test call:** opt in and answer every question, then check in Datadog that
-  every `f_recordAnswers_*` widget ended with `success` and that there is no
+  `f_createControlTask` and every `f_recordAnswers_*` widget ended with `success` and that there is no
   `service:twilio-lambda status:error "Couldn't match task to queue" <AccountSID>` error for the account.
