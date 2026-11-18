@@ -61,7 +61,12 @@ describe('acceptSpecificTask', () => {
   it('accepts a pending reservation belonging to the target worker', async () => {
     const update = jest.fn().mockResolvedValue({ reservationStatus: 'accepted' });
     const task = createTask([
-      { sid: 'WRother', workerSid: 'WKother', reservationStatus: 'pending', update: jest.fn() },
+      {
+        sid: 'WRother',
+        workerSid: 'WKother',
+        reservationStatus: 'pending',
+        update: jest.fn(),
+      },
       { sid: 'WRtarget', workerSid: TARGET_SID, reservationStatus: 'pending', update },
     ]);
 
@@ -116,7 +121,9 @@ describe('acceptSpecificTask', () => {
       { sid: 'WRtarget', workerSid: TARGET_SID, reservationStatus: 'pending', update },
     ]);
 
-    await expect(acceptSpecificTask(TARGET_SID, task as any)).rejects.toThrow(/not accepted/);
+    await expect(acceptSpecificTask(TARGET_SID, task as any)).rejects.toThrow(
+      /not accepted/,
+    );
   });
 });
 

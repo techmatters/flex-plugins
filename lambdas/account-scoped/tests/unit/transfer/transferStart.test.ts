@@ -82,6 +82,12 @@ describe('transferStartHandler', () => {
   let mockUpdateTask: jest.Mock;
   let mockListReservations: jest.Mock;
   let mockCreateInvite: jest.Mock;
+  let mockUpdateNewTask: jest.Mock;
+  let mockListNewTaskReservations: jest.Mock;
+  let mockNewTaskReservationUpdate: jest.Mock;
+  let mockRemoveNewTask: jest.Mock;
+  let mockWorkerUpdate: jest.Mock;
+  let mockActivitiesList: jest.Mock;
   let workerFetchMocks: Record<string, jest.Mock>;
   let currentTaskAttributes: Record<string, unknown>;
 
@@ -103,6 +109,23 @@ describe('transferStartHandler', () => {
     mockCreateInvite = jest.fn().mockResolvedValue({
       routing: { properties: { sid: NEW_TASK_SID } },
     });
+    mockNewTaskReservationUpdate = jest.fn().mockResolvedValue({
+      reservationStatus: 'accepted',
+    });
+    mockListNewTaskReservations = jest.fn().mockResolvedValue([
+      {
+        sid: 'WRnewreservation',
+        reservationStatus: 'pending',
+        workerSid: SUPERVISOR_WORKER_SID,
+        update: mockNewTaskReservationUpdate,
+      },
+    ]);
+    mockUpdateNewTask = jest.fn().mockImplementation(async ({ attributes }) => ({
+      sid: NEW_TASK_SID,
+      attributes,
+      reservations: jest.fn().mockReturnValue({ list: mockListNewTaskReservations }),
+    }));
+    mockRemoveNewTask = jest.fn().mockResolvedValue(true);
     workerFetchMocks = {
       [ORIGINAL_WORKER_SID]: jest.fn().mockResolvedValue({
         sid: ORIGINAL_WORKER_SID,
@@ -115,6 +138,10 @@ describe('transferStartHandler', () => {
         attributes: JSON.stringify({ full_name: 'Supervisor' }),
       }),
     };
+    mockWorkerUpdate = jest.fn().mockResolvedValue({});
+    mockActivitiesList = jest
+      .fn()
+      .mockResolvedValue([{ sid: 'WAavailable', friendlyName: 'Available' }]);
 
     const taskContext = {
       fetch: mockFetchTask,
@@ -123,36 +150,50 @@ describe('transferStartHandler', () => {
         list: mockListReservations,
       },
     };
-    const tasks = {
-      get: () => taskContext,
+    const newTaskContext = {
+      update: mockUpdateNewTask,
+      remove: mockRemoveNewTask,
     };
+    const tasks = {
+      get: (sid: string) => (sid === NEW_TASK_SID ? newTaskContext : taskContext),
+    };
+
+    const workerContextFor = (workerSid: string) => ({
+      fetch: workerFetchMocks[workerSid],
+      update: mockWorkerUpdate,
+      workerChannels: {
+        get: () => ({
+          fetch: jest.fn().mockResolvedValue({
+            availableCapacityPercentage: 1,
+            configuredCapacity: 1,
+          }),
+        }),
+      },
+    });
+    const workers = Object.assign((workerSid: string) => workerContextFor(workerSid), {
+      get: (workerSid: string) => workerContextFor(workerSid),
+    });
+
+    const workspace = {
+      tasks,
+      taskQueues: {
+        list: jest
+          .fn()
+          .mockResolvedValue([{ sid: 'WQdirect', friendlyName: 'Everyone' }]),
+      },
+      workers,
+      activities: {
+        list: mockActivitiesList,
+      },
+    };
+    const workspaces = Object.assign(() => workspace, {
+      get: () => workspace,
+    });
 
     const mockClient: RecursivePartial<twilio.Twilio> = {
       taskrouter: {
         v1: {
-          workspaces: {
-            get: () => ({
-              tasks,
-              taskQueues: {
-                list: jest
-                  .fn()
-                  .mockResolvedValue([{ sid: 'WQdirect', friendlyName: 'Everyone' }]),
-              },
-              workers: {
-                get: (workerSid: string) => ({
-                  fetch: workerFetchMocks[workerSid],
-                  workerChannels: {
-                    get: () => ({
-                      fetch: jest.fn().mockResolvedValue({
-                        availableCapacityPercentage: 1,
-                        configuredCapacity: 1,
-                      }),
-                    }),
-                  },
-                }),
-              },
-            }),
-          },
+          workspaces,
         },
       },
       flexApi: {
@@ -447,4 +488,78 @@ describe('transferStartHandler', () => {
     );
     expect(lastUpdateAttributes).toEqual(ORIGINAL_TASK_ATTRIBUTES);
   });
+
+  test('takes over a task while offline, temporarily making the supervisor available and restoring their previous state afterwards', async () => {
+    workerFetchMocks[SUPERVISOR_WORKER_SID] = jest.fn().mockResolvedValue({
+      sid: SUPERVISOR_WORKER_SID,
+      available: false,
+      activitySid: 'WAoffline',
+      attributes: JSON.stringify({ full_name: 'Supervisor' }),
+    });
+
+    const result = await transferStartHandler(
+      newRequest(
+        { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+        { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+      ),
+      TEST_ACCOUNT_SID,
+    );
+
+    expect(isOk(result)).toBe(true);
+    if (isOk(result)) {
+      expect(result.data).toEqual({ taskSid: NEW_TASK_SID });
+    }
+
+    expect(mockActivitiesList).toHaveBeenCalledWith({ available: 'true' });
+
+    // First update puts the supervisor into the available activity, restricted to the takeover task
+    const setAvailableCall = mockWorkerUpdate.mock.calls[0][0];
+    expect(setAvailableCall.activitySid).toBe('WAavailable');
+    expect(JSON.parse(setAvailableCall.attributes)).toEqual({
+      full_name: 'Supervisor',
+      waitingForSpecificTask: true,
+      waitingForSpecificTaskInfo: {
+        taskSid: NEW_TASK_SID,
+        reason: 'takeover',
+        originalTaskSid: TASK_SID,
+      },
+    });
+
+    // The reservation on the new task was accepted
+    expect(mockNewTaskReservationUpdate).toHaveBeenCalledWith({
+      reservationStatus: 'accepted',
+    });
+
+    // Final update restores the supervisor to their previous offline activity and attributes
+    const restoreCall =
+      mockWorkerUpdate.mock.calls[mockWorkerUpdate.mock.calls.length - 1][0];
+    expect(restoreCall.activitySid).toBe('WAoffline');
+    expect(JSON.parse(restoreCall.attributes)).toEqual({ full_name: 'Supervisor' });
+    expect(restoreCall.rejectPendingReservations).toBe(true);
+  });
+
+  test('cleans up the new task if the takeover reservation can never be accepted', async () => {
+    mockListNewTaskReservations.mockResolvedValue([]);
+
+    const result = await transferStartHandler(
+      newRequest(
+        { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+        { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+      ),
+      TEST_ACCOUNT_SID,
+    );
+
+    expect(isErr(result)).toBe(true);
+    if (isErr(result)) {
+      expect((result.error as HttpError).statusCode).toBe(500);
+    }
+
+    expect(mockRemoveNewTask).toHaveBeenCalled();
+
+    // Last update restores the original attributes on the original task
+    const lastUpdateAttributes = JSON.parse(
+      mockUpdateTask.mock.calls[mockUpdateTask.mock.calls.length - 1][0].attributes,
+    );
+    expect(lastUpdateAttributes).toEqual(ORIGINAL_TASK_ATTRIBUTES);
+  }, 10000);
 });

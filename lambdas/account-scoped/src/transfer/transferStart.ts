@@ -24,6 +24,10 @@ import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
 import { patchTaskAttributes } from '../task/patchTaskAttributes';
+import {
+  acceptSpecificTask,
+  withAvailableWorkerForTask,
+} from '../task/assignSpecificTask';
 
 export type Body = {
   taskSid: TaskSID;
@@ -42,12 +46,15 @@ const DIRECT_TRANSFER_QUEUE_FRIENDLY_NAME = 'Everyone';
 type ValidationResult = { type: 'worker'; worker: WorkerInstance } | { type: 'queue' };
 
 // If the transfer targets a worker, validate that the worker is online and has capacity.
+// For takeovers, the supervisor is allowed to be offline (isTakeover skips the online/capacity
+// checks), since transferStartHandler temporarily brings them online just for the task being taken over.
 async function validateChannelIfWorker(
   accountSid: AccountSID,
   targetSid: string,
   transferTargetType: string,
   taskChannelUniqueName: string,
   channelType: string,
+  isTakeover: boolean = false,
 ): Promise<Result<Error, ValidationResult>> {
   const client = await getTwilioClient(accountSid);
   const workspaceSid = await getWorkspaceSid(accountSid);
@@ -62,7 +69,7 @@ async function validateChannelIfWorker(
       .fetch(),
   ]);
 
-  if (!worker.available) {
+  if (!worker.available && !isTakeover) {
     return newErr({
       message: `Can't transfer to an offline counselor`,
       error: new Error("Can't transfer to an offline counselor"),
@@ -79,7 +86,7 @@ async function validateChannelIfWorker(
       workerChannel.configuredCapacity >= workerAttr.maxMessageCapacity
     : channelType !== 'voice' && !workerChannel.availableCapacityPercentage;
 
-  if (unavailableVoice || unavailableChat) {
+  if ((unavailableVoice || unavailableChat) && !isTakeover) {
     return newErr({
       message: `Counselor has no available capacity: ${unavailableVoice ? 'voice' : 'chat'} capacity full`,
       error: new Error('Counselor has no available capacity'),
@@ -151,12 +158,20 @@ export const transferStartHandler: FlexValidatedHandler = async (
 
   const transferTargetType = targetSid.startsWith('WK') ? 'worker' : 'queue';
 
+  // A takeover is a transfer targeting the requesting supervisor themselves, away from whoever currently holds the task.
+  // Takeovers are allowed even if the supervisor is currently offline - see the post-invite handling below.
+  const isTakeover =
+    transferTargetType === 'worker' &&
+    targetSid === tokenResult.worker_sid &&
+    acceptedReservation.workerSid !== tokenResult.worker_sid;
+
   const validationResult = await validateChannelIfWorker(
     accountSid,
     targetSid,
     transferTargetType,
     originalTask.taskChannelUniqueName,
     originalAttributes.channelType,
+    isTakeover,
   );
 
   if (isErr(validationResult)) {
@@ -165,6 +180,9 @@ export const transferStartHandler: FlexValidatedHandler = async (
       error: { cause: validationResult.error, statusCode: 400 },
     });
   }
+
+  const targetWorker =
+    validationResult.data.type === 'worker' ? validationResult.data.worker : undefined;
 
   let originalParticipantSid: string | undefined;
   try {
@@ -301,6 +319,34 @@ export const transferStartHandler: FlexValidatedHandler = async (
       console.info(
         `Transferred conversations task ${taskSid} to worker ${targetSid} by creating interaction invite.`,
       );
+
+      if (isTakeover) {
+        // Lets the TaskRouter workflow match the new task back up to the target worker even while
+        // they are marked waitingForSpecificTask (see assignSpecificTask.ts) below.
+        const newTask = await workspace.tasks.get(newTaskSid).update({
+          attributes: JSON.stringify({
+            ...newAttributes,
+            waitingForSpecificTaskSid: newTaskSid,
+          }),
+        });
+
+        console.info(
+          `Takeover of task ${taskSid} by worker ${targetSid}: waiting to accept reservation on new task ${newTaskSid}.`,
+        );
+        if (targetWorker?.available) {
+          await acceptSpecificTask(targetSid, newTask);
+        } else {
+          await withAvailableWorkerForTask(
+            accountSid,
+            { sid: targetSid },
+            { taskSid: newTaskSid, reason: 'takeover', originalTaskSid: taskSid },
+            () => acceptSpecificTask(targetSid, newTask),
+          );
+        }
+        console.info(
+          `Takeover of task ${taskSid} by worker ${targetSid}: reservation on new task ${newTaskSid} accepted.`,
+        );
+      }
     } else if (transferTargetType === 'queue') {
       console.info(
         `Transferring conversations task ${taskSid} to queue ${targetSid} by creating interaction invite.`,
@@ -354,6 +400,18 @@ export const transferStartHandler: FlexValidatedHandler = async (
         `Failed to roll back transfer metadata on task ${taskSid} after a failed transfer`,
         rollbackErr,
       );
+    }
+    if (isTakeover && newTaskSid) {
+      // The invite task was created but the takeover reservation couldn't be accepted - clean it up
+      // rather than leaving a dangling task nobody will ever be offered.
+      try {
+        await workspace.tasks.get(newTaskSid).remove();
+      } catch (cleanupErr) {
+        console.error(
+          `Failed to clean up new task ${newTaskSid} after a failed takeover of task ${taskSid}`,
+          cleanupErr,
+        );
+      }
     }
     return newHttpErrorResult(err as Error, 500);
   }
