@@ -18,8 +18,12 @@ import { Twilio } from 'twilio';
 import { AccountSID } from '@tech-matters/twilio-types';
 import {
   getSurveyWorkflowSid,
+  getTwilioClient,
   getWorkspaceSid,
 } from '@tech-matters/twilio-configuration';
+import { newOk } from '@tech-matters/result-type';
+import { AccountScopedHandler } from '../httpTypes';
+import { newMissingParameterResult } from '../httpErrors';
 
 // How long a post survey control task lives before TaskRouter cancels it
 export const POST_SURVEY_CONTROL_TASK_TTL_SECONDS = 3600;
@@ -57,6 +61,27 @@ export const createPostSurveyControlTask = async (
     attributes: JSON.stringify(buildPostSurveyControlTaskAttributes(contact)),
     timeout: POST_SURVEY_CONTROL_TASK_TTL_SECONDS,
   });
+
+/**
+ * Called by post survey Studio flows before the first question, so each answer can be recorded on the control task.
+ */
+export const createPostSurveyControlTaskHandler: AccountScopedHandler = async (
+  { body },
+  accountSid,
+) => {
+  const { contactTaskSid, contactId } = body;
+  if (!contactTaskSid) return newMissingParameterResult('contactTaskSid');
+
+  const controlTask = await createPostSurveyControlTask(
+    await getTwilioClient(accountSid),
+    accountSid,
+    { contactTaskSid, contactId },
+  );
+  console.info(
+    `[Post Survey - ${accountSid}/${contactTaskSid}]: Created post survey control task ${controlTask.sid}`,
+  );
+  return newOk({ controlTaskSid: controlTask.sid });
+};
 
 /**
  * Survey tasks are never assigned to a worker, so they stay pending. A pending task can't be completed,

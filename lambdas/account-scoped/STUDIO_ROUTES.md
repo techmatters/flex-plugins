@@ -18,6 +18,7 @@ custom-channel callbacks) are intentionally not listed here.
 | [`channelCapture/chatbotCallbackCleanup`](#channelcapturechatbotcallbackcleanup) | Force-release a conversation captured by a bot |
 | [`channelCapture/startPostSurveyChatbot`](#channelcapturestartpostsurveychatbot) | Start the post-survey Lex bot on a conversation |
 | [`hrm/savePostSurvey`](#hrmsavepostsurvey) | Save voice (IVR) post-survey answers to HRM and Insights |
+| [`postSurvey/createControlTask`](#postsurveycreatecontroltask) | Start a voice (IVR) post-survey: create the task its answers are recorded on |
 | [`postSurvey/recordAnswers`](#postsurveyrecordanswers) | Record voice (IVR) post-survey answers as they are given |
 | [`conversation/sendMessageAndRunJanitor`](#conversationsendmessageandrunjanitor) | Send a final message and close the conversation |
 | [`conversation/sendStudioMessage`](#conversationsendstudiomessage) | Detach Studio and send a system message (system-down flow) |
@@ -518,22 +519,58 @@ this through a short-lived `survey` task, which it creates and cancels itself.
 
 ---
 
+## postSurvey/createControlTask
+
+Starts a **voice** (IVR) post-call survey: creates the post survey control task that
+[`postSurvey/recordAnswers`](#postsurveyrecordanswers) records each answer on. Call it once, as the
+first widget of the survey flow, before any question.
+
+**URL:** `${lambda_twilio_account_scoped_url}/postSurvey/createControlTask`
+
+| Param | Required | Example | Notes |
+|---|---|---|---|
+| `contactTaskSid` | yes | `{{trigger.call.taskSid}}` | Task of the contact being surveyed. `rest` trigger: `{{flow.data.contactTaskSid}}` |
+| `contactId` | no | `{{trigger.call.contactId}}` | HRM contact. `rest` trigger: `{{flow.data.contactId}}` |
+
+**Example body:**
+
+```json
+{
+  "contactTaskSid": "{{trigger.call.taskSid}}",
+  "contactId": "{{trigger.call.contactId}}"
+}
+```
+
+**Response:**
+
+```json
+{ "controlTaskSid": "WTxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" }
+```
+
+**Use the result:** send `{{widgets.f_createControlTask.parsed.controlTaskSid}}` as `controlTaskSid`
+to every `postSurvey/recordAnswers` call.
+
+**Good to know:**
+
+- Continue the survey from `failed` too: the caller still hears it, but no answers are recorded.
+- The control task expires after 15 minutes if the survey is never completed.
+
+---
+
 ## postSurvey/recordAnswers
 
 Records **voice** (IVR) post-call survey answers as soon as they are given, so a caller who
 hangs up halfway still leaves the answers they gave. Each call stores the answers on the post
 survey control task (for Flex Insights) and saves all the answers so far to HRM.
 
-The control task is created by the lambda before the flow starts, when the flow's
-`postStudioFlows` entry in the service configuration has `"createSurveyControlTask": true`.
-Its SID reaches the flow as `{{trigger.call.controlTaskSid}}` (`inProgressCall` trigger) or
-`{{flow.data.controlTaskSid}}` (`rest` trigger).
+The control task is created by the flow itself, with
+[`postSurvey/createControlTask`](#postsurveycreatecontroltask) before the first question.
 
 **URL:** `${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers`
 
 | Param | Required | Example | Notes |
 |---|---|---|---|
-| `controlTaskSid` | yes | `{{trigger.call.controlTaskSid}}` | Post survey control task |
+| `controlTaskSid` | yes | `{{widgets.f_createControlTask.parsed.controlTaskSid}}` | Post survey control task |
 | `answers` | no | `{"feel_supported": "Yes"}` | Object. Keys must match the questions in the helpline's form definitions `insights/postSurvey` spec. Empty answers are ignored, so send only the question just answered. Send it as JSON, not form parameters. |
 | `surveyComplete` | no | `true` | Send `true` once, on the last call of a survey that reached its end. It closes the control task, after which no more answers can be recorded. |
 
@@ -541,7 +578,7 @@ Its SID reaches the flow as `{{trigger.call.controlTaskSid}}` (`inProgressCall` 
 
 ```json
 {
-  "controlTaskSid": "{{trigger.call.controlTaskSid}}",
+  "controlTaskSid": "{{widgets.f_createControlTask.parsed.controlTaskSid}}",
   "answers": { "end_interaction": "{{flow.variables.end_interaction}}" },
   "surveyComplete": true
 }
