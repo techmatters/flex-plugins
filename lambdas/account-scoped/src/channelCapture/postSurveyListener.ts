@@ -42,19 +42,11 @@ import { getTranslation } from '../translations/translationLookup';
 import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
 import { newOk } from '@tech-matters/result-type';
 import { AccountScopedHandler } from '../httpTypes';
+import { getTaskLanguage } from '../task/taskLanguage';
 import {
   buildPostSurveyControlTaskAttributes,
   POST_SURVEY_CONTROL_TASK_TTL_SECONDS,
 } from '../postSurvey/postSurveyControlTask';
-
-const GLOBAL_DEFAULT_LANGUAGE = 'en-US';
-
-// ================== //
-// TODO: unify this code with Flex codebase
-const getTaskLanguage =
-  (helplineLanguage: string) => (taskAttributes: { language?: string }) =>
-    taskAttributes.language || helplineLanguage || GLOBAL_DEFAULT_LANGUAGE;
-// ================== //
 
 // TODO: factor out
 type TransferMeta = {

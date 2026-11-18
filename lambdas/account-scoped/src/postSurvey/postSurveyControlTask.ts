@@ -69,13 +69,13 @@ export const createPostSurveyControlTaskHandler: AccountScopedHandler = async (
   { body },
   accountSid,
 ) => {
-  const { contactTaskSid, contactId } = body;
+  const { contactTaskSid, contactId, language } = body;
   if (!contactTaskSid) return newMissingParameterResult('contactTaskSid');
 
   const controlTask = await createPostSurveyControlTask(
     await getTwilioClient(accountSid),
     accountSid,
-    { contactTaskSid, contactId },
+    { contactTaskSid, contactId, language },
   );
   console.info(
     `[Post Survey - ${accountSid}/${contactTaskSid}]: Created post survey control task ${controlTask.sid}`,
