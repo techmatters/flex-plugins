@@ -15,7 +15,7 @@ ${
           "event": "incomingMessage"
         },
         {
-          "next": "say_play_1",
+          "next": "f_createControlTask",
           "event": "incomingCall"
         },
         {
@@ -33,6 +33,31 @@ ${
           "x": -23,
           "y": 2
         }
+      }
+    },
+    {
+      "name": "f_createControlTask",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "say_play_1",
+          "event": "success"
+        },
+        {
+          "next": "say_play_1",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 377,
+          "y": 2
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"contactTaskSid\": \"{{trigger.call.taskSid}}\",\n  \"contactId\": \"{{trigger.call.contactId}}\"\n}",
+        "url": "${lambda_twilio_account_scoped_url}/postSurvey/createControlTask"
       }
     },
     {
@@ -285,7 +310,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"e_Helpful_Main_v1\": \"{{widgets.gather_1.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
+        "body": "{\n  \"controlTaskSid\": \"{{widgets.f_createControlTask.parsed.controlTaskSid}}\",\n  \"answers\": {\n    \"e_Helpful_Main_v1\": \"{{widgets.gather_1.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
         "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
       }
     },
@@ -310,7 +335,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"e_feelBetter_Main_v1\": \"{{widgets.gather_2.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
+        "body": "{\n  \"controlTaskSid\": \"{{widgets.f_createControlTask.parsed.controlTaskSid}}\",\n  \"answers\": {\n    \"e_feelBetter_Main_v1\": \"{{widgets.gather_2.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
         "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
       }
     },
@@ -335,7 +360,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"e_contactAgain_Main_v1\": \"{{widgets.gather_3.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
+        "body": "{\n  \"controlTaskSid\": \"{{widgets.f_createControlTask.parsed.controlTaskSid}}\",\n  \"answers\": {\n    \"e_contactAgain_Main_v1\": \"{{widgets.gather_3.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
         "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
       }
     },
@@ -360,7 +385,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"e_Respected_Main_v1\": \"{{widgets.gather_4.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
+        "body": "{\n  \"controlTaskSid\": \"{{widgets.f_createControlTask.parsed.controlTaskSid}}\",\n  \"answers\": {\n    \"e_Respected_Main_v1\": \"{{widgets.gather_4.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
         "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
       }
     },
@@ -385,7 +410,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"e_Age_Main_v1\": \"{{widgets.gather_5.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
+        "body": "{\n  \"controlTaskSid\": \"{{widgets.f_createControlTask.parsed.controlTaskSid}}\",\n  \"answers\": {\n    \"e_Age_Main_v1\": \"{{widgets.gather_5.Digits}}\"\n  },\n  \"surveyComplete\": false\n}",
         "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
       }
     },
@@ -410,7 +435,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {\n    \"e_Identity_Main_v1\": \"{{widgets.gather_6.Digits}}\"\n  },\n  \"surveyComplete\": true\n}",
+        "body": "{\n  \"controlTaskSid\": \"{{widgets.f_createControlTask.parsed.controlTaskSid}}\",\n  \"answers\": {\n    \"e_Identity_Main_v1\": \"{{widgets.gather_6.Digits}}\"\n  },\n  \"surveyComplete\": true\n}",
         "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
       }
     },
@@ -435,7 +460,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\n  \"controlTaskSid\": \"{{trigger.call.controlTaskSid}}\",\n  \"answers\": {},\n  \"surveyComplete\": true\n}",
+        "body": "{\n  \"controlTaskSid\": \"{{widgets.f_createControlTask.parsed.controlTaskSid}}\",\n  \"answers\": {},\n  \"surveyComplete\": true\n}",
         "url": "${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers"
       }
     },
