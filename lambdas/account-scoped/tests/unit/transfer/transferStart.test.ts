@@ -82,7 +82,7 @@ describe('transferStartHandler', () => {
   let mockUpdateTask: jest.Mock;
   let mockListReservations: jest.Mock;
   let mockCreateInvite: jest.Mock;
-  let mockUpdateNewTask: jest.Mock;
+  let mockFetchNewTask: jest.Mock;
   let mockListNewTaskReservations: jest.Mock;
   let mockNewTaskReservationUpdate: jest.Mock;
   let mockRemoveNewTask: jest.Mock;
@@ -120,9 +120,8 @@ describe('transferStartHandler', () => {
         update: mockNewTaskReservationUpdate,
       },
     ]);
-    mockUpdateNewTask = jest.fn().mockImplementation(async ({ attributes }) => ({
+    mockFetchNewTask = jest.fn().mockImplementation(async () => ({
       sid: NEW_TASK_SID,
-      attributes,
       reservations: jest.fn().mockReturnValue({ list: mockListNewTaskReservations }),
     }));
     mockRemoveNewTask = jest.fn().mockResolvedValue(true);
@@ -151,7 +150,7 @@ describe('transferStartHandler', () => {
       },
     };
     const newTaskContext = {
-      update: mockUpdateNewTask,
+      fetch: mockFetchNewTask,
       remove: mockRemoveNewTask,
     };
     const tasks = {
@@ -321,6 +320,10 @@ describe('transferStartHandler', () => {
         workspace_sid: TEST_WORKSPACE_SID,
       }),
     );
+    expect(mockWorkerUpdate).not.toHaveBeenCalled();
+    expect(mockNewTaskReservationUpdate).toHaveBeenCalledWith({
+      reservationStatus: 'accepted',
+    });
   });
 
   test('assigned worker can start a transfer without a supervisor role', async () => {
@@ -517,18 +520,26 @@ describe('transferStartHandler', () => {
 
     expect(mockActivitiesList).toHaveBeenCalledWith({ available: 'true' });
 
-    // First update puts the supervisor into the available activity, restricted to the takeover task
+    // First update puts the supervisor into the available activity before inviting them.
     const setAvailableCall = mockWorkerUpdate.mock.calls[0][0];
     expect(setAvailableCall.activitySid).toBe('WAavailable');
     expect(JSON.parse(setAvailableCall.attributes)).toEqual({
       full_name: 'Supervisor',
       waitingForSpecificTask: true,
       waitingForSpecificTaskInfo: {
-        taskSid: NEW_TASK_SID,
         reason: 'takeover',
         originalTaskSid: TASK_SID,
       },
     });
+    expect(mockWorkerUpdate.mock.invocationCallOrder[0]).toBeLessThan(
+      mockCreateInvite.mock.invocationCallOrder[0],
+    );
+    expect(mockCreateInvite.mock.invocationCallOrder[0]).toBeLessThan(
+      mockNewTaskReservationUpdate.mock.invocationCallOrder[0],
+    );
+    expect(mockNewTaskReservationUpdate.mock.invocationCallOrder[0]).toBeLessThan(
+      mockWorkerUpdate.mock.invocationCallOrder[1],
+    );
 
     // The reservation on the new task was accepted
     expect(mockNewTaskReservationUpdate).toHaveBeenCalledWith({
@@ -543,7 +554,83 @@ describe('transferStartHandler', () => {
     expect(restoreCall.rejectPendingReservations).toBe(true);
   });
 
+  test('restores an offline supervisor if the invite fails', async () => {
+    workerFetchMocks[SUPERVISOR_WORKER_SID].mockResolvedValue({
+      sid: SUPERVISOR_WORKER_SID,
+      available: false,
+      activitySid: 'WAoffline',
+      attributes: JSON.stringify({ full_name: 'Supervisor' }),
+    });
+    mockCreateInvite.mockRejectedValue(new Error('invite failed'));
+
+    const result = await transferStartHandler(
+      newRequest(
+        { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+        { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+      ),
+      TEST_ACCOUNT_SID,
+    );
+
+    expect(isErr(result)).toBe(true);
+    expect(mockWorkerUpdate).toHaveBeenCalledTimes(2);
+    expect(mockWorkerUpdate.mock.calls[1][0].activitySid).toBe('WAoffline');
+    expect(mockRemoveNewTask).not.toHaveBeenCalled();
+    expect(JSON.parse(mockUpdateTask.mock.calls.at(-1)![0].attributes)).toEqual(
+      ORIGINAL_TASK_ATTRIBUTES,
+    );
+  });
+
+  test('does not send an invite if the offline supervisor cannot be made available', async () => {
+    workerFetchMocks[SUPERVISOR_WORKER_SID].mockResolvedValue({
+      sid: SUPERVISOR_WORKER_SID,
+      available: false,
+      activitySid: 'WAoffline',
+      attributes: JSON.stringify({ waitingForSpecificTask: true }),
+    });
+    const result = await transferStartHandler(
+      newRequest(
+        { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+        { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+      ),
+      TEST_ACCOUNT_SID,
+    );
+
+    expect(isErr(result)).toBe(true);
+    expect(mockCreateInvite).not.toHaveBeenCalled();
+  });
+
+  test('does not delete an accepted takeover if restoring the supervisor fails', async () => {
+    workerFetchMocks[SUPERVISOR_WORKER_SID].mockResolvedValue({
+      sid: SUPERVISOR_WORKER_SID,
+      available: false,
+      activitySid: 'WAoffline',
+      attributes: JSON.stringify({ full_name: 'Supervisor' }),
+    });
+    mockWorkerUpdate
+      .mockResolvedValueOnce({})
+      .mockRejectedValue(new Error('restore failed'));
+
+    const result = await transferStartHandler(
+      newRequest(
+        { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+        { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+      ),
+      TEST_ACCOUNT_SID,
+    );
+
+    expect(isErr(result)).toBe(true);
+    expect(mockNewTaskReservationUpdate).toHaveBeenCalled();
+    expect(mockRemoveNewTask).not.toHaveBeenCalled();
+    expect(mockUpdateTask).toHaveBeenCalledTimes(1);
+  });
+
   test('cleans up the new task if the takeover reservation can never be accepted', async () => {
+    workerFetchMocks[SUPERVISOR_WORKER_SID].mockResolvedValue({
+      sid: SUPERVISOR_WORKER_SID,
+      available: false,
+      activitySid: 'WAoffline',
+      attributes: JSON.stringify({ full_name: 'Supervisor' }),
+    });
     mockListNewTaskReservations.mockResolvedValue([]);
 
     const result = await transferStartHandler(
@@ -560,6 +647,7 @@ describe('transferStartHandler', () => {
     }
 
     expect(mockRemoveNewTask).toHaveBeenCalled();
+    expect(mockWorkerUpdate.mock.calls[1][0].activitySid).toBe('WAoffline');
 
     // Last update restores the original attributes on the original task
     const lastUpdateAttributes = JSON.parse(

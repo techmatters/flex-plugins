@@ -159,7 +159,7 @@ export const transferStartHandler: FlexValidatedHandler = async (
   const transferTargetType = targetSid.startsWith('WK') ? 'worker' : 'queue';
 
   // A takeover is a transfer targeting the requesting supervisor themselves, away from whoever currently holds the task.
-  // Takeovers are allowed even if the supervisor is currently offline - see the post-invite handling below.
+  // Takeovers are allowed even if the supervisor is currently offline.
   const isTakeover =
     transferTargetType === 'worker' &&
     targetSid === tokenResult.worker_sid &&
@@ -278,7 +278,8 @@ export const transferStartHandler: FlexValidatedHandler = async (
     originalParticipantSid,
   };
 
-  let newTaskSid;
+  let newTaskSid: string | undefined;
+  let takeoverAccepted = false;
   try {
     const conversationsTransferWorkflowSid =
       await getConversationsTransferWorkflow(accountSid);
@@ -298,61 +299,51 @@ export const transferStartHandler: FlexValidatedHandler = async (
       console.info(
         `Transferring conversations task ${taskSid} to worker ${targetSid} via queue ${taskQueueSid} and workflow ${conversationsTransferWorkflowSid} by creating interaction invite.`,
       );
-      // Create invite to target worker
-      const invite = await client.flexApi.v1.interaction
-        .get(flexInteractionSid)
-        .channels.get(flexInteractionChannelSid)
-        .invites.create({
-          routing: {
-            properties: {
-              queue_sid: taskQueueSid,
-              worker_sid: targetSid,
-              workflow_sid: conversationsTransferWorkflowSid,
-              workspace_sid: workspaceSid,
-              attributes: newAttributes,
-              task_channel_unique_name: originalTask.taskChannelUniqueName,
+      const createInvite = async () => {
+        const invite = await client.flexApi.v1.interaction
+          .get(flexInteractionSid)
+          .channels.get(flexInteractionChannelSid)
+          .invites.create({
+            routing: {
+              properties: {
+                queue_sid: taskQueueSid,
+                worker_sid: targetSid,
+                workflow_sid: conversationsTransferWorkflowSid,
+                workspace_sid: workspaceSid,
+                attributes: newAttributes,
+                task_channel_unique_name: originalTask.taskChannelUniqueName,
+              },
             },
-          },
-        });
+          });
 
-      newTaskSid = invite.routing.properties.sid;
-      console.info(
-        `Transferred conversations task ${taskSid} to worker ${targetSid} by creating interaction invite.`,
-      );
-
-      if (isTakeover) {
-        // Lets the TaskRouter workflow match the new task back up to the target worker even while
-        // they are marked waitingForSpecificTask (see assignSpecificTask.ts) below.
-        const patchResult = await patchTaskAttributes(
-          accountSid,
-          newTaskSid,
-          currentAttributes => ({
-            ...currentAttributes,
-            waitingForSpecificTaskSid: newTaskSid,
-          }),
-          { requireEtag: true },
-        );
-        if (isErr(patchResult)) {
-          throw new Error(patchResult.message);
-        }
-        const newTask = await workspace.tasks.get(newTaskSid).fetch();
-
-        console.info(
-          `Takeover of task ${taskSid} by worker ${targetSid}: waiting to accept reservation on new task ${newTaskSid}.`,
-        );
-        if (targetWorker?.available) {
-          await acceptSpecificTask(targetSid, newTask);
-        } else {
-          await withAvailableWorkerForTask(
-            accountSid,
-            { sid: targetSid },
-            { taskSid: newTaskSid, reason: 'takeover', originalTaskSid: taskSid },
-            () => acceptSpecificTask(targetSid, newTask),
+        newTaskSid = invite.routing.properties.sid;
+        if (!newTaskSid) {
+          throw new Error(
+            `Interaction invite for task ${taskSid} did not return a task SID`,
           );
         }
         console.info(
-          `Takeover of task ${taskSid} by worker ${targetSid}: reservation on new task ${newTaskSid} accepted.`,
+          `Transferred conversations task ${taskSid} to worker ${targetSid} by creating interaction invite.`,
         );
+        if (isTakeover) {
+          const newTask = await workspace.tasks.get(newTaskSid).fetch();
+          await acceptSpecificTask(targetSid, newTask);
+          takeoverAccepted = true;
+          console.info(
+            `Takeover of task ${taskSid} by worker ${targetSid}: reservation on new task ${newTaskSid} accepted.`,
+          );
+        }
+      };
+
+      if (isTakeover && !targetWorker?.available) {
+        await withAvailableWorkerForTask(
+          accountSid,
+          { sid: targetSid },
+          { reason: 'takeover', originalTaskSid: taskSid },
+          createInvite,
+        );
+      } else {
+        await createInvite();
       }
     } else if (transferTargetType === 'queue') {
       console.info(
@@ -397,6 +388,13 @@ export const transferStartHandler: FlexValidatedHandler = async (
       });
     }
   } catch (err) {
+    if (takeoverAccepted) {
+      console.error(
+        `Failed to restore worker ${targetSid} after takeover of task ${taskSid}`,
+        err,
+      );
+      return newHttpErrorResult(err as Error, 500);
+    }
     // Roll back the transfer metadata set on the original task above so it isn't left looking 'mid transfer'
     try {
       await workspace.tasks

@@ -214,7 +214,7 @@ describe('assignOfflineContactInitHandler', () => {
     }
     const [{ attributes: mergedAttributesJson }] = mockTask.update.mock.calls[0];
     const mergedAttributes = JSON.parse(mergedAttributesJson);
-    expect(mergedAttributes.waitingForSpecificTaskSid).toBe('WT_NEW_TASK');
+    expect(mergedAttributes.waitingForSpecificTaskSid).toBeUndefined();
   });
 
   it('should temporarily make an offline worker available, assign the task, then restore the worker', async () => {

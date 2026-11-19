@@ -101,6 +101,47 @@ describe('acceptSpecificTask', () => {
     expect(update).not.toHaveBeenCalled();
   });
 
+  it('handles a reservation accepted concurrently by the Flex client', async () => {
+    const update = jest.fn().mockRejectedValue(new Error('already accepted'));
+    const fetch = jest.fn().mockResolvedValue({
+      workerSid: TARGET_SID,
+      reservationStatus: 'accepted',
+    });
+    const task = createTask([
+      {
+        sid: 'WRtarget',
+        workerSid: TARGET_SID,
+        reservationStatus: 'pending',
+        update,
+        fetch,
+      },
+    ]);
+
+    await expect(acceptSpecificTask(TARGET_SID, task as any)).resolves.toBeUndefined();
+    expect(fetch).toHaveBeenCalled();
+  });
+
+  it('propagates an acceptance error when the reservation was not accepted', async () => {
+    const update = jest.fn().mockRejectedValue(new Error('accept failed'));
+    const fetch = jest.fn().mockResolvedValue({
+      workerSid: TARGET_SID,
+      reservationStatus: 'pending',
+    });
+    const task = createTask([
+      {
+        sid: 'WRtarget',
+        workerSid: TARGET_SID,
+        reservationStatus: 'pending',
+        update,
+        fetch,
+      },
+    ]);
+
+    await expect(acceptSpecificTask(TARGET_SID, task as any)).rejects.toThrow(
+      'accept failed',
+    );
+  });
+
   it('polls for the reservation to appear, bounded to 9 attempts', async () => {
     const list = jest.fn().mockResolvedValue([]);
     const task = {

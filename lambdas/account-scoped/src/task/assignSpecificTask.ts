@@ -23,9 +23,7 @@ import { patchWorker } from '../worker/patchWorker';
 type ReservableTask = Pick<TaskInstance, 'reservations' | 'sid'>;
 
 export type WaitingForSpecificTaskInfo = {
-  // The sid of the task the worker should receive a reservation for - this should also be set as
-  // the waitingForSpecificTaskSid attribute on that task, so TaskRouter workflow expressions can match the two up.
-  taskSid: string;
+  taskSid?: string;
   reason: 'offline-contact' | 'takeover';
   // The original task being taken over, only present for takeovers
   originalTaskSid?: string;
@@ -64,8 +62,19 @@ export const acceptSpecificTask = async (
       // eslint-disable-next-line no-await-in-loop
       await beforeAccept?.(reservation.sid, alreadyAccepted);
       if (alreadyAccepted) return;
-      // eslint-disable-next-line no-await-in-loop
-      const accepted = await reservation.update({ reservationStatus: 'accepted' });
+      let accepted;
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        accepted = await reservation.update({ reservationStatus: 'accepted' });
+      } catch (error) {
+        // The Flex client may have accepted the reservation concurrently.
+        // eslint-disable-next-line no-await-in-loop
+        const current = await reservation.fetch();
+        if (current.workerSid === targetSid && current.reservationStatus === 'accepted') {
+          return;
+        }
+        throw error;
+      }
       if (accepted.reservationStatus !== 'accepted') {
         throw new Error(
           `Error: reservation ${reservation.sid} for task ${task.sid} and worker ${targetSid} not accepted, status: ${accepted.reservationStatus}`,
@@ -84,8 +93,8 @@ export const acceptSpecificTask = async (
 };
 
 /**
- * Temporarily puts worker into an available activity and marks it as only able to accept a
- * specific task (via the waitingForSpecificTask / waitingForSpecificTaskInfo attributes), runs
+ * Temporarily puts worker into an available activity and marks it as only able to receive tasks
+ * targeted to it (via waitingForSpecificTask), runs
  * assign, then restores the worker's previous activity and attributes (keeping any unrelated
  * attribute changes made elsewhere while assign() was running).
  *
@@ -125,7 +134,7 @@ export const withAvailableWorkerForTask = async <T>(
   };
 
   console.info(
-    `Setting worker ${workerSid} to available activity ${availableActivitySid} to accept task ${info.taskSid} (reason: ${info.reason})`,
+    `Setting worker ${workerSid} to available activity ${availableActivitySid} for ${JSON.stringify(info)}`,
   );
 
   // patchWorker gives us the same ETag based optimistic concurrency protection as
@@ -138,9 +147,7 @@ export const withAvailableWorkerForTask = async <T>(
     ({ attributes }) => {
       if (isWaitingForTask(attributes)) {
         throw new Error(
-          `Worker ${workerSid} is already waiting for a specific task, so cannot also be set to wait for task ${info.taskSid} (reason: ${info.reason}${
-            info.originalTaskSid ? `, original task: ${info.originalTaskSid}` : ''
-          }).`,
+          `Worker ${workerSid} is already waiting for a specific task, so cannot also wait for ${JSON.stringify(info)}.`,
         );
       }
       return {
@@ -183,21 +190,9 @@ export const withAvailableWorkerForTask = async <T>(
       { requireEtag: true },
     );
     if (isErr(restoreResult)) {
-      console.error(
-        `Unable to restore worker ${workerSid} to previous activity ${previousActivitySid} via patchWorker, falling back to a plain update using the pre-assign attributes`,
-        restoreResult.error,
+      throw new Error(
+        `Unable to restore worker ${workerSid} to previous activity ${previousActivitySid}: ${restoreResult.message}`,
       );
-      // Last resort fallback - no optimistic concurrency protection here, and any unrelated
-      // attribute changes made while assign() was running will be lost, but it's better than
-      // leaving the worker stuck in the temporary available/waiting state.
-      await client.taskrouter.v1
-        .workspaces(workspaceSid)
-        .workers(workerSid)
-        .update({
-          activitySid: previousActivitySid,
-          attributes: JSON.stringify(previousAttributes),
-          rejectPendingReservations: true,
-        });
     }
   }
 };

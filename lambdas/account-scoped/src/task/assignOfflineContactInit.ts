@@ -155,9 +155,6 @@ const assignOfflineContact = async (
     ...newTaskAttributes,
     ...parsedFinalAttributes,
     ...routingAttributes,
-    // Lets the TaskRouter workflow match this task back up to the worker it's intended for, even
-    // while the worker is otherwise marked as waitingForSpecificTask (see assignSpecificTask.ts).
-    waitingForSpecificTaskSid: newTask.sid,
     customers: {
       ...parsedFinalAttributes.customers,
       external_id: newTask.sid,
