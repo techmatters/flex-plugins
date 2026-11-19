@@ -323,12 +323,19 @@ export const transferStartHandler: FlexValidatedHandler = async (
       if (isTakeover) {
         // Lets the TaskRouter workflow match the new task back up to the target worker even while
         // they are marked waitingForSpecificTask (see assignSpecificTask.ts) below.
-        const newTask = await workspace.tasks.get(newTaskSid).update({
-          attributes: JSON.stringify({
-            ...newAttributes,
+        const patchResult = await patchTaskAttributes(
+          accountSid,
+          newTaskSid,
+          currentAttributes => ({
+            ...currentAttributes,
             waitingForSpecificTaskSid: newTaskSid,
           }),
-        });
+          { requireEtag: true },
+        );
+        if (isErr(patchResult)) {
+          throw new Error(patchResult.message);
+        }
+        const newTask = await workspace.tasks.get(newTaskSid).fetch();
 
         console.info(
           `Takeover of task ${taskSid} by worker ${targetSid}: waiting to accept reservation on new task ${newTaskSid}.`,
