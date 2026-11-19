@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "test:unit": "jest tests/unit",
     "test:e2e": "jest tests/e2e",
     "docker:build": "docker build -t twilioeventstreams --build-arg lambda_name=twilioEventStreams --build-arg lambda_dir=. -f ../Dockerfile ../"
   },
