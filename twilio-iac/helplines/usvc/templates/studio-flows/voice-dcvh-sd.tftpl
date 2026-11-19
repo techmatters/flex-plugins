@@ -331,63 +331,6 @@ ${
           "y": 1830
         }
       }
-    },
-    {
-      "name": "run_subflow_debug",
-      "type": "run-subflow",
-      "transitions": [
-        {
-          "event": "completed"
-        },
-        {
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "flow_sid": "${debug_studio_subflow_sid}",
-        "flow_revision": "LatestPublished",
-        "offset": {
-          "x": -120,
-          "y": 2620
-        },
-        "parameters": [
-          {
-            "type": "json_object",
-            "value": "{{flow}}",
-            "key": "flow"
-          },
-          {
-            "type": "string",
-            "value": "widget_failures",
-            "key": "debug_mode"
-          },
-          {
-            "type": "json_object",
-            "value": "{{widgets}}",
-            "key": "widgets"
-          },
-          {
-            "type": "json_object",
-            "value": "{{trigger}}",
-            "key": "trigger"
-          },
-          {
-            "type": "string",
-            "value": "{{flow.flow_sid}}",
-            "key": "flow_sid"
-          },
-          {
-            "type": "string",
-            "value": "{{flow.sid}}",
-            "key": "execution_sid"
-          },
-          {
-            "type": "string",
-            "value": "${channel_attributes.default}",
-            "key": "task_attributes"
-          }
-        ]
-      }
     }
   ],
   "initial_state": "Trigger",
