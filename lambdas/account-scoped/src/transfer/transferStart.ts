@@ -295,10 +295,11 @@ export const transferStartHandler: FlexValidatedHandler = async (
         taskQueues.find(tq => tq.friendlyName === DIRECT_TRANSFER_QUEUE_FRIENDLY_NAME)
           ?.sid || taskQueues[0].sid;
 
-      console.info(
-        `Transferring conversations task ${taskSid} to worker ${targetSid} via queue ${taskQueueSid} and workflow ${conversationsTransferWorkflowSid} by creating interaction invite.`,
-      );
+
       const createInvite = async () => {
+        console.info(
+            `Transferring conversations task ${taskSid} to worker ${targetSid} via queue ${taskQueueSid} and workflow ${conversationsTransferWorkflowSid} by creating interaction invite.`,
+        );
         const invite = await client.flexApi.v1.interaction
           .get(flexInteractionSid)
           .channels.get(flexInteractionChannelSid)
@@ -324,6 +325,7 @@ export const transferStartHandler: FlexValidatedHandler = async (
         console.info(
           `Transferred conversations task ${taskSid} to worker ${targetSid} by creating interaction invite.`,
         );
+        console.debug(`[SENSITIVE] Invite:`, invite);
         if (isTakeover) {
           const newTask = await workspace.tasks.get(newTaskSid).fetch();
           await acceptSpecificTask(targetSid, newTask);
@@ -379,7 +381,7 @@ export const transferStartHandler: FlexValidatedHandler = async (
       console.info(
         `Transferred conversations task ${taskSid} to queue ${targetSid} by creating interaction invite.`,
       );
-      console.debug(`[SENSITIVE] Invite:`, invite)
+      console.debug(`[SENSITIVE] Invite:`, invite);
       newTaskSid = invite.routing.properties.sid;
     } else {
       return newErr({
