@@ -116,5 +116,12 @@ locals {
 
     hrm_transcript_retention_days_override = 60
     hrm_index_transcripts_for_search       = false
+
+    # Okta: helpline-level, shared by staging and production apps (okta-org stage). See twilio-iac/docs/okta.md
+    okta = {
+      group_name      = "ChildHelp (USCH)"
+      app_name        = "ChildHelp"
+      import_existing = true
+    }
   }
 }

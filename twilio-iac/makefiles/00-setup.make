@@ -24,6 +24,8 @@ endif
 
 AWS_DEFAULT_REGION ?= us-east-1
 AWS_REGION ?= us-east-1
+# Export so `-e AWS_REGION` in SECRETS passes the default into docker when the shell doesn't set it
+export AWS_DEFAULT_REGION AWS_REGION
 MY_CONTAINER_PATH = $(MOUNT_PATH)$(MY_RELATIVE_PATH)
 PWD_ARG = -v $(GIT_ROOT):$(MOUNT_PATH) -w $(MY_CONTAINER_PATH)
 ENV_ARG = -e MY_ENV=$(MY_ENV) -e HL=$(HL) -e HL_ENV=$(HL_ENV) -e TF_LOG

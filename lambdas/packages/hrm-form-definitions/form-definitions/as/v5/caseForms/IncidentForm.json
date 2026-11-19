@@ -1,0 +1,103 @@
+[
+  {
+    "name": "date",
+    "label": "Date",
+    "type": "date-input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    }
+  },
+  {
+    "name": "type",
+    "label": "Type of Crisis",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Suicidal crisis",
+        "label": "Suicidal crisis"
+      },
+      {
+        "value": "Self-harm",
+        "label": "Self-harm"
+      },
+      {
+        "value": "Psychotic episode",
+        "label": "Psychotic episode"
+      },
+      {
+        "value": "Panic / severe anxiety",
+        "label": "Panic / severe anxiety"
+      },
+      {
+        "value": "Substance-related",
+        "label": "Substance-related"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "resolution",
+    "label": "Resolution",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "De-escalated on the call",
+        "label": "De-escalated on the call"
+      },
+      {
+        "value": "Transferred to crisis line",
+        "label": "Transferred to crisis line"
+      },
+      {
+        "value": "Mobile crisis team",
+        "label": "Mobile crisis team"
+      },
+      {
+        "value": "Emergency services",
+        "label": "Emergency services"
+      },
+      {
+        "value": "Hospital",
+        "label": "Hospital"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "description",
+    "label": "Description",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 8,
+    "width": 300
+  }
+]

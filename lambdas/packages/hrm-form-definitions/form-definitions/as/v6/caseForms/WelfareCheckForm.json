@@ -1,0 +1,93 @@
+[
+  {
+    "name": "date",
+    "label": "Date",
+    "type": "date-input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    }
+  },
+  {
+    "name": "requestedFrom",
+    "label": "Requested From",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Police",
+        "label": "Police"
+      },
+      {
+        "value": "Mobile crisis team",
+        "label": "Mobile crisis team"
+      },
+      {
+        "value": "Community partner",
+        "label": "Community partner"
+      },
+      {
+        "value": "Family member",
+        "label": "Family member"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "addressChecked",
+    "label": "Address Checked",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "result",
+    "label": "Result",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Person safe",
+        "label": "Person safe"
+      },
+      {
+        "value": "Person needed help - services engaged",
+        "label": "Person needed help - services engaged"
+      },
+      {
+        "value": "No one home",
+        "label": "No one home"
+      },
+      {
+        "value": "Pending",
+        "label": "Pending"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "notes",
+    "label": "Notes",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 6,
+    "width": 300
+  }
+]

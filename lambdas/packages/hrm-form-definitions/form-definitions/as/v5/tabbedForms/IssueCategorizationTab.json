@@ -1,0 +1,167 @@
+{
+  "Mental Health Support Line": {
+    "maxSelections": 5,
+    "categories": {
+      "Emotional Wellbeing": {
+        "color": "#4d92c2",
+        "subcategories": [
+          {
+            "label": "Stress"
+          },
+          {
+            "label": "Loneliness / isolation"
+          },
+          {
+            "label": "Grief / loss"
+          },
+          {
+            "label": "Low self-esteem"
+          },
+          {
+            "label": "Life transitions"
+          },
+          {
+            "label": "Hope and reassurance"
+          }
+        ]
+      },
+      "Mental Health Conditions": {
+        "color": "#f2a93b",
+        "subcategories": [
+          {
+            "label": "Anxiety / panic"
+          },
+          {
+            "label": "Depression"
+          },
+          {
+            "label": "Bipolar disorder"
+          },
+          {
+            "label": "Psychosis"
+          },
+          {
+            "label": "Trauma / PTSD"
+          },
+          {
+            "label": "Eating disorders"
+          },
+          {
+            "label": "OCD"
+          },
+          {
+            "label": "Other diagnosis"
+          }
+        ]
+      },
+      "Suicide & Self-harm": {
+        "color": "#e05d5d",
+        "subcategories": [
+          {
+            "label": "Suicidal thoughts"
+          },
+          {
+            "label": "Self-harm"
+          },
+          {
+            "label": "Concern for someone else"
+          },
+          {
+            "label": "Bereaved by suicide"
+          }
+        ]
+      },
+      "Substance Use": {
+        "color": "#8b5cf6",
+        "subcategories": [
+          {
+            "label": "Alcohol"
+          },
+          {
+            "label": "Drugs"
+          },
+          {
+            "label": "Gambling / other addictive behaviours"
+          },
+          {
+            "label": "Recovery support"
+          }
+        ]
+      },
+      "Relationships & Family": {
+        "color": "#d36fa4",
+        "subcategories": [
+          {
+            "label": "Family conflict"
+          },
+          {
+            "label": "Relationship problems"
+          },
+          {
+            "label": "Domestic abuse"
+          },
+          {
+            "label": "Supporting a loved one"
+          },
+          {
+            "label": "Caregiver burnout"
+          }
+        ]
+      },
+      "Treatment & Services": {
+        "color": "#5bb381",
+        "subcategories": [
+          {
+            "label": "Finding a provider"
+          },
+          {
+            "label": "Medication questions"
+          },
+          {
+            "label": "After hospital discharge"
+          },
+          {
+            "label": "Affordability / insurance"
+          },
+          {
+            "label": "Complaints about services"
+          }
+        ]
+      },
+      "Practical Needs": {
+        "color": "#14919b",
+        "subcategories": [
+          {
+            "label": "Housing"
+          },
+          {
+            "label": "Employment"
+          },
+          {
+            "label": "Financial hardship"
+          },
+          {
+            "label": "Legal"
+          },
+          {
+            "label": "Food"
+          }
+        ]
+      },
+      "Information": {
+        "color": "#9aa5b1",
+        "subcategories": [
+          {
+            "label": "About the helpline"
+          },
+          {
+            "label": "Mental health education"
+          },
+          {
+            "label": "Other"
+          }
+        ]
+      }
+    }
+  }
+}

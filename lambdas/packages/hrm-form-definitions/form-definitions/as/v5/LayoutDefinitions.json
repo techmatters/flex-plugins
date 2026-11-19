@@ -1,0 +1,155 @@
+{
+  "contact": {
+    "callerInformation": {
+      "splitFormAt": 3
+    },
+    "childInformation": {
+      "splitFormAt": 7
+    },
+    "caseInformation": {
+      "splitFormAt": 4
+    }
+  },
+  "case": {
+    "sectionTypes": {
+      "safetyPlan": {
+        "caseHomeOrder": 1,
+        "printOrder": 1,
+        "splitFormAt": 4,
+        "printFormat": "list",
+        "previewFields": [
+          "date",
+          "warningSigns"
+        ],
+        "layout": {
+          "date": {
+            "includeLabel": false,
+            "format": "date"
+          },
+          "warningSigns": {
+            "includeLabel": true,
+            "widthRatio": 3
+          }
+        }
+      },
+      "household": {
+        "caseHomeOrder": 2,
+        "printOrder": 2,
+        "splitFormAt": 3,
+        "previewFields": [
+          "firstName",
+          "relationshipToChild",
+          "okToContact"
+        ],
+        "layout": {
+          "firstName": {
+            "includeLabel": false
+          },
+          "relationshipToChild": {
+            "includeLabel": true
+          },
+          "okToContact": {
+            "includeLabel": true
+          }
+        }
+      },
+      "incident": {
+        "caseHomeOrder": 3,
+        "printOrder": 3,
+        "splitFormAt": 2,
+        "previewFields": [
+          "date",
+          "type",
+          "resolution"
+        ],
+        "layout": {
+          "date": {
+            "includeLabel": false,
+            "format": "date"
+          },
+          "type": {
+            "includeLabel": true
+          },
+          "resolution": {
+            "includeLabel": true
+          }
+        }
+      },
+      "document": {
+        "caseHomeOrder": 4,
+        "splitFormAt": 1,
+        "printFormat": "hidden",
+        "previewFields": [
+          "createdAt",
+          "fileName",
+          "comments"
+        ],
+        "layout": {
+          "createdAt": {
+            "includeLabel": false,
+            "labelTemplateCode": "Case-DocumentDate",
+            "format": "date"
+          },
+          "fileName": {
+            "includeLabel": false,
+            "labelTemplateCode": "Case-DocumentFileName",
+            "format": "file",
+            "widthRatio": 2
+          },
+          "comments": {
+            "includeLabel": false,
+            "labelTemplateCode": "Case-DocumentComments",
+            "widthRatio": 2
+          }
+        }
+      },
+      "followUp": {
+        "caseHomeLocation": "timeline",
+        "printOrder": 4,
+        "splitFormAt": 3,
+        "previewFields": [
+          "outcome",
+          "riskLevel"
+        ],
+        "layout": {
+          "outcome": {
+            "includeLabel": false
+          },
+          "riskLevel": {
+            "includeLabel": true
+          }
+        }
+      },
+      "referral": {
+        "caseHomeLocation": "timeline",
+        "printOrder": 5,
+        "splitFormAt": 2,
+        "previewFields": [
+          "referredTo",
+          "referralStatus"
+        ],
+        "layout": {
+          "referredTo": {
+            "includeLabel": false
+          },
+          "referralStatus": {
+            "includeLabel": true
+          }
+        }
+      },
+      "note": {
+        "caseHomeLocation": "timeline",
+        "printOrder": 6,
+        "printFormat": "list",
+        "previewFields": [
+          "note"
+        ],
+        "layout": {
+          "note": {
+            "includeLabel": false
+          }
+        }
+      }
+    }
+  }
+}

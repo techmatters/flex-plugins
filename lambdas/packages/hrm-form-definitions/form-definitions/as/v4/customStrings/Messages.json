@@ -1,0 +1,10 @@
+{
+  "en": {
+    "WelcomeMsg": "Hi, you are now chatting with a counselor. This is a safe space. How can I help you today?",
+    "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. You can contact us again anytime.",
+    "EndChatMsg": "You ended the chat. Thank you for reaching out. You can contact us again anytime.",
+    "ClosedOutOfShift": "The helpline is closed right now. Please reach us later. If you are in danger, call your local emergency number.",
+    "ClosedHolidays": "The helpline is closed due to a holiday. If you are in danger, call your local emergency number.",
+    "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  }
+}

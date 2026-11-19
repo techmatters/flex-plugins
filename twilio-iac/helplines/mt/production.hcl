@@ -102,5 +102,10 @@ locals {
       }
     }
     get_profile_flags_for_identifier_base_url = "https://hrm-production-eu.tl.techmatters.org/lambda/twilio/account-scoped"
+
+    # Okta SAML app for this environment (okta-app stage). See twilio-iac/docs/okta.md
+    okta_app = {
+      import_existing = true
+    }
   }
 }

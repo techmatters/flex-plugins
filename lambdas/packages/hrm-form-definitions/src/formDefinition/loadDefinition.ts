@@ -187,6 +187,7 @@ type DefinitionVersionFileToType = {
   postSurveyMessages: Record<string, string>;
   flexUiLocales: FlexUILocaleEntry[];
   customLinks: DefinitionVersion['customLinks'];
+  queueGreetings: DefinitionVersion['queueGreetings'];
 };
 
 // Placeholder for prepopulateKeys
@@ -241,6 +242,7 @@ const definitionVersionFileToLocation: {
   postSurveyMessages: { location: 'customStrings/postSurveyMessages.json', placeholder: {} },
   flexUiLocales: { location: 'FlexUiLocales.json', placeholder: [] },
   customLinks: { location: 'CustomLinks.json', placeholder: [] },
+  queueGreetings: { location: 'QueueGreetings.json', placeholder: {} },
 };
 
 const definitionVersionFileKeys = Object.keys(
@@ -328,6 +330,7 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     postSurveyMessages,
     flexUiLocales,
     customLinks,
+    queueGreetings,
   } = await loadDefinitionAllFiles(fetchDefinition);
 
   const expandedCaseSections: CaseSectionTypeDefinitions = await loadAndExpandCaseSections(
@@ -377,5 +380,6 @@ export async function loadDefinition(baseUrl: string): Promise<DefinitionVersion
     },
     flexUiLocales,
     customLinks,
+    queueGreetings,
   };
 }

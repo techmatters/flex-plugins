@@ -1,0 +1,313 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "placeholder": "First name or nickname",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relationship to Help Seeker",
+    "type": "select",
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Parent or caregiver",
+        "label": "Parent or caregiver"
+      },
+      {
+        "value": "Partner or spouse",
+        "label": "Partner or spouse"
+      },
+      {
+        "value": "Other family member",
+        "label": "Other family member"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Professional",
+        "label": "Professional"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "isPII": false
+  },
+  {
+    "name": "age",
+    "label": "Age",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Under 13",
+        "label": "Under 13"
+      },
+      {
+        "value": "13-17",
+        "label": "13-17"
+      },
+      {
+        "value": "18-24",
+        "label": "18-24"
+      },
+      {
+        "value": "25-34",
+        "label": "25-34"
+      },
+      {
+        "value": "35-44",
+        "label": "35-44"
+      },
+      {
+        "value": "45-54",
+        "label": "45-54"
+      },
+      {
+        "value": "55-64",
+        "label": "55-64"
+      },
+      {
+        "value": "65+",
+        "label": "65+"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Woman",
+        "label": "Woman"
+      },
+      {
+        "value": "Man",
+        "label": "Man"
+      },
+      {
+        "value": "Non-binary",
+        "label": "Non-binary"
+      },
+      {
+        "value": "Another gender",
+        "label": "Another gender"
+      },
+      {
+        "value": "Prefer not to say",
+        "label": "Prefer not to say"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "language",
+    "label": "Preferred Language",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "English",
+        "label": "English"
+      },
+      {
+        "value": "Spanish",
+        "label": "Spanish"
+      },
+      {
+        "value": "ASL",
+        "label": "ASL"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "phone1",
+    "label": "Phone",
+    "type": "input",
+    "placeholder": "(555) 555-0100",
+    "maxLength": {
+      "value": 20,
+      "message": "Use 20 characters or fewer"
+    },
+    "isPII": true
+  },
+  {
+    "name": "email",
+    "label": "Email",
+    "type": "email",
+    "isPII": true
+  },
+  {
+    "name": "state",
+    "label": "State",
+    "type": "select",
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "California",
+        "label": "California"
+      },
+      {
+        "value": "New Mexico",
+        "label": "New Mexico"
+      },
+      {
+        "value": "New York",
+        "label": "New York"
+      },
+      {
+        "value": "Texas",
+        "label": "Texas"
+      },
+      {
+        "value": "Outside the US",
+        "label": "Outside the US"
+      }
+    ],
+    "isPII": false
+  },
+  {
+    "name": "county",
+    "label": "County",
+    "type": "dependent-select",
+    "dependsOn": "state",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "California": [
+        {
+          "value": "Los Angeles County",
+          "label": "Los Angeles County"
+        },
+        {
+          "value": "Sacramento County",
+          "label": "Sacramento County"
+        },
+        {
+          "value": "San Diego County",
+          "label": "San Diego County"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "New Mexico": [
+        {
+          "value": "Bernalillo County",
+          "label": "Bernalillo County"
+        },
+        {
+          "value": "Doña Ana County",
+          "label": "Doña Ana County"
+        },
+        {
+          "value": "Santa Fe County",
+          "label": "Santa Fe County"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "New York": [
+        {
+          "value": "Albany County",
+          "label": "Albany County"
+        },
+        {
+          "value": "Erie County",
+          "label": "Erie County"
+        },
+        {
+          "value": "Kings County",
+          "label": "Kings County"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Texas": [
+        {
+          "value": "Bexar County",
+          "label": "Bexar County"
+        },
+        {
+          "value": "Harris County",
+          "label": "Harris County"
+        },
+        {
+          "value": "Travis County",
+          "label": "Travis County"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Outside the US": [
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ],
+      "Unknown": [
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ]
+    },
+    "description": {
+      "title": "Depends on State",
+      "content": "The counties listed change with the state selected above."
+    },
+    "isPII": false
+  }
+]

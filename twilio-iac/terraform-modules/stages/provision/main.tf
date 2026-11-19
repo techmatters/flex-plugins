@@ -73,8 +73,6 @@ module "aws" {
   environment                        = title(var.environment)
   short_environment                  = var.short_environment
   operating_info_key                 = var.operating_info_key
-  datadog_app_id                     = local.secrets.datadog_app_id
-  datadog_access_token               = local.secrets.datadog_access_token
   flex_task_assignment_workspace_sid = module.taskRouter.flex_task_assignment_workspace_sid
   master_workflow_sid                = module.taskRouter.workflow_sids["master"]
   queue_transfers_workflow_sid       = try(module.taskRouter.workflow_sids["queue_transfers"],"NOTVALIDWORKFLOWSID")

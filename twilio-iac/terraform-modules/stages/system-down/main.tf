@@ -17,7 +17,7 @@ locals {
   webhook_url_studio_errors = nonsensitive(data.aws_ssm_parameter.webhook_url_studio_errors.value)
   debug_templatefile = "/app/twilio-iac/helplines/templates/studio-flows/debug-studio-subflow.tftpl"
   lambda_twilio_account_scoped_url = nonsensitive(
-  "https://hrm-${var.environment}${var.helpline_region == "eu-west-1" ? "-eu" : ""}.tl.techmatters.org/lambda/twilio/account-scoped/${local.secrets.twilio_account_sid}")
+  "https://hrm-${var.environment}${lookup({ "eu-west-1" = "-eu", "ca-central-1" = "-ca" }, var.helpline_region, "")}.tl.techmatters.org/lambda/twilio/account-scoped/${local.secrets.twilio_account_sid}")
 }
 
 data "terraform_remote_state" "provision" {

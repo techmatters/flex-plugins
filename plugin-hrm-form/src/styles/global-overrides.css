@@ -17,121 +17,135 @@
 body,
 body p,
 body span {
-    font-family: Open Sans;
+  font-family: Open Sans;
 }
 
 div.Twilio-ModalPopupWithEntryControl {
-    padding-top: 7px;
-    padding-bottom: 7px;
+  padding-top: 7px;
+  padding-bottom: 7px;
 }
 div.Twilio-SideNav-Container {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 div.Twilio-MainHeader {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 div.Twilio-MainHeader img {
-    margin-left: -12px;
+  margin-left: -12px;
 }
 div.Twilio-MainHeader div.Twilio-Icon {
-    color: rgb(18, 28, 45);
+  color: rgb(18, 28, 45);
 }
 div.Twilio-MainHeader button span {
-    color: rgb(18, 28, 45);
+  color: rgb(18, 28, 45);
 }
 div.Twilio-MainHeader button.MuiButton-root {
-    background-color: rgb(18, 28, 45);
-    border: none;
+  background-color: rgb(18, 28, 45);
+  border: none;
 }
 div.Twilio-SideNav-default > div:hover {
-    background-color: #e4e6e7;
+  background-color: #e4e6e7;
 }
 
 div.Twilio-MainHeader button.MuiButton-root span {
-    color: rgb(248, 250, 252);
-    background-color: rgb(18, 28, 45);
+  color: rgb(248, 250, 252);
+  background-color: rgb(18, 28, 45);
 }
 div.Twilio-SideNav button.Twilio-Side-Link--Active svg path {
-    color: rgb(18, 28, 45);
+  color: rgb(18, 28, 45);
 }
 button.Twilio-TaskListFilter-TaskFilterButton {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 button.Twilio-TaskListFilter-TaskFilterButton > div.Twilio-Icon-Filter {
-    margin-left: auto;
+  margin-left: auto;
 }
 button.Twilio-TaskListFilter-TaskFilterButton > div.Twilio-Icon-FilterUp {
-    margin-left: auto;
+  margin-left: auto;
+}
+div.Twilio-TaskListBaseItem {
+  border-bottom: none;
 }
 div.Twilio-TaskListBaseItem::before {
-    width: 0;
+  width: 0;
 }
 button.Twilio-TaskCanvasHeader-EndButton {
-    border-radius: 4px;
-    font-size: 13px;
-    letter-spacing: 0px;
+  border-radius: 4px;
+  font-size: 13px;
+  letter-spacing: 0px;
 }
 button.Twilio-MessageInput-SendButton {
-    background: rgba(216, 27, 96, 0.8);
-    color: #f6f6f6;
+  background: rgba(216, 27, 96, 0.8);
+  color: #f6f6f6;
 }
 button.Twilio-MessageInput-SendButton:hover {
-    background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
-a.link-text-decoration-none { text-decoration: none; color: #1874e1; }
-a.link-text-decoration-none:visited { text-decoration: none; color: #1874e1; }
-a.link-text-decoration-none:hover { text-decoration: none; color: #1874e1; }
-a.link-text-decoration-none:focus { text-decoration: none; color: #1874e1; }
-a.link-text-decoration-none:active { text-decoration: none; color: #1874e1; }
-
-
-.Twilio-View-case-list
-.Twilio-View-search
-{
-    background-color: #f6f6f6;
+a.link-text-decoration-none {
+  text-decoration: none;
+  color: #1874e1;
+}
+a.link-text-decoration-none:visited {
+  text-decoration: none;
+  color: #1874e1;
+}
+a.link-text-decoration-none:hover {
+  text-decoration: none;
+  color: #1874e1;
+}
+a.link-text-decoration-none:focus {
+  text-decoration: none;
+  color: #1874e1;
+}
+a.link-text-decoration-none:active {
+  text-decoration: none;
+  color: #1874e1;
 }
 
-.Twilio-View-referrable-resources
-{
-    background-color: #ECEDF1;
+.Twilio-View-case-list .Twilio-View-search {
+  background-color: #f6f6f6;
+}
+
+.Twilio-View-referrable-resources {
+  background-color: #ecedf1;
 }
 
 .Twilio-SidePanel-Title.Twilio-SidePanel-TranscriptPlayer-Title {
-    text-transform: capitalize;
-    letter-spacing: inherit;
-    font-size: 14px;
+  text-transform: capitalize;
+  letter-spacing: inherit;
+  font-size: 14px;
 }
 button.Twilio-TaskCanvasHeader-EndButton {
-    padding: 3px 16px;
-    font-weight: 600;
-    min-width: auto;
+  padding: 3px 16px;
+  font-weight: 600;
+  min-width: auto;
 }
-button.Twilio-TaskCanvasHeader-EndButton:hover{
-    border: 1px solid #BAC0C2;
-    background-color: rgb(220, 84, 84);
+button.Twilio-TaskCanvasHeader-EndButton:hover {
+  border: 1px solid #bac0c2;
+  background-color: rgb(220, 84, 84);
 }
 button.Twilio-TaskCanvasHeader-EndButton:active {
-    border: 2px solid black;
+  border: 2px solid black;
 }
 
-div.Twilio-ViewCollection{
-    background-color: #f6f6f6;
+div.Twilio-ViewCollection {
+  background-color: #f6f6f6;
 }
 
 div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
-    border-left-width: 0px;
+  border-left-width: 0px;
 }
 
 /**
  * Conferencing Dialog was hidden after @twilio/flex-ui@2.3.3
  * The following overrides will fix this issue
  */
- div.Twilio-TaskDetailsPanel-Buttons > div.Twilio-CallCanvasActions {
-    overflow-x: visible;
-    width: 100%;
-    justify-content: center;
- }
+div.Twilio-TaskDetailsPanel-Buttons > div.Twilio-CallCanvasActions {
+  overflow-x: visible;
+  width: 100%;
+  justify-content: center;
+}
 
 /**
  * Teams View CSS Overrides:
@@ -139,41 +153,41 @@ div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
  */
 
 .Twilio-WorkersDataTable {
-    min-width: 950px !important;
+  min-width: 950px !important;
 }
-.Twilio-WorkersDataTable th.MuiTableCell-root.MuiTableCell-head.Twilio-DataTable-Header:nth-last-child(-n+2) {
-    width: calc(12.5rem)
+.Twilio-WorkersDataTable th.MuiTableCell-root.MuiTableCell-head.Twilio-DataTable-Header:nth-last-child(-n + 2) {
+  width: calc(12.5rem);
 }
-.Twilio-WorkersDataTable td.MuiTableCell-root.MuiTableCell-body.Twilio-DataTable-Cell:nth-last-child(-n+2) > div {
-    margin: 0;
+.Twilio-WorkersDataTable td.MuiTableCell-root.MuiTableCell-body.Twilio-DataTable-Cell:nth-last-child(-n + 2) > div {
+  margin: 0;
 }
 .Twilio-TeamsView-Loaded {
-    width: 100%;
-    overflow-x: auto;
-    padding: .5rem;
+  width: 100%;
+  overflow-x: auto;
+  padding: 0.5rem;
 }
 .Twilio-UserCard-AvatarContainer {
-    display: none;
+  display: none;
 }
 .Twilio-UserCard-InfoContainer {
-    margin: 0;
-    padding: 0;
+  margin: 0;
+  padding: 0;
 }
 .Twilio-TeamsView-Filter {
-    margin: .75rem .25rem;
+  margin: 0.75rem 0.25rem;
 }
 
 .Twilio-DataTable-Header > span {
   width: 100%;
   align-items: center;
 }
-.Twilio-DataTable-Header > span > span[data-paste-element="ICON"] {
+.Twilio-DataTable-Header > span > span[data-paste-element='ICON'] {
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: right;
 }
-.Twilio-DataTable-Header > span > span[data-paste-element="ICON"] > svg {
+.Twilio-DataTable-Header > span > span[data-paste-element='ICON'] > svg {
   height: 20px;
   width: 20px;
 }
@@ -181,18 +195,18 @@ div.Twilio-Splitter div.Twilio-AgentDesktopView\.Panel2 {
 /**  
  * Overrides to allow better UX for Reset and Apply (buttons) in the Filter Panel
  */
- .Twilio-FilterListButtons-Container {
-    min-width: 325px;
-    width: -webkit-fill-available;
-    overflow: visible;
-    position: fixed;
-    bottom: 0;
-    background-color: white;
-    margin-left: -1px;
-    border-left: 1px solid #cacdd8;
-    border-top: 1px solid #cacdd8;
- }
- .Twilio-TeamFiltersPanel {
-    height: calc(100% - 79px); /* 79px is the height of the Filter Buttons Container */
-    flex-grow: 0;
- }
+.Twilio-FilterListButtons-Container {
+  min-width: 325px;
+  width: -webkit-fill-available;
+  overflow: visible;
+  position: fixed;
+  bottom: 0;
+  background-color: white;
+  margin-left: -1px;
+  border-left: 1px solid #cacdd8;
+  border-top: 1px solid #cacdd8;
+}
+.Twilio-TeamFiltersPanel {
+  height: calc(100% - 79px); /* 79px is the height of the Filter Buttons Container */
+  flex-grow: 0;
+}

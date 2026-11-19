@@ -1,0 +1,80 @@
+[
+  {
+    "name": "firstName",
+    "label": "Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "relationshipToChild",
+    "label": "Relationship to Help Seeker",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Parent",
+        "label": "Parent"
+      },
+      {
+        "value": "Partner / spouse",
+        "label": "Partner / spouse"
+      },
+      {
+        "value": "Child",
+        "label": "Child"
+      },
+      {
+        "value": "Sibling",
+        "label": "Sibling"
+      },
+      {
+        "value": "Friend",
+        "label": "Friend"
+      },
+      {
+        "value": "Therapist / doctor",
+        "label": "Therapist / doctor"
+      },
+      {
+        "value": "Case worker",
+        "label": "Case worker"
+      },
+      {
+        "value": "Peer supporter",
+        "label": "Peer supporter"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "phone",
+    "label": "Phone Number",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "okToContact",
+    "label": "Help seeker consents to us contacting this person",
+    "type": "checkbox",
+    "isPII": false
+  },
+  {
+    "name": "notes",
+    "label": "Notes",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 4,
+    "width": 300
+  }
+]

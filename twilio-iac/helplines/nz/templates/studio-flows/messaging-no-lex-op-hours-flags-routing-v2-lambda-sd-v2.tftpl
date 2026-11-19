@@ -51,7 +51,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-NZ\"}",
+        "body": "{\"channel\": \"webchat\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-NZ\", \"from\": \"{{trigger.conversation.From}}\"}",
         "url": "${get_profile_flags_for_identifier_base_url}/operatingHours"
       }
     },

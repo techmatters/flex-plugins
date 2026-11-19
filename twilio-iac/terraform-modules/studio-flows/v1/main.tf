@@ -15,7 +15,7 @@ locals {
   #Marking this as non sensitive since we need to see the studio flow definition when running a plan to validate changes.
   webhook_url_studio_errors = nonsensitive(data.aws_ssm_parameter.webhook_url_studio_errors.value)
   lambda_twilio_account_scoped_url = nonsensitive(
-  "https://hrm-${var.environment}${var.region == "eu-west-1" ? "-eu" : ""}.tl.techmatters.org/lambda/twilio/account-scoped/${var.twilio_account_sid}"
+  "https://hrm-${var.environment}${lookup({ "eu-west-1" = "-eu", "ca-central-1" = "-ca" }, var.region, "")}.tl.techmatters.org/lambda/twilio/account-scoped/${var.twilio_account_sid}"
   )
 }
 

@@ -28,7 +28,7 @@ export type ChatTransferTaskAttributes = {
 };
 
 const hasTransferStarted = (taskAttributes: ChatTransferTaskAttributes) =>
-  Boolean(taskAttributes && taskAttributes.transferMeta);
+  Boolean(taskAttributes?.transferMeta);
 
 export const hasTaskControl = async ({
   client,
@@ -57,5 +57,6 @@ export const hasTaskControl = async ({
       taskAttributes.transferMeta?.sidWithTaskControl
     } (taskAttributes.transferMeta?.sidWithTaskControl) IN (${reservations.map(r => r.sid)})`,
   );
+  console.debug('hasTaskControl? transferMeta:', taskAttributes.transferMeta);
   return res;
 };

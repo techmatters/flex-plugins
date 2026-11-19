@@ -189,8 +189,6 @@ locals {
     // HRM_STATIC_KEY = jsonencode(["TWILIO", "NOT_SET", "Twilio account - HRM static secret to perform backend calls"])
     S3_BUCKET_DOCS     = jsonencode(["TWILIO", local.docs_s3_location, "Twilio account - Post Survey bot chat url"])
     OPERATING_INFO_KEY = jsonencode(["TWILIO", var.operating_info_key, "Twilio account - Operating Key info"])
-    APP_ID             = jsonencode(["DATADOG", var.datadog_app_id, "Datadog - Application ID"])
-    ACCESS_TOKEN       = jsonencode(["DATADOG", var.datadog_access_token, "Datadog - Access Token"])
   }
 }
 

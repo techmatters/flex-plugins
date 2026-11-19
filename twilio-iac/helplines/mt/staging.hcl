@@ -77,5 +77,12 @@ locals {
       }
     }
   get_profile_flags_for_identifier_base_url = "https://hrm-staging-eu.tl.techmatters.org/lambda/twilio/account-scoped"
+
+    # Okta SAML app for this environment (okta-app stage). See twilio-iac/docs/okta.md
+    okta_app = {
+      import_existing        = true
+      # After launch only a subset of Kellimni staff keeps staging access (assigned outside the helpline group)
+      include_helpline_group = false
+    }
   }
 }

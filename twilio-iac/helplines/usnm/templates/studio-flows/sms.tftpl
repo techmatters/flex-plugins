@@ -363,7 +363,7 @@ ${
         "channel": "${task_channel_sids.chat}",
         "attributes": "{\n  \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"tya\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"sms\",\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\", \n    \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}\n",
         "priority": "0",
-        "timeout": "3600"
+        "timeout": "86400"
       }
     },
     {
@@ -958,7 +958,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\",\"office\": \"preClosing\"}",
+        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\",\"office\": \"preClosing\", \"from\": \"{{trigger.conversation.From}}\"}",
         "url": "${lambda_twilio_account_scoped_url}/operatingHours"
       }
     },
@@ -1370,7 +1370,7 @@ ${
         "channel": "${task_channel_sids.chat}",
         "attributes": "{\n  \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"std\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"sms\",\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\", \n    \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}\n",
         "priority": "0",
-        "timeout": "3600"
+        "timeout": "86400"
       }
     },
     {
@@ -1398,7 +1398,7 @@ ${
         "channel": "${task_channel_sids.chat}",
         "attributes": "{\n  \"name\": \"{{trigger.conversation.From}}\",\n  \"ignoreAgent\": \"\",\n  \"helpline\":\"NAMI\",\n  \"transferTargetType\": \"\",\n   \"service\" :\"fcg\",\n   \"serviceLanguage\": \"english\",\n   \"language\": \"en\",\n  \"channelType\": \"sms\",\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\", \n    \"channelSid\": \"{{trigger.conversation.ChannelSid}}\", \n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}\n",
         "priority": "0",
-        "timeout": "3600"
+        "timeout": "86400"
       }
     },
     {
@@ -1577,7 +1577,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\"}",
+        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\", \"from\": \"{{trigger.conversation.From}}\"}",
         "url": "${lambda_twilio_account_scoped_url}/operatingHours"
       }
     },
@@ -2000,7 +2000,7 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\"}",
+        "body": "{\"channel\": \"sms\", \"includeMessageTextInResponse\": \"true\", \"language\": \"en-USNM\", \"from\": \"{{trigger.conversation.From}}\"}",
         "url": "${lambda_twilio_account_scoped_url}/operatingHours"
       }
     },

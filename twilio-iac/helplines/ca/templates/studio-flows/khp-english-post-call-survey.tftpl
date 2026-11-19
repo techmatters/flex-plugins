@@ -285,8 +285,8 @@ ${
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
-        "body": "{  \"contactId\": \"{{trigger.call.contactId}}\",   \"contactTaskSid\": \"{{trigger.call.taskSid}}\",  \"postSurveyAnswers\": {     \"wasHelpful\": \"{{widgets.gather_1.Digits}}\",     \"feelBetter\": \"{{widgets.gather_2.Digits}}\",     \"contactAgain\": \"{{widgets.gather_3.Digits}}\" , \"wasRespected\": \"{{widgets.gather_4.Digits}}\",     \"age\": \"{{widgets.gather_5.Digits}}\",     \"identity\": \"{{widgets.gather_6.Digits}}\"   }}",
-        "url": "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped/ACeb335f4685aa874fddf00cdd7c2946bd/hrm/savePostSurvey"
+        "body": "{  \"contactId\": \"{{trigger.call.contactId}}\",   \"contactTaskSid\": \"{{trigger.call.taskSid}}\",  \"postSurveyAnswers\": {     \"e_Helpful_Main_v1\": \"{{widgets.gather_1.Digits}}\",     \"e_feelBetter_Main_v1\": \"{{widgets.gather_2.Digits}}\",     \"e_contactAgain_Main_v1\": \"{{widgets.gather_3.Digits}}\" , \"e_Respected_Main_v1\": \"{{widgets.gather_4.Digits}}\",     \"e_Age_Main_v1\": \"{{widgets.gather_5.Digits}}\",     \"e_Identity_Main_v1\": \"{{widgets.gather_6.Digits}}\"   }}",
+        "url": "${lambda_twilio_account_scoped_url}/hrm/savePostSurvey"
       }
     },
     {

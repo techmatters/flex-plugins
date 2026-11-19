@@ -30,7 +30,7 @@ import * as ConfigActions from '../../states/configuration/actions';
 import { ContactDetailsSectionFormApi, contactDetailsSectionFormApi } from './contactDetailsSectionFormApi';
 import ContactDetailsSectionForm from './ContactDetailsSectionForm';
 import IssueCategorizationSectionForm from './IssueCategorizationSectionForm';
-import { loadContactFromHrmByIdAsyncAction } from '../../states/contacts/saveContact';
+import { newLoadContactFromHrmByIdAsyncAction } from '../../states/contacts/saveContact';
 import { clearDraft, newSetContactDialogStateAction, updateDraft } from '../../states/contacts/existingContacts';
 import CSAMReport from '../CSAMReport/CSAMReport';
 import { existingContactCSAMApi } from '../CSAMReport/csamReportApi';
@@ -88,7 +88,7 @@ const ContactDetails: React.FC<Props> = ({
   React.useEffect(() => {
     // No conversationMedia means we've only loaded contact info required for the list, not the full contact, do a full load
     if (!savedContactState?.savedContact?.conversationMedia && loadingStatus !== 'loading') {
-      dispatch(loadContactFromHrmByIdAsyncAction(contactId, `${task.taskSid}-viewing`));
+      dispatch(newLoadContactFromHrmByIdAsyncAction(contactId, `${task.taskSid}-viewing`));
     }
   }, [contactId, dispatch, loadingStatus, savedContactState?.savedContact, task.taskSid]);
   const version =

@@ -31,6 +31,7 @@ import { reduce as ConferencingReducer } from './conferencing';
 import { reduce as ProfileReducer } from './profile/reducer';
 import { reduce as SwitchboardReducer } from './switchboard/reducer';
 import { reduce as TeamsViewReducer } from './teamsView';
+import { reduce as TaskScopedMetadataReducer } from './taskScopedMetadata';
 import { CaseState } from './case/types';
 import { ContactsState } from './contacts/types';
 import {
@@ -47,6 +48,7 @@ import {
   referrableResourcesBase,
   routingBase,
   switchboardBase,
+  taskScopedMetadataBase,
   teamsViewBase,
 } from './storeNamespaces';
 import { reduce as CaseMergingBannersReducer } from './case/caseBanners';
@@ -66,6 +68,7 @@ const reducers = {
   [profileBase]: ProfileReducer,
   [switchboardBase]: SwitchboardReducer,
   [teamsViewBase]: TeamsViewReducer,
+  [taskScopedMetadataBase]: TaskScopedMetadataReducer,
 
   /*
    * [csamClcReportBase]: CSAMCLCReportReducer,

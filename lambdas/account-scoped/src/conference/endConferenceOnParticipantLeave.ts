@@ -21,7 +21,12 @@ import {
 } from './conferenceStatusCallback';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { isAgentInConference } from './isAgentInConference';
-import { hasTaskControl } from '../transfer/hasTaskControl';
+import { ReservationStatus } from 'twilio/lib/rest/taskrouter/v1/workspace/task/reservation';
+
+const RESERVATION_STATUSES_TO_PREVENT_ENDING_CALLS: ReservationStatus[] = [
+  'pending',
+  'accepted',
+];
 
 const takeOffHoldAndUnmute = async (
   participants: ParticipantInstance[],
@@ -101,17 +106,37 @@ export const endConferenceOnParticipantLeaveHandler: ConferenceStatusEventHandle
     if (remainingParticipants.length === 1) {
       const [remainingParticipant] = remainingParticipants;
       if (remainingParticipant.callSid === customerCallSid) {
-        const taskInControl = await hasTaskControl({ client, taskSid, workspaceSid });
-        if (!taskInControl) {
+        const taskContext = client.taskrouter.v1.workspaces
+          .get(workspaceSid)
+          .tasks.get(taskSid);
+        const task = await taskContext.fetch();
+        const reservations = await taskContext.reservations.list();
+        const reservationPreventingCallEnd = reservations.filter(r =>
+          RESERVATION_STATUSES_TO_PREVENT_ENDING_CALLS.includes(r.reservationStatus),
+        );
+        if (reservationPreventingCallEnd.length > 0) {
           console.info(
-            `${logPrefix} Only the customer remains on conference ${conferenceSid} but a transfer is in progress, leaving them on the call waiting for the new agent`,
+            `${logPrefix} Only the customer remains on conference ${conferenceSid}, but the following reservations on the associated task (${taskSid}) prevent the call ending, most likely due to an ongoing transfer`,
+            reservationPreventingCallEnd.map(
+              ({
+                reservationStatus,
+                sid,
+                workerSid,
+                workerName,
+                dateCreated,
+                dateUpdated,
+              }) => ({
+                reservationStatus,
+                sid,
+                workerSid,
+                workerName,
+                dateCreated,
+                dateUpdated,
+              }),
+            ),
           );
           return;
         }
-        const task = await client.taskrouter.v1.workspaces
-          .get(workspaceSid)
-          .tasks.get(taskSid)
-          .fetch();
         const postStudioFlowConfig =
           postStudioFlows?.[task.taskQueueSid] ??
           postStudioFlows?.[task.taskChannelUniqueName];

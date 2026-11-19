@@ -110,6 +110,6 @@ locals {
       recording_url    = "https://usnm-recordings-v2-1724.twil.io/play_message_voice_launch_technical_upgrade.mp3"
     }
 
-    get_profile_flags_for_identifier_base_url = "https://hrm-staging-us.tl.techmatters.org/lambda/twilio/account-scoped"
+    get_profile_flags_for_identifier_base_url = "https://hrm-staging.tl.techmatters.org/lambda/twilio/account-scoped"
   }
 }

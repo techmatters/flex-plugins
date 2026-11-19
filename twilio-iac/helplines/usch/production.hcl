@@ -176,5 +176,11 @@ locals {
       forward_number                   = "+123"
       recording_url                    = "https://<place_holder>.mp3"
     }
+
+    # Okta SAML app for this environment (okta-app stage). See twilio-iac/docs/okta.md
+    okta_app = {
+      import_existing         = true
+      optional_attribute_sets = ["labels", "team"]
+    }
   }
 }

@@ -1,0 +1,12 @@
+{
+  "Admin": {
+    "pillText": "AS Greeting",
+    "popoverTitle": "Aselo Greeting",
+    "popoverContent": "“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.”"
+  },
+  "Aselo": {
+    "pillText": "AS-V1-AseloQueue-PillGreetingText",
+    "popoverTitle": "AS-V1-AseloQueue-PopoverGreetingTitle",
+    "popoverContent": "AS-V1-AseloQueue-PopoverGreetingContent"
+  }
+}

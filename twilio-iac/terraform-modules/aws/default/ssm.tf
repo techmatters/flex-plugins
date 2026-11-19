@@ -4,32 +4,6 @@
  * all of the related modules that the for_each data structure depends on.
  */
 
-resource "aws_ssm_parameter" "datadog_app_id" {
-  name        = "/${lower(var.environment)}/datadog/${nonsensitive(var.twilio_account_sid)}/app_id"
-  type        = "SecureString"
-  value       = var.datadog_app_id
-  description = "Datadog - Application ID"
-
-  tags = {
-    Environment = lower(var.environment)
-    Name        = "/${lower(var.environment)}/datadog/${nonsensitive(var.twilio_account_sid)}/app_id"
-    Terraform   = true
-  }
-}
-
-resource "aws_ssm_parameter" "datadog_access_token" {
-  name        = "/${lower(var.environment)}/datadog/${nonsensitive(var.twilio_account_sid)}/access_token"
-  type        = "SecureString"
-  value       = var.datadog_access_token
-  description = "Datadog - Access Token"
-
-  tags = {
-    Environment = lower(var.environment)
-    Name        = "/${lower(var.environment)}/datadog/${nonsensitive(var.twilio_account_sid)}/access_token"
-    Terraform   = true
-  }
-}
-
 resource "aws_ssm_parameter" "s3_docs_bucket_id" {
   name        = "/${lower(var.environment)}/s3/${nonsensitive(var.twilio_account_sid)}/docs_bucket_name"
   type        = "SecureString"

@@ -9,7 +9,10 @@
     "Conference-PhoneInputDialog-QuickDialItem/988-Spanish": "988 (Spanish)",
     "Conference-PhoneInputDialog-QuickDialItem/Aselo-Development": "Aselo Development",
     "Conference-PhoneInputDialog-QuickDialItem/Aselo-Production": "Aselo Production",
-    "Conference-PhoneInputDialog-QuickDialItem/Dee": "Dee"
+    "Conference-PhoneInputDialog-QuickDialItem/Dee": "Dee",
+    "AS-V1-AseloQueue-PillGreetingText": "AS greeting",
+    "AS-V1-AseloQueue-PopoverGreetingTitle": "Aselo Greeting",
+    "AS-V1-AseloQueue-PopoverGreetingContent": "“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.”"
   },
   "es": {
     "HelplineSubstitution": "Substitución de la Línea de Ayuda",

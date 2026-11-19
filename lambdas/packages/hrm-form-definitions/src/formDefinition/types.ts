@@ -393,6 +393,22 @@ export type CustomLink = {
   type: 'embedded' | 'new-window';
 };
 
+/**
+ * Guidance shown to counsellors for contacts coming from a given queue
+ */
+export type QueueGreeting = {
+  pillText: string;
+  popoverTitle: string;
+  popoverContent: string;
+};
+
+/**
+ * Map from queue name to the greeting shown for contacts coming from that queue
+ */
+export type QueueGreetingsDefinitions = {
+  [queueName: string]: QueueGreeting;
+};
+
 export type FullyQualifiedFieldReference = `${keyof DefinitionVersion['tabbedForms']}.${string}`;
 /**
  * Type that defines a complete version for all the customizable forms used across the app
@@ -477,4 +493,5 @@ export type DefinitionVersion = {
   };
   flexUiLocales?: FlexUILocaleEntry[];
   customLinks?: CustomLink[];
+  queueGreetings?: QueueGreetingsDefinitions;
 };

@@ -36,6 +36,8 @@ import ManualPullButton from '../components/ManualPullButton';
 import ProfileList from '../components/profileList';
 import ProfileListSideLink from '../components/sideLinks/ProfileListSideLink';
 import { AddOfflineContactButton, OfflineContactTask } from '../components/OfflineContact';
+import QueueGreetingPill from '../components/queueGreetings/QueueGreetingPill';
+import QueueGreetingPopover from '../components/queueGreetings/QueueGreetingPopover';
 import { chatCapacityUpdated } from '../states/configuration/actions';
 import { Box, Column, HeaderContainer, TaskCanvasOverride } from '../styles';
 import HrmTheme from '../styles/HrmTheme';
@@ -118,6 +120,14 @@ export const setUpQueuesStatus = (setupObject: SetupObject) => {
     sortOrder: -1,
     align: 'start',
   });
+};
+
+/**
+ * Adds the guidance pill to task list items and the greeting popover to the task canvas, for queues with a greeting configured
+ */
+export const setUpQueueGreetings = () => {
+  Flex.TaskListItem.Content.add(<QueueGreetingPill key="queue-greeting-pill" />, { align: 'end' });
+  Flex.TaskCanvas.Content.add(<QueueGreetingPopover key="queue-greeting-popover" />, { sortOrder: Infinity });
 };
 
 const setUpManualPulling = () => {

@@ -72,6 +72,7 @@ import { pullTaskHandler } from './worker/pullTask';
 import { sendSystemMessageHandler } from './conversation/sendSystemMessage';
 import { sendStudioMessageHandler } from './conversation/sendStudioMessage';
 import { sendMessageAndRunJanitorHandler } from './conversation/sendMessageAndRunJanitor';
+import { setFlowMemoryHandler } from './conversation/setFlowMemory';
 import { issueSyncTokenHandler } from './issueSyncToken';
 import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
 import { getMediaUrlHandler } from './conversation/getMediaUrl';
@@ -394,6 +395,10 @@ const ACCOUNTSID_ROUTES: Record<
   'conversation/sendMessageAndRunJanitor': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: sendMessageAndRunJanitorHandler,
+  }),
+  'conversation/setFlowMemory': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: setFlowMemoryHandler,
   }),
   'voicemail/recordingCompleteCallback': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],

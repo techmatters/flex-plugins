@@ -1,0 +1,335 @@
+[
+  {
+    "name": "firstName",
+    "label": "First Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "lastName",
+    "label": "Last Name",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "age",
+    "label": "Age Group",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "ageGroups",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "gender",
+    "label": "Gender",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "genders",
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "currentLocation",
+    "label": "Current Location / Address",
+    "type": "input",
+    "isPII": true
+  },
+  {
+    "name": "locationType",
+    "label": "Location Type",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Home",
+        "label": "Home"
+      },
+      {
+        "value": "Street / outdoors",
+        "label": "Street / outdoors"
+      },
+      {
+        "value": "Vehicle",
+        "label": "Vehicle"
+      },
+      {
+        "value": "Workplace",
+        "label": "Workplace"
+      },
+      {
+        "value": "School",
+        "label": "School"
+      },
+      {
+        "value": "Public building",
+        "label": "Public building"
+      },
+      {
+        "value": "Bridge / height",
+        "label": "Bridge / height"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "region",
+    "label": "Region",
+    "type": "select",
+    "isPII": false,
+    "optionsReferenceKey": "regions"
+  },
+  {
+    "name": "emergencyType",
+    "label": "Emergency Type",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Suicide attempt in progress",
+        "label": "Suicide attempt in progress"
+      },
+      {
+        "value": "Suicidal crisis",
+        "label": "Suicidal crisis"
+      },
+      {
+        "value": "Threat to harm others",
+        "label": "Threat to harm others"
+      },
+      {
+        "value": "Medical emergency",
+        "label": "Medical emergency"
+      },
+      {
+        "value": "Overdose / poisoning",
+        "label": "Overdose / poisoning"
+      },
+      {
+        "value": "Violence or abuse in progress",
+        "label": "Violence or abuse in progress"
+      },
+      {
+        "value": "Missing person",
+        "label": "Missing person"
+      },
+      {
+        "value": "Disaster / major incident",
+        "label": "Disaster / major incident"
+      },
+      {
+        "value": "Mental health crisis",
+        "label": "Mental health crisis"
+      },
+      {
+        "value": "Other",
+        "label": "Other"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "overdoseSubstance",
+    "label": "Substance taken",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "emergencyType",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Overdose / poisoning": [
+        {
+          "value": "Prescription medication",
+          "label": "Prescription medication"
+        },
+        {
+          "value": "Opioids",
+          "label": "Opioids"
+        },
+        {
+          "value": "Alcohol",
+          "label": "Alcohol"
+        },
+        {
+          "value": "Other drugs",
+          "label": "Other drugs"
+        },
+        {
+          "value": "Household chemical",
+          "label": "Household chemical"
+        },
+        {
+          "value": "Unknown",
+          "label": "Unknown"
+        }
+      ]
+    }
+  },
+  {
+    "name": "disasterType",
+    "label": "Type of disaster / incident",
+    "type": "dependent-select",
+    "isPII": false,
+    "dependsOn": "emergencyType",
+    "defaultOption": {
+      "value": "",
+      "label": ""
+    },
+    "options": {
+      "Disaster / major incident": [
+        {
+          "value": "Flood",
+          "label": "Flood"
+        },
+        {
+          "value": "Fire / wildfire",
+          "label": "Fire / wildfire"
+        },
+        {
+          "value": "Storm",
+          "label": "Storm"
+        },
+        {
+          "value": "Earthquake",
+          "label": "Earthquake"
+        },
+        {
+          "value": "Mass casualty incident",
+          "label": "Mass casualty incident"
+        },
+        {
+          "value": "Other",
+          "label": "Other"
+        }
+      ]
+    }
+  },
+  {
+    "name": "immediateDanger",
+    "label": "Is anyone in immediate danger?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ],
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "accessToMeans",
+    "label": "Access to weapons or lethal means?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "substanceInvolvement",
+    "label": "Alcohol or drugs involved?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes",
+        "label": "Yes"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "injuriesReported",
+    "label": "Injuries reported?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "None",
+        "label": "None"
+      },
+      {
+        "value": "Minor",
+        "label": "Minor"
+      },
+      {
+        "value": "Serious",
+        "label": "Serious"
+      },
+      {
+        "value": "Life-threatening",
+        "label": "Life-threatening"
+      },
+      {
+        "value": "Unknown",
+        "label": "Unknown"
+      }
+    ]
+  }
+]
