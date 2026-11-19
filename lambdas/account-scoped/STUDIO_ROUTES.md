@@ -17,7 +17,8 @@ custom-channel callbacks) are intentionally not listed here.
 | [`channelCapture/captureChannelWithBot`](#channelcapturecapturechannelwithbot) | Hand the conversation to a Lex bot |
 | [`channelCapture/chatbotCallbackCleanup`](#channelcapturechatbotcallbackcleanup) | Force-release a conversation captured by a bot |
 | [`channelCapture/startPostSurveyChatbot`](#channelcapturestartpostsurveychatbot) | Start the post-survey Lex bot on a conversation |
-| [`hrm/savePostSurvey`](#hrmsavepostsurvey) | Save voice (IVR) post-survey answers to HRM and Insights |
+| [`postSurvey/createControlTask`](#postsurveycreatecontroltask) | Start a voice (IVR) post-survey: create the task its answers are recorded on |
+| [`postSurvey/recordAnswers`](#postsurveyrecordanswers) | Record voice (IVR) post-survey answers as they are given |
 | [`conversation/sendMessageAndRunJanitor`](#conversationsendmessageandrunjanitor) | Send a final message and close the conversation |
 | [`conversation/sendStudioMessage`](#conversationsendstudiomessage) | Detach Studio and send a system message (system-down flow) |
 | [`conversation/setFlowMemory`](#conversationsetflowmemory) | Keep values on the conversation for later executions (e.g. after a chatbot) |
@@ -480,40 +481,86 @@ start.
 
 ---
 
-## hrm/savePostSurvey
+## postSurvey/createControlTask
 
-Saves the answers from a **voice** (IVR) post-call survey to HRM and to Flex Insights. It does
-this through a short-lived `survey` task, which it creates and cancels itself.
+Starts a **voice** (IVR) post-call survey: creates the post survey control task that
+[`postSurvey/recordAnswers`](#postsurveyrecordanswers) records each answer on. Call it once, as the
+first widget of the survey flow, before any question.
 
-**URL:** `${lambda_twilio_account_scoped_url}/hrm/savePostSurvey`
+**URL:** `${lambda_twilio_account_scoped_url}/postSurvey/createControlTask`
 
 | Param | Required | Example | Notes |
 |---|---|---|---|
-| `contactId` | yes | `{{trigger.call.contactId}}` | HRM contact ID |
-| `contactTaskSid` | yes | `{{trigger.call.taskSid}}` | Original contact's task |
-| `postSurveyAnswers` | yes | see below | Object. Keys must match the questions in the helpline's form definitions `insights/postSurvey` spec. Send it as JSON, not form parameters. |
+| `contactTaskSid` | yes | `{{trigger.call.taskSid}}` | Task of the contact being surveyed. `rest` trigger: `{{flow.data.contactTaskSid}}` |
+| `contactId` | no | `{{trigger.call.contactId}}` | HRM contact. `rest` trigger: `{{flow.data.contactId}}` |
+| `language` | no | `{{trigger.call.taskLanguage}}` | Contact's language (the task's, else the helpline's), stored on the control task for Insights. `rest` trigger: `{{flow.data.taskLanguage}}` |
 
 **Example body:**
 
 ```json
 {
-  "contactId": "{{trigger.call.contactId}}",
   "contactTaskSid": "{{trigger.call.taskSid}}",
-  "postSurveyAnswers": {
-    "feel_supported": "{{flow.variables.feel_supported}}",
-    "beginning_interaction": "{{flow.variables.beginning_interaction}}",
-    "end_interaction": "{{flow.variables.end_interaction}}"
-  }
+  "contactId": "{{trigger.call.contactId}}",
+  "language": "{{trigger.call.taskLanguage}}"
 }
 ```
 
 **Response:**
 
 ```json
-{ "message": "[Post Survey Studio Flow - AC.../WT...]: Saved post survey to contact 123 with contact task SID WT...." }
+{ "controlTaskSid": "WTxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" }
 ```
 
-**Good to know:** HRM or Insights save errors are only logged, and the route still returns `200`.
+**Use the result:** send `{{widgets.f_createControlTask.parsed.controlTaskSid}}` as `controlTaskSid`
+to every `postSurvey/recordAnswers` call.
+
+**Good to know:**
+
+- Continue the survey from `failed` too: the caller still hears it, but no answers are recorded.
+- The control task expires after 15 minutes if the survey is never completed.
+
+---
+
+## postSurvey/recordAnswers
+
+Records **voice** (IVR) post-call survey answers as soon as they are given, so a caller who
+hangs up halfway still leaves the answers they gave. Each call stores the answers on the post
+survey control task (for Flex Insights) and saves all the answers so far to HRM.
+
+The control task is created by the flow itself, with
+[`postSurvey/createControlTask`](#postsurveycreatecontroltask) before the first question.
+
+**URL:** `${lambda_twilio_account_scoped_url}/postSurvey/recordAnswers`
+
+| Param | Required | Example | Notes |
+|---|---|---|---|
+| `controlTaskSid` | yes | `{{widgets.f_createControlTask.parsed.controlTaskSid}}` | Post survey control task |
+| `answers` | no | `{"feel_supported": "Yes"}` | Object. Keys must match the questions in the helpline's form definitions `insights/postSurvey` spec. Empty answers are ignored, so send only the question just answered. Send it as JSON, not form parameters. |
+| `surveyComplete` | no | `true` | Send `true` once, on the last call of a survey that reached its end. It closes the control task, after which no more answers can be recorded. |
+
+**Example body** (after the last question):
+
+```json
+{
+  "controlTaskSid": "{{widgets.f_createControlTask.parsed.controlTaskSid}}",
+  "answers": { "end_interaction": "{{flow.variables.end_interaction}}" },
+  "surveyComplete": true
+}
+```
+
+**Response:**
+
+```json
+{ "message": "Post survey answers recorded" }
+```
+
+**Good to know:**
+
+- If the caller hangs up, nothing else is needed: the control task expires after 15 minutes and
+  the answers already recorded are kept.
+- A failure returns `500` and fires `failed`. Always continue the survey from `failed`: the next
+  call sends all the answers so far to HRM again, so a single failure is recovered.
+- A survey with no answers saves nothing.
 
 ---
 

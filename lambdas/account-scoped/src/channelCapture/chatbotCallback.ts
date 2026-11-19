@@ -27,6 +27,7 @@ import {
 } from '@tech-matters/twilio-configuration';
 import { LexClient } from './lexClient';
 import { chatbotCallbackCleanup } from './chatbotCallbackCleanup';
+import { recordPostSurveyAnswers } from '../postSurvey/recordPostSurveyAnswers';
 
 export const handleChatbotCallback: AccountScopedHandler = async (
   request,
@@ -150,6 +151,20 @@ export const handleChatbotCallback: AccountScopedHandler = async (
       const twilioWorkspaceSid = await getWorkspaceSid(accountSid);
 
       const { lexResponse } = lexResult.data;
+      if (capturedChannelAttributes.releaseType === 'postSurveyComplete') {
+        // Record every answer as it is given, so a survey left halfway still keeps them
+        const recordResult = await recordPostSurveyAnswers({
+          accountSid,
+          controlTaskSid: capturedChannelAttributes.controlTaskSid,
+          answers: LexClient.getBotMemory({ lexResponse }),
+        });
+        if (isErr(recordResult)) {
+          console.error(
+            `Failed to record post survey answers for control task ${capturedChannelAttributes.controlTaskSid}`,
+            recordResult.message,
+          );
+        }
+      }
       // If the session ended, we should unlock the channel to continue the Studio Flow
       if (LexClient.isEndOfDialog(lexResponse)) {
         await chatbotCallbackCleanup({

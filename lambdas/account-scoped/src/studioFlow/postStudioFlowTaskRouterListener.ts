@@ -26,6 +26,7 @@ import { retrieveServiceConfigurationAttributes } from '../configuration/aseloCo
 import { isChatCaptureControlTask } from '../channelCapture/channelCaptureHandlers';
 import VoiceResponse = TwilioSDK.twiml.VoiceResponse;
 import { patchTaskAttributes } from '../task/patchTaskAttributes';
+import { getTaskLanguage } from '../task/taskLanguage';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { AccountScopedHandler } from '../httpTypes';
 import { newOk } from '@tech-matters/result-type';
@@ -74,8 +75,13 @@ const triggerPostStudioFlow = async ({
       // This task is a candidate to trigger post survey. Check feature flags for the account.
       const serviceConfigAttributes =
         await retrieveServiceConfigurationAttributes(client);
-      const { postStudioFlows, hrm_base_url: hrmBaseUrl } = serviceConfigAttributes;
+      const {
+        postStudioFlows,
+        hrm_base_url: hrmBaseUrl,
+        helplineLanguage,
+      } = serviceConfigAttributes;
       const { conference, contactId } = taskAttributes;
+      const taskLanguage = getTaskLanguage(helplineLanguage)(taskAttributes);
       const studioFlowIdentifier =
         postStudioFlows?.[taskQueueSid] ?? postStudioFlows?.[taskChannelUniqueName];
 
@@ -104,7 +110,7 @@ const triggerPostStudioFlow = async ({
             try {
               const twiml = new VoiceResponse();
               twiml.redirect(
-                `${studioWebhookUrl}?Trigger=inProgressCall&contactId=${contactId}&taskSid=${taskSid}`,
+                `${studioWebhookUrl}?Trigger=inProgressCall&contactId=${contactId}&taskSid=${taskSid}&taskLanguage=${encodeURIComponent(taskLanguage)}`,
               );
               await client.calls.get(participant.callSid).update({
                 twiml,
@@ -147,7 +153,7 @@ const triggerPostStudioFlow = async ({
               contactId,
               contactTaskSid: taskSid,
               taskQueueSid,
-              taskLanguage: taskAttributes.language ?? '',
+              taskLanguage,
             },
             to: isOutbound ? taskAttributes.outbound_to : taskAttributes.from,
           });

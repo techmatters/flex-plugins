@@ -77,10 +77,8 @@ import { issueSyncTokenHandler } from './issueSyncToken';
 import { getExternalRecordingS3LocationHandler } from './conversation/getExternalRecordingS3Location';
 import { getMediaUrlHandler } from './conversation/getMediaUrl';
 import { startPostSurveyChatbotHandler } from './channelCapture/postSurveyListener';
-import {
-  savePostSurveyHandler,
-  voicePostSurveyActionHandler,
-} from './hrm/voicePostSurvey';
+import { recordPostSurveyAnswersHandler } from './postSurvey/recordPostSurveyAnswers';
+import { createPostSurveyControlTaskHandler } from './postSurvey/postSurveyControlTask';
 import { postStudioFlowCallStatusCallbackHandler } from './studioFlow/postStudioFlowCallStatusCallback';
 import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRouterListener';
 import { randomOptionSelectorHandler } from './randomOptionSelector';
@@ -140,13 +138,13 @@ const ACCOUNTSID_ROUTES: Record<
     requestPipeline: [validateWebhookRequest],
     handler: startPostSurveyChatbotHandler,
   }),
-  'hrm/savePostSurvey': newRoute({
+  'postSurvey/createControlTask': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
-    handler: savePostSurveyHandler,
+    handler: createPostSurveyControlTaskHandler,
   }),
-  'hrm/voicePostSurveyAction': newRoute({
+  'postSurvey/recordAnswers': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
-    handler: voicePostSurveyActionHandler,
+    handler: recordPostSurveyAnswersHandler,
   }),
   'conference/conferenceStatusCallback': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
