@@ -1,0 +1,73 @@
+{
+    "intentName": "post_survey_no",
+    "description": "Specific usch/configs/lex_v2/es_USCH/bots Spanish Post Survey bot",
+    "sampleUtterances": [
+        {
+            "utterance": "No"
+        },
+        {
+            "utterance": "no"
+        },
+        {
+            "utterance": "Nop"
+        },
+        {
+            "utterance": "nop"
+        },
+        {
+            "utterance": "2"
+        },
+        {
+            "utterance": "nope"
+        }
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Gracias por comunicarte con la línea de ayuda. No dudes en volver a escribirnos si necesitas más apoyo."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    }
+}

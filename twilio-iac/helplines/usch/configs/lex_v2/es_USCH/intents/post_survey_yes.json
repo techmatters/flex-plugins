@@ -1,0 +1,98 @@
+{
+    "intentName": "post_survey_yes",
+    "description": "Specific usch/configs/lex_v2/es_USCH/bots Spanish Post Survey bot",
+    "sampleUtterances": [
+        {
+            "utterance": "Sí"
+        },
+        {
+            "utterance": "sí"
+        },
+        {
+            "utterance": "Si"
+        },
+        {
+            "utterance": "si"
+        },
+        {
+            "utterance": "Claro"
+        },
+        {
+            "utterance": "claro"
+        },
+        {
+            "utterance": "1"
+        },
+        {
+            "utterance": "Yes"
+        },
+        {
+            "utterance": "yes"
+        },
+        {
+            "utterance": "yeah"
+        }
+    ],
+    "dialogCodeHook": {
+        "enabled": false
+    },
+    "fulfillmentCodeHook": {
+        "enabled": false,
+        "active": true,
+        "postFulfillmentStatusSpecification": {
+            "successNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "failureNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            },
+            "timeoutNextStep": {
+                "dialogAction": {
+                    "type": "CloseIntent"
+                },
+                "intent": {}
+            }
+        }
+    },
+    "slotPriorities": [
+        {
+            "priority": 1,
+            "slotName": "experience_rating"
+        },
+        {
+            "priority": 2,
+            "slotName": "feel_supported"
+        },
+        {
+            "priority": 3,
+            "slotName": "better_prepared"
+        }
+    ],
+    "intentClosingSetting": {
+        "closingResponse": {
+            "messageGroups": [
+                {
+                    "message": {
+                        "plainTextMessage": {
+                            "value": "Gracias por comunicarte con la línea de ayuda. No dudes en volver a escribirnos si necesitas más apoyo."
+                        }
+                    }
+                }
+            ],
+            "allowInterrupt": true
+        },
+        "active": true,
+        "nextStep": {
+            "dialogAction": {
+                "type": "EndConversation"
+            },
+            "intent": {}
+        }
+    }
+}

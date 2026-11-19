@@ -1,0 +1,118 @@
+{
+    "slotTypeName": "yes_no",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Yes"
+            },
+            "synonyms": [
+                {
+                    "value": "Sí"
+                },
+                {
+                    "value": "sí"
+                },
+                {
+                    "value": "Si"
+                },
+                {
+                    "value": "si"
+                },
+                {
+                    "value": "S"
+                },
+                {
+                    "value": "s"
+                },
+                {
+                    "value": "Claro"
+                },
+                {
+                    "value": "claro"
+                },
+                {
+                    "value": "1"
+                },
+                {
+                    "value": "Uno"
+                },
+                {
+                    "value": "uno"
+                },
+                {
+                    "value": "X"
+                },
+                {
+                    "value": "x"
+                },
+                {
+                    "value": "Yah"
+                },
+                {
+                    "value": "Y"
+                },
+                {
+                    "value": "Yeah"
+                },
+                {
+                    "value": "Ya"
+                },
+                {
+                    "value": "One"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "No"
+            },
+            "synonyms": [
+                {
+                    "value": "No"
+                },
+                {
+                    "value": "no"
+                },
+                {
+                    "value": "N"
+                },
+                {
+                    "value": "n"
+                },
+                {
+                    "value": "Nop"
+                },
+                {
+                    "value": "nop"
+                },
+                {
+                    "value": "2"
+                },
+                {
+                    "value": "Dos"
+                },
+                {
+                    "value": "dos"
+                },
+                {
+                    "value": "Na"
+                },
+                {
+                    "value": "Nah"
+                },
+                {
+                    "value": "Noo"
+                },
+                {
+                    "value": "Two"
+                },
+                {
+                    "value": "nope"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

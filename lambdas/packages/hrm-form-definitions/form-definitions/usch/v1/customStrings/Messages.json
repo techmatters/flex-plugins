@@ -1,10 +1,18 @@
 {
   "en": {
-    "WelcomeMsg": "Hello! I am a live counselor. This chat line does not take reports of abuse, but we are here to listen and to help by providing information, resources, and emotional support. How can I help you today?",
+    "WelcomeMsg": "Hello! I am a live counselor. This chat line does not take reports of abuse, but we are here to listen and to help by providing information, resources, and emotional support.\nHow can I help you today?",
     "GoodbyeMsg": "The counselor has left the chat. Thank you for reaching out. Please contact us again if you need more help.",
     "EndChatMsg": "You ended the chat. Thank you for reaching out. Please contact us again if you need more help.",
     "ClosedOutOfShift": "The helpline is out of shift, please reach us later.",
     "ClosedHolidays": "The helpline is closed due to a holiday.",
     "UnsupportedMediaErrorMsg": "Sorry, the message you just sent is unsupported and could not be delivered."
+  },
+  "es": {
+    "WelcomeMsg": "¡Hola! Soy una persona consejera. Esta línea de chat no recibe reportes de abuso, pero estamos aquí para escuchar y ayudar, proporcionando información, recursos y apoyo emocional.\n¿Cómo puedo ayudarte hoy?",
+    "GoodbyeMsg": "La persona consejera ha salido del chat. Gracias por comunicarte. Por favor, contáctanos de nuevo si necesitas más ayuda.",
+    "EndChatMsg": "Has terminado el chat. Gracias por comunicarte. Por favor, contáctanos de nuevo si necesitas más ayuda.",
+    "ClosedOutOfShift": "La línea de ayuda está fuera de horario. Por favor, comunícate con nosotros más tarde.",
+    "ClosedHolidays": "La línea de ayuda está cerrada por un día festivo.",
+    "UnsupportedMediaErrorMsg": "Lo sentimos, el mensaje que acabas de enviar no es compatible y no se pudo entregar."
   }
 }

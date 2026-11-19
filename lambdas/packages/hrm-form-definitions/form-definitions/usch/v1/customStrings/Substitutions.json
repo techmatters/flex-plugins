@@ -122,6 +122,7 @@
     "Profile-Title": "Client Record",
     "Profile-EditHeader": "Edit Record",
     "SideNavProfileList": "Client Records",
-    "ProfileList-Summary-None": "- No record summary -"
+    "ProfileList-Summary-None": "- No record summary -",
+    "Conference-PhoneInputDialog-QuickDialItem/LanguageLine": "Language Line"
   }
 }

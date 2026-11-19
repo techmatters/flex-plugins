@@ -1,0 +1,236 @@
+{
+  "description": "${flow_description}",
+  "states": [
+    {
+      "name": "Trigger",
+      "type": "trigger",
+      "transitions": [
+        {
+          "event": "incomingMessage"
+        },
+        {
+          "next": "play_message_voice_post_survey_intro",
+          "event": "incomingCall"
+        },
+        {
+          "event": "incomingConversationMessage"
+        },
+        {
+          "event": "incomingRequest"
+        },
+        {
+          "event": "incomingParent"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    },
+    {
+      "name": "play_message_voice_post_survey_intro",
+      "type": "say-play",
+      "transitions": [
+        {
+          "next": "gather_input_voice_experience_rating",
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "say": "${flow_vars.play_message_voice_post_survey_intro}",
+        "language": "${flow_vars.say_language}",
+        "voice": "${flow_vars.say_voice}",
+        "offset": {
+          "x": 0,
+          "y": 200
+        },
+        "loop": 1
+      }
+    },
+    {
+      "name": "gather_input_voice_experience_rating",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "gather_input_voice_feel_supported",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_input_voice_feel_supported",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "say": "${flow_vars.gather_input_voice_experience_rating}",
+        "language": "${flow_vars.say_language}",
+        "voice": "${flow_vars.say_voice}",
+        "number_of_digits": 1,
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 0,
+          "y": 440
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "${flow_vars.say_language}",
+        "profanity_filter": "true",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "gather_input_voice_feel_supported",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "gather_input_voice_better_prepared",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "gather_input_voice_better_prepared",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "say": "${flow_vars.gather_input_voice_feel_supported}",
+        "language": "${flow_vars.say_language}",
+        "voice": "${flow_vars.say_voice}",
+        "number_of_digits": 1,
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 0,
+          "y": 680
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "${flow_vars.say_language}",
+        "profanity_filter": "true",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "gather_input_voice_better_prepared",
+      "type": "gather-input-on-call",
+      "transitions": [
+        {
+          "next": "set_var_post_survey_answers",
+          "event": "keypress"
+        },
+        {
+          "event": "speech"
+        },
+        {
+          "next": "set_var_post_survey_answers",
+          "event": "timeout"
+        }
+      ],
+      "properties": {
+        "say": "${flow_vars.gather_input_voice_better_prepared}",
+        "language": "${flow_vars.say_language}",
+        "voice": "${flow_vars.say_voice}",
+        "number_of_digits": 1,
+        "speech_timeout": "auto",
+        "offset": {
+          "x": 0,
+          "y": 920
+        },
+        "loop": 1,
+        "finish_on_key": "#",
+        "stop_gather": true,
+        "gather_language": "${flow_vars.say_language}",
+        "profanity_filter": "true",
+        "timeout": 5
+      }
+    },
+    {
+      "name": "set_var_post_survey_answers",
+      "type": "set-variables",
+      "transitions": [
+        {
+          "next": "f_savePostSurvey",
+          "event": "next"
+        }
+      ],
+      "properties": {
+        "variables": [
+          {
+            "type": "string",
+            "value": "{% case widgets.gather_input_voice_experience_rating.Digits %}{% when '1' %}Excellent{% when '2' %}Good{% when '3' %}Fair{% when '4' %}Poor{% endcase %}",
+            "key": "experience_rating"
+          },
+          {
+            "type": "string",
+            "value": "{% case widgets.gather_input_voice_feel_supported.Digits %}{% when '1' %}Yes{% when '2' %}No{% endcase %}",
+            "key": "feel_supported"
+          },
+          {
+            "type": "string",
+            "value": "{% case widgets.gather_input_voice_better_prepared.Digits %}{% when '1' %}Yes{% when '2' %}No{% endcase %}",
+            "key": "better_prepared"
+          }
+        ],
+        "offset": {
+          "x": 0,
+          "y": 1160
+        }
+      }
+    },
+    {
+      "name": "f_savePostSurvey",
+      "type": "make-http-request",
+      "transitions": [
+        {
+          "next": "play_message_voice_post_survey_complete",
+          "event": "success"
+        },
+        {
+          "next": "play_message_voice_post_survey_complete",
+          "event": "failed"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 0,
+          "y": 1380
+        },
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\n  \"contactId\": \"{{trigger.call.contactId}}\",\n  \"contactTaskSid\": \"{{trigger.call.taskSid}}\",\n  \"postSurveyAnswers\": {\n    \"experience_rating\": \"{{flow.variables.experience_rating}}\",\n    \"feel_supported\": \"{{flow.variables.feel_supported}}\",\n    \"better_prepared\": \"{{flow.variables.better_prepared}}\"\n  }\n}",
+        "url": "${lambda_twilio_account_scoped_url}/hrm/savePostSurvey"
+      }
+    },
+    {
+      "name": "play_message_voice_post_survey_complete",
+      "type": "say-play",
+      "transitions": [
+        {
+          "event": "audioComplete"
+        }
+      ],
+      "properties": {
+        "say": "${flow_vars.play_message_voice_post_survey_complete}",
+        "language": "${flow_vars.say_language}",
+        "voice": "${flow_vars.say_voice}",
+        "offset": {
+          "x": 0,
+          "y": 1620
+        },
+        "loop": 1
+      }
+    }
+  ],
+  "initial_state": "Trigger",
+  "flags": {
+    "allow_concurrent_calls": true
+  }
+}
