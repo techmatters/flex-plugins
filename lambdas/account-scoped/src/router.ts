@@ -81,6 +81,8 @@ import {
   savePostSurveyHandler,
   voicePostSurveyActionHandler,
 } from './hrm/voicePostSurvey';
+import { recordPostSurveyAnswersHandler } from './postSurvey/recordPostSurveyAnswers';
+import { createPostSurveyControlTaskHandler } from './postSurvey/postSurveyControlTask';
 import { postStudioFlowCallStatusCallbackHandler } from './studioFlow/postStudioFlowCallStatusCallback';
 import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRouterListener';
 import { randomOptionSelectorHandler } from './randomOptionSelector';
@@ -143,6 +145,14 @@ const ACCOUNTSID_ROUTES: Record<
   'hrm/savePostSurvey': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: savePostSurveyHandler,
+  }),
+  'postSurvey/createControlTask': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: createPostSurveyControlTaskHandler,
+  }),
+  'postSurvey/recordAnswers': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: recordPostSurveyAnswersHandler,
   }),
   'hrm/voicePostSurveyAction': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],

@@ -42,15 +42,11 @@ import { getTranslation } from '../translations/translationLookup';
 import { getCurrentDefinitionVersion } from '../hrm/formDefinitionsCache';
 import { newOk } from '@tech-matters/result-type';
 import { AccountScopedHandler } from '../httpTypes';
-
-const GLOBAL_DEFAULT_LANGUAGE = 'en-US';
-
-// ================== //
-// TODO: unify this code with Flex codebase
-const getTaskLanguage =
-  (helplineLanguage: string) => (taskAttributes: { language?: string }) =>
-    taskAttributes.language || helplineLanguage || GLOBAL_DEFAULT_LANGUAGE;
-// ================== //
+import { getTaskLanguage } from '../task/taskLanguage';
+import {
+  buildPostSurveyControlTaskAttributes,
+  POST_SURVEY_CONTROL_TASK_TTL_SECONDS,
+} from '../postSurvey/postSurveyControlTask';
 
 // TODO: factor out
 type TransferMeta = {
@@ -127,14 +123,14 @@ const postSurveyInitHandler = async ({
     releaseType: 'postSurveyComplete',
     memoryAttribute: 'postSurvey',
     releaseFlag: 'postSuveyComplete',
-    additionControlTaskAttributes: JSON.stringify({
-      isSurveyTask: true,
-      contactTaskId: taskSid,
-      conversations: { conversation_id: taskSid },
-      language: taskLanguage, // if there's a task language, attach it to the post survey task
-      contactId,
-    }),
-    controlTaskTTL: 3600,
+    additionControlTaskAttributes: JSON.stringify(
+      buildPostSurveyControlTaskAttributes({
+        contactTaskSid: taskSid,
+        contactId,
+        language: taskLanguage,
+      }),
+    ),
+    controlTaskTTL: POST_SURVEY_CONTROL_TASK_TTL_SECONDS,
     channelType,
     chatServiceSid,
     environment,
