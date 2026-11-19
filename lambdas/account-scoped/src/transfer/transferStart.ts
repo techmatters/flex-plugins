@@ -24,10 +24,7 @@ import { isErr, newErr, newOk, Result } from '@tech-matters/result-type';
 import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
 import { patchTaskAttributes } from '../task/patchTaskAttributes';
-import {
-  acceptSpecificTask,
-  withAvailableWorkerForTask,
-} from '../task/assignSpecificTask';
+import { withAvailableWorkerForTask } from '../task/assignSpecificTask';
 
 export type Body = {
   taskSid: TaskSID;
@@ -42,6 +39,8 @@ const DUMMY_RESERVATION_SID = 'WR00000000000000000000000000000000';
 class ActiveTransferError extends Error {}
 
 const DIRECT_TRANSFER_QUEUE_FRIENDLY_NAME = 'Everyone';
+
+const waitForClient = () => new Promise(resolve => setTimeout(resolve, 200));
 
 type ValidationResult = { type: 'worker'; worker: WorkerInstance } | { type: 'queue' };
 
@@ -278,7 +277,6 @@ export const transferStartHandler: FlexValidatedHandler = async (
   };
 
   let newTaskSid: string | undefined;
-  let takeoverAccepted = false;
   try {
     const conversationsTransferWorkflowSid =
       await getConversationsTransferWorkflow(accountSid);
@@ -295,10 +293,9 @@ export const transferStartHandler: FlexValidatedHandler = async (
         taskQueues.find(tq => tq.friendlyName === DIRECT_TRANSFER_QUEUE_FRIENDLY_NAME)
           ?.sid || taskQueues[0].sid;
 
-
       const createInvite = async () => {
         console.info(
-            `Transferring conversations task ${taskSid} to worker ${targetSid} via queue ${taskQueueSid} and workflow ${conversationsTransferWorkflowSid} by creating interaction invite.`,
+          `Transferring conversations task ${taskSid} to worker ${targetSid} via queue ${taskQueueSid} and workflow ${conversationsTransferWorkflowSid} by creating interaction invite.`,
         );
         const invite = await client.flexApi.v1.interaction
           .get(flexInteractionSid)
@@ -326,14 +323,7 @@ export const transferStartHandler: FlexValidatedHandler = async (
           `Transferred conversations task ${taskSid} to worker ${targetSid} by creating interaction invite.`,
         );
         console.debug(`[SENSITIVE] Invite:`, invite);
-        if (isTakeover) {
-          const newTask = await workspace.tasks.get(newTaskSid).fetch();
-          await acceptSpecificTask(targetSid, newTask);
-          takeoverAccepted = true;
-          console.info(
-            `Takeover of task ${taskSid} by worker ${targetSid}: reservation on new task ${newTaskSid} accepted.`,
-          );
-        }
+        return newTaskSid;
       };
 
       if (isTakeover && !targetWorker?.available) {
@@ -341,7 +331,32 @@ export const transferStartHandler: FlexValidatedHandler = async (
           accountSid,
           { sid: targetSid },
           { reason: 'takeover', originalTaskSid: taskSid },
-          createInvite,
+          async () => {
+            const invitedTaskSid = await createInvite();
+            // Flex must accept the reservation; keep the worker available until it does.
+            for (let attempt = 0; attempt <= 40; attempt++) {
+              // eslint-disable-next-line no-await-in-loop
+              const invitedReservations = await workspace.tasks
+                .get(invitedTaskSid)
+                .reservations.list();
+              if (
+                invitedReservations.some(
+                  reservation =>
+                    reservation.workerSid === targetSid &&
+                    reservation.reservationStatus === 'accepted',
+                )
+              ) {
+                return;
+              }
+              if (attempt < 40) {
+                // eslint-disable-next-line no-await-in-loop
+                await waitForClient();
+              }
+            }
+            throw new Error(
+              `Timed out waiting for Flex to accept takeover task ${invitedTaskSid} for worker ${targetSid}`,
+            );
+          },
         );
       } else {
         await createInvite();
@@ -390,9 +405,9 @@ export const transferStartHandler: FlexValidatedHandler = async (
       });
     }
   } catch (err) {
-    if (takeoverAccepted) {
+    if (isTakeover && newTaskSid) {
       console.error(
-        `Failed to restore worker ${targetSid} after takeover of task ${taskSid}`,
+        `Takeover of task ${taskSid} by worker ${targetSid} failed after creating task ${newTaskSid}; its acceptance status may be unknown`,
         err,
       );
       return newHttpErrorResult(err as Error, 500);
@@ -407,18 +422,6 @@ export const transferStartHandler: FlexValidatedHandler = async (
         `Failed to roll back transfer metadata on task ${taskSid} after a failed transfer`,
         rollbackErr,
       );
-    }
-    if (isTakeover && newTaskSid) {
-      // The invite task was created but the takeover reservation couldn't be accepted - clean it up
-      // rather than leaving a dangling task nobody will ever be offered.
-      try {
-        await workspace.tasks.get(newTaskSid).remove();
-      } catch (cleanupErr) {
-        console.error(
-          `Failed to clean up new task ${newTaskSid} after a failed takeover of task ${taskSid}`,
-          cleanupErr,
-        );
-      }
     }
     return newHttpErrorResult(err as Error, 500);
   }

@@ -82,7 +82,6 @@ describe('transferStartHandler', () => {
   let mockUpdateTask: jest.Mock;
   let mockListReservations: jest.Mock;
   let mockCreateInvite: jest.Mock;
-  let mockFetchNewTask: jest.Mock;
   let mockListNewTaskReservations: jest.Mock;
   let mockNewTaskReservationUpdate: jest.Mock;
   let mockRemoveNewTask: jest.Mock;
@@ -115,15 +114,11 @@ describe('transferStartHandler', () => {
     mockListNewTaskReservations = jest.fn().mockResolvedValue([
       {
         sid: 'WRnewreservation',
-        reservationStatus: 'pending',
+        reservationStatus: 'accepted',
         workerSid: SUPERVISOR_WORKER_SID,
         update: mockNewTaskReservationUpdate,
       },
     ]);
-    mockFetchNewTask = jest.fn().mockImplementation(async () => ({
-      sid: NEW_TASK_SID,
-      reservations: jest.fn().mockReturnValue({ list: mockListNewTaskReservations }),
-    }));
     mockRemoveNewTask = jest.fn().mockResolvedValue(true);
     workerFetchMocks = {
       [ORIGINAL_WORKER_SID]: jest.fn().mockResolvedValue({
@@ -150,7 +145,7 @@ describe('transferStartHandler', () => {
       },
     };
     const newTaskContext = {
-      fetch: mockFetchNewTask,
+      reservations: { list: mockListNewTaskReservations },
       remove: mockRemoveNewTask,
     };
     const tasks = {
@@ -320,9 +315,8 @@ describe('transferStartHandler', () => {
       }),
     );
     expect(mockWorkerUpdate).not.toHaveBeenCalled();
-    expect(mockNewTaskReservationUpdate).toHaveBeenCalledWith({
-      reservationStatus: 'accepted',
-    });
+    expect(mockNewTaskReservationUpdate).not.toHaveBeenCalled();
+    expect(mockListNewTaskReservations).not.toHaveBeenCalled();
   });
 
   test('assigned worker can start a transfer without a supervisor role', async () => {
@@ -503,6 +497,19 @@ describe('transferStartHandler', () => {
       activitySid: 'WAoffline',
       attributes: JSON.stringify({ full_name: 'Supervisor' }),
     });
+    mockListNewTaskReservations.mockResolvedValueOnce([
+      {
+        sid: 'WRother',
+        workerSid: 'WKother',
+        reservationStatus: 'accepted',
+      },
+      {
+        sid: 'WRnewreservation',
+        workerSid: SUPERVISOR_WORKER_SID,
+        reservationStatus: 'pending',
+        update: mockNewTaskReservationUpdate,
+      },
+    ]);
 
     const result = await transferStartHandler(
       newRequest(
@@ -534,16 +541,15 @@ describe('transferStartHandler', () => {
       mockCreateInvite.mock.invocationCallOrder[0],
     );
     expect(mockCreateInvite.mock.invocationCallOrder[0]).toBeLessThan(
-      mockNewTaskReservationUpdate.mock.invocationCallOrder[0],
+      mockListNewTaskReservations.mock.invocationCallOrder[0],
     );
-    expect(mockNewTaskReservationUpdate.mock.invocationCallOrder[0]).toBeLessThan(
+    expect(mockListNewTaskReservations.mock.invocationCallOrder[1]).toBeLessThan(
       mockWorkerUpdate.mock.invocationCallOrder[1],
     );
 
     // The reservation on the new task was accepted
-    expect(mockNewTaskReservationUpdate).toHaveBeenCalledWith({
-      reservationStatus: 'accepted',
-    });
+    expect(mockNewTaskReservationUpdate).not.toHaveBeenCalled();
+    expect(mockListNewTaskReservations).toHaveBeenCalledTimes(2);
 
     // Final update restores the supervisor to their previous offline activity and attributes
     const restoreCall =
@@ -618,12 +624,12 @@ describe('transferStartHandler', () => {
     );
 
     expect(isErr(result)).toBe(true);
-    expect(mockNewTaskReservationUpdate).toHaveBeenCalled();
+    expect(mockNewTaskReservationUpdate).not.toHaveBeenCalled();
     expect(mockRemoveNewTask).not.toHaveBeenCalled();
     expect(mockUpdateTask).toHaveBeenCalledTimes(1);
   });
 
-  test('cleans up the new task if the takeover reservation can never be accepted', async () => {
+  test('preserves the new task if Flex does not accept before the timeout', async () => {
     workerFetchMocks[SUPERVISOR_WORKER_SID].mockResolvedValue({
       sid: SUPERVISOR_WORKER_SID,
       available: false,
@@ -645,13 +651,10 @@ describe('transferStartHandler', () => {
       expect((result.error as HttpError).statusCode).toBe(500);
     }
 
-    expect(mockRemoveNewTask).toHaveBeenCalled();
+    expect(mockRemoveNewTask).not.toHaveBeenCalled();
+    expect(mockNewTaskReservationUpdate).not.toHaveBeenCalled();
     expect(mockWorkerUpdate.mock.calls[1][0].activitySid).toBe('WAoffline');
 
-    // Last update restores the original attributes on the original task
-    const lastUpdateAttributes = JSON.parse(
-      mockUpdateTask.mock.calls[mockUpdateTask.mock.calls.length - 1][0].attributes,
-    );
-    expect(lastUpdateAttributes).toEqual(ORIGINAL_TASK_ATTRIBUTES);
-  }, 10000);
+    expect(mockUpdateTask).toHaveBeenCalledTimes(1);
+  }, 15000);
 });

@@ -37,7 +37,7 @@ jest.mock('@twilio/flex-ui', () => ({
 const reservation = (initiatingWorkerSid: string) =>
   (({
     sid: 'WR-reservation',
-    task: { attributes: { transferMeta: { initiatingWorkerSid } },
+    task: { attributes: { transferMeta: { initiatingWorkerSid } } },
   } as unknown) as Reservation);
 
 describe('acceptSelfInitiatedTakeover', () => {
