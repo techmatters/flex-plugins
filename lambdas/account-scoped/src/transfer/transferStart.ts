@@ -270,7 +270,6 @@ export const transferStartHandler: FlexValidatedHandler = async (
 
   const newAttributes: Record<string, any> = {
     ...attributesWithTransferMeta,
-    initiatedByWorker: tokenResult.worker_sid,
     conversations: attributesWithTransferMeta.conversations, // link the new task to the original in Flex Insights
     ignoreAgent, // update task attributes to ignore the agent who transferred the task
     targetSid, // update task attributes to include the required targetSid on the task (workerSid or a queueSid)
@@ -380,6 +379,7 @@ export const transferStartHandler: FlexValidatedHandler = async (
       console.info(
         `Transferred conversations task ${taskSid} to queue ${targetSid} by creating interaction invite.`,
       );
+      console.debug(`[SENSITIVE] Invite:`, invite)
       newTaskSid = invite.routing.properties.sid;
     } else {
       return newErr({

@@ -34,10 +34,10 @@ jest.mock('@twilio/flex-ui', () => ({
   Notifications: { showNotificationSingle: (...args) => mockShowNotificationSingle(...args) },
 }));
 
-const reservation = (initiatedByWorker: string) =>
+const reservation = (initiatingWorkerSid: string) =>
   (({
     sid: 'WR-reservation',
-    task: { attributes: { initiatedByWorker } },
+    task: { attributes: { transferMeta: { initiatingWorkerSid } },
   } as unknown) as Reservation);
 
 describe('acceptSelfInitiatedTakeover', () => {
