@@ -80,6 +80,7 @@
   },
   "overrides": {
     "@graphql-tools/merge": "9.2.8",
-    "@graphql-tools/utils": "12.1.0"
+    "@graphql-tools/utils": "12.1.0",
+    "basic-ftp": "6.2.4"
   }
 }
