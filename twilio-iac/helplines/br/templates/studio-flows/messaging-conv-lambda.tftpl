@@ -170,7 +170,7 @@ ${
             {
               "friendly_name": "If value contains open",
               "arguments": [
-                "{{widgets.facebookHours.body}}"
+                "{{widgets.f_operatingHours_facebook.parsed.status}}"
               ],
               "type": "contains",
               "value": "open"
@@ -184,7 +184,7 @@ ${
             {
               "friendly_name": "If value contains closed",
               "arguments": [
-                "{{widgets.facebookHours.body}}"
+                "{{widgets.f_operatingHours_facebook.parsed.status}}"
               ],
               "type": "contains",
               "value": "closed"
@@ -198,7 +198,7 @@ ${
             {
               "friendly_name": "If value contains holiday",
               "arguments": [
-                "{{widgets.facebookHours.body}}"
+                "{{widgets.f_operatingHours_facebook.parsed.status}}"
               ],
               "type": "contains",
               "value": "holiday"
@@ -207,7 +207,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.facebookHours.body}}",
+        "input": "{{widgets.f_operatingHours_facebook.parsed.status}}",
         "offset": {
           "x": 40,
           "y": -60
