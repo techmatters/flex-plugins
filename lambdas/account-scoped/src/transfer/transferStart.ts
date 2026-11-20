@@ -45,8 +45,8 @@ const waitForClient = () => new Promise(resolve => setTimeout(resolve, 200));
 type ValidationResult = { type: 'worker'; worker: WorkerInstance } | { type: 'queue' };
 
 // If the transfer targets a worker, validate that the worker is online and has capacity.
-// For takeovers, the supervisor is allowed to be offline (isTakeover skips the online/capacity
-// checks), since transferStartHandler temporarily brings them online just for the task being taken over.
+// For takeovers, the supervisor is allowed to be offline, since transferStartHandler temporarily
+// brings them online just for the task being taken over.
 async function validateChannelIfWorker(
   accountSid: AccountSID,
   targetSid: string,
@@ -85,7 +85,7 @@ async function validateChannelIfWorker(
       workerChannel.configuredCapacity >= workerAttr.maxMessageCapacity
     : channelType !== 'voice' && !workerChannel.availableCapacityPercentage;
 
-  if ((unavailableVoice || unavailableChat) && !isTakeover) {
+  if (unavailableVoice || unavailableChat) {
     return newErr({
       message: `Counselor has no available capacity: ${unavailableVoice ? 'voice' : 'chat'} capacity full`,
       error: new Error('Counselor has no available capacity'),

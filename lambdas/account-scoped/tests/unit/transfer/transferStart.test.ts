@@ -87,6 +87,7 @@ describe('transferStartHandler', () => {
   let mockRemoveNewTask: jest.Mock;
   let mockWorkerUpdate: jest.Mock;
   let mockActivitiesList: jest.Mock;
+  let mockWorkerChannelFetch: jest.Mock;
   let workerFetchMocks: Record<string, jest.Mock>;
   let currentTaskAttributes: Record<string, unknown>;
 
@@ -136,6 +137,10 @@ describe('transferStartHandler', () => {
     mockActivitiesList = jest
       .fn()
       .mockResolvedValue([{ sid: 'WAavailable', friendlyName: 'Available' }]);
+    mockWorkerChannelFetch = jest.fn().mockResolvedValue({
+      availableCapacityPercentage: 1,
+      configuredCapacity: 1,
+    });
 
     const taskContext = {
       fetch: mockFetchTask,
@@ -157,10 +162,7 @@ describe('transferStartHandler', () => {
       update: mockWorkerUpdate,
       workerChannels: {
         get: () => ({
-          fetch: jest.fn().mockResolvedValue({
-            availableCapacityPercentage: 1,
-            configuredCapacity: 1,
-          }),
+          fetch: mockWorkerChannelFetch,
         }),
       },
     });
@@ -318,6 +320,106 @@ describe('transferStartHandler', () => {
     expect(mockNewTaskReservationUpdate).not.toHaveBeenCalled();
     expect(mockListNewTaskReservations).not.toHaveBeenCalled();
   });
+
+  test.each([
+    {
+      available: true,
+      channelType: 'web',
+      workerAttributes: {},
+      configuredCapacity: 1,
+    },
+    {
+      available: false,
+      channelType: 'web',
+      workerAttributes: {},
+      configuredCapacity: 1,
+    },
+    {
+      available: true,
+      channelType: 'web',
+      workerAttributes: { maxMessageCapacity: 2 },
+      configuredCapacity: 2,
+    },
+    {
+      available: false,
+      channelType: 'web',
+      workerAttributes: { maxMessageCapacity: 2 },
+      configuredCapacity: 2,
+    },
+    {
+      available: true,
+      channelType: 'voice',
+      workerAttributes: {},
+      configuredCapacity: 1,
+    },
+    {
+      available: false,
+      channelType: 'voice',
+      workerAttributes: {},
+      configuredCapacity: 1,
+    },
+  ])(
+    'rejects takeover at capacity: available=$available channel=$channelType attributes=$workerAttributes',
+    async ({ available, channelType, workerAttributes, configuredCapacity }) => {
+      setUpMockClient({ ...ORIGINAL_TASK_ATTRIBUTES, channelType });
+      workerFetchMocks[SUPERVISOR_WORKER_SID].mockResolvedValue({
+        sid: SUPERVISOR_WORKER_SID,
+        available,
+        activitySid: 'WAoffline',
+        attributes: JSON.stringify(workerAttributes),
+      });
+      mockWorkerChannelFetch.mockResolvedValue({
+        availableCapacityPercentage: 0,
+        configuredCapacity,
+      });
+
+      const result = await transferStartHandler(
+        newRequest(
+          { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+          { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+        ),
+        TEST_ACCOUNT_SID,
+      );
+
+      expect(isErr(result)).toBe(true);
+      if (isErr(result)) {
+        expect((result.error as HttpError).statusCode).toBe(400);
+        expect(result.message).toContain(
+          `Counselor has no available capacity: ${channelType === 'voice' ? 'voice' : 'chat'}`,
+        );
+      }
+      expect(mockPatchTaskAttributes).not.toHaveBeenCalled();
+      expect(mockWorkerUpdate).not.toHaveBeenCalled();
+      expect(mockCreateInvite).not.toHaveBeenCalled();
+    },
+  );
+
+  test.each([true, false])(
+    'allows a takeover below maxMessageCapacity when worker available=%s',
+    async available => {
+      workerFetchMocks[SUPERVISOR_WORKER_SID].mockResolvedValue({
+        sid: SUPERVISOR_WORKER_SID,
+        available,
+        activitySid: 'WAoffline',
+        attributes: JSON.stringify({ maxMessageCapacity: 2 }),
+      });
+      mockWorkerChannelFetch.mockResolvedValue({
+        availableCapacityPercentage: 0,
+        configuredCapacity: 1,
+      });
+
+      const result = await transferStartHandler(
+        newRequest(
+          { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+          { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+        ),
+        TEST_ACCOUNT_SID,
+      );
+
+      expect(isOk(result)).toBe(true);
+      expect(mockCreateInvite).toHaveBeenCalled();
+    },
+  );
 
   test('assigned worker can start a transfer without a supervisor role', async () => {
     const result = await transferStartHandler(
