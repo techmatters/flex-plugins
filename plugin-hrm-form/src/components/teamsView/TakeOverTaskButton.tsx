@@ -34,7 +34,6 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   const asyncDispatcher = asyncDispatch(useDispatch());
   const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task?.taskSid));
   const isCreating = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
-  const activityName = useSelector((state: RootState) => state.flex.worker.worker.activityName);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [pendingTakeoverTaskSid, setPendingTakeoverTaskSid] = useState<string | null>(null);
 
@@ -57,15 +56,12 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
 
   const transferInProgress = isTransferring(task);
   const isPending = pendingTakeoverTaskSid === task.taskSid;
-  const isOnline = Boolean(activityName && activityName !== 'Offline');
   let disabledReason: string | undefined;
   if (isSupervisor) {
-    if (isOnline) {
-      if (transferInProgress || isPending) {
-        disabledReason = 'TakeOver-Disabled-TransferInProgress';
-      }
-    } else {
-      disabledReason = 'TakeOver-Disabled-Offline';
+    // Supervisors can take over while offline - the transferStart lambda temporarily brings them
+    // online, restricted to the task being taken over, then restores their previous state.
+    if (transferInProgress || isPending) {
+      disabledReason = 'TakeOver-Disabled-TransferInProgress';
     }
   } else {
     disabledReason = 'TakeOver-Disabled-NotSupervisor';

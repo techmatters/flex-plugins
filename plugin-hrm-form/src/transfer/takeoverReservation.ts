@@ -51,7 +51,7 @@ export const notifySupervisorTakeoverIfNeeded = (
 
 export const acceptSelfInitiatedTakeover = async (reservation: Reservation) => {
   const { workerClient } = Manager.getInstance();
-  if (reservation.task.attributes?.initiatedByWorker !== workerClient.sid) return;
+  if (reservation.task.attributes?.transferMeta?.initiatingWorkerSid !== workerClient.sid) return;
 
   await Actions.invokeAction('AcceptTask', { sid: reservation.sid });
   Notifications.showNotificationSingle(TAKEOVER_SUCCESS_NOTIFICATION_ID);
