@@ -103,7 +103,8 @@
     "@svgr/webpack": "7.0.0",
     "serialize-javascript": "7.1.4",
     "resolve-url-loader": "5.0.0",
-    "webpack-dev-middleware": "7.4.6"
+    "webpack-dev-middleware": "7.4.6",
+    "highcharts": "11.4.9"
   },
   "scripts": {
     "preinstall": "cd ../lambdas/packages/hrm-form-definitions && npm ci && npm run build && cd ../hrm-types && npm ci && npm run build",
