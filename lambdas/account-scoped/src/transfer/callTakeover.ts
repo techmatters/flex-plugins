@@ -28,7 +28,7 @@ import { isErr, newOk } from '@tech-matters/result-type';
 import { FlexValidatedHandler } from '../validation/flexToken';
 import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 import { patchTaskAttributes } from '../task/patchTaskAttributes';
-import { validateChannelIfWorker } from './transferStart';
+import { validateChannelIfWorker } from './validateChannelIfWorker';
 
 // After this long, a request can no longer be started or block a new one
 export const TAKEOVER_REQUEST_TTL_MS = 60 * 1000;
