@@ -9,6 +9,7 @@ locals {
     permission_config = "e2e"
     custom_task_routing_filter_expression = "*(helpline IN ['Childline', ''] OR channelType =='web' OR channelType == 'voice' OR channelType == 'sms') AND isContactlessTask != true"
     flow_vars = {
+      send_message_janitor_function_sid     = "ZH1590b1fcafd0933568a22235adec994b"
       bot_language                          = "en-US"
       widget_from                           = "E2E"
       chat_blocked_message                  = "Sorry, you're not able to contact E2E from this device or account"

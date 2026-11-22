@@ -265,23 +265,23 @@ ${
     },
     {
       "name": "send_message_run_janitor",
-      "type": "make-http-request",
+      "type": "run-function",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "event": "failed"
+          "event": "fail"
         }
       ],
       "properties": {
+        "service_sid": "${serverless_service_sid}",
+        "environment_sid": "${serverless_environment_sid}",
         "offset": {
           "x": 130,
           "y": 1250
         },
-        "method": "POST",
-        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
-        "add_twilio_auth": false,
+        "function_sid": "${flow_vars.send_message_janitor_function_sid}",
         "parameters": [
           {
             "value": "{{flow.channel.address}}",
@@ -296,7 +296,7 @@ ${
             "key": "from"
           }
         ],
-        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
+        "url": "${serverless_url}/sendMessageAndRunJanitor"
       }
     }
   ],
