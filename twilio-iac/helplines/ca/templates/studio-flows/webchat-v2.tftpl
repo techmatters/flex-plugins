@@ -1355,7 +1355,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_no_counsellors",
+          "next": "f_send_no_counsellors_fr",
           "event": "noMatch"
         },
         {
@@ -1558,6 +1558,7 @@ ${
           "event": "success"
         },
         {
+          "next": "send_no_counsellors",
           "event": "failed"
         }
       ],
