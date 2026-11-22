@@ -86,7 +86,6 @@ locals {
       service_sid                       = "ZSbf1bb881cc2e8db613ee6bca0e8e2c29"
       environment_sid                   = "ZE339938daa781b8e21baa45feae0e1afe"
       operating_hours_function_sid      = "ZH5fcc5dee5089c176acd0bd24e7fa873e"
-      send_message_janitor_function_sid = "ZH74666f7e7ee6bc54405a2d37b98518f8"
       co_assets_url                     = "https://co-assets-2865.twil.io"
       co_assets_service_sid             = "ZSef16a2a1468522b0bff91ff2e78d6744"
       co_assets_environment_sid         = "ZE94dddf1f10abf3042db52ed92e07895c"

@@ -11,7 +11,6 @@ locals {
     flow_vars = {
       service_sid                           = "ZSebf401319dc0c98090afd70f4d6b825f"
       environment_sid                       = "ZE206b298e102d8432ab9bfe4732064908"
-      send_message_run_janitor_function_sid = "ZHd26fbb04d70461a1846391ce40755cf4"
       widget_from                            = "SaferNet"
       chat_blocked_message                   = "Sorry, you're not able to contact SaferNet from this device or account"
     }
