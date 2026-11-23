@@ -24,6 +24,7 @@ import { isErr, newErr, newOk } from '@tech-matters/result-type';
 import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
 import { patchTaskAttributes } from '../task/patchTaskAttributes';
 import { withAvailableWorkerForTask } from '../task/assignSpecificTask';
+import { validateChannelIfWorker } from './validateChannelIfWorker';
 
 export type Body = {
   taskSid: TaskSID;
@@ -38,6 +39,8 @@ const DUMMY_RESERVATION_SID = 'WR00000000000000000000000000000000';
 class ActiveTransferError extends Error {}
 
 const DIRECT_TRANSFER_QUEUE_FRIENDLY_NAME = 'Everyone';
+
+const waitForClient = () => new Promise(resolve => setTimeout(resolve, 200));
 
 export const transferStartHandler: FlexValidatedHandler = async (
   { body: event, tokenResult },
