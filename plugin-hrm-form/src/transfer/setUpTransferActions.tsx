@@ -40,13 +40,18 @@ import { saveFormSharedState } from './formDataTransfer';
 import {
   TAKEOVER_SUCCESS_NOTIFICATION_ID,
   SUPERVISOR_TAKEOVER_NOTIFICATION_ID,
+  TAKEOVER_FAILED_NOTIFICATION_ID,
   acceptSelfInitiatedTakeover,
 } from './takeoverReservation';
 import { newSetFlexTransferActionInProgressAction } from '../states/taskScopedMetadata';
+import { setUpCallTakeoverRequests } from './callTakeoverRequest';
 
 type SetupObject = ReturnType<typeof getHrmConfig>;
 type ActionPayload = { task: ITask };
-type ActionPayloadWithOptions = ActionPayload & { options: { mode: string }; targetSid: string };
+type ActionPayloadWithOptions = ActionPayload & {
+  options: { mode: string; initiatingWorkerSid?: string };
+  targetSid: string;
+};
 const DEFAULT_TRANSFER_MODE = transferModes.cold;
 
 export const TransfersNotifications = {
@@ -70,6 +75,13 @@ const setUpTransfersNotifications = () => {
     timeout: 0,
     type: NotificationType.warning,
     content: <Template code="TakeOver-OriginalCounselor-Notification" />,
+  });
+  Notifications.registerNotification({
+    id: TAKEOVER_FAILED_NOTIFICATION_ID,
+    closeButton: true,
+    timeout: 0,
+    type: NotificationType.error,
+    content: <Template code="TakeOver-Failed-Notification" />,
   });
 };
 
@@ -206,4 +218,7 @@ export const setUpTransferActions = (setupObject: SetupObject) => {
       console.error('Failed to accept self-initiated takeover', error);
     });
   });
+  if (setupObject.enableCallTakeovers) {
+    setUpCallTakeoverRequests(Manager.getInstance().workerClient);
+  }
 };

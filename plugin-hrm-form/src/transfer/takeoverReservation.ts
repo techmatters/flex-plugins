@@ -17,8 +17,11 @@
 import { Actions, Manager, Notifications } from '@twilio/flex-ui';
 import type { Reservation } from 'twilio-taskrouter';
 
+import type { CallTakeoverRequest } from './callTakeoverRequest';
+
 export const TAKEOVER_SUCCESS_NOTIFICATION_ID = 'TakeOver_SucceededNotification';
 export const SUPERVISOR_TAKEOVER_NOTIFICATION_ID = 'Supervisor_TakeOver_Notification';
+export const TAKEOVER_FAILED_NOTIFICATION_ID = 'TakeOver_FailedNotification';
 
 type TransferMetadata = {
   initiatingWorkerSid?: string;
@@ -49,10 +52,31 @@ export const notifySupervisorTakeoverIfNeeded = (
   Notifications.showNotificationSingle(SUPERVISOR_TAKEOVER_NOTIFICATION_ID);
 };
 
+/**
+ * A supervisor listening in on a call has a monitoring connection, which would clash with the call they take over
+ */
+export const stopMonitoringCall = async () => {
+  const { task } = Manager.getInstance().store.getState().flex.supervisor.callMonitoring;
+  if (task) await Actions.invokeAction('StopMonitoringCall', { task });
+};
+
+// Call take overs are transferred from the counselor's client, on the same task, so they're matched on the takeover request instead of initiatedByWorker
+const isOwnCallTakeoverReservation = (reservation: Reservation, workerSid: string) => {
+  const request: CallTakeoverRequest | undefined = reservation.task.attributes?.takeoverRequest;
+  return Boolean(
+    request?.status === 'started' &&
+      request.requestedBy === workerSid &&
+      request.originalReservation !== reservation.sid,
+  );
+};
+
 export const acceptSelfInitiatedTakeover = async (reservation: Reservation) => {
   const { workerClient } = Manager.getInstance();
-  if (reservation.task.attributes?.transferMeta?.initiatingWorkerSid !== workerClient.sid) return;
+  const isChatTakeover = reservation.task.attributes?.transferMeta?.initiatingWorkerSid === workerClient.sid;
+  const isCallTakeover = isOwnCallTakeoverReservation(reservation, workerClient.sid);
+  if (!isChatTakeover && !isCallTakeover) return;
 
+  if (isCallTakeover) await stopMonitoringCall();
   await Actions.invokeAction('AcceptTask', { sid: reservation.sid });
   Notifications.showNotificationSingle(TAKEOVER_SUCCESS_NOTIFICATION_ID);
   await Actions.invokeAction('SelectTask', { sid: reservation.sid });

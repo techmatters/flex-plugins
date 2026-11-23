@@ -29,7 +29,8 @@ export const setUpTeamsView = () => {
   TeamsView.setUpTeamsViewSorting();
   TeamsView.setUpTeamsViewFilters();
   TeamsView.setUpWorkerDirectoryFilters();
-  if (getHrmConfig().enableChatTakeovers) {
+  const { enableChatTakeovers, enableCallTakeovers } = getHrmConfig();
+  if (enableChatTakeovers || enableCallTakeovers) {
     Flex.Supervisor.TaskCanvasHeader.Content.addWrapper(OriginalComponent => props => (
       <>
         <OriginalComponent {...props} />

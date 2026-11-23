@@ -66,7 +66,7 @@ test.describe.serial('Voice caller', () => {
   });
 
   test('Call', async () => {
-    test.setTimeout(900000);
+    test.setTimeout(600000);
     console.info(`Placing call`);
     await makeCallToService();
     console.info(`Waiting for call to be placed in queue`);

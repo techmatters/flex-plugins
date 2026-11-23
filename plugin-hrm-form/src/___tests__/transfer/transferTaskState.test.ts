@@ -348,6 +348,7 @@ describe('Kick, close and helpers', () => {
     const counselorName = 'full name';
 
     const coldExpected = {
+      initiatingWorkerSid: 'worker1',
       originalTask: 'task1',
       originalReservation: 'reservation1',
       originalCounselor: 'worker1',
@@ -368,6 +369,7 @@ describe('Kick, close and helpers', () => {
     );
 
     const warmExpected = {
+      initiatingWorkerSid: 'WKworker1',
       originalTask: 'task1',
       originalReservation: 'reservation1',
       originalCounselor: 'WKworker1',
@@ -387,6 +389,24 @@ describe('Kick, close and helpers', () => {
 
     await TransferHelpers.setTransferMeta(warmPayload, counselorName);
     expect(warmTask.attributes.transferMeta).toStrictEqual(warmExpected);
+  });
+
+  test('setTransferMeta - on behalf of a supervisor taking over the task', async () => {
+    const task = createTask(
+      {},
+      { sid: 'reservation1', taskSid: 'task1', taskChannelSid: 'channel1', workerSid: 'WKworker1' },
+    );
+
+    await TransferHelpers.setTransferMeta(
+      {
+        targetSid: 'WKsupervisor',
+        options: { mode: transferModes.cold, initiatingWorkerSid: 'WKsupervisor' },
+        task,
+      },
+      'full name',
+    );
+    expect(task.attributes.transferMeta.initiatingWorkerSid).toBe('WKsupervisor');
+    expect(task.attributes.transferMeta.originalCounselor).toBe('WKworker1');
   });
 
   test('clearTransferMeta', async () => {
