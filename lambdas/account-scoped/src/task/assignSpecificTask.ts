@@ -22,12 +22,23 @@ import { patchWorker } from '../worker/patchWorker';
 
 type ReservableTask = Pick<TaskInstance, 'reservations' | 'sid'>;
 
-export type WaitingForSpecificTaskInfo = {
+type WaitingForSpecificTaskInfoBase = {
   taskSid?: string;
-  reason: 'offline-contact' | 'takeover';
-  // The original task being taken over, only present for takeovers
-  originalTaskSid?: string;
 };
+
+type WaitingForOfflineContactInfo = WaitingForSpecificTaskInfoBase & {
+  reason: 'offline-contact';
+};
+
+type WaitingForTakeoverInfo = WaitingForSpecificTaskInfoBase & {
+  reason: 'takeover';
+  // The original task being taken over
+  originalTaskSid: string;
+};
+
+export type WaitingForSpecificTaskInfo =
+  | WaitingForOfflineContactInfo
+  | WaitingForTakeoverInfo;
 
 /**
  * `waitingOfflineContact` is deprecated in favour of the generic `waitingForSpecificTask` attribute below.

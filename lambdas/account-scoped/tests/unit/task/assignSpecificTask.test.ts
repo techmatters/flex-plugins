@@ -268,7 +268,7 @@ describe('withAvailableWorkerForTask', () => {
       withAvailableWorkerForTask(
         TEST_ACCOUNT_SID,
         { sid: TARGET_SID },
-        { taskSid: 'WTnew', reason: 'takeover' },
+        { taskSid: 'WTnew', reason: 'takeover', originalTaskSid: 'WToriginal' },
         jest.fn(),
       ),
     ).rejects.toThrow(/already waiting/);
@@ -285,7 +285,7 @@ describe('withAvailableWorkerForTask', () => {
       withAvailableWorkerForTask(
         TEST_ACCOUNT_SID,
         { sid: TARGET_SID },
-        { taskSid: 'WTnew', reason: 'takeover' },
+        { taskSid: 'WTnew', reason: 'takeover', originalTaskSid: 'WToriginal' },
         jest.fn().mockRejectedValue(assignError),
       ),
     ).rejects.toThrow('assign failed');
@@ -310,7 +310,11 @@ describe('withAvailableWorkerForTask', () => {
         attributes: JSON.stringify({
           ...previousAttributes,
           waitingForSpecificTask: true,
-          waitingForSpecificTaskInfo: { taskSid: 'WTnew', reason: 'takeover' },
+          waitingForSpecificTaskInfo: {
+            taskSid: 'WTnew',
+            reason: 'takeover',
+            originalTaskSid: 'WToriginal',
+          },
           someUnrelatedAttribute: 'changed-during-assign',
         }),
       });
@@ -318,7 +322,7 @@ describe('withAvailableWorkerForTask', () => {
     await withAvailableWorkerForTask(
       TEST_ACCOUNT_SID,
       { sid: TARGET_SID },
-      { taskSid: 'WTnew', reason: 'takeover' },
+      { taskSid: 'WTnew', reason: 'takeover', originalTaskSid: 'WToriginal' },
       jest.fn().mockResolvedValue(undefined),
     );
 
