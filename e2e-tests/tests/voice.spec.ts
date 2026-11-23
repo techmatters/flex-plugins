@@ -86,7 +86,6 @@ test.describe.serial('Voice caller', () => {
     }
     const form = contactForm(pluginPage);
 
-    await form.selectChildCallType();
     await form.fillWithContent(formContent);
 
     console.info('Saving form');
