@@ -28,6 +28,7 @@ export async function validateChannelIfWorker(
   transferTargetType: string,
   taskChannelUniqueName: string,
   channelType: string,
+  isTakeover: boolean,
 ): Promise<Result<Error, ValidationResult>> {
   const client = await getTwilioClient(accountSid);
   const workspaceSid = await getWorkspaceSid(accountSid);
@@ -42,7 +43,7 @@ export async function validateChannelIfWorker(
       .fetch(),
   ]);
 
-  if (!worker.available) {
+  if (!worker.available && (!isTakeover || channelType === 'voice')) {
     return newErr({
       message: `Can't transfer to an offline counselor`,
       error: new Error("Can't transfer to an offline counselor"),

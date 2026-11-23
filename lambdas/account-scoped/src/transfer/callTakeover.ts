@@ -145,6 +145,7 @@ export const requestCallTakeoverHandler: FlexValidatedHandler = async (
     'worker',
     'voice',
     'voice',
+      true,
   );
   if (isErr(supervisorValidation)) {
     return newHttpErrorResult(supervisorValidation.message, 400);
