@@ -25,6 +25,7 @@ import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
 import { patchTaskAttributes } from '../task/patchTaskAttributes';
 import { withAvailableWorkerForTask } from '../task/assignSpecificTask';
 import { validateChannelIfWorker } from './validateChannelIfWorker';
+import type { TaskContext } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 
 export type Body = {
   taskSid: TaskSID;
@@ -41,6 +42,29 @@ class ActiveTransferError extends Error {}
 const DIRECT_TRANSFER_QUEUE_FRIENDLY_NAME = 'Everyone';
 
 const waitForClient = () => new Promise(resolve => setTimeout(resolve, 200));
+
+const MAX_TAKEOVER_ACCEPTANCE_RETRIES = 40;
+
+const waitForFlexToAcceptTakeover = async (
+  invitedTask: Pick<TaskContext, 'reservations'>,
+  invitedTaskSid: string,
+  targetSid: string,
+  retry = 0,
+): Promise<void> => {
+  const invitedReservations = await invitedTask.reservations.list();
+  const isAccepted = invitedReservations.some(
+    reservation =>
+      reservation.workerSid === targetSid && reservation.reservationStatus === 'accepted',
+  );
+  if (isAccepted) return;
+  if (retry >= MAX_TAKEOVER_ACCEPTANCE_RETRIES) {
+    throw new Error(
+      `Timed out waiting for Flex to accept takeover task ${invitedTaskSid} for worker ${targetSid}`,
+    );
+  }
+  await waitForClient();
+  await waitForFlexToAcceptTakeover(invitedTask, invitedTaskSid, targetSid, retry + 1);
+};
 
 export const transferStartHandler: FlexValidatedHandler = async (
   { body: event, tokenResult },
@@ -281,27 +305,10 @@ export const transferStartHandler: FlexValidatedHandler = async (
           async () => {
             const invitedTaskSid = await createInvite();
             // Flex must accept the reservation; keep the worker available until it does.
-            for (let attempt = 0; attempt <= 40; attempt++) {
-              // eslint-disable-next-line no-await-in-loop
-              const invitedReservations = await workspace.tasks
-                .get(invitedTaskSid)
-                .reservations.list();
-              if (
-                invitedReservations.some(
-                  reservation =>
-                    reservation.workerSid === targetSid &&
-                    reservation.reservationStatus === 'accepted',
-                )
-              ) {
-                return;
-              }
-              if (attempt < 40) {
-                // eslint-disable-next-line no-await-in-loop
-                await waitForClient();
-              }
-            }
-            throw new Error(
-              `Timed out waiting for Flex to accept takeover task ${invitedTaskSid} for worker ${targetSid}`,
+            await waitForFlexToAcceptTakeover(
+              workspace.tasks.get(invitedTaskSid),
+              invitedTaskSid,
+              targetSid,
             );
           },
         );
