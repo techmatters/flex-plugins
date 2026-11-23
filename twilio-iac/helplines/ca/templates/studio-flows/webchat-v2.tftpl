@@ -1496,7 +1496,21 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
+          "next": "helpline_parameters",
           "event": "noMatch"
+        },
+        {
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}"
+              ],
+              "type": "contains",
+              "value": "true"
+            }
+          ]
         },
         {
           "next": "helpline_parameters",
@@ -1719,21 +1733,8 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "event": "noMatch"
-        },
-        {
           "next": "engagement",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value contains en-CA",
-              "arguments": [
-                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
-              ],
-              "type": "contains",
-              "value": "en-CA"
-            }
-          ]
+          "event": "noMatch"
         },
         {
           "next": "check_counsellors_fr_post_queue",
@@ -1742,16 +1743,16 @@ ${
             {
               "friendly_name": "If value contains fr-CA",
               "arguments": [
-                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.Body}}"
               ],
               "type": "contains",
-              "value": "fr-CA"
+              "value": "Nouveau contact de web Anonymous"
             }
           ]
         }
       ],
       "properties": {
-        "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}",
+        "input": "{{trigger.conversation.Body}}",
         "offset": {
           "x": 2100,
           "y": 1760
@@ -1780,7 +1781,7 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "{\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\",\n  \"ip\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"firstName\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"helpline\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}\",\n  \"language\":\"fr-CA\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}",
+        "attributes": "{\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\",\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"ip\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"firstName\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"helpline\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}\",\n  \"language\":\"fr-CA\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}",
         "priority": "0",
         "timeout": "3600"
       }
