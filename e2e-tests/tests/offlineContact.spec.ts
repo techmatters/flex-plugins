@@ -24,10 +24,7 @@ import { closePage, setupContextAndPage } from '../browser';
 import { apiHrmRequest } from '../hrm/hrmRequest';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { getConfigValue } from '../config';
-import {
-  formContentsByHelpline,
-  formContentsByHelplineForEmptyForm,
-} from '../formContentsByHelpline';
+import { getFormContents } from '../formContentsByHelpline';
 
 test.describe.serial('Offline Contact (with Case)', () => {
   skipTestIfNotTargeted();
@@ -61,11 +58,10 @@ test.describe.serial('Offline Contact (with Case)', () => {
     await agentDesktopPage.addOfflineContact();
 
     console.log('Starting filling form');
-    const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;
-    const formContent = formContentsByHelplineForEmptyForm[helpline];
+    const helpline = getConfigValue('helplineShortCode').toString();
+    const formContent = getFormContents(helpline, 'offline');
 
     const form = contactForm(pluginPage);
-    await form.selectChildCallType();
     await form.fill([
       <ContactFormTab>{
         id: 'contactlessTask',

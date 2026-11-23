@@ -14,20 +14,58 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-export const formContentsByHelpline = {
+type FormContents = {
+  childInformation: Record<string, string>;
+  categories: Record<string, string[]>;
+  caseInformation: Record<string, string>;
+  callType?: string;
+  channelOverrides?: Record<string, Partial<Exclude<FormContents, 'channelOverrides'>>>;
+};
+
+const e2eBaseContent = {
+  childInformation: {
+    firstName: 'E2E',
+    lastName: 'TEST',
+    phone1: '1234512345',
+    province: 'Northern',
+    district: 'District A',
+  },
+  categories: {
+    Accessibility: ['Education'],
+  },
+  caseInformation: {
+    callSummary: 'E2E TEST PREPOPULATED FORM',
+  },
+};
+
+const formContentsByHelpline: Record<string, FormContents> = {
   e2e: {
-    childInformation: {
-      firstName: 'E2E',
-      lastName: 'TEST',
-      phone1: '1234512345',
-      province: 'Northern',
-      district: 'District A',
-    },
-    categories: {
-      Accessibility: ['Education'],
-    },
-    caseInformation: {
-      callSummary: 'E2E TEST PREPOPULATED FORM',
+    ...e2eBaseContent,
+    channelOverrides: {
+      voice: {
+        callType: 'child',
+      },
+      sms: {
+        childInformation: {
+          ...e2eBaseContent.childInformation,
+          gender: 'Unknown',
+          age: 'Unknown',
+        },
+        caseInformation: {
+          callSummary: 'E2E TEST EMPTY FORM',
+        },
+      },
+      offline: {
+        callType: 'child',
+        childInformation: {
+          ...e2eBaseContent.childInformation,
+          gender: 'Unknown',
+          age: 'Unknown',
+        },
+        caseInformation: {
+          callSummary: 'E2E TEST EMPTY FORM',
+        },
+      },
     },
   },
   ca: {
@@ -52,6 +90,7 @@ export const formContentsByHelpline = {
     caseInformation: {
       contactType: 'Testing',
     },
+    channelOverrides: {},
   },
   usnm: {
     childInformation: {
@@ -64,21 +103,17 @@ export const formContentsByHelpline = {
       transferredTo988: 'No',
     },
     callType: 'child',
+    channelOverrides: {},
   },
 };
 
-export const formContentsByHelplineForEmptyForm = {
-  ...formContentsByHelpline,
-  e2e: {
-    ...formContentsByHelpline.e2e,
-    childInformation: {
-      ...formContentsByHelpline.e2e.childInformation,
-
-      gender: 'Unknown',
-      age: 'Unknown',
-    },
-    caseInformation: {
-      callSummary: 'E2E TEST EMPTY FORM',
-    },
-  },
+export const getFormContents = (
+  helpline: keyof typeof formContentsByHelpline,
+  channel?: string,
+) => {
+  const { channelOverrides, ...formContent } = formContentsByHelpline[helpline];
+  return {
+    ...formContent,
+    ...(channel ? channelOverrides?.[channel] ?? {} : {}),
+  };
 };

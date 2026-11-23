@@ -24,10 +24,7 @@ import { agentDesktop, clickThroughTwilioPasteModals } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
-import {
-  formContentsByHelpline,
-  formContentsByHelplineForEmptyForm,
-} from '../formContentsByHelpline';
+import { getFormContents } from '../formContentsByHelpline';
 import { getConfigValue } from '../config';
 import { makeCallToService } from '../twilio/voice';
 import { tasks } from '../tasks';
@@ -79,8 +76,8 @@ test.describe.serial('Voice caller', () => {
     console.info(`Call seen in E2E queue`);
     await tasks(pluginPage).acceptNextTask();
     console.info('Starting filling form');
-    const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;
-    const formContent = formContentsByHelplineForEmptyForm[helpline];
+    const helpline = getConfigValue('helplineShortCode').toString();
+    const formContent = getFormContents(helpline, 'voice');
     if (!formContent) {
       throw new Error(`No form contents configured for helplineShortCode="${String(helpline)}"`);
     }
