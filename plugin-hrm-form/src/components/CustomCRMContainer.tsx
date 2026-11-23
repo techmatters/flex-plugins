@@ -28,7 +28,7 @@ import { getOfflineContactTask, getOfflineContactTaskSid } from '../states/conta
 import { namespace } from '../states/storeNamespaces';
 import { getUnsavedContact } from '../states/contacts/getUnsavedContact';
 import asyncDispatch from '../states/asyncDispatch';
-import { newLoadContactFromHrmForTaskAsyncAction } from '../states/contacts/saveContact';
+import { newLoadContactFromHrmForIncomingTaskAsyncAction } from '../states/contacts/saveContact';
 import { getAseloFeatureFlags } from '../hrmConfig';
 import { selectAnyContactIsSaving } from '../states/contacts/selectContactSaveStatus';
 import selectCurrentOfflineContact from '../states/contacts/selectCurrentOfflineContact';
@@ -77,7 +77,7 @@ const CustomCRMContainer: React.FC<Props> = ({ task }) => {
 
   useEffect(() => {
     if (!currentOfflineContact) {
-      asyncDispatch(dispatch)(newLoadContactFromHrmForTaskAsyncAction(getOfflineContactTask()));
+      asyncDispatch(dispatch)(newLoadContactFromHrmForIncomingTaskAsyncAction(getOfflineContactTask()));
     }
   }, [currentOfflineContact, dispatch]);
 

@@ -23,10 +23,7 @@ import {
   TEST_TASK_SID,
   TEST_WORKSPACE_SID,
 } from '../../testTwilioValues';
-import {
-  newMockTwilioClientWithConfigurationAttributes,
-  setConfigurationAttributes,
-} from '../mockServiceConfiguration';
+import { setConfigurationAttributes } from '../mockServiceConfiguration';
 import {
   RESERVATION_ACCEPTED,
   RESERVATION_REJECTED,
@@ -129,10 +126,18 @@ describe('transfersTaskRouterListener', () => {
     });
   });
 
-  test('use_twilio_lambda_transfers flag not set - skips without any task updates', async () => {
-    const disabledClient = newMockTwilioClientWithConfigurationAttributes({
-      feature_flags: { use_twilio_lambda_transfers: false },
-    });
+  test('use_twilio_lambda_transfers flag not set - still handles transfer events', async () => {
+    const disabledClient = setConfigurationAttributes(
+      {
+        ...(client as unknown as Record<string, unknown>),
+      } as unknown as twilio.Twilio,
+      {
+        feature_flags: { use_twilio_lambda_transfers: false },
+      },
+    );
+    mockUpdateTask.mockResolvedValue({
+      attributes: JSON.stringify({ flexInteractionSid: null }),
+    } as TaskInstance);
 
     await handleEvent(
       newEventFields('chat', RESERVATION_ACCEPTED, {
@@ -143,7 +148,10 @@ describe('transfersTaskRouterListener', () => {
       disabledClient,
     );
 
-    expect(mockUpdateTask).not.toHaveBeenCalled();
+    expect(mockUpdateTask).toHaveBeenCalledWith({
+      assignmentStatus: 'completed',
+      reason: 'task transferred accepted',
+    });
   });
 
   test('chat transfer to worker accepted - completes original task', async () => {

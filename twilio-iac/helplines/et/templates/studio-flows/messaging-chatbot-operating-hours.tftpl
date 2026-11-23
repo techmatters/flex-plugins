@@ -135,31 +135,26 @@ ${
     },
     {
       "name": "check_operating_hours",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "split_status",
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
         "offset": {
           "x": 120,
           "y": 390
         },
-        "function_sid": flow_vars["operating_hours_function_sid"],
-        "parameters": [
-          {
-            "value": channel_name,
-            "key": "channel"
-          }
-        ],
-        "url": "${serverless_url}/operatingHours"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"${channel_name}\", \"from\": \"{{trigger.message.ChannelAttributes.from}}\"}",
+        "url": "${lambda_twilio_account_scoped_url}/operatingHours"
       }
     },
     {
@@ -277,66 +272,25 @@ ${
     },
     {
       "name": "capture_channel_with_bot",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
         "offset": {
           "x": -270,
           "y": 380
         },
-        "function_sid": flow_vars["capture_channel_with_bot_function_sid"],
-        "parameters": [
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
-          },
-          {
-            "value": "trigger_pre_survey",
-            "key": "message"
-          },
-          {
-            "value": "{{flow.flow_sid}}",
-            "key": "studioFlowSid"
-          },
-          {
-            "value": "${flow_vars.bot_language}",
-            "key": "language"
-          },
-          {
-            "value": "pre_survey",
-            "key": "botSuffix"
-          },
-          {
-            "value": "withUserMessage",
-            "key": "triggerType"
-          },
-          {
-            "value": "triggerStudioFlow",
-            "key": "releaseType"
-          },
-          {
-            "value": "preSurveyComplete",
-            "key": "releaseFlag"
-          },
-          {
-            "value": "{{trigger.message.ChannelAttributes.channel_type | downcase}}",
-            "key": "channelType"
-          },
-          {
-            "value": "false",
-            "key": "isConversation"
-          }
-        ],
-        "url": "${serverless_url}/channelCapture/captureChannelWithBot"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channelSid\": \"{{flow.channel.address}}\", \"message\": \"trigger_pre_survey\", \"studioFlowSid\": \"{{flow.flow_sid}}\", \"language\": \"${flow_vars.bot_language}\", \"botSuffix\": \"pre_survey\", \"triggerType\": \"withUserMessage\", \"releaseType\": \"triggerStudioFlow\", \"releaseFlag\": \"preSurveyComplete\", \"channelType\": \"{{trigger.message.ChannelAttributes.channel_type | downcase}}\", \"isConversation\": \"false\"}",
+        "url": "${lambda_twilio_account_scoped_url}/channelCapture/captureChannelWithBot"
       }
     }
   ],

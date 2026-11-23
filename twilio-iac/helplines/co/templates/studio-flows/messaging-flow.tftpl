@@ -58,31 +58,26 @@ ${
     },
     {
       "name": "operating_hours",
-      "type": "run-function",
+      "type": "make-http-request",
       "transitions": [
         {
           "next": "check_office_state",
           "event": "success"
         },
         {
-          "event": "fail"
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": flow_vars["service_sid"],
-        "environment_sid": flow_vars["environment_sid"],
         "offset": {
           "x": 180,
           "y": 290
         },
-        "function_sid": flow_vars["operating_hours_function_sid"],
-        "parameters": [
-          {
-            "value": "webchat",
-            "key": "channel"
-          }
-        ],
-        "url": "${serverless_url}/operatingHours"
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{\"channel\": \"webchat\", \"from\": \"{{trigger.message.ChannelAttributes.from}}\"}",
+        "url": "${lambda_twilio_account_scoped_url}/operatingHours"
       }
     },
     {

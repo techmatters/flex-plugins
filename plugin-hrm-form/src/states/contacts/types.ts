@@ -29,9 +29,10 @@ export const CREATE_CONTACT_ACTION_FULFILLED = `${CREATE_CONTACT_ACTION}_FULFILL
 export const UPDATE_CONTACT_ACTION = 'contact-action/update-contact' as const;
 export const UPDATE_CONTACT_ACTION_FULFILLED = `${UPDATE_CONTACT_ACTION}_FULFILLED` as const;
 export const LOAD_CONTACT_FROM_HRM_BY_ID_ACTION = 'contact-action/load-contact-from-hrm-by-id' as const;
+export const LOAD_CONTACT_FROM_HRM_BY_TASKSID_ACTION = 'contact-action/load-contact-from-hrm-by-tasksid' as const;
 
-export const LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION = 'contact-action/load-contact-from-hrm-for-task' as const;
-export const LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED = `${LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION}_FULFILLED` as const;
+export const LOAD_CONTACT_FROM_HRM_FOR_INCOMING_TASK_ACTION = 'contact-action/load-contact-from-hrm-for-incoming-task' as const;
+export const LOAD_CONTACT_FROM_HRM_FOR_TASK_ACTION_FULFILLED = `${LOAD_CONTACT_FROM_HRM_FOR_INCOMING_TASK_ACTION}_FULFILLED` as const;
 export const CONNECT_TO_CASE = 'contact-action/connect-to-case' as const;
 export const REMOVE_FROM_CASE = 'contact-action/remove-from-case' as const;
 export const CONNECT_TO_CASE_ACTION_FULFILLED = `${CONNECT_TO_CASE}_FULFILLED` as const;

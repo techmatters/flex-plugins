@@ -1,0 +1,11 @@
+[
+  {
+    "name": "note",
+    "label": "Note",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 20,
+    "width": 500,
+    "placeholder": "Type here to add a note..."
+  }
+]

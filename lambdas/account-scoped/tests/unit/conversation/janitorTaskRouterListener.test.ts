@@ -230,6 +230,63 @@ describe('janitorTaskRouterListener', () => {
     });
   });
 
+  describe('enable_post_survey=true and valid postSurveySpecs', () => {
+    beforeEach(() => {
+      client = newMockTwilioClientWithConfigurationAttributes({
+        feature_flags: { use_twilio_lambda_janitor: true, enable_post_survey: true },
+      });
+      mockGetCurrentDefinitionVersion.mockResolvedValue({
+        insights: { postSurveySpecs: [{ taskChannelUniqueName: 'survey' }] },
+      } as any);
+    });
+
+    test('TASK_CANCELED (never accepted, e.g. TTL exceeded in the queue) - calls chatChannelJanitor', async () => {
+      await handleEvent(newEventFields('chat', TASK_CANCELED), TEST_ACCOUNT_SID, client);
+
+      expect(mockGetCurrentDefinitionVersion).not.toHaveBeenCalled();
+      expect(mockChatChannelJanitor).toHaveBeenCalledWith(TEST_ACCOUNT_SID, {
+        channelSid: TEST_CHANNEL_SID,
+        conversationSid: TEST_CONVERSATION_SID,
+      });
+    });
+
+    test('survey task TASK_CANCELED (voice post survey control task) - skips chatChannelJanitor', async () => {
+      await handleEvent(
+        {
+          EventType: TASK_CANCELED,
+          TaskSid: TEST_TASK_SID,
+          TaskChannelUniqueName: 'survey',
+          TaskAttributes: JSON.stringify({
+            isSurveyTask: true,
+            contactTaskId: 'WTxx',
+            contactId: '123',
+          }),
+        } as EventFields,
+        TEST_ACCOUNT_SID,
+        client,
+      );
+
+      expect(mockChatChannelJanitor).not.toHaveBeenCalled();
+    });
+
+    test('TASK_CANCELED but not in task control (e.g. rejected transfer) - skips chatChannelJanitor', async () => {
+      mockHasTaskControl.mockResolvedValue(false);
+
+      await handleEvent(newEventFields('chat', TASK_CANCELED), TEST_ACCOUNT_SID, client);
+
+      expect(mockChatChannelJanitor).not.toHaveBeenCalled();
+    });
+
+    test.each([TASK_COMPLETED, TASK_DELETED])(
+      '%s - skips chatChannelJanitor while post survey is enabled',
+      async eventType => {
+        await handleEvent(newEventFields('chat', eventType), TEST_ACCOUNT_SID, client);
+
+        expect(mockChatChannelJanitor).not.toHaveBeenCalled();
+      },
+    );
+  });
+
   test('TASK_WRAPUP but not in task control - skips chatChannelJanitor', async () => {
     client = newMockTwilioClientWithConfigurationAttributes({
       feature_flags: { use_twilio_lambda_janitor: true, enable_post_survey: false },

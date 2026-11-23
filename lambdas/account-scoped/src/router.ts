@@ -63,6 +63,10 @@ import { refreshTokenHandler } from './webchatAuthentication/refreshToken';
 import { getAccountSid } from '@tech-matters/twilio-configuration';
 import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
 import { transferStartHandler } from './transfer/transferStart';
+import {
+  requestCallTakeoverHandler,
+  updateCallTakeoverStatusHandler,
+} from './transfer/callTakeover';
 import { reportToIWFHandler } from './integrations/iwf/reportToIWF';
 import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
 import { populateCounselorsHandler } from './worker/populateCounselors';
@@ -81,6 +85,8 @@ import {
   savePostSurveyHandler,
   voicePostSurveyActionHandler,
 } from './hrm/voicePostSurvey';
+import { recordPostSurveyAnswersHandler } from './postSurvey/recordPostSurveyAnswers';
+import { createPostSurveyControlTaskHandler } from './postSurvey/postSurveyControlTask';
 import { postStudioFlowCallStatusCallbackHandler } from './studioFlow/postStudioFlowCallStatusCallback';
 import { triggerPostStudioFlowHandler } from './studioFlow/postStudioFlowTaskRouterListener';
 import { randomOptionSelectorHandler } from './randomOptionSelector';
@@ -143,6 +149,14 @@ const ACCOUNTSID_ROUTES: Record<
   'hrm/savePostSurvey': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
     handler: savePostSurveyHandler,
+  }),
+  'postSurvey/createControlTask': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: createPostSurveyControlTaskHandler,
+  }),
+  'postSurvey/recordAnswers': newRoute({
+    requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
+    handler: recordPostSurveyAnswersHandler,
   }),
   'hrm/voicePostSurveyAction': newRoute({
     requestPipeline: [validateRequestMethod('POST'), validateWebhookRequest],
@@ -317,6 +331,20 @@ const ACCOUNTSID_ROUTES: Record<
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: transferStartHandler,
+  }),
+  'transfer/requestCallTakeover': newRoute({
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'supervisor' }),
+    ],
+    handler: requestCallTakeoverHandler,
+  }),
+  'transfer/updateCallTakeoverStatus': newRoute({
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
+    handler: updateCallTakeoverStatusHandler,
   }),
   updateWorkersSkills: newRoute({
     requestPipeline: [

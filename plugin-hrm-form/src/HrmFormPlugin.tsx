@@ -32,7 +32,6 @@ import { getAseloFeatureFlags, getHrmConfig, initializeConfig, subscribeToConfig
 import { setUpSyncClient } from './services/SyncService';
 import { setUpReferrableResources } from './components/resources/setUpReferrableResources';
 import QueuesView from './components/queuesView';
-import TeamsView from './components/teamsView';
 import { setUpTransferComponents } from './components/transfer/setUpTransferComponents';
 import { subscribeNewMessageAlertOnPluginInit } from './notifications/newMessage';
 import { subscribeReservedTaskAlert } from './notifications/reservedTask';
@@ -51,6 +50,7 @@ import { setUpCustomSideLinks } from './components/customSideLinks/setUpCustomSi
 import { setUpVoicemailComponents } from './voicemail/setUpVoicemailComponents';
 import { newLoadAseloTwilioConfigurationAsyncAction } from './states/configuration/loadAseloTwilioConfiguration';
 import asyncDispatch from './states/asyncDispatch';
+import { setUpTeamsView } from './setupTeamsView';
 
 const PLUGIN_NAME = 'HrmFormPlugin';
 
@@ -92,6 +92,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   // setUp (add) dynamic components
   Components.setUpQueuesStatusWriter(setupObject);
   Components.setUpQueuesStatus(setupObject);
+  Components.setUpQueueGreetings();
   Components.setUpAddButtons(featureFlags);
   Components.setUpNoTasksUI(featureFlags, setupObject);
   Components.setUpCustomCRMContainer();
@@ -123,14 +124,7 @@ const setUpComponents = (featureFlags: FeatureFlags, setupObject: ReturnType<typ
   if (featureFlags.enable_emoji_picker) Components.setupEmojiPicker();
   if (preventSendingAttachmentsFromFlex) Components.disableFlexMessageAttachments();
   if (featureFlags.enable_canned_responses) Components.setupCannedResponses();
-
-  TeamsView.setUpSelectAgentColumn();
-  TeamsView.setUpAgentColumn();
-  if (!featureFlags.remove_custom_status_column) TeamsView.setUpStatusColumn();
-  TeamsView.setUpSkillsColumn();
-  TeamsView.setUpTeamsViewSorting();
-  TeamsView.setUpTeamsViewFilters();
-  TeamsView.setUpWorkerDirectoryFilters();
+  setUpTeamsView();
 
   if (featureFlags.enable_switchboarding) {
     QueuesView.setUpSwitchboard();
@@ -184,6 +178,22 @@ const setUpActions = (
   if (featureFlags.enable_llm_summary) setupLlmNotifications();
 };
 
+const ASELO_FAVICON_URL = 'https://aselo-logo.s3.us-east-1.amazonaws.com/820-symbol-only-transparent-background.svg';
+
+/**
+ * Twilio's hosted Flex page brands the browser tab as 'Twilio Flex' with the Twilio icon; brand it as Aselo instead
+ */
+const setUpBrowserTabBranding = () => {
+  document.title = 'Aselo';
+  // Remove Twilio's icon links so the browser doesn't fall back to them
+  document.querySelectorAll("link[rel~='icon']").forEach(link => link.remove());
+  const favicon = document.createElement('link');
+  favicon.rel = 'icon';
+  favicon.type = 'image/svg+xml';
+  favicon.href = ASELO_FAVICON_URL;
+  document.head.appendChild(favicon);
+};
+
 export default class HrmFormPlugin extends FlexPlugin {
   constructor() {
     super(PLUGIN_NAME);
@@ -194,6 +204,7 @@ export default class HrmFormPlugin extends FlexPlugin {
    * Use this to modify any UI components or attach to the actions framework
    */
   async init(flex: typeof Flex, manager: Flex.Manager) {
+    setUpBrowserTabBranding();
     loadCSS('https://use.fontawesome.com/releases/v5.15.4/css/solid.css');
 
     setUpFullStory(manager.workerClient, manager.serviceConfiguration);

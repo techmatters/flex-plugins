@@ -1,0 +1,162 @@
+{
+  "contact": {
+    "callerInformation": {
+      "splitFormAt": 4
+    },
+    "childInformation": {
+      "splitFormAt": 7
+    },
+    "caseInformation": {
+      "splitFormAt": 5
+    }
+  },
+  "case": {
+    "sectionTypes": {
+      "household": {
+        "caseHomeOrder": 1,
+        "printOrder": 1,
+        "splitFormAt": 5,
+        "previewFields": [
+          "firstName",
+          "relationshipToChild",
+          "isSafeContact"
+        ],
+        "layout": {
+          "firstName": {
+            "includeLabel": true
+          },
+          "relationshipToChild": {
+            "includeLabel": true
+          },
+          "isSafeContact": {
+            "includeLabel": true
+          }
+        }
+      },
+      "perpetrator": {
+        "caseHomeOrder": 2,
+        "printOrder": 2,
+        "splitFormAt": 4,
+        "previewFields": [
+          "firstName",
+          "relationshipToChild",
+          "hasAccessToChild"
+        ],
+        "layout": {
+          "firstName": {
+            "includeLabel": true
+          },
+          "relationshipToChild": {
+            "includeLabel": true
+          },
+          "hasAccessToChild": {
+            "includeLabel": true
+          }
+        }
+      },
+      "incident": {
+        "caseHomeOrder": 3,
+        "printOrder": 3,
+        "splitFormAt": 3,
+        "previewFields": [
+          "date",
+          "duration",
+          "location"
+        ],
+        "layout": {
+          "date": {
+            "includeLabel": false,
+            "format": "date"
+          },
+          "duration": {
+            "includeLabel": true
+          },
+          "location": {
+            "includeLabel": true
+          }
+        }
+      },
+      "externalReport": {
+        "caseHomeOrder": 4,
+        "printOrder": 4,
+        "splitFormAt": 6,
+        "printFormat": "tabular",
+        "previewFields": [
+          "reportDate",
+          "agencyNotified",
+          "referenceNumber"
+        ],
+        "layout": {
+          "reportDate": {
+            "includeLabel": false,
+            "format": "date"
+          },
+          "agencyNotified": {
+            "includeLabel": true
+          },
+          "referenceNumber": {
+            "includeLabel": true
+          }
+        }
+      },
+      "document": {
+        "caseHomeOrder": 5,
+        "splitFormAt": 1,
+        "printFormat": "hidden",
+        "previewFields": [
+          "createdAt",
+          "fileName",
+          "comments"
+        ],
+        "layout": {
+          "createdAt": {
+            "includeLabel": false,
+            "labelTemplateCode": "Case-DocumentDate",
+            "format": "date"
+          },
+          "fileName": {
+            "includeLabel": false,
+            "labelTemplateCode": "Case-DocumentFileName",
+            "format": "file",
+            "widthRatio": 2
+          },
+          "comments": {
+            "includeLabel": false,
+            "labelTemplateCode": "Case-DocumentComments",
+            "widthRatio": 2
+          }
+        }
+      },
+      "referral": {
+        "caseHomeLocation": "timeline",
+        "printOrder": 5,
+        "splitFormAt": 2,
+        "previewFields": [
+          "referredTo",
+          "referralStatus"
+        ],
+        "layout": {
+          "referredTo": {
+            "includeLabel": false
+          },
+          "referralStatus": {
+            "includeLabel": true
+          }
+        }
+      },
+      "note": {
+        "caseHomeLocation": "timeline",
+        "printOrder": 6,
+        "printFormat": "list",
+        "previewFields": [
+          "note"
+        ],
+        "layout": {
+          "note": {
+            "includeLabel": false
+          }
+        }
+      }
+    }
+  }
+}

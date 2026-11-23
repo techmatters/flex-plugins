@@ -1,0 +1,91 @@
+[
+  {
+    "name": "date",
+    "label": "Date Created / Reviewed",
+    "type": "date-input",
+    "isPII": false,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    },
+    "metadata": {
+      "eventTimestampSource": true
+    }
+  },
+  {
+    "name": "warningSigns",
+    "label": "1. Warning signs that a crisis may be developing",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 5,
+    "width": 300,
+    "required": {
+      "value": true,
+      "message": "RequiredFieldError"
+    }
+  },
+  {
+    "name": "copingStrategies",
+    "label": "2. Things I can do on my own to take my mind off things",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 5,
+    "width": 300
+  },
+  {
+    "name": "distractionPeoplePlaces",
+    "label": "3. People and places that help distract me",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 5,
+    "width": 300
+  },
+  {
+    "name": "peopleToAskForHelp",
+    "label": "4. People I can ask for help",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 5,
+    "width": 300
+  },
+  {
+    "name": "professionalsToContact",
+    "label": "5. Professionals and services I can contact",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 5,
+    "width": 300
+  },
+  {
+    "name": "makingEnvironmentSafe",
+    "label": "6. Making my environment safer",
+    "type": "textarea",
+    "isPII": true,
+    "rows": 5,
+    "width": 300
+  },
+  {
+    "name": "planSharedWithHelpSeeker",
+    "label": "Plan shared with the help seeker?",
+    "type": "select",
+    "isPII": false,
+    "options": [
+      {
+        "value": "Unknown",
+        "label": ""
+      },
+      {
+        "value": "Yes - read back",
+        "label": "Yes - read back"
+      },
+      {
+        "value": "Yes - sent by message",
+        "label": "Yes - sent by message"
+      },
+      {
+        "value": "No",
+        "label": "No"
+      }
+    ]
+  }
+]

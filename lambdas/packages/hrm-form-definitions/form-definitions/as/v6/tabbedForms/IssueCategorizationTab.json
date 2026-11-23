@@ -1,0 +1,140 @@
+{
+  "Crisis Response Line": {
+    "maxSelections": 3,
+    "categories": {
+      "Suicide & Self-harm": {
+        "color": "#e05d5d",
+        "subcategories": [
+          {
+            "label": "Attempt in progress"
+          },
+          {
+            "label": "Active suicidal ideation"
+          },
+          {
+            "label": "Self-harm"
+          },
+          {
+            "label": "Third-party concern"
+          }
+        ]
+      },
+      "Mental Health Crisis": {
+        "color": "#f2a93b",
+        "subcategories": [
+          {
+            "label": "Psychosis"
+          },
+          {
+            "label": "Severe anxiety / panic"
+          },
+          {
+            "label": "Agitation / aggression"
+          },
+          {
+            "label": "Disorientation / confusion"
+          }
+        ]
+      },
+      "Medical": {
+        "color": "#d36fa4",
+        "subcategories": [
+          {
+            "label": "Overdose / poisoning"
+          },
+          {
+            "label": "Injury"
+          },
+          {
+            "label": "Medical emergency"
+          },
+          {
+            "label": "Medication crisis"
+          }
+        ]
+      },
+      "Violence & Safety": {
+        "color": "#8b5cf6",
+        "subcategories": [
+          {
+            "label": "Domestic violence"
+          },
+          {
+            "label": "Child at risk"
+          },
+          {
+            "label": "Elder at risk"
+          },
+          {
+            "label": "Threat to others"
+          },
+          {
+            "label": "Sexual assault"
+          }
+        ]
+      },
+      "Missing Persons": {
+        "color": "#4d92c2",
+        "subcategories": [
+          {
+            "label": "Missing adult"
+          },
+          {
+            "label": "Missing child"
+          },
+          {
+            "label": "Wandering (dementia)"
+          }
+        ]
+      },
+      "Disaster & Major Incidents": {
+        "color": "#14919b",
+        "subcategories": [
+          {
+            "label": "Evacuation"
+          },
+          {
+            "label": "Shelter needs"
+          },
+          {
+            "label": "Locating family"
+          },
+          {
+            "label": "Trauma after an incident"
+          }
+        ]
+      },
+      "Basic Needs": {
+        "color": "#5bb381",
+        "subcategories": [
+          {
+            "label": "Unsafe housing / homelessness"
+          },
+          {
+            "label": "Food"
+          },
+          {
+            "label": "Utilities shut-off"
+          },
+          {
+            "label": "Transportation"
+          }
+        ]
+      },
+      "Information & Referral": {
+        "color": "#9aa5b1",
+        "subcategories": [
+          {
+            "label": "Service information"
+          },
+          {
+            "label": "Follow-up on a previous incident"
+          },
+          {
+            "label": "Other"
+          }
+        ]
+      }
+    }
+  }
+}
