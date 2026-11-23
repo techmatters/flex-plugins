@@ -99,8 +99,10 @@ export function contactForm(page: Page) {
       const button = selectors.tabButton(tabs[0]);
       await expect(button).toBeVisible({ timeout: 15000 });
       for (const tab of tabs) {
-        await selectTab(tab, tab !== tabs[0]);
-        await tab.fill(tab);
+        if (tab.items) {
+          await selectTab(tab, tab !== tabs[0]);
+          await tab.fill(tab);
+        }
       }
     },
     fillWithContent: async (formContent: any) => {
@@ -125,6 +127,12 @@ export function contactForm(page: Page) {
           label: 'TabbedForms-AddCaseInfoTab',
           fill: formApi.fillStandardTab,
           items: formContent.caseInformation,
+        },
+        <ContactFormTab>{
+          id: 'contactlessTask',
+          label: 'TabbedForms-AddContactInfoTab',
+          fill: formApi.fillStandardTab,
+          items: formContent.contactlessTask,
         },
       ]);
     },

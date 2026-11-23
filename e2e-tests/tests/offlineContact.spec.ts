@@ -15,7 +15,7 @@
  */
 
 import { expect, Page, request, test } from '@playwright/test';
-import { contactForm, ContactFormTab } from '../contactForm';
+import { contactForm } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
 import { skipTestIfDataUpdateDisabled, skipTestIfNotTargeted } from '../skipTest';
@@ -24,10 +24,7 @@ import { closePage, setupContextAndPage } from '../browser';
 import { apiHrmRequest } from '../hrm/hrmRequest';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { getConfigValue } from '../config';
-import {
-  formContentsByHelpline,
-  formContentsByHelplineForEmptyForm,
-} from '../formContentsByHelpline';
+import { getFormContents } from '../formContentsByHelpline';
 
 test.describe.serial('Offline Contact (with Case)', () => {
   skipTestIfNotTargeted();
@@ -61,23 +58,10 @@ test.describe.serial('Offline Contact (with Case)', () => {
     await agentDesktopPage.addOfflineContact();
 
     console.log('Starting filling form');
-    const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;
-    const formContent = formContentsByHelplineForEmptyForm[helpline];
+    const helpline = getConfigValue('helplineShortCode').toString();
+    const formContent = getFormContents(helpline, 'offline');
 
     const form = contactForm(pluginPage);
-    await form.selectChildCallType();
-    await form.fill([
-      <ContactFormTab>{
-        id: 'contactlessTask',
-        label: 'TabbedForms-AddContactInfoTab',
-        fill: form.fillStandardTab,
-        items: {
-          // Fill only the inputs that does not initializes with "current" initial values
-          channel: 'web',
-          helpline: 'Childline',
-        },
-      },
-    ]);
     await form.fillWithContent(formContent);
     const beforeDate = new Date(); // Capture date here since we'll create case inmediately after saving contact
 

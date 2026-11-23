@@ -30,7 +30,7 @@ import { clickThroughTwilioPasteModals } from '../agent-desktop';
 import { setupContextAndPage, closePage } from '../browser';
 import { clearOfflineTask } from '../hrm/clearOfflineTask';
 import { apiHrmRequest } from '../hrm/hrmRequest';
-import { formContentsByHelpline } from '../formContentsByHelpline';
+import { getFormContents } from '../formContentsByHelpline';
 import { getConfigValue } from '../config';
 
 test.describe.serial('Aselo web chat caller', () => {
@@ -96,8 +96,8 @@ test.describe.serial('Aselo web chat caller', () => {
     }
 
     console.info('Starting filling form');
-    const helpline = getConfigValue('helplineShortCode') as keyof typeof formContentsByHelpline;
-    const formContent = formContentsByHelpline[helpline];
+    const helpline = getConfigValue('helplineShortCode').toString();
+    const formContent = getFormContents(helpline);
     if (!formContent) {
       throw new Error(`No form contents configured for helplineShortCode="${String(helpline)}"`);
     }
