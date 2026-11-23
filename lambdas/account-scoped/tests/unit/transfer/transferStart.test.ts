@@ -385,7 +385,9 @@ describe('transferStartHandler', () => {
       if (isErr(result)) {
         expect((result.error as HttpError).statusCode).toBe(400);
         expect(result.message).toContain(
-          `Counselor has no available capacity: ${channelType === 'voice' ? 'voice' : 'chat'}`,
+          !available && channelType === 'voice'
+            ? "Can't transfer to an offline counselor"
+            : `Counselor has no available capacity: ${channelType === 'voice' ? 'voice' : 'chat'}`,
         );
       }
       expect(mockPatchTaskAttributes).not.toHaveBeenCalled();
