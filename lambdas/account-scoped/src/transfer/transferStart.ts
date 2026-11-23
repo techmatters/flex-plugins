@@ -111,14 +111,14 @@ export const transferStartHandler: FlexValidatedHandler = async (
     targetSid === tokenResult.worker_sid &&
     acceptedReservation.workerSid !== tokenResult.worker_sid;
 
-  const validationResult = await validateChannelIfWorker(
+  const validationResult = await validateChannelIfWorker({
     accountSid,
     targetSid,
     transferTargetType,
-    originalTask.taskChannelUniqueName,
-    originalAttributes.channelType,
+    taskChannelUniqueName: originalTask.taskChannelUniqueName,
+    channelType: originalAttributes.channelType,
     isTakeover,
-  );
+  });
 
   if (isErr(validationResult)) {
     return newErr({

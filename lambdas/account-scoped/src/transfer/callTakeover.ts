@@ -139,14 +139,14 @@ export const requestCallTakeoverHandler: FlexValidatedHandler = async (
     return newHttpErrorResult(`Task ${taskSid} is already assigned to you`, 400);
   }
 
-  const supervisorValidation = await validateChannelIfWorker(
+  const supervisorValidation = await validateChannelIfWorker({
     accountSid,
-    supervisorSid,
-    'worker',
-    'voice',
-    'voice',
-    true,
-  );
+    targetSid: supervisorSid,
+    transferTargetType: 'worker',
+    taskChannelUniqueName: 'voice',
+    channelType: 'voice',
+    isTakeover: true,
+  });
   if (isErr(supervisorValidation)) {
     return newHttpErrorResult(supervisorValidation.message, 400);
   }
