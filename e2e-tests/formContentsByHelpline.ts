@@ -15,6 +15,7 @@
  */
 
 type FormContents = {
+  contactlessTask?: Record<string, string>;
   childInformation: Record<string, string>;
   categories: Record<string, string[]>;
   caseInformation: Record<string, string>;
@@ -64,6 +65,10 @@ const formContentsByHelpline: Record<string, FormContents> = {
         },
         caseInformation: {
           callSummary: 'E2E TEST EMPTY FORM',
+        },
+        contactlessTask: {
+          channel: 'web',
+          helpline: 'Childline',
         },
       },
     },

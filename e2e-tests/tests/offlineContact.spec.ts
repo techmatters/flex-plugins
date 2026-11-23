@@ -15,7 +15,7 @@
  */
 
 import { expect, Page, request, test } from '@playwright/test';
-import { contactForm, ContactFormTab } from '../contactForm';
+import { contactForm } from '../contactForm';
 import { caseHome } from '../case';
 import { agentDesktop, navigateToAgentDesktop } from '../agent-desktop';
 import { skipTestIfDataUpdateDisabled, skipTestIfNotTargeted } from '../skipTest';
@@ -62,18 +62,6 @@ test.describe.serial('Offline Contact (with Case)', () => {
     const formContent = getFormContents(helpline, 'offline');
 
     const form = contactForm(pluginPage);
-    await form.fill([
-      <ContactFormTab>{
-        id: 'contactlessTask',
-        label: 'TabbedForms-AddContactInfoTab',
-        fill: form.fillStandardTab,
-        items: {
-          // Fill only the inputs that does not initializes with "current" initial values
-          channel: 'web',
-          helpline: 'Childline',
-        },
-      },
-    ]);
     await form.fillWithContent(formContent);
     const beforeDate = new Date(); // Capture date here since we'll create case inmediately after saving contact
 
