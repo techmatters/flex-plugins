@@ -112,7 +112,7 @@ module "channel" {
 module "datadog" {
   source = "../../datadog/v1"
   enable_datadog_monitoring = var.enable_datadog_monitoring
-  datadog_tags_bucket       = var.datadog_tags_bucket
+  datadog_tags_bucket       = "${var.datadog_tags_bucket_prefix}-${var.environment}"
   short_helpline    = upper(var.short_helpline)
   short_environment = var.short_environment
   channel_studio_flow_sids = module.channel.channel_studio_flows_sids

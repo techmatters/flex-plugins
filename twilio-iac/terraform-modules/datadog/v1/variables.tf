@@ -33,7 +33,7 @@ variable "enable_datadog_monitoring" {
 }
 
 variable "datadog_tags_bucket" {
-  description = "S3 bucket (us-east-1) holding the Datadog Reference Table files (aselo_twilio_accounts.csv, aselo_twilio_flows.csv) and the per-helpline files"
+  description = "This environment's S3 bucket (us-east-1) holding the Datadog Reference Table files (aselo_twilio_accounts.csv, aselo_twilio_studio_flows.csv) and the per-helpline files"
   type        = string
   default     = ""
 }

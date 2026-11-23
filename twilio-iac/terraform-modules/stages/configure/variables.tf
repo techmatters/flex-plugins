@@ -182,8 +182,8 @@ variable "enable_datadog_monitoring" {
   default = false
 }
 
-variable "datadog_tags_bucket" {
-  description = "S3 bucket for the Datadog Reference Table files (created manually for now, see the datadog/v1 module)"
+variable "datadog_tags_bucket_prefix" {
+  description = "Prefix of the per-environment S3 buckets for the Datadog Reference Table files: <prefix>-<environment>, e.g. aselo-datadog-reference-tables-staging (created manually for now, see the datadog/v1 module)"
   type        = string
   default     = "aselo-datadog-reference-tables"
 }

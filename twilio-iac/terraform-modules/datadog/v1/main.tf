@@ -63,13 +63,17 @@ resource "datadog_monitor" "nr_of_executions_threshold" {
 # "Adding Account Tags (accountSid)" and "Studio Flows Sids to Labels". SIDs missing from the tables get
 # MISSING_ACCOUNT_SHORT_CODE / MISSING_ENV / MISSING_FLOW_NAME from the pipeline.
 #
-# How it fits together (bucket, Reference Tables and the global pipeline are set up outside this repo):
+# One bucket per environment (aselo-datadog-reference-tables-<development|staging|production>), each with
+# its own two Reference Tables (<table>_<dev|stg|prod>), so an apply only touches its own environment's
+# files. The single global pipeline looks a SID up in all three; a SID only exists in one of them.
+#
+# How it fits together (buckets, Reference Tables and the global pipeline are set up outside this repo):
 #   s3://<bucket>/helpline-tags/<folder>/<code>_<env>.csv  this helpline's rows (other applies read them)
 #   s3://<bucket>/<merged file>                            every helpline's rows merged; the Datadog
 #                                                          Reference Table syncs from it (~every 5 minutes)
 #   folder / merged file / Reference Table per table:
-#     accounts      accounts/      aselo_twilio_accounts.csv      aselo_twilio_accounts
-#     studio_flows  studio-flows/  aselo_twilio_studio_flows.csv  aselo_twilio_studio_flows
+#     accounts      accounts/      aselo_twilio_accounts.csv      aselo_twilio_accounts_<dev|stg|prod>
+#     studio_flows  studio-flows/  aselo_twilio_studio_flows.csv  aselo_twilio_studio_flows_<dev|stg|prod>
 # Each apply rebuilds the merged files from all the per-helpline files (and the seed files) plus its own
 # current rows, so one apply is enough and no list is edited by hand. Rows are keyed by SID; for the same
 # SID a later file wins, and this helpline's own rows always win.
