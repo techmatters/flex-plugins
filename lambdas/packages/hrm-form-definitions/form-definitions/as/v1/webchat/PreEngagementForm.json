@@ -328,6 +328,12 @@
         "value": true,
         "message": "Sorry, if you don't accept our terms and conditions we can't provide counselling to you."
       }
+    },
+    {
+      "type": "input",
+      "name": "newQuestionTestMec",
+      "label": "New question test MEC",
+      "required": false
     }
   ]
 }

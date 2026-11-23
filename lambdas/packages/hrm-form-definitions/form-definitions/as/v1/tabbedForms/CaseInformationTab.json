@@ -97,6 +97,12 @@
     "isPII": false
   },
   {
+    "name": "dateOfIncident",
+    "label": "Date of incident",
+    "type": "date-input",
+    "isPII": true
+  },
+  {
     "name": "callSummary",
     "label": "Contact Summary",
     "type": "textarea",
