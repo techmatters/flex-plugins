@@ -111,12 +111,6 @@ export function contactForm(page: Page) {
       }
       await formApi.fill([
         <ContactFormTab>{
-          id: 'contactlessTask',
-          label: 'TabbedForms-AddContactInfoTab',
-          fill: formApi.fillStandardTab,
-          items: formContent.contactlessTask,
-        },
-        <ContactFormTab>{
           id: 'childInformation',
           label: 'TabbedForms-AddChildInfoTab',
           fill: formApi.fillStandardTab,
@@ -133,6 +127,12 @@ export function contactForm(page: Page) {
           label: 'TabbedForms-AddCaseInfoTab',
           fill: formApi.fillStandardTab,
           items: formContent.caseInformation,
+        },
+        <ContactFormTab>{
+          id: 'contactlessTask',
+          label: 'TabbedForms-AddContactInfoTab',
+          fill: formApi.fillStandardTab,
+          items: formContent.contactlessTask,
         },
       ]);
     },
