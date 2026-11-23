@@ -182,7 +182,7 @@ resource "aws_s3_object" "datadog_helpline_tags_own" {
 # same content).
 # prevent_destroy: the files are shared, so no single helpline may delete them. Decommissioning a
 # helpline needs a `removed { lifecycle { destroy = false } }` block for this resource first.
-resource "aws_s3_object" "datadog_helpline_tags_all" {
+resource "aws_s3_object" "datadog_helpline_tags_merged" {
   for_each     = local.datadog_tagging_enabled ? toset(keys(local.datadog_tag_tables)) : toset([])
   bucket       = var.datadog_tags_bucket
   key          = local.datadog_tag_tables[each.key].merged_file
@@ -191,5 +191,17 @@ resource "aws_s3_object" "datadog_helpline_tags_all" {
 
   lifecycle {
     prevent_destroy = true
+  }
+}
+
+# The merged files used to live in one shared bucket (aselo-datadog-reference-tables) under the name
+# datadog_helpline_tags_all. Helplines that applied before the split (USNC and SG staging) still have them
+# in state: forget them without deleting (prevent_destroy would fail the plan, and the old bucket is
+# retired by hand). Safe to delete this block once every helpline has applied with it.
+removed {
+  from = aws_s3_object.datadog_helpline_tags_all
+
+  lifecycle {
+    destroy = false
   }
 }
