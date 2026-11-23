@@ -45,6 +45,11 @@ const formContentsByHelpline: Record<string, FormContents> = {
     channelOverrides: {
       voice: {
         callType: 'child',
+        childInformation: {
+          ...e2eBaseContent.childInformation,
+          gender: 'Unknown',
+          age: 'Unknown',
+        },
       },
       sms: {
         childInformation: {
