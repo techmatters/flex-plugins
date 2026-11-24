@@ -29,9 +29,11 @@ import { FlexValidatedHandler } from '../validation/flexToken';
 import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 import { patchTaskAttributes } from '../task/patchTaskAttributes';
 import { validateChannelIfWorker } from './validateChannelIfWorker';
+import { withAvailableWorkerForTask } from '../task/assignSpecificTask';
+import type { TaskContext } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 
 // After this long, a request can no longer be started or block a new one
-export const TAKEOVER_REQUEST_TTL_MS = 60 * 1000;
+export const TAKEOVER_REQUEST_TTL_MS = 30 * 1000;
 
 export type TakeoverRequestStatus = 'requested' | 'started' | 'failed';
 
@@ -99,8 +101,44 @@ const patchTakeoverRequest = async (
   }
 };
 
+const CALL_TAKEOVER_POLL_INTERVAL_MS = 1000;
+
+type CallTakeoverOutcome = 'accepted' | 'failed' | 'expired';
+
+const waitForPoll = () =>
+  new Promise(resolve => setTimeout(resolve, CALL_TAKEOVER_POLL_INTERVAL_MS));
+
+const waitForCallTakeoverOutcome = async (
+  task: Pick<TaskContext, 'fetch' | 'reservations'>,
+  supervisorSid: WorkerSID,
+): Promise<CallTakeoverOutcome> => {
+  const [{ attributes }, reservations] = await Promise.all([
+    task.fetch(),
+    task.reservations.list(),
+  ]);
+  if (
+    reservations.some(
+      reservation =>
+        reservation.workerSid === supervisorSid &&
+        reservation.reservationStatus === 'accepted',
+    )
+  ) {
+    return 'accepted';
+  }
+  const request: TakeoverRequest | undefined = JSON.parse(attributes).takeoverRequest;
+  if (!request || request.requestedBy !== supervisorSid || request.status === 'failed') {
+    return 'failed';
+  }
+  if (isExpired(request, Date.now())) {
+    return 'expired';
+  }
+  await waitForPoll();
+  return waitForCallTakeoverOutcome(task, supervisorSid);
+};
+
 /**
  * Called by a supervisor: records a takeover request on a call task assigned to another worker.
+ * If the supervisor is offline, they are made available for this task only until the take over ends.
  */
 export const requestCallTakeoverHandler: FlexValidatedHandler = async (
   { body, tokenResult },
@@ -151,21 +189,53 @@ export const requestCallTakeoverHandler: FlexValidatedHandler = async (
     return newHttpErrorResult(supervisorValidation.message, 400);
   }
 
-  return patchTakeoverRequest(accountSid, taskSid, attributes => {
-    if (isTransferInProgress(attributes, acceptedReservation.sid)) {
-      throw new CallTakeoverError('A transfer is already active for this task', 409);
-    }
-    if (isTakeoverRequestInProgress(attributes.takeoverRequest, Date.now())) {
-      throw new CallTakeoverError('A take over is already active for this task', 409);
-    }
-    return {
-      requestedBy: supervisorSid,
-      requestedAt: new Date().toISOString(),
-      originalReservation: acceptedReservation.sid,
-      originalCounselor: acceptedReservation.workerSid as WorkerSID,
-      status: 'requested',
-    };
-  });
+  const recordRequest = () =>
+    patchTakeoverRequest(accountSid, taskSid, attributes => {
+      if (isTransferInProgress(attributes, acceptedReservation.sid)) {
+        throw new CallTakeoverError('A transfer is already active for this task', 409);
+      }
+      if (isTakeoverRequestInProgress(attributes.takeoverRequest, Date.now())) {
+        throw new CallTakeoverError('A take over is already active for this task', 409);
+      }
+      return {
+        requestedBy: supervisorSid,
+        requestedAt: new Date().toISOString(),
+        originalReservation: acceptedReservation.sid,
+        originalCounselor: acceptedReservation.workerSid as WorkerSID,
+        status: 'requested',
+      };
+    });
+
+  if (
+    supervisorValidation.data.type === 'worker' &&
+    supervisorValidation.data.worker.available
+  ) {
+    return recordRequest();
+  }
+
+  // The counselor's client transfers the call asynchronously, so keep the offline supervisor
+  // available (and only routable this task) until the take over has been accepted, failed or expired
+  try {
+    return await withAvailableWorkerForTask(
+      accountSid,
+      { sid: supervisorSid },
+      { reason: 'takeover', taskSid, originalTaskSid: taskSid },
+      async () => {
+        const recordResult = await recordRequest();
+        if (isErr(recordResult)) return recordResult;
+        const outcome = await waitForCallTakeoverOutcome(
+          workspace.tasks.get(taskSid),
+          supervisorSid,
+        );
+        console.info(
+          `Call take over of task ${taskSid} by offline supervisor ${supervisorSid} ended: ${outcome}`,
+        );
+        return recordResult;
+      },
+    );
+  } catch (err) {
+    return newHttpErrorResult(err as Error, 500);
+  }
 };
 
 type UpdateStatusBody = {

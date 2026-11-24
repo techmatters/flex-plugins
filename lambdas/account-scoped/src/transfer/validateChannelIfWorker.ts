@@ -50,7 +50,7 @@ export async function validateChannelIfWorker({
       .fetch(),
   ]);
 
-  if (!worker.available && (!isTakeover || channelType === 'voice')) {
+  if (!worker.available && !isTakeover) {
     return newErr({
       message: `Can't transfer to an offline counselor`,
       error: new Error("Can't transfer to an offline counselor"),
