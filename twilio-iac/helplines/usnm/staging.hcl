@@ -13,6 +13,7 @@ locals {
     flow_vars = {
       custom_functions_url                                   = "https://custom-functions-4084.twil.io"
       usnm_recordings_url                                    = "https://usnm-recordings-v2-1724.twil.io"
+      recordings_url                                         = "https://recordings-staging.tl.techmatters.org/usnm"
       conversation_time_delay_function_sid                   = "ZH45e11e1929796c69c440a52f9692c085"
       is_task_in_queue_function_sid                          = "ZH39ee1bcce2b12e22091c0a0249f3a50b"
       cancel_pending_task_function_sid                       = "ZH373b00896c33f2d6343bfea6483de7eb"
@@ -75,7 +76,7 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usnm/templates/studio-flows/voice.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usnm/templates/studio-flows/voice-staging.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
