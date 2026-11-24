@@ -539,6 +539,7 @@
   "Resources-Search-ResultsDescription-FeeStructure": "Cost: <span style=\"font-weight:800\">{{selections}}</span>.",
   "Resources-Search-ResultsDescription-HowServiceIsOffered": "Offered as <span style=\"font-weight:800\">{{selections}}</span>.",
   "Resources-Search-ResultsDescription-Location": "Located in <span style=\"font-weight:800\">{{location}}</span>.",
+  "Resources-Search-ResultsDescription-Categories": "Categories selected: <span style=\"font-weight:800\">{{count}}</span>.",
   "Search-ClearFormButton": "Clear",
   "Resources-ResourceSearchError": "Something went wrong trying to search for resources.",
   "Resources-Search-SearchTermHeader": "Search resource names, populations, services, languages served, etc.",

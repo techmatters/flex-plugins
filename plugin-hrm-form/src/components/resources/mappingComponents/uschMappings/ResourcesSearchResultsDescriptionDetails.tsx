@@ -48,7 +48,24 @@ const ResourcesSearchResultsDescriptionDetails: React.FC<{}> = () => {
     return null;
   };
 
-  return <>{locationDescription()}</>;
+  const categoriesDescription = () => {
+    const selectedCategoriesCount = filterSelections.categories?.length ?? 0;
+    if (selectedCategoriesCount) {
+      return (
+        <ResourcesSearchResultsDescriptionItem>
+          <Template code="Resources-Search-ResultsDescription-Categories" count={selectedCategoriesCount} />
+        </ResourcesSearchResultsDescriptionItem>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <>
+      {locationDescription()}
+      {categoriesDescription()}
+    </>
+  );
 };
 
 export default ResourcesSearchResultsDescriptionDetails;
