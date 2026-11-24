@@ -53,7 +53,6 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   const asyncDispatcher = useMemo(() => asyncDispatch(dispatch), [dispatch]);
   const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task?.taskSid));
   const isCreating = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
-  const activityName = useSelector((state: RootState) => state.flex.worker.worker.activityName);
   const takeover = useSelector((state: RootState) => selectTakeover(state, task?.taskSid));
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
@@ -100,10 +99,8 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
     return null;
   }
 
-  const isOnline = Boolean(activityName && activityName !== 'Offline');
   const disabledReason = firstApplicableReason([
     [!isSupervisor, 'TakeOver-Disabled-NotSupervisor'],
-    [!isOnline && isCall, 'TakeOver-Disabled-Offline'],
     [isCall && task.taskStatus !== 'assigned', 'TakeOver-Disabled-CallNotActive'],
     [
       isTransferring(task) || isPending || isCallTakeoverInProgress(callTakeoverRequest, Date.now()),

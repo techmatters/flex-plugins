@@ -30,7 +30,7 @@ import { canTransferConference } from './transferTaskState';
 import { SUPERVISOR_TAKEOVER_NOTIFICATION_ID } from './takeoverReservation';
 
 // Matches the lambda: the server rejects claims on older requests anyway, this just avoids the round trip
-export const CALL_TAKEOVER_REQUEST_TTL_MS = 60 * 1000;
+export const CALL_TAKEOVER_REQUEST_TTL_MS = 30 * 1000;
 
 export type CallTakeoverRequest = {
   requestedBy: string;
