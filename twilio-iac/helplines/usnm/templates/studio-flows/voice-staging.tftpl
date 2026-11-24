@@ -1031,8 +1031,8 @@ ${
       "properties": {
         "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_welcome.mp3",
         "offset": {
-          "x": -172,
-          "y": 2053
+          "x": 357,
+          "y": 1773
         },
         "loop": 1
       }
@@ -1143,8 +1143,8 @@ ${
         "number_of_digits": 1,
         "speech_timeout": "5",
         "offset": {
-          "x": 539,
-          "y": 2257
+          "x": 603,
+          "y": 2092
         },
         "loop": 1,
         "finish_on_key": "#",
@@ -1248,8 +1248,8 @@ ${
       "properties": {
         "input": "{{widgets.gather_input_voice_es_service.Digits}}",
         "offset": {
-          "x": 552,
-          "y": 2512
+          "x": 684,
+          "y": 2408
         }
       }
     },
@@ -1265,8 +1265,8 @@ ${
       "properties": {
         "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_prequeue_std.mp3",
         "offset": {
-          "x": 847,
-          "y": 3598
+          "x": 999,
+          "y": 3485
         },
         "loop": 1
       }
@@ -1292,8 +1292,8 @@ ${
         "waitUrlMethod": "POST",
         "timeout": "3600",
         "offset": {
-          "x": 661,
-          "y": 4117
+          "x": 717,
+          "y": 3995
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.voice}",
@@ -1314,8 +1314,8 @@ ${
       "properties": {
         "play": "${flow_vars.usnm_recordings_url}/play_message_voice_es_post_survey_info_std.mp3",
         "offset": {
-          "x": 762,
-          "y": 3853
+          "x": 781,
+          "y": 3770
         },
         "loop": 1
       }
@@ -1341,8 +1341,8 @@ ${
         "number_of_digits": 1,
         "speech_timeout": "5",
         "offset": {
-          "x": 1272,
-          "y": 3206
+          "x": 1424,
+          "y": 3038
         },
         "loop": 1,
         "finish_on_key": "#",
@@ -2293,8 +2293,8 @@ ${
           }
         ],
         "offset": {
-          "x": 229,
-          "y": 2501
+          "x": 278,
+          "y": 2316
         }
       }
     },
@@ -2323,8 +2323,8 @@ ${
       "properties": {
         "input": "{{flow.variables.es_service_counter}}",
         "offset": {
-          "x": -73,
-          "y": 2343
+          "x": 41,
+          "y": 2053
         }
       }
     },
@@ -2426,57 +2426,6 @@ ${
         "content_type": "application/json;charset=utf-8",
         "add_twilio_auth": false,
         "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_en_no_service_std.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_en_no_service_std.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_en_no_service_std.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"maxCallbackAttempts\": 2,\n  \"routingAttributes\": {\"service\": \"std\",\"serviceLanguage\": \"english\",\"language\": \"en\"}\n}",
-        "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
-      }
-    },
-    {
-      "name": "record_voicemail_es_no_service_std",
-      "type": "record-voicemail",
-      "transitions": [
-        {
-          "next": "f_recordingCompleteCallback_es_no_service_std",
-          "event": "recordingComplete"
-        },
-        {
-          "event": "noAudio"
-        },
-        {
-          "next": "f_recordingCompleteCallback_es_no_service_std",
-          "event": "hangup"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": 997,
-          "y": 4021
-        },
-        "play_beep": "true",
-        "timeout": 5,
-        "max_length": 3600
-      }
-    },
-    {
-      "name": "f_recordingCompleteCallback_es_no_service_std",
-      "type": "make-http-request",
-      "transitions": [
-        {
-          "next": "play_message_voice_es_voicemail_saved",
-          "event": "success"
-        },
-        {
-          "next": "http_post_webhook_notify_failed_to_enqueue",
-          "event": "failed"
-        }
-      ],
-      "properties": {
-        "offset": {
-          "x": -1658,
-          "y": 4279
-        },
-        "method": "POST",
-        "content_type": "application/json;charset=utf-8",
-        "add_twilio_auth": false,
-        "body": "{\n  \"accountSid\": \"{{widgets.record_voicemail_es_no_service_std.AccountSid}}\",\n  \"callSid\": \"{{widgets.record_voicemail_es_no_service_std.CallSid}}\",\n  \"callStatus\": \"{{widgets.record_voicemail_es_no_service_std.CallStatus}}\",\n  \"voicemailWorkflowSid\": \"${workflow_sids.master}\",\n  \"from\": \"{{trigger.call.From}}\",\n  \"maxCallbackAttempts\": 2,\n  \"routingAttributes\": {\"service\": \"std\",\"serviceLanguage\": \"spanish\",\"language\": \"es\"}\n}",
         "url": "${lambda_twilio_account_scoped_url}/voicemail/recordingCompleteCallback"
       }
     },
@@ -2612,7 +2561,7 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "record_voicemail_es_no_service_std",
+          "next": "record_voicemail_voice_es_std_no_service",
           "event": "match",
           "conditions": [
             {
@@ -2629,8 +2578,8 @@ ${
       "properties": {
         "input": "{{widgets.send_to_queue_es_std.QueueResult}}",
         "offset": {
-          "x": 644,
-          "y": 4348
+          "x": 787,
+          "y": 4263
         }
       }
     },
@@ -2659,8 +2608,8 @@ ${
       "properties": {
         "input": "{{widgets.send_to_queue_es_tya.QueueResult}}",
         "offset": {
-          "x": 1947,
-          "y": 4391
+          "x": 1659,
+          "y": 4231
         }
       }
     },
@@ -2679,8 +2628,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 1700,
-          "y": 5150
+          "x": 1200,
+          "y": 2605
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
@@ -2715,8 +2664,8 @@ ${
       "properties": {
         "input": "{{widgets.f_isSkilledWorkerAvailable_calls_spanish_tya.parsed.totalAvailableWorkers}}",
         "offset": {
-          "x": 1700,
-          "y": 5380
+          "x": 1856,
+          "y": 3127
         }
       }
     },
@@ -2738,8 +2687,8 @@ ${
           }
         ],
         "offset": {
-          "x": 1330,
-          "y": 5830
+          "x": 1201,
+          "y": 3313
         }
       }
     },
@@ -2769,8 +2718,8 @@ ${
       "properties": {
         "input": "{{flow.variables.counter_es_tya_counter}}",
         "offset": {
-          "x": 1250,
-          "y": 5600
+          "x": 1106,
+          "y": 3145
         }
       }
     },
@@ -2789,8 +2738,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 300,
-          "y": 5150
+          "x": 311,
+          "y": 2666
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
@@ -2825,8 +2774,8 @@ ${
       "properties": {
         "input": "{{widgets.f_isSkilledWorkerAvailable_calls_spanish.parsed.totalAvailableWorkers}}",
         "offset": {
-          "x": 300,
-          "y": 5380
+          "x": 759,
+          "y": 2802
         }
       }
     },
@@ -2848,8 +2797,8 @@ ${
           }
         ],
         "offset": {
-          "x": 360,
-          "y": 5830
+          "x": 225,
+          "y": 3466
         }
       }
     },
@@ -2879,8 +2828,8 @@ ${
       "properties": {
         "input": "{{flow.variables.counter_es_std_no_service_counter}}",
         "offset": {
-          "x": 300,
-          "y": 5600
+          "x": 139,
+          "y": 3210
         }
       }
     },
@@ -2903,8 +2852,8 @@ ${
       "properties": {
         "transcribe": false,
         "offset": {
-          "x": 750,
-          "y": 6100
+          "x": 312,
+          "y": 3885
         },
         "trim": "trim-silence",
         "play_beep": "true",
@@ -2928,8 +2877,8 @@ ${
       ],
       "properties": {
         "offset": {
-          "x": 750,
-          "y": 6350
+          "x": 319,
+          "y": 4065
         },
         "method": "POST",
         "content_type": "application/json;charset=utf-8",
@@ -2959,8 +2908,8 @@ ${
         "number_of_digits": 1,
         "speech_timeout": "auto",
         "offset": {
-          "x": 650,
-          "y": 5600
+          "x": 575,
+          "y": 3094
         },
         "loop": 1,
         "finish_on_key": "#",
@@ -2996,8 +2945,8 @@ ${
       "properties": {
         "input": "{{widgets.gather_input_voice_es_std_no_service.Digits}}",
         "offset": {
-          "x": 750,
-          "y": 5850
+          "x": 615,
+          "y": 3486
         }
       }
     }
