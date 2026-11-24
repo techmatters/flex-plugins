@@ -70,7 +70,7 @@ describe('acceptSpecificTask', () => {
       { sid: 'WRtarget', workerSid: TARGET_SID, reservationStatus: 'pending', update },
     ]);
 
-    await acceptSpecificTask(TARGET_SID, task as any);
+    await acceptSpecificTask({ targetSid: TARGET_SID, task: task as any });
 
     expect(update).toHaveBeenCalledWith({ reservationStatus: 'accepted' });
   });
@@ -82,7 +82,7 @@ describe('acceptSpecificTask', () => {
     ]);
     const beforeAccept = jest.fn().mockResolvedValue(undefined);
 
-    await acceptSpecificTask(TARGET_SID, task as any, beforeAccept);
+    await acceptSpecificTask({ targetSid: TARGET_SID, task: task as any, beforeAccept });
 
     expect(beforeAccept).toHaveBeenCalledWith('WRtarget', false);
     expect(update).toHaveBeenCalled();
@@ -95,7 +95,7 @@ describe('acceptSpecificTask', () => {
     ]);
     const beforeAccept = jest.fn().mockResolvedValue(undefined);
 
-    await acceptSpecificTask(TARGET_SID, task as any, beforeAccept);
+    await acceptSpecificTask({ targetSid: TARGET_SID, task: task as any, beforeAccept });
 
     expect(beforeAccept).toHaveBeenCalledWith('WRtarget', true);
     expect(update).not.toHaveBeenCalled();
@@ -117,7 +117,9 @@ describe('acceptSpecificTask', () => {
       },
     ]);
 
-    await expect(acceptSpecificTask(TARGET_SID, task as any)).resolves.toBeUndefined();
+    await expect(
+      acceptSpecificTask({ targetSid: TARGET_SID, task: task as any }),
+    ).resolves.toBeUndefined();
     expect(fetch).toHaveBeenCalled();
   });
 
@@ -137,9 +139,9 @@ describe('acceptSpecificTask', () => {
       },
     ]);
 
-    await expect(acceptSpecificTask(TARGET_SID, task as any)).rejects.toThrow(
-      'accept failed',
-    );
+    await expect(
+      acceptSpecificTask({ targetSid: TARGET_SID, task: task as any }),
+    ).rejects.toThrow('accept failed');
   });
 
   it('polls for the reservation to appear, bounded to 9 attempts', async () => {
@@ -149,9 +151,9 @@ describe('acceptSpecificTask', () => {
       reservations: jest.fn().mockReturnValue({ list }),
     };
 
-    await expect(acceptSpecificTask(TARGET_SID, task as any)).rejects.toThrow(
-      /no reservation found/,
-    );
+    await expect(
+      acceptSpecificTask({ targetSid: TARGET_SID, task: task as any }),
+    ).rejects.toThrow(/no reservation found/);
 
     expect(list).toHaveBeenCalledTimes(9);
   }, 10000);
@@ -162,9 +164,9 @@ describe('acceptSpecificTask', () => {
       { sid: 'WRtarget', workerSid: TARGET_SID, reservationStatus: 'pending', update },
     ]);
 
-    await expect(acceptSpecificTask(TARGET_SID, task as any)).rejects.toThrow(
-      /not accepted/,
-    );
+    await expect(
+      acceptSpecificTask({ targetSid: TARGET_SID, task: task as any }),
+    ).rejects.toThrow(/not accepted/);
   });
 });
 

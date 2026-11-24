@@ -69,7 +69,7 @@ const assignToAvailableWorker = async (
   newTask: TaskInstance,
 ): Promise<AssignmentResult> => {
   try {
-    await acceptSpecificTask(targetSid, newTask);
+    await acceptSpecificTask({ targetSid, task: newTask });
     console.info(`Task ${newTask.sid} successfully assigned to worker ${targetSid}`);
     return { type: 'success', newTask } as const;
   } catch (error) {

@@ -45,12 +45,17 @@ const waitForClient = () => new Promise(resolve => setTimeout(resolve, 200));
 
 const MAX_TAKEOVER_ACCEPTANCE_RETRIES = 40;
 
-const waitForFlexToAcceptTakeover = async (
-  invitedTask: Pick<TaskContext, 'reservations'>,
-  invitedTaskSid: string,
-  targetSid: string,
+const waitForFlexToAcceptTakeover = async ({
+  invitedTask,
+  invitedTaskSid,
+  targetSid,
   retry = 0,
-): Promise<void> => {
+}: {
+  invitedTask: Pick<TaskContext, 'reservations'>;
+  invitedTaskSid: string;
+  targetSid: string;
+  retry?: number;
+}): Promise<void> => {
   const invitedReservations = await invitedTask.reservations.list();
   const isAccepted = invitedReservations.some(
     reservation =>
@@ -63,7 +68,12 @@ const waitForFlexToAcceptTakeover = async (
     );
   }
   await waitForClient();
-  await waitForFlexToAcceptTakeover(invitedTask, invitedTaskSid, targetSid, retry + 1);
+  await waitForFlexToAcceptTakeover({
+    invitedTask,
+    invitedTaskSid,
+    targetSid,
+    retry: retry + 1,
+  });
 };
 
 export const transferStartHandler: FlexValidatedHandler = async (
@@ -305,11 +315,11 @@ export const transferStartHandler: FlexValidatedHandler = async (
           async () => {
             const invitedTaskSid = await createInvite();
             // Flex must accept the reservation; keep the worker available until it does.
-            await waitForFlexToAcceptTakeover(
-              workspace.tasks.get(invitedTaskSid),
+            await waitForFlexToAcceptTakeover({
+              invitedTask: workspace.tasks.get(invitedTaskSid),
               invitedTaskSid,
               targetSid,
-            );
+            });
           },
         );
       } else {

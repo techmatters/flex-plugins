@@ -59,12 +59,17 @@ const MAX_RESERVATION_RETRIES = 8;
 
 type BeforeAccept = (reservationSid: string, alreadyAccepted: boolean) => Promise<void>;
 
-const acceptReservation = async (
-  targetSid: string,
-  task: ReservableTask,
-  reservation: ReservationInstance,
-  beforeAccept?: BeforeAccept,
-): Promise<void> => {
+const acceptReservation = async ({
+  targetSid,
+  task,
+  reservation,
+  beforeAccept,
+}: {
+  targetSid: string;
+  task: ReservableTask;
+  reservation: ReservationInstance;
+  beforeAccept?: BeforeAccept;
+}): Promise<void> => {
   const alreadyAccepted = reservation.reservationStatus === 'accepted';
   await beforeAccept?.(reservation.sid, alreadyAccepted);
   if (alreadyAccepted) return;
@@ -86,16 +91,21 @@ const acceptReservation = async (
   }
 };
 
-const pollAndAcceptReservation = async (
-  targetSid: string,
-  task: ReservableTask,
-  beforeAccept: BeforeAccept | undefined,
-  retry: number,
-): Promise<void> => {
+const pollAndAcceptReservation = async ({
+  targetSid,
+  task,
+  beforeAccept,
+  retry,
+}: {
+  targetSid: string;
+  task: ReservableTask;
+  beforeAccept?: BeforeAccept;
+  retry: number;
+}): Promise<void> => {
   const reservations = await task.reservations().list();
   const reservation = reservations.find(r => r.workerSid === targetSid);
   if (reservation) {
-    return acceptReservation(targetSid, task, reservation, beforeAccept);
+    return acceptReservation({ targetSid, task, reservation, beforeAccept });
   }
   if (retry >= MAX_RESERVATION_RETRIES) {
     throw new Error(
@@ -103,7 +113,7 @@ const pollAndAcceptReservation = async (
     );
   }
   await waitForReservation();
-  return pollAndAcceptReservation(targetSid, task, beforeAccept, retry + 1);
+  return pollAndAcceptReservation({ targetSid, task, beforeAccept, retry: retry + 1 });
 };
 
 /**
@@ -111,11 +121,16 @@ const pollAndAcceptReservation = async (
  * beforeAccept, if provided, is invoked with the reservation sid before it is accepted (or once
  * discovered already accepted) so callers can record it (e.g. to update transfer metadata).
  */
-export const acceptSpecificTask = (
-  targetSid: string,
-  task: ReservableTask,
-  beforeAccept?: BeforeAccept,
-): Promise<void> => pollAndAcceptReservation(targetSid, task, beforeAccept, 0);
+export const acceptSpecificTask = ({
+  targetSid,
+  task,
+  beforeAccept,
+}: {
+  targetSid: string;
+  task: ReservableTask;
+  beforeAccept?: BeforeAccept;
+}): Promise<void> =>
+  pollAndAcceptReservation({ targetSid, task, beforeAccept, retry: 0 });
 
 /**
  * Temporarily puts worker into an available activity and marks it as only able to receive tasks
