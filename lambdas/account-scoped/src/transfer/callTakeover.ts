@@ -206,11 +206,14 @@ export const requestCallTakeoverHandler: FlexValidatedHandler = async (
       };
     });
 
-  if (
-    supervisorValidation.data.type === 'worker' &&
-    supervisorValidation.data.worker.available
-  ) {
-    return recordRequest();
+  if (supervisorValidation.data.type === 'worker') {
+    const workerAttributes = JSON.parse(supervisorValidation.data.worker.attributes);
+    if (workerAttributes.waitingForSpecificTask || workerAttributes.waitingOfflineContact) {
+      return newHttpErrorResult('Worker is already waiting for a specific task', 409);
+    }
+    if (supervisorValidation.data.worker.available) {
+      return recordRequest();
+    }
   }
 
   // The counselor's client transfers the call asynchronously, so keep the offline supervisor
