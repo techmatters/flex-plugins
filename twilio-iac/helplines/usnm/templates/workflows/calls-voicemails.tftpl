@@ -131,7 +131,7 @@
         "targets": [
           {
             "queue": "${task_queues.en_std_voicemail}",
-            "expression": "(worker.waitingForSpecificTask != true OR (task.targetSid == worker.sid)) AND ((   (worker.waitingOfflineContact != true) mail.assigned_tasks   AND   (     task.channelType == 'voicemail'     AND     worker.channel.voice== 0   )   AND   (     'Voicemail' IN worker.routing.skills   )   AND   (     worker.roles HAS 'agent'   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) ))",
+            "expression": "(worker.waitingForSpecificTask != true OR (task.targetSid == worker.sid)) AND ((   (worker.waitingOfflineContact != true)   AND   (     task.channelType == 'voicemail'     AND     worker.channel.voicemail.assigned_tasks == 0   )   AND   (     'Voicemail' IN worker.routing.skills   )   AND   (     worker.roles HAS 'agent'   )   AND   (     (       task.transferTargetType == 'worker'       AND       task.targetSid == worker.sid     )     OR     (       task.transferTargetType != 'worker'       AND       worker.sid != task.ignoreAgent     )   ) ))",
             "skip_if": "1==1",
             "priority": 70
           },
