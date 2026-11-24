@@ -1321,7 +1321,7 @@ ${
       }
     },
     {
-      "name": "gather_input_voice_es_no_tya_service",
+      "name": "gather_input_voice_es_tya_no_service",
       "type": "gather-input-on-call",
       "transitions": [
         {
@@ -1337,7 +1337,7 @@ ${
         }
       ],
       "properties": {
-        "play": "${flow_vars.usnm_recordings_url}/gather_input_voice_es_no_tya_service.mp3",
+        "play": "${flow_vars.recordings_url}/gather_input_voice_es_tya_no_service.mp3",
         "number_of_digits": 1,
         "speech_timeout": "5",
         "offset": {
@@ -1367,7 +1367,7 @@ ${
             {
               "friendly_name": "If value equal_to 3",
               "arguments": [
-                "{{widgets.gather_input_voice_es_no_tya_service.Digits}}"
+                "{{widgets.gather_input_voice_es_tya_no_service.Digits}}"
               ],
               "type": "equal_to",
               "value": "3"
@@ -1376,7 +1376,7 @@ ${
         }
       ],
       "properties": {
-        "input": "{{widgets.gather_input_voice_es_no_tya_service.Digits}}",
+        "input": "{{widgets.gather_input_voice_es_tya_no_service.Digits}}",
         "offset": {
           "x": 1475,
           "y": 3507
@@ -2623,7 +2623,7 @@ ${
         },
         {
           "event": "failed",
-          "next": "gather_input_voice_es_no_tya_service"
+          "next": "gather_input_voice_es_tya_no_service"
         }
       ],
       "properties": {
@@ -2644,7 +2644,7 @@ ${
       "transitions": [
         {
           "event": "noMatch",
-          "next": "gather_input_voice_es_no_tya_service"
+          "next": "gather_input_voice_es_tya_no_service"
         },
         {
           "event": "match",
@@ -2698,7 +2698,7 @@ ${
       "transitions": [
         {
           "event": "noMatch",
-          "next": "gather_input_voice_es_no_tya_service"
+          "next": "gather_input_voice_es_tya_no_service"
         },
         {
           "event": "match",
