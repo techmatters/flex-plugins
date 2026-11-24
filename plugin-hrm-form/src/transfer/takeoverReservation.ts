@@ -72,7 +72,7 @@ const isOwnCallTakeoverReservation = (reservation: Reservation, workerSid: strin
 
 export const acceptSelfInitiatedTakeover = async (reservation: Reservation) => {
   const { workerClient } = Manager.getInstance();
-  const isChatTakeover = reservation.task.attributes?.initiatedByWorker === workerClient.sid;
+  const isChatTakeover = reservation.task.attributes?.transferMeta?.initiatingWorkerSid === workerClient.sid;
   const isCallTakeover = isOwnCallTakeoverReservation(reservation, workerClient.sid);
   if (!isChatTakeover && !isCallTakeover) return;
 

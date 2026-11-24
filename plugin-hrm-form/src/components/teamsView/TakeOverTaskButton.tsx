@@ -103,7 +103,7 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
   const isOnline = Boolean(activityName && activityName !== 'Offline');
   const disabledReason = firstApplicableReason([
     [!isSupervisor, 'TakeOver-Disabled-NotSupervisor'],
-    [!isOnline, 'TakeOver-Disabled-Offline'],
+    [!isOnline && isCall, 'TakeOver-Disabled-Offline'],
     [isCall && task.taskStatus !== 'assigned', 'TakeOver-Disabled-CallNotActive'],
     [
       isTransferring(task) || isPending || isCallTakeoverInProgress(callTakeoverRequest, Date.now()),
