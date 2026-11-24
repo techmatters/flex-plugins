@@ -40,6 +40,7 @@ jest.mock('../../../src/task/patchTaskAttributes', () => ({
 }));
 
 jest.mock('../../../src/task/assignSpecificTask', () => ({
+  ...jest.requireActual('../../../src/task/assignSpecificTask'),
   withAvailableWorkerForTask: jest.fn(),
 }));
 
@@ -87,6 +88,7 @@ let currentAttributes: Record<string, any>;
 let taskChannelUniqueName: string;
 let reservations: { sid: string; reservationStatus: string; workerSid: string }[];
 let supervisorAvailable: boolean;
+let supervisorAttributes: Record<string, unknown>;
 
 beforeEach(() => {
   jest.useFakeTimers({ doNotFake: ['performance'] }).setSystemTime(NOW);
@@ -94,6 +96,7 @@ beforeEach(() => {
   currentAttributes = {};
   taskChannelUniqueName = 'voice';
   supervisorAvailable = true;
+  supervisorAttributes = {};
   reservations = [
     {
       sid: ORIGINAL_RESERVATION_SID,
@@ -119,7 +122,7 @@ beforeEach(() => {
               get: () => ({
                 fetch: jest.fn(async () => ({
                   available: supervisorAvailable,
-                  attributes: '{}',
+                  attributes: JSON.stringify(supervisorAttributes),
                 })),
                 workerChannels: {
                   get: () => ({
@@ -197,6 +200,14 @@ describe('requestCallTakeoverHandler', () => {
 
   test('supervisor online - records the request without changing their availability', async () => {
     expect(isOk(await requestTakeover())).toBe(true);
+    expect(mockWithAvailableWorkerForTask).not.toHaveBeenCalled();
+  });
+
+  test('supervisor made available for another take over - returns 409', async () => {
+    supervisorAttributes = { waitingForSpecificTask: true };
+
+    expectHttpError(await requestTakeover(), 409);
+    expect(mockPatchTaskAttributes).not.toHaveBeenCalled();
     expect(mockWithAvailableWorkerForTask).not.toHaveBeenCalled();
   });
 

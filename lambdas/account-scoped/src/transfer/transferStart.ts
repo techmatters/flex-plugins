@@ -23,7 +23,7 @@ import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 import { isErr, newErr, newOk } from '@tech-matters/result-type';
 import { FlexValidatedHandler, isSupervisor } from '../validation/flexToken';
 import { patchTaskAttributes } from '../task/patchTaskAttributes';
-import { withAvailableWorkerForTask } from '../task/assignSpecificTask';
+import { isWaitingForTask, withAvailableWorkerForTask } from '../task/assignSpecificTask';
 import { validateChannelIfWorker } from './validateChannelIfWorker';
 import type { TaskContext } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 
@@ -163,6 +163,16 @@ export const transferStartHandler: FlexValidatedHandler = async (
 
   const targetWorker =
     validationResult.data.type === 'worker' ? validationResult.data.worker : undefined;
+
+  // A supervisor made available for another take over looks online, but taking over this task too
+  // would let that take over's cleanup set them back offline and reject this one's reservation
+  if (
+    isTakeover &&
+    targetWorker &&
+    isWaitingForTask(JSON.parse(targetWorker.attributes))
+  ) {
+    return newHttpErrorResult('Worker is already waiting for a specific task', 409);
+  }
 
   let originalParticipantSid: string | undefined;
   try {

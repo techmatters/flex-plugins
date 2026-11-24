@@ -29,7 +29,7 @@ import { FlexValidatedHandler } from '../validation/flexToken';
 import { newHttpErrorResult, newMissingParameterResult } from '../httpErrors';
 import { patchTaskAttributes } from '../task/patchTaskAttributes';
 import { validateChannelIfWorker } from './validateChannelIfWorker';
-import { withAvailableWorkerForTask } from '../task/assignSpecificTask';
+import { isWaitingForTask, withAvailableWorkerForTask } from '../task/assignSpecificTask';
 import type { TaskContext } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 
 // After this long, a request can no longer be started or block a new one
@@ -207,8 +207,9 @@ export const requestCallTakeoverHandler: FlexValidatedHandler = async (
     });
 
   if (supervisorValidation.data.type === 'worker') {
-    const workerAttributes = JSON.parse(supervisorValidation.data.worker.attributes);
-    if (workerAttributes.waitingForSpecificTask || workerAttributes.waitingOfflineContact) {
+    // A supervisor made available for another take over looks online, but taking this shortcut would
+    // let that take over's cleanup set them back offline and reject this one's reservation
+    if (isWaitingForTask(JSON.parse(supervisorValidation.data.worker.attributes))) {
       return newHttpErrorResult('Worker is already waiting for a specific task', 409);
     }
     if (supervisorValidation.data.worker.available) {
