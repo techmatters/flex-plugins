@@ -63,7 +63,6 @@ const ResourceSearchFilters: React.FC<{}> = () => {
   };
 
   useEffect(() => {
-    let isMounted = true;
     const loadReferenceLocations = (referenceLocations: ReferenceLocationState) => {
       const loadedOptionsByList: [USCHReferenceLocationList, FilterOption[] | undefined][] = [
         [USCHReferenceLocationList.Country, referenceLocations.countryOptions],
@@ -78,16 +77,13 @@ const ResourceSearchFilters: React.FC<{}> = () => {
           await searchAsyncDispatch(
             loadReferenceLocationsAsyncAction({ loadReferenceActionFunction: loadReferenceActionFunction(list) }),
           );
-          if (list === USCHReferenceLocationList.Categories && isMounted) {
+          if (list === USCHReferenceLocationList.Categories) {
             setCategoriesLoading(false);
           }
         });
     };
 
     loadReferenceLocations(referenceLocations);
-    return () => {
-      isMounted = false;
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
