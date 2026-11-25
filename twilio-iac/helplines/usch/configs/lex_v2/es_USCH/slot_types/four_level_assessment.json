@@ -1,0 +1,132 @@
+{
+    "slotTypeName": "four_level_assessment",
+    "slotTypeValues": [
+        {
+            "sampleValue": {
+                "value": "Excellent"
+            },
+            "synonyms": [
+                {
+                    "value": "1."
+                },
+                {
+                    "value": "1!"
+                },
+                {
+                    "value": "1"
+                },
+                {
+                    "value": "🥰"
+                },
+                {
+                    "value": ":)"
+                },
+                {
+                    "value": "Excelente"
+                },
+                {
+                    "value": "excelente"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Good"
+            },
+            "synonyms": [
+                {
+                    "value": "2."
+                },
+                {
+                    "value": "2!"
+                },
+                {
+                    "value": "2"
+                },
+                {
+                    "value": "😊"
+                },
+                {
+                    "value": ":|"
+                },
+                {
+                    "value": "Buena"
+                },
+                {
+                    "value": "buena"
+                },
+                {
+                    "value": "Bueno"
+                },
+                {
+                    "value": "bueno"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Fair"
+            },
+            "synonyms": [
+                {
+                    "value": "3."
+                },
+                {
+                    "value": "3!"
+                },
+                {
+                    "value": "3"
+                },
+                {
+                    "value": "😒"
+                },
+                {
+                    "value": ":/"
+                },
+                {
+                    "value": "Regular"
+                },
+                {
+                    "value": "regular"
+                }
+            ]
+        },
+        {
+            "sampleValue": {
+                "value": "Poor"
+            },
+            "synonyms": [
+                {
+                    "value": "4"
+                },
+                {
+                    "value": "4."
+                },
+                {
+                    "value": "4!"
+                },
+                {
+                    "value": "😡"
+                },
+                {
+                    "value": ":("
+                },
+                {
+                    "value": "Mala"
+                },
+                {
+                    "value": "mala"
+                },
+                {
+                    "value": "Malo"
+                },
+                {
+                    "value": "malo"
+                }
+            ]
+        }
+    ],
+    "valueSelectionSetting": {
+        "resolutionStrategy": "TopResolution"
+    }
+}

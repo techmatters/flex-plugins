@@ -1,7 +1,11 @@
 [
   {
-    "label": "Welcome Message",
-    "text": "Hello! I am a live counselor. This chat line does not take reports of abuse, but we are here to listen and to help by providing information, resources, and emotional support. How can I help you today?"
+    "label": "Welcome Message (counselor)",
+    "text": "Hello! I am a live counselor. How can I help?"
+  },
+  {
+    "label": "Welcome Message (advocate)",
+    "text": "Hello! I am a live advocate. How can I help?"
   },
   {
     "label": "Abusive Language",

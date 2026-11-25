@@ -36,7 +36,7 @@
           "2":  {
             "slot_name": "feel_supported",
             "slot_type_name": "yes_no",
-            "slot_question": "Did you feel supported and respected by the counselor? \nReply with: \n1 = Yes, 2 = No",
+            "slot_question": "Did you feel supported and respected by the person who helped you? \nReply with: \n1 = Yes, 2 = No",
             "failure_response": "Thank you for reaching out. Please contact us again if you need more help."
           },
           "3":  {
