@@ -120,7 +120,9 @@ export const loadReferenceActionFunction: (list: string) => LoadReferenceActionF
     allowDescendantKeys: list === USCHReferenceLocationList.Categories,
   });
   const unsortedOptions = apiAttributes.map(({ value, info }) => ({
-    label: info?.name ?? value,
+    // Some values in the DB have stray spaces. Only the label is trimmed: the value must stay
+    // exactly as stored, because it is matched exactly against the search index.
+    label: (info?.name ?? value).trim(),
     value,
   }));
   return { list, options: dedupAndSort(unsortedOptions) };

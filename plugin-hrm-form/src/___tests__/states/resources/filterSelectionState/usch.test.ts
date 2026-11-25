@@ -152,6 +152,21 @@ describe('USCH filterSelectionState', () => {
       });
     });
 
+    test('trims leading and trailing spaces from labels but keeps values as stored', async () => {
+      mockGetDistinctStringAttributes.mockResolvedValue([
+        { value: ' Housing ', info: null, id: '1', language: 'en' },
+        { value: 'Food', info: null, id: '2', language: 'en' },
+      ]);
+      const result = await loadReferenceActionFunction(USCHReferenceLocationList.Categories)();
+      expect(result).toStrictEqual({
+        list: USCHReferenceLocationList.Categories,
+        options: [
+          { value: 'Food', label: 'Food' },
+          { value: ' Housing ', label: 'Housing' },
+        ],
+      });
+    });
+
     test('deduplicates options with the same value, keeping the last', async () => {
       mockGetDistinctStringAttributes.mockResolvedValue([
         { value: 'United States', info: { name: 'United States (first)' }, id: '1', language: 'en' },
