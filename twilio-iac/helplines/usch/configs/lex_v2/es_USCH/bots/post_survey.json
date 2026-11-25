@@ -53,7 +53,7 @@
           "2": {
             "slot_name": "feel_supported",
             "slot_type_name": "yes_no",
-            "slot_question": "¿Sentiste apoyo y respeto por parte del consejero o consejera? \nResponde con: \n1 = Sí, 2 = No",
+            "slot_question": "¿Sentiste apoyo y respeto por parte de la persona que te atendió? \nResponde con: \n1 = Sí, 2 = No",
             "failure_response": "Gracias por comunicarte con nosotros. Vuelve a escribirnos si necesitas más ayuda."
           },
           "3": {

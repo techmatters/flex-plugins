@@ -75,7 +75,7 @@ locals {
           say_voice                               = "Polly.Joanna"
           play_message_voice_post_survey_intro    = "Thank you for calling. Please stay on the line for a short, anonymous, optional survey. You can hang up at any time."
           gather_input_voice_experience_rating    = "How would you rate your experience? Select 1 for excellent, 2 for good, 3 for fair, and 4 for poor."
-          gather_input_voice_feel_supported       = "I felt supported and respected by the counselor. Select 1 for yes and 2 for no."
+          gather_input_voice_feel_supported       = "I felt supported and respected by the person who helped me. Select 1 for yes and 2 for no."
           gather_input_voice_better_prepared      = "I feel better prepared to deal with my situation after this conversation. Select 1 for yes and 2 for no."
           play_message_voice_post_survey_complete = "Thank you for contacting the hotline. Feel free to reach out again if you need additional support."
         }
@@ -87,7 +87,7 @@ locals {
           say_voice                               = "Polly.Lupe"
           play_message_voice_post_survey_intro    = "Gracias por llamar. Por favor permanece en la línea para responder una breve encuesta anónima y opcional. Puedes colgar en cualquier momento."
           gather_input_voice_experience_rating    = "¿Cómo calificarías tu experiencia? Marca 1 para excelente, 2 para buena, 3 para regular y 4 para mala."
-          gather_input_voice_feel_supported       = "Sentí apoyo y respeto por parte del consejero o consejera. Marca 1 para sí y 2 para no."
+          gather_input_voice_feel_supported       = "Sentí apoyo y respeto por parte de la persona que me atendió. Marca 1 para sí y 2 para no."
           gather_input_voice_better_prepared      = "Me siento con más herramientas para enfrentar mi situación después de esta conversación. Marca 1 para sí y 2 para no."
           play_message_voice_post_survey_complete = "Gracias por comunicarte con la línea de ayuda. No dudes en volver a llamarnos si necesitas más apoyo."
         }

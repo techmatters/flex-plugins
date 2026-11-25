@@ -10,7 +10,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "¿Sentiste apoyo y respeto por parte del consejero o consejera? \nResponde con: \n1 = Sí, 2 = No"
+                            "value": "¿Sentiste apoyo y respeto por parte de la persona que te atendió? \nResponde con: \n1 = Sí, 2 = No"
                         }
                     }
                 }
