@@ -18,6 +18,7 @@ import * as React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 
+import '../../mockGetConfig';
 import CheckboxMultiSelectFilter from '../../../components/resources/mappingComponents/CheckboxMultiSelectFilter';
 
 const options = [{ value: 'Free' }, { value: 'Sliding Scale' }, { value: 'Membership Fee' }];
@@ -42,6 +43,12 @@ describe('CheckboxMultiSelectFilter', () => {
     expect(screen.getByLabelText('Free')).not.toBeChecked();
     expect(screen.getByLabelText('Sliding Scale')).toBeChecked();
     expect(screen.getByLabelText('Membership Fee')).not.toBeChecked();
+  });
+
+  test('each label has its full text as a tooltip, so labels cut at two lines can still be read', () => {
+    renderFilter([]);
+
+    options.forEach(({ value }) => expect(screen.getByTitle(value)).toHaveTextContent(value));
   });
 
   test('checking an option adds it to the selection', () => {
