@@ -15,6 +15,7 @@
  */
 import React, { useState } from 'react';
 import { Template } from '@twilio/flex-ui';
+import { CircularProgress } from '@material-ui/core';
 import ArrowRightTwoTone from '@material-ui/icons/ArrowRightTwoTone';
 import ArrowDropDownTwoTone from '@material-ui/icons/ArrowDropDownTwoTone';
 
@@ -31,6 +32,7 @@ const optionMatchesSearchTerm = (searchTerm: string) => ({ value, label }: Filte
   (label ?? value).toLowerCase().includes(searchTerm.trim().toLowerCase());
 
 type Props = {
+  loading: boolean;
   options: FilterOption[];
   selectedValues: string[];
   onChange: (selectedValues: string[] | undefined) => void;
@@ -40,7 +42,7 @@ type Props = {
  * There are too many categories to show them all at once, so the list starts collapsed
  * and can be narrowed down with a search term once expanded.
  */
-const CategoriesFilter: React.FC<Props> = ({ options, selectedValues, onChange }) => {
+const CategoriesFilter: React.FC<Props> = ({ loading, options, selectedValues, onChange }) => {
   const [expanded, setExpanded] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const strings = getTemplateStrings();
@@ -56,7 +58,20 @@ const CategoriesFilter: React.FC<Props> = ({ options, selectedValues, onChange }
         {expanded ? <ArrowDropDownTwoTone /> : <ArrowRightTwoTone />}
         <ResourcesSearchFormFilterHeader style={{ marginBottom: 0 }}>
           <Template code="Resources-Search-categories" />
+          {selectedValues.length > 0 && (
+            <>
+              &nbsp;
+              <Template code="Resources-Search-categories-SelectedCount" count={selectedValues.length} />
+            </>
+          )}
         </ResourcesSearchFormFilterHeader>
+        {loading && (
+          <CircularProgress
+            size={14}
+            style={{ marginLeft: '8px' }}
+            aria-label={strings['Resources-Search-categories-Loading']}
+          />
+        )}
       </SectionTitleButton>
       <SectionCollapse expanded={expanded} timeout="auto">
         <div id={CATEGORIES_OPTIONS_ID} style={{ padding: '10px 0' }}>

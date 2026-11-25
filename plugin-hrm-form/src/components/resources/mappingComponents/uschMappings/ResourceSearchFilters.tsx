@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -52,6 +52,7 @@ const ResourceSearchFilters: React.FC<{}> = () => {
   );
   const { country, province, city, categories } = (filterOptions || {}) as USCHFilterOptions;
   const filterSelections: USCHFilterSelections = useSelector(selectFilterSelections);
+  const [categoriesLoading, setCategoriesLoading] = useState(() => !referenceLocations.categoryOptions?.length);
 
   const updateFilterSelection = (filterName: FilterName, filterValue: string | string[] | undefined) => {
     let reduxFilterValue = filterValue;
@@ -62,6 +63,7 @@ const ResourceSearchFilters: React.FC<{}> = () => {
   };
 
   useEffect(() => {
+    let isMounted = true;
     const loadReferenceLocations = (referenceLocations: ReferenceLocationState) => {
       const loadedOptionsByList: [USCHReferenceLocationList, FilterOption[] | undefined][] = [
         [USCHReferenceLocationList.Country, referenceLocations.countryOptions],
@@ -71,14 +73,21 @@ const ResourceSearchFilters: React.FC<{}> = () => {
       ];
       loadedOptionsByList
         .filter(([, loadedOptions]) => !loadedOptions?.length)
-        .forEach(([list]) =>
-          searchAsyncDispatch(
+        .forEach(async ([list]) => {
+          // asyncDispatch settles once the list is loaded or has failed, it never throws
+          await searchAsyncDispatch(
             loadReferenceLocationsAsyncAction({ loadReferenceActionFunction: loadReferenceActionFunction(list) }),
-          ),
-        );
+          );
+          if (list === USCHReferenceLocationList.Categories && isMounted) {
+            setCategoriesLoading(false);
+          }
+        });
     };
 
     loadReferenceLocations(referenceLocations);
+    return () => {
+      isMounted = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -159,6 +168,7 @@ const ResourceSearchFilters: React.FC<{}> = () => {
         </Row>
       </ResourcesSearchFormSettingBox>
       <CategoriesFilter
+        loading={categoriesLoading}
         options={categories || []}
         selectedValues={filterSelections.categories ?? []}
         onChange={selectedValues => updateFilterSelection('categories', selectedValues)}

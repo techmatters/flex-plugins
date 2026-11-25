@@ -557,6 +557,8 @@
   "Resources-Search-feeStructure": "Fee Structure",
   "Resources-Search-categories": "Categories",
   "Resources-Search-categories-SearchLabel": "Find a category",
+  "Resources-Search-categories-SelectedCount": "({{count}} selected)",
+  "Resources-Search-categories-Loading": "Loading categories",
   "Resources-Search-targetPopulations": "Target Populations",
   "Resources-Search-Preview-PrimaryAddress": "Primary Address",
   "Resources-Search-Preview-AgesServed": "Ages Served",

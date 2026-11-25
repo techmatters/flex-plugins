@@ -21,19 +21,26 @@ import '@testing-library/jest-dom/extend-expect';
 import '../../mockGetConfig';
 import CategoriesFilter from '../../../components/resources/mappingComponents/uschMappings/CategoriesFilter';
 
+jest.mock('@twilio/flex-ui', () => ({
+  ...jest.requireActual('@twilio/flex-ui'),
+  Template: ({ code, count }: { code: string; count?: number }) => (
+    <span>{count === undefined ? code : `${code}:${count}`}</span>
+  ),
+}));
+
 const options = [
   { value: 'Food', label: 'Food' },
   { value: 'Food Banks', label: 'Food Banks' },
   { value: 'Housing', label: 'Housing' },
 ];
 
-const renderFilter = (selectedValues: string[] = []) => {
+const renderFilter = (selectedValues: string[] = [], { loading = false }: { loading?: boolean } = {}) => {
   const onChange = jest.fn();
-  render(<CategoriesFilter options={options} selectedValues={selectedValues} onChange={onChange} />);
+  render(<CategoriesFilter loading={loading} options={options} selectedValues={selectedValues} onChange={onChange} />);
   return onChange;
 };
 
-const toggleButton = () => screen.getByRole('button', { name: /Resources-Search-categories/ });
+const toggleButton = () => screen.getByRole('button', { name: /^Resources-Search-categories/ });
 const searchBox = () => screen.getByRole('textbox');
 const searchFor = (searchTerm: string) => {
   fireEvent.click(toggleButton());
@@ -45,6 +52,30 @@ describe('USCH CategoriesFilter', () => {
     renderFilter();
 
     expect(toggleButton()).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  test('header shows how many categories are selected', () => {
+    renderFilter(['Food', 'Housing']);
+
+    expect(toggleButton()).toHaveTextContent('Resources-Search-categories-SelectedCount:2');
+  });
+
+  test('header does not show a count when no categories are selected', () => {
+    renderFilter();
+
+    expect(toggleButton()).not.toHaveTextContent('Resources-Search-categories-SelectedCount');
+  });
+
+  test('shows a spinner while the categories are loading', () => {
+    renderFilter([], { loading: true });
+
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  test('does not show a spinner once the categories are loaded', () => {
+    renderFilter();
+
+    expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });
 
   test('clicking the header expands it, clicking again collapses it', () => {
