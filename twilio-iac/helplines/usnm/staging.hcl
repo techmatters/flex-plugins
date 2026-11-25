@@ -76,7 +76,7 @@ locals {
       voice : {
         channel_type     = "voice"
         contact_identity = ""
-        templatefile     = "/app/twilio-iac/helplines/usnm/templates/studio-flows/voice-staging.tftpl"
+        templatefile     = "/app/twilio-iac/helplines/usnm/templates/studio-flows/voice.tftpl"
         channel_flow_vars = {
         }
         chatbot_unique_names = []
