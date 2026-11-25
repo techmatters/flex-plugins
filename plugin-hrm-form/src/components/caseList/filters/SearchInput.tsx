@@ -23,6 +23,8 @@ import ClearIcon from '@material-ui/icons/Clear';
 import { MultiSelectSearchInput } from '../../../styles';
 
 type OwnProps = {
+  // Set it when more than one SearchInput can be on screen at the same time
+  id?: string;
   label: string;
   searchTerm: string;
   innerRef: Ref<any>;
@@ -37,6 +39,7 @@ type OwnProps = {
 type Props = OwnProps;
 
 const SearchInput: React.FC<Props> = ({
+  id = 'search-input',
   label,
   searchTerm,
   innerRef,
@@ -59,13 +62,13 @@ const SearchInput: React.FC<Props> = ({
 
   return (
     <>
-      <label htmlFor="search-input" style={{ display: 'block', fontSize: '14px', marginBottom: '10px' }}>
+      <label htmlFor={id} style={{ display: 'block', fontSize: '14px', marginBottom: '10px' }}>
         {label}
       </label>
       <div style={{ position: 'relative' }}>
         <SearchIcon style={{ position: 'absolute', top: 10, left: 8, fontSize: '20px', opacity: '40%' }} />
         <MultiSelectSearchInput
-          id="search-input"
+          id={id}
           ref={innerRef}
           value={searchTerm}
           type="string"

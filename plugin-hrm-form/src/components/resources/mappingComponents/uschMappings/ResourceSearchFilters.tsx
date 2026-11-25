@@ -35,7 +35,7 @@ import {
 } from '../../../../states/resources/filterSelectionState/usch';
 import asyncDispatch from '../../../../states/asyncDispatch';
 import { getFilterSelectionState } from '..';
-import CheckboxMultiSelectFilter from '../CheckboxMultiSelectFilter';
+import CategoriesFilter from './CategoriesFilter';
 
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
 
@@ -158,8 +158,7 @@ const ResourceSearchFilters: React.FC<{}> = () => {
           </Column>
         </Row>
       </ResourcesSearchFormSettingBox>
-      <CheckboxMultiSelectFilter
-        headerCode="Resources-Search-categories"
+      <CategoriesFilter
         options={categories || []}
         selectedValues={filterSelections.categories ?? []}
         onChange={selectedValues => updateFilterSelection('categories', selectedValues)}
