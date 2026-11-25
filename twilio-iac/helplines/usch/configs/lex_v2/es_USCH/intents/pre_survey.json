@@ -64,7 +64,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Gracias. Un consejero o consejera se comunicará contigo en breve."
+                            "value": "Gracias. Te atenderemos lo antes posible."
                         }
                     }
                 }
@@ -85,7 +85,7 @@
                 {
                     "message": {
                         "plainTextMessage": {
-                            "value": "Si se trata de una emergencia que pone en riesgo la vida, comunícate con el 911. Para poder brindarte una mejor atención, responde las siguientes cinco preguntas breves. Luego te pondremos en contacto con un consejero o consejera. Puedes escribir X si prefieres no responder alguna pregunta."
+                            "value": "Si se trata de una emergencia que pone en riesgo la vida, comunícate con el 911. Para poder brindarte una mejor atención, responde las siguientes cinco preguntas breves. Te atenderemos lo antes posible. Puedes escribir X si prefieres no responder alguna pregunta."
                         }
                     }
                 }

@@ -17,11 +17,11 @@
                     }
                 ],
                 "initial_response": {
-                    "message": "Si se trata de una emergencia que pone en riesgo la vida, comunícate con el 911. Para poder brindarte una mejor atención, responde las siguientes cinco preguntas breves. Luego te pondremos en contacto con un consejero o consejera. Puedes escribir X si prefieres no responder alguna pregunta.",
+                    "message": "Si se trata de una emergencia que pone en riesgo la vida, comunícate con el 911. Para poder brindarte una mejor atención, responde las siguientes cinco preguntas breves. Te atenderemos lo antes posible. Puedes escribir X si prefieres no responder alguna pregunta.",
                     "slot_to_elicit": "aboutSelf"
                 },
                 "closing_response": {
-                    "message": "Gracias. Un consejero o consejera se comunicará contigo en breve."
+                    "message": "Gracias. Te atenderemos lo antes posible."
                 },
                 "slot_priorities": {
                     "1": {
