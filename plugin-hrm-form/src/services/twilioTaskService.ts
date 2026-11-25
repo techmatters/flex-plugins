@@ -148,10 +148,9 @@ type TransferChatStartBody = {
 type TransferChatStartReturn = { closed: string; kept: string };
 
 export const transferChatStart = async (body: TransferChatStartBody): Promise<TransferChatStartReturn> => {
-  const { use_twilio_lambda_transfers: useTwilioLambda } = getAseloFeatureFlags();
-  const path = useTwilioLambda ? '/transfer/transferStart' : '/transferChatStart';
   try {
-    return await fetchProtectedApi(path, body, useTwilioLambda ? { useTwilioLambda: true } : undefined);
+    // The lambda endpoint manages the transfer metadata on the original task server side, which is required for supervisor take overs
+    return await fetchProtectedApi('/transfer/transferStart', body, { useTwilioLambda: true });
   } catch (err) {
     Notifications.showNotification('TransferFailed', {
       reason: `Worker ${body.targetSid} is not available.`,
@@ -161,3 +160,21 @@ export const transferChatStart = async (body: TransferChatStartBody): Promise<Tr
     throw err;
   }
 };
+
+type UpdateCallTakeoverStatusBody = {
+  taskSid: TaskSID;
+  status: 'started' | 'failed';
+  reason?: string;
+};
+
+/**
+ * Claims ('started') or fails a supervisor's request to take over a call task. Rejects if the request was already claimed or has expired.
+ */
+export const updateCallTakeoverStatus = (body: UpdateCallTakeoverStatusBody): Promise<void> =>
+  fetchProtectedApi('/transfer/updateCallTakeoverStatus', body, { useTwilioLambda: true });
+
+/**
+ * Asks the counselor assigned a call task to transfer it to the current supervisor (take over)
+ */
+export const requestCallTakeover = (body: { taskSid: TaskSID }): Promise<void> =>
+  fetchProtectedApi('/transfer/requestCallTakeover', body, { useTwilioLambda: true });

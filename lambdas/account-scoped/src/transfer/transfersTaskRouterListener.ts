@@ -30,7 +30,6 @@ import {
   TASK_QUEUE_ENTERED,
 } from '../taskrouter/eventTypes';
 import { EventFields } from '../taskrouter';
-import { retrieveFeatureFlags } from '../configuration/aseloConfiguration';
 import { getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { TransferMeta } from './hasTaskControl';
 import { transitionAgentParticipants } from '../conversation/interactionChannelParticipants';
@@ -154,15 +153,6 @@ const transfersHandler: TaskRouterEventHandler = async (
   accountSid: AccountSID,
   client: Twilio,
 ) => {
-  const featureFlags = await retrieveFeatureFlags(client);
-
-  if (!featureFlags.use_twilio_lambda_transfers) {
-    console.debug(
-      `TransfersTaskRouterListener skipped for account ${accountSid} - use_twilio_lambda_transfers flag not enabled`,
-    );
-    return;
-  }
-
   try {
     const {
       EventType: eventType,

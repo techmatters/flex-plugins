@@ -21,42 +21,7 @@ import { AccountSID } from '@tech-matters/twilio-types';
 import { Twilio } from 'twilio';
 import { getCurrentDefinitionVersion } from './formDefinitionsCache';
 import { postToInternalHrmEndpoint } from './internalHrmRequest';
-import { get } from 'lodash';
-
-export type PostSurveyData = { [question: string]: string | number };
-/**
- * Given a bot's memory returns a function to reduce over an array of OneToManyConfigSpec.
- * The function returned will grab all the answers to the questions defined in the OneToManyConfigSpecs
- * and return a flattened object of type PostSurveyData
- */
-const flattenOneToMany =
-  (memory: PostSurveyData, pathBuilder: (question: string) => string) =>
-  (accum: PostSurveyData, curr: LegacyOneToManyConfigSpec) => {
-    const paths = curr.questions.map(
-      question => ({
-        question,
-        path: pathBuilder(question),
-      }), // Path where the answer for each question should be in bot memory
-    );
-
-    const values: PostSurveyData = {};
-    paths.forEach(p => {
-      values[p.question] = get(memory, p.path, '');
-    });
-
-    return { ...accum, ...values };
-  };
-/**
- * Given the config for the post survey and the bot's memory, returns the collected answers in the format it's stored in HRM.
- */
-export const buildDataObject = (
-  oneToManyConfigSpecs: LegacyOneToManyConfigSpec[],
-  memory: PostSurveyData,
-  pathBuilder: (question: string) => string = q => q,
-) => {
-  const reducerFunction = flattenOneToMany(memory, pathBuilder);
-  return oneToManyConfigSpecs.reduce<PostSurveyData>(reducerFunction, {});
-};
+import { buildDataObject, PostSurveyData } from '../postSurvey/postSurveyData';
 
 type PostSurveyBody = {
   contactTaskId: string;

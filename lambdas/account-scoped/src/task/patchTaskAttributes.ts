@@ -21,6 +21,11 @@ import { ErrorResult, newErr, newOk, Result } from '@tech-matters/result-type';
 
 const MAX_ATTEMPTS = 10;
 
+type PatchTaskAttributesOptions = {
+  attemptsAlreadyMade?: number;
+  requireEtag?: boolean;
+};
+
 type ErrorResultPayload = {
   accountSid: AccountSID;
   taskSid: TaskSID;
@@ -68,7 +73,7 @@ export const patchTaskAttributes = async (
   updatedAttributesGenerator: (
     originalTaskAttributes: Record<string, any>,
   ) => Record<string, any>,
-  attemptsAlreadyMade = 0,
+  { attemptsAlreadyMade = 0, requireEtag = false }: PatchTaskAttributesOptions = {},
 ): Promise<
   Result<
     | ErrorResultPayload
@@ -123,6 +128,16 @@ export const patchTaskAttributes = async (
     }
   }
 
+  if (requireEtag && !version) {
+    return newErrorResult({
+      accountSid,
+      taskSid,
+      etag: version,
+      step: 'update',
+      errorInstance: new Error('Task update requires an ETag for optimistic locking'),
+    });
+  }
+
   const taskAttributes = JSON.parse(task.attributes);
 
   const newAttributes = updatedAttributesGenerator(taskAttributes);
@@ -144,12 +159,10 @@ export const patchTaskAttributes = async (
           console.warn(
             `Error 412 thrown, this usually indicates a mismatch in the ETag from the fetched task (${version}) and the one being updated, retry attempt ${attemptsAlreadyMade + 1} / ${MAX_ATTEMPTS}`,
           );
-          return patchTaskAttributes(
-            accountSid,
-            taskSid,
-            updatedAttributesGenerator,
-            attemptsAlreadyMade + 1,
-          );
+          return patchTaskAttributes(accountSid, taskSid, updatedAttributesGenerator, {
+            attemptsAlreadyMade: attemptsAlreadyMade + 1,
+            requireEtag,
+          });
         }
         return newErrorResult({
           accountSid,

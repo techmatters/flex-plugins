@@ -21,12 +21,7 @@ import {
 } from './conferenceStatusCallback';
 import { retrieveServiceConfigurationAttributes } from '../configuration/aseloConfiguration';
 import { isAgentInConference } from './isAgentInConference';
-import { ReservationStatus } from 'twilio/lib/rest/taskrouter/v1/workspace/task/reservation';
-
-const RESERVATION_STATUSES_TO_PREVENT_ENDING_CALLS: ReservationStatus[] = [
-  'pending',
-  'accepted',
-];
+import { getActiveTaskReservations } from '../task/getActiveTaskReservations';
 
 const takeOffHoldAndUnmute = async (
   participants: ParticipantInstance[],
@@ -110,10 +105,11 @@ export const endConferenceOnParticipantLeaveHandler: ConferenceStatusEventHandle
           .get(workspaceSid)
           .tasks.get(taskSid);
         const task = await taskContext.fetch();
-        const reservations = await taskContext.reservations.list();
-        const reservationPreventingCallEnd = reservations.filter(r =>
-          RESERVATION_STATUSES_TO_PREVENT_ENDING_CALLS.includes(r.reservationStatus),
-        );
+        const reservationPreventingCallEnd = await getActiveTaskReservations({
+          client,
+          taskSid,
+          workspaceSid,
+        });
         if (reservationPreventingCallEnd.length > 0) {
           console.info(
             `${logPrefix} Only the customer remains on conference ${conferenceSid}, but the following reservations on the associated task (${taskSid}) prevent the call ending, most likely due to an ongoing transfer`,
