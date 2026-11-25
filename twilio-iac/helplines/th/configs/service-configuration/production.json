@@ -1,6 +1,7 @@
 {
     "attributes": {
         "feature_flags": {
+            "enable_llm_summary": true
         },
         "pdfImagesSource": "https://tl-public-chat-th-prod.s3.amazonaws.com"
     }
