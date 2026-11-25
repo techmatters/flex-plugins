@@ -38,7 +38,7 @@ import {
   suggestSearchAsyncAction,
   updateSearchFormAction,
 } from '../../../states/resources/search';
-import SearchInput from '../../caseList/filters/SearchInput';
+import SearchInput from '../../SearchInput';
 import { getTemplateStrings } from '../../../hrmConfig';
 import asyncDispatch from '../../../states/asyncDispatch';
 import SearchAutoComplete from './SearchAutoComplete';

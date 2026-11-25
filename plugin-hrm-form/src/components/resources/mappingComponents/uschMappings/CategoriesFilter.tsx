@@ -23,7 +23,7 @@ import { FilterOption } from '../../../../states/resources/types';
 import { getTemplateStrings } from '../../../../hrmConfig';
 import { SectionCollapse } from '../../../search/styles';
 import { ResourcesSearchFormFilterHeader, ResourcesSearchFormSettingBox, SectionTitleButton } from '../../styles';
-import SearchInput from '../../../caseList/filters/SearchInput';
+import SearchInput from '../../../SearchInput';
 import { CheckboxMultiSelectOptions } from '../CheckboxMultiSelectFilter';
 
 const CATEGORIES_OPTIONS_ID = 'resources-search-categories-options';
