@@ -165,11 +165,16 @@ const TabbedFormsTabs: React.FC<Props> = ({ task }) => {
     else isMounted.current = true;
   }, [savedContact?.helpline, setValue]);
 
+  const latestDraftSave = React.useRef({ savedContact, draftContact, saveDraft });
+  latestDraftSave.current = { savedContact, draftContact, saveDraft };
+
   React.useEffect(
     () => () => {
-      saveDraft(savedContact, draftContact);
+      const latest = latestDraftSave.current;
+      if (latest.savedContact && latest.draftContact) {
+        void latest.saveDraft(latest.savedContact, latest.draftContact);
+      }
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
