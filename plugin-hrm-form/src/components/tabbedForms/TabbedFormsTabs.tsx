@@ -24,8 +24,7 @@ import { AnyAction } from 'redux';
 import { removeOfflineContact } from '../../services/formSubmissionHelpers';
 import { RootState } from '../../states';
 import asyncDispatch from '../../states/asyncDispatch';
-import { namespace } from '../../states/storeNamespaces';
-import { getCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
+import { selectCurrentTopmostRouteForTask } from '../../states/routing/getRoute';
 import { Contact, ContactRawJson, isOfflineContact, isOfflineContactTask, isStandaloneITask } from '../../types/types';
 import { isNonDataCallType } from '../../states/validationRules';
 import { selectCaseMergingBanners } from '../../states/case/caseBanners';
@@ -58,6 +57,7 @@ import { useTabbedFormContext } from './hooks/useTabbedForm';
 import '../contact/ResourceReferralList';
 import '../contact/GenerateSummaryButton';
 import '../customIntegrations/uscr/DispatchIncidentButton';
+import { selectCurrentDefinitionVersion } from '../../states/configuration/selectDefinitions';
 
 type Props = TabbedFormsCommonProps;
 
@@ -104,16 +104,14 @@ const TabbedFormsTabs: React.FC<Props> = ({ task }) => {
   const dispatch = useDispatch();
 
   const { taskSid } = task;
-  const {
-    [namespace]: { configuration, routing: routingState },
-  } = useSelector((state: RootState) => state);
-  const currentRoute = useSelector((state: RootState) => getCurrentTopmostRouteForTask(routingState, taskSid));
+
+  const currentRoute = useSelector((state: RootState) => selectCurrentTopmostRouteForTask(state, taskSid));
   const { draftContact, savedContact } = useSelector((state: RootState) => selectContactByTaskSid(state, taskSid));
   const contactId = savedContact.id;
   const { showConnectedToCaseBanner, showRemovedFromCaseBanner } = useSelector((state: RootState) =>
     selectCaseMergingBanners(state, contactId),
   );
-  const { currentDefinitionVersion } = configuration;
+  const currentDefinitionVersion = useSelector(selectCurrentDefinitionVersion);
   const updatedContact = getUnsavedContact(savedContact, draftContact);
 
   const backToCallTypeSelect = () =>
@@ -166,6 +164,19 @@ const TabbedFormsTabs: React.FC<Props> = ({ task }) => {
     if (isMounted.current) setValue('categories', emptyCategories);
     else isMounted.current = true;
   }, [savedContact?.helpline, setValue]);
+
+  const latestDraftSave = React.useRef({ savedContact, draftContact, saveDraft });
+  latestDraftSave.current = { savedContact, draftContact, saveDraft };
+
+  React.useEffect(
+    () => () => {
+      const latest = latestDraftSave.current;
+      if (latest.savedContact && latest.draftContact) {
+        latest.saveDraft(latest.savedContact, latest.draftContact);
+      }
+    },
+    [],
+  );
 
   const csamAttachments = React.useMemo(
     () => savedContact && <CSAMAttachments csamReports={savedContact.csamReports} />,
