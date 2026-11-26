@@ -21,20 +21,24 @@ import configureMockStore from 'redux-mock-store';
 import promiseMiddleware from 'redux-promise-middleware';
 import '@testing-library/jest-dom/extend-expect';
 
-import '../../mockGetConfig';
+import { baseMockConfig } from '../../mockGetConfig';
+import { getAseloFeatureFlags } from '../../../hrmConfig';
 import ResourceSearchFilters from '../../../components/resources/mappingComponents/uschMappings/ResourceSearchFilters';
 import { namespace, referrableResourcesBase } from '../../../states/storeNamespaces';
 
 let mockResolveCategories: () => void;
+const mockLoadedLists: string[] = [];
 
 jest.mock('../../../components/resources/mappingComponents', () => ({
   getFilterSelectionState: () => ({
-    loadReferenceActionFunction: (list: string) => () =>
-      list === 'categories'
+    loadReferenceActionFunction: (list: string) => () => {
+      mockLoadedLists.push(list);
+      return list === 'categories'
         ? new Promise(resolve => {
             mockResolveCategories = () => resolve({ list, options: [] });
           })
-        : Promise.resolve({ list, options: [] }),
+        : Promise.resolve({ list, options: [] });
+    },
   }),
 }));
 
@@ -56,6 +60,34 @@ const renderFilters = (categoryOptions: { value: string; label: string }[] = [])
     </Provider>,
   );
 };
+
+const mockCategoryFiltersFlag = (enabled: boolean) =>
+  (getAseloFeatureFlags as jest.Mock).mockReturnValue({
+    ...baseMockConfig.featureFlags,
+    // eslint-disable-next-line camelcase
+    enable_category_filters: enabled,
+  });
+
+beforeEach(() => {
+  mockLoadedLists.length = 0;
+  mockCategoryFiltersFlag(true);
+});
+
+describe('USCH ResourceSearchFilters - categories feature flag', () => {
+  test('hides the categories filter and does not load categories when the flag is off', async () => {
+    mockCategoryFiltersFlag(false);
+    await act(async () => renderFilters());
+
+    expect(screen.queryByText('Resources-Search-categories')).not.toBeInTheDocument();
+    expect(mockLoadedLists).not.toContain('categories');
+  });
+
+  test('shows the categories filter when the flag is on', () => {
+    renderFilters();
+
+    expect(screen.getByText('Resources-Search-categories')).toBeInTheDocument();
+  });
+});
 
 describe('USCH ResourceSearchFilters - categories loading', () => {
   test('shows a spinner until the categories have been fetched', async () => {

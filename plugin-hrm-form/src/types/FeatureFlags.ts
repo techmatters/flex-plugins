@@ -18,6 +18,7 @@ export type FeatureFlags = {
   // Please keep this in alphabetical order!
   enable_assigned_skill_teams_view_filters: boolean; // Enable the 'Assigned Skill' and 'Unassigned Skill' filters on the teams view
   enable_canned_responses: boolean; // Enables Canned Responses
+  enable_category_filters: boolean; // Enables the categories filter in Resource Search (USCH)
   enable_conference_status_event_handler: boolean; // Enable conference status event handling. This needs to be set up from flex when accepting a task
   enable_confirm_on_browser_close: boolean; // Enables confirmation dialog on browser close when there are unsaved changes
   enable_csam_clc_report: boolean; // Enables CSAM child Reports
