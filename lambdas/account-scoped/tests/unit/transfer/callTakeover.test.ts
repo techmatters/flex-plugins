@@ -23,6 +23,7 @@ import {
   updateCallTakeoverStatusHandler,
 } from '../../../src/transfer/callTakeover';
 import { patchTaskAttributes } from '../../../src/task/patchTaskAttributes';
+import { withAvailableWorkerForTask } from '../../../src/task/assignSpecificTask';
 import { FlexValidatedHttpRequest } from '../../../src/validation/flexToken';
 import { HttpError } from '../../../src/httpTypes';
 import { RecursivePartial } from '../RecursivePartial';
@@ -38,6 +39,14 @@ jest.mock('../../../src/task/patchTaskAttributes', () => ({
   patchTaskAttributes: jest.fn(),
 }));
 
+jest.mock('../../../src/task/assignSpecificTask', () => ({
+  ...jest.requireActual('../../../src/task/assignSpecificTask'),
+  withAvailableWorkerForTask: jest.fn(),
+}));
+
+const mockWithAvailableWorkerForTask = withAvailableWorkerForTask as jest.MockedFunction<
+  typeof withAvailableWorkerForTask
+>;
 const mockGetTwilioClient = getTwilioClient as jest.MockedFunction<
   typeof getTwilioClient
 >;
@@ -79,6 +88,7 @@ let currentAttributes: Record<string, any>;
 let taskChannelUniqueName: string;
 let reservations: { sid: string; reservationStatus: string; workerSid: string }[];
 let supervisorAvailable: boolean;
+let supervisorAttributes: Record<string, unknown>;
 
 beforeEach(() => {
   jest.useFakeTimers({ doNotFake: ['performance'] }).setSystemTime(NOW);
@@ -86,6 +96,7 @@ beforeEach(() => {
   currentAttributes = {};
   taskChannelUniqueName = 'voice';
   supervisorAvailable = true;
+  supervisorAttributes = {};
   reservations = [
     {
       sid: ORIGINAL_RESERVATION_SID,
@@ -111,7 +122,7 @@ beforeEach(() => {
               get: () => ({
                 fetch: jest.fn(async () => ({
                   available: supervisorAvailable,
-                  attributes: '{}',
+                  attributes: JSON.stringify(supervisorAttributes),
                 })),
                 workerChannels: {
                   get: () => ({
@@ -134,6 +145,9 @@ beforeEach(() => {
     currentAttributes = update(currentAttributes);
     return newOk(undefined) as any;
   });
+  mockWithAvailableWorkerForTask.mockImplementation(
+    async (_accountSid, _worker, _info, assign) => assign(),
+  );
 });
 
 afterEach(() => {
@@ -184,10 +198,104 @@ describe('requestCallTakeoverHandler', () => {
     expectHttpError(await requestTakeover(), 400);
   });
 
-  test('supervisor offline - returns 400', async () => {
-    supervisorAvailable = false;
-    expectHttpError(await requestTakeover(), 400);
+  test('supervisor online - records the request without changing their availability', async () => {
+    expect(isOk(await requestTakeover())).toBe(true);
+    expect(mockWithAvailableWorkerForTask).not.toHaveBeenCalled();
+  });
+
+  test('supervisor made available for another take over - returns 409', async () => {
+    supervisorAttributes = { waitingForSpecificTask: true };
+
+    expectHttpError(await requestTakeover(), 409);
     expect(mockPatchTaskAttributes).not.toHaveBeenCalled();
+    expect(mockWithAvailableWorkerForTask).not.toHaveBeenCalled();
+  });
+
+  describe('supervisor offline', () => {
+    const POLL_INTERVAL_MS = 1000;
+
+    const flushPromises = () =>
+      new Promise(resolve => jest.requireActual('timers').setImmediate(resolve));
+
+    // Advances one poll interval at a time, letting each poll's API calls resolve before the next timer fires
+    const advanceTimers = async (ms: number): Promise<void> => {
+      await flushPromises();
+      if (ms <= 0) return;
+      jest.advanceTimersByTime(Math.min(ms, POLL_INTERVAL_MS));
+      await advanceTimers(ms - POLL_INTERVAL_MS);
+    };
+
+    const trackSettled = (promise: Promise<unknown>) => {
+      const tracker = { settled: false };
+      promise.finally(() => {
+        tracker.settled = true;
+      });
+      return tracker;
+    };
+
+    beforeEach(() => {
+      supervisorAvailable = false;
+    });
+
+    test('kept available for this task only, until they accept the call', async () => {
+      const result = requestTakeover();
+      const tracker = trackSettled(result);
+      await advanceTimers(5 * POLL_INTERVAL_MS);
+
+      expect(mockWithAvailableWorkerForTask).toHaveBeenCalledWith(
+        TEST_ACCOUNT_SID,
+        { sid: SUPERVISOR_SID },
+        { reason: 'takeover', taskSid: TASK_SID, originalTaskSid: TASK_SID },
+        expect.any(Function),
+      );
+      expect(currentAttributes.takeoverRequest).toStrictEqual(pendingRequest());
+      expect(tracker.settled).toBe(false);
+
+      reservations.push({
+        sid: 'WRsupervisor',
+        reservationStatus: 'accepted',
+        workerSid: SUPERVISOR_SID,
+      });
+      await advanceTimers(POLL_INTERVAL_MS);
+
+      expect(isOk(await result)).toBe(true);
+    });
+
+    test('stops waiting when the request is marked failed', async () => {
+      const result = requestTakeover();
+      const tracker = trackSettled(result);
+      await advanceTimers(POLL_INTERVAL_MS);
+      expect(tracker.settled).toBe(false);
+
+      currentAttributes.takeoverRequest.status = 'failed';
+      await advanceTimers(POLL_INTERVAL_MS);
+
+      expect(isOk(await result)).toBe(true);
+    });
+
+    test('stops waiting when the request expires', async () => {
+      const result = requestTakeover();
+      const tracker = trackSettled(result);
+      await advanceTimers(TAKEOVER_REQUEST_TTL_MS);
+      expect(tracker.settled).toBe(false);
+
+      await advanceTimers(2 * POLL_INTERVAL_MS);
+
+      expect(isOk(await result)).toBe(true);
+    });
+
+    test('request not recorded - returns the error without waiting', async () => {
+      currentAttributes = { takeoverRequest: pendingRequest() };
+      expectHttpError(await requestTakeover(), 409);
+    });
+
+    test('supervisor already waiting for another task - returns 500', async () => {
+      mockWithAvailableWorkerForTask.mockRejectedValueOnce(
+        new Error('Worker WKsupervisor is already waiting for a specific task'),
+      );
+      expectHttpError(await requestTakeover(), 500);
+      expect(mockPatchTaskAttributes).not.toHaveBeenCalled();
+    });
   });
 
   test('two accepted reservations (warm transfer) - returns 409', async () => {

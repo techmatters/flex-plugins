@@ -385,9 +385,7 @@ describe('transferStartHandler', () => {
       if (isErr(result)) {
         expect((result.error as HttpError).statusCode).toBe(400);
         expect(result.message).toContain(
-          !available && channelType === 'voice'
-            ? "Can't transfer to an offline counselor"
-            : `Counselor has no available capacity: ${channelType === 'voice' ? 'voice' : 'chat'}`,
+          `Counselor has no available capacity: ${channelType === 'voice' ? 'voice' : 'chat'}`,
         );
       }
       expect(mockPatchTaskAttributes).not.toHaveBeenCalled();
@@ -689,13 +687,38 @@ describe('transferStartHandler', () => {
     );
   });
 
+  test('rejects a takeover by a supervisor already made available for another takeover', async () => {
+    workerFetchMocks[SUPERVISOR_WORKER_SID].mockResolvedValue({
+      sid: SUPERVISOR_WORKER_SID,
+      available: true,
+      activitySid: 'WAavailable',
+      attributes: JSON.stringify({ waitingForSpecificTask: true }),
+    });
+    const result = await transferStartHandler(
+      newRequest(
+        { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },
+        { worker_sid: SUPERVISOR_WORKER_SID, roles: ['supervisor'] },
+      ),
+      TEST_ACCOUNT_SID,
+    );
+
+    expect(isErr(result)).toBe(true);
+    if (isErr(result)) {
+      expect((result.error as HttpError).statusCode).toBe(409);
+    }
+    expect(mockPatchTaskAttributes).not.toHaveBeenCalled();
+    expect(mockWorkerUpdate).not.toHaveBeenCalled();
+    expect(mockCreateInvite).not.toHaveBeenCalled();
+  });
+
   test('does not send an invite if the offline supervisor cannot be made available', async () => {
     workerFetchMocks[SUPERVISOR_WORKER_SID].mockResolvedValue({
       sid: SUPERVISOR_WORKER_SID,
       available: false,
       activitySid: 'WAoffline',
-      attributes: JSON.stringify({ waitingForSpecificTask: true }),
+      attributes: '{}',
     });
+    mockWorkerUpdate.mockRejectedValueOnce(new Error('worker update failed'));
     const result = await transferStartHandler(
       newRequest(
         { taskSid: TASK_SID, targetSid: SUPERVISOR_WORKER_SID, mode: 'COLD' },

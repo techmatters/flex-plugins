@@ -17,17 +17,29 @@ import { AccountSID, WorkerSID } from '@tech-matters/twilio-types';
 import { getTwilioClient, getWorkspaceSid } from '@tech-matters/twilio-configuration';
 import { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
 import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
+import { ReservationInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task/reservation';
 import { isErr } from '@tech-matters/result-type';
 import { patchWorker } from '../worker/patchWorker';
 
 type ReservableTask = Pick<TaskInstance, 'reservations' | 'sid'>;
 
-export type WaitingForSpecificTaskInfo = {
+type WaitingForSpecificTaskInfoBase = {
   taskSid?: string;
-  reason: 'offline-contact' | 'takeover';
-  // The original task being taken over, only present for takeovers
-  originalTaskSid?: string;
 };
+
+type WaitingForOfflineContactInfo = WaitingForSpecificTaskInfoBase & {
+  reason: 'offline-contact';
+};
+
+type WaitingForTakeoverInfo = WaitingForSpecificTaskInfoBase & {
+  reason: 'takeover';
+  // The original task being taken over
+  originalTaskSid: string;
+};
+
+export type WaitingForSpecificTaskInfo =
+  | WaitingForOfflineContactInfo
+  | WaitingForTakeoverInfo;
 
 /**
  * `waitingOfflineContact` is deprecated in favour of the generic `waitingForSpecificTask` attribute below.
@@ -43,54 +55,82 @@ const waitForReservation = (): Promise<void> =>
     setTimeout(resolve, 200);
   });
 
+const MAX_RESERVATION_RETRIES = 8;
+
+type BeforeAccept = (reservationSid: string, alreadyAccepted: boolean) => Promise<void>;
+
+const acceptReservation = async ({
+  targetSid,
+  task,
+  reservation,
+  beforeAccept,
+}: {
+  targetSid: string;
+  task: ReservableTask;
+  reservation: ReservationInstance;
+  beforeAccept?: BeforeAccept;
+}): Promise<void> => {
+  const alreadyAccepted = reservation.reservationStatus === 'accepted';
+  await beforeAccept?.(reservation.sid, alreadyAccepted);
+  if (alreadyAccepted) return;
+  let accepted;
+  try {
+    accepted = await reservation.update({ reservationStatus: 'accepted' });
+  } catch (error) {
+    // The Flex client may have accepted the reservation concurrently.
+    const current = await reservation.fetch();
+    if (current.workerSid === targetSid && current.reservationStatus === 'accepted') {
+      return;
+    }
+    throw error;
+  }
+  if (accepted.reservationStatus !== 'accepted') {
+    throw new Error(
+      `Error: reservation ${reservation.sid} for task ${task.sid} and worker ${targetSid} not accepted, status: ${accepted.reservationStatus}`,
+    );
+  }
+};
+
+const pollAndAcceptReservation = async ({
+  targetSid,
+  task,
+  beforeAccept,
+  retry,
+}: {
+  targetSid: string;
+  task: ReservableTask;
+  beforeAccept?: BeforeAccept;
+  retry: number;
+}): Promise<void> => {
+  const reservations = await task.reservations().list();
+  const reservation = reservations.find(r => r.workerSid === targetSid);
+  if (reservation) {
+    return acceptReservation({ targetSid, task, reservation, beforeAccept });
+  }
+  if (retry >= MAX_RESERVATION_RETRIES) {
+    throw new Error(
+      `Error: no reservation found for task ${task.sid} and worker ${targetSid} after ${MAX_RESERVATION_RETRIES} retries`,
+    );
+  }
+  await waitForReservation();
+  return pollAndAcceptReservation({ targetSid, task, beforeAccept, retry: retry + 1 });
+};
+
 /**
  * Polls the reservations on a task for one addressed to targetSid, and accepts it once found.
  * beforeAccept, if provided, is invoked with the reservation sid before it is accepted (or once
  * discovered already accepted) so callers can record it (e.g. to update transfer metadata).
  */
-export const acceptSpecificTask = async (
-  targetSid: string,
-  task: ReservableTask,
-  beforeAccept?: (reservationSid: string, alreadyAccepted: boolean) => Promise<void>,
-): Promise<void> => {
-  for (let retry = 0; retry <= 8; retry++) {
-    // eslint-disable-next-line no-await-in-loop
-    const reservations = await task.reservations().list();
-    const reservation = reservations.find(r => r.workerSid === targetSid);
-    if (reservation) {
-      const alreadyAccepted = reservation.reservationStatus === 'accepted';
-      // eslint-disable-next-line no-await-in-loop
-      await beforeAccept?.(reservation.sid, alreadyAccepted);
-      if (alreadyAccepted) return;
-      let accepted;
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        accepted = await reservation.update({ reservationStatus: 'accepted' });
-      } catch (error) {
-        // The Flex client may have accepted the reservation concurrently.
-        // eslint-disable-next-line no-await-in-loop
-        const current = await reservation.fetch();
-        if (current.workerSid === targetSid && current.reservationStatus === 'accepted') {
-          return;
-        }
-        throw error;
-      }
-      if (accepted.reservationStatus !== 'accepted') {
-        throw new Error(
-          `Error: reservation ${reservation.sid} for task ${task.sid} and worker ${targetSid} not accepted, status: ${accepted.reservationStatus}`,
-        );
-      }
-      return;
-    }
-    if (retry < 8) {
-      // eslint-disable-next-line no-await-in-loop
-      await waitForReservation();
-    }
-  }
-  throw new Error(
-    `Error: no reservation found for task ${task.sid} and worker ${targetSid} after 8 retries`,
-  );
-};
+export const acceptSpecificTask = ({
+  targetSid,
+  task,
+  beforeAccept,
+}: {
+  targetSid: string;
+  task: ReservableTask;
+  beforeAccept?: BeforeAccept;
+}): Promise<void> =>
+  pollAndAcceptReservation({ targetSid, task, beforeAccept, retry: 0 });
 
 /**
  * Temporarily puts worker into an available activity and marks it as only able to receive tasks

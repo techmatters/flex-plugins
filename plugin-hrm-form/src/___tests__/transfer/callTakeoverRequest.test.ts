@@ -19,6 +19,7 @@ import { EventEmitter } from 'events';
 import type { Reservation, Worker } from 'twilio-taskrouter';
 
 import {
+  CALL_TAKEOVER_REQUEST_TTL_MS,
   isCallTakeoverInProgress,
   isCallTakeoverRequestForReservation,
   setUpCallTakeoverRequests,
@@ -84,7 +85,7 @@ describe('isCallTakeoverRequestForReservation', () => {
     ['request failed', newRequest({ status: 'failed' })],
     ['request for another reservation', newRequest({ originalReservation: 'WRother' })],
     ['request made by this worker', newRequest({ requestedBy: COUNSELOR_SID })],
-    ['expired request', newRequest({ requestedAt: new Date(NOW - 60 * 1000 - 1).toISOString() })],
+    ['expired request', newRequest({ requestedAt: new Date(NOW - CALL_TAKEOVER_REQUEST_TTL_MS - 1).toISOString() })],
   ])('%s - false', (_, request) => {
     expect(isCallTakeoverRequestForReservation(newReservation(request), NOW)).toBe(false);
   });
@@ -101,7 +102,7 @@ describe('isCallTakeoverInProgress', () => {
     ['fresh requested', newRequest(), true],
     ['fresh started', newRequest({ status: 'started' }), true],
     ['failed', newRequest({ status: 'failed' }), false],
-    ['expired', newRequest({ requestedAt: new Date(NOW - 60 * 1000 - 1).toISOString() }), false],
+    ['expired', newRequest({ requestedAt: new Date(NOW - CALL_TAKEOVER_REQUEST_TTL_MS - 1).toISOString() }), false],
   ])('%s - %p', (_, request, expected) => {
     expect(isCallTakeoverInProgress(request as any, NOW)).toBe(expected);
   });

@@ -22,14 +22,21 @@ import { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 type ValidationResult = { type: 'worker'; worker: WorkerInstance } | { type: 'queue' };
 
 // If the transfer targets a worker, validate that the worker is online and has capacity.
-export async function validateChannelIfWorker(
-  accountSid: AccountSID,
-  targetSid: string,
-  transferTargetType: string,
-  taskChannelUniqueName: string,
-  channelType: string,
-  isTakeover: boolean,
-): Promise<Result<Error, ValidationResult>> {
+export async function validateChannelIfWorker({
+  accountSid,
+  targetSid,
+  transferTargetType,
+  taskChannelUniqueName,
+  channelType,
+  isTakeover,
+}: {
+  accountSid: AccountSID;
+  targetSid: string;
+  transferTargetType: string;
+  taskChannelUniqueName: string;
+  channelType: string;
+  isTakeover: boolean;
+}): Promise<Result<Error, ValidationResult>> {
   const client = await getTwilioClient(accountSid);
   const workspaceSid = await getWorkspaceSid(accountSid);
   if (transferTargetType === 'queue') return newOk({ type: 'queue' });
@@ -43,7 +50,7 @@ export async function validateChannelIfWorker(
       .fetch(),
   ]);
 
-  if (!worker.available && (!isTakeover || channelType === 'voice')) {
+  if (!worker.available && !isTakeover) {
     return newErr({
       message: `Can't transfer to an offline counselor`,
       error: new Error("Can't transfer to an offline counselor"),
