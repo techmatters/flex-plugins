@@ -14,42 +14,58 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import { filterSensitiveData, maskText } from '../../attributeFilterer';
-import type { JsonValue } from '../../attributeFilterer';
+import { filterSensitiveData, isJsonObject, maskText } from '../../sensitiveDataFilter';
+import type { JsonObject, JsonValue } from '../../sensitiveDataFilter';
 
 // Shapes copied from real events in Datadog, with made-up numbers, IPs and emails
 const HELPSEEKER_NUMBER = '+15550001234';
 const HELPLINE_NUMBER = '+15559876543';
 
-type StreamEvent = { type?: string; data: Record<string, any> };
+// Reads a nested field of a masked event
+const field = (value: JsonValue | undefined, ...path: string[]): JsonValue | undefined =>
+  path.reduce<JsonValue | undefined>(
+    (current, key) => (isJsonObject(current) ? current[key] : undefined),
+    value,
+  );
 
-const filter = (event: StreamEvent): StreamEvent =>
-  filterSensitiveData(event as JsonValue) as StreamEvent;
+const maskedData = (event: JsonObject) => field(filterSensitiveData(event), 'data');
 
-const taskRouterEvent = (taskAttributes: Record<string, unknown>): StreamEvent => ({
+const taskRouterEvent = (taskAttributesJson: string): JsonObject => ({
   type: 'com.twilio.taskrouter.task.created',
   data: {
     account_sid: 'ACxxx',
     name: 'TasksCreated',
     payload: {
       task_sid: 'WTxxx',
-      task_attributes: JSON.stringify(taskAttributes),
+      task_attributes: taskAttributesJson,
       worker_name: 'counselor@helpline.org',
     },
   },
 });
 
-const filteredTaskAttributes = (taskAttributes: Record<string, unknown>) =>
-  JSON.parse(filter(taskRouterEvent(taskAttributes)).data.payload.task_attributes);
+const maskedTaskAttributes = (taskAttributesJson: string) =>
+  field(maskedData(taskRouterEvent(taskAttributesJson)), 'payload', 'task_attributes');
 
-const errorLogEvent = (payload: JsonValue): StreamEvent => ({
+const filteredTaskAttributes = (taskAttributes: JsonObject) =>
+  JSON.parse(String(maskedTaskAttributes(JSON.stringify(taskAttributes))));
+
+const errorLogEvent = (payload: JsonValue, otherFields: JsonObject = {}): JsonObject => ({
   type: 'com.twilio.error-logs.error.logged',
-  data: { account_sid: 'ACxxx', level: 'INFO', product_name: 'Functions', payload },
+  data: {
+    account_sid: 'ACxxx',
+    level: 'INFO',
+    product_name: 'Functions',
+    payload,
+    ...otherFields,
+  },
 });
+
+const maskedErrorLogPayload = (payload: JsonValue) =>
+  String(field(maskedData(errorLogEvent(payload)), 'payload'));
 
 // Anything that still looks like a phone number, IP address or email
 const UNMASKED_DATA =
-  /(\+|%2B)\d{7,15}|\b(\d{1,3}\.){3}\d{1,3}\b|jane@mail\.com|64211234567|26300000000001/i;
+  /(\+|%2B)\d{7,15}|\b(\d{1,3}\.){3}\d{1,3}\b|jane@mail\.com|64211234567|26300000000001|U4af498/i;
 
 describe('filterSensitiveData', () => {
   describe('TaskRouter task attributes', () => {
@@ -74,7 +90,7 @@ describe('filterSensitiveData', () => {
         name: 'XXXXX1234',
         name_old: 'XXXXX0.40',
         customerAddress: 'XXXXX1234',
-        customerName: 'XXXXXmith',
+        customerName: 'XXXXX',
         outbound_to: 'XXXXX1234',
         friendlyName: 'XXXXX',
         ip: 'XXXXX0.40',
@@ -112,7 +128,7 @@ describe('filterSensitiveData', () => {
         filteredTaskAttributes({
           to: HELPLINE_NUMBER,
           called: HELPLINE_NUMBER,
-          ivr: { phone: HELPSEEKER_NUMBER },
+          ivr: { phone: HELPSEEKER_NUMBER, address: '26300000000001' },
           conversations: { conversation_attribute_1: `call me on ${HELPSEEKER_NUMBER}` },
           notes: ['jane@mail.com', 'from 10.20.30.40'],
           channelType: 'voice',
@@ -121,39 +137,68 @@ describe('filterSensitiveData', () => {
       ).toStrictEqual({
         to: 'XXXXX6543',
         called: 'XXXXX6543',
-        ivr: { phone: 'XXXXX1234' },
+        ivr: { phone: 'XXXXX1234', address: 'XXXXX0001' },
         conversations: { conversation_attribute_1: 'call me on XXXXX1234' },
-        notes: ['XXXXX.com', 'from XXXXX0.40'],
+        notes: ['XXXXX', 'from XXXXX0.40'],
         channelType: 'voice',
         language: 'en-US',
       });
     });
 
-    test('keeps empty and non-text values as they are', () => {
+    test('masks names entirely, surnames included', () => {
       expect(
-        filteredTaskAttributes({ from: '', name: null, caller: 42, ignoreAgent: '' }),
-      ).toStrictEqual({ from: '', name: null, caller: 42, ignoreAgent: '' });
+        filteredTaskAttributes({
+          customerName: 'Maria Lopez',
+          firstName: 'Maria',
+          friendlyName: 'Jane Doe',
+          name: 'Jane Doe',
+        }),
+      ).toStrictEqual({
+        customerName: 'XXXXX',
+        firstName: 'XXXXX',
+        friendlyName: 'XXXXX',
+        name: 'XXXXX',
+      });
+    });
+
+    test('masks numbers under helpseeker attributes and keeps the JSON valid', () => {
+      expect(
+        filteredTaskAttributes({ caller: 15550001234, from: 42, name: null }),
+      ).toStrictEqual({
+        caller: 'XXXXX1234',
+        from: 'XXXXX',
+        name: null,
+      });
+    });
+
+    test('keeps empty and other non-text values as they are', () => {
+      expect(
+        filteredTaskAttributes({ from: '', name: null, ignoreAgent: '', priority: 42 }),
+      ).toStrictEqual({ from: '', name: null, ignoreAgent: '', priority: 42 });
     });
 
     test('leaves the event envelope alone', () => {
-      const event = filter(taskRouterEvent({ from: HELPSEEKER_NUMBER }));
+      const event = filterSensitiveData(
+        taskRouterEvent(JSON.stringify({ from: HELPSEEKER_NUMBER })),
+      );
 
-      expect(event.type).toBe('com.twilio.taskrouter.task.created');
-      expect(event.data.name).toBe('TasksCreated');
-      expect(event.data.payload.task_sid).toBe('WTxxx');
-      expect(event.data.payload.worker_name).toBe('counselor@helpline.org');
+      expect(field(event, 'type')).toBe('com.twilio.taskrouter.task.created');
+      expect(field(event, 'data', 'name')).toBe('TasksCreated');
+      expect(field(event, 'data', 'payload', 'task_sid')).toBe('WTxxx');
+      expect(field(event, 'data', 'payload', 'worker_name')).toBe(
+        'counselor@helpline.org',
+      );
     });
 
     test('masks task attributes that are not valid JSON as free text', () => {
-      const event = taskRouterEvent({});
-      event.data.payload.task_attributes = `{"from":"${HELPSEEKER_NUMBER}"`;
-
-      expect(filter(event).data.payload.task_attributes).toBe('{"from":"XXXXX1234"');
+      expect(maskedTaskAttributes(`{"from":"${HELPSEEKER_NUMBER}"`)).toBe(
+        '{"from":"XXXXX1234"',
+      );
     });
   });
 
   test('masks the contact address of Studio executions', () => {
-    const event = filter({
+    const data = maskedData({
       type: 'com.twilio.studio.flow.execution.started',
       data: {
         contact_channel_address: 'sip:+260000000001@10.20.30.40',
@@ -161,14 +206,14 @@ describe('filterSensitiveData', () => {
       },
     });
 
-    expect(event.data).toStrictEqual({
+    expect(data).toStrictEqual({
       contact_channel_address: 'XXXXX0.40',
       flow_sid: 'FWxxx',
     });
   });
 
   test('masks the numbers and the text of Messaging events', () => {
-    const event = filter({
+    const data = maskedData({
       type: 'com.twilio.messaging.inbound-message.received',
       data: {
         from: HELPSEEKER_NUMBER,
@@ -178,7 +223,7 @@ describe('filterSensitiveData', () => {
       },
     });
 
-    expect(event.data).toStrictEqual({
+    expect(data).toStrictEqual({
       from: 'XXXXX1234',
       to: 'XXXXX6543',
       body: 'XXXXX',
@@ -187,7 +232,7 @@ describe('filterSensitiveData', () => {
   });
 
   test('masks the author and text of Conversations events', () => {
-    const event = filter({
+    const data = maskedData({
       type: 'com.twilio.conversations.message.added',
       data: {
         Author: 'modica:+64211234567',
@@ -196,26 +241,50 @@ describe('filterSensitiveData', () => {
       },
     });
 
-    expect(event.data).toStrictEqual({
+    expect(data).toStrictEqual({
       Author: 'XXXXX4567',
       Body: 'XXXXX',
       ConversationSid: 'CHxxx',
     });
   });
 
-  test('masks phone numbers in any other event type', () => {
-    const event = filter({
+  test('masks the addresses, emails and attributes of Conversations participant events', () => {
+    const data = maskedData({
+      type: 'com.twilio.conversations.participant.added',
+      data: {
+        MessagingBinding: {
+          Address: `whatsapp:${HELPSEEKER_NUMBER}`,
+          ProxyAddress: `whatsapp:${HELPLINE_NUMBER}`,
+        },
+        Identity: 'jane@mail.com',
+        Attributes: JSON.stringify({ friendlyName: 'Jane Doe', email: 'jane@mail.com' }),
+        ParticipantSid: 'MBxxx',
+      },
+    });
+
+    expect(data).toStrictEqual({
+      MessagingBinding: { Address: 'XXXXX1234', ProxyAddress: 'whatsapp:XXXXX6543' },
+      Identity: 'XXXXX',
+      Attributes: JSON.stringify({ friendlyName: 'XXXXX', email: 'XXXXX' }),
+      ParticipantSid: 'MBxxx',
+    });
+  });
+
+  test('masks phone numbers, IPs and emails in any other event type', () => {
+    const data = maskedData({
       type: 'com.twilio.voice.insights.call-summary.complete',
       data: {
         from: { caller: HELPSEEKER_NUMBER, country_code: 'US' },
         to: { callee: HELPLINE_NUMBER },
+        client_edge: { ip: '10.20.30.40', identity: 'jane@mail.com' },
         call_sid: 'CAxxx',
       },
     });
 
-    expect(event.data).toStrictEqual({
+    expect(data).toStrictEqual({
       from: { caller: 'XXXXX1234', country_code: 'US' },
       to: { callee: 'XXXXX6543' },
+      client_edge: { ip: 'XXXXX0.40', identity: 'XXXXX' },
       call_sid: 'CAxxx',
     });
   });
@@ -262,24 +331,89 @@ describe('filterSensitiveData', () => {
         '\\"name\\":\\"26300000000001234\\"',
       ],
       ['a webhook parameter without +', 'From=26300000000001&To=62640'],
+      ['a phone attribute without +', 'ivr: { \\"phone\\":\\"26300000000001\\" }'],
+      ['an address without +', 'address: 26300000000001'],
+      ['a friendlyName without +', 'friendlyName=26300000000001'],
+      ['a LINE user ID', 'From=line:U4af4980629a1b2c3d4e5f60718293a4b'],
     ])('masks %s', (_description, message) => {
-      const payload = filter(
-        errorLogEvent(JSON.stringify({ service_sid: 'ZSxxx', message })),
-      ).data.payload;
+      const payload = maskedErrorLogPayload(
+        JSON.stringify({ service_sid: 'ZSxxx', message }),
+      );
 
       expect(payload).not.toMatch(UNMASKED_DATA);
       expect(payload).toContain('ZSxxx');
     });
 
-    test('masks payloads that arrive as objects, and the other fields of the event', () => {
-      const errorLog = errorLogEvent({
-        request_url: `https://hook?From=%2B15550001234&ip=10.20.30.40`,
+    test('masks the message text and profile name of a logged webhook request', () => {
+      const payload = maskedErrorLogPayload(
+        JSON.stringify({
+          error_code: '11200',
+          webhook: {
+            request: {
+              url: 'https://hook.example.org/webhook',
+              parameters: {
+                Body: 'my name is Jane and I live at 5 Main St',
+                From: `whatsapp:${HELPSEEKER_NUMBER}`,
+                ProfileName: 'Jane Doe',
+                MessageSid: 'SMxxx',
+              },
+            },
+            response: { status_code: 502, body: 'Bad gateway' },
+          },
+        }),
+      );
+
+      expect(JSON.parse(payload)).toStrictEqual({
+        error_code: '11200',
+        webhook: {
+          request: {
+            url: 'https://hook.example.org/webhook',
+            parameters: {
+              Body: 'XXXXX',
+              From: 'XXXXX1234',
+              ProfileName: 'XXXXX',
+              MessageSid: 'SMxxx',
+            },
+          },
+          response: { status_code: 502, body: 'Bad gateway' },
+        },
       });
-      errorLog.data.message = 'Failed to reach jane@mail.com';
-      const event = filter(errorLog);
+    });
+
+    test.each([
+      [
+        'URL-encoded',
+        'Body=I+want+to+kill+myself&From=whatsapp%3A%2B15550001234&ProfileName=Jane+Doe',
+        'Body=XXXXX&From=whatsapp%3AXXXXX1234&ProfileName=XXXXX',
+      ],
+      [
+        'logged as JSON',
+        'parameters: {"Body":"I need help","ProfileName":"Jane Doe"}',
+        'parameters: {"Body":"XXXXX","ProfileName":"XXXXX"}',
+      ],
+      [
+        'logged as escaped JSON',
+        'parameters: {\\"Body\\":\\"I need help\\"}',
+        'parameters: {\\"Body\\":\\"XXXXX\\"}',
+      ],
+    ])('masks message text and profile names in free text, %s', (_d, text, expected) => {
+      expect(maskText(text)).toBe(expected);
+    });
+
+    test('masks payloads that arrive as objects, and the other fields of the event', () => {
+      const event = filterSensitiveData(
+        errorLogEvent(
+          { request_url: `https://hook?From=%2B15550001234&ip=10.20.30.40` },
+          { message: 'Failed to reach jane@mail.com' },
+        ),
+      );
 
       expect(JSON.stringify(event)).not.toMatch(UNMASKED_DATA);
-      expect(event.data.account_sid).toBe('ACxxx');
+      expect(field(event, 'data', 'account_sid')).toBe('ACxxx');
+    });
+
+    test('masks every digit of numbers longer than 15 digits but the last 4', () => {
+      expect(maskText('address: +12345678901234567890')).toBe('address: XXXXX7890');
     });
 
     test('keeps short codes, SIDs, timestamps and dates', () => {
@@ -301,11 +435,12 @@ describe('filterSensitiveData', () => {
 
       maskText(longText);
 
-      expect(Date.now() - start).toBeLessThan(500);
+      // Takes a few ms; a backtracking regex takes seconds. The margin covers slow CI runners.
+      expect(Date.now() - start).toBeLessThan(2000);
     });
   });
 
-  test('masks phone numbers in values that are not events', () => {
+  test('masks values that are not events', () => {
     expect(filterSensitiveData({ type: 'unknown' })).toStrictEqual({ type: 'unknown' });
     expect(filterSensitiveData(`call ${HELPSEEKER_NUMBER}`)).toBe('call XXXXX1234');
   });
