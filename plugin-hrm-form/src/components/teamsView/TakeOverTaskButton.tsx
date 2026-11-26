@@ -124,7 +124,8 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
           style={{
             display: 'inline-block',
             alignSelf: 'end',
-            marginTop: '-30px',
+            marginTop: '-32px',
+            marginBottom: '4px',
             marginRight: '18px',
           }}
         >
