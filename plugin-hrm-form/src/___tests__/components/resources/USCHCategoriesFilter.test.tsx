@@ -88,6 +88,13 @@ describe('USCH CategoriesFilter', () => {
     expect(toggleButton()).toHaveAttribute('aria-expanded', 'false');
   });
 
+  test('clicking the header does not expand it while the categories are loading', () => {
+    renderFilter([], { loading: true });
+
+    fireEvent.click(toggleButton());
+    expect(toggleButton()).toHaveAttribute('aria-expanded', 'false');
+  });
+
   test('shows every category when there is no search term', () => {
     renderFilter();
 

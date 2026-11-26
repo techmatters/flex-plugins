@@ -52,6 +52,8 @@ const CategoriesFilter: React.FC<Props> = ({ loading, options, selectedValues, o
       <SectionTitleButton
         aria-expanded={expanded}
         aria-controls={CATEGORIES_OPTIONS_ID}
+        // The options aren't available until they finish loading, so there is nothing to expand yet
+        disabled={loading}
         onClick={() => setExpanded(!expanded)}
         style={{ justifyContent: 'flex-start' }}
       >
@@ -67,6 +69,8 @@ const CategoriesFilter: React.FC<Props> = ({ loading, options, selectedValues, o
         </ResourcesSearchFormFilterHeader>
         {loading && (
           <CircularProgress
+            // MUI's shrink animation freezes when the main thread is busy, making the spinner look stuck
+            disableShrink
             size={14}
             style={{ marginLeft: '8px' }}
             aria-label={strings['Resources-Search-categories-Loading']}
