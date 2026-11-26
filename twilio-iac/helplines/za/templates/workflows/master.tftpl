@@ -7,7 +7,7 @@
         "targets": [
           {
             "queue": "${task_queues.webchat}",
-            "expression": "(worker.waitingForSpecificTask != true OR (task.targetSid == worker.sid)) AND ((((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND (worker.waitingOfflineContact != true)))"
+            "expression": "(((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.waitingOfflineContact != true)"
           }
         ]
       },
@@ -17,7 +17,7 @@
         "targets": [
           {
             "queue": "${task_queues.offline}",
-            "expression": "(worker.waitingForSpecificTask != true OR (task.targetSid == worker.sid)) AND ( task.isContactlessTask == true)"
+            "expression": " task.isContactlessTask == true"
           }
         ]
       },
@@ -27,7 +27,7 @@
         "targets": [
           {
             "queue": "${task_queues.free_state}",
-            "expression": "(worker.waitingForSpecificTask != true OR (task.targetSid == worker.sid)) AND ((((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND (worker.waitingOfflineContact != true)))"
+            "expression": "(((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.waitingOfflineContact != true)"
           }
         ]
       },
@@ -37,7 +37,7 @@
         "targets": [
           {
             "queue": "${task_queues.mpumalanga}",
-            "expression": "(worker.waitingForSpecificTask != true OR (task.targetSid == worker.sid)) AND ((((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND (worker.waitingOfflineContact != true)))"
+            "expression": "(((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.waitingOfflineContact != true)"
           }
         ]
       },
@@ -47,7 +47,7 @@
         "targets": [
           {
             "queue": "${task_queues.western_cape}",
-            "expression": "(worker.waitingForSpecificTask != true OR (task.targetSid == worker.sid)) AND ((((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND (worker.waitingOfflineContact != true)))"
+            "expression": "(((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent)) AND worker.waitingOfflineContact != true)"
           }
         ]
       },
@@ -57,7 +57,7 @@
         "targets": [
           {
             "queue": "${task_queues.facebook}",
-            "expression": "(worker.waitingForSpecificTask != true OR (task.targetSid == worker.sid)) AND ((worker.waitingOfflineContact != true))"
+            "expression": "worker.waitingOfflineContact! = true"
           }
         ]
       }
