@@ -25,20 +25,20 @@ import VoiceResponse = twilio.twiml.VoiceResponse;
 export const makeCallToService = async () => {
   const clientAccountSid = getConfigValue('clientTwilioAccountSid') as string;
   const authToken = getConfigValue('clientTwilioAuthToken') as string;
-  const from = getConfigValue('clientSmsPhoneNumber') as string;
+  const from = getConfigValue('clientVoicePhoneNumber') as string;
   // const serviceAccountSid = getConfigValue('twilioAccountSid') as string;
   const to = getConfigValue('voicePhoneNumber') as string;
-
+  console.debug(`Placing call from ${from} to ${to}.`);
   const response = new VoiceResponse();
   response.say({ loop: 100 }, "Hello, I'm an end to end test");
 
   const client = twilio(clientAccountSid, authToken);
-  //const call =
-  await client.calls.create({
+  const call = await client.calls.create({
     method: 'GET',
     twiml: response,
     from,
     to,
   });
+  console.debug(`Call details:`, call);
   //callerCallSid = call.sid;
 };

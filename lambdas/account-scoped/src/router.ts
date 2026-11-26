@@ -63,6 +63,10 @@ import { refreshTokenHandler } from './webchatAuthentication/refreshToken';
 import { getAccountSid } from '@tech-matters/twilio-configuration';
 import { validateRequestWithTwilioJwtToken } from './validation/twilioJwt';
 import { transferStartHandler } from './transfer/transferStart';
+import {
+  requestCallTakeoverHandler,
+  updateCallTakeoverStatusHandler,
+} from './transfer/callTakeover';
 import { reportToIWFHandler } from './integrations/iwf/reportToIWF';
 import { selfReportToIWFHandler } from './integrations/iwf/selfReportToIWF';
 import { populateCounselorsHandler } from './worker/populateCounselors';
@@ -327,6 +331,20 @@ const ACCOUNTSID_ROUTES: Record<
       validateFlexTokenRequest({ tokenMode: 'agent' }),
     ],
     handler: transferStartHandler,
+  }),
+  'transfer/requestCallTakeover': newRoute({
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'supervisor' }),
+    ],
+    handler: requestCallTakeoverHandler,
+  }),
+  'transfer/updateCallTakeoverStatus': newRoute({
+    requestPipeline: [
+      validateRequestMethod('POST'),
+      validateFlexTokenRequest({ tokenMode: 'agent' }),
+    ],
+    handler: updateCallTakeoverStatusHandler,
   }),
   updateWorkersSkills: newRoute({
     requestPipeline: [

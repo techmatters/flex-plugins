@@ -7,7 +7,7 @@
         "targets": [
           {
             "queue": "${task_queues.everyone}",
-            "expression": "worker.sid == task.targetSid"
+            "expression": "(worker.waitingForSpecificTask != true OR (task.targetSid == worker.sid)) AND (worker.sid == task.targetSid)"
           }
         ]
       },
@@ -16,7 +16,7 @@
         "expression": "channelType IN ['web'] AND transferTargetType == ''",
         "targets": [
           {
-            "expression": "(worker.roles HAS 'supervisor') AND (worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "expression": "(worker.waitingForSpecificTask != true OR (task.targetSid == worker.sid)) AND ((worker.roles HAS 'supervisor') AND ((worker.waitingOfflineContact != true) AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true))",
             "queue": "${task_queues.coordinator}"
           }
         ]
@@ -26,7 +26,7 @@
         "expression": "channelType IN ['web']  OR isContactlessTask == true OR transferTargetType != ''",
         "targets": [
           {
-            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "expression": "(worker.waitingForSpecificTask != true OR (task.targetSid == worker.sid)) AND (((worker.waitingOfflineContact != true) AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true))",
             "queue": "${task_queues.supporter}"
           }
         ]
@@ -36,7 +36,7 @@
         "expression": "channelType=='web' AND e2eTestMode=='true'",
         "targets": [
           {
-            "expression": "(worker.waitingOfflineContact != true AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true)",
+            "expression": "(worker.waitingForSpecificTask != true OR (task.targetSid == worker.sid)) AND (((worker.waitingOfflineContact != true) AND ((task.channelType == 'voice' AND worker.channel.chat.assigned_tasks == 0) OR (task.channelType != 'voice' AND worker.channel.voice.assigned_tasks == 0)) AND ((task.transferTargetType == 'worker' AND task.targetSid == worker.sid) OR (task.transferTargetType != 'worker' AND worker.sid != task.ignoreAgent))) OR (worker.waitingOfflineContact == true AND task.targetSid == worker.sid AND task.isContactlessTask == true))",
             "queue": "${task_queues.e2e_test}"
           }
         ]

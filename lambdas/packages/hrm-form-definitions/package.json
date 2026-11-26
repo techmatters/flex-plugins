@@ -50,5 +50,8 @@
     "trailingComma": "all",
     "tabWidth": 2,
     "endOfLine": "auto"
+  },
+  "overrides": {
+    "minimatch@^9.0.0": "11.0.9"
   }
 }

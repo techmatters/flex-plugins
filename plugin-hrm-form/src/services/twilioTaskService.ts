@@ -160,3 +160,21 @@ export const transferChatStart = async (body: TransferChatStartBody): Promise<Tr
     throw err;
   }
 };
+
+type UpdateCallTakeoverStatusBody = {
+  taskSid: TaskSID;
+  status: 'started' | 'failed';
+  reason?: string;
+};
+
+/**
+ * Claims ('started') or fails a supervisor's request to take over a call task. Rejects if the request was already claimed or has expired.
+ */
+export const updateCallTakeoverStatus = (body: UpdateCallTakeoverStatusBody): Promise<void> =>
+  fetchProtectedApi('/transfer/updateCallTakeoverStatus', body, { useTwilioLambda: true });
+
+/**
+ * Asks the counselor assigned a call task to transfer it to the current supervisor (take over)
+ */
+export const requestCallTakeover = (body: { taskSid: TaskSID }): Promise<void> =>
+  fetchProtectedApi('/transfer/requestCallTakeover', body, { useTwilioLambda: true });

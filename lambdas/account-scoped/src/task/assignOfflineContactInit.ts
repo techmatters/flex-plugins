@@ -23,8 +23,12 @@ import {
 } from '@tech-matters/twilio-configuration';
 import { newMissingParameterResult } from '../httpErrors';
 import { newErr, newOk } from '@tech-matters/result-type';
-import type { WorkerInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/worker';
 import type { TaskInstance } from 'twilio/lib/rest/taskrouter/v1/workspace/task';
+import {
+  acceptSpecificTask,
+  isWaitingForTask,
+  withAvailableWorkerForTask,
+} from './assignSpecificTask';
 
 export type Body = {
   targetSid?: string;
@@ -42,11 +46,6 @@ type AssignmentResult =
       };
     }
   | { type: 'success'; newTask: TaskInstance };
-
-const wait = (ms: number): Promise<void> =>
-  new Promise(resolve => {
-    setTimeout(resolve, ms);
-  });
 
 const cleanUpTask = async (task: TaskInstance, message: string) => {
   const { attributes } = task;
@@ -68,83 +67,15 @@ const cleanUpTask = async (task: TaskInstance, message: string) => {
 const assignToAvailableWorker = async (
   targetSid: string,
   newTask: TaskInstance,
-  retry: number = 0,
 ): Promise<AssignmentResult> => {
-  const reservations = await newTask.reservations().list();
-  const reservation = reservations.find(r => r.workerSid === targetSid);
-
-  if (!reservation) {
-    if (retry < 8) {
-      await wait(200);
-      return assignToAvailableWorker(targetSid, newTask, retry + 1);
-    }
-
-    console.error(
-      `No reservation found for task ${newTask.sid} and worker ${targetSid} after ${retry} retries`,
-    );
-    return cleanUpTask(newTask, 'Error: reservation for task not created.');
+  try {
+    await acceptSpecificTask(targetSid, newTask);
+    console.info(`Task ${newTask.sid} successfully assigned to worker ${targetSid}`);
+    return { type: 'success', newTask } as const;
+  } catch (error) {
+    console.error((error as Error).message);
+    return cleanUpTask(newTask, (error as Error).message);
   }
-
-  const accepted = await reservation.update({ reservationStatus: 'accepted' });
-
-  if (accepted.reservationStatus !== 'accepted') {
-    console.error(
-      `Reservation ${reservation.sid} for task ${newTask.sid} and worker ${targetSid} could not be accepted, status: ${accepted.reservationStatus}`,
-    );
-    return cleanUpTask(newTask, 'Error: reservation for task not accepted.');
-  }
-
-  if (retry)
-    console.warn(
-      `Needed ${retry} retries to get reservation for task ${newTask.sid} and worker ${targetSid}`,
-    );
-  console.info(`Task ${newTask.sid} successfully assigned to worker ${targetSid}`);
-
-  return { type: 'success', newTask } as const;
-};
-
-const assignToOfflineWorker = async (
-  accountSid: AccountSID,
-  targetSid: string,
-  targetWorker: WorkerInstance,
-  newTask: TaskInstance,
-) => {
-  const previousActivity = targetWorker.activitySid;
-  const previousAttributes = JSON.parse(targetWorker.attributes);
-
-  const client = await getTwilioClient(accountSid);
-  const workspaceSid = await getWorkspaceSid(accountSid);
-
-  const availableActivity = await client.taskrouter.v1
-    .workspaces(workspaceSid)
-    .activities.list({ available: 'true' });
-
-  if (availableActivity.length > 1) {
-    console.warn(
-      `There are ${availableActivity.length} available worker activities for workspace ${workspaceSid}, but there should only be one.`,
-    );
-  }
-
-  console.info(
-    `Setting offline worker ${targetSid} to available activity ${availableActivity[0].sid} to accept task ${newTask.sid}`,
-  );
-  await targetWorker.update({
-    activitySid: availableActivity[0].sid,
-    attributes: JSON.stringify({ ...previousAttributes, waitingOfflineContact: true }), // waitingOfflineContact is used to avoid other tasks to be assigned during this window of time (workflow rules)
-  });
-
-  const result = await assignToAvailableWorker(targetSid, newTask);
-
-  console.info(
-    `Restoring worker ${targetSid} to previous activity ${previousActivity} after offline contact assignment`,
-  );
-  await targetWorker.update({
-    activitySid: previousActivity,
-    attributes: JSON.stringify(previousAttributes),
-    rejectPendingReservations: true,
-  });
-
-  return result;
 };
 
 const assignOfflineContact = async (
@@ -178,7 +109,7 @@ const assignOfflineContact = async (
     };
   }
 
-  if (targetWorkerAttributes.waitingOfflineContact) {
+  if (isWaitingForTask(targetWorkerAttributes)) {
     console.error(`Worker ${targetSid} is already waiting for an offline contact`);
     return {
       type: 'error',
@@ -239,7 +170,12 @@ const assignOfflineContact = async (
     return assignToAvailableWorker(targetSid, updatedTask);
   }
   // Set the worker available, assign the task, accept it and set worker to previous state
-  return assignToOfflineWorker(accountSid, targetSid, targetWorker, updatedTask);
+  return withAvailableWorkerForTask(
+    accountSid,
+    { sid: targetSid },
+    { taskSid: updatedTask.sid, reason: 'offline-contact' },
+    () => assignToAvailableWorker(targetSid, updatedTask),
+  );
 };
 
 export const assignOfflineContactInitHandler: FlexValidatedHandler = async (

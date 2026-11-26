@@ -14,8 +14,8 @@
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
 
-import React, { useEffect, useState } from 'react';
-import { Actions, Template, withTaskContext, TaskHelper } from '@twilio/flex-ui';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Template, withTaskContext, TaskHelper } from '@twilio/flex-ui';
 import Tooltip from '@material-ui/core/Tooltip';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -28,15 +28,34 @@ import asyncDispatch from '../../states/asyncDispatch';
 import { newLoadContactFromHrmByTaskSidAsyncAction } from '../../states/contacts/saveContact';
 import { isTransferring } from '../../transfer/transferTaskState';
 import { selectIsContactCreating } from '../../states/contacts/selectContactSaveStatus';
+import {
+  CALL_TAKEOVER_REQUEST_TTL_MS,
+  CallTakeoverRequest,
+  isCallTakeoverInProgress,
+} from '../../transfer/callTakeoverRequest';
+import {
+  newClearTakeoverAction,
+  newFailCallTakeoverAsyncAction,
+  newStartTakeoverAsyncAction,
+  selectTakeover,
+} from '../../states/taskScopedMetadata';
+import { TaskSID } from '../../types/twilio';
+
+// Extra time for the counselor's client to start the transfer once it has claimed the request
+const CALL_TAKEOVER_TIMEOUT_MS = CALL_TAKEOVER_REQUEST_TTL_MS + 15 * 1000;
+
+const firstApplicableReason = (disabledReasons: [boolean, string][]) =>
+  disabledReasons.find(([applies]) => applies)?.[1];
 
 const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
-  const { isSupervisor, workerSid } = getHrmConfig();
-  const asyncDispatcher = asyncDispatch(useDispatch());
+  const { isSupervisor, workerSid, enableChatTakeovers, enableCallTakeovers } = getHrmConfig();
+  const dispatch = useDispatch();
+  const asyncDispatcher = useMemo(() => asyncDispatch(dispatch), [dispatch]);
   const contactState = useSelector((state: RootState) => selectContactByTaskSid(state, task?.taskSid));
   const isCreating = useSelector((state: RootState) => selectIsContactCreating(state, task?.taskSid));
   const activityName = useSelector((state: RootState) => state.flex.worker.worker.activityName);
+  const takeover = useSelector((state: RootState) => selectTakeover(state, task?.taskSid));
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
-  const [pendingTakeoverTaskSid, setPendingTakeoverTaskSid] = useState<string | null>(null);
 
   useEffect(() => {
     if (task && !contactState && !isCreating) {
@@ -44,46 +63,57 @@ const TakeOverTaskButton: React.FC<TaskContextProps> = ({ task }) => {
     }
   }, [asyncDispatcher, contactState, isCreating, task]);
 
-  useEffect(() => {
-    if (task && isTransferring(task) && pendingTakeoverTaskSid === task.taskSid) {
-      setPendingTakeoverTaskSid(null);
-    }
-  }, [pendingTakeoverTaskSid, task]);
+  const isPending = takeover?.status === 'pending';
+  const isCall = Boolean(task && TaskHelper.isCallTask(task));
+  const isCallTakeoverPending = isCall && isPending;
+  const callTakeoverRequest: CallTakeoverRequest | undefined = task?.attributes?.takeoverRequest;
+  const taskSid = task?.taskSid as TaskSID;
 
-  // Takeovers are only supported for chat tasks via the lambda transferStart endpoint, which sets the transfer metadata server side
-  if (!task || !workerSid || !contactState || TaskHelper.isCallTask(task)) {
+  useEffect(() => {
+    if (isPending && isTransferring(task)) {
+      dispatch(newClearTakeoverAction(taskSid));
+    }
+  }, [dispatch, isPending, task, taskSid]);
+
+  // The counselor's client reports failures on the request
+  useEffect(() => {
+    if (
+      isCallTakeoverPending &&
+      callTakeoverRequest?.status === 'failed' &&
+      callTakeoverRequest.requestedBy === workerSid &&
+      callTakeoverRequest.requestedAt !== takeover?.requestedAtBeforeTakeover
+    ) {
+      asyncDispatcher(newFailCallTakeoverAsyncAction(taskSid, callTakeoverRequest.reason ?? 'unknown', false));
+    }
+  }, [asyncDispatcher, isCallTakeoverPending, callTakeoverRequest, takeover, taskSid, workerSid]);
+
+  // ...but its Flex may be closed, offline or on an older version, so don't wait forever
+  useEffect(() => {
+    if (!isCallTakeoverPending) return undefined;
+    const timeout = setTimeout(() => {
+      asyncDispatcher(newFailCallTakeoverAsyncAction(taskSid, 'Timed out', true));
+    }, CALL_TAKEOVER_TIMEOUT_MS);
+    return () => clearTimeout(timeout);
+  }, [asyncDispatcher, isCallTakeoverPending, taskSid]);
+
+  if (!task || !workerSid || !contactState || !(isCall ? enableCallTakeovers : enableChatTakeovers)) {
     return null;
   }
 
-  const transferInProgress = isTransferring(task);
-  const isPending = pendingTakeoverTaskSid === task.taskSid;
   const isOnline = Boolean(activityName && activityName !== 'Offline');
-  let disabledReason: string | undefined;
-  if (isSupervisor) {
-    if (isOnline) {
-      if (transferInProgress || isPending) {
-        disabledReason = 'TakeOver-Disabled-TransferInProgress';
-      }
-    } else {
-      disabledReason = 'TakeOver-Disabled-Offline';
-    }
-  } else {
-    disabledReason = 'TakeOver-Disabled-NotSupervisor';
-  }
+  const disabledReason = firstApplicableReason([
+    [!isSupervisor, 'TakeOver-Disabled-NotSupervisor'],
+    [!isOnline && isCall, 'TakeOver-Disabled-Offline'],
+    [isCall && task.taskStatus !== 'assigned', 'TakeOver-Disabled-CallNotActive'],
+    [
+      isTransferring(task) || isPending || isCallTakeoverInProgress(callTakeoverRequest, Date.now()),
+      'TakeOver-Disabled-TransferInProgress',
+    ],
+  ]);
 
-  const startTakeover = async () => {
+  const startTakeover = () => {
     setIsConfirmationOpen(false);
-    setPendingTakeoverTaskSid(task.taskSid);
-    try {
-      await Actions.invokeAction('TransferTask', {
-        task,
-        targetSid: workerSid,
-        options: { mode: 'COLD' },
-      });
-    } catch (error) {
-      setPendingTakeoverTaskSid(null);
-      console.error('Failed to take over task', error);
-    }
+    asyncDispatcher(newStartTakeoverAsyncAction(task, workerSid));
   };
 
   return (

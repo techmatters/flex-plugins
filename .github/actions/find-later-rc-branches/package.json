@@ -11,7 +11,7 @@
   "license": "AGPL",
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "isomorphic-git": "^1.32.1"
+    "isomorphic-git": "^1.44.17"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",
