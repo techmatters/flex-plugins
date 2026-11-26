@@ -172,7 +172,7 @@ const TabbedFormsTabs: React.FC<Props> = ({ task }) => {
     () => () => {
       const latest = latestDraftSave.current;
       if (latest.savedContact && latest.draftContact) {
-        void latest.saveDraft(latest.savedContact, latest.draftContact);
+        latest.saveDraft(latest.savedContact, latest.draftContact);
       }
     },
     [],
