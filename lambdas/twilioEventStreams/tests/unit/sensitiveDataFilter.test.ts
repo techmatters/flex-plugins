@@ -145,6 +145,29 @@ describe('filterSensitiveData', () => {
       });
     });
 
+    test('masks numbers under keys that look like phone numbers, keeping small counts', () => {
+      expect(
+        filteredTaskAttributes({
+          phoneNumber: 15550001234,
+          callerNumber: '15550001234',
+          attemptNumber: 2,
+        }),
+      ).toStrictEqual({
+        phoneNumber: 'XXXXX1234',
+        callerNumber: 'XXXXX1234',
+        attemptNumber: 2,
+      });
+    });
+
+    test('masks names entirely, surnames and digits included', () => {
+      expect(
+        filteredTaskAttributes({
+          customerName: 'Jane Doe 1990',
+          name_old: 'Jane 2',
+        }),
+      ).toStrictEqual({ customerName: 'XXXXX', name_old: 'XXXXX' });
+    });
+
     test('masks names entirely, surnames included', () => {
       expect(
         filteredTaskAttributes({
@@ -380,6 +403,46 @@ describe('filterSensitiveData', () => {
       });
     });
 
+    test('masks WhatsApp webhook parameters: number, name and location', () => {
+      const payload = maskedErrorLogPayload(
+        JSON.stringify({
+          webhook: {
+            request: {
+              parameters: {
+                WaId: '15550001234',
+                ProfileName: 'Jane Doe',
+                Latitude: '-33.4489',
+                Longitude: -70.6693,
+                Address: '5 Main St',
+                CallerName: 'JANE SMITH',
+                FromCity: 'SANTIAGO',
+                ForwardedFrom: '15550001234',
+                NumMedia: '0',
+              },
+            },
+          },
+        }),
+      );
+
+      expect(JSON.parse(payload).webhook.request.parameters).toStrictEqual({
+        WaId: 'XXXXX1234',
+        ProfileName: 'XXXXX',
+        Latitude: 'XXXXX',
+        Longitude: 'XXXXX',
+        Address: 'XXXXX',
+        CallerName: 'XXXXX',
+        FromCity: 'XXXXX',
+        ForwardedFrom: 'XXXXX1234',
+        NumMedia: '0',
+      });
+    });
+
+    test('keeps error log payloads that need no masking exactly as they are', () => {
+      const payload = '{ "id": 12345678901234567890, "error_code": "11200" }';
+
+      expect(maskedErrorLogPayload(payload)).toBe(payload);
+    });
+
     test.each([
       [
         'URL-encoded',
@@ -395,6 +458,31 @@ describe('filterSensitiveData', () => {
         'logged as escaped JSON',
         'parameters: {\\"Body\\":\\"I need help\\"}',
         'parameters: {\\"Body\\":\\"XXXXX\\"}',
+      ],
+      [
+        'with line breaks, quotes and accents',
+        'parameters: {"Body":"hello\\nmy address is 5 Main St \\"quoted\\" \\u00e1","To":"62640"}',
+        'parameters: {"Body":"XXXXX","To":"62640"}',
+      ],
+      [
+        'escaped, with line breaks, quotes and accents',
+        'parameters: {\\"Body\\":\\"hello\\\\nmy address \\\\\\"quoted\\\\\\" \\\\u00e1\\",\\"To\\":\\"62640\\"}',
+        'parameters: {\\"Body\\":\\"XXXXX\\",\\"To\\":\\"62640\\"}',
+      ],
+      [
+        'lowercase body',
+        'Message: {"body":"I want to die","status":"sent"}',
+        'Message: {"body":"XXXXX","status":"sent"}',
+      ],
+      [
+        'cut short',
+        'parameters: {"To":"62640","Body":"I need help with my ad',
+        'parameters: {"To":"62640","Body":"XXXXX',
+      ],
+      [
+        'a WhatsApp ID parameter',
+        'WaId=15550001234&NumMedia=0',
+        'WaId=XXXXX1234&NumMedia=0',
       ],
     ])('masks message text and profile names in free text, %s', (_d, text, expected) => {
       expect(maskText(text)).toBe(expected);
@@ -416,6 +504,12 @@ describe('filterSensitiveData', () => {
       expect(maskText('address: +12345678901234567890')).toBe('address: XXXXX7890');
     });
 
+    test('keeps timestamps after "from" and "to" in sentences', () => {
+      const text = 'updated from 1763550080822 to 1763550099999';
+
+      expect(maskText(text)).toBe(text);
+    });
+
     test('keeps short codes, SIDs, timestamps and dates', () => {
       const text =
         'proxy address: 62640, task WT0123456789abcdef, at 1763550080822 (2026-11-19T12:01:20.822Z)';
@@ -430,7 +524,7 @@ describe('filterSensitiveData', () => {
     });
 
     test('handles long text without an @ quickly', () => {
-      const longText = `${'a'.repeat(50000)} ${'1.'.repeat(25000)}`;
+      const longText = `${'a'.repeat(50000)} ${'1.'.repeat(25000)} ${'"Body":"'.repeat(20000)}`;
       const start = Date.now();
 
       maskText(longText);

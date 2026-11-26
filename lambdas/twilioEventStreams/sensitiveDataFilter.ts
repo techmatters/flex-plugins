@@ -16,16 +16,18 @@
 
 // Masks helpseeker data in Twilio Event Streams events before they are sent to Datadog.
 // filterSensitiveData walks every field of the event, whatever the event type:
-// 1. Fields known to hold helpseeker data are masked by name, at any depth: message text and
-//    profile names entirely, contact addresses keeping their last 4 characters
+// 1. Fields known to hold helpseeker data are masked by name, at any depth: message text,
+//    names and locations entirely, contact addresses keeping their last 4 characters
 // 2. Attributes JSON (TaskRouter task attributes, Conversations attributes): removed or masked
 //    by name at any depth, then masked like any other field
 // 3. Other strings holding JSON (error log payloads, logged webhook requests) are parsed and
-//    masked field by field, so masking can't break the JSON
+//    masked field by field, so masking can't break the JSON. They are only rewritten when
+//    something was masked: rewriting drops their formatting and the precision of numbers over
+//    15 digits.
 // 4. Any other text (Functions and Studio console output, error messages): message text,
 //    phone numbers, channel IDs, IP addresses and emails are masked by pattern
-// Masked numbers and addresses keep their last 4 characters (XXXXX1234) so they can still be
-// told apart; names and text are masked entirely (XXXXX).
+// Masked numbers and addresses keep their last 4 characters (XXXXX1234, XXXXX0.40) so they can
+// still be told apart, unless those contain letters; names and text are masked entirely (XXXXX).
 
 export type JsonValue = string | number | boolean | null | JsonValue[] | JsonObject;
 export type JsonObject = { [key: string]: JsonValue };
@@ -40,14 +42,12 @@ const ATTRIBUTES_TO_REMOVE = new Map<string, string[]>([
 ]);
 
 // Attributes masked wherever they appear in task or Conversations attributes
+const NAME_ATTRIBUTES = new Set(['customerName', 'firstName', 'friendlyName']);
 const SENSITIVE_ATTRIBUTES = new Set([
   'customerAddress',
-  'customerName',
   'from',
   'name',
   'name_old',
-  'firstName',
-  'friendlyName',
   'ip',
   'contactIdentifier',
   'caller',
@@ -58,31 +58,44 @@ const SENSITIVE_ATTRIBUTES = new Set([
   'to',
 ]);
 
-// Event fields masked by name at any depth. Not "name": it is the event name in TaskRouter
-// events.
+// Event fields masked by name at any depth, whatever their case. Not "name": it is the event
+// name in TaskRouter events.
 const CONTACT_FIELDS = new Set([
   'contact_channel_address',
   'from',
-  'From',
   'to',
-  'To',
-  'Author',
   'author',
-  'Address',
   'address',
   'phone',
-  'Phone',
   'caller',
-  'customerAddress',
+  'customeraddress',
   'external_contact',
   'outbound_to',
+  'waid', // WhatsApp number without a +
+  'forwardedfrom',
 ]);
 
-// Message text and helpseeker profile names, masked entirely at any depth (e.g. Conversations
-// events, webhook parameters in error logs). Lowercase "body" only at the top of the event's
-// data (Messaging events): deeper down it is a webhook response, needed to debug the failure.
-const MESSAGE_TEXT_FIELDS = new Set(['Body', 'ProfileName']);
-const TOP_LEVEL_MESSAGE_TEXT_FIELD = 'body';
+// Message text, names and locations, masked entirely at any depth, whatever their case
+// (Messaging and Conversations events, webhook parameters in error logs)
+const FULLY_MASKED_FIELDS = new Set([
+  'body',
+  'profilename',
+  'callername',
+  'latitude',
+  'longitude',
+  'fromcity',
+  'fromstate',
+  'fromzip',
+  'callercity',
+  'callerstate',
+  'callerzip',
+]);
+
+// Other fields that may hold a phone number, masked when they hold 7 digits or more
+const PHONE_LIKE_KEY = /phone|number|caller|msisdn|wa_?id/i;
+
+// A webhook response body is the helpline's own server answering: kept for debugging
+const RESPONSE_FIELD = 'response';
 
 // JSON strings of attributes, filtered like task attributes
 const ATTRIBUTES_JSON_FIELDS = new Set(['task_attributes', 'Attributes', 'attributes']);
@@ -91,11 +104,17 @@ const ATTRIBUTES_JSON_FIELDS = new Set(['task_attributes', 'Attributes', 'attrib
 const STAFF_FIELDS = new Set(['worker_name']);
 
 // Message text and profile names in free text, masked entirely: webhook parameters
-// (Body=I+need+help) and logged JSON ("Body":"I need help", also escaped)
-const MESSAGE_TEXT_PATTERNS = [
-  /(?<=\b(?:Body|ProfileName)=)[^&\s"]+/g,
-  /(?<=\b(?:Body|ProfileName)\\*"\s*:\s*\\*")[^"\\]+/g,
-];
+// (Body=I+need+help) and logged JSON ("Body":"I need help"), also escaped once or more
+// (\"Body\":\"I need help\"). The JSON value ends at an unescaped quote with as many
+// backslashes as the opening one, followed by , } or ], so escaped quotes, line breaks and
+// accents in the message don't end it early. Without that end (e.g. a log cut short), the
+// rest of the text is masked: safer, and it keeps the masking linear on large payloads.
+const MESSAGE_TEXT_KEYS = '(?:Body|ProfileName|CallerName)';
+const MESSAGE_TEXT_PARAMETER = new RegExp(`(?<=\\b${MESSAGE_TEXT_KEYS}=)[^&\\s"]+`, 'gi');
+const MESSAGE_TEXT_JSON = new RegExp(
+  `(\\b${MESSAGE_TEXT_KEYS}(\\\\*)"\\s*:\\s*\\2")([\\s\\S]*?)(?:(?<!\\\\)(?=\\2"\\s*[,}\\]])|$)`,
+  'gi',
+);
 
 // Phone numbers and channel IDs in free text
 const PHONE_PATTERNS = [
@@ -109,8 +128,11 @@ const PHONE_PATTERNS = [
   /(?<=\bline(?::|%3A))U[0-9a-f]{32}/g, // LINE user IDs, e.g. line:U4af4980629...
   // Numbers or IDs (Messenger/Instagram IDs are 16-17 digits) without a + right after a contact
   // attribute name, also in logged or escaped JSON and webhook parameters, e.g. Studio's Send to
-  // Flex log: \"name\":\"26300000000\"; Task attribute: from 26300000000; From=26300000000
-  /(?<=\b(?:name|name_old|friendlyName|profileName|from|to|caller|phone|address|customerAddress|customerName|contact_channel_address|external_contact|outbound_to|author)[\s\\"':=]{1,10})\d{7,}/gi,
+  // Flex log: \"name\":\"26300000000\"; Task attribute: caller 26300000000; From=26300000000
+  /(?<=\b(?:name|name_old|friendlyName|profileName|caller|phone|address|customerAddress|customerName|contact_channel_address|external_contact|outbound_to|author|waid|forwardedFrom)[\s\\"':=]{1,10})\d{7,}/gi,
+  // "from" and "to" only as keys (from: / from= / "from"), so timestamps in sentences like
+  // "updated from 1763550080822 to 1763550099999" are kept
+  /(?<=\b(?:from|to)[\s\\"]{0,3}[:='"][\s\\"':=]{0,9})\d{7,}/gi,
 ];
 
 // Also masked in free text, after the phone numbers (a SIP address is a phone number and an IP
@@ -123,11 +145,18 @@ const OTHER_SENSITIVE_PATTERNS = [
   /(?<![A-Za-z0-9._%+-])[A-Za-z0-9._%+-]{1,64}@[A-Za-z0-9.-]{1,253}\.[A-Za-z]{2,}/g,
 ];
 
-// Numbers and addresses keep their last 4 characters; names (no digits) are masked entirely
+// Numbers and addresses keep their last 4 characters, unless those contain letters (names,
+// street addresses, emails): then they are masked entirely
 const maskValue = (value: string): string => {
   if (!value) return value;
-  return value.length > 4 && /\d/.test(value) ? `XXXXX${value.slice(-4)}` : FULLY_MASKED;
+  const lastFour = value.slice(-4);
+  return value.length > 4 && !/[A-Za-z]/.test(lastFour)
+    ? `XXXXX${lastFour}`
+    : FULLY_MASKED;
 };
+
+const hasPhoneNumberDigits = (value: string): boolean =>
+  value.replace(/\D/g, '').length >= 7;
 
 const maskPatterns = (
   text: string,
@@ -137,7 +166,11 @@ const maskPatterns = (
 
 export const maskText = (text: string): string =>
   maskPatterns(
-    maskPatterns(text, MESSAGE_TEXT_PATTERNS, () => FULLY_MASKED),
+    text
+      .replace(MESSAGE_TEXT_PARAMETER, FULLY_MASKED)
+      .replace(MESSAGE_TEXT_JSON, (_match, key: string, _quote, messageText: string) =>
+        messageText ? `${key}${FULLY_MASKED}` : key,
+      ),
     [...PHONE_PATTERNS, ...OTHER_SENSITIVE_PATTERNS],
     maskValue,
   );
@@ -155,6 +188,9 @@ const parseJson = (text: string): JsonValue | undefined => {
 
 const isMaskable = (value: JsonValue): value is string | number =>
   typeof value === 'string' || typeof value === 'number';
+
+const isPhoneLike = (key: string, value: JsonValue): value is string | number =>
+  PHONE_LIKE_KEY.test(key) && isMaskable(value) && hasPhoneNumberDigits(String(value));
 
 const keepNestedAttributes = (
   value: JsonValue,
@@ -176,7 +212,12 @@ const filterAttributes = (value: JsonValue): JsonValue => {
     if (toKeep) {
       const kept = keepNestedAttributes(item, toKeep);
       if (kept) filtered[key] = kept;
-    } else if (SENSITIVE_ATTRIBUTES.has(key) && isMaskable(item)) {
+    } else if (NAME_ATTRIBUTES.has(key) && isMaskable(item)) {
+      filtered[key] = item === '' ? item : FULLY_MASKED;
+    } else if (
+      (SENSITIVE_ATTRIBUTES.has(key) && isMaskable(item)) ||
+      isPhoneLike(key, item)
+    ) {
       filtered[key] = maskValue(String(item));
     } else {
       filtered[key] = filterAttributes(item);
@@ -190,12 +231,22 @@ const parseJsonObjectOrArray = (text: string): JsonValue | undefined => {
   return trimmed.startsWith('{') || trimmed.startsWith('[') ? parseJson(text) : undefined;
 };
 
+// Rewrites a JSON string only when masking changed it
+const stringifyIfMasked = (
+  original: string,
+  parsed: JsonValue,
+  masked: JsonValue,
+): string => {
+  const maskedJson = JSON.stringify(masked);
+  return maskedJson === JSON.stringify(parsed) ? original : maskedJson;
+};
+
 const maskEventValue = (value: JsonValue): JsonValue => {
   if (typeof value === 'string') {
     const parsed = parseJsonObjectOrArray(value);
     return parsed === undefined
       ? maskText(value)
-      : JSON.stringify(maskEventValue(parsed));
+      : stringifyIfMasked(value, parsed, maskEventValue(parsed));
   }
   if (Array.isArray(value)) return value.map(maskEventValue);
   if (!isJsonObject(value)) return value;
@@ -210,32 +261,40 @@ const filterAttributesJson = (attributesJson: string): string => {
   const attributes = parseJson(attributesJson);
   return attributes === undefined
     ? maskText(attributesJson)
-    : JSON.stringify(maskEventValue(filterAttributes(attributes)));
+    : stringifyIfMasked(
+        attributesJson,
+        attributes,
+        maskEventValue(filterAttributes(attributes)),
+      );
 };
 
+// The body of a webhook response gets pattern masking only, the rest is masked as usual
+const maskResponse = (response: JsonObject): JsonObject =>
+  Object.fromEntries(
+    Object.entries(response).map(([key, item]) => [
+      key,
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      key.toLowerCase() === 'body' ? maskEventValue(item) : maskEventField(key, item),
+    ]),
+  );
+
 const maskEventField = (key: string, value: JsonValue): JsonValue => {
+  const lowerCaseKey = key.toLowerCase();
   if (STAFF_FIELDS.has(key)) return value;
-  if (MESSAGE_TEXT_FIELDS.has(key) && typeof value === 'string' && value) {
-    return FULLY_MASKED;
+  if (FULLY_MASKED_FIELDS.has(lowerCaseKey) && isMaskable(value)) {
+    return value === '' ? value : FULLY_MASKED;
   }
-  if (CONTACT_FIELDS.has(key) && isMaskable(value)) return maskValue(String(value));
+  if (
+    (CONTACT_FIELDS.has(lowerCaseKey) && isMaskable(value)) ||
+    isPhoneLike(key, value)
+  ) {
+    return maskValue(String(value));
+  }
   if (ATTRIBUTES_JSON_FIELDS.has(key) && typeof value === 'string') {
     return filterAttributesJson(value);
   }
+  if (lowerCaseKey === RESPONSE_FIELD && isJsonObject(value)) return maskResponse(value);
   return maskEventValue(value);
 };
 
-export const filterSensitiveData = (event: JsonValue): JsonValue => {
-  const masked = maskEventValue(event);
-  if (
-    !isJsonObject(masked) ||
-    !isJsonObject(masked.data) ||
-    !masked.data[TOP_LEVEL_MESSAGE_TEXT_FIELD]
-  ) {
-    return masked;
-  }
-  return {
-    ...masked,
-    data: { ...masked.data, [TOP_LEVEL_MESSAGE_TEXT_FIELD]: FULLY_MASKED },
-  };
-};
+export const filterSensitiveData = (event: JsonValue): JsonValue => maskEventValue(event);

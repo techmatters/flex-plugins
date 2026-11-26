@@ -128,7 +128,10 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
           const api = await getApi();
           await api.submitLog(params);
         } catch (error) {
-          console.error('Error posting to Datadog', error);
+          console.error(
+            `[${accountSid}] Error masking or posting the event to Datadog`,
+            error,
+          );
         }
       };
 
