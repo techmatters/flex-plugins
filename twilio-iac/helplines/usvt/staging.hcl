@@ -14,7 +14,6 @@ locals {
       widget_from                               = "PCAVT"
       chat_blocked_message                      = "Hi, you've been blocked from accessing our services and we are not able to read or receive further messages from you."
       bot_language                              = "en"
-      send_message_janitor_function_sid         = "ZH10171c61b82a492f4cf008622e1d9f34"
       error_message                             = "There has been an error with your message, please try writing us again."
       menu_option_message_report_abuse          = "If you or someone else is in immediate danger, please call 911. If you are concerned about the safety or well-being of a child and would like to make a report of child abuse or neglect, you can call 1-800-649-5285. The line is available 24 hours a day, 7 days a week."
       menu_option_message_talk_to_someone       = "If you would like to talk with someone you can text this number XXX-XXX-XXXX or call XXX-XXX-XXXX."
