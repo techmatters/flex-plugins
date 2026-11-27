@@ -93,14 +93,14 @@ From `twilio-iac/stages/provision` on the devops node:
    the subflow from the system-down state, so it must come after it.
 5. 🧑 Buy/assign the phone number in Twilio and point its **A call comes in** to the voice Studio
    flow (Terraform does not manage phone numbers; it only uses `phone_numbers` in routing expressions).
-6. Flex service configuration (not managed by Terraform; see [service_configuration.md](service_configuration.md)).
-   From `twilio-iac/` on the devops node, after provision and configure are applied:
-   🤖 `make service-config-plan HL=<code> HL_ENV=staging`, then 🧑 `make service-config-apply HL=<code> HL_ENV=staging`.
-   It pushes `definitionVersion`, `permissionConfig` and the feature flags from
-   `configs/service-configuration/defaults.json` + the helpline's JSON files. Without it a new account
-   keeps Twilio's defaults: the `use_twilio_lambda_*` flags are off, so the plugin calls the Serverless
-   service, which new accounts don't have (`issueSyncToken` fails with a CORS error and the forms don't
-   load properly).
+6. 🤖 Check the Flex service configuration. The `configure` apply pushes it (an `after_hook` runs
+   `manageServiceConfig.py apply`; see [service_configuration.md](service_configuration.md)):
+   `definitionVersion`, `permissionConfig` and the feature flags from
+   `configs/service-configuration/defaults.json` + the helpline's JSON files. Look for the hook's output
+   at the end of the configure apply. If it failed or the flags are missing (the plugin calls
+   `serverless-….twil.io`, e.g. `issueSyncToken` fails with a CORS error and the forms don't load), run
+   from `twilio-iac/`: `make service-config-plan HL=<code> HL_ENV=staging`, then 🧑
+   `make service-config-apply HL=<code> HL_ENV=staging`.
 
 New accounts have no Serverless deployment: the baseline sets `enable_lambda_event_callback_url = true`
 so the TaskRouter workspace callback goes to the account-scoped lambda. Check the provision plan shows
@@ -270,13 +270,13 @@ Copy into the helpline's tracking issue / task and tick as you go.
 - [ ] 0 Intake complete
 - [ ] 1.1 Helpline config committed
 - [ ] 1.2 SSM secrets
-- [ ] 1.3 provision / lex (if used) / system-down / configure applied · service configuration applied · phone number → voice flow
+- [ ] 1.3 provision / lex (if used) / system-down / configure applied (service configuration hook ✅) · phone number → voice flow
 - [ ] 1.4 Error webhook
 - [ ] 1.5 Okta: group · app · Flex SSO values entered · SSO login ✅
 - [ ] 1.6 Twilio console users invited
 - [ ] 2.1 Form definitions
 - [ ] 2.2 Twilio lambdas deployed
-- [ ] 2.3 Flex plugin deployed, Unified Profiles Container off (service configuration applied in 1.3)
+- [ ] 2.3 Flex plugin deployed, Unified Profiles Container off
 - [ ] 2.4 Webchat config + app deployed (if needed)
 - [ ] 2.5 HRM permissions merged + deployed
 - [ ] 2.6 FullStory segment

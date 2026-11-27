@@ -109,8 +109,8 @@ def onboarding_status(
         '(re-plan shows only the known whitespace drift)', 'manual',
         f'make plan HL={code} HL_ENV={environment} in each stage')
     add('1.3', 'Phone number points at the voice Studio flow', 'manual', 'Twilio Console › Phone Numbers')
-    add('1.3', 'Flex service configuration applied (feature flags, definitionVersion)', 'manual',
-        f'from twilio-iac/: make service-config-plan / service-config-apply HL={code} HL_ENV={environment}')
+    add('1.3', 'Flex service configuration pushed by the configure apply (after_hook succeeded)', 'manual',
+        f'if not: from twilio-iac/, make service-config-plan / service-config-apply HL={code} HL_ENV={environment}')
 
     # 1.4 Error reporting: TwilioErrorReporter finds the account from this parameter (written by provision)
     if sid:

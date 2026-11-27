@@ -92,10 +92,11 @@ Later on this information may come from a tool that collects it from meetings; u
   in provision). configure reads the system-down state, so it can't be planned before system-down is
   applied. Summarize each plan (what gets created) and wait for the person's apply before the next stage.
 - 1.3 🧑 Phone number → voice Studio flow (Terraform doesn't manage numbers).
-- 1.3 Flex service configuration, after provision + configure: from `twilio-iac/` run
-  `make service-config-plan HL=<code> HL_ENV=<env>` (ask first: not a Terraform plan), summarize, then
-  🧑 `make service-config-apply`. Without it the `use_twilio_lambda_*` feature flags are off and the
-  plugin calls Serverless, which new accounts don't have. In the provision plan, check the workspace
+- 1.3 The configure apply also pushes the Flex service configuration (`after_hook` running
+  `manageServiceConfig.py apply`). Ask the person whether the hook's output at the end of the apply
+  succeeded. If not, or if the plugin still calls Serverless (`use_twilio_lambda_*` flags missing),
+  from `twilio-iac/`: `make service-config-plan HL=<code> HL_ENV=<env>` (ask first: not a Terraform
+  plan), then 🧑 `make service-config-apply`. In the provision plan, check the workspace
   `event_callback_url` is the account-scoped lambda (`enable_lambda_event_callback_url = true`), not
   `serverless-….twil.io`.
 - 1.4 🧑 Errors webhook in the console. TwilioErrorReporter needs no change: it finds the account
