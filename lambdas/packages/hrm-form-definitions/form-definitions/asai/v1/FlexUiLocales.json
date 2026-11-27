@@ -1,0 +1,12 @@
+[
+  {
+    "label": "English (EN)",
+    "shortLabel": "EN",
+    "aseloLocale": "en-US"
+  },
+  {
+    "label": "Español (ES)",
+    "shortLabel": "ES",
+    "aseloLocale": "es-CL"
+  }
+]

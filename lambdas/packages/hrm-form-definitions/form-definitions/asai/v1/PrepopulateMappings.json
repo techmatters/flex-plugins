@@ -1,0 +1,22 @@
+{
+  "formSelector": {
+    "selectorType": "staticSelector",
+    "callType": "Child calling about self",
+    "parameter": {
+      "availableTabs": [
+        "ChildInformationTab"
+      ]
+    }
+  },
+  "survey": {
+    "age": "ChildInformationTab.age",
+    "gender": "ChildInformationTab.gender"
+  },
+  "preEngagement": {
+    "friendlyName": "ChildInformationTab.firstName",
+    "age": "ChildInformationTab.age",
+    "gender": "ChildInformationTab.gender",
+    "state": "ChildInformationTab.state",
+    "urgencyLevel": "CaseInformationTab.urgencyLevel"
+  }
+}
