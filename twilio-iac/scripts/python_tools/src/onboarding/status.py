@@ -109,6 +109,8 @@ def onboarding_status(
         '(re-plan shows only the known whitespace drift)', 'manual',
         f'make plan HL={code} HL_ENV={environment} in each stage')
     add('1.3', 'Phone number points at the voice Studio flow', 'manual', 'Twilio Console › Phone Numbers')
+    add('1.3', 'Flex service configuration pushed by the configure apply (after_hook succeeded)', 'manual',
+        f'if not: from twilio-iac/, make service-config-plan / service-config-apply HL={code} HL_ENV={environment}')
 
     # 1.4 Error reporting: TwilioErrorReporter finds the account from this parameter (written by provision)
     if sid:
@@ -139,15 +141,19 @@ def onboarding_status(
         'done' if definition_version == f'{code}-v1' else 'missing',
         f'currently "{definition_version}"' if definition_version and definition_version != f'{code}-v1' else '')
     add('2.1', 'Form definitions deployed to S3', 'manual',
-        'GitHub Actions › Deploy form-definitions to S3 (from the helpline branch until merged)')
+        'deployed by Flex Deploy (2.3), from the helpline branch until merged')
     add('2.2', 'Twilio lambdas deployed', 'manual',
         'GitHub Actions › Deploy All Twilio Lambdas (environment), from master')
-    add('2.3', 'Flex plugin deployed', 'manual', 'Flex Deploy workflow')
+    add('2.3', 'Flex plugin deployed', 'manual',
+        'merge master into the helpline branch, then Flex Deploy from it (also deploys the forms)')
+    add('2.3', 'Unified Profiles Container turned off', 'manual',
+        'Twilio Console › Flex › Settings › UI components (else the Aselo forms are hidden)')
     webchat_config = f'aselo-webchat-react-app/configSrc/{code}'
     add('2.4', 'Webchat config (if the helpline uses webchat)', 'done' if exists(webchat_config) else 'missing',
         '' if exists(webchat_config) else webchat_config)
     add('2.4', 'Webchat config + app deployed (if the helpline uses webchat)', 'manual',
-        'Deploy Aselo Webchat React App - single helpline (also deploys the forms)')
+        'Deploy Aselo Webchat React App - single helpline (also deploys the forms); '
+        f'test page https://assets-{environment}.tl.techmatters.org/aselo-webchat-react-app/{code}/')
 
     # permissionConfig can point at another helpline's rules (e.g. "demo" for a test helpline)
     rules_name = permission_config if permission_config and not permission_config.startswith('<') else code

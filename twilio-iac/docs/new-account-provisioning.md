@@ -73,6 +73,12 @@ make manage-ssm-secrets HL=<code> HL_ENV=staging
 It asks for the Twilio account SID and auth token. Never paste the auth token into a chat with an
 agent.
 
+The account must be upgraded (not a trial) before 1.3: on a trial account `setup-new-environment`
+fails at `twilio-resources-import-account-defaults` with Twilio error 20003 ("This feature is not
+available on a Trial account"). To switch a helpline to a different Twilio account before anything
+is provisioned, re-run `manage-ssm-secrets` with the new SID and token: no account values are in the
+repo.
+
 ### 1.3 Twilio infrastructure (Terraform) 🤝
 
 From `twilio-iac/stages/provision` on the devops node:
@@ -87,6 +93,19 @@ From `twilio-iac/stages/provision` on the devops node:
    the subflow from the system-down state, so it must come after it.
 5. 🧑 Buy/assign the phone number in Twilio and point its **A call comes in** to the voice Studio
    flow (Terraform does not manage phone numbers; it only uses `phone_numbers` in routing expressions).
+6. 🤖 Check the Flex service configuration. The `configure` apply pushes it (an `after_hook` runs
+   `manageServiceConfig.py apply`; see [service_configuration.md](service_configuration.md)):
+   `definitionVersion`, `permissionConfig` and the feature flags from
+   `configs/service-configuration/defaults.json` + the helpline's JSON files. Look for the hook's output
+   at the end of the configure apply. If it failed or the flags are missing (the plugin calls
+   `serverless-….twil.io`, e.g. `issueSyncToken` fails with a CORS error and the forms don't load), run
+   from `twilio-iac/`: `make service-config-plan HL=<code> HL_ENV=staging`, then 🧑
+   `make service-config-apply HL=<code> HL_ENV=staging`.
+
+New accounts have no Serverless deployment: the baseline sets `enable_lambda_event_callback_url = true`
+so the TaskRouter workspace callback goes to the account-scoped lambda. Check the provision plan shows
+`event_callback_url` on `hrm-<env>…/lambda/twilio/account-scoped/<account>/webhooks/taskrouterCallback`,
+not `serverless-….twil.io`.
 
 ### 1.4 Error reporting 🧑
 
@@ -131,12 +150,11 @@ Twilio Console › Account › **Manage users**: invite the engineers and soluti
    categories to what the helpline asked for.
 3. 🤖 `cd lambdas/packages/hrm-form-definitions && npm test -- validateDefinitions`: must pass.
    Include the files in the helpline's PR.
-4. 🧑 GitHub Actions › **Deploy form-definitions to S3** with `helpline_code=<code>` and the environment.
-   Until the forms are merged, set **Use workflow from** to the helpline's branch (or
+4. Deploy them with *Flex Deploy* in 2.3: it deploys the form definitions too, from the branch it runs
+   on. Run **Deploy form-definitions to S3** on its own only when just the forms change. Either way,
+   until the forms are merged, set **Use workflow from** to the helpline's branch (or
    `gh workflow run <workflow file> --ref <branch> -f ...`): on master the folder doesn't exist yet and
    the sync fails with "The user-provided path ... does not exist".
-   (The webchat deploy in 2.4 also deploys the forms; this step is still needed without webchat or
-   when only the forms change.)
 
 ### 2.2 Twilio lambdas 🧑
 
@@ -148,7 +166,16 @@ helpline.
 
 ### 2.3 Flex plugin 🧑
 
-Run *Flex Deploy* in this repo's GitHub Actions for the new account.
+1. 🤖 Merge master into the helpline's branch and push, so the branch has the current Flex plugin.
+2. 🧑 Wait for *Flex Plugins CI* on the branch to pass (it builds the plugin and the webchat for it).
+3. 🧑 Run *Flex Deploy* ([flex-deploy.yml](../../.github/workflows/flex-deploy.yml)) with **Use workflow
+   from** set to the helpline's branch, `helpline_code=<CODE>` (upper case) and the environment. Its last
+   job deploys the form definitions from that branch, so this also completes 2.1. Once the helpline is
+   merged, run it from master.
+4. 🧑 Twilio Console › Flex › Settings › **UI components**
+   (`https://console.twilio.com/us1/develop/flex/settings/ui-components`): turn off **Unified Profiles
+   Container**. New accounts have it on, and it replaces the CRM container in Panel 2 of the agent
+   desktop, where the Aselo plugin shows its forms: with it on, counsellors don't see the contact forms.
 
 ### 2.4 Webchat (only if the helpline uses it) 🤝
 
@@ -165,6 +192,8 @@ Run *Flex Deploy* in this repo's GitHub Actions for the new account.
      the workflow uses that build, where the configuration was merged at build time.
    - *Deploy webchat configuration to S3* is not needed: it writes to the old webchat location
      (`webchat/<code>/`), which the React webchat doesn't read.
+   - Test page: `https://assets-<env>.tl.techmatters.org/aselo-webchat-react-app/<code>/` (not the old
+     `webchat/<code>/test-chat.html`).
 
 ### 2.5 HRM permissions (hrm repo) 🤝
 
@@ -241,13 +270,13 @@ Copy into the helpline's tracking issue / task and tick as you go.
 - [ ] 0 Intake complete
 - [ ] 1.1 Helpline config committed
 - [ ] 1.2 SSM secrets
-- [ ] 1.3 provision / lex (if used) / system-down / configure applied · phone number → voice flow
+- [ ] 1.3 provision / lex (if used) / system-down / configure applied (service configuration hook ✅) · phone number → voice flow
 - [ ] 1.4 Error webhook
 - [ ] 1.5 Okta: group · app · Flex SSO values entered · SSO login ✅
 - [ ] 1.6 Twilio console users invited
 - [ ] 2.1 Form definitions
 - [ ] 2.2 Twilio lambdas deployed
-- [ ] 2.3 Flex plugin deployed
+- [ ] 2.3 Flex plugin deployed, Unified Profiles Container off
 - [ ] 2.4 Webchat config + app deployed (if needed)
 - [ ] 2.5 HRM permissions merged + deployed
 - [ ] 2.6 FullStory segment
