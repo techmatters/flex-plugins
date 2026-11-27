@@ -115,13 +115,16 @@ const ensureFilterSelectionsAreValid = (
 export const loadReferenceActionFunction: (list: string) => LoadReferenceActionFunction = (
   list: string,
 ) => async () => {
+  const isCategoriesList = list === USCHReferenceLocationList.Categories;
   const apiAttributes = await getDistinctStringAttributes({
     key: list,
-    allowDescendantKeys: list === USCHReferenceLocationList.Categories,
+    allowDescendantKeys: isCategoriesList,
   });
+  // Some values in the DB have stray spaces. Category values are trimmed as well as labels,
+  // so that variants differing only in spaces are deduplicated into a single option.
   const unsortedOptions = apiAttributes.map(({ value, info }) => ({
-    label: info?.name ?? value,
-    value,
+    label: (info?.name ?? value).trim(),
+    value: isCategoriesList ? value.trim() : value,
   }));
   return { list, options: dedupAndSort(unsortedOptions) };
 };

@@ -13,7 +13,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see https://www.gnu.org/licenses/.
  */
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AnyAction } from 'redux';
 import { Template } from '@twilio/flex-ui';
@@ -35,7 +35,7 @@ import {
 } from '../../../../states/resources/filterSelectionState/usch';
 import asyncDispatch from '../../../../states/asyncDispatch';
 import { getFilterSelectionState } from '..';
-import CheckboxMultiSelectFilter from '../CheckboxMultiSelectFilter';
+import CategoriesFilter from './CategoriesFilter';
 
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
 
@@ -52,6 +52,7 @@ const ResourceSearchFilters: React.FC<{}> = () => {
   );
   const { country, province, city, categories } = (filterOptions || {}) as USCHFilterOptions;
   const filterSelections: USCHFilterSelections = useSelector(selectFilterSelections);
+  const [categoriesLoading, setCategoriesLoading] = useState(() => !referenceLocations.categoryOptions?.length);
 
   const updateFilterSelection = (filterName: FilterName, filterValue: string | string[] | undefined) => {
     let reduxFilterValue = filterValue;
@@ -71,11 +72,15 @@ const ResourceSearchFilters: React.FC<{}> = () => {
       ];
       loadedOptionsByList
         .filter(([, loadedOptions]) => !loadedOptions?.length)
-        .forEach(([list]) =>
-          searchAsyncDispatch(
+        .forEach(async ([list]) => {
+          // asyncDispatch settles once the list is loaded or has failed, it never throws
+          await searchAsyncDispatch(
             loadReferenceLocationsAsyncAction({ loadReferenceActionFunction: loadReferenceActionFunction(list) }),
-          ),
-        );
+          );
+          if (list === USCHReferenceLocationList.Categories) {
+            setCategoriesLoading(false);
+          }
+        });
     };
 
     loadReferenceLocations(referenceLocations);
@@ -158,8 +163,8 @@ const ResourceSearchFilters: React.FC<{}> = () => {
           </Column>
         </Row>
       </ResourcesSearchFormSettingBox>
-      <CheckboxMultiSelectFilter
-        headerCode="Resources-Search-categories"
+      <CategoriesFilter
+        loading={categoriesLoading}
         options={categories || []}
         selectedValues={filterSelections.categories ?? []}
         onChange={selectedValues => updateFilterSelection('categories', selectedValues)}

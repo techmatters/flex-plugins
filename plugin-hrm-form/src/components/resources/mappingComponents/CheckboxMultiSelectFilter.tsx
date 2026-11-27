@@ -18,51 +18,57 @@ import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
 
 import { FiltersCheckbox, FormLabel } from '../../../styles';
-import {
-  CheckboxFilterOption,
-  CheckboxFilterOptionsScrollBox,
-  ResourcesSearchFormFilterHeader,
-  ResourcesSearchFormSettingBox,
-} from '../styles';
+import { ResourcesSearchFormFilterHeader, ResourcesSearchFormSettingBox } from '../styles';
 import { FilterOption } from '../../../states/resources/types';
 
-type Props = {
-  headerCode: string;
+type CheckboxMultiSelectOptionsProps = {
   options: FilterOption[];
   selectedValues: string[];
   // Receives undefined when nothing is selected, so the filter is dropped from the search
   onChange: (selectedValues: string[] | undefined) => void;
 };
 
-const CheckboxMultiSelectFilter: React.FC<Props> = ({ headerCode, options, selectedValues, onChange }) => (
+/**
+ * Grid with a checkbox for every option it is given.
+ * Selections are computed against all selectedValues, so options that are not shown stay selected.
+ */
+export const CheckboxMultiSelectOptions: React.FC<CheckboxMultiSelectOptionsProps> = ({
+  options,
+  selectedValues,
+  onChange,
+}) => (
+  <Grid container>
+    {options.map(({ value, label }) => (
+      <Grid key={value} xs={4} item>
+        <FormLabel htmlFor={value} style={{ flexDirection: 'row' }}>
+          <FiltersCheckbox
+            id={value}
+            name={value}
+            type="checkbox"
+            checked={selectedValues.includes(value)}
+            onChange={({ target: { checked } }) => {
+              const newSelections = checked
+                ? [...selectedValues, value]
+                : selectedValues.filter(option => option !== value);
+              onChange(newSelections.length ? newSelections : undefined);
+            }}
+          />
+          &nbsp;&nbsp;
+          <Template code={label ?? value} />
+        </FormLabel>
+      </Grid>
+    ))}
+  </Grid>
+);
+
+type CheckboxMultiSelectFilterProps = CheckboxMultiSelectOptionsProps & { headerCode: string };
+
+const CheckboxMultiSelectFilter: React.FC<CheckboxMultiSelectFilterProps> = ({ headerCode, ...optionsProps }) => (
   <ResourcesSearchFormSettingBox>
     <ResourcesSearchFormFilterHeader>
       <Template code={headerCode} />
     </ResourcesSearchFormFilterHeader>
-    <CheckboxFilterOptionsScrollBox>
-      <Grid container>
-        {options.map(({ value, label }) => (
-          <Grid key={value} xs={4} item component={CheckboxFilterOption}>
-            <FormLabel htmlFor={value} style={{ flexDirection: 'row' }}>
-              <FiltersCheckbox
-                id={value}
-                name={value}
-                type="checkbox"
-                checked={selectedValues.includes(value)}
-                onChange={({ target: { checked } }) => {
-                  const newSelections = checked
-                    ? [...selectedValues, value]
-                    : selectedValues.filter(option => option !== value);
-                  onChange(newSelections.length ? newSelections : undefined);
-                }}
-              />
-              &nbsp;&nbsp;
-              <Template code={label ?? value} />
-            </FormLabel>
-          </Grid>
-        ))}
-      </Grid>
-    </CheckboxFilterOptionsScrollBox>
+    <CheckboxMultiSelectOptions {...optionsProps} />
   </ResourcesSearchFormSettingBox>
 );
 

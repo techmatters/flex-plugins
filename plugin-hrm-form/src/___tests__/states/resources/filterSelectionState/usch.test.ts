@@ -152,6 +152,28 @@ describe('USCH filterSelectionState', () => {
       });
     });
 
+    test('trims category labels and values, deduplicating categories that only differ in spaces', async () => {
+      mockGetDistinctStringAttributes.mockResolvedValue([
+        { value: ' Housing ', info: null, id: '1', language: 'en' },
+        { value: 'Housing', info: null, id: '2', language: 'en' },
+        { value: 'Food', info: null, id: '3', language: 'en' },
+      ]);
+      const result = await loadReferenceActionFunction(USCHReferenceLocationList.Categories)();
+      expect(result).toStrictEqual({
+        list: USCHReferenceLocationList.Categories,
+        options: [
+          { value: 'Food', label: 'Food' },
+          { value: 'Housing', label: 'Housing' },
+        ],
+      });
+    });
+
+    test('trims location labels but keeps location values as stored', async () => {
+      mockGetDistinctStringAttributes.mockResolvedValue([{ value: ' Canada ', info: null, id: '1', language: 'en' }]);
+      const result = await loadReferenceActionFunction(USCHReferenceLocationList.Country)();
+      expect(result.options).toStrictEqual([{ value: ' Canada ', label: 'Canada' }]);
+    });
+
     test('deduplicates options with the same value, keeping the last', async () => {
       mockGetDistinctStringAttributes.mockResolvedValue([
         { value: 'United States', info: { name: 'United States (first)' }, id: '1', language: 'en' },
