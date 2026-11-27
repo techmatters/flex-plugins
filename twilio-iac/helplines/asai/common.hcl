@@ -12,6 +12,8 @@ locals {
     task_language              = "en-US"
     enable_post_survey         = false
     enable_external_recordings = true
+    # TaskRouter workspace events go to the account-scoped lambda: Serverless is not deployed on new accounts
+    enable_lambda_event_callback_url = true
     permission_config          = "demo"
     # Baseline: 1 queue, a chat (webchat over Conversations) channel and a voice channel. Add more as the helpline needs.
     workflows = {
