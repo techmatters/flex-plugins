@@ -139,10 +139,11 @@ def onboarding_status(
         'done' if definition_version == f'{code}-v1' else 'missing',
         f'currently "{definition_version}"' if definition_version and definition_version != f'{code}-v1' else '')
     add('2.1', 'Form definitions deployed to S3', 'manual',
-        'GitHub Actions › Deploy form-definitions to S3 (from the helpline branch until merged)')
+        'deployed by Flex Deploy (2.3), from the helpline branch until merged')
     add('2.2', 'Twilio lambdas deployed', 'manual',
         'GitHub Actions › Deploy All Twilio Lambdas (environment), from master')
-    add('2.3', 'Flex plugin deployed', 'manual', 'Flex Deploy workflow')
+    add('2.3', 'Flex plugin deployed', 'manual',
+        'merge master into the helpline branch, then Flex Deploy from it (also deploys the forms)')
     webchat_config = f'aselo-webchat-react-app/configSrc/{code}'
     add('2.4', 'Webchat config (if the helpline uses webchat)', 'done' if exists(webchat_config) else 'missing',
         '' if exists(webchat_config) else webchat_config)

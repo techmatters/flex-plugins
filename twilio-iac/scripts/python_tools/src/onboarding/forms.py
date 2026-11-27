@@ -63,5 +63,5 @@ Next:
   1. Set "definitionVersion": "{code}-v1" in twilio-iac/helplines/{code}/configs/service-configuration/common.json
   2. Fill in HelplineInformation.json (manager name, phone, email) and adapt the forms to the helpline
   3. cd lambdas/packages/hrm-form-definitions && npm test -- validateDefinitions   (must pass)
-  4. Deploy: GitHub Actions › "Deploy form-definitions to S3" with helpline_code={code}''')
+  4. Deploy: GitHub Actions › "Flex Deploy" from the helpline branch (it also deploys the forms)''')
     return 0

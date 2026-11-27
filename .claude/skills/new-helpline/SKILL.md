@@ -106,15 +106,18 @@ then wait for the person's SSO login test.
   `python3 twilio-iac/scripts/python_tools/onboarding.py new-forms --hl <code> --helpline "<helpline from common.hcl>"`,
   set `definitionVersion` to `<code>-v1`, fill the manager details, replace the example
   states/counties, adapt fields and categories to the intake (rules in `as/v3/README.md`), then run
-  `npm test -- validateDefinitions` in `lambdas/packages/hrm-form-definitions`. 🧑 The person runs
-  the "Deploy form-definitions to S3" workflow, with **Use workflow from** set to the helpline's
-  branch until the forms are merged (on master the folder doesn't exist and the sync fails).
+  `npm test -- validateDefinitions` in `lambdas/packages/hrm-form-definitions`. The forms are
+  deployed by *Flex Deploy* in 2.3.
+- 2.3 Before the Flex deploy, merge master into the helpline's branch and push (ask first). 🧑 The
+  person waits for *Flex Plugins CI* on the branch, then runs *Flex Deploy* with **Use workflow
+  from** set to the helpline's branch (`helpline_code` upper case): it also deploys the forms from
+  that branch (on master the forms folder doesn't exist until merged). Give the workflow links.
 - 2.4 Webchat config in `aselo-webchat-react-app/configSrc/<code>/` (copy `usvt`: common, staging,
   translations; no Twilio values needed).
 - 2.5 HRM permissions in the hrm repo, if the person has it checked out. A test helpline can reuse
   existing rules instead (`permission_config` / `permissionConfig` = e.g. `demo`).
 - 🧑 2.2 Twilio lambdas (*Deploy All Twilio Lambdas*, from master only: it deploys to every helpline
-  of the environment), 2.3 Flex, 2.4 webchat (*Deploy Aselo Webchat React
+  of the environment), 2.4 webchat (*Deploy Aselo Webchat React
   App - single helpline*, on a branch CI has built that contains `configSrc/<code>/`; not *Deploy
   webchat configuration to S3*), 2.6 FullStory, 2.7 CloudTrail: tell the person
   what to run or ask for, and wait.
