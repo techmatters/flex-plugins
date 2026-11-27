@@ -159,6 +159,10 @@ helpline.
    from** set to the helpline's branch, `helpline_code=<CODE>` (upper case) and the environment. Its last
    job deploys the form definitions from that branch, so this also completes 2.1. Once the helpline is
    merged, run it from master.
+4. 🧑 Twilio Console › Flex › Settings › **UI components**
+   (`https://console.twilio.com/us1/develop/flex/settings/ui-components`): turn off **Unified Profiles
+   Container**. New accounts have it on, and it replaces the CRM container in Panel 2 of the agent
+   desktop, where the Aselo plugin shows its forms: with it on, counsellors don't see the contact forms.
 
 ### 2.4 Webchat (only if the helpline uses it) 🤝
 
@@ -175,6 +179,8 @@ helpline.
      the workflow uses that build, where the configuration was merged at build time.
    - *Deploy webchat configuration to S3* is not needed: it writes to the old webchat location
      (`webchat/<code>/`), which the React webchat doesn't read.
+   - Test page: `https://assets-<env>.tl.techmatters.org/aselo-webchat-react-app/<code>/` (not the old
+     `webchat/<code>/test-chat.html`).
 
 ### 2.5 HRM permissions (hrm repo) 🤝
 
@@ -257,7 +263,7 @@ Copy into the helpline's tracking issue / task and tick as you go.
 - [ ] 1.6 Twilio console users invited
 - [ ] 2.1 Form definitions
 - [ ] 2.2 Twilio lambdas deployed
-- [ ] 2.3 Flex plugin deployed
+- [ ] 2.3 Flex plugin deployed, Unified Profiles Container off
 - [ ] 2.4 Webchat config + app deployed (if needed)
 - [ ] 2.5 HRM permissions merged + deployed
 - [ ] 2.6 FullStory segment

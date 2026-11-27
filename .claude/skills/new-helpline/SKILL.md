@@ -112,6 +112,8 @@ then wait for the person's SSO login test.
   person waits for *Flex Plugins CI* on the branch, then runs *Flex Deploy* with **Use workflow
   from** set to the helpline's branch (`helpline_code` upper case): it also deploys the forms from
   that branch (on master the forms folder doesn't exist until merged). Give the workflow links.
+  🧑 Then Twilio Console › Flex › Settings › UI components: turn off **Unified Profiles Container**
+  (on by default in new accounts; it replaces the CRM container where the Aselo forms show).
 - 2.4 Webchat config in `aselo-webchat-react-app/configSrc/<code>/` (copy `usvt`: common, staging,
   translations; no Twilio values needed).
 - 2.5 HRM permissions in the hrm repo, if the person has it checked out. A test helpline can reuse
@@ -119,7 +121,8 @@ then wait for the person's SSO login test.
 - 🧑 2.2 Twilio lambdas (*Deploy All Twilio Lambdas*, from master only: it deploys to every helpline
   of the environment), 2.4 webchat (*Deploy Aselo Webchat React
   App - single helpline*, on a branch CI has built that contains `configSrc/<code>/`; not *Deploy
-  webchat configuration to S3*), 2.6 FullStory, 2.7 CloudTrail: tell the person
+  webchat configuration to S3*; test page `https://assets-<env>.tl.techmatters.org/aselo-webchat-react-app/<code>/`),
+  2.6 FullStory, 2.7 CloudTrail: tell the person
   what to run or ask for, and wait.
 
 ### 8. Verification (Phase 3)
@@ -134,3 +137,19 @@ deviates from the baseline.
 Each time you stop, say in plain terms: what was done, what they need to do next (exact console
 path or command), and what they will see. Explain user-facing consequences, e.g. "after this,
 counsellors in the helpline group can log in to staging Flex".
+
+Give a direct link whenever one exists, with the inputs to fill in (branch for **Use workflow
+from**, helpline code, environment), instead of only naming the page or workflow:
+
+- Workflows: `https://github.com/techmatters/flex-plugins/actions/workflows/<file>.yml`:
+  `twilio-lambda-deploy-all.yml` (2.2), `flex-deploy.yml` (2.3, also the forms),
+  `aselo-webchat-react-app-deploy.yml` (2.4), `deploy-form-definitions.yml` (forms only),
+  `global-ci.yml?query=branch%3A<branch>` (CI run of the helpline's branch)
+- PRs: `https://github.com/techmatters/<repo>/compare/master...<branch>?expand=1`, with title and
+  description ready
+- Twilio Console: `https://console.twilio.com/us1/develop/flex/settings/ui-components` (Unified
+  Profiles, 2.3); Phone Numbers › Active numbers (1.3); Monitor › Errors › Webhooks & alerts (1.4);
+  Flex › Users and access › Single sign-on (1.5)
+- Webchat test page: `https://assets-<env>.tl.techmatters.org/aselo-webchat-react-app/<code>/`
+- Internal URLs (e.g. the TwilioErrorReporter webhook for 1.4) are not in this public repo: give them
+  from private notes or ask the person, never commit them.

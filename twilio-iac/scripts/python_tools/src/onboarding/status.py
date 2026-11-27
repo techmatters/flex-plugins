@@ -144,11 +144,14 @@ def onboarding_status(
         'GitHub Actions › Deploy All Twilio Lambdas (environment), from master')
     add('2.3', 'Flex plugin deployed', 'manual',
         'merge master into the helpline branch, then Flex Deploy from it (also deploys the forms)')
+    add('2.3', 'Unified Profiles Container turned off', 'manual',
+        'Twilio Console › Flex › Settings › UI components (else the Aselo forms are hidden)')
     webchat_config = f'aselo-webchat-react-app/configSrc/{code}'
     add('2.4', 'Webchat config (if the helpline uses webchat)', 'done' if exists(webchat_config) else 'missing',
         '' if exists(webchat_config) else webchat_config)
     add('2.4', 'Webchat config + app deployed (if the helpline uses webchat)', 'manual',
-        'Deploy Aselo Webchat React App - single helpline (also deploys the forms)')
+        'Deploy Aselo Webchat React App - single helpline (also deploys the forms); '
+        f'test page https://assets-{environment}.tl.techmatters.org/aselo-webchat-react-app/{code}/')
 
     # permissionConfig can point at another helpline's rules (e.g. "demo" for a test helpline)
     rules_name = permission_config if permission_config and not permission_config.startswith('<') else code
