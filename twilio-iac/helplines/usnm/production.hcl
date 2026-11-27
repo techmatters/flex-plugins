@@ -13,6 +13,7 @@ locals {
     flow_vars = {
       custom_functions_url                                   = "https://custom-functions-2196.twil.io"
       usnm_recordings_url                                    = "https://usnm-recordings-5659.twil.io"
+      recordings_url                                         = "https://recordings-production.tl.techmatters.org/usnm"
       conversation_time_delay_function_sid                   = "ZHc4d16dc47536625d362c9643af7afcd2"
       is_task_in_queue_function_sid                          = "ZH4c638934125af2174fe4c005de72495a"
       cancel_pending_task_function_sid                       = "ZHf6502c58b42dbc188b3d8bd868823ce1"
