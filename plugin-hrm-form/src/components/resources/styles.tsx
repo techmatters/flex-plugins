@@ -139,6 +139,17 @@ export const ResourcesSearchFormArea = styled('div')`
   flex-grow: 1;
 `;
 
+// Long checkbox labels are cut at two lines with an ellipsis
+export const CheckboxOptionLabelText = styled('span')`
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  min-width: 0;
+`;
+CheckboxOptionLabelText.displayName = 'CheckboxOptionLabelText';
+
 export const ResourcesSearchFormSettingBox = styled('div')`
   width: 100%;
   background-color: white;
