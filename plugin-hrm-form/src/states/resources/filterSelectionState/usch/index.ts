@@ -24,18 +24,22 @@ export type USCHReferenceLocationState = {
   countryOptions: FilterOption[];
   provinceOptions: FilterOption[];
   cityOptions: FilterOption[];
+  categoryOptions: FilterOption[];
 };
 
 export const referenceLocationsInitialState: USCHReferenceLocationState = {
   countryOptions: [],
   provinceOptions: [],
   cityOptions: [],
+  categoryOptions: [],
 };
 
 export const enum USCHReferenceLocationList {
   Country = 'address/country',
   Provinces = 'address/province',
   Cities = 'address/city',
+  // Stored under one key per category: 'categories/0', 'categories/1', ...
+  Categories = 'categories',
 }
 
 export type USCHFilterOptions = {
@@ -43,6 +47,7 @@ export type USCHFilterOptions = {
   country: FilterOption[];
   province: FilterOption[];
   city?: FilterOption[];
+  categories: FilterOption[];
 };
 
 const initialFilterOptions: USCHFilterOptions = {
@@ -52,17 +57,19 @@ const initialFilterOptions: USCHFilterOptions = {
   country: [],
   province: [{ label: '', value: undefined }],
   city: [],
+  categories: [],
 };
 
 export type USCHFilterSelections = {
   country?: string;
   province?: string;
   city?: string;
+  categories?: string[];
 };
 
 const getFilterOptionsBasedOnSelections = (
   filterSelections: USCHFilterSelections,
-  { countryOptions, provinceOptions, cityOptions }: ReferenceLocationState = {},
+  { countryOptions, provinceOptions, cityOptions, categoryOptions }: ReferenceLocationState = {},
 ): USCHFilterOptions => {
   return {
     ...initialFilterOptions,
@@ -84,6 +91,7 @@ const getFilterOptionsBasedOnSelections = (
         return !value || value.startsWith(startPrefix);
       }),
     ],
+    categories: categoryOptions || [],
   };
 };
 
@@ -107,7 +115,10 @@ const ensureFilterSelectionsAreValid = (
 export const loadReferenceActionFunction: (list: string) => LoadReferenceActionFunction = (
   list: string,
 ) => async () => {
-  const apiAttributes = await getDistinctStringAttributes({ key: list });
+  const apiAttributes = await getDistinctStringAttributes({
+    key: list,
+    allowDescendantKeys: list === USCHReferenceLocationList.Categories,
+  });
   const unsortedOptions = apiAttributes.map(({ value, info }) => ({
     label: info?.name ?? value,
     value,
@@ -198,6 +209,9 @@ export const handleLoadReferenceLocationsAsyncActionFulfilled = (
       break;
     case USCHReferenceLocationList.Cities:
       referenceLocations = { ...referenceLocations, cityOptions: options };
+      break;
+    case USCHReferenceLocationList.Categories:
+      referenceLocations = { ...referenceLocations, categoryOptions: options };
       break;
     default:
   }

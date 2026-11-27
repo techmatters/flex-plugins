@@ -98,11 +98,16 @@ export const getDistinctStringAttributes = async ({
   key,
   language,
   valueStartsWith,
+  allowDescendantKeys,
 }: {
   key: string;
   language?: string;
   valueStartsWith?: string;
+  // Also match attributes stored under child keys, e.g. 'categories/0', 'categories/1' for key 'categories'
+  allowDescendantKeys?: boolean;
 }): Promise<ListAttributeStringValue[]> => {
   // Keys can contain slashes, it's ok for them to be more path sections
-  return fetchResourceApi(`list-string-attributes/${key}?${convertObjectToQueryString({ valueStartsWith, language })}`);
+  return fetchResourceApi(
+    `list-string-attributes/${key}?${convertObjectToQueryString({ valueStartsWith, language, allowDescendantKeys })}`,
+  );
 };

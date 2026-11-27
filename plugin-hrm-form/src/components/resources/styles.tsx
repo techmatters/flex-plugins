@@ -148,6 +148,20 @@ export const ResourcesSearchFormSettingBox = styled('div')`
   border: #e6e6e6 1px solid;
 `;
 
+const CHECKBOX_FILTER_ROW_HEIGHT_PX = 22;
+const CHECKBOX_FILTER_MAX_VISIBLE_ROWS = 5;
+
+export const CheckboxFilterOptionsScrollBox = styled('div')`
+  max-height: ${CHECKBOX_FILTER_ROW_HEIGHT_PX * CHECKBOX_FILTER_MAX_VISIBLE_ROWS}px;
+  overflow-y: auto;
+`;
+CheckboxFilterOptionsScrollBox.displayName = 'CheckboxFilterOptionsScrollBox';
+
+export const CheckboxFilterOption = styled('div')`
+  min-height: ${CHECKBOX_FILTER_ROW_HEIGHT_PX}px;
+`;
+CheckboxFilterOption.displayName = 'CheckboxFilterOption';
+
 export const ResourcesSearchFormContainer = styled(Column)`
   width: 100%;
   background-color: #f6f6f6;

@@ -18,7 +18,12 @@ import { Template } from '@twilio/flex-ui';
 import { Grid } from '@material-ui/core';
 
 import { FiltersCheckbox, FormLabel } from '../../../styles';
-import { ResourcesSearchFormFilterHeader, ResourcesSearchFormSettingBox } from '../styles';
+import {
+  CheckboxFilterOption,
+  CheckboxFilterOptionsScrollBox,
+  ResourcesSearchFormFilterHeader,
+  ResourcesSearchFormSettingBox,
+} from '../styles';
 import { FilterOption } from '../../../states/resources/types';
 
 type Props = {
@@ -34,28 +39,30 @@ const CheckboxMultiSelectFilter: React.FC<Props> = ({ headerCode, options, selec
     <ResourcesSearchFormFilterHeader>
       <Template code={headerCode} />
     </ResourcesSearchFormFilterHeader>
-    <Grid container>
-      {options.map(({ value, label }) => (
-        <Grid key={value} xs={4} item>
-          <FormLabel htmlFor={value} style={{ flexDirection: 'row' }}>
-            <FiltersCheckbox
-              id={value}
-              name={value}
-              type="checkbox"
-              checked={selectedValues.includes(value)}
-              onChange={({ target: { checked } }) => {
-                const newSelections = checked
-                  ? [...selectedValues, value]
-                  : selectedValues.filter(option => option !== value);
-                onChange(newSelections.length ? newSelections : undefined);
-              }}
-            />
-            &nbsp;&nbsp;
-            <Template code={label ?? value} />
-          </FormLabel>
-        </Grid>
-      ))}
-    </Grid>
+    <CheckboxFilterOptionsScrollBox>
+      <Grid container>
+        {options.map(({ value, label }) => (
+          <Grid key={value} xs={4} item component={CheckboxFilterOption}>
+            <FormLabel htmlFor={value} style={{ flexDirection: 'row' }}>
+              <FiltersCheckbox
+                id={value}
+                name={value}
+                type="checkbox"
+                checked={selectedValues.includes(value)}
+                onChange={({ target: { checked } }) => {
+                  const newSelections = checked
+                    ? [...selectedValues, value]
+                    : selectedValues.filter(option => option !== value);
+                  onChange(newSelections.length ? newSelections : undefined);
+                }}
+              />
+              &nbsp;&nbsp;
+              <Template code={label ?? value} />
+            </FormLabel>
+          </Grid>
+        ))}
+      </Grid>
+    </CheckboxFilterOptionsScrollBox>
   </ResourcesSearchFormSettingBox>
 );
 

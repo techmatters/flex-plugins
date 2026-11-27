@@ -74,6 +74,7 @@ describe('USCH filterSelectionState', () => {
         countryOptions: [],
         provinceOptions: [],
         cityOptions: [],
+        categoryOptions: [],
       });
     });
   });
@@ -86,19 +87,37 @@ describe('USCH filterSelectionState', () => {
     test('Country - calls getDistinctStringAttributes with the correct key', async () => {
       mockGetDistinctStringAttributes.mockResolvedValue([]);
       await loadReferenceActionFunction(USCHReferenceLocationList.Country)();
-      expect(getDistinctStringAttributes).toHaveBeenCalledWith({ key: USCHReferenceLocationList.Country });
+      expect(getDistinctStringAttributes).toHaveBeenCalledWith({
+        key: USCHReferenceLocationList.Country,
+        allowDescendantKeys: false,
+      });
     });
 
     test('Provinces - calls getDistinctStringAttributes with the correct key', async () => {
       mockGetDistinctStringAttributes.mockResolvedValue([]);
       await loadReferenceActionFunction(USCHReferenceLocationList.Provinces)();
-      expect(getDistinctStringAttributes).toHaveBeenCalledWith({ key: USCHReferenceLocationList.Provinces });
+      expect(getDistinctStringAttributes).toHaveBeenCalledWith({
+        key: USCHReferenceLocationList.Provinces,
+        allowDescendantKeys: false,
+      });
     });
 
     test('Cities - calls getDistinctStringAttributes with the correct key', async () => {
       mockGetDistinctStringAttributes.mockResolvedValue([]);
       await loadReferenceActionFunction(USCHReferenceLocationList.Cities)();
-      expect(getDistinctStringAttributes).toHaveBeenCalledWith({ key: USCHReferenceLocationList.Cities });
+      expect(getDistinctStringAttributes).toHaveBeenCalledWith({
+        key: USCHReferenceLocationList.Cities,
+        allowDescendantKeys: false,
+      });
+    });
+
+    test('Categories - calls getDistinctStringAttributes including descendant keys', async () => {
+      mockGetDistinctStringAttributes.mockResolvedValue([]);
+      await loadReferenceActionFunction(USCHReferenceLocationList.Categories)();
+      expect(getDistinctStringAttributes).toHaveBeenCalledWith({
+        key: USCHReferenceLocationList.Categories,
+        allowDescendantKeys: true,
+      });
     });
 
     test('returns the list name and sorted/deduped options using label from info.name when available', async () => {
@@ -314,6 +333,27 @@ describe('USCH filterSelectionState', () => {
       });
     });
 
+    describe('Categories list', () => {
+      const options = [
+        { value: 'Food', label: 'Food' },
+        { value: 'Housing', label: 'Housing' },
+      ];
+
+      test('updates categoryOptions in referenceLocations', () => {
+        const newState = handleLoadReferenceLocationsAsyncActionFulfilled(emptyState, {
+          payload: { list: USCHReferenceLocationList.Categories, options },
+        });
+        expect(newState.referenceLocations.categoryOptions).toStrictEqual(options);
+      });
+
+      test('populates filterOptions.categories with the loaded categories', () => {
+        const newState = handleLoadReferenceLocationsAsyncActionFulfilled(emptyState, {
+          payload: { list: USCHReferenceLocationList.Categories, options },
+        });
+        expect(newState.filterOptions.categories).toStrictEqual(options);
+      });
+    });
+
     test('Unknown list type - does not update reference locations', () => {
       const newState = handleLoadReferenceLocationsAsyncActionFulfilled(baseSearchState, {
         payload: { list: 'unknown/list', options: [{ value: 'X', label: 'X' }] },
@@ -345,6 +385,24 @@ describe('USCH filterSelectionState', () => {
   });
 
   describe('handlerUpdateSearchFormAction', () => {
+    test('Selecting categories adds them to the filter selections', () => {
+      const newState = handlerUpdateSearchFormAction(baseSearchState, {
+        payload: { filterSelections: { categories: ['Food', 'Housing'] } },
+      });
+      expect(newState.parameters.filterSelections.categories).toStrictEqual(['Food', 'Housing']);
+    });
+
+    test('Clearing categories removes them from the filter selections', () => {
+      const stateWithCategories: ReferrableResourceSearchState = {
+        ...baseSearchState,
+        parameters: { ...baseSearchState.parameters, filterSelections: { categories: ['Food'] } },
+      };
+      const newState = handlerUpdateSearchFormAction(stateWithCategories, {
+        payload: { filterSelections: { categories: undefined } },
+      });
+      expect(newState.parameters.filterSelections).not.toHaveProperty('categories');
+    });
+
     test('Updates generalSearchTerm in parameters', () => {
       const newState = handlerUpdateSearchFormAction(baseSearchState, {
         payload: { generalSearchTerm: 'new search term' },

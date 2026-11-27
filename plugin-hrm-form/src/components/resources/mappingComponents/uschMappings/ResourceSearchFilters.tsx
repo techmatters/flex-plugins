@@ -35,6 +35,7 @@ import {
 } from '../../../../states/resources/filterSelectionState/usch';
 import asyncDispatch from '../../../../states/asyncDispatch';
 import { getFilterSelectionState } from '..';
+import CheckboxMultiSelectFilter from '../CheckboxMultiSelectFilter';
 
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
 
@@ -49,10 +50,10 @@ const ResourceSearchFilters: React.FC<{}> = () => {
   const { referenceLocations, filterOptions, parameters } = useSelector(
     (state: RootState) => state[namespace][referrableResourcesBase].search,
   );
-  const { country, province, city } = (filterOptions || {}) as USCHFilterOptions;
+  const { country, province, city, categories } = (filterOptions || {}) as USCHFilterOptions;
   const filterSelections: USCHFilterSelections = useSelector(selectFilterSelections);
 
-  const updateFilterSelection = (filterName: FilterName, filterValue: string | number | boolean | string[]) => {
+  const updateFilterSelection = (filterName: FilterName, filterValue: string | string[] | undefined) => {
     let reduxFilterValue = filterValue;
     if (filterName === 'country' || filterName === 'province' || filterName === 'city') {
       reduxFilterValue = filterValue === NO_LOCATION_SELECTED ? undefined : filterValue;
@@ -62,27 +63,19 @@ const ResourceSearchFilters: React.FC<{}> = () => {
 
   useEffect(() => {
     const loadReferenceLocations = (referenceLocations: ReferenceLocationState) => {
-      if (!referenceLocations.countryOptions?.length) {
-        searchAsyncDispatch(
-          loadReferenceLocationsAsyncAction({
-            loadReferenceActionFunction: loadReferenceActionFunction(USCHReferenceLocationList.Country),
-          }),
+      const loadedOptionsByList: [USCHReferenceLocationList, FilterOption[] | undefined][] = [
+        [USCHReferenceLocationList.Country, referenceLocations.countryOptions],
+        [USCHReferenceLocationList.Provinces, referenceLocations.provinceOptions],
+        [USCHReferenceLocationList.Cities, referenceLocations.cityOptions],
+        [USCHReferenceLocationList.Categories, referenceLocations.categoryOptions],
+      ];
+      loadedOptionsByList
+        .filter(([, loadedOptions]) => !loadedOptions?.length)
+        .forEach(([list]) =>
+          searchAsyncDispatch(
+            loadReferenceLocationsAsyncAction({ loadReferenceActionFunction: loadReferenceActionFunction(list) }),
+          ),
         );
-      }
-      if (!referenceLocations.provinceOptions?.length) {
-        searchAsyncDispatch(
-          loadReferenceLocationsAsyncAction({
-            loadReferenceActionFunction: loadReferenceActionFunction(USCHReferenceLocationList.Provinces),
-          }),
-        );
-      }
-      if (!referenceLocations.cityOptions?.length) {
-        searchAsyncDispatch(
-          loadReferenceLocationsAsyncAction({
-            loadReferenceActionFunction: loadReferenceActionFunction(USCHReferenceLocationList.Cities),
-          }),
-        );
-      }
     };
 
     loadReferenceLocations(referenceLocations);
@@ -165,6 +158,12 @@ const ResourceSearchFilters: React.FC<{}> = () => {
           </Column>
         </Row>
       </ResourcesSearchFormSettingBox>
+      <CheckboxMultiSelectFilter
+        headerCode="Resources-Search-categories"
+        options={categories || []}
+        selectedValues={filterSelections.categories ?? []}
+        onChange={selectedValues => updateFilterSelection('categories', selectedValues)}
+      />
     </Column>
   );
 };
