@@ -19,6 +19,14 @@ locals {
       # New attribute statements (federated claims): the standard for new helplines (tested on ASOP)
       attribute_statements_mode = "federated"
       # optional_attribute_sets = ["labels", "team"]
+      # Takeovers: same attribute as USCH staging (legacy user.waitingForSpecificTask), as a boolean worker attribute
+      extra_attribute_statements = [
+        {
+          name      = "waitingForSpecificTask.boolean"
+          legacy    = "user.waitingForSpecificTask"
+          federated = "user.profile.waitingForSpecificTask"
+        },
+      ]
     }
   }
 }
