@@ -34,6 +34,7 @@ import {
   USCHReferenceLocationList,
 } from '../../../../states/resources/filterSelectionState/usch';
 import asyncDispatch from '../../../../states/asyncDispatch';
+import { getAseloFeatureFlags } from '../../../../hrmConfig';
 import { getFilterSelectionState } from '..';
 import CategoriesFilter from './CategoriesFilter';
 
@@ -46,6 +47,7 @@ const ResourceSearchFilters: React.FC<{}> = () => {
   const dispatch = useDispatch();
   const searchAsyncDispatch = asyncDispatch<AnyAction>(dispatch);
   const { loadReferenceActionFunction } = getFilterSelectionState();
+  const { enable_category_filters: enableCategoryFilters } = getAseloFeatureFlags();
 
   const { referenceLocations, filterOptions, parameters } = useSelector(
     (state: RootState) => state[namespace][referrableResourcesBase].search,
@@ -68,8 +70,10 @@ const ResourceSearchFilters: React.FC<{}> = () => {
         [USCHReferenceLocationList.Country, referenceLocations.countryOptions],
         [USCHReferenceLocationList.Provinces, referenceLocations.provinceOptions],
         [USCHReferenceLocationList.Cities, referenceLocations.cityOptions],
-        [USCHReferenceLocationList.Categories, referenceLocations.categoryOptions],
       ];
+      if (enableCategoryFilters) {
+        loadedOptionsByList.push([USCHReferenceLocationList.Categories, referenceLocations.categoryOptions]);
+      }
       loadedOptionsByList
         .filter(([, loadedOptions]) => !loadedOptions?.length)
         .forEach(async ([list]) => {
@@ -163,12 +167,14 @@ const ResourceSearchFilters: React.FC<{}> = () => {
           </Column>
         </Row>
       </ResourcesSearchFormSettingBox>
-      <CategoriesFilter
-        loading={categoriesLoading}
-        options={categories || []}
-        selectedValues={filterSelections.categories ?? []}
-        onChange={selectedValues => updateFilterSelection('categories', selectedValues)}
-      />
+      {enableCategoryFilters && (
+        <CategoriesFilter
+          loading={categoriesLoading}
+          options={categories || []}
+          selectedValues={filterSelections.categories ?? []}
+          onChange={selectedValues => updateFilterSelection('categories', selectedValues)}
+        />
+      )}
     </Column>
   );
 };
