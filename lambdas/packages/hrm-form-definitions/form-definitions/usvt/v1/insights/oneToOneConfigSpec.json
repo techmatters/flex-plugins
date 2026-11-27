@@ -80,30 +80,6 @@
         "insights": ["conversations", "case"]
       }
     ],
-    "perpetrator": [
-      {
-        "name": "relationshipToChild",
-        "insights": ["customers", "organization"]
-      },
-      {
-        "name": "gender",
-        "insights": ["conversations", "followed_by"]
-      },
-      {
-        "name": "age",
-        "insights": ["conversations", "preceded_by"]
-      }
-    ],
-    "incident": [
-      {
-        "name": "duration",
-        "insights": ["conversations", "in_business_hours"]
-      },
-      {
-        "name": "location",
-        "insights": ["customers", "market_segment"]
-      }
-    ],
     "referral": [
       {
         "name": "referredTo",
