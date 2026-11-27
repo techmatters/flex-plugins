@@ -1,5 +1,12 @@
 [
   {
+    "name": "transferNotes",
+    "label": "Counsellor Transfer Notes",
+    "type": "textarea",
+    "rows": "5",
+    "isPII": true
+  },
+  {
     "name": "contactType",
     "label": "contactType",
     "type": "listbox-multiselect",
