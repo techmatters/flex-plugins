@@ -3,7 +3,8 @@
     "name": "firstName",
     "label": "First Name",
     "type": "input",
-    "isPII": true
+    "isPII": true,
+    "isDisabled": true
   },
   {
     "name": "lastName",

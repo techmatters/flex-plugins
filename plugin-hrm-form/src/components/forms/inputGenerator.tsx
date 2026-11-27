@@ -61,7 +61,7 @@ const createFormInput = ({
   formItemDefinition,
   parentsPath,
   updateCallback,
-  isItemEnabled = () => true,
+  isItemEnabled = (item) => !((item as any).isDisabled ?? false),
   initialValue,
   customHandlers,
   htmlElRef = null,
