@@ -76,7 +76,9 @@ ${
         },
         "workflow": "${workflow_sids.master}",
         "channel": "${task_channel_sids.chat}",
-        "attributes": "${channel_attributes.default}"
+        "attributes": "{\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\",\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"ip\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"firstName\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"helpline\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}\",\n  \"language\":\"en-CA\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}",
+        "priority": "0",
+        "timeout": "3600"
       }
     },
     {
@@ -154,7 +156,7 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "AdjustAttributes",
+          "next": "webAttributes",
           "event": "sent"
         },
         {
@@ -169,6 +171,7 @@ ${
         "service": "{{trigger.conversation.InstanceSid}}",
         "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "System",
+        "message_type": "custom",
         "to": "{{contact.channel.address}}",
         "body": "Hi, welcome to Kids Help Phone’s Live Chat Counselling.\n\nFrom all of us, we want to share how grateful we are that you have reached out for support. It takes courage to do that.\n\nLive Chat Counselling is anonymous and confidential, meaning the only thing we know about you is what you choose to share with us.\n\nTo best care for your needs right now, the counsellor will ask you questions to understand what’s going on for you, check in on your safety and how to support you in this moment.\n\nAn average chat is roughly 45mins and you can anticipate that the counsellor will assist you in building next steps that are realistic and make sense for you and your life.\n\nTo make the most of your time together with the counsellor, you may find it helpful to think about what is most important to talk about in the conversation while you wait. Together you and the counsellor can give the topic the time and attention it deserves.\n\nAt Kids Help Phone, we want you to feel safe and respected. Our team of professional counsellors also deserve respect and safety. If anyone is abusive or using our service for inappropriate reasons the conversation will be ended. Anyone who continues to use our service in a harmful way may be denied from using our service. If you have any questions about this or any other part of our service, please speak with your counsellor or ask to speak to a manager. You can also review our Terms of Services on the website.\n\nOur average wait time to connect with a counsellor is 30 minutes. We understand that sometimes waiting can be tough. If you'd like to call a counsellor instead, please call 1-800-668-6868. It is confidential and anonymous, and available 24/7.\n\nOr if you prefer to text with a trained volunteer at our confidential texting service, you can text “LIVECHAT” to 686868 any time.\n\nIf this is an emergency, please call 911"
       }
@@ -627,36 +630,22 @@ ${
           "event": "noMatch"
         },
         {
-          "next": "chatHoursEn",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value equal_to \"en-CA\"",
-              "arguments": [
-                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
-              ],
-              "type": "contains",
-              "value": "en-CA"
-            }
-          ]
-        },
-        {
           "next": "chatHoursFr",
           "event": "match",
           "conditions": [
             {
               "friendly_name": "If value equal_to fr-CA",
               "arguments": [
-                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.Body}}"
               ],
-              "type": "contains",
-              "value": "fr-CA"
+              "type": "matches_any_of",
+              "value": "Nouveau contact de web Anonymous"
             }
           ]
         }
       ],
       "properties": {
-        "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}",
+        "input": "{{trigger.conversation.Body}}",
         "offset": {
           "x": 260,
           "y": -350
@@ -668,7 +657,7 @@ ${
       "type": "send-message",
       "transitions": [
         {
-          "next": "AdjustAttributes",
+          "next": "webAttributes_fr",
           "event": "sent"
         },
         {
@@ -683,6 +672,7 @@ ${
         "service": "{{trigger.conversation.InstanceSid}}",
         "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "Système",
+        "message_type": "custom",
         "to": "{{contact.channel.address}}",
         "body": "Salut! Bienvenue au service d’intervention Clavardage en direct de Jeunesse, J’écoute. \n\nNous tenons tous à te féliciter d’avoir demandé de l’aide. Ça prend un grand courage pour faire ça. \n\nLe service d’intervention Clavardage en direct est un service anonyme et confidentiel; tout ce que nous savons de toi, c’est ce que tu choisis de nous dire. \n\nAfin de t’offrir du soutien qui correspond e mieux possible à tes besoins en ce moment, l’intervenant clinique te posera des questions afin de comprendre ce qui se passe dans ton quotidien, pour s’assurer de ta sécurité et pour déterminer quel soutien te serait le plus utile dans l’immédiat. L’intervenant t’aidera à définir les prochaines étapes réalisables qui prendront un sens tout particulier dans ta vie pendant la session de clavardage, qui dure habituellement environ 45 minutes. \nPour bénéficier pleinement de ton échange avec l’intervenant, il pourrait être utile, pendant que tu es dans la file d’attente, de penser aux choses importantes dont tu aimerais discuter. L’intervenant et toi pourrez alors prendre le temps nécessaire pour faire le tour du sujet. \n\nChez Jeunesse, J’écoute, nous tenons à ce que tu te sentes en sécurité et respecté. Il en va de même pour les membres de notre équipe d’intervenants cliniques professionnels, qui méritent eux aussi de travailler dans un environnement respectueux et sécuritaire. Si quelqu’un abuse ou utilise notre service pour des raisons inappropriées, on mettra fin à la conversation. Toute personne qui continue à avoir recours à notre service de manière malveillante peut se voir refuser l’accès. Si tu as des questions à cet égard ou sur tout autre aspect de notre service, pose-les à ton intervenant ou demande à communiquer avec un gestionnaire. Tu peux aussi consulter les Conditions de services sur le site Web. \n\nDe façon générale, le temps d’attente pour échanger avec un intervenant est d’une moyenne de 30 minutes. Nous comprenons que ça peut être difficile d’attendre. Si tu préfères parler avec un intervenant, appelle au 1 800 668-6868. Ce service, offert 24 heures par jour, 7 jours par semaine, est confidentiel et anonyme. \n\nTu peux aussi échanger avec un bénévole qualifié par texto en envoyant LIVECHAT au 686868 en tout temps. \n\nSi la situation est urgente, signale le 911."
       }
@@ -692,21 +682,8 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "event": "noMatch"
-        },
-        {
           "next": "split_messages_en",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value contains en-CA",
-              "arguments": [
-                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
-              ],
-              "type": "contains",
-              "value": "en-CA"
-            }
-          ]
+          "event": "noMatch"
         },
         {
           "next": "split_messages_fr",
@@ -715,16 +692,16 @@ ${
             {
               "friendly_name": "If value contains fr-CA",
               "arguments": [
-                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.Body}}"
               ],
               "type": "contains",
-              "value": "fr-CA"
+              "value": "Nouveau contact de web Anonymous"
             }
           ]
         }
       ],
       "properties": {
-        "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}",
+        "input": "{{trigger.conversation.Body}}",
         "offset": {
           "x": 1290,
           "y": 2440
@@ -1336,7 +1313,7 @@ ${
         "channel": "{{trigger.conversation.ChannelSid}}",
         "from": "Système",
         "to": "{{contact.channel.address}}",
-        "body": "{{widgets.check_hours_fr.parsed.message}}"
+        "body": "{{widgets.chatHoursFr.parsed.message}}"
       }
     },
     {
@@ -1378,7 +1355,7 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "next": "send_no_counsellors",
+          "next": "f_send_no_counsellors_fr",
           "event": "noMatch"
         },
         {
@@ -1519,7 +1496,21 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
+          "next": "helpline_parameters",
           "event": "noMatch"
+        },
+        {
+          "event": "match",
+          "conditions": [
+            {
+              "friendly_name": "If value contains true",
+              "arguments": [
+                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}"
+              ],
+              "type": "contains",
+              "value": "true"
+            }
+          ]
         },
         {
           "next": "helpline_parameters",
@@ -1575,28 +1566,25 @@ ${
     },
     {
       "name": "f_send_no_counsellors_fr",
-     "type": "run-function",
+     "type": "make-http-request",
       "transitions": [
         {
           "event": "success"
         },
         {
-          "event": "fail"
+          "next": "send_no_counsellors",
+          "event": "failed"
         }
       ],
       "properties": {
-        "service_sid": "${flow_vars.serverless_service_sid}",
-        "environment_sid": "${flow_vars.serverless_environment_sid}",
         "offset": {
           "x": 2570,
           "y": 800
         },
-        "function_sid": "${flow_vars.send_message_run_janitor_sid}",
+        "method": "POST",
+        "content_type": "application/x-www-form-urlencoded;charset=utf-8",
+        "add_twilio_auth": false,
         "parameters": [
-          {
-            "value": "{{flow.channel.address}}",
-            "key": "channelSid"
-          },
           {
             "value": "{{flow.channel.address}}",
             "key": "conversationSid"
@@ -1610,7 +1598,7 @@ ${
             "key": "from"
           }
         ],
-        "url": "${flow_vars.send_message_run_janitor_url}"
+        "url": "${lambda_twilio_account_scoped_url}/conversation/sendMessageAndRunJanitor"
       }
     },
     {
@@ -1745,21 +1733,8 @@ ${
       "type": "split-based-on",
       "transitions": [
         {
-          "event": "noMatch"
-        },
-        {
           "next": "engagement",
-          "event": "match",
-          "conditions": [
-            {
-              "friendly_name": "If value contains en-CA",
-              "arguments": [
-                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
-              ],
-              "type": "contains",
-              "value": "en-CA"
-            }
-          ]
+          "event": "noMatch"
         },
         {
           "next": "check_counsellors_fr_post_queue",
@@ -1768,20 +1743,47 @@ ${
             {
               "friendly_name": "If value contains fr-CA",
               "arguments": [
-                "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}"
+                "{{trigger.conversation.Body}}"
               ],
               "type": "contains",
-              "value": "fr-CA"
+              "value": "Nouveau contact de web Anonymous"
             }
           ]
         }
       ],
       "properties": {
-        "input": "{{trigger.conversation.ChannelAttributes.pre_engagement_data.language}}",
+        "input": "{{trigger.conversation.Body}}",
         "offset": {
           "x": 2100,
           "y": 1760
         }
+      }
+    },
+    {
+      "name": "webAttributes_fr",
+      "type": "send-to-flex",
+      "transitions": [
+        {
+          "next": "test_flag_queue",
+          "event": "callComplete"
+        },
+        {
+          "event": "failedToEnqueue"
+        },
+        {
+          "event": "callFailure"
+        }
+      ],
+      "properties": {
+        "offset": {
+          "x": 1018,
+          "y": 489
+        },
+        "workflow": "${workflow_sids.master}",
+        "channel": "${task_channel_sids.chat}",
+        "attributes": "{\n  \"e2eTestMode\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.e2eTestMode}}\",\n  \"name\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"ip\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.ip}}\",\n  \"firstName\": \"{{trigger.conversation.ChannelAttributes.from}}\",\n  \"channelType\": \"{{trigger.conversation.ChannelAttributes.channel_type}}\",\n  \"channelSid\": \"{{trigger.conversation.ChannelSid}}\",\n  \"helpline\": \"{{trigger.conversation.ChannelAttributes.pre_engagement_data.helpline}}\",\n  \"language\":\"fr-CA\",\n  \"ignoreAgent\": \"\",\n  \"transferTargetType\": \"\",\n  \"preEngagementData\": {{trigger.conversation.ChannelAttributes.pre_engagement_data | to_json}},\n  \"memory\": {{trigger.conversation.ChannelAttributes.memory | to_json}}\n}",
+        "priority": "0",
+        "timeout": "3600"
       }
     }
   ],

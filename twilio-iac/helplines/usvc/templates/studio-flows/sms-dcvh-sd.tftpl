@@ -35,15 +35,14 @@ ${
       "type": "send-to-flex",
       "transitions": [
         {
-          "next": "run_subflow_debug",
           "event": "callComplete"
         },
         {
-          "next": "run_subflow_debug",
+          "next": "http_post_webhook_notify_failure",
           "event": "failedToEnqueue"
         },
         {
-          "next": "run_subflow_debug",
+          "next": "http_post_webhook_notify_failure",
           "event": "callFailure"
         }
       ],
@@ -243,60 +242,26 @@ ${
       }
     },
     {
-      "name": "run_subflow_debug",
-      "type": "run-subflow",
+      "name": "http_post_webhook_notify_failure",
+      "type": "make-http-request",
       "transitions": [
         {
-          "event": "completed"
+          "event": "success"
         },
         {
           "event": "failed"
         }
       ],
       "properties": {
-        "flow_sid": "${debug_studio_subflow_sid}",
-        "flow_revision": "LatestPublished",
         "offset": {
           "x": 700,
           "y": 1650
         },
-        "parameters": [
-          {
-            "type": "json_object",
-            "value": "{{flow}}",
-            "key": "flow"
-          },
-          {
-            "type": "string",
-            "value": "widget_failures",
-            "key": "debug_mode"
-          },
-          {
-            "type": "json_object",
-            "value": "{{widgets}}",
-            "key": "widgets"
-          },
-          {
-            "type": "json_object",
-            "value": "{{trigger}}",
-            "key": "trigger"
-          },
-          {
-            "type": "string",
-            "value": "{{flow.flow_sid}}",
-            "key": "flow_sid"
-          },
-          {
-            "type": "string",
-            "value": "{{flow.sid}}",
-            "key": "execution_sid"
-          },
-          {
-            "type": "string",
-            "value": "${channel_attributes.default}",
-            "key": "task_attributes"
-          }
-        ]
+        "method": "POST",
+        "content_type": "application/json;charset=utf-8",
+        "add_twilio_auth": false,
+        "body": "{ \"text\": \"Issue detected [Failed to send to Flex] on ${short_helpline} ${short_environment} Flow SID: {{flow.flow_sid}} Execution SID: {{flow.sid}}  \" }",
+        "url": "${webhook_url_studio_errors}"
       }
     }
   ],

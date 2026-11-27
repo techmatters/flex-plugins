@@ -3,7 +3,7 @@
     "description": "Specific en_USCH/bots Post Survey bot",
     "locale": "en_US",
     "child_directed": true,
-    "idle_session_ttl_in_seconds": "300",
+    "idle_session_ttl_in_seconds": "900",
     "staging_bot_alias_id": "TSTALIASID",
     "production_bot_alias_id": "NRLEJBGBLB",
     "type": "Bot",

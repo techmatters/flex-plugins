@@ -25,6 +25,7 @@ import '../conversation/janitorTaskRouterListener';
 import '../channelCapture/postSurveyListener';
 import '../studioFlow/postStudioFlowTaskRouterListener';
 import '../transfer/transfersTaskRouterListener';
+import '../transfer/callTakeoverTaskRouterListener';
 
 export { handleTaskRouterEvent } from './taskrouterEventHandler';
 

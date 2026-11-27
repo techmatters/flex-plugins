@@ -122,11 +122,12 @@ export const setTransferRejected = updateTransferStatus(transferStatuses.rejecte
  * @param {string} counselorName
  */
 export const setTransferMeta = async (
-  payload: { task: ITask; options: { mode: string }; targetSid: string },
+  payload: { task: ITask; options: { mode: string; initiatingWorkerSid?: string }; targetSid: string },
   counselorName: string,
 ) => {
   const { task, options, targetSid } = payload;
-  const { mode } = options;
+  // initiatingWorkerSid is the supervisor when the counselor's client transfers a call on their behalf (take over)
+  const { mode, initiatingWorkerSid = task.workerSid } = options;
   const targetType = targetSid.startsWith('WK') ? 'worker' : 'queue';
 
   // Set transfer metadata
@@ -134,6 +135,7 @@ export const setTransferMeta = async (
     ...task.attributes,
     transferStarted: true,
     transferMeta: {
+      initiatingWorkerSid,
       originalTask: task.taskSid,
       originalReservation: task.sid,
       originalCounselor: task.workerSid,

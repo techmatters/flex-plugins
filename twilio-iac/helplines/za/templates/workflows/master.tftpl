@@ -57,7 +57,7 @@
         "targets": [
           {
             "queue": "${task_queues.facebook}",
-            "expression": "worker.waitingOfflineContact! = true"
+            "expression": "worker.waitingOfflineContact != true"
           }
         ]
       }
