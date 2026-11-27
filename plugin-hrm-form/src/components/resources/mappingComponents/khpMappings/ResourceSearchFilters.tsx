@@ -46,6 +46,7 @@ import {
 } from '../../../../states/resources/filterSelectionState/khp';
 import asyncDispatch from '../../../../states/asyncDispatch';
 import { getFilterSelectionState } from '..';
+import CheckboxMultiSelectFilter from '../CheckboxMultiSelectFilter';
 
 const NO_AGE_SELECTED = -1;
 const NO_LOCATION_SELECTED = '__NO_LOCATION_SELECTED__';
@@ -163,42 +164,6 @@ const ResourceSearchFilters: React.FC<{}> = () => {
     );
   };
 
-  const checkboxSet = (optionSet: CheckboxFilterName, options: FilterOption[]) => {
-    const selectedOptions = filterSelections[optionSet] ?? [];
-    return (
-      <ResourcesSearchFormSettingBox>
-        <ResourcesSearchFormFilterHeader>
-          <Template code={`Resources-Search-${optionSet}`} />
-        </ResourcesSearchFormFilterHeader>
-        <Grid container>
-          {options.map(({ value, label }) => (
-            <Grid key={value} xs={4} item>
-              <FormLabel htmlFor={value} style={{ flexDirection: 'row' }}>
-                <FiltersCheckbox
-                  id={value}
-                  name={value}
-                  type="checkbox"
-                  checked={selectedOptions.includes(value)}
-                  onChange={({ target: { checked } }) => {
-                    const newSelections = checked
-                      ? [...selectedOptions, value]
-                      : selectedOptions.filter(option => option !== value);
-                    updateFilterSelection(
-                      optionSet as CheckboxFilterName,
-                      newSelections.length ? newSelections : undefined,
-                    );
-                  }}
-                />
-                &nbsp;&nbsp;
-                <Template code={label ?? value} />
-              </FormLabel>
-            </Grid>
-          ))}
-        </Grid>
-      </ResourcesSearchFormSettingBox>
-    );
-  };
-
   return (
     <Column>
       <ResourcesSearchFormSettingBox>
@@ -281,9 +246,15 @@ const ResourceSearchFilters: React.FC<{}> = () => {
         </ResourcesSearchFormSettingBox>
       </Row>
       <Grid container>
-        {Object.entries(checkboxOptions).map(([optionSet, options]) =>
-          checkboxSet(optionSet as CheckboxFilterName, options),
-        )}
+        {Object.entries(checkboxOptions).map(([optionSet, options]) => (
+          <CheckboxMultiSelectFilter
+            key={optionSet}
+            headerCode={`Resources-Search-${optionSet}`}
+            options={options}
+            selectedValues={filterSelections[optionSet as CheckboxFilterName] ?? []}
+            onChange={selectedValues => updateFilterSelection(optionSet as CheckboxFilterName, selectedValues)}
+          />
+        ))}
       </Grid>
     </Column>
   );
