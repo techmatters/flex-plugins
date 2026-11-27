@@ -16,7 +16,8 @@
 
 import type { ALBEvent, ALBResult } from 'aws-lambda';
 import { isValidTwilioRequest } from './requestValidator';
-import { removeAttributes, redactSensitiveAttributes } from './attributeFilterer';
+import { filterSensitiveData, isJsonObject } from './sensitiveDataFilter';
+import type { JsonValue } from './sensitiveDataFilter';
 import { client, v2 } from '@datadog/datadog-api-client';
 import { getSsmParameter } from '@tech-matters/ssm-cache';
 
@@ -78,25 +79,17 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
     }
 
     try {
-      let body = JSON.parse(bodyJson);
-      const attributesToRemove = ['customers', 'memory', 'preEngagementData'];
-      const nestedAttributesToKeep = { customers: ['external_id'] };
-      // List of attributes to redact
-      const sensitiveAttributes = [
-        'customerAddress',
-        'customerName',
-        'from',
-        'name',
-        'firstName',
-        'friendyName',
-        'ip',
-        'caller',
-      ];
-      body = removeAttributes(body, attributesToRemove, nestedAttributesToKeep);
-      body = redactSensitiveAttributes(body, sensitiveAttributes);
+      const streamEvents: JsonValue = JSON.parse(bodyJson);
+      if (!Array.isArray(streamEvents)) {
+        return handleError('Event body is not an array of events', undefined, 400);
+      }
       // Access the account_sid value
-      const accountSid = body[0]?.data?.account_sid || body[0]?.data?.accountSid;
-      if (!accountSid) {
+      const [firstEvent] = streamEvents;
+      const eventData = isJsonObject(firstEvent) ? firstEvent.data : undefined;
+      const accountSid = isJsonObject(eventData)
+        ? eventData.account_sid || eventData.accountSid
+        : undefined;
+      if (typeof accountSid !== 'string' || !accountSid) {
         return handleError('Account SID is missing in the event body');
       }
 
@@ -114,22 +107,31 @@ export const handler = async (event: ALBEvent): Promise<ALBResult> => {
       // Validate Twilio request
       const validRequest = isValidTwilioRequest(authToken, event);
       const sentToDatadog = async () => {
-        const params = {
-          body: [
-            {
-              ddsource: 'twilio',
-              ddtags: '',
-              hostname: '',
-              message: JSON.stringify(body[0]),
-              service: 'twilio-event-stream',
-            },
-          ],
-        };
-        const api = await getApi();
+        // Masking is inside the try so a masking failure only skips Datadog (never sending the
+        // unmasked event) and doesn't fail the request, which would make Twilio retry and
+        // publish the events to SNS again.
         try {
+          // Mask helpseeker data (message text, contact addresses, attributes, error logs).
+          // Only after the request is validated, so unsigned requests can't make it run.
+          const maskedEvent = filterSensitiveData(firstEvent);
+          const params = {
+            body: [
+              {
+                ddsource: 'twilio',
+                ddtags: '',
+                hostname: '',
+                message: JSON.stringify(maskedEvent),
+                service: 'twilio-event-stream',
+              },
+            ],
+          };
+          const api = await getApi();
           await api.submitLog(params);
         } catch (error) {
-          console.error('Error posting to Datadog', error);
+          console.error(
+            `[${accountSid}] Error masking or posting the event to Datadog`,
+            error,
+          );
         }
       };
 
