@@ -4,6 +4,11 @@
             "web"
         ],
         "definitionVersion": "asai-v1",
+        "feature_flags": {
+            "use_twilio_lambda_to_send_messages": true,
+            "use_twilio_lambda_to_transition_participants": true,
+            "use_twilio_lambda_transfers": true
+        },
         "helplineLanguage": "en-US",
         "permissionConfig": "demo"
     }
