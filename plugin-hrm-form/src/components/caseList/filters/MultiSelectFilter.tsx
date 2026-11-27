@@ -21,7 +21,7 @@ import { Template } from '@twilio/flex-ui';
 import ArrowDropDown from '@material-ui/icons/ArrowDropDown';
 import ArrowDropUp from '@material-ui/icons/ArrowDropUp';
 
-import SearchInput from './SearchInput';
+import SearchInput from '../../SearchInput';
 import {
   MultiSelectButton,
   DialogArrow,

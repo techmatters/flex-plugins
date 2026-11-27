@@ -20,7 +20,7 @@ import React, { Ref } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
 
-import { MultiSelectSearchInput } from '../../../styles';
+import { MultiSelectSearchInput } from './styles';
 
 type OwnProps = {
   // Set it when more than one SearchInput can be on screen at the same time

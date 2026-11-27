@@ -17,7 +17,6 @@
 import { styled } from '@twilio/flex-ui';
 
 import { Flex } from './layout';
-import HrmTheme from './HrmTheme';
 import { PrimaryButton, SecondaryButton, TertiaryButton } from './buttons';
 
 export const FiltersContainer = styled(Flex)`
@@ -212,31 +211,6 @@ export const MultiSelectCheckboxLabel = styled('span')<{ capitalize?: boolean }>
   }
 `;
 MultiSelectCheckboxLabel.displayName = 'MultiSelectCheckboxLabel';
-
-export const MultiSelectSearchInput = styled('input')`
-  margin-bottom: 15px;
-  display: flex;
-  flex-grow: 0;
-  font-family: Open Sans;
-  font-size: 13px;
-  line-height: 1.33;
-  letter-spacing: normal;
-  box-sizing: border-box;
-  width: 100%;
-  height: 40px;
-  background-color: ${HrmTheme.colors.inputBackgroundColor};
-  color: #192b33;
-  box-shadow: none;
-  padding: 0 34px;
-  border: none;
-
-  &:focus {
-    background-color: ${HrmTheme.colors.inputBackgroundColor};
-    box-shadow: none;
-    border: 1px solid rgba(0, 59, 129, 0.37);
-  }
-`;
-MultiSelectSearchInput.displayName = 'MultiSelectSearchInput';
 
 export const FiltersBottomButtons = styled(Flex)`
   margin-top: 20px;
